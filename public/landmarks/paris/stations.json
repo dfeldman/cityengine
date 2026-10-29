@@ -1,1 +1,151 @@
-[]
+[
+  {
+    "name": "Gare du Nord",
+    "procedural": "gareDuNord",
+    "osm": [
+      "way/63195471"
+    ],
+    "front": 197,
+    "height": 47,
+    "note": "Hittorff's front on the Place Napoléon-III, fitted to OSM's head building (a U round the shed's end); front −z to the place (197°). The shed behind it is the next entry, in the same turn (197.5°, what the snug fit gives) so the two agree."
+  },
+  {
+    "name": "Gare du Nord — train shed",
+    "procedural": "gareDuNordShed",
+    "osm": [
+      "way/63197091"
+    ],
+    "lat": 48.8809871,
+    "lon": 2.3553831,
+    "front": 197.5,
+    "size": [
+      138,
+      185
+    ],
+    "height": 37,
+    "shadow": false,
+    "sign": false,
+    "note": "OSM's shed (building=train_station, gabled, wall=no) drawn as three gabled iron-and-glass halls with the platforms between the track pairs. Placed at its own point and turn because its outline and platforms are generated into stations/data.ts in exactly this frame (tools: the generator described there); the way is still claimed, so the city's 2-storey box over the tracks is gone. No footprint shadow: it is a roof on columns, not a solid."
+  },
+  {
+    "name": "Gare de Lyon",
+    "procedural": "gareDeLyon",
+    "osm": [
+      "way/1161318094",
+      "way/115948337",
+      "way/231098536",
+      "way/115928131",
+      "way/115948181",
+      "way/1161318096",
+      "way/231098535",
+      "way/115948339",
+      "way/231095201",
+      "way/231095204"
+    ],
+    "lat": 48.8446753,
+    "lon": 2.3747704,
+    "front": 310,
+    "size": [
+      186,
+      221
+    ],
+    "height": 67,
+    "shadow": false,
+    "note": "One model: the clock tower, the front to the Place Louis-Armand, the Boulevard Diderot range and the Grande Halle with its platforms. OSM maps the station as an outline with nine parts and the tower as an outline with two parts (the bake keeps two of OSM's four); every one is claimed, and each is drawn on its own footprint, generated into stations/data.ts in this entry's frame (front −z to the place, 310°). No footprint shadow: the rectangle round the whole station would darken the streets beside it."
+  },
+  {
+    "name": "Gare de l'Est",
+    "procedural": "gareDeLest",
+    "osm": [
+      "way/280670907"
+    ],
+    "lat": 48.8780688,
+    "lon": 2.3600256,
+    "front": 201,
+    "size": [
+      203,
+      378
+    ],
+    "height": 34,
+    "shadow": false,
+    "note": "One model: the front with its two roses (Strasbourg, Verdun), the portico, the two barrel-vaulted halls behind the roses and the long platform canopies out over the track fan. OSM maps head and halls as one way (280670907) and four of the canopies as raised roofs the bake does not draw; the outline and the platforms are generated into stations/data.ts in this entry's frame, front −z to the place (201°). No footprint shadow: the rectangle round the canopies would darken the whole fan."
+  },
+  {
+    "name": "Gare Saint-Lazare",
+    "procedural": "gareSaintLazare",
+    "osm": [
+      "way/727994377",
+      "way/67825343",
+      "way/67825345",
+      "way/402381719",
+      "way/685606131"
+    ],
+    "lat": 48.8770801,
+    "lon": 2.3250532,
+    "front": 169,
+    "size": [
+      258,
+      243
+    ],
+    "height": 41,
+    "shadow": false,
+    "note": "One model: Lisch's front on the Rue Saint-Lazare between the Cour de Rome and the Cour du Havre, its end pavilions' square domes and the clock, and five gabled halls over the tracks. OSM maps the station as one outline (727994377) with parts; the outline and the platforms are generated into stations/data.ts in this entry's frame, front −z to the street (169°). The parts on level −2 are below ground and not in the bake, so not named."
+  },
+  {
+    "name": "Gare d'Austerlitz",
+    "procedural": "gareDAusterlitz",
+    "osm": [
+      "way/62380197",
+      "way/62380200",
+      "way/728823414",
+      "way/732347972"
+    ],
+    "lat": 48.8417721,
+    "lon": 2.366202,
+    "front": 330,
+    "size": [
+      130,
+      283
+    ],
+    "height": 36,
+    "shadow": false,
+    "note": "One model: the Orléans company's head on the Place Valhubert with its clock, the side ranges, the Grande Halle's 51 m iron arch over them and the lower sheds over the platforms beyond. OSM's outline (62380197, layer 3) and its three parts, all claimed; the outline and the platforms are generated into stations/data.ts in this entry's frame, front −z to the place and the Seine (330°)."
+  },
+  {
+    "name": "Gare Montparnasse",
+    "procedural": "gareMontparnasse",
+    "lat": 48.8401441,
+    "lon": 2.3193168,
+    "front": 39,
+    "size": [
+      241,
+      316
+    ],
+    "height": 29,
+    "shadow": false,
+    "note": "Hall 1's glass front and pylons on the Place Raoul-Dautry and the Jardin Atlantique's deck over the platforms. Replaces only the HEMA store inside Hall 1 (relation 14130166, an indoor room the bake drew as a 20 m block through the hall's glass roof): OSM puts Hall 1 and Hall Pasteur on layer −1 and the deck is a raised roof (400154236), none of which the bake draws; the office slab over Hall 1 (part 229412474) is the city's own. Footprints and platforms (from the tracks, mapped as a tunnel under the deck) are generated into stations/data.ts in this entry's frame, front −z to the place (39°). The deck's top is planted by the city (MeshBuilder.decks).",
+    "osm": [
+      "relation/14130166"
+    ],
+    "stone": false
+  },
+  {
+    "name": "Gare de Bercy",
+    "procedural": "gareDeBercy",
+    "osm": [
+      "way/468790339",
+      "way/1221427146"
+    ],
+    "lat": 48.8384077,
+    "lon": 2.3845616,
+    "front": 302,
+    "size": [
+      100,
+      324
+    ],
+    "height": 10,
+    "shadow": false,
+    "note": "The low 1977 hall on the Boulevard de Bercy, the covered auto-train track along its side (OSM maps both as one layer-2 way, which the city drew as a solid two-storey block over the rails) and the three platform canopies (raised roofs the bake does not draw). Generated into stations/data.ts in this entry's frame, front −z to the boulevard (302°). Part 1221427146, a one-storey block mapped inside the hall, goes with it. The small Auto-Train building (468790340) stays the city's.",
+    "stone": false
+  }
+]

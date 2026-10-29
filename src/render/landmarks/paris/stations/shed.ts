@@ -27,7 +27,6 @@ type P2 = { x: number; z: number }
 const FIXED = 0
 const METAL = surfaceTag('metal')
 const GLASS = surfaceTag('glass')
-const CONCRETE = surfaceTag('concrete')
 
 export interface Span {
   /** the span's edges across the tracks, metres in the shed frame (moved onto the nearest platform: `snap`) */
@@ -252,4 +251,42 @@ export function trainShed(out: MeshBuilder, data: ShedData, spec: ShedSpec): voi
     }
   }
   platforms(out, data, spec.platform)
+}
+
+/**
+ * Platform CANOPIES (marquises): on every platform between z0 and z1, a roof just wider than the platform, its two
+ * halves falling to a gutter on the middle (the "umbrella" of the Gare de l'Est's and Saint-Lazare's long platforms),
+ * on a row of columns down the platform's middle. They follow the platform where it curves.
+ */
+export function canopies(out: MeshBuilder, data: ShedData, z0: number, z1: number, o: { height?: number; colour?: Rgb; iron?: Rgb; step?: number } = {}): void {
+  const plats = data.platforms.map(toP)
+  const y = o.height ?? 5.4
+  const c = o.colour ?? [0.36, 0.4, 0.39]
+  const iron = o.iron ?? [0.22, 0.25, 0.25]
+  const step = o.step ?? 9
+  for (const r of plats) {
+    const zs = r.map((p) => p.z)
+    const za = Math.max(z0, Math.min(...zs) + 1), zb = Math.min(z1, Math.max(...zs) - 1)
+    if (zb - za < 8) continue
+    const n = Math.max(1, Math.round((zb - za) / step))
+    let prev: [number, number, number] | null = null
+    for (let k = 0; k <= n; k++) {
+      const z = za + ((zb - za) * k) / n
+      // this platform's own interval at z
+      const iv = platformsAt([r], z)[0]
+      if (!iv) { prev = null; continue }
+      const a = iv[0] - 0.7, b = iv[1] + 0.7, m = (iv[0] + iv[1]) / 2
+      if (prev) {
+        const [pa, pb, pz] = prev, pm = (pa + pb) / 2
+        out.quad([[pa, y + 0.45, pz], [pm, y, pz], [m, y, z], [a, y + 0.45, z]], [0.1, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, METAL)
+        out.quad([[pm, y, pz], [pb, y + 0.45, pz], [b, y + 0.45, z], [m, y, z]], [-0.1, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, METAL)
+        // the fascia along each edge, one strip each
+        for (const [p0, p1] of [[pa, a], [pb, b]] as const) {
+          out.quad([[p0, y + 0.05, pz], [p1, y + 0.05, z], [p1, y + 0.6, z], [p0, y + 0.6, pz]], [p0 === pa ? -1 : 1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], iron, METAL)
+        }
+      }
+      if (k % 2 === 0) prism(out, m, z, 0.76, y, 0.16, 5, iron, METAL)
+      prev = [a, b, z]
+    }
+  }
 }

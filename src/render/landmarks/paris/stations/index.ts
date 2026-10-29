@@ -4,6 +4,15 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
+import { gareDuNord, gareDuNordShed } from './gare-du-nord.ts'
+import { gareDeLyon } from './gare-de-lyon.ts'
+import { gareDeLest } from './gare-de-lest.ts'
+import { gareSaintLazare } from './saint-lazare.ts'
+import { gareDAusterlitz } from './austerlitz.ts'
+import { gareMontparnasse } from './montparnasse.ts'
+import { gareDeBercy } from './bercy.ts'
 
 export const PARIS_STATIONS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  gareDuNord, gareDuNordShed, gareDeLyon, gareDeLest, gareSaintLazare, gareDAusterlitz,
+  gareMontparnasse, gareDeBercy,
 }
