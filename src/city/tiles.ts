@@ -102,6 +102,8 @@ export interface CityIndex {
    */
   sea?: number | null
   skyline?: CityPackage['skyline']
+  /** the roundabouts OSM maps (CityPackage.roundabouts): the ride graph's, and the monuments in their middles */
+  roundabouts?: CityPackage['roundabouts']
   /** every named landmark, for the menu and the minimap (they are also in their tiles, for the plates) */
   landmarks: PackedLandmark[]
   /** the water bodies whole: quays, the ground occluder and the crowd need the river, not its tile pieces */
@@ -316,6 +318,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
     region: pkg.region, start: pkg.start, terrain: pkg.terrain, sea: pkg.seaLevel ?? null, skyline: pkg.skyline, landmarks: pkg.landmarks ?? [],
     water: pkg.areas.filter((a) => a.kind === 'water'),
     ...(pkg.walls && pkg.walls.length > 0 ? { walls: pkg.walls } : {}),
+    ...(pkg.roundabouts && pkg.roundabouts.length > 0 ? { roundabouts: pkg.roundabouts } : {}),
     attribution: pkg.attribution, baked: pkg.baked, tile: TILE,
   }
   return { index, tiles }

@@ -37,6 +37,8 @@ import { TravelCard } from './ui/travel.ts'
 import { stationsFor, metroName, fareFrom, destinations, type Station } from './game/stations.ts'
 import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
+import { roundaboutMonuments } from './render/paris/roundabout-monuments.ts'
+import { RIDE_OVERRIDES } from './city/overrides.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
 import { postersLayer } from './render/posters.ts'
 import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts'
@@ -782,6 +784,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(passagesLayer(scene, city.terrain))
   // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
   city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
+  /*
+   * PARIS'S PLACE MONUMENTS (render/paris/roundabout-monuments.ts): one in the middle of each roundabout the bake found,
+   * unless a modelled landmark or a hand-made place is there already (the Bastille's column, the Étoile's arch).
+   */
+  if (pkg.region === 'paris' && index.roundabouts?.length) {
+    const pr = new Projection(pkg.origin)
+    const placed = landmarkList.filter((e) => e.lat !== undefined && e.lon !== undefined).map((e) => pr.toLocal({ lat: e.lat!, lon: e.lon! }))
+    const hand = (RIDE_OVERRIDES.paris?.roundabouts ?? []).map((h) => ({ ...pr.toLocal({ lat: h.lat, lon: h.lon }), R: h.R }))
+    const rings = index.roundabouts.map((r) => ({ ...pr.toLocal({ lat: r.lat, lon: r.lon }), r: r.r }))
+    const m = roundaboutMonuments(scene, rings, (x, z) => city.terrain.heightAt(x, z),
+      (x, z, r) => placed.some((p) => Math.hypot(p.x - x, p.z - z) < r) || hand.some((h) => Math.hypot(h.x - x, h.z - z) < h.R))
+    if (m) console.log('[paris] place monuments', rings.length)
+  }
   // OSM's flagpoles and what they fly (render/flags.ts, tools/flags.ts)
   if (!off.has('flags')) {
     const fp = new Projection(pkg.origin)
