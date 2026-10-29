@@ -35,5 +35,247 @@
     "height": 46,
     "stone": false,
     "note": "Gehry's twelve glass sails (two tiers, the highest 46 m) over the white Ductal iceberg and its planted terraces, in the Bois de Boulogne. Placed by point and size like the Grand Palais — the plan is drawn in the builder from OSM's way 309626332 (122 × 57 m, centred here), its −z to the south (the Avenue du Mahatma-Gandhi and the basin) — so the frame is the builder's and not one the fit search picks off the blob. OSM's basin round it stays the city's water."
+  },
+  {
+    "name": "Musée du quai Branly",
+    "procedural": "quaiBranly",
+    "osm": [
+      "way/69045431",
+      "way/1556506842",
+      "way/1556506843",
+      "way/1556506844",
+      "way/1556506845",
+      "way/1556506846",
+      "way/1556506847",
+      "way/1556506848",
+      "way/1556506849",
+      "way/1556506850"
+    ],
+    "lat": 48.8607902,
+    "lon": 2.2977436,
+    "size": [
+      209,
+      85
+    ],
+    "front": 330,
+    "height": 26,
+    "stone": false,
+    "note": "Nouvel's pont-musée on its stilts 10 m over Clément's garden, the coloured boxes out of its north face, the louvred south face, the roof restaurant's oval; the Bâtiment Branly's planted wall to the quai, the Auvent and the Université building; the 12 m glass palisade along the quai. Placed by point and size (the outline's 209 × 85 m box, −z to the quai, NNW), the plans drawn in the builder from OSM's outline way 69045431 and its nine building:parts, all named here so they go whether or not the bake superseded the outline. The Palais de l'Alma next door (relation 1084225) is not this museum's."
+  },
+  {
+    "name": "Institut du monde arabe",
+    "procedural": "institutMondeArabe",
+    "osm": [
+      "way/22870791"
+    ],
+    "lat": 48.8489941,
+    "lon": 2.3572322,
+    "size": [
+      77,
+      35
+    ],
+    "front": 226.5,
+    "height": 31,
+    "stone": false,
+    "note": "Nouvel's moucharabieh front to the Place Mohammed-V (−z, SW): the steel panels with their irises, 24 × 9 here; the north wing's printed glass curving along the Quai Saint-Bernard to the prow at the west (toward Notre-Dame); the cut and the patio between, open as OSM maps them; the Tour des Livres in the library's glazed west end. Placed by point and size, the plan drawn in the builder from OSM's way 22870791 (77 × 35 m, centred here), because the cut and the patio make the outline concave."
+  },
+  {
+    "name": "Musée Rodin — Hôtel Biron",
+    "osm": [
+      "way/68568682"
+    ],
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 3,
+    "eaves": 13,
+    "roofHeight": 6,
+    "roofColour": "#4e555d",
+    "note": "The Hôtel Biron (1732), Rodin's house and museum, between its court on the Rue de Varenne and the sculpture garden: the pale dressed stone of the hôtels particuliers and a slate roof. It needs its own entry — the hôtels' regular expression wants 'Hôtel de/du/des', and OSM names it 'Hôtel Biron'."
+  },
+  {
+    "name": "Musée de Cluny — the Hôtel de Cluny",
+    "osm": [
+      "way/41874779"
+    ],
+    "restyle": "marais",
+    "roof": "gabled",
+    "roofHeight": 8,
+    "roofColour": "#4e555d",
+    "note": "The abbots' Flamboyant Gothic hôtel (c. 1500) and the museum's halls: rough limestone under steep slate, the Marais dress — closer to the late-Gothic house than the hôtels' classical one. OSM maps it as an outline (way 41874779) and eleven building:parts; this claims the parts (the 'Hôtels particuliers' regular expression can only reach the outline's id, which the bake drops when the parts supersede it). The brief's way 56640163 is the museum's site (tourism=museum, no building). If the bake kept the outline instead, the 'Hôtels particuliers' entry (earlier in paris.json, first wins) dresses it classical and this one does nothing."
+  },
+  {
+    "name": "Thermes de Cluny",
+    "procedural": "clunyThermes",
+    "lat": 48.850672,
+    "lon": 2.343181,
+    "front": 270,
+    "size": [
+      30,
+      14
+    ],
+    "height": 14,
+    "sign": false,
+    "note": "The Gallo-Roman baths' broken walls along the Boulevard Saint-Michel, at OSM's archaeological-site node (Thermes de Cluny): banded rubble and brick, arched openings, the tall wall at the back. Placed by point and size; it replaces the three untagged building:parts of the hôtel's outline that stand there (1132441563/566/567 — the baths' remains as OSM boxes), so the ruins do not stand inside them. The 2018 entrance building (way 1174834795, Desmoulin) stays the city's. −z to the boulevard.",
+    "osm": [
+      "way/1132441563",
+      "way/1132441566",
+      "way/1132441567"
+    ]
+  },
+  {
+    "name": "Musée Picasso — Hôtel Salé",
+    "osm": [
+      "way/57745739"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 3,
+    "eaves": 14,
+    "roofHeight": 8,
+    "roofColour": "#4e555d",
+    "note": "The Hôtel Salé (1659), the Musée national Picasso-Paris, in the Rue de Thorigny: the hôtels' dressed stone and a steep slate roof. OSM leaves the building unnamed (way 57745739, inside the museum's site way 57745741), so the hôtels' regular expression never reached it."
+  },
+  {
+    "name": "Saint-Martin-des-Champs — Musée des Arts et Métiers",
+    "procedural": "saintMartinDesChamps",
+    "osm": [
+      "way/56301534",
+      "way/1484904717",
+      "way/1484904718",
+      "way/1484904719"
+    ],
+    "front": 270,
+    "height": 24,
+    "note": "The priory church, the museum's hall of machines: the church kit's long nave, west gable to the Rue Saint-Martin, the Romanesque choir's apse at the east end, fitted to OSM's outline (75 × 44 m, its ambulatory chapels drawn as the apse). OSM tags it a one-level chapel; 24 m is the nave's ridge. The three building:parts inside its outline (1484904717/718/719) are named too, so they go whether or not the bake superseded the outline."
+  },
+  {
+    "name": "Conservatoire national des arts et métiers",
+    "osm": [
+      "relation/550505"
+    ],
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 4,
+    "eaves": 17,
+    "roofHeight": 6,
+    "roofColour": "#4e555d",
+    "note": "The CNAM round the priory — Vaudoyer's and Ancelet's stone fronts to the Rue Saint-Martin and the Rue Réaumur, the cloister and the refectory behind: OSM's multipolygon (182 × 184 m, building:levels 2, which is wrong) in the classical dress at its real four storeys under slate."
+  },
+  {
+    "name": "Grande Galerie de l'Évolution",
+    "osm": [
+      "way/83913793"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 4,
+    "eaves": 22,
+    "roofHeight": 9,
+    "roofColour": "#9aaab0",
+    "note": "Jules André's gallery of 1889 at the head of the Jardin des Plantes' parterres: the classical stone front to the garden and, over the great nave, the glass roof — a hipped roof in pale glass-grey here. OSM's 8 levels are the galleries inside; the stone walls stand 22 m."
+  },
+  {
+    "name": "Musée Guimet",
+    "osm": [
+      "way/79641993"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 4,
+    "roofHeight": 4,
+    "roofColour": "#4e555d",
+    "note": "Terrier's museum of 1889 on the Place d'Iéna: the triangular block in the classical dress; its rotunda at the corner on the place is `guimetRotunda`."
+  },
+  {
+    "name": "Musée Guimet — the rotunda",
+    "procedural": "guimetRotunda",
+    "lat": 48.865114,
+    "lon": 2.293669,
+    "front": 210,
+    "size": [
+      16,
+      16
+    ],
+    "height": 26,
+    "sign": false,
+    "note": "The rotunda on the Place d'Iéna: drum, engaged Ionic columns, attic and low dome, standing over the round end of OSM's way 79641993 (restyled above, not replaced). −z to the place (SSW)."
+  },
+  {
+    "name": "La Géode",
+    "procedural": "geode",
+    "osm": [
+      "way/64040790"
+    ],
+    "height": 36,
+    "stone": false,
+    "note": "Fainsilber's 36 m mirror sphere of steel triangles in its basin before the Cité des Sciences: latitude bands, each quad's two triangles a shade apart so the facets read, sky-pale above and the ground's darker reflection below. Fitted to OSM's round outline (37 m)."
+  },
+  {
+    "name": "Cité des Sciences et de l'Industrie",
+    "procedural": "citeDesSciences",
+    "osm": [
+      "way/64040845",
+      "way/251644330",
+      "way/251644331"
+    ],
+    "front": 143,
+    "height": 34,
+    "stone": false,
+    "note": "The old abattoirs' sale hall as Fainsilber rebuilt it: the 280 × 110 m steel-and-glass box, its roof trusses, the planetarium's two domes (OSM's roof parts 251644330/331, claimed here), and the three glass serres on the south-east front facing the Géode. Fitted to OSM's outline, −z to the SE."
+  },
+  {
+    "name": "Philharmonie de Paris",
+    "procedural": "philharmonie",
+    "osm": [
+      "way/21502894"
+    ],
+    "front": 260,
+    "height": 52,
+    "stone": false,
+    "note": "Nouvel's shimmering hill of aluminium bird-tiles in six greys over a glazed base, the belvédère's tilted blade at 52 m thrust out over the park, the ramp up the south flank. Fitted to OSM's outline (163 × 104 m, no height in OSM), −z to the park (W). The Cité de la Musique next door (way 63971254) is not claimed."
+  },
+  {
+    "name": "Bibliothèque nationale de France — Tour des Lettres",
+    "procedural": "bnfTower",
+    "osm": [
+      "way/62379530"
+    ],
+    "height": 79,
+    "stone": false,
+    "sign": false,
+    "note": "One of Perrault's four L-shaped glass towers (open books on end, 79 m) at the corners of the BnF's esplanade round the sunken garden: glass over the library's wooden shutters, open and shut bay by bay. Fitted to the tower's own OSM outline."
+  },
+  {
+    "name": "Bibliothèque nationale de France — Tour des Temps",
+    "procedural": "bnfTower",
+    "osm": [
+      "way/62379535"
+    ],
+    "height": 79,
+    "stone": false,
+    "sign": false,
+    "note": "One of Perrault's four L-shaped glass towers (open books on end, 79 m) at the corners of the BnF's esplanade round the sunken garden: glass over the library's wooden shutters, open and shut bay by bay. Fitted to the tower's own OSM outline."
+  },
+  {
+    "name": "Bibliothèque nationale de France — Tour des Nombres",
+    "procedural": "bnfTower",
+    "osm": [
+      "way/62379550"
+    ],
+    "height": 79,
+    "stone": false,
+    "sign": false,
+    "note": "One of Perrault's four L-shaped glass towers (open books on end, 79 m) at the corners of the BnF's esplanade round the sunken garden: glass over the library's wooden shutters, open and shut bay by bay. Fitted to the tower's own OSM outline."
+  },
+  {
+    "name": "Bibliothèque nationale de France — Tour des Lois",
+    "procedural": "bnfTower",
+    "osm": [
+      "way/62379561"
+    ],
+    "height": 79,
+    "stone": false,
+    "sign": true,
+    "note": "One of Perrault's four L-shaped glass towers (open books on end, 79 m) at the corners of the BnF's esplanade round the sunken garden: glass over the library's wooden shutters, open and shut bay by bay. Fitted to the tower's own OSM outline."
   }
 ]

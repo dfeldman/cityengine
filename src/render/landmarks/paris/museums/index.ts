@@ -5,9 +5,19 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
+import { bnfTower } from './bnf-tower.ts'
+import { citeDesSciences } from './cite-des-sciences.ts'
+import { clunyThermes } from './cluny-thermes.ts'
 import { fondationLouisVuitton } from './fondation-louis-vuitton.ts'
+import { geode } from './geode.ts'
+import { guimetRotunda } from './guimet-rotunda.ts'
+import { institutMondeArabe } from './institut-monde-arabe.ts'
 import { jeuDePaume, orangerie } from './orangerie.ts'
+import { philharmonie } from './philharmonie.ts'
+import { quaiBranly } from './quai-branly.ts'
+import { saintMartinDesChamps } from './saint-martin-des-champs.ts'
 
 export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  orangerie, jeuDePaume, fondationLouisVuitton,
+  orangerie, jeuDePaume, fondationLouisVuitton, quaiBranly, institutMondeArabe, clunyThermes, saintMartinDesChamps, guimetRotunda,
+  geode, citeDesSciences, philharmonie, bnfTower,
 }

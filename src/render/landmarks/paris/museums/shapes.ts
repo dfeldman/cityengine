@@ -9,6 +9,12 @@ const FIXED = 0
 export type P2 = { x: number; z: number }
 export type V3 = [number, number, number]
 
+/** a fixed scatter in [0, 1), the same every build: for patterns that must not shimmer between loads */
+export const jitter = (i: number, k: number): number => {
+  const s = Math.sin(i * 127.1 + k * 311.7) * 43758.5453
+  return s - Math.floor(s)
+}
+
 /** `[x, z]` pairs drawn at a reference half-size, stretched to the fitted one (sx = fit.hx / ref.hx…) */
 export const plan = (pts: [number, number][], sx: number, sz: number): P2[] => pts.map(([x, z]) => ({ x: x * sx, z: z * sz }))
 
