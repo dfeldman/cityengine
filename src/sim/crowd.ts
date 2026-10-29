@@ -135,6 +135,16 @@ export function rng(seed: number): () => number {
   }
 }
 
+/**
+ * Where a cyclist of the crowd rides: a street's carriageway, or a path or track a bike may use (a park's paths, the
+ * Presidio's trails) — not a pavement's footway, not a crossing.
+ */
+function bikeWay(e: Edge): boolean {
+  if (e.crossing) return false
+  if (!e.foot) return e.width >= 2.8
+  return /^(path|track|cycleway|bridleway)$/.test(e.kind ?? '') && e.width >= 2
+}
+
 export class Crowd {
   private readonly g: CityGraph
   private readonly cfg: CrowdConfig
@@ -369,7 +379,7 @@ export class Crowd {
     const node = atB ? e.b : e.a
     const xs = exits(this.g, node, e.id).filter((x) => {
       const ne = this.g.edges.get(x.edgeId)!
-      if (w.kind === 'cycle') return !ne.foot && ne.width >= 2.8 && !ne.crossing
+      if (w.kind === 'cycle') return bikeWay(ne)
       if (!this.walkable(ne)) return false
       /*
        * …and not onto a dual carriageway's median: the side they would carry on along must have a pavement. Only the
@@ -406,7 +416,10 @@ export class Crowd {
 
     for (const e of edgesNear) {
       if (this.populated.has(e.id)) continue
-      if (!this.walkable(e)) continue   // a crossing, or a lane with no real pavement, has nobody on it
+      // a crossing, or a lane with no real pavement, has nobody on it — but a road with no pavement still has its
+      // cyclists (Golden Gate Park's drives had nobody at all)
+      const onFoot = this.walkable(e)
+      if (!onFoot && !bikeWay(e)) continue
       this.populated.add(e.id)
       /*
        * Nobody on a footway over water. OSM maps a bridge's sidewalks as separate ways, and where they are
@@ -443,7 +456,16 @@ export class Crowd {
         if (med === 3 && roll >= 0.15) continue
         if (med & (side > 0 ? 1 : 2)) side = (-side) as 1 | -1
         const base = { edgeId: e.id, s: s0, dir, at: { x: 0, z: 0 }, heading: 0, back: 0, across: 0, dodge: 0 }
-        if (road && roll < 0.15) {
+        /*
+         * MORE OF THEM (owner, 2026-10-29: "given the nature of the game, there should be more NPC cyclists and runners
+         * than there are now"): a cyclist in a quarter of a road's draws, was 0.15, and on a park path or a track now too
+         * (`bikeWay`), where there were none; a runner in the next 0.14 on a street, was 0.09. By head count (a draw that is
+         * neither is a group of one to four) about one in seven people on a street is on a bike and one in twelve running,
+         * was one in thirteen and one in twenty.
+         */
+        // (not more on a festival street: Fisherman's Wharf's throng strolls, below)
+        const cycling = road ? (this.zoneFactor(mid) >= 3 ? 0.15 : 0.25) : bikeWay(e) ? 0.15 : 0
+        if (roll < cycling) {
           /*
            * a cyclist, in the road on their RIGHT, at a town pace. The offset is along the edge's left normal (-dz, dx)
            * of a→b, so riding a→b (dir +1) their right is side −1: `side = −dir` (owner, 2026-10-17: "npc cyclists are
@@ -453,6 +475,7 @@ export class Crowd {
             height: 0.95 + r() * 0.15, phase: r() * Math.PI * 2, ...dressed(r, true) })
           continue
         }
+        if (!onFoot) continue
         /*
          * a runner, alone, in athletic kit — more of them, and quicker, on the paths and in the parks (owner,
          * 2026-10-02: "runners - people in athletic clothing moving faster through the parks and trails especially";
@@ -464,7 +487,7 @@ export class Crowd {
          * atmosphere", "so many people": a sightseeing throng strolls, and nobody jogs through it.)
          */
         const festival = this.zoneFactor(mid) >= 3
-        if (roll < (festival ? 0.02 : trail ? 0.35 : 0.24)) {
+        if (roll < cycling + (festival ? 0.02 : trail ? 0.35 : 0.14)) {
           this.walkers.push({ ...base, id: nextWalkerId++, side, kind: 'run', speed: trail ? 3.2 + r() * 1.4 : 2.6 + r() * 0.9,
             height: 0.95 + r() * 0.15, phase: r() * Math.PI * 2, ...dressed(r, true) })
           continue
