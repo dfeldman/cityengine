@@ -125,8 +125,17 @@ export const CITIES: CitySpec[] = [
     ],
     name: 'Central Paris',
     centre: { lat: 48.8605, lon: 2.3320 },
-    radius: 3400,
-    box: { west: 3370, east: 3370, north: 1725, south: 1725 },
+    radius: 8400,
+    /*
+     * Grown to San Francisco's land (owner, 2026-10-29: "make the box have roughly the same land area as the SF one … more
+     * of the river, montmarte and large parks"; "We could include Bois de boulogne to get a golden gate style large
+     * natural park"): lon 2.218–2.410, lat 48.820–48.898, ~14 × 8.7 km, ~123 km² and nearly all of it land (SF's box holds
+     * ~94 km²). The whole Bois de Boulogne, the Seine from Boulogne to Bercy, Montmartre, the Buttes-Chaumont, Belleville
+     * and Père-Lachaise, Montsouris, the Parc André-Citroën. The origin stays on the Palais-Royal, so every landmark,
+     * statue and view keeps its place. Was 6.7 × 3.5 km (lon 2.286–2.378, lat 48.845–48.876). The custom landmarks stay
+     * in the core.
+     */
+    box: { west: 8355, east: 5715, north: 4175, south: 4510 },
     ground: 'grass',
     styles: [
       // Haussmann's Paris: the boulevards and the west are his; the older centre keeps the Marais's mix
@@ -134,7 +143,7 @@ export const CITIES: CitySpec[] = [
       { id: 'classical', weight: 3 },
       { id: 'marais', weight: 1 },
     ],
-    note: 'The tourist centre as one rideable city: tiled and streamed (PARIS_EXPAND.md).',
+    note: 'Paris inside the Périphérique, near enough: tiled and streamed (PARIS_EXPAND.md, PARIS_PARITY.md).',
   },
   {
     id: 'brooklyn-heights',

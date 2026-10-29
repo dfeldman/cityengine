@@ -26,7 +26,7 @@ import type { CityPackage } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
 import { nearLevel, profileAt } from '../city/terrain.ts'
-import { StreetFleet } from './street-fleet.ts'
+import { StreetFleet, type CarKit } from './street-fleet.ts'
 
 class Pool {
   readonly mesh: Mesh
@@ -180,8 +180,8 @@ export class Life {
   private readonly m = Matrix.Identity()
 
   constructor(scene: Scene, pkg: CityPackage, budget = { cars: 90, buses: 16, people: 3000 },
-              stock: RegionStock = DEFAULT_STOCK, stations: { x: number; z: number }[] = [], carkit = true) {
-    this.fleet = carkit ? new StreetFleet(scene) : null
+              stock: RegionStock = DEFAULT_STOCK, stations: { x: number; z: number }[] = [], carkit = true, cars?: CarKit) {
+    this.fleet = carkit ? new StreetFleet(scene, cars) : null
     this.cars = new Pool(scene, 'cars', build(car), carkit ? 1 : budget.cars)
     this.buses = new Pool(scene, 'buses', build(bus), carkit ? 1 : budget.buses)
     // the region's own rolling stock (render/rolling-stock.ts; Paris's RER, métro and Citadis, SF's cable cars)

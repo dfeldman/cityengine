@@ -51,7 +51,7 @@ import { region } from './city/region.ts'
 import { ambientOcclusion } from './render/depth.ts'
 import { colourGrade, GRADE, GRADE_NO_AO } from './render/grade.ts'
 import { City, setupGroundLayers } from './render/city.ts'
-import { Crowd } from './sim/crowd.ts'
+import { Crowd, crowdLook } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
 import { OverheadLines } from './render/overhead.ts'
 import { streetRailsLayer } from './render/street-rails.ts'
@@ -75,7 +75,7 @@ import { Tunnels } from './render/tunnels.ts'
 import { Beacon } from './render/beacon.ts'
 import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
-import { BakedCrowd, cityClothes, peopleLights } from './render/crowd-baked.ts'
+import { BakedCrowd, cityClothes, peopleLights, wardrobeFor } from './render/crowd-baked.ts'
 import { CableRiders } from './render/cable-riders.ts'
 import { FerrisWheel, SKYSTAR } from './render/sf/ferris.ts'
 import { PLAYER_SPOT } from './render/sf/trains.ts'
@@ -1188,9 +1188,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const crowdN = numArg('crowd')
   // (`without=crowd`, iOS's ultra tier: nobody on the pavements; the cars still drive)
   const crowdLevel = off.has('crowd') ? 'none' : (new URLSearchParams(location.search).get('crowd') as 'none' | 'some' | 'busy' | 'crowded' | null) ?? level
+  // the city's own colours and clothes for its people (Paris's darker, with its coats)
+  crowdLook(pkg.region)
+  wardrobeFor(pkg.region)
   const crowd = new Crowd(graph, crowdN !== null
     ? { perKm: crowdN, range: Math.max(260, 26 * Math.sqrt(crowdN)) }
     : crowdLevel, crowdZone)
+  if (pkg.region === 'paris') crowd.cycling = 1.6
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
   /*
@@ -1211,7 +1215,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     : dense ? { cars: 900, buses: 80, people: 3000 } : undefined
   if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
   // the cars and buses by carkit (render/street-fleet.ts); `?without=carkit` for the old stand-ins
-  const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'))
+  const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'), regionKit(pkg.region).cars)
   /** seconds to the next refresh of the parked cars round the rider (city/parking.ts) */
   let parkClock = 0
   /*

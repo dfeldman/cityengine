@@ -458,6 +458,18 @@ const CITY_WARDROBE = {
     'toigo_camisole_dress_with_full_skirt', 'aethelraed_flapper_dress', 'toigo_halter_dress_knee_length'],
 }
 
+/**
+ * …and in Paris, the coats: a winter coat on one woman in five and one man in six, a suit jacket on some of the men
+ * (owner, 2026-10-29: Paris's "outfits on NPCs" are its own). Set by `wardrobeFor` (game.ts, by region).
+ */
+const PARIS_WARDROBE = {
+  ...CITY_WARDROBE,
+  topsF: [...CITY_WARDROBE.topsF, 'punkduck_winter_coat', 'punkduck_winter_coat'],
+  topsM: [...CITY_WARDROBE.topsM, 'punkduck_winter_coat', 'toigo_male_suit_tie_and_jacket'],
+}
+let wardrobe = CITY_WARDROBE
+export function wardrobeFor(region: string | undefined): void { wardrobe = region === 'paris' ? PARIS_WARDROBE : CITY_WARDROBE }
+
 /** women dressed so far, so one in three gets a dress — a fixed share, not a dice roll that can come up none */
 let women = 0
 
@@ -470,19 +482,19 @@ export function cityClothes(spec: AvatarSpec, seed: number, index: number): Avat
   const kind = index % 10
   if (index < 0) {
     // a cyclist: everyday top, and trousers — a skirt's cloth hangs through the saddle
-    clothes[0] = { ...clothes[0], id: pick(fem ? CITY_WARDROBE.topsF : CITY_WARDROBE.topsM) }
-    clothes[1] = { ...clothes[1], id: pick(fem ? CITY_WARDROBE.bottomsF.filter((b) => !b.includes('skirt')) : CITY_WARDROBE.bottomsM) }
+    clothes[0] = { ...clothes[0], id: pick(fem ? wardrobe.topsF : wardrobe.topsM) }
+    clothes[1] = { ...clothes[1], id: pick(fem ? wardrobe.bottomsF.filter((b) => !b.includes('skirt')) : wardrobe.bottomsM) }
   } else if (kind < 2) {
-    clothes[0] = { ...clothes[0], id: pick(CITY_WARDROBE.athleticTops.filter((t) => fem || t !== 'elvs_lara_tank1')) }
-    clothes[1] = { ...clothes[1], id: pick(CITY_WARDROBE.athleticBottoms) }
+    clothes[0] = { ...clothes[0], id: pick(wardrobe.athleticTops.filter((t) => fem || t !== 'elvs_lara_tank1')) }
+    clothes[1] = { ...clothes[1], id: pick(wardrobe.athleticBottoms) }
   } else if (fem && women++ % 3 === 0) {
     // one woman in three in a dress
     // the dress is the "top" (tinted with the walker's top colour) and tights the "bottoms"
-    clothes[0] = { ...clothes[0], id: pick(CITY_WARDROBE.dresses) }
+    clothes[0] = { ...clothes[0], id: pick(wardrobe.dresses) }
     clothes[1] = { ...clothes[1], id: 'kwnet_at_pantyhose01' }
   } else {
-    clothes[0] = { ...clothes[0], id: pick(fem ? CITY_WARDROBE.topsF : CITY_WARDROBE.topsM) }
-    clothes[1] = { ...clothes[1], id: pick(fem ? CITY_WARDROBE.bottomsF : CITY_WARDROBE.bottomsM) }
+    clothes[0] = { ...clothes[0], id: pick(fem ? wardrobe.topsF : wardrobe.topsM) }
+    clothes[1] = { ...clothes[1], id: pick(fem ? wardrobe.bottomsF : wardrobe.bottomsM) }
   }
   return { ...spec, clothes }
 }

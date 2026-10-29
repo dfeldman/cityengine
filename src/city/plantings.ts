@@ -70,7 +70,7 @@ export const TREES_PER_KM2 = 1000
  * in place of step 3's guessed boulevard rows, and kept whole: the cap thins only
  * the park scatter then, since a tree that is really there is not one to thin.
  */
-export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, cap = TREE_CAP,
+export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings' | 'region'>>, cap = TREE_CAP,
                           given?: Planting[], parks?: ParkRule | PlantZones, report?: PlantReport, hand: Planting[] = []): Planting[] {
   // (the trees planted by HAND — data/trees/<city>.json: the Japanese Tea Garden's Cherry Tree Lane and Maple Lane —
   //  come first and are not moved: everything else keeps its spacing from them)
@@ -253,11 +253,19 @@ const pick = <T extends { weight: number }>(l: T[], u: number): T => {
 }
 
 /** The rules before zones, which a city with no planting zones (Paris) still plants by. */
-function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, cap: number,
+function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings' | 'region'>>, cap: number,
                      given?: Planting[], parks?: ParkRule): Planting[] {
   const street = given ? seatTrees(given, pkg) : undefined
   const out: Planting[] = []
   const r = mulberry(0x5eed ^ pkg.edges.length)
+  /*
+   * How tall. Most cities plant street trees that stay under the first floor's windows; Paris's are the boulevards'
+   * MATURE planes and chestnuts, up past the fourth floor (owner, 2026-10-29, from street view: "Paris has a lot more
+   * mature deciduous trees"), and its parks' the same again.
+   */
+  const mature = pkg.region === 'paris'
+  const streetH = (): number => mature ? 12 + r() * 8 : 6.5 + r() * 3
+  const parkH = (): number => mature ? 14 + r() * 8 : 8 + r() * 4
 
   // 1. the trees somebody actually mapped — with a city list, only those it does not have (a park's, a plaza's:
   // the city's list is of its street trees), which are the ones not within 3 m of one of its own
@@ -271,7 +279,7 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
   const trees = pkg.trees
   for (let i = 0; i < trees.length; i += 2) {
     if (street && near(trees[i], trees[i + 1])) continue
-    out.push({ x: trees[i], z: trees[i + 1], height: 6.5 + r() * 3, spin: r() * 6.28, park: false })
+    out.push({ x: trees[i], z: trees[i + 1], height: streetH(), spin: r() * 6.28, park: false })
   }
 
   /*
@@ -305,7 +313,7 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
       const x = minx + r() * (maxx - minx)
       const z = minz + r() * (maxz - minz)
       if (!inside(ring, x, z)) continue
-      out.push({ x, z, height: 8 + r() * 4, spin: r() * 6.28, park: true })
+      out.push({ x, z, height: parkH(), spin: r() * 6.28, park: true })
       i++
     }
   }
@@ -346,7 +354,7 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
         for (const side of [-1, 1]) {
           out.push({
             x: px + (-dz / seg) * off * side, z: pz + (dx / seg) * off * side,
-            height: 6 + r() * 2.5, spin: r() * 6.28, park: false,
+            height: mature ? streetH() : 6 + r() * 2.5, spin: r() * 6.28, park: false,
           })
         }
         acc += spacing

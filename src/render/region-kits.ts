@@ -7,6 +7,9 @@ import type { RegionStock } from './rolling-stock.ts'
 import type { BoatKind } from './river-traffic.ts'
 import { PARIS_STOCK } from './paris/trains.ts'
 import { PARIS_FLEET } from './paris/boats.ts'
+import { parisFlora } from './paris/flora.ts'
+import { PARIS_CARS } from './paris/cars.ts'
+import type { CarKit } from './street-fleet.ts'
 import { SF_STOCK } from './sf/trains.ts'
 import { sfFlora } from './sf/flora.ts'
 import { SF_ROUTES, type BayRoute } from './sf/boats.ts'
@@ -19,10 +22,12 @@ export interface RegionKit {
   routes?: BayRoute[]
   /** what it plants, given the city's local-metre → lat/lon */
   flora?: (toLatLon: (x: number, z: number) => { lat: number; lon: number }) => Flora
+  /** its street traffic: the mix, the liveries, the buses (render/street-fleet.ts) */
+  cars?: CarKit
 }
 
 const KITS: Record<string, RegionKit> = {
-  paris: { stock: PARIS_STOCK, fleet: PARIS_FLEET },
+  paris: { stock: PARIS_STOCK, fleet: PARIS_FLEET, flora: parisFlora, cars: PARIS_CARS },
   'san-francisco': { stock: SF_STOCK, flora: sfFlora, routes: SF_ROUTES },
 }
 

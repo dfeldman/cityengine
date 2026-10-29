@@ -10,7 +10,7 @@
  * Trains, streetcars and cable cars are not carkit's: render/life.ts and rolling-stock.ts still draw those.
  */
 import type { Scene } from '@babylonjs/core/scene'
-import { Fleet, randomSpec, slopePose, steerForCurvature, type Archetype, type Car, type Livery } from 'carkit'
+import { Fleet, randomSpec, slopePose, steerForCurvature, type Archetype, type Car, type CarSpec, type Livery } from 'carkit'
 import { DAYLIGHT, NIGHT } from './facade-material.ts'
 import type { Vehicle } from '../sim/traffic.ts'
 
@@ -18,6 +18,18 @@ import type { Vehicle } from '../sim/traffic.ts'
  * The city's mix of shapes, by weight (after carkit's demo): mostly sedans, hatchbacks and SUVs, a few vans and
  * trucks, the odd taxi and police car. Buses come from the traffic sim as buses.
  */
+/**
+ * A region's own traffic (render/region-kits.ts `cars`; Paris: render/paris/cars.ts): what the street's cars are and in
+ * what shares, how a livery is painted there (a Paris taxi is any dark or pale saloon with its roof sign, not yellow),
+ * and its buses. Absent: San Francisco's, below.
+ */
+export interface CarKit {
+  mix: [Archetype, number, Livery][]
+  /** repaint a spec dressed in `livery` the region's way, `h` the car's own hash */
+  dress?: (spec: CarSpec, livery: Livery, h: number) => CarSpec
+  bus?: (seed: number) => CarSpec
+}
+
 const MIX: [Archetype, number, Livery][] = [
   ['sedan', 22, 'none'], ['hatchback', 18, 'none'], ['suv', 18, 'none'], ['coupe', 4, 'none'], ['minivan', 7, 'none'],
   ['pickup', 6, 'none'], ['van', 7, 'none'], ['boxtruck', 4, 'none'], ['sedan', 6, 'taxi'], ['minivan', 2, 'taxi'],
@@ -66,7 +78,10 @@ export class StreetFleet {
   readonly worst = { excess: 0, x: 0, z: 0, slope: 0, pitch: 0, n: 0 }
   private lookNight = -1
 
-  constructor(scene: Scene) {
+  private readonly kit: CarKit
+
+  constructor(scene: Scene, kit?: CarKit) {
+    this.kit = kit ?? { mix: MIX }
     // the buildings' group (the groups after 0 clear depth, and the streets bury anything left in 0); no shadows
     // of carkit's own: Life lays its sun-stretched blob under every vehicle, sized from the car
     this.fleet = new Fleet(scene, { shadows: false, renderingGroupId: 3 })
@@ -92,17 +107,18 @@ export class StreetFleet {
     const h = hash(v.id)
     const seed = 1 + (h % SEEDS)
     if (v.kind === 'bus') {
-      // Muni's livery, silver-grey with its two red bands (carkit `transit`), not the sim's random colour
-      return this.fleet.add(randomSpec('bus', seed, 'transit'))
+      // Muni's livery, silver-grey with its two red bands (carkit `transit`), not the sim's random colour; or the region's
+      return this.fleet.add(this.kit.bus ? this.kit.bus(seed) : randomSpec('bus', seed, 'transit'))
     }
     // the sim says which cars are taxis (it lets them onto car-free Market Street): those are drawn as taxis, and no
     // other car is
-    const mix = MIX.filter((m) => (m[2] === 'taxi') === !!v.taxi)
+    const mix = this.kit.mix.filter((m) => (m[2] === 'taxi') === !!v.taxi)
     const total = mix.reduce((t, m) => t + m[1], 0)
     let x = (h >>> 8) % total
     let pick = mix[0]
     for (const m of mix) { x -= m[1]; if (x < 0) { pick = m; break } }
-    const car = this.fleet.add(randomSpec(pick[0], seed, pick[2]))
+    const spec = randomSpec(pick[0], seed, pick[2])
+    const car = this.fleet.add(this.kit.dress && pick[2] !== 'none' ? this.kit.dress(spec, pick[2], h) : spec)
     // a plain car keeps the colour the traffic sim gave it; a livery is its own
     if (pick[2] === 'none') car.paint = [...v.colour]
     if (pick[2] === 'police' || pick[2] === 'ambulance') car.lights.beacon = (h >>> 20) % 3 === 0

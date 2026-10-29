@@ -33,6 +33,57 @@ ranked landmark ledger is [docs/landmarks/paris-centre.txt](docs/landmarks/paris
 Because the bake is on the old terrain format, **any expansion is a re-bake on the current pipeline anyway**; do
 the box change and the re-bake together.
 
+## The owner's notes from street view (2026-10-29)
+
+> "Paris has a lot more mature deciduous trees, cyclists, bus stops, very large distinctive street signs. Overall
+> think it should be much easier than SF since there are few unique buildings (mostly churches and government
+> buildings)"
+
+> "Essentially every building is cream, with an exception maybe once every few blocks. The street furniture and
+> sidewalk cafes are distinctive" — "There is some variation between modern cream hausmann-ish facades and real
+> original ones" — "We can get that from construction date" — "Most of the others are brick with a cream first floor"
+
+> "The real exceptions are civic buildings. Museums schools hospitals libraries government offices"
+
+So the generic building is ONE colour family (cream limestone), told apart by AGE, not by palette; what breaks the
+cream is the CIVIC building — museums, schools, hospitals, libraries, government offices (OSM `amenity=school|
+hospital|library|townhall`, `tourism=museum`, `office=government`, `building=school|hospital|government|civic`),
+which get their own treatment (brick and stone schools, glass and concrete hospitals, the ministries' classical
+stone).
+
+> "I'm not sure there is a single unique building that's a mere private office building or apartment in central
+> Paris - there are when you get outside the central area of course"
+
+So inside the old core (roughly the 1st–8th and the Marais) a private building is never a landmark: the generic
+grammar is the whole job there. Further out — the Front de Seine towers and Beaugrenelle, Montparnasse, the 13th's
+towers, the edges of the box in Boulogne and Levallois — modern private buildings do stand out, and are worth a look
+building by building (Mapillary, as SF). By age:
+
+| period (APUR `c_perconst`) | what it is | how it reads |
+|---|---|---|
+| before 1800, 1801–1850 | faubourg and Marais houses | plastered, narrower bays, shutters, steeper slate roof (`marais`) |
+| 1851–1914 | Haussmann proper | cut stone, the 2nd- and 5th-floor balconies, zinc mansard (`haussmann`) |
+| 1915–1939 | interwar, the HBM rings | **brick above a cream stone ground floor** |
+| 1940 on | post-war and modern | cream render or stone cladding "Haussmann-ish": flat fronts, regular windows, no mansard, continuous balconies of a newer kind |
+
+OSM has a `start_date` on only 4,804 of the box's 130,970 buildings (3.7%), so the age has to come from **APUR's
+building layer** ("Emprise bâtie", field `c_perconst`, every building in Paris) — and the national **BDNB** for the
+suburbs inside the box (Boulogne, Neuilly, Levallois, Montrouge…). That is a bake input, like SF's Assessor records.
+
+Done 2026-10-29: the box grown to ~123 km² with the whole Bois de Boulogne; Paris trees (planes first, mature:
+12–20 m on the streets, 14–22 m in the parks), Paris traffic (hatchbacks and small vans, black and white taxis with
+the roof sign, white police, green-and-white buses), more cyclists (×1.6), darker clothes with coats.
+
+> "There are a whole lot of train stations, with their trains"
+
+The grown box takes in all seven great termini and their approaches — Saint-Lazare, the Gare du Nord, the Gare de
+l'Est, the Gare de Lyon, Austerlitz, Bercy, Montparnasse — each a landmark (the train shed, the front, the clock
+tower of the Gare de Lyon) with a fan of open tracks behind it running for kilometres (the Saint-Lazare trench under
+the Pont de l'Europe, the Nord and Est throats at La Chapelle, the Lyon and Austerlitz viaducts). The rail already
+draws (the bake found 2,622 railways); the trains want their stock: TGV and Ouigo (double-deck), Transilien and the
+RER's double-deckers (only the Z 2N is in `render/paris/trains.ts`), the TER, the Eurostar at the Nord. And the
+stations need trains standing at the platforms, not only passing.
+
 ## 1. Generic buildings (the owner's first priority)
 
 Paris already has its own palettes, shop names, porte cochère, awnings, chimneys, dormers, terracotta pots and three
@@ -163,6 +214,18 @@ dresses in stone. The top thirty by prominence:
     Saint-Louis relation/10714750, Bon Marché relation/10166422, BHV way/29168869
 
 Not checked: whether the 80 m test marks a neighbour of a modelled building as covered when it is not.
+
+### …and the palaces and monuments, wherever they are in the box
+
+> "We should do the palace and monuments tho"
+
+The custom work stays in the core for ordinary buildings, but not for PALACES and MONUMENTS: those get modelled
+anywhere in the grown box. Newly inside it: Sacré-Cœur and the Saint-Pierre de Montmartre, the Moulin de la Galette;
+the Lion de Belfort at Denfert-Rochereau and the Observatoire; the Triomphe de la République at the Nation; the Grande
+Mosquée; the Buttes-Chaumont's Temple de la Sibylle; the Bois de Boulogne's Pré Catelan, the Bagatelle's château and
+the Fondation Louis Vuitton; the Palais des Congrès at the Porte Maillot; the Cité universitaire's houses. In the
+core, still to do: the Palais du Luxembourg (and its Médicis fountain), the Élysée, the Palais Bourbon in full, the
+Invalides in full, the Panthéon in full, the Portes Saint-Denis and Saint-Martin, the Arc du Carrousel (§4).
 
 ## 5. Already planned (PARIS_EXPAND.md §8)
 

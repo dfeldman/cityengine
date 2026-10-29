@@ -2133,8 +2133,9 @@ async function bake(spec: CitySpec): Promise<void> {
       const through = (n: number): boolean => (streetEnds.get(n)?.length ?? 0) === 2
       let cur = e, from = e.a, guard = 0
       while (through(from) && guard++ < 500) {
-        const o = streetEnds.get(from)!.find((x) => x !== cur)!
-        if (o === e) break
+        // (none: both ends at this node are the same piece, a way closing on itself — a loop, Paris 2026-10-29)
+        const o = streetEnds.get(from)!.find((x) => x !== cur)
+        if (!o || o === e) break
         from = o.a === from ? o.b : o.a
         cur = o
       }

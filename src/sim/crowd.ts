@@ -109,6 +109,20 @@ const TOPS = ['#1c2541', '#101114', '#2b2d31', '#4a4e57', '#8a8f98', '#f2f0ea', 
   '#1f6bff', '#e03131', '#ffd42a', '#12a874', '#e5157f', '#f59e0b', '#22c7ee', '#7c3aed']
 const BOTTOMS = ['#111111', '#1f2937', '#263066', '#0d1233', '#3b4a63', '#5a6f8f', '#6b7280', '#c8b596', '#8b5a2b',
   '#4b4f3a', '#2e2a26', '#d0d4e0']
+/**
+ * Paris dresses darker (owner, 2026-10-29: Paris's "outfits on NPCs" are its own; PARIS_PARITY.md §3): navy, black,
+ * charcoal, camel, beige and cream, a burgundy or a bottle green, and only now and then a bright colour.
+ */
+const PARIS_TOPS = ['#1c2541', '#1c2541', '#101114', '#101114', '#2b2d31', '#4a4e57', '#8a8f98', '#f2f0ea', '#e8e0cf',
+  '#c8a97e', '#c8a97e', '#a47148', '#d9c3a5', '#6b2737', '#7a1f2b', '#243b2f', '#3e5c76', '#3b3a36', '#e03131', '#1f6bff']
+const PARIS_BOTTOMS = ['#111111', '#111111', '#1f2937', '#263066', '#0d1233', '#3b4a63', '#2e2a26', '#4a4e57', '#c8b596']
+let tops = TOPS
+let bottoms = BOTTOMS
+/** the city's own colours for its people (game.ts, by region): Paris's, or everyone's */
+export function crowdLook(region: string | undefined): void {
+  tops = region === 'paris' ? PARIS_TOPS : TOPS
+  bottoms = region === 'paris' ? PARIS_BOTTOMS : BOTTOMS
+}
 /** a little darker or lighter, per person */
 const jitter = (r: () => number, hex: string): string => {
   const k = 0.84 + r() * 0.3
@@ -146,6 +160,11 @@ function bikeWay(e: Edge): boolean {
 }
 
 export class Crowd {
+  /**
+   * The city's share of cyclists, against the default (game.ts by region): Paris rides — the Vélib's, the bike lanes on
+   * every boulevard (owner, 2026-10-29, from street view: "Paris has a lot more … cyclists").
+   */
+  cycling = 1
   private readonly g: CityGraph
   private readonly cfg: CrowdConfig
   private readonly walkers: Walker[] = []
@@ -464,7 +483,7 @@ export class Crowd {
          * was one in thirteen and one in twenty.
          */
         // (not more on a festival street: Fisherman's Wharf's throng strolls, below)
-        const cycling = road ? (this.zoneFactor(mid) >= 3 ? 0.15 : 0.25) : bikeWay(e) ? 0.15 : 0
+        const cycling = (road ? (this.zoneFactor(mid) >= 3 ? 0.15 : 0.25) : bikeWay(e) ? 0.15 : 0) * this.cycling
         if (roll < cycling) {
           /*
            * a cyclist, in the road on their RIGHT, at a town pace. The offset is along the edge's left normal (-dz, dx)
@@ -715,8 +734,8 @@ const SPORT_TOPS = ['#1f6bff', '#22c7ee', '#e03131', '#e5157f', '#ffd42a', '#12a
 const SPORT_BOTTOMS = ['#111111', '#1f2937', '#263066']
 
 export function dressed(r: () => number, sport = false): Pick<Walker, 'shirt' | 'trousers' | 'skin' | 'hair' | 'look'> {
-  const look = { skin: pick(r, SKIN), hair: pick(r, HAIR), top: jitter(r, pick(r, sport ? SPORT_TOPS : TOPS)),
-    bottom: jitter(r, pick(r, sport ? SPORT_BOTTOMS : BOTTOMS)) }
+  const look = { skin: pick(r, SKIN), hair: pick(r, HAIR), top: jitter(r, pick(r, sport ? SPORT_TOPS : tops)),
+    bottom: jitter(r, pick(r, sport ? SPORT_BOTTOMS : bottoms)) }
   return { look, skin: rgb(look.skin), hair: rgb(look.hair), shirt: rgb(look.top), trousers: rgb(look.bottom) }
 }
 
