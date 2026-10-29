@@ -98,8 +98,10 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       if (e.a === e.b || (!onSurface(e) && !e.bore)) return false
       // a way rising more than it runs is a lift or a stair core drawn as a bridge (Embarcadero Center's 78924 climbs 8 m
       // in 4) — not drawn (render/city.ts `steeperThanWall`), so not ridden: the route went straight up the air
-      // (stairs are exempt: Embarcadero Center's spiral stairs are short OSM ways climbing 8 m, and they ARE the way up)
-      if (k0(e) !== 'steps' && e.heights && e.heights.some((h, i) => i > 0 && Math.abs(h - e.heights![i - 1]) > Math.max(1.5,
+      // (stairs are exempt: Embarcadero Center's spiral stairs are short OSM ways climbing 8 m, and they ARE the way up;
+      // and the region's own ways, whose heights are authored — Salesforce Park's lifts climb 18 m in 3, and with them
+      // dropped the only way off the roof was the gondola, a forty-second wait for the cabin)
+      if (k0(e) !== 'steps' && !e.authored && e.heights && e.heights.some((h, i) => i > 0 && Math.abs(h - e.heights![i - 1]) > Math.max(1.5,
         Math.hypot(e.points[i].x - e.points[i - 1].x, e.points[i].z - e.points[i - 1].z)))) return false
       const k = e.kind ?? 'residential'
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
@@ -2088,9 +2090,11 @@ export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null
       if (d < 20 * DEG) return true
       if (base !== undefined && trunkName(ce.name) === base) {
         // the same street: its carriageways leaving side by side, or a short stub of it round a bend — but never
-        // the other direction along it, which is a real choice
+        // the other direction along it, which is a real choice. (Not the region's own ways, which have no stubs: the
+        // 20 m from Salesforce Park's loop to each lift is named for the park, and was folded into the loop, so the
+        // rider could never turn off to the lift.)
         if (d < 50 * DEG) return true
-        if (d < 100 * DEG && Math.min(e.length, ce.length) < 30) return true
+        if (d < 100 * DEG && Math.min(e.length, ce.length) < 30 && !e.authored && !ce.authored) return true
       }
       // a service lane beside a street it runs with
       return (lane || ce.kind === 'service' || ce.kind === 'alley') && d < 35 * DEG && (!!ce.name || !!e.name)

@@ -30,6 +30,7 @@ The owner's brief:
 | top left | **job**: compass, distance, clock; under it, the job line ("1 · Pick up …") | during a job |
 | top, full width | **offer**: dish, where, Take it / No thanks, countdown | while an offer is up |
 | under the speed | **toast**: one line at a time, 1.5–3 s (notes, banners, transit and observe events) | on events |
+| bottom centre | **route pill**: distance to go, next turn; in tour mode "Stop 2/9 · 1.3 mi · 0.4 of 10.3 mi" (the next stop, how far to it, ridden of the tour's length); on a phone it wraps, above the energy bar | while a route is set, not during a job |
 | bottom centre | **action chip**: the one thing you can do right now (eat, board/get off, travel, observe, a star junction's exits) | when something is actionable |
 | bottom centre, above the chip | **turn buttons**: ← ↑ → (offered, picked, locked) and ↩ turn round, tappable | always while riding: without them the rider has no idea what's going on (owner) |
 | bottom left | **energy bar**, with the **cash** small beside it | energy in couch mode (a trainer rider has real legs); cash always |
@@ -63,6 +64,9 @@ The type is big enough to read from a bike.
 - **Search** (`/`): every landmark in the city, filtered as you type; choose one to go there. Each row shows the
   entry's builder, OSM ids, manifest file and coordinates, and all of those are searchable (src/ui/search.ts)
 - **Look around**: the free camera (today's P)
+- **🏁 End ride**: the summary (src/ui/end-screen.ts). On Dandyhorse it asks first, then completes the session, as the
+  bridge's End does; standalone, Done rides on. In tour mode the tour-complete card offers it too, and on Dandyhorse
+  the phone shows 🏁 End ride / 🚲 Keep riding as buttons until the rider chooses
 - **Ride**: turn round, get off / board, coast tips, travel (at a station)
 - **Deliveries**: earnings, level, stars; skip the current job
 - **Session**: time, distance, average watts, energy, climbing

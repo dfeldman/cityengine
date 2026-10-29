@@ -97,8 +97,16 @@ export const SF_TOURS: Tour[] = [
         text: 'Opened in 1879, the oldest wooden glasshouse in the Americas, full of orchids and giant lily pads.' },
       { lat: 37.77070, lon: -122.46750, name: 'The Music Concourse',
         text: 'Between the de Young museum and the Academy of Sciences, under pollarded plane trees, the band shell from 1900.' },
-      { lat: 37.77010, lon: -122.47050, name: 'Japanese Tea Garden',
+      // a spin through the Tea Garden (owner, 2026-10-28): in at the Main Gate, over the Drum Bridge, through the
+      // west of the garden on its own paths, back out and round the outside of the fence on the Tea Garden Loop
+      // (src/city/sf/tea-garden-loop.ts), west side then north, to the Drive and JFK
+      { lat: 37.76975, lon: -122.46981, name: 'Japanese Tea Garden',
         text: 'The oldest public Japanese garden in the US, from 1894. By most accounts, fortune cookies were first served here.' },
+      { lat: 37.77001, lon: -122.46995, name: 'The Drum Bridge',
+        text: 'So steeply arched that walkers climb it on rungs, and its reflection in the pond makes a full circle.' },
+      { lat: 37.77014, lon: -122.47071 },
+      { lat: 37.77040, lon: -122.47092 },
+      { lat: 37.77101, lon: -122.47003 },
       { lat: 37.77120, lon: -122.47700, name: 'Stow Lake',
         text: 'A lake round an island, Strawberry Hill, with a waterfall and a Chinese pavilion. Boats for hire.' },
       { lat: 37.77050, lon: -122.49350 },
@@ -117,8 +125,12 @@ export const SF_TOURS: Tour[] = [
     id: 'salesforce-sutro', name: 'Salesforce Park to Sutro Baths',
     blurb: 'Across the whole city, from the park on a roof to the ruins on the ocean.',
     stops: [
-      { lat: 37.78970, lon: -122.39660, name: 'Salesforce Park',
+      // from the Beale Street end along the roof's Howard side, and down by the Shaw Alley lift at the Second Street end:
+      // started beside the gondola, the route took it, and the rider waited at its station for the cabin. (The stop on
+      // the roof is ~100 m short of the lift's turn: one at the turn is reached 30 m out, and the turn was missed.)
+      { lat: 37.79030, lon: -122.39572, name: 'Salesforce Park',
         text: 'A park 70 feet up on the roof of the Transit Center, four blocks long, with a fountain that follows the buses below.' },
+      { lat: 37.78866, lon: -122.39710 },
       { lat: 37.78790, lon: -122.40750, name: 'Union Square',
         text: 'The shopping heart of the city since the 1850s, and the cable cars turn round a block away.' },
       { lat: 37.78530, lon: -122.42950, name: 'Japantown',
@@ -260,7 +272,8 @@ export const SF_TOURS: Tour[] = [
         text: 'Today we leave the city by the bridge, not the ferry.' },
       { lat: 37.79150, lon: -122.39000, name: 'Rincon Park',
         text: 'Look up: the Bay Bridge flies over the rooftops here, carrying 260,000 cars a day.' },
-      { lat: 37.78560, lon: -122.39300 },
+      { lat: 37.78965, lon: -122.38841, name: 'The Bay Bridge Bikeway',
+        text: 'A spiral ramp out in the bay up to the lower deck. It does not exist in real life: here it is the only way onto the bridge.' },
       { lat: 37.79740, lon: -122.37870, name: 'The Bay Bridge',
         text: 'Opened in 1936, six months before the Golden Gate. In real life no bike can ride the western span: here you can.' },
       { lat: 37.81000, lon: -122.36400, name: 'Yerba Buena Island',

@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest'
 import { chooseMode, MODES } from '../src/modes.ts'
 import { Energy, ENERGY_DEFAULTS } from '../src/sim/energy.ts'
-import { Ride } from '../src/sim/ride.ts'
+import { DEFAULTS as RIDE, Ride } from '../src/sim/ride.ts'
 import { Delivery, DEFAULTS, type DeliveryWorld } from '../src/game/delivery.ts'
 
 const watts = (power: number) => ({ power, speed: null, cadence: 85, heartRate: null })
@@ -56,15 +56,33 @@ describe('the energy bar', () => {
 })
 
 describe('the speedup', () => {
-  it('covers k times the ground at the same watts, on the flat', () => {
+  it('covers k times the ground at the same watts, on the flat (under the top speed)', () => {
     const a = new Ride(), b = new Ride()
     b.speedup = 2
     let va = 0, vb = 0
     for (let i = 0; i < 600; i++) {
-      va = a.step(0.1, watts(200), 'bike', 'asphalt', 0).speed
-      vb = b.step(0.1, watts(200), 'bike', 'asphalt', 0).speed
+      va = a.step(0.1, watts(100), 'bike', 'asphalt', 0).speed
+      vb = b.step(0.1, watts(100), 'bike', 'asphalt', 0).speed
     }
     expect(vb).toBeCloseTo(va * 2, 5)
+  })
+
+  it('eases off above the top speed in the world: a hard sprint or a steep descent settles, it does not run away', () => {
+    const settle = (w: number, grade: number, surface = 'asphalt', foot = false): number => {
+      const r = new Ride()
+      r.speedup = 2
+      let v = 0
+      for (let i = 0; i < 3000; i++) v = r.step(0.1, watts(w), 'bike', surface, grade, Infinity, Infinity, null, foot).speed
+      return v
+    }
+    const top = RIDE.topSpeed + RIDE.topBand
+    expect(settle(700, 0)).toBeLessThan(top)
+    expect(settle(150, -0.1)).toBeLessThan(top)
+    // …a harder effort is still a little faster
+    expect(settle(700, 0)).toBeGreaterThan(settle(150, 0))
+    // and a rough surface or a path is slower than the road
+    expect(settle(250, 0, 'cobblestone')).toBeLessThan(settle(250, 0) * 0.75)
+    expect(settle(250, 0, 'asphalt', true)).toBeLessThan(settle(250, 0) * 0.75)
   })
 
   it('still takes a corner at the world speed it can hold, and never passes through the car ahead', () => {

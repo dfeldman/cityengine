@@ -180,4 +180,30 @@ describe('Street Runner on Dandyhorse (src/platform.ts)', () => {
     expect(endScreenHtml({ travelled: 1609.344, seconds: 60, imperial: true, deliveries: [] })).toContain('1.00 mi')
     expect(clockWords(3725)).toBe('1:02:05')
   })
+
+  it('ends the session from the game (End ride), once, with the tours it finished on the timeline', async () => {
+    const p = new Platform(start(), () => {}) as unknown as Inside & {
+      endSession: Platform['endSession']
+      client: { requestTick(): Promise<void>; end(status: string, reason?: string, extra?: { message?: string }): Promise<void> }
+    }
+    const ends: { status: string; message?: string }[] = []
+    p.client.requestTick = async () => {}
+    p.client.end = async (status, _r, extra) => { ends.push({ status, message: extra?.message }) }
+    // (before the rider is on the street there is nothing to end from)
+    p.endSession()
+    p.link = { ...link(), record: () => ({ travelled: 4200, deliveries: [], imperial: false, tours: [{ name: 'Golden Gate Park', stops: 9 }] }) }
+    p.endSession()
+    p.endSession()
+    await new Promise((r) => setTimeout(r, 0))
+    expect(ends).toEqual([{ status: 'complete', message: 'Golden Gate Park, toured. 0.3 km of pedalling.' }])
+  })
+
+  it('draws a tour session\'s end screen with its tours and no talk of deliveries', () => {
+    const html = endScreenHtml({ travelled: 13400, seconds: 2400, imperial: false, deliveries: [], tours: [{ name: 'Golden Gate Park', stops: 9 }] })
+    expect(html).toContain('Golden Gate Park')
+    expect(html).toContain('9 stops')
+    expect(html).not.toContain('deliveries')
+    expect(html).not.toContain('earned')
+    expect(endScreenHtml({ travelled: 100, seconds: 60, imperial: false, deliveries: [], tours: [] })).toContain('No tour finished')
+  })
 })

@@ -18,15 +18,15 @@
   "steepest": 6.7
  },
  "golden-gate-park": {
-  "km": 13,
-  "climb": 100,
-  "descent": 90,
+  "km": 13.4,
+  "climb": 104,
+  "descent": 94,
   "steepest": 2
  },
  "salesforce-sutro": {
-  "km": 14.2,
-  "climb": 224,
-  "descent": 233,
+  "km": 14.6,
+  "climb": 221,
+  "descent": 231,
   "steepest": 2.4
  },
  "waterfront": {
@@ -60,9 +60,9 @@
   "steepest": 4.6
  },
  "treasure-island": {
-  "km": 10.4,
-  "climb": 126,
-  "descent": 127,
-  "steepest": 2.3
+  "km": 9.3,
+  "climb": 103,
+  "descent": 104,
+  "steepest": 2.9
  }
 }

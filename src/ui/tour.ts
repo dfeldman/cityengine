@@ -46,6 +46,7 @@ export const TOUR_CSS = `
 .sr-tour-card .acts button { font: 700 14px/1 var(--font); padding: 10px 14px; border-radius: 999px; cursor: pointer;
   border: 2px solid var(--border); background: var(--panel-2); color: var(--text) }
 .sr-tour-card .acts button.main { background: var(--page); color: var(--on-page); border-color: var(--page) }
+.sr-tour-card .acts button:focus-visible { outline: 3px solid var(--text); outline-offset: 2px }
 /* a phone: the bottom is the route's pill and the energy bar, so the card goes up under the speed */
 @media (max-width: 560px) { .sr-tour-card { top: 84px; bottom: auto; padding: 12px 14px } .sr-tour-card h2 { font-size: 18px } .sr-tour-card p { font-size: 14px } }
 `
@@ -156,24 +157,38 @@ export class TourCard {
     this.hideIn(16000)
   }
 
-  /** the end: how far and how long, and what now */
-  complete(name: string, summary: string, again: () => void, ride: () => void): void {
-    this.fill('Tour complete', name, summary)
-    const acts = document.createElement('div')
-    acts.className = 'acts'
-    const b1 = document.createElement('button')
-    b1.className = 'main'
-    b1.textContent = 'Choose another tour'
-    b1.addEventListener('click', again)
-    const b2 = document.createElement('button')
-    b2.textContent = 'Keep riding'
-    b2.addEventListener('click', () => { this.hide(); ride() })
-    acts.append(b1, b2)
-    this.el.appendChild(acts)
+  /**
+   * The end: how far and how long, and what now (owner, 2026-10-28: "prompt the user to possibly end the session when
+   * the tour is complete"). The first of `acts` is the main button, focused for a keyboard (`focus`): Enter takes it.
+   * Every button hides the card; `note` is a line under them.
+   */
+  complete(name: string, summary: string, acts: { label: string; run: () => void }[], o: { note?: string; focus?: boolean } = {}): void {
+    this.fill('Tour complete', name, summary, o.note)
+    const row = document.createElement('div')
+    row.className = 'acts'
+    const buttons = acts.map((a, i) => {
+      const b = document.createElement('button')
+      if (i === 0) b.className = 'main'
+      b.textContent = a.label
+      b.addEventListener('click', () => { this.hide(); a.run() })
+      return b
+    })
+    row.append(...buttons)
+    // (the note, if any, after the buttons)
+    this.el.insertBefore(row, this.el.querySelector('.next'))
     clearTimeout(this.timer)
+    if (o.focus) buttons[0]?.focus({ preventScroll: true })
   }
 
-  hide(): void { clearTimeout(this.timer); this.el.classList.add('hidden') }
+  /** the card is up */
+  get isOpen(): boolean { return !this.el.classList.contains('hidden') }
+
+  hide(): void {
+    clearTimeout(this.timer)
+    this.el.classList.add('hidden')
+    // (a focused button would take the next Enter or Space, card or no card)
+    if (this.el.contains(document.activeElement)) (document.activeElement as HTMLElement).blur()
+  }
 
   private hideIn(ms: number): void {
     clearTimeout(this.timer)

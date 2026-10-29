@@ -40,6 +40,7 @@ import { DEFAULT_FLORA, type Flora } from './flora.ts'
 import { palmModel, type PalmKind } from './palms.ts'
 import { formCode, type TreeForm } from '../city/tree-forms.ts'
 import { thicken } from './infill.ts'
+import { TILE } from '../city/tiles.ts'
 import { assetRootAndFile, fetchAssetJson } from '../assets.ts'
 
 /** each palm kind's seed family, so the same kind is the same palms everywhere */
@@ -596,6 +597,91 @@ export class Vegetation {
   }
 
   get plantedCount(): number { return this.planted }
+
+  /**
+   * How much of the straight line from a to b runs through a tree's crown: the fraction of points along it, 0..1.
+   * For the chase camera (game.ts), which stood up in the street trees whenever the rider did not steer (owner,
+   * 2026-10-29: "without steering the camera is usually up in the trees"). From the trees as they are drawn — each
+   * planting's own model at its own matrix (`seated`) — not a ray against the meshes, and not `crownRadius`: that is
+   * the bake's figure for keeping a crown off a wall, and the models are half as wide again (a street tree's
+   * leaves reach out 0.35–0.7 of its height, a Canary palm's fronds half of it). A crown is a squat round-ended
+   * drum about the trunk from its leaves' own extent (`crownOf`), padded by a narrow cone round the line — `pad` at
+   * a, `spread` more a metre along it — because a crown that misses the line by a hand's breadth beside the lens
+   * still fills a third of the frame (Hayes Street, 2026-10-29: the trunk 2.6 m from the eye, the leaves 2.5 m out).
+   * Nothing counts before the models have arrived: nothing is drawn.
+   */
+  canopyAlong(ax: number, ay: number, az: number, bx: number, by: number, bz: number, samples = 8, pad = 0.4, spread = 0.08): number {
+    if (this.models.length === 0) return 0
+    const reach = 15
+    const x0 = Math.min(ax, bx) - reach, x1 = Math.max(ax, bx) + reach, z0 = Math.min(az, bz) - reach, z1 = Math.max(az, bz) + reach
+    // the crowns near the line, in world terms: centre, horizontal radius, vertical half-height
+    const near: number[] = []
+    for (let tz = Math.floor(z0 / TILE); tz <= Math.floor(z1 / TILE); tz++) {
+      for (let tx = Math.floor(x0 / TILE); tx <= Math.floor(x1 / TILE); tx++) {
+        const seat = this.seated.get(`${tx},${tz}`)
+        if (!seat) continue
+        const { mats, model } = seat
+        for (let i = 0; i < model.length; i++) {
+          const x = mats[i * 16 + 12], z = mats[i * 16 + 14]
+          if (x < x0 || x > x1 || z < z0 || z > z1) continue
+          const c = crownOf(model[i])
+          if (!c) continue
+          const k = Math.hypot(mats[i * 16], mats[i * 16 + 1], mats[i * 16 + 2])
+          near.push(x, mats[i * 16 + 13] + k * (c.lo + c.hi) / 2, z, k * c.r, k * (c.hi - c.lo) / 2)
+        }
+      }
+    }
+    if (near.length === 0) return 0
+    let inside = 0
+    const length = Math.hypot(bx - ax, by - ay, bz - az)
+    for (let i = 0; i < samples; i++) {
+      const t = samples === 1 ? 0 : i / (samples - 1)
+      const x = ax + (bx - ax) * t, y = ay + (by - ay) * t, z = az + (bz - az) * t
+      const p = pad + spread * length * t
+      for (let j = 0; j < near.length; j += 5) {
+        const dx = x - near[j], dz = z - near[j + 2], r = near[j + 3] + p, ey = (y - near[j + 1]) / (near[j + 4] + p)
+        // (ey to the fourth: flat-topped and flat-bottomed, nearer a crown's shape than an egg, which cut its shoulders off)
+        if ((dx * dx + dz * dz) / (r * r) + ey * ey * ey * ey < 1) { inside++; break }
+      }
+    }
+    return inside / samples
+  }
+}
+
+/**
+ * A model's crown, in its own units: the radius most of its leaves fall within, and the band they fill — from the
+ * widest of its parts (the leaves, or the whole tree where the parts were merged), its vertices off the trunk. Taken
+ * once a model, from the geometry; null for a model with nothing to measure.
+ */
+const crowns = new WeakMap<Model, { r: number; lo: number; hi: number } | null>()
+function crownOf(m: Model): { r: number; lo: number; hi: number } | null {
+  if (crowns.has(m)) return crowns.get(m)!
+  let best: Float32Array | number[] | null = null, wide = 0
+  for (const p of m.parts) {
+    const v = p.getVerticesData('position')
+    if (!v) continue
+    let w = 0
+    for (let i = 0; i < v.length; i += 3) w = Math.max(w, v[i] * v[i] + v[i + 2] * v[i + 2])
+    if (w > wide) { wide = w; best = v }
+  }
+  let c: { r: number; lo: number; hi: number } | null = null
+  if (best && best.length >= 9) {
+    const rad: number[] = []
+    for (let i = 0; i < best.length; i += 3) rad.push(Math.hypot(best[i], best[i + 2]))
+    const sorted = [...rad].sort((a, b) => a - b)
+    // (nearly all the leaves, not the one twig that reaches furthest: the 85th percentile was a street tree's crown
+    // 1.5 m round whose leaves reached 2.5 m and filled the frame)
+    const r = sorted[Math.floor(sorted.length * 0.95)]
+    const ys: number[] = []
+    for (let i = 0; i < best.length; i += 3) if (rad[i / 3] > 0.35 * r) ys.push(best[i + 1])
+    ys.sort((a, b) => a - b)
+    if (r > 0 && ys.length > 0) {
+      const lo = ys[Math.floor(ys.length * 0.05)], hi = ys[ys.length - 1]
+      if (hi > lo) c = { r, lo, hi }
+    }
+  }
+  crowns.set(m, c)
+  return c
 }
 
 /**
@@ -625,3 +711,4 @@ export function foliageLights(scene: Scene): void {
     sun.excludeWithLayerMask = PEOPLE
   }
 }
+

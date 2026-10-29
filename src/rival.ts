@@ -98,9 +98,14 @@ export async function startRival(sessionId: string, unitSystem: UnitSystem, city
 
 /** The line when nobody was raced: what the ride itself was. */
 export function soloMessage(now: RideNow, collisions: number, streets: number, imperial: boolean,
-                            place: string | null): string {
+                            place: string | null, tours: string[] = []): string {
   const far = (m: number): string => imperial ? `${(m / 1609.344).toFixed(1)} mi` : `${(m / 1000).toFixed(1)} km`
   const where = place ? ` of ${place}` : ''
+  // tour mode: the tours finished ("Golden Gate Park and The Embarcadero, toured. 21.4 km of pedalling.")
+  if (tours.length) {
+    const names = tours.length === 1 ? tours[0] : `${tours.slice(0, -1).join(', ')} and ${tours[tours.length - 1]}`
+    return `${names}, toured. ${far(now.distance)} of pedalling.`
+  }
   if (now.deliveries > 0) {
     const bumps = collisions > 0 ? `, and ${collisions} car${collisions === 1 ? '' : 's'} found the hard way` : ''
     return `${now.deliveries} parcel${now.deliveries === 1 ? '' : 's'} delivered for `

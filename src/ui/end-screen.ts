@@ -34,7 +34,12 @@ export interface EndRecord {
   imperial: boolean
   /** the city's name, for the subtitle */
   place?: string
+  /** tour mode (src/game/tour.ts): the tours finished this session, listed in place of the deliveries */
+  tours?: EndTour[]
 }
+
+/** One tour finished in the session. */
+export interface EndTour { name: string; stops: number }
 
 export const END_CSS = `
 .sr-standing { margin: 10px 0 0; font-weight: 800; letter-spacing: .01em; }
@@ -53,6 +58,7 @@ export const END_CSS = `
 .sr-end ol { list-style: none; margin: 0 0 14px; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 6px; }
 .sr-end li { display: grid; grid-template-columns: 34px 1fr auto auto; gap: 4px 12px; align-items: center; padding: 8px 10px;
   border-radius: var(--radius-sm); background: color-mix(in srgb, var(--text) 6%, transparent); }
+.sr-end li.tour { grid-template-columns: 34px 1fr }
 .sr-end li .emoji { font-size: 26px; line-height: 1; text-align: center; }
 .sr-end li .what b { display: block; font: 800 15px/1.2 var(--font); }
 .sr-end li .what span { display: block; font: 500 12px/1.3 var(--font); opacity: .75; }
@@ -89,6 +95,9 @@ export function endScreenHtml(r: EndRecord): string {
   const rated = done.filter((d) => d.stars > 0)
   const avg = rated.length ? rated.reduce((a, d) => a + d.stars, 0) / rated.length : 0
   const stars = (n: number): string => `${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i>`
+  // tour mode: the tours ridden, and no talk of deliveries unless there were some
+  const tours = r.tours
+  const jobs = !tours || r.deliveries.length > 0
   const rows = r.deliveries.map((d) => `<li class="${d.outcome === 'delivered' ? '' : 'miss'}">
       <span class="emoji">${esc(d.emoji)}</span>
       <span class="what"><b>${esc(d.what.charAt(0).toUpperCase() + d.what.slice(1))}</b><span>${esc(d.from)} → ${esc(d.to)}${d.outcome === 'delivered' ? '' : ` · ${MISSED[d.outcome]}`}</span></span>
@@ -100,11 +109,16 @@ export function endScreenHtml(r: EndRecord): string {
     <div class="totals">
       <div><b>${distanceWords(r.travelled, r.imperial)}</b><small>ridden</small></div>
       <div><b>${clockWords(r.seconds)}</b><small>riding time</small></div>
-      <div><b>${done.length}</b><small>${done.length === 1 ? 'delivery' : 'deliveries'}</small></div>
-      ${rated.length ? `<div><b>${avg.toFixed(1)} ★</b><small>average</small></div>` : ''}
-      <div><b class="cash">$${earned.toFixed(2)}</b><small>earned</small></div>
+      ${tours?.length ? `<div><b>${tours.length}</b><small>${tours.length === 1 ? 'tour' : 'tours'}</small></div>` : ''}
+      ${jobs ? `<div><b>${done.length}</b><small>${done.length === 1 ? 'delivery' : 'deliveries'}</small></div>` : ''}
+      ${jobs && rated.length ? `<div><b>${avg.toFixed(1)} ★</b><small>average</small></div>` : ''}
+      ${jobs ? `<div><b class="cash">$${earned.toFixed(2)}</b><small>earned</small></div>` : ''}
     </div>
-    ${r.deliveries.length ? `<ol>${rows}</ol>` : '<div class="none">No deliveries this time — just the ride.</div>'}
+    ${tours?.length ? `<ol>${tours.map((t) => `<li class="tour"><span class="emoji">🚲</span>
+      <span class="what"><b>${esc(t.name)}</b><span>Tour complete · ${t.stops} stops</span></span></li>`).join('')}</ol>` : ''}
+    ${r.deliveries.length ? `<ol>${rows}</ol>`
+      : tours ? (tours.length ? '' : '<div class="none">No tour finished this time — just the ride.</div>')
+        : '<div class="none">No deliveries this time — just the ride.</div>'}
     <button class="done" type="button">✓ Done</button>
     <div class="hint"><span class="keys">Enter or Esc · </span>or Done on your phone<span class="left"></span></div>`
 }

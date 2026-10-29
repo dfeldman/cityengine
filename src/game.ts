@@ -106,7 +106,7 @@ import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import type { Platform } from './platform.ts'
-import { EndScreen, type EndDelivery } from './ui/end-screen.ts'
+import { EndScreen, type EndDelivery, type EndTour } from './ui/end-screen.ts'
 import { Tools } from '@babylonjs/core/Misc/tools'
 import { Navigator, pointAlong } from './sim/navigate.ts'
 import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/transit.ts'
@@ -115,7 +115,7 @@ import { addEdges, departureBearing, exits, resolve, type CityGraph, type Edge }
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
 import { nearestOnGraph, planRoute, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
-import { Sights, TourGuide, toursFor, type GuideEvent, type Tour } from './game/tour.ts'
+import { Sights, statsOf, TourGuide, toursFor, type GuideEvent, type Tour } from './game/tour.ts'
 import { TourCard, pickTour } from './ui/tour.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
 import { loadRide, openCity } from './city/tilestore.ts'
@@ -1669,11 +1669,24 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let endScreen: EndScreen | null = null
   const endRide = (): void => {
     endScreen ??= new EndScreen()
-    endScreen.show({ travelled: nav.travelled - rideStartM, seconds: rideSeconds, deliveries: [...sessionJobs], imperial: imperialNow(), place: pkg.name }, () => {
+    endScreen.show({ travelled: nav.travelled - rideStartM, seconds: rideSeconds, deliveries: [...sessionJobs], imperial: imperialNow(), place: pkg.name,
+      ...(opts.tour ? { tours: [...sessionTours] } : {}) }, () => {
       sessionJobs.length = 0
+      sessionTours.length = 0
       rideSeconds = 0
       rideStartM = nav.travelled
     })
+  }
+  /** tour mode: the tours finished this session, for the end screen */
+  const sessionTours: EndTour[] = []
+  /**
+   * END RIDE, in either mode (owner, 2026-10-28: "we don't have a good way to end a session … Right now it can be done
+   * from the bridge app only"): on Dandyhorse the session completes from here and the platform's end screen comes up
+   * (src/platform.ts `endSession`); standalone, the same summary, and Done rides on.
+   */
+  const endSession = (): void => {
+    if (opts.platform) opts.platform.endSession()
+    else endRide()
   }
   let rideStartM = 0
   const acceptedJobs = new Set<number>()
@@ -1901,6 +1914,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   /** where the tour began, for its summary */
   let tourFrom = { m: 0, s: 0 }
   let tourPicking = false
+  /** a tour just finished: End ride and Keep riding are on the phone's buttons until the rider chooses */
+  let tourEndOffered = false
   const aimGuide = (): void => {
     const t = guide?.target
     if (!t) return
@@ -1925,8 +1940,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       sights?.seen(guide.stops.find((q) => Math.hypot(q.x - ev.stop.x, q.z - ev.stop.z) < 150 && q.name)?.name)
       const g = guide
       const summary = `${far(nav.travelled - tourFrom.m)} in ${clock(simSeconds - tourFrom.s)} · ${g.count} stops`
-      setTimeout(() => tourCard?.complete(g.tour.name, summary, () => void chooseTour(),
-        () => hud.banner('Free ride', 'ride wherever you like')), ev.stop.n !== null ? 9000 : 0)
+      sessionTours.push({ name: g.tour.name, stops: g.count })
+      // …and the end of the session on offer: on the card, and on the phone beside the d-pad (a trainer's rider may
+      // have nothing else to press), until they choose
+      const keepRiding = (): void => { tourEndOffered = false; hud.banner('Free ride', 'ride wherever you like') }
+      setTimeout(() => {
+        tourEndOffered = true
+        tourCard?.complete(g.tour.name, summary, [
+          { label: '🏁 End ride', run: () => { tourEndOffered = false; endSession() } },
+          // (the picker needs a keyboard, a mouse or a finger: not offered on the phone)
+          { label: 'Choose another tour', run: () => { tourEndOffered = false; void chooseTour() } },
+          { label: 'Keep riding', run: keepRiding },
+        ], { note: opts.platform ? 'Or 🏁 End ride on your phone' : undefined, focus: !touchScreen() })
+      }, ev.stop.n !== null ? 9000 : 0)
       endTour()
     }
   }
@@ -1937,6 +1963,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const chooseTour = async (): Promise<void> => {
     if (tourPicking) return
     tourPicking = true
+    tourEndOffered = false
     tourCard?.hide()
     const t = await pickTour(toursFor(opts.city), { speedup: play.speedup, imperial: imperialNow(), touch: touchScreen(), platform: !!opts.platform })
     tourPicking = false
@@ -2535,7 +2562,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { label: 'Map', hint: keyHint('M'), run: toggleMap },
     ...(search ? [{ label: 'Search', hint: keyHint('/'), run: () => search.open() }] : []),
     ...(frozen ? [] : [{ label: 'Look around', hint: keyHint('P'), run: toggleLook }]),
-    ...(opts.platform ? [] : [{ label: 'End ride', run: endRide }]),
+    // (on Dandyhorse it ends the session for good, so it asks first; standalone, Done on the summary rides on)
+    opts.platform
+      ? { label: '🏁 End ride', hint: 'finish the session', sub: (): MenuItem[] => [
+        { label: 'End the session now?', info: `${far(nav.travelled)} · ${clock(simSeconds)}` },
+        { label: 'Yes, end the ride', run: endSession },
+        { label: 'No, keep riding', run: () => {} },
+      ] }
+      : { label: '🏁 End ride', hint: 'see the summary', run: endSession },
     { label: 'Ride', sub: (): MenuItem[] => [
       { label: 'Turn around', hint: keyHint('U'), run: () => (controls.press ? controls.press('back') : nav.turnAround()) },
       ...(transit.aboard ? [{ label: 'Get off', hint: keyHint('B'), run: transitAction },
@@ -2647,6 +2681,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * couch the rider weaves and steers round them, so there it stays behind. Eased, so a change of lane swings it gently.
    */
   let camCentre = 0
+  /**
+   * …and in under the trees when they keep filling the view (owner, 2026-10-29: "without steering the camera is usually
+   * up in the trees… detect when the camera is persistently in trees, and zoom in to a secondary position closer to the
+   * rider"). `canopyScore` is how much of the last few seconds the USUAL position's sight line to the rider ran
+   * through or close by a crown (render/vegetation.ts `canopyAlong`) — the usual one, never the tucked one, which is
+   * under the leaves and would read clear and send the camera straight back up into them. A street of trees on the
+   * kerb blocks it a third of the time, a tree at a time; a lone tree for a moment. Over 0.35 the camera tucks in; it
+   * stands back out only once that has fallen under 0.05, five seconds or so clear, so a gap between two street
+   * trees does not bounce it. `camTuck` is the ease between the two, 0 out, 1 in.
+   */
+  let canopyScore = 0
+  let tucked = false
+  let camTuck = 0
   // where the camera is LOOKING, in height: the road's own profile ahead, eased (BUGS.md #207)
   let aimY = nav.elevationAhead(12)
 
@@ -2851,8 +2898,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const exit = want === undefined || !junction ? undefined : junction.exits.find((x) => x.edgeId === want)
         const left = toGo(route.length)
         const next = route.turnRound ? 'turn round' : exit && junction && exit.turn !== 'straight' ? `${exit.turn} soon` : ''
-        const of = guide ? `${guide.upcoming?.n ?? guide.count}/${guide.count} · ` : tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''
-        hud.gps(`⌖ ${of}${left}${next ? ` · ${next}` : ''}`)
+        // a tour: which stop and how far to it, then how far ridden of the whole (owner, 2026-10-29: "display current
+        // and total distance, as well as current and total waypoints")
+        let line = `${tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''}${left}`
+        if (guide) {
+          const km = statsOf(guide.tour)?.km
+          const d = (m: number): string => (imperialNow() ? (m / 1609.344) : (m / 1000)).toFixed(1)
+          const unit = imperialNow() ? 'mi' : 'km'
+          const ridden = nav.travelled - tourFrom.m
+          line = `Stop ${guide.upcoming?.n ?? guide.count}/${guide.count} · ${left} · `
+            + (km ? `${d(ridden)} of ${d(km * 1000)} ${unit}` : `${d(ridden)} ${unit} ridden`)
+        }
+        hud.gps(`⌖ ${line}${next ? ` · ${next}` : ''}`)
       } else if (route) hud.gps(null)
       paths.follow(nav.at())
       paths.update(nav.edge.id, junction, nav.requested)
@@ -2917,7 +2974,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         : ride.step(dt, given, opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity,
           // held behind the car ahead in the rider's lane (none on a descent: the traffic makes way instead) —
           // judged along the strip the rider is WEAVING to, and slowed to swing out in time when that is far across
-          (lastLead = lastRider && !hold ? heldBy(lastRider) : null))
+          (lastLead = lastRider && !hold ? heldBy(lastRider) : null), edge.foot)
       lastState = state
       // held still behind traffic for a while: say how to get out (owner, 2026-09-29: stuck face to face with a car
       // on a narrow street) — a U-turn works from a standstill
@@ -3321,10 +3378,32 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // …except a cable car, which is open: the camera stands off its right side, close and low, where the rider stands
       // in the grip section and the people on the running boards are seen (owner, 2026-10-16)
       const onCable = transit.aboard?.kind === 'cable'
-      const want = high ? 46 : onCable ? 6.5 : riding ? 22 : 7.5
       camSide += ((onCable && !high ? 4.2 : 0) - camSide) * Math.min(1, dt * 3)
-      camCentre += ((!nav.fast && !riding && !high ? -0.85 * nav.sideOffset : 0) - camCentre) * Math.min(1, dt * 1.5)
-      const room = high || riding ? want : city.clearBehind(at.x, at.z, -fx, -fz, want)
+      // (and tucked under the trees, a little: the street trees are on the pavement, so the way out of them is toward the
+      // middle of the road — but no more than a stride, or a camera that close has the rider at the edge of the frame)
+      const centring = -0.85 * nav.sideOffset
+      camCentre += ((riding || high ? 0 : !nav.fast ? centring : tucked ? Math.max(-1.2, Math.min(1.2, centring)) : 0) - camCentre)
+        * Math.min(1, dt * 1.5)
+      // (the room behind for the usual 7.5 m: the tucked camera's is the same wall, nearer)
+      const groundCam = !high && !riding && !onCable && !frozen
+      const usualRoom = high || riding ? 0 : city.clearBehind(at.x, at.z, -fx, -fz, onCable ? 6.5 : 7.5)
+      let through = 0
+      if (groundCam) {
+        // the usual eye, 3.5 m up behind the rider (where it would stand untucked, so not toward the middle of the road
+        // unless the trainer has it there anyway), to the rider's chest
+        const off = !nav.fast ? -0.85 * nav.sideOffset : 0
+        through = trees.canopyAlong(at.x - fx * usualRoom + fz * off, groundY + 3.5, at.z - fz * usualRoom - fx * off,
+          at.x, groundY + 1.3, at.z)
+        canopyScore += (Math.min(1, through * 4) - canopyScore) * Math.min(1, dt / 2.5)
+        // (and never out on a frame that is itself in the leaves: the score can dip under the line just as the next tree arrives)
+        tucked = tucked ? canopyScore > 0.05 || through > 0 : canopyScore > 0.35
+      } else { canopyScore = 0; tucked = false }
+      // (at a steady rate under a smoothstep, so it starts and ends gently both ways: in over 1.7 s, out over 3)
+      camTuck = Math.max(0, Math.min(1, camTuck + (tucked ? 0.6 : -0.33) * dt))
+      const tuck = camTuck * camTuck * (3 - 2 * camTuck)
+      ;(window as unknown as Record<string, unknown>).__camTuck = { through: +through.toFixed(2), score: +canopyScore.toFixed(2), tucked, tuck: +tuck.toFixed(2) }
+      const want = high ? 46 : onCable ? 6.5 : riding ? 22 : 7.5 + (4.6 - 7.5) * tuck
+      const room = high || riding ? want : Math.min(usualRoom, want)
       camBack += (room - camBack) * Math.min(1, dt * (room < camBack ? 12 : 3))
       /*
        * The camera rides the hill with the rider, looking at where the ROAD actually goes — from the road's
@@ -3352,7 +3431,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // cut the vault with its near plane — render/tunnels.ts `headroom`)
       const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
         ?? tunnels.headroom(at.x - fx * camBack, at.z - fz * camBack, camBack) ?? tunnels.headroom(at.x, at.z, 0)
-      const lift = high ? 34 : onCable ? 2.6 : riding ? 6.5 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
+      const lift = high ? 34 : onCable ? 2.6 : riding ? 6.5
+        : Math.min(3.5 + (2.1 - 3.5) * tuck, vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0)))
       camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vault === null ? 4 : 8))
       // (only on the ground, the rider's own speed: not aboard, not from above)
       const felt = high || riding || speedLines === null ? 0 : (lastState?.speed ?? 0)
@@ -3366,8 +3446,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       } else if (!frozen) {
         // (the right of the way the rider faces is (fz, −fx))
         camera.position.set(at.x - fx * camBack + fz * (camSide + camCentre), camHeight, at.z - fz * camBack - fx * (camSide + camCentre))
-        camera.setTarget(new Vector3(at.x + fx * (high ? 26 : 9), (high ? 6 : 1.9) + aheadY,
-          at.z + fz * (high ? 26 : 9)))
+        // (tucked in, looking a little nearer and lower, so the rider sits in the frame rather than under it)
+        const ahead = high ? 26 : 9 - 2 * tuck
+        camera.setTarget(new Vector3(at.x + fx * ahead, (high ? 6 : 1.9 - 0.4 * tuck) + aheadY, at.z + fz * ahead))
       }
 
       // glass and water are view-dependent, so they need the eye every frame; the chase camera is driven by
@@ -3644,6 +3725,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           out.push({ id: 'eat', label: `${delivery.job.item?.emoji ?? '🍽'} Eat the ${delivery.job.item?.name ?? 'order'}` })
         }
         out.push({ id: 'map', label: minimap.isLarge ? '🗺️ Close the map' : '🗺️ Map' })
+        // a tour just finished: what now (first, so they are the big buttons the rider sees)
+        if (tourEndOffered) out.unshift({ id: 'end', label: '🏁 End ride' }, { id: 'ride-on', label: '🚲 Keep riding' })
         return out
       },
       act: (id) => {
@@ -3653,10 +3736,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           else { const o = !frozen ? nearTop(lastAt) : null; if (o) goUp(o) }
         } else if (id === 'eat') onDelivery(delivery.eat())
         else if (id === 'map') toggleMap()
+        else if (id === 'end') { tourEndOffered = false; tourCard?.hide(); endSession() }
+        else if (id === 'ride-on') { tourEndOffered = false; tourCard?.hide(); hud.banner('Free ride', 'ride wherever you like') }
       },
       showMap: (on) => { if (on === minimap.isLarge) return false; toggleMap(); return true },
       // [#303 HOOK] the end screen's numbers: the ride and this session's jobs
-      record: () => ({ travelled: nav.travelled, deliveries: [...sessionJobs], collisions, imperial: imperialNow(), place: pkg.name }),
+      record: () => ({ travelled: nav.travelled, deliveries: [...sessionJobs], collisions, imperial: imperialNow(), place: pkg.name,
+        ...(opts.tour ? { tours: [...sessionTours] } : {}) }),
     })
   }
 }

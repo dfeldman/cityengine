@@ -25,8 +25,18 @@ const G = 9.81
 
 /** Rolling resistance by what OSM says the street is made of. */
 export const CRR: Record<string, number> = {
-  asphalt: 0.004, concrete: 0.005, wood: 0.006, cobblestone: 0.011, gravel: 0.008, dirt: 0.012,
+  asphalt: 0.004, concrete: 0.005, wood: 0.006, cobblestone: 0.011, gravel: 0.008, dirt: 0.012, brick: 0.007,
 }
+
+/**
+ * The top speed's share on each surface (`RideConfig.topSpeed`): what a rider would actually take over it. The
+ * resistance above is a mile an hour or two between asphalt and cobbles — true, and nobody feels it — so a rough
+ * surface says so with a lower top speed instead (owner, 2026-10-29: "we don't detect different materials like
+ * pedestrian walks, cobblestone etc at all").
+ */
+export const SURFACE_TOP: Record<string, number> = { cobblestone: 0.6, dirt: 0.65, gravel: 0.7, brick: 0.75, wood: 0.8 }
+/** …and on a footway or path, shared with people walking: on top of its surface's */
+export const FOOT_TOP = 0.6
 
 export interface RideConfig {
   riderMassKg: number
@@ -37,10 +47,15 @@ export interface RideConfig {
   cornerAccel: number
   /** how hard the brakes may be applied for a corner, m/s² */
   brakeDecel: number
+  /** m/s in the WORLD (the speedup counted): the rider eases off above it, harder through `topBand` (see `step`) */
+  topSpeed: number
+  topBand: number
 }
 
 export const DEFAULTS: RideConfig = {
   riderMassKg: 75, bikeMassKg: 9, cdA: 0.36, drivetrain: 0.97, cornerAccel: 2.6, brakeDecel: 2.4,
+  // 35 mph, fully on by 45
+  topSpeed: 15.6, topBand: 4.5,
 }
 
 export interface RideState {
@@ -112,6 +127,8 @@ export class Ride {
      * way instead), so the descent stays the rider's.
      */
     leader: { speed: number; gap: number } | null = null,
+    /** on a footway or path (`FOOT_TOP`) */
+    foot = false,
   ): RideState {
     if (deviceType === 'treadmill') {
       // The belt is the truth. Smoothing is for the eye only: the machine reports once a second and the
@@ -194,6 +211,22 @@ export class Ride {
         if (leader.gap < 0.5) this.v = Math.min(this.v, leader.speed)
         this.braking = true
       }
+    }
+
+    /*
+     * TOP SPEED (owner, 2026-10-29: "the speed SHOULD be faster than reality, to be more fun than reality. But right
+     * now you can get up to 70 mph which is a bit silly"). The speedup doubles a couch rider's 30 mph descent, and
+     * nothing held it. Above `topSpeed` in the world the rider feathers the brakes, a little at first and fully
+     * `topBand` further on, so a harder effort still goes a little faster and a descent settles instead of running
+     * away. Lower on a rough surface and on a path. In world terms, like the corner's and the leader's caps, and on
+     * the physical speed, so what a trainer reports is what was ridden. Only ever downward.
+     */
+    const share = (SURFACE_TOP[surface] ?? 1) * (foot ? FOOT_TOP : 1)
+    const top = (this.cfg.topSpeed * share) / k
+    if (this.v > top) {
+      const over = Math.min(1, (this.v - top) / ((this.cfg.topBand * share) / k))
+      this.v = Math.max(top, this.v - this.cfg.brakeDecel * over * dt)
+      if (over > 0.25) this.braking = true
     }
 
     /*

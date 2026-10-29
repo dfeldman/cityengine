@@ -18,23 +18,20 @@
  * `ports-8-chinese-culture-center-entrance.webp`): a WIDE, OPEN brick-paved plaza-walkway (not enclosed —
  * that was a guess this file's own photos disprove), white-capped brick parapets, concrete benches and
  * faceted gold lantern piers, climbing gently from the square's deck, passing under a tiled pagoda gate with
- * red ironwork at the Hilton end (SKYPARKS.md: "the gate appears to normally be closed"), and ending in a
- * forecourt with a stair down to the Chinese Culture Center's entrance, which sits at grade in the gap
- * between the Hilton's own two splayed legs (`hiltonFinancialDistrict`, districts/model-tall.ts) — no
- * separate piers are built here, the Hilton's inverted-Y legs ARE the "two huge battered piers" SKYPARKS.md
- * describes. The mosaic facing on those piers and on the CCC entrance stair is still NOT modelled (do-not,
- * below) — a plain stair reads as an arrival without that budget.
+ * red ironwork at the Hilton end (SKYPARKS.md: "the gate appears to normally be closed"), where it meets the
+ * Hilton's Kearny podium (`hiltonFinancialDistrict`, districts/model-tall.ts), the Chinese Culture Center's
+ * deck. It goes nowhere else: no stair, no forecourt (owner, 2026-10-29: "It is SUPPOSED to connect only to
+ * the hotel. Right now it has stairs (which do not exist) going into the center of the road"). The mosaic
+ * facing on the Hilton's piers is still NOT modelled (do-not, below).
  *
- * REGISTRATION, honestly stated: this file and `hiltonFinancialDistrict` are fitted independently, each in
- * its own local frame, with no shared coordinate at build time. The bridge's HEADING comes from `edgeAt()` on
- * this file's own ring (never a hand atan2, bug #135), as required; its LENGTH (43 m) and climb (2.8 m) come
- * from the real lat/lon gap between this file's origin (37.7948339, -122.40536495) and way/260922316's
- * (37.795142, -122.404297, docs/sf-buildings.csv) — about 100 m apart, minus the Hilton's own half-length
- * (`fit.hx`, 38.8 m per model-tall.ts) and a short forecourt. That distance math lines up with
- * `hiltonFinancialDistrict`'s own comment that Portsmouth Square sits "~12 deg off" its short-end axis — the
- * same ~12-16 deg of slop shows up here as a lateral offset over the 43 m run. This is the "get the gist"
- * standard the rest of this file already holds itself to, not a claimed exact seam; if a photo pins the exact
- * junction facade, that is the thing to fix next, not the span or the height.
+ * REGISTRATION: the bridge is OSM's — the footway way/32946373 ("Dr. Rolland and Kathryn Lowe Community
+ * Bridge", layer 1) and its man_made=bridge outline way/1092159734, read from the Overpass cache in this
+ * file's local metres. It runs ~9 deg north of east from the deck to (55.4, 28.9), the middle of the podium's
+ * west face (part way/1092160237, its edge (56.0, 24.9)-(54.8, 32.4)), and the outline is ~7.6 m wide. It was
+ * once placed from the gap between the two buildings' centres instead, off the wrong edge of the ring: it
+ * ended 20 m south of the podium, past its corner, and its stair came down in Kearny Street. Its HEIGHT: the
+ * podium's deck stands 0.6 m below this one in the city (both placed on their own lowest ground, probed
+ * 2026-10-29), so the span is level to within that, as the real one is.
  *
  * DO: the deck over the garage with its edge and planting; the LEVEL ACCESS from Walter U Lum Place (the
  * square sits at street grade there — no stair, which is what makes it ridable at all); the two pagoda
@@ -86,7 +83,7 @@ import { capPolygon } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { boxAlong, edgeAt, offsetRing, railing, stair } from '../parts.ts'
+import { boxAlong, edgeAt, offsetRing, railing } from '../parts.ts'
 import { faceBand } from '../tower.ts'
 
 type P2 = { x: number; z: number }
@@ -107,6 +104,11 @@ const RING: P2[] = [
   { x: -29.9, z: 39.4 },
 ]
 const ACCESS_EDGE = 0 // RING[0] -> RING[1]: Walter U Lum Place, at grade — no wall, no railing
+/** the skybridge's centre line, OSM way/32946373 in local metres: from inside the deck to the Hilton podium's face */
+const BRIDGE_FROM: P2 = { x: -8.1, z: 19.1 }
+const BRIDGE_TO: P2 = { x: 55.4, z: 28.9 }
+const BRIDGE_HALF_W = 3.8 // way/1092159734's outline, ~7.6 m across
+const BRIDGE_DROP = 0.6 // to the Hilton podium's deck (see header)
 
 const DECK_Y = 4.4 // the garage's clearance above the streets it does NOT meet at grade
 const WALL: Rgb = [0.58, 0.57, 0.54]
@@ -217,18 +219,15 @@ function bench(out: MeshBuilder, x: number, z: number, y: number, heading: numbe
 
 /**
  * The Portsmouth Square skybridge to the Hilton / Chinese Culture Center — built in full, per the header's
- * BUGS.md #173 note. `gateX,gateZ` is the bridge mouth on the square's own deck (past the retaining wall);
- * `headingOut` is `edgeAt(ring, 6).heading`, the required convention (never a hand atan2, bug #135) — its
- * sin/cos give the TRAVEL direction (`edgeAt`'s own outward-normal convention) and the perpendicular WIDTH
- * direction, exactly as `boxAlong`'s own hz/hx axes read for this heading.
- *
- * Span and climb (43 m run, 2.8 m rise) are derived from the real lat/lon gap to way/260922316 minus its own
- * half-length, not typed — see the header's REGISTRATION note for the arithmetic and its honest error bar.
+ * BUGS.md #173 note. `gateX,gateZ` is the bridge mouth on the square's own deck edge, `run` the span from there
+ * to the Hilton podium's face; `headingOut` is the mouth's `edgeAt().heading`, the required convention (never a
+ * hand atan2, bug #135) — its sin/cos give the TRAVEL direction (`edgeAt`'s own outward-normal convention) and
+ * the perpendicular WIDTH direction, exactly as `boxAlong`'s own hz/hx axes read for this heading.
  */
-function skybridgeToHilton(out: MeshBuilder, gateX: number, gateZ: number, y0: number, headingOut: number): void {
-  const RUN = 43 // metres — real-world gap (~100 m, Projection maths in the header) minus the Hilton's own half-length and a forecourt
-  const RISE = 2.8 // "climbing gently" (docs/SKYPARKS.md) — nowhere near the deck-to-street kind of climb
-  const HALF_W = 6 // the real bridge is a wide plaza-walkway, not a footpath (ports-1/ports-6)
+function skybridgeToHilton(out: MeshBuilder, gateX: number, gateZ: number, y0: number, headingOut: number, run: number): void {
+  const RUN = run
+  const RISE = -BRIDGE_DROP
+  const HALF_W = BRIDGE_HALF_W
   const SEGMENTS = 4
   const sHead = Math.sin(headingOut)
   const cHead = Math.cos(headingOut)
@@ -236,8 +235,9 @@ function skybridgeToHilton(out: MeshBuilder, gateX: number, gateZ: number, y0: n
   const side = { x: cHead, z: -sHead } // perpendicular — boxAlong's own hx (width) axis for this heading
 
   // the gatehouse astride the bridge mouth, on the square's own deck — widened to the bridge's real width
-  box(out, gateX, y0 + 1.6, gateZ, HALF_W * 0.5, 1.6, 1.4, RED_LACQUER, surfaceTag('clapboard'))
-  tieredPagodaRoof(out, gateX, gateZ, y0 + 3.2, { tiers: 1, baseR: HALF_W * 0.85, postH: 1.2 })
+  const gx = gateX - travel.x * 1.6, gz = gateZ - travel.z * 1.6
+  box(out, gx, y0 + 1.6, gz, HALF_W * 0.5, 1.6, 1.4, RED_LACQUER, surfaceTag('clapboard'))
+  tieredPagodaRoof(out, gx, gz, y0 + 3.2, { tiers: 1, baseR: HALF_W * 0.85, postH: 1.2 })
 
   // the centreline points and heights at each segment boundary, and the deck/parapets/furniture built off them
   const pts: { x: number; z: number; y: number }[] = []
@@ -253,7 +253,8 @@ function skybridgeToHilton(out: MeshBuilder, gateX: number, gateZ: number, y0: n
     const cy = (a.y + b.y) / 2
     const segLen = RUN / SEGMENTS
     // the deck slab: wide, brick-paved (SURFACES.brick gives the running-bond pattern for free)
-    boxAlong(out, cx, cy - 0.3, cz, HALF_W, 0.35, segLen / 2, headingOut, BRICK_DECK, surfaceTag('brick'))
+    // (its top on the walkway's own line: 5 cm proud, the first slab sat 2.5 cm under the square's deck where they meet)
+    boxAlong(out, cx, cy - 0.35, cz, HALF_W, 0.35, segLen / 2, headingOut, BRICK_DECK, surfaceTag('brick'))
     // low parapets both sides, white-capped concrete over brick in the reference photos — simplified to one
     // solid tone, per this file's existing cost discipline
     for (const s of [1, -1] as const) {
@@ -274,37 +275,47 @@ function skybridgeToHilton(out: MeshBuilder, gateX: number, gateZ: number, y0: n
     }
   }
 
-  // the Hilton-end gate: a bigger tiered pagoda roof spanning the bridge, with a red iron fence across it —
-  // "the gate appears to normally be closed" (docs/SKYPARKS.md)
-  const head = pts[SEGMENTS]
+  // the Hilton-end gate, just short of the podium's face: a bigger tiered pagoda roof spanning the bridge, with a red
+  // iron fence across it — "the gate appears to normally be closed" (docs/SKYPARKS.md). The podium's deck is beyond.
+  const end = pts[SEGMENTS]
+  const head = { x: end.x - travel.x * 0.6, z: end.z - travel.z * 0.6, y: end.y }
   box(out, head.x, head.y + 2.0, head.z, HALF_W * 0.92, 2.0, 0.35, RED_LACQUER, surfaceTag('clapboard'))
   tieredPagodaRoof(out, head.x, head.z, head.y + 4.0, { tiers: 2, baseR: HALF_W * 1.05, postH: 1.6 })
   railing(out, [
     { x: head.x - side.x * HALF_W, z: head.z - side.z * HALF_W },
     { x: head.x + side.x * HALF_W, z: head.z + side.z * HALF_W },
   ], head.y, { kind: 'posts', height: 1.7, spacing: 0.4, colour: IRON_RED })
-
-  // a short forecourt beyond the gate, then a stair down to grade — the Chinese Culture Center's entrance
-  // sits at street level in the gap between the Hilton's own two splayed legs (hiltonFinancialDistrict), so
-  // this is where the bridge's climb gives back what it gained
-  const courtEnd = { x: head.x + travel.x * 3, z: head.z + travel.z * 3, y: head.y }
-  boxAlong(out, (head.x + courtEnd.x) / 2, head.y - 0.3, (head.z + courtEnd.z) / 2, HALF_W * 1.15, 0.35, 1.5, headingOut, BRICK_DECK, surfaceTag('brick'))
-  for (const s of [1, -1] as const) {
-    lanternPier(out, courtEnd.x + side.x * (HALF_W * 1.15 + 0.25) * s, courtEnd.z + side.z * (HALF_W * 1.15 + 0.25) * s, head.y)
-  }
-  // stair(): `a`/`b` is the flight's WIDTH line, climbing along ITS OWN normal — built so that normal points
-  // along `travel` (forward, away from the square) and `anchor: 'top'` puts the width line at y1 (the
-  // forecourt), descending to grade beyond it, never a hand atan2 (bug #135)
-  const stairA = { x: courtEnd.x + side.x * HALF_W, z: courtEnd.z + side.z * HALF_W }
-  const stairB = { x: courtEnd.x - side.x * HALF_W, z: courtEnd.z - side.z * HALF_W }
-  stair(out, stairA, stairB, 0, courtEnd.y, { anchor: 'top', material: 'concrete', tread: 'paving' })
 }
 
-/** The garage's retaining edge along one ring edge: a plain wall up to deck level, with a rail on top. */
-function retainingEdge(out: MeshBuilder, ring: P2[], i: number, y: number): void {
+/**
+ * The garage's retaining edge along one ring edge: a plain wall up to deck level, with a rail on top — none across
+ * `gap` (metres along the edge from `a`), the skybridge's mouth.
+ */
+function retainingEdge(out: MeshBuilder, ring: P2[], i: number, y: number, gap?: [number, number]): void {
   const e = edgeAt(ring, i)
   boxAlong(out, e.mid.x + e.nx * 0.15, y / 2, e.mid.z + e.nz * 0.15, e.L / 2, y / 2, 0.3, e.heading, WALL, surfaceTag('concrete'))
-  railing(out, [e.a, e.b], y, { kind: 'posts', height: 1.0, colour: [0.2, 0.21, 0.24] })
+  const at = (d: number): P2 => ({ x: e.a.x + e.tx * d, z: e.a.z + e.tz * d })
+  const runs: [number, number][] = gap ? [[0, gap[0]], [gap[1], e.L]] : [[0, e.L]]
+  for (const [d0, d1] of runs) {
+    if (d1 - d0 > 0.5) railing(out, [at(Math.max(0, d0)), at(Math.min(e.L, d1))], y, { kind: 'posts', height: 1.0, colour: [0.2, 0.21, 0.24] })
+  }
+}
+
+/** where the skybridge's line leaves the deck: the ring edge it crosses, and how far along it */
+function bridgeMouth(ring: P2[]): { edge: number; d: number; at: P2 } {
+  const dx = BRIDGE_TO.x - BRIDGE_FROM.x, dz = BRIDGE_TO.z - BRIDGE_FROM.z
+  let best = { edge: -1, d: 0, at: BRIDGE_FROM, t: -1 }
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    const den = dx * e.tz - dz * e.tx
+    if (Math.abs(den) < 1e-9) continue
+    const wx = e.a.x - BRIDGE_FROM.x, wz = e.a.z - BRIDGE_FROM.z
+    const t = (wx * e.tz - wz * e.tx) / den  // along the bridge line, 0..1
+    const u = (wx * dz - wz * dx) / den      // along the edge, metres
+    // (the last crossing: the line starts inside the deck)
+    if (t >= 0 && t <= 1 && u >= 0 && u <= e.L && t > best.t) best = { edge: i, d: u, at: { x: BRIDGE_FROM.x + dx * t, z: BRIDGE_FROM.z + dz * t }, t }
+  }
+  return best
 }
 
 /**
@@ -316,9 +327,10 @@ function retainingEdge(out: MeshBuilder, ring: P2[], i: number, y: number): void
 export function portsmouthSquareDeck(out: MeshBuilder, _fit: Fit): void {
   const ring = RING
   capPolygon(out, ring, DECK_Y, [0.64, 0.62, 0.56], surfaceTag('concrete'))
+  const mouth = bridgeMouth(ring)
   for (let i = 0; i < ring.length; i++) {
     if (i === ACCESS_EDGE) continue // Walter U Lum Place: level access, no wall, no rail
-    retainingEdge(out, ring, i, DECK_Y)
+    retainingEdge(out, ring, i, DECK_Y, i === mouth.edge ? [mouth.d - BRIDGE_HALF_W - 0.3, mouth.d + BRIDGE_HALF_W + 0.3] : undefined)
   }
   // the automatic deck planting along the ring (render/plants.ts edges it in shrubs/trees) — skip the access
   // edge's immediate strip by using the full ring anyway: the planting pass reads the polygon, not per-edge
@@ -329,10 +341,12 @@ export function portsmouthSquareDeck(out: MeshBuilder, _fit: Fit): void {
   pagodaPavilion(out, -4, 30, DECK_Y)
   pagodaPavilion(out, 12, -16, DECK_Y)
 
-  // the skybridge to the Hilton / Chinese Culture Center, dead-ending to the east: heading measured off the
-  // notch edge (index 6), never hand-rolled atan2 (bug #135)
-  const bridgeEdge = edgeAt(ring, 6)
-  skybridgeToHilton(out, bridgeEdge.mid.x + bridgeEdge.nx * 2, bridgeEdge.mid.z + bridgeEdge.nz * 2, DECK_Y, bridgeEdge.heading)
+  // the skybridge to the Hilton / Chinese Culture Center, along OSM's line (header): its heading from the mouth's
+  // width line, laid across the line so `edgeAt`'s normal points along it — never hand-rolled atan2 (bug #135)
+  const ux = BRIDGE_TO.x - BRIDGE_FROM.x, uz = BRIDGE_TO.z - BRIDGE_FROM.z, uL = Math.hypot(ux, uz)
+  const m = mouth.at
+  const across = edgeAt([{ x: m.x + uz / uL, z: m.z - ux / uL }, { x: m.x - uz / uL, z: m.z + ux / uL }], 0)
+  skybridgeToHilton(out, m.x, m.z, DECK_Y, across.heading, Math.hypot(BRIDGE_TO.x - m.x, BRIDGE_TO.z - m.z))
 }
 
 /**

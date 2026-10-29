@@ -2367,11 +2367,15 @@ async function bake(spec: CitySpec): Promise<void> {
        * street a cutting is a wall. (Built when the carving runs: after the bridges over cuts are back at grade.)
        */
       let banks: StreetGrade | null = null
-      const carve = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
+      const streetsAtGrade = (): StreetGrade => {
         if (!banks) {
           banks = new StreetGrade()
           for (const o of kept) if (!o.cut && !o.bore && !o.tunnel && !o.bridge && !o.foot && o.heights?.length) banks.add(o)
         }
+        return banks
+      }
+      const carve = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
+        streetsAtGrade()
         let lowered = 0
         for (const e of cuts) {
           const pts = unpackPoints(e.points)
@@ -2468,7 +2472,17 @@ async function bake(spec: CitySpec): Promise<void> {
               const d = Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
               if (d > reach) continue
               const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt
-              const want = level + OVER - Math.max(0, d - half) * 2
+              let want = level + OVER - Math.max(0, d - half) * 2
+              /*
+               * …never over a street standing on the cover (owner, 2026-10-29, Broadway at Mason: "cars all get
+               * submerged here"). The streets were levelled before the fill, so where one runs over a shallow bore (surface
+               * Broadway beside the Broadway Tunnel, Mason over it: 4–6 m above the tunnel's road, not the 6 m the fill
+               * assumes) the fill rose a metre and more over their profiles, and the road drawn on it stood over the cars
+               * driving the profile. Inside a street's corridor the ground stops at the street. (The tube is only drawn
+               * from inside it, render/tunnels.ts, so its crown under the street shows nowhere.)
+               */
+              const street = streetsAtGrade().at(x, z)
+              if (street !== null) want = Math.min(want, street)
               const k = r * ncols + c
               if (want > h[k]) { h[k] = want; raised++ }
             }

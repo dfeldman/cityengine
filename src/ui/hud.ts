@@ -265,6 +265,8 @@ html:not(.sr-minimap) #minimap:not(.large) { display: none }
   font: 600 15px/1.4 var(--font); color: var(--text); font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 4px rgba(0,0,0,.8); pointer-events: none; display: flex;
   flex-direction: column; align-items: center; gap: 4px; }
+/* a phone: the pill is as wide as the screen, so it goes up over the energy bar rather than under it */
+@media (max-width: 560px) { #hud { padding-bottom: 48px } }
 #hud .sr-turns { font-size: 40px; letter-spacing: 16px; line-height: 1; display: flex; gap: 4px }
 #hud .sr-arrow { transition: opacity .12s, color .12s, transform .12s; opacity: .22 }
 #hud .sr-arrow.on { opacity: .62 }
@@ -287,7 +289,9 @@ html:not(.sr-minimap) #minimap:not(.large) { display: none }
   background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; text-shadow: none; box-shadow: var(--shadow) }
 #hud .sr-exits button.picked { background: var(--c-amber); color: var(--on-amber); border-color: var(--c-amber) }
 #hud .sr-exit-arrow { display: inline-block; font-size: 15px }
-#hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
+/* (max-width: a tour's line is long, and on a phone it wraps rather than running off both edges) */
+#hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow);
+  max-width: 100%; box-sizing: border-box; text-align: center }
 #hud .sr-transit { align-self: center; font: 700 15px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber);
   border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow); cursor: pointer; pointer-events: auto }
 #hud .sr-action { align-self: center; font: 700 15px/1.3 var(--font); color: var(--text); background: var(--panel);

@@ -382,6 +382,17 @@ export class Platform implements Controls {
     if (want && this.elapsedSeconds() >= want && !this.ended()) this.finish()
   }
 
+  /**
+   * End ride in the game (owner, 2026-10-28: "we don't have a good way to end a session … Right now it can be done from
+   * the bridge app only"): the session completes from here, as when the workout's time is up, and the end screen comes
+   * up when the server has it.
+   */
+  endSession(): void {
+    if (!this.link || this.finishing || this.ended()) return
+    this.log('ended in the game')
+    this.finish()
+  }
+
   private finish(): void {
     this.finishing = true
     this.writeSave(true)
@@ -477,8 +488,9 @@ export class Platform implements Controls {
     const done = this.tally()
     const beside = this.rival?.verdict(this.counted, done.collisions)
     if (beside) return beside
+    const r = this.link?.record?.()
     return soloMessage(this.counted, done.collisions, this.visited.size,
-                       this.start.unitSystem !== 'metric', this.link?.record?.()?.place ?? null)
+                       this.start.unitSystem !== 'metric', r?.place ?? null, r?.tours?.map((t) => t.name))
   }
 
   // --- setstate -----------------------------------------------------------------------------------
