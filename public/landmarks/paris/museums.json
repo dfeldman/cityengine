@@ -1,1 +1,39 @@
-[]
+[
+  {
+    "name": "Musée de l'Orangerie",
+    "procedural": "orangerie",
+    "osm": [
+      "way/54188996"
+    ],
+    "front": 206,
+    "height": 14,
+    "note": "The 1852 orangery on the Terrasse du Bord-de-l'Eau: its south front to the Seine glazed (it was a greenhouse), the north to the garden blind with the Rodin bronzes, a door under a pediment on two columns at each end — the west end to the Concorde — and the glass roof over the Nymphéas. Fitted to OSM's 101 × 15 m outline, front SSW to the quai. OSM gives no height (building:levels 3 is the 1965 floors inside the hall): eaves 10 m, the roof's glass top at 13.4."
+  },
+  {
+    "name": "Jeu de Paume",
+    "procedural": "jeuDePaume",
+    "osm": [
+      "way/54188994"
+    ],
+    "front": 206,
+    "height": 14,
+    "note": "The Orangerie's twin (1861) on the Terrasse des Feuillants over the Rue de Rivoli: eighteen round-arched bays a side, glazed to the garden (the front, SSW), blind to Rivoli, the Orangerie's pedimented porch at each end. Fitted to OSM's 82 × 13 m outline."
+  },
+  {
+    "name": "Fondation Louis Vuitton",
+    "procedural": "fondationLouisVuitton",
+    "osm": [
+      "way/309626332"
+    ],
+    "lat": 48.8766546,
+    "lon": 2.2633259,
+    "size": [
+      122,
+      57
+    ],
+    "front": 180,
+    "height": 46,
+    "stone": false,
+    "note": "Gehry's twelve glass sails (two tiers, the highest 46 m) over the white Ductal iceberg and its planted terraces, in the Bois de Boulogne. Placed by point and size like the Grand Palais — the plan is drawn in the builder from OSM's way 309626332 (122 × 57 m, centred here), its −z to the south (the Avenue du Mahatma-Gandhi and the basin) — so the frame is the builder's and not one the fit search picks off the blob. OSM's basin round it stays the city's water."
+  }
+]

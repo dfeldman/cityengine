@@ -189,6 +189,7 @@
       "wallLamps": true,
       "terraces": true
     },
+    "roadPaint": "paris",
     "crossings": "bands",
     "shopNames": "fr",
     "defaultLevels": {

@@ -703,6 +703,37 @@ function drawnSurface(e: { surface: string; foot?: boolean }): string {
   return !e.foot && e.surface === 'concrete' ? 'asphalt' : e.surface
 }
 
+/** A point `s` metres along a polyline, and the unit direction there. */
+function alongLine(pts: { x: number; z: number }[], s: number): { x: number; z: number; ux: number; uz: number } {
+  let left = Math.max(0, s)
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], L = Math.hypot(b.x - a.x, b.z - a.z) || 1e-6
+    if (left <= L || i === pts.length - 1) {
+      const t = Math.min(1, left / L)
+      return { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t, ux: (b.x - a.x) / L, uz: (b.z - a.z) / L }
+    }
+    left -= L
+  }
+  return { x: pts[0].x, z: pts[0].z, ux: 1, uz: 0 }
+}
+
+/**
+ * Paris's yellow ZIGZAG along the kerb at a bus stop (Region.roadPaint): from `s0` to `s1` metres along the line, `offset`
+ * metres to its left (negative: right), peaks `amp` either side, a stroke every `step` metres.
+ */
+function zigzag(out: MeshBuilder, pts: { x: number; z: number }[], s0: number, s1: number, offset: number, y: number,
+                amp: number, step: number, colour: [number, number, number]): void {
+  const w = 0.07
+  for (let s = s0, k = 0; s < s1 - 1e-6; s += step, k++) {
+    const a = alongLine(pts, s), b = alongLine(pts, Math.min(s1, s + step))
+    const oa = offset + (k % 2 === 0 ? -amp : amp), ob = offset + (k % 2 === 0 ? amp : -amp)
+    const pa = { x: a.x - a.uz * oa, z: a.z + a.ux * oa }, pb = { x: b.x - b.uz * ob, z: b.z + b.ux * ob }
+    const dx = pb.x - pa.x, dz = pb.z - pa.z, L = Math.hypot(dx, dz) || 1e-6, nx = -dz / L * w, nz = dx / L * w
+    out.quad([[pa.x - nx, y, pa.z - nz], [pb.x - nx, y, pb.z - nz], [pb.x + nx, y, pb.z + nz], [pa.x + nx, y, pa.z + nz]],
+      [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, 0)
+  }
+}
+
 function dashedLine(out: MeshBuilder, pts: { x: number; z: number }[], offset: number, y: number,
                     width: number, on: number, period: number,
                     white: [number, number, number] = [0.86, 0.85, 0.79]): void {
@@ -2496,6 +2527,9 @@ export class City {
     const pagedOut = new Map<string, MeshBuilder>()
     const walks = new MeshBuilder()
     const markings = new MeshBuilder()
+    // Paris's road paint (Region.roadPaint): its bus stops, for the zigzags, and its junction damiers (below)
+    const parisPaint = this.region.roadPaint === 'paris'
+    const busStops = parisPaint ? (this.pointsIn.get(k) ?? []).filter((f) => f.kind === 'busstop') : []
     const corridor = new MeshBuilder()
     const trails = new Map<string, MeshBuilder>()
     const shadows = new MeshBuilder()
@@ -2900,6 +2934,23 @@ export class City {
     for (const id of pads) {
       const n = this.nodes.get(id)
       if (!n || n.arms.length < 2) continue
+      /*
+       * Paris's DAMIER (Region.roadPaint; owner, 2026-10-29: "checkerboards"): white squares of a metre across the box of
+       * a big signalled crossing — where the bus lanes run through and the street-view frames show it — turned to its
+       * widest street, as far as the narrowest street meeting it allows.
+       */
+      const driving = n.arms.filter((a) => !a.foot && a.half >= 3)
+      if (parisPaint && lights.has(id) && driving.length >= 4) {
+        const main = driving.reduce((p, q) => (q.half > p.half ? q : p))
+        const R = Math.max(2.5, Math.min(6, Math.min(...driving.map((a) => a.half)) * 0.9))
+        const ux = main.ux, uz = main.uz, vx = -uz, vz = ux
+        const N = Math.floor(R)
+        for (let i = -N; i < N; i++) for (let j = -N; j < N; j++) {
+          if ((i + j) % 2 !== 0) continue
+          const c = (a: number, b: number): [number, number, number] => [n.at.x + ux * a + vx * b, 0.064, n.at.z + uz * a + vz * b]
+          markings.quad([c(i, j), c(i + 1, j), c(i + 1, j + 1), c(i, j + 1)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.86, 0.85, 0.79], 0)
+        }
+      }
 
       // Generously wider than the carriageway hull: the corridor layer's job is to leave no bare ground
       // anywhere near a junction, and being painted rather than unioned it can overlap as much as it likes.
@@ -2985,7 +3036,25 @@ export class City {
         } else {
           dashedLine(markings, pts, 0, 0.063, 0.12, 3, 9)
         }
-        for (const side of [-1, 1]) dashedLine(markings, pts, side * (e.width / 2 - 0.5), 0.063, 0.10, 1, 1)
+        // (Paris: the axis line alone — no edge lines; a bus stop's yellow zigzag along its kerb instead, below)
+        if (!parisPaint) for (const side of [-1, 1]) dashedLine(markings, pts, side * (e.width / 2 - 0.5), 0.063, 0.10, 1, 1)
+      }
+      if (parisPaint) {
+        for (const f of busStops) {
+          // nearest point on this street's line, and which side the stop stands
+          let best = { d: Infinity, s: 0, side: 1 }
+          let run = 0
+          for (let i = 1; i < pts.length; i++) {
+            const a = pts[i - 1], b = pts[i], dx = b.x - a.x, dz = b.z - a.z, L2 = dx * dx + dz * dz || 1e-6, L = Math.sqrt(L2)
+            const t = Math.max(0, Math.min(1, ((f.x - a.x) * dx + (f.z - a.z) * dz) / L2))
+            const d = Math.hypot(f.x - a.x - dx * t, f.z - a.z - dz * t)
+            if (d < best.d) best = { d, s: run + t * L, side: (dx * (f.z - a.z) - dz * (f.x - a.x)) >= 0 ? 1 : -1 }
+            run += L
+          }
+          if (best.d > e.width / 2 + e.walk + 5) continue
+          const total = lengthOf(pts)
+          zigzag(markings, pts, Math.max(0.5, best.s - 9), Math.min(total - 0.5, best.s + 9), best.side * (e.width / 2 - 0.55), 0.064, 0.32, 1.1, YELLOW)
+        }
       }
       // the red bus lanes along their curbs (PackedEdge `busSide`; owner: "render bus lanes as red"), just under the paint
       if (e.busSide && e.width >= 7) {
@@ -4104,7 +4173,7 @@ export class City {
         : pf.american && f.kind === 'postbox' ? uspsBox
         : f.kind === 'callbox' && pf.callBox ? (pf.callBox === 'nyc' ? nycFireAlarmBox : sfFireAlarmBox)
         : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
-        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : pf.busStop === 'paris' ? parisBusStop : plainStop)
+        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : pf.busStop === 'paris' ? (o: MeshBuilder) => parisBusStop(o, f.shelter ?? false) : plainStop)
         : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)
       /*
        * A street clock on its post (OSM amenity=clock, support=pole): the dark iron column, the drum head and its four

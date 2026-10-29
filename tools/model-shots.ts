@@ -95,6 +95,19 @@ const SETS: Record<string, V[]> = {
    * drawn round it. Then a three-quarter for the net and the hoops, and a rider's eye from the baseline,
    * which is the height a court is actually passed at.
    */
+  // a museum of 80-200 m (render/landmarks/paris/museums): its −z front, three-quarter from the south-west, the west
+  // end close (the Concorde ends of the Tuileries pavilions), from the north-east and from above
+  museum: [['front', -1.57, 1.42, 170, 0, 10, 0], ['sw', -2.4, 1.3, 170, 0, 10, 0], ['west-end', 3.14, 1.45, 70, -20, 7, 0],
+    ['ne', 0.8, 1.2, 190, 0, 10, 0], ['top', -1.2, 0.6, 220, 0, 0, 0]],
+  /*
+   * A PALACE (paris/palaces/): a long low building with a front (local −z) and a back worth seeing, 100–160 m across —
+   * head-on to both, a three-quarter to each, from a rider across its street, and from above for the plan.
+   * `palace-big` is the same for the Invalides' 270 m.
+   */
+  palace: [['front', -1.57, 1.4, 250, 0, 14, 0], ['front-3q', -2.25, 1.3, 230, 0, 14, 0], ['back', 1.57, 1.4, 250, 0, 14, 0],
+    ['back-3q', 0.85, 1.3, 230, 0, 14, 0], ['top', -1.4, 0.55, 300, 0, 0, 0], ['street', -1.9, 1.52, 120, 0, 16, -40]],
+  'palace-big': [['front', -1.57, 1.4, 420, 0, 14, 0], ['front-3q', -2.25, 1.3, 380, 0, 14, 0], ['back', 1.57, 1.4, 420, 0, 14, 0],
+    ['back-3q', 0.85, 1.3, 380, 0, 14, 0], ['top', -1.4, 0.55, 480, 0, 0, 0], ['street', -1.9, 1.52, 170, 0, 16, -90]],
   court: [
     ['plan', -1.57, 0.04, 34, 0, 0, 0],
     ['three-quarter', -0.9, 1.15, 34, 0, 1, 0],

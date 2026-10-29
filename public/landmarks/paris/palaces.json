@@ -1,1 +1,43 @@
-[]
+[
+  {
+    "name": "Palais du Luxembourg",
+    "procedural": "luxembourgPalace",
+    "osm": [
+      "relation/975955"
+    ],
+    "lat": 48.848558,
+    "lon": 2.337111,
+    "rotateDeg": 2,
+    "size": [
+      118.6,
+      149.8
+    ],
+    "height": 34,
+    "note": "The Senate. Placed on OSM relation 975955's box turned 2° to its axes (centre and size measured off the relation with osmium, 2026-10-29); the relation and its ~90 building:parts are replaced. Garden front (−z) to the south: Gisors' gallery, the clock frontispiece under its square dome, the corner pavilions; the Rue de Vaugirard (+z): the domed gatehouse in its screen between the tall-roofed pavilions."
+  },
+  {
+    "name": "Fontaine Médicis",
+    "procedural": "medicisFountain",
+    "kind": "fountain",
+    "lat": 48.848066,
+    "lon": 2.338941,
+    "rotateDeg": 92,
+    "size": [
+      14,
+      60
+    ],
+    "sign": false,
+    "note": "OSM node 782601793 and its basin (way 62848427, the garden's fence way 837832921 round it): centred on the basin, whose axis runs at bearing 92/272; the grotto front at the east end facing down the basin toward the palace (−z, bearing 272). The water is the city's own; the model draws the kerb, the urns and the fountain."
+  },
+  {
+    "name": "Musée du Luxembourg",
+    "osm": [
+      "way/170226810"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 2,
+    "height": 13,
+    "note": "The old orangery of the palace on the Rue de Vaugirard: two storeys of tall windows in stone under a slate roof."
+  }
+]

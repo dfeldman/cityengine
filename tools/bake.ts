@@ -414,6 +414,42 @@ async function bake(spec: CitySpec): Promise<void> {
   // (and not industrial yard track: Sausalito's boatyard slipways are `railway=rail, service=yard, usage=industrial`)
   const railways = ways.filter((w) => RUNNING.test(w.tags.railway ?? '') && !/^(abandoned|disused|razed|construction|proposed)$/.test(w.tags.usage ?? '')
     && !(w.tags.service === 'yard' && w.tags.usage === 'industrial'))
+  /*
+   * THE ROUNDABOUTS OSM MAPS (owner, 2026-10-29: "we also have to handle all the traffic circles, which is already done for
+   * a few cases"): a ring of junction=roundabout road ways, joined end to end, is a place the ride graph draws as a circle
+   * and its spokes (ridegraph.ts applyRoundabout) — as the seven placed by hand in city/overrides.ts are. Its centre and
+   * radius from its own points; cut out to R, past the junctions round it. Only rings going most of the way round, of
+   * 14 to 120 m: a mini-roundabout is an ordinary junction to a rider, and a half-mapped one is not a circle.
+   */
+  const roundabouts: NonNullable<CityPackage['roundabouts']> = []
+  {
+    const rings = ways.filter((w) => w.tags.junction === 'roundabout' && w.tags.highway && !/^(footway|path|cycleway|steps|pedestrian)$/.test(w.tags.highway) && w.geometry && w.geometry.length >= 2)
+    const key = (g: LatLon): string => `${g.lat.toFixed(6)},${g.lon.toFixed(6)}`
+    const parent = rings.map((_, i) => i)
+    const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])))
+    const byEnd = new Map<string, number>()
+    rings.forEach((w, i) => {
+      for (const g of [w.geometry![0], w.geometry![w.geometry!.length - 1]]) {
+        const k = key(g), j = byEnd.get(k)
+        if (j === undefined) byEnd.set(k, i); else parent[find(i)] = find(j)
+      }
+    })
+    const groups = new Map<number, typeof rings>()
+    rings.forEach((w, i) => { const r = find(i); groups.set(r, [...(groups.get(r) ?? []), w]) })
+    for (const g of groups.values()) {
+      const pts = g.flatMap((w) => w.geometry!.map((q) => proj.toLocal(q)))
+      const cx = pts.reduce((t, q) => t + q.x, 0) / pts.length, cz = pts.reduce((t, q) => t + q.z, 0) / pts.length
+      const r = pts.reduce((t, q) => t + Math.hypot(q.x - cx, q.z - cz), 0) / pts.length
+      // round, and most of the way round: its points' bearings from the centre cover at least 300°
+      const bins = new Set(pts.map((q) => Math.floor(((Math.atan2(q.z - cz, q.x - cx) + Math.PI) / (2 * Math.PI)) * 12) % 12))
+      const spread = pts.reduce((t, q) => t + Math.abs(Math.hypot(q.x - cx, q.z - cz) - r), 0) / pts.length
+      if (r < 14 || r > 120 || bins.size < 10 || spread > r * 0.35) continue
+      const ll = proj.toLatLon({ x: cx, z: cz })
+      const name = g.find((w) => w.tags.name)?.tags.name
+      roundabouts.push({ lat: +ll.lat.toFixed(6), lon: +ll.lon.toFixed(6), r: Math.round(r), R: Math.round(r + Math.max(30, r * 0.6)), ...(name ? { name } : {}) })
+    }
+    console.log(`  ${roundabouts.length} roundabouts from OSM's junction=roundabout rings (of ${groups.size} ring groups)`)
+  }
   /**
    * Buildings, minus the outlines that have been superseded by their own parts.
    *
@@ -2813,7 +2849,10 @@ async function bake(spec: CitySpec): Promise<void> {
       if (!kind) continue
       const p = proj.toLocal(n)
       const wallace = kind === 'fountain' && /wallace/i.test(`${t.name ?? ''} ${t.brand ?? ''} ${t.model ?? ''} ${t['fountain'] ?? ''} ${t.description ?? ''}`)
-      furniture.push({ x: Math.round(p.x * 10) / 10, z: Math.round(p.z * 10) / 10, kind, ...(wallace ? { wallace: true as const } : {}) })
+      // (a bus stop with its shelter: OSM's shelter=yes, two in three of Paris's — the rest are the post alone)
+      const shelter = kind === 'busstop' && t.shelter === 'yes'
+      furniture.push({ x: Math.round(p.x * 10) / 10, z: Math.round(p.z * 10) / 10, kind, ...(wallace ? { wallace: true as const } : {}),
+        ...(shelter ? { shelter: true as const } : {}) })
     }
     const count = (k: string): number => furniture.filter((x) => x.kind === k).length
     console.log(`  furniture: ${count('metro')} métro entrances, ${count('fountain')} fountains `
@@ -3086,7 +3125,7 @@ async function bake(spec: CitySpec): Promise<void> {
     seaLevel,
     box: { x0: -ext.west, x1: ext.east, z0: -ext.south, z1: ext.north },
     start: { edgeId: start.e.id, s: 0 },
-    edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, fringe,
+    edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, fringe, roundabouts,
     ...(sportsCourts.length ? { courts: sportsCourts } : {}),
     ...(spec.skyline ? {
       skyline: spec.skyline.map((s) => {
@@ -4130,7 +4169,7 @@ async function writeRides(pkg: CityPackage): Promise<void> {
   const edges = mapEdges(pkg.edges, terrain)
   for (const mode of ['bike', 'run'] as const) {
     const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z), pkg.region,
-      pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring))
+      pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring), pkg.roundabouts)
     const text = JSON.stringify(packRide(g, mode))
     await mkdir(shippedDir(pkg.id), { recursive: true })
     await writeFile(resolve(shippedDir(pkg.id), `ride-${mode}.json`), text)

@@ -66,6 +66,12 @@ export interface Region {
   crossings: 'zebra' | 'bands' | 'continental' | 'none'
   /** the centre line: Europe's dashed white, or North America's solid double yellow (none on one-way streets) */
   centreLine: 'white' | 'doubleYellow'
+  /**
+   * Paris's road paint (owner, 2026-10-29: "the street lines are different. mostly single lines with zigzags for no
+   * parking and checkerboards"): the axis line only, no edge lines; the yellow zigzag along the kerb at a bus stop (the
+   * no-stopping mark); the white damier across a signalled junction's box.
+   */
+  roadPaint?: 'paris'
   /** red fire hydrants along the pavements */
   hydrants: boolean
   /**
@@ -213,6 +219,7 @@ export function region(id: string | undefined): Region {
     furniture: { ...base.furniture, ...(own?.furniture ?? {}) },
     crossings: own?.crossings ?? base.crossings,
     centreLine: own?.centreLine ?? base.centreLine,
+    roadPaint: own?.roadPaint ?? base.roadPaint,
     hydrants: own?.hydrants ?? base.hydrants,
     hydrantPaint: own?.hydrantPaint ?? base.hydrantPaint,
     park: { ...base.park, ...(own?.park ?? {}) },

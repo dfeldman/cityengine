@@ -193,6 +193,8 @@ export interface Feature {
   shape?: 'angled' | 'square' | 'rounded'
   /** a bay painted apart from its wall (the wall's colour when absent) */
   body?: string
+  /** painted flat, not in the wall's stone: a door's paint, a box of plants */
+  flat?: boolean
 }
 
 export interface FacadePlan {
@@ -325,6 +327,25 @@ export interface ParisDress {
   deep: boolean
   /** the carved consoles under the first balcony */
   consoles: boolean
+  /**
+   * From the owner's street-view frames (2026-10-29, Rue Mayet: "all similar but the window placement, exact height, presence
+   * of balconies or false balconies, door color, exact shade of cream varies quite a bit"): a moulded stone frame round
+   * every upper window; a row of small consoles under the main cornice; the carriage door's paint; the share of windows
+   * with a box of plants on the sill.
+   */
+  surrounds: boolean
+  modillions: boolean
+  door: string
+  plants: number
+  /**
+   * And from the richer streets' (Rue Bouchut, 2026-10-29: "the really nice hausmanns in expensive areas … a more polished
+   * look" — "also note the lines on the lower section"): how many storeys from the ground are RUSTICATED, the stone cut in
+   * horizontal grooves; a glazed bow window up the middle of the front, between the balcony floors; the storeys with a
+   * balcony of its own at each window, on consoles.
+   */
+  rustic: number
+  oriel: boolean
+  single: number[]
 }
 
 export interface GroundMix {
@@ -423,10 +444,18 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
     const paris: ParisDress = {
       balconies: scheme === 'noble' ? [noble] : scheme === 'late' ? (under > noble ? [under] : [noble]) : pair,
       centre: scheme === 'rich' && noble + 1 < under ? [noble + 1] : [],
-      railings: weighted(r, scheme === 'late' ? [['all', 40], ['some', 40], ['none', 20]] : [['all', 70], ['some', 25], ['none', 5]]),
+      // (nearly every French window has its iron rail: the street-view frames show them on almost every front)
+      railings: weighted(r, scheme === 'late' ? [['all', 70], ['some', 25], ['none', 5]] : [['all', 88], ['some', 10], ['none', 2]]),
       hoods: scheme === 'late' ? [] : scheme === 'rich' ? [noble, noble + 1] : r() < 0.7 ? [noble] : [],
       deep: scheme === 'rich' || r() < 0.3,
       consoles: scheme !== 'late' && r() < 0.65,
+      surrounds: scheme === 'late' ? r() < 0.5 : r() < 0.85,
+      modillions: scheme === 'rich' || (scheme !== 'late' && r() < 0.5),
+      door: weighted(r, [['#1f2a44', 5], ['#24382d', 3], ['#4a1f22', 2], ['#141516', 3], ['#5a4632', 1.5], ['#2e3f52', 1.5]]),
+      plants: r() < 0.45 ? 0.08 + r() * 0.2 : 0,
+      rustic: weighted(r, scheme === 'late' ? [[1, 55], [0, 45]] : scheme === 'rich' ? [[2, 75], [1, 25]] : [[2, 40], [1, 45], [0, 15]]),
+      oriel: scheme === 'rich' && r() < 0.55,
+      single: scheme === 'rich' && noble + 2 < under ? [noble + 2] : scheme === 'classic' && noble + 1 < under && r() < 0.3 ? [noble + 1] : [],
     }
     return { dress: { ...NO_DRESS, paris } }
   },
@@ -674,6 +703,9 @@ export function planFacade(
   const st = style(styleId)
   const r = rng(seed)
   let palette = pickPalette(r, palettes && palettes.length > 0 ? palettes : st.palettes)
+  // (a Haussmann front's stone, a shade of its own: warmer or whiter, lighter or darker — owner, from street view: "exact
+  //  shade of cream varies quite a bit"; its own stream, so nothing else moves)
+  if (styleId === 'haussmann') palette = shadeCream(palette, rng(seed ^ 0xc4ea3))
   if (look?.palette) palette = { ...palette, ...look.palette }
 
   let levels = Math.max(
@@ -897,6 +929,17 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     }
   }
 
+  // a Haussmann front's carriage door in its own paint (ParisDress.door): navy, green, oxblood, black — the street's colour
+  if (plan.dress?.paris && carriageBay >= 0 && shown !== null && plan.storeys[0].kind === 'ground') {
+    const g = plan.storeys[0], x0 = margin + carriageBay * bayW
+    const dx0 = x0 + 0.35, dx1 = x0 + bayW - 0.35, dy1 = Math.min(g.y1 - 0.9, 3.9), mid = (dx0 + dx1) / 2
+    const door = plan.dress.paris.door, line = shadeHex(door, 0.55)
+    // two leaves, a rail across them at a third, the meeting stile down the middle, in a stone frame
+    features.push({ kind: 'panel', y0: 0.05, y1: dy1, depth: 0.04, x0: dx0, x1: dx1, colour: door, flat: true })
+    features.push({ kind: 'panel', y0: 0.05, y1: dy1, depth: 0.06, x0: mid - 0.03, x1: mid + 0.03, colour: line, flat: true })
+    features.push({ kind: 'panel', y0: dy1 * 0.36, y1: dy1 * 0.36 + 0.06, depth: 0.06, x0: dx0 + 0.08, x1: dx1 - 0.08, colour: line, flat: true })
+    for (const x of [dx0 - 0.16, dx1]) features.push({ kind: 'pilaster', y0: 0, y1: dy1 + 0.1, depth: 0.08, x0: x, x1: x + 0.16, colour: plan.palette.trim })
+  }
   // a parking garage's spandrels: a solid band at every floor line, the open deck between
   if (d?.decks && shown !== null) {
     for (const s of plan.storeys) {
@@ -1162,6 +1205,22 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
 }
 
 /** A moulded hood over every upper window — a lip, and a second deeper one above it on a grand front. */
+/** a hex colour scaled toward black */
+function shadeHex(hex: string, k: number): string {
+  return '#' + [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * k).toString(16).padStart(2, '0')).join('')
+}
+
+/** a Haussmann palette's wall and trim, a few per cent lighter or darker and warmer or whiter (planFacade) */
+function shadeCream(p: Palette, r: () => number): Palette {
+  const k = 0.95 + r() * 0.08, warm = (r() - 0.5) * 0.06
+  const shade = (hex: string): string => {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    const out = [c[0] * k * (1 + warm), c[1] * k, c[2] * k * (1 - warm)]
+    return '#' + out.map((v) => Math.round(Math.max(0, Math.min(1, v)) * 255).toString(16).padStart(2, '0')).join('')
+  }
+  return { ...p, wall: shade(p.wall), trim: shade(p.trim) }
+}
+
 /** A Haussmann street front's own parts (ParisDress): the railings, the hoods, the consoles, the central balconies. */
 function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin: number, bayW: number, bays: number): void {
   const st = style(plan.style)
@@ -1193,6 +1252,77 @@ function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin
         features.push({ kind: 'cornice', y0: y, y1: y + 0.2, depth: 0.2, x0: x0 - 0.14, x1: x0 + winW + 0.14, colour: plan.palette.trim })
         if (p.deep) features.push({ kind: 'cornice', y0: y + 0.2, y1: y + 0.34, depth: 0.3, x0: x0 - 0.24, x1: x0 + winW + 0.24, colour: plan.palette.trim })
       }
+    }
+  }
+  // the moulded stone frame round each upper window, and a box of plants on some of the sills
+  const pr = rng(Math.round(margin * 1000 + bayW * 7919) ^ plan.levels)
+  for (const s of plan.storeys) {
+    if (s.kind === 'ground' || (s.index === top && plan.top === 'mansard')) continue
+    const h = s.y1 - s.y0
+    const wy0 = s.y0 + h * 0.06, wy1 = s.y1 - h * 0.13
+    for (let b = 0; b < bays; b++) {
+      const x0 = margin + b * bayW + (bayW - winW) / 2
+      if (p.surrounds) {
+        for (const x of [x0 - 0.13, x0 + winW]) features.push({ kind: 'pilaster', y0: wy0, y1: wy1, depth: 0.06, x0: x, x1: x + 0.13, colour: plan.palette.trim })
+        if (!p.hoods.includes(s.index)) features.push({ kind: 'cornice', y0: wy1, y1: wy1 + 0.12, depth: 0.07, x0: x0 - 0.13, x1: x0 + winW + 0.13, colour: plan.palette.trim })
+      }
+      if (p.plants > 0 && pr() < p.plants) {
+        // a low box on the sill and clumps of green over it, now and then in flower
+        features.push({ kind: 'cornice', y0: s.y0 + 0.06, y1: s.y0 + 0.24, depth: 0.24, x0: x0 + 0.06, x1: x0 + winW - 0.06, colour: '#5d4a3a', flat: true })
+        const n = 3 + Math.floor(pr() * 2), w = (winW - 0.2) / n
+        for (let c = 0; c < n; c++) {
+          const cx0 = x0 + 0.1 + c * w, ht = 0.18 + pr() * 0.22
+          const leaf = pr() < 0.22 ? (pr() < 0.5 ? '#b2465a' : '#d9a13a') : (pr() < 0.5 ? '#4f7a3a' : '#3d6a34')
+          features.push({ kind: 'bracket', y0: s.y0 + 0.24, y1: s.y0 + 0.24 + ht, depth: 0.2 + pr() * 0.08, x0: cx0 + 0.02, x1: cx0 + w - 0.02, colour: leaf, flat: true })
+        }
+      }
+    }
+  }
+  // the rusticated lower storeys: a groove every 45 cm across the solid stone — the corner piers on the shop floor, the
+  // piers between the windows above it
+  if (p.rustic > 0) {
+    const groove = shadeHex(plan.palette.wall, 0.8)
+    for (const s of plan.storeys) {
+      if (s.index >= p.rustic) break
+      const spans: [number, number][] = []
+      if (s.kind === 'ground') spans.push([0, margin], [margin + bays * bayW, margin * 2 + bays * bayW])
+      else {
+        let x = 0
+        for (let b = 0; b < bays; b++) { const x0 = margin + b * bayW + (bayW - winW) / 2 - 0.14; spans.push([x, x0]); x = x0 + winW + 0.28 }
+        spans.push([x, margin * 2 + bays * bayW])
+      }
+      for (let y = s.y0 + 0.45; y < s.y1 - 0.2; y += 0.45) {
+        for (const [a, b] of spans) if (b - a > 0.15) features.push({ kind: 'cornice', y0: y, y1: y + 0.035, depth: 0.015, x0: a, x1: b, colour: groove })
+      }
+    }
+  }
+  // a glazed bow window up the middle of the front, between the balcony floors
+  const lo = Math.min(...p.balconies), hi = Math.max(...p.balconies)
+  if (p.oriel && bays >= 3 && hi - lo >= 2) {
+    const bc = Math.floor(bays / 2)
+    for (const s of plan.storeys) {
+      if (s.index <= lo || s.index >= hi) continue
+      features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.65, x0: margin + bc * bayW + 0.1, x1: margin + (bc + 1) * bayW - 0.1, colour: plan.palette.trim, shape: 'rounded' })
+    }
+  }
+  // a balcony of its own at each window, on a pair of consoles
+  for (const si of p.single) {
+    const s = plan.storeys[si]
+    if (!s || plan.hasBalconyAt(si)) continue
+    for (let b = 0; b < bays; b++) {
+      if (p.oriel && b === Math.floor(bays / 2)) continue
+      const x0 = margin + b * bayW + (bayW - winW) / 2
+      features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: 0.45, x0: x0 - 0.2, x1: x0 + winW + 0.2, colour: plan.palette.accent })
+      for (const x of [x0 - 0.1, x0 + winW + 0.1]) features.push({ kind: 'bracket', y0: s.y0 - 0.42, y1: s.y0, depth: 0.4, x0: x - 0.09, x1: x + 0.09, colour: plan.palette.trim })
+    }
+  }
+  // the small consoles under the main cornice, every 0.7 m
+  if (p.modillions) {
+    const y = plan.height - style(plan.style).cornice.height
+    const n = Math.floor((bays * bayW) / 0.7)
+    for (let i = 0; i <= n; i++) {
+      const x = margin + (i * bays * bayW) / Math.max(1, n)
+      features.push({ kind: 'bracket', y0: y - 0.28, y1: y, depth: 0.32, x0: x - 0.07, x1: x + 0.07, colour: plan.palette.trim })
     }
   }
   // the consoles under the first balcony: a carved bracket at every pier, carrying the slab

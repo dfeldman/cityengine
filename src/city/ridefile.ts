@@ -30,12 +30,21 @@ export function mapEdges(edges: PackedEdge[], terrain: { heightAt(x: number, z: 
 }
 
 export function rideFor(city: string, origin: CityPackage['origin'], edges: Edge[], mode: RideMode,
-  heightAt: (x: number, z: number) => number, region?: string, buildings?: number[][]): RideGraph {
+  heightAt: (x: number, z: number) => number, region?: string, buildings?: number[][],
+  /** the roundabouts the bake found in OSM (CityPackage.roundabouts): each one no hand-made one already covers */
+  found: NonNullable<CityPackage['roundabouts']> = []): RideGraph {
   const proj = new Projection(origin)
   const o = RIDE_OVERRIDES[city] ?? (region ? RIDE_OVERRIDES[region] : undefined)
+  const hand = o?.roundabouts ?? []
+  const near = (a: { lat: number; lon: number }, b: { lat: number; lon: number }): number => {
+    const p = proj.toLocal(a), q = proj.toLocal(b)
+    return Math.hypot(p.x - q.x, p.z - q.z)
+  }
+  const extra = found.filter((f) => !hand.some((h) => near(h, f) < h.R + f.r))
+    .map((f) => ({ name: f.name ?? 'roundabout', lat: f.lat, lon: f.lon, r: f.r, R: f.R }))
   return rideGraph(edges, mode, {
     corridors: (o?.corridors ?? []).map((c) => ({ street: c.street, from: proj.toLocal(c.from), to: proj.toLocal(c.to), lane: c.lane })),
-    roundabouts: (o?.roundabouts ?? []).map((r) => {
+    roundabouts: [...hand, ...extra].map((r) => {
       const p = proj.toLocal({ lat: r.lat, lon: r.lon })
       return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }
     }),

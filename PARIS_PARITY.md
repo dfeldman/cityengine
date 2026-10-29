@@ -45,6 +45,28 @@ the box change and the re-bake together.
 
 > "The real exceptions are civic buildings. Museums schools hospitals libraries government offices"
 
+### The street-view checklist (owner, 2026-10-29) — tick as done, check each in the city
+
+- [x] bus stops: Foster's abribus where OSM says `shelter=yes`, RATP's post elsewhere
+- [x] far more pedestrians ("30 on a random block … more pedestrians than cars"): crowd ×3 (to be counted on a block)
+- [x] more cyclists (×1.6); trams T2/T3a/T3b (Citadis, already); the funicular; the Métro to 15 stations
+- [x] road paint: the axis line only; yellow zigzags at bus stops; the white damier across big signalled crossings
+- [x] Haussmann fronts varied: balcony schemes, railings at almost every window, hoods, window surrounds, consoles,
+      modillions under the cornice, painted carriage doors, plants on some sills, the cream's own shade, rustication
+      grooves on the lower storeys, bow windows and single balconies on the richer fronts
+- [x] seven levels by default (the ground, five, the mansard)
+- [ ] wall-to-wall: no gap between buildings (check in the city: the cadastre footprints touch)
+- [ ] the traffic circles, all of them (done: found from OSM's junction=roundabout rings at bake) — and a MONUMENT in
+      the middle of most ("so many monuments that many aren't even named"): a generic statue, column or fountain
+      where OSM has a memorial or artwork there
+- [ ] the wayfinding signs: white arrow panels with blue lettering, 2–4 on a grey post, at the big junctions only
+- [ ] two-wheelers parked in rows along the kerb (scooters, motorbikes)
+- [ ] parking bays marked in dashes along the kerb
+- [ ] cobblestone (`surface=sett`) — check how much shows; some pavements red-tinted
+- [ ] food and craft stands (the bouquinistes are done on their quays)
+- [ ] La Défense's towers (inside the box's north-west corner now) and the Grande Arche
+- [ ] the decorated métro viaducts (Lines 2 and 6: the lattice girders, the stone piers, the city's arms) — check
+
 So the generic building is ONE colour family (cream limestone), told apart by AGE, not by palette; what breaks the
 cream is the CIVIC building — museums, schools, hospitals, libraries, government offices (OSM `amenity=school|
 hospital|library|townhall`, `tourism=museum`, `office=government`, `building=school|hospital|government|civic`),
@@ -69,6 +91,13 @@ building by building (Mapillary, as SF). By age:
 OSM has a `start_date` on only 4,804 of the box's 130,970 buildings (3.7%), so the age has to come from **APUR's
 building layer** ("Emprise bâtie", field `c_perconst`, every building in Paris) — and the national **BDNB** for the
 suburbs inside the box (Boulogne, Neuilly, Levallois, Montrouge…). That is a bake input, like SF's Assessor records.
+
+**Mapillary, as SF** (owner: "use Mapillary like we did in SF for individual buildings"): the SF pipeline
+(docs/APPEARANCE-RESEARCH.md, tools/appearance/) is paused — it reads awnings, balconies and fire escapes at 95–97% but
+style and exact colour at ~60%, and its biggest error is WHICH building a frame shows. Paris needs it less: APUR dates
+every front, and the core is one grammar. So the Paris pass is aimed where APUR leaves a question: the post-war and outer
+buildings (the 13th's towers, the Front de Seine, Boulogne and Levallois at the box's edges), and the features it reads
+well (balcony schemes, awnings, a front's ground floor). After the façade grammar has its Paris vocabulary, not before.
 
 Done 2026-10-29: the box grown to ~123 km² with the whole Bois de Boulogne; Paris trees (planes first, mature:
 12–20 m on the streets, 14–22 m in the parks), Paris traffic (hatchbacks and small vans, black and white taxis with

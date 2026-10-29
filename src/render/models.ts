@@ -837,7 +837,8 @@ export function morrisColumn(out: MeshBuilder): void {
  * the other, a bench in the shelter — and beside it RATP's stop post, the grey pole with its flag. Local frame: +z
  * toward the street, the shelter's open side; about 3.4 m long.
  */
-export function parisBusStop(out: MeshBuilder): void {
+export function parisBusStop(out: MeshBuilder, shelter = true): void {
+  if (!shelter) { ratpPost(out, 0, 0); return }
   const leg: Rgb = [0.2, 0.21, 0.22]
   const glass: Rgb = [0.6, 0.68, 0.72]
   const roof: Rgb = [0.86, 0.87, 0.86]
@@ -853,12 +854,17 @@ export function parisBusStop(out: MeshBuilder): void {
   // the bench, on two brackets off the back
   box(out, 0.1, 0.47, -0.55, 1.0, 0.03, 0.16, [0.55, 0.47, 0.36], FIXED)
   for (const x of [-0.7, 0.9]) box(out, x, 0.24, -0.62, 0.03, 0.22, 0.03, leg, FIXED)
-  // RATP's stop post past the open end: the grey pole, the flag with its green band and the white "bus" plate
-  box(out, 2.15, 1.45, 0.25, 0.035, 1.45, 0.035, [0.45, 0.47, 0.49], FIXED)
-  box(out, 2.15, 2.72, 0.25, 0.02, 0.26, 0.24, [0.18, 0.2, 0.24], FIXED)
+  // RATP's stop post past the open end
+  ratpPost(out, 2.15, 0.25)
+}
+
+/** RATP's stop post: the grey pole, the flag with its green band and the white "bus" plate */
+function ratpPost(out: MeshBuilder, x: number, z: number): void {
+  box(out, x, 1.45, z, 0.035, 1.45, 0.035, [0.45, 0.47, 0.49], FIXED)
+  box(out, x, 2.72, z, 0.02, 0.26, 0.24, [0.18, 0.2, 0.24], FIXED)
   for (const sx of [-1, 1]) {
-    box(out, 2.15 + sx * 0.022, 2.85, 0.25, 0.002, 0.07, 0.22, [0.0, 0.6, 0.5], FIXED)
-    box(out, 2.15 + sx * 0.022, 2.65, 0.25, 0.002, 0.09, 0.16, [0.95, 0.95, 0.93], FIXED)
+    box(out, x + sx * 0.022, 2.85, z, 0.002, 0.07, 0.22, [0.0, 0.6, 0.5], FIXED)
+    box(out, x + sx * 0.022, 2.65, z, 0.002, 0.09, 0.16, [0.95, 0.95, 0.93], FIXED)
   }
 }
 

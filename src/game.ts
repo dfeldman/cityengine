@@ -1194,7 +1194,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const crowd = new Crowd(graph, crowdN !== null
     ? { perKm: crowdN, range: Math.max(260, 26 * Math.sqrt(crowdN)) }
     : crowdLevel, crowdZone)
-  if (pkg.region === 'paris') crowd.cycling = 1.6
+  // (Paris: "just on a random paris block it's common to see 30 pedestrians, often more … More pedestrians than cars" —
+  //  owner, 2026-10-29, from street view; three times the default, to be checked by counting a block in the city)
+  if (pkg.region === 'paris') { crowd.cycling = 1.6; crowd.density = 3 }
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
   /*
@@ -1213,9 +1215,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         people: Math.min(40000, Math.max(3000, Math.round((crowdN ?? 95) * 60))),
       }
     : dense ? { cars: 900, buses: 80, people: 3000 } : undefined
-  if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
+  // (Paris's crowd is three times the default: room for it, or a full pool just stops drawing people)
+  const peopled = pkg.region === 'paris' && crowdN === null ? { ...(budget ?? { cars: 90, buses: 16, people: 3000 }), people: Math.max(budget?.people ?? 3000, 8000) } : budget
+  if (peopled) console.log('[density] pools', peopled, 'traffic', trafficN, 'crowd', crowdN)
   // the cars and buses by carkit (render/street-fleet.ts); `?without=carkit` for the old stand-ins
-  const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'), regionKit(pkg.region).cars)
+  const life = new Life(scene, pkg as unknown as CityPackage, peopled, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'), regionKit(pkg.region).cars)
   /** seconds to the next refresh of the parked cars round the rider (city/parking.ts) */
   let parkClock = 0
   /*

@@ -257,6 +257,8 @@ export interface PackedFurniture {
     | 'clock'
   /** a Wallace fountain, as opposed to any drinking tap */
   wallace?: true
+  /** a bus stop with a shelter (OSM shelter=yes): the shelter drawn, not only the post */
+  shelter?: true
   /** explicit Z (map format v3): the ground at the point, metres, datum frame */
   y?: number
 }
@@ -334,6 +336,8 @@ export interface PackedRail {
 }
 
 export interface CityPackage {
+  /** the roundabouts OSM maps (junction=roundabout rings, tools/bake.ts), for the ride graph beside the hand-made ones */
+  roundabouts?: { lat: number; lon: number; r: number; R: number; name?: string }[]
   id: string
   name: string
   origin: { lat: number; lon: number }

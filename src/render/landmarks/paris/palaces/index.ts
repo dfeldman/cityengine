@@ -4,6 +4,10 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
+import { luxembourgPalace } from './luxembourg.ts'
+import { medicisFountain } from './medicis-fountain.ts'
 
 export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  luxembourgPalace,
+  medicisFountain,
 }

@@ -165,6 +165,12 @@ export class Crowd {
    * every boulevard (owner, 2026-10-29, from street view: "Paris has a lot more … cyclists").
    */
   cycling = 1
+  /**
+   * The city's own crowding, against the default, everywhere (game.ts by region): Paris's pavements are FULL (owner,
+   * 2026-10-29, from street view: "a LOT more pedestrians"). Not a zone factor: a zone over 1.2 reads as a park (its
+   * runners) and over 3 as a festival street.
+   */
+  density = 1
   private readonly g: CityGraph
   private readonly cfg: CrowdConfig
   private readonly walkers: Walker[] = []
@@ -451,7 +457,7 @@ export class Crowd {
 
       // a different draw each time the street is populated: the same seed twice gave exact clones
       const r = rng(e.id ^ 0x51ed270b ^ Math.imul(++this.generation, 0x9e3779b9))
-      const want = (e.length / 1000) * this.cfg.perKm * this.zoneFactor(mid)
+      const want = (e.length / 1000) * this.cfg.perKm * this.zoneFactor(mid) * this.density
       let n = Math.floor(want)
       if (r() < want - n) n++
       for (let i = 0; i < n; i++) {

@@ -562,7 +562,9 @@ function feature(
   const d = f.depth
   const tint = rgb(f.colour)
   const s = WALL_PAGE_METRES
-  const uvq: [number, number][] = [[0, 0], [(x1 - x0) / s, 0], [(x1 - x0) / s, d / s], [0, d / s]]
+  // (a flat-painted feature reads one small patch of the page, too small to show the stone's joints — as the awnings do)
+  const FLAT_UV: [number, number][] = [[0.02, 0.02], [0.03, 0.02], [0.03, 0.03], [0.02, 0.03]]
+  const uvq: [number, number][] = f.flat ? FLAT_UV : [[0, 0], [(x1 - x0) / s, 0], [(x1 - x0) / s, d / s], [0, d / s]]
 
   const at = (t: number, y: number, off: number): [number, number, number] =>
     [a.x + ux * t + nx * off, baseY + y, a.z + uz * t + nz * off]
@@ -592,7 +594,7 @@ function feature(
 
   // Everything else is a band proud of the wall: a face, a top the sun lands on, and a soffit in shadow.
   out.quad([at(x0, f.y0, d), at(x1, f.y0, d), at(x1, f.y1, d), at(x0, f.y1, d)],
-    [nx, 0, nz], [[0, 0], [(x1 - x0) / s, 0], [(x1 - x0) / s, (f.y1 - f.y0) / s], [0, (f.y1 - f.y0) / s]],
+    [nx, 0, nz], f.flat ? FLAT_UV : [[0, 0], [(x1 - x0) / s, 0], [(x1 - x0) / s, (f.y1 - f.y0) / s], [0, (f.y1 - f.y0) / s]],
     tint, KIND_WALL)
   out.quad([at(x0, f.y1, 0), at(x1, f.y1, 0), at(x1, f.y1, d), at(x0, f.y1, d)],
     [0, 1, 0], uvq, tint, KIND_WALL)
