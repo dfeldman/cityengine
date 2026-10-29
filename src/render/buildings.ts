@@ -456,6 +456,7 @@ const AWNING_COLOURS: [number, number, number][] = [
   [0.62, 0.14, 0.12], [0.14, 0.34, 0.22], [0.13, 0.19, 0.36], [0.52, 0.1, 0.16], [0.66, 0.48, 0.16],
 ]
 const CREAM: [number, number, number] = [0.92, 0.89, 0.8]
+const TRICOLOUR: [number, number, number][] = [[0.16, 0.25, 0.58], [0.93, 0.92, 0.9], [0.78, 0.14, 0.17]]
 
 /**
  * Canvas awnings — the stores bannes — over the shopfronts of a street-facing wall: a sloping cloth from
@@ -501,13 +502,16 @@ function awnings(out: MeshBuilder, cells: Cell[], plan: FacadePlan, seed: number
     const tint: [number, number, number] = pick < 0.25 ? rgb(plan.palette.accent)
       : AWNING_COLOURS[Math.floor(r() * AWNING_COLOURS.length)]
     const stripes = street.main && r() < 0.5
+    // (a Paris shop's now and then in the tricolour's three stripes, blue, white, red — owner, 2026-10-29: "the red white
+    //  blue awnings are popular too")
+    const tricolour = plan.style === 'haussmann' && r() < 0.07
     const x0 = run[0].x0 + 0.08
     const x1 = run[run.length - 1].x1 - 0.08
-    const n = stripes ? Math.max(3, Math.round((x1 - x0) / 0.32)) : 1
+    const n = tricolour ? 3 : stripes ? Math.max(3, Math.round((x1 - x0) / 0.32)) : 1
     for (let k = 0; k < n; k++) {
       const a0 = x0 + ((x1 - x0) * k) / n
       const a1 = x0 + ((x1 - x0) * (k + 1)) / n
-      const c = stripes && k % 2 === 1 ? CREAM : tint
+      const c = tricolour ? TRICOLOUR[Math.min(2, Math.floor((k / n) * 3))] : stripes && k % 2 === 1 ? CREAM : tint
       const wl = at(a0, top)
       const wr = at(a1, top)
       const fl = off(wl, depth, -drop)

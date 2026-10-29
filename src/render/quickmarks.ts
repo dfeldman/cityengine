@@ -19,7 +19,7 @@ import { unpackPoints } from '../city/package.ts'
 
 const FIXED = 0
 
-function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz: number, paris: boolean): void {
+function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz: number, paris: boolean, eu = false): void {
   // the pole, out from the wall and up at 35°, and the flag hanging from its end, turned along the wall
   const L = 3
   const tx = x + nx * L * 0.82
@@ -31,9 +31,24 @@ function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz:
     box(out, x + (tx - x) * t, y + (ty - y) * t, z + (tz - z) * t, 0.04, 0.04, 0.04, [0.85, 0.85, 0.82], FIXED)
   }
   // the flag: along the pole's outer half, hanging down, in the plane that contains the pole
-  const bands: Rgb[] = paris ? [[0.18, 0.28, 0.62], [0.95, 0.95, 0.95], [0.82, 0.15, 0.18]] : [[0.72, 0.12, 0.16], [0.95, 0.95, 0.95], [0.72, 0.12, 0.16]]
   const w = 1.6
   const h = 1.05
+  if (eu) {
+    // the European flag: blue, its twelve gold stars in a ring
+    const t0 = 1 - w / L
+    const at = (t: number, dy: number): [number, number, number] => [x + (tx - x) * t, y + (ty - y) * t + dy, z + (tz - z) * t]
+    out.quad([at(t0, -h), at(1, -h), at(1, 0), at(t0, 0)], [-nz, 0, nx], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.0, 0.2, 0.58], FIXED)
+    for (let k = 0; k < 12; k++) {
+      const a = (k / 12) * Math.PI * 2, tc = t0 + (w / L) * (0.5 + Math.cos(a) * 0.3), yc = -h / 2 + Math.sin(a) * h * 0.33, d = 0.035
+      const p = at(tc, yc)
+      const ux = (tx - x) / L, uz = (tz - z) / L
+      out.quad([[p[0] - ux * d + nx * 0.005, p[1] - d, p[2] - uz * d + nz * 0.005], [p[0] + ux * d + nx * 0.005, p[1] - d, p[2] + uz * d + nz * 0.005],
+        [p[0] + ux * d + nx * 0.005, p[1] + d, p[2] + uz * d + nz * 0.005], [p[0] - ux * d + nx * 0.005, p[1] + d, p[2] - uz * d + nz * 0.005]],
+        [-nz, 0, nx], [[0, 0], [1, 0], [1, 1], [0, 1]], [1.0, 0.82, 0.0], FIXED)
+    }
+    return
+  }
+  const bands: Rgb[] = paris ? [[0.18, 0.28, 0.62], [0.95, 0.95, 0.95], [0.82, 0.15, 0.18]] : [[0.72, 0.12, 0.16], [0.95, 0.95, 0.95], [0.72, 0.12, 0.16]]
   for (let b = 0; b < 3; b++) {
     const t0 = 1 - (w / L) + (b / 3) * (w / L)
     const t1 = 1 - (w / L) + ((b + 1) / 3) * (w / L)
@@ -70,8 +85,18 @@ export function quickMarksLayer(scene: Scene, terrain: Terrain, region: string |
         const f = l.frontage
         const g = terrain.heightAt(f.x, f.z)
         const eaves = b.height ?? (b.levels ? b.levels * 3.3 : 12)
-        if (l.kind === 'civic' || l.kind === 'school' || l.kind === 'museum') {
+        /*
+         * Paris's flags are not everywhere (owner, 2026-10-29: "French flags are not that common but are a nice touch on
+         * government buildings especially" — "Also EU flags"): every civic building flies the tricolour with the EU flag
+         * beside it; two schools and museums in five the tricolour alone.
+         */
+        const some = (Math.imul(l.id, 2654435761) >>> 0) % 5 < 2
+        if (l.kind === 'civic' || ((l.kind === 'school' || l.kind === 'museum') && (!paris || some))) {
           flag(out, f.x + f.nx * 0.1, g + Math.min(eaves - 2, 8.5), f.z + f.nz * 0.1, f.nx, f.nz, paris)
+          if (paris && l.kind === 'civic') {
+            const ax = -f.nz * 2.2, az = f.nx * 2.2
+            flag(out, f.x + f.nx * 0.1 + ax, g + Math.min(eaves - 2, 8.5), f.z + f.nz * 0.1 + az, f.nx, f.nz, paris, true)
+          }
         } else if (l.kind === 'church') {
           // a bell tower at the front, inside the footprint, its spire in slate
           const ring = unpackPoints(b.ring)
