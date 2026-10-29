@@ -832,6 +832,81 @@ export function morrisColumn(out: MeshBuilder): void {
 }
 
 /**
+ * One panel of Paris's low kerb barrier (owner, 2026-10-29: "a lot of inexplicable low black fences, probably to stop people
+ * from crossing outside crosswalks"): the black iron frame with its Saint-Andrew's cross, 1.25 m long and 0.9 m high,
+ * along +z. In runs from the corners, past the crossing (render/city.ts).
+ */
+export function parisBarrier(out: MeshBuilder): void {
+  const iron: Rgb = [0.08, 0.1, 0.09]
+  const L = 0.625, H = 0.9
+  for (const z of [-L, L]) box(out, 0, H / 2, z, 0.025, H / 2, 0.025, iron, FIXED)
+  box(out, 0, H - 0.02, 0, 0.018, 0.02, L, iron, FIXED)
+  box(out, 0, 0.12, 0, 0.018, 0.02, L, iron, FIXED)
+  // the cross, both faces
+  for (const f of [1, -1] as const) {
+    const x = f * 0.012, t = 0.02
+    for (const [z0, y0, z1, y1] of [[-L, 0.14, L, H - 0.04], [-L, H - 0.04, L, 0.14]] as const) {
+      const dz = z1 - z0, dy = y1 - y0, l = Math.hypot(dz, dy), nz = (-dy / l) * t, ny = (dz / l) * t
+      const pts: [number, number, number][] = [[x, y0 - ny, z0 - nz], [x, y1 - ny, z1 - nz], [x, y1 + ny, z1 + nz], [x, y0 + ny, z0 + nz]]
+      out.quad(f > 0 ? [pts[3], pts[2], pts[1], pts[0]] : pts, [f, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], iron, FIXED)
+    }
+  }
+}
+
+/**
+ * A Paris street lamp (owner, 2026-10-29: "streetlights are very different from SF, and much rarer"): on the boulevards
+ * and avenues only — the side streets light from lamps on the walls — a tall, slender dark-green column on a moulded
+ * base, a curved arm out over the road and the lantern hanging from it. About 9 m. Local frame: +z along the street, the
+ * arm out over +x (toward the road).
+ */
+export function parisLamp(out: MeshBuilder): void {
+  const iron: Rgb = [0.12, 0.17, 0.15]
+  prism(out, 0, 0, 0, 0.7, 0.2, 8, iron)
+  prism(out, 0, 0, 0.7, 7.6, 0.075, 8, iron, FIXED, 0.055)
+  prism(out, 0, 0, 7.6, 7.8, 0.1, 8, iron)
+  // the arm: out and a little up, in three pieces, then the lantern under its end
+  box(out, 0.35, 7.95, 0, 0.35, 0.04, 0.04, iron, FIXED)
+  box(out, 0.95, 8.1, 0, 0.3, 0.04, 0.04, iron, FIXED)
+  box(out, 1.3, 8.05, 0, 0.06, 0.12, 0.05, iron, FIXED)
+  prism(out, 1.3, 0, 7.55, 7.95, 0.24, 8, iron, FIXED, 0.12)
+  prism(out, 1.3, 0, 7.35, 7.55, 0.2, 8, [1.0, 0.92, 0.72], EMIT, 0.24)
+}
+
+/**
+ * The Métro's totem (owner, 2026-10-29: "the big M in a circle signs seem to signal stairs down to the metro, which are
+ * otherwise hard to see"): a dark post with a disc at the top, the yellow ring and the yellow M on both faces, standing by
+ * each entrance. About 3.6 m. Local frame: the faces toward ±z.
+ */
+export function metroTotem(out: MeshBuilder): void {
+  const post: Rgb = [0.16, 0.2, 0.22]
+  const yellow: Rgb = [0.98, 0.78, 0.14]
+  const disc: Rgb = [0.12, 0.2, 0.3]
+  box(out, 0, 1.45, 0, 0.05, 1.45, 0.05, post, FIXED)
+  const cy = 3.2, R = 0.42
+  for (const f of [1, -1] as const) {
+    const z = f * 0.045
+    // the ring and the dark disc inside it
+    for (let i = 0; i < 16; i++) {
+      const a0 = (i / 16) * Math.PI * 2, a1 = ((i + 1) / 16) * Math.PI * 2
+      const ring = (r: number, a: number): [number, number, number] => [Math.cos(a) * r, cy + Math.sin(a) * r, z]
+      const q = (pts: [number, number, number][]) => out.quad(f > 0 ? pts : [pts[3], pts[2], pts[1], pts[0]], [0, 0, f], [[0, 0], [1, 0], [1, 1], [0, 1]], yellow, EMIT)
+      q([ring(R * 0.84, a0), ring(R, a0), ring(R, a1), ring(R * 0.84, a1)])
+      const d = (pts: [number, number, number][]) => out.quad(f > 0 ? pts : [pts[3], pts[2], pts[1], pts[0]], [0, 0, f], [[0, 0], [1, 0], [1, 1], [0, 1]], disc, FIXED)
+      d([[0, cy, z - f * 0.002], ring(R * 0.84, a0).map((v, k) => (k === 2 ? z - f * 0.002 : v)) as [number, number, number], ring(R * 0.84, a1).map((v, k) => (k === 2 ? z - f * 0.002 : v)) as [number, number, number], [0, cy, z - f * 0.002]])
+    }
+    // the M: two stems and two diagonals meeting low in the middle (read from the front: mirrored on the back)
+    const zz = z + f * 0.004, h = 0.26, w = 0.2, t = 0.045
+    const stroke = (x0: number, y0: number, x1: number, y1: number): void => {
+      const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy) || 1, nx = (-dy / L) * t, ny = (dx / L) * t
+      const pts: [number, number, number][] = [[x0 - nx, cy + y0 - ny, zz], [x1 - nx, cy + y1 - ny, zz], [x1 + nx, cy + y1 + ny, zz], [x0 + nx, cy + y0 + ny, zz]]
+      out.quad(f > 0 ? pts : [pts[3], pts[2], pts[1], pts[0]], [0, 0, f], [[0, 0], [1, 0], [1, 1], [0, 1]], yellow, EMIT)
+    }
+    stroke(-w, -h / 2, -w, h / 2); stroke(w, -h / 2, w, h / 2)
+    stroke(-w, h / 2, 0, -h / 6); stroke(0, -h / 6, w, h / 2)
+  }
+}
+
+/**
  * A Paris bus stop (owner, 2026-10-29, from street view: Paris has "bus stops", and there were none): Norman Foster's
  * JCDecaux abribus — a thin pale roof on slender dark legs, a glass back, the route map at one end and a lit poster at
  * the other, a bench in the shelter — and beside it RATP's stop post, the grey pole with its flag. Local frame: +z
@@ -957,6 +1032,77 @@ export function bikeDocks(colour: Rgb): (out: MeshBuilder) => void {
         box(out, 0.2, 0.35, z, 0.3, 0.3, 0.015, [0.1, 0.1, 0.1], FIXED)
         box(out, 0.9, 0.35, z, 0.3, 0.3, 0.015, [0.1, 0.1, 0.1], FIXED)
       }
+    }
+  }
+}
+
+/**
+ * A VÉLIB' station (owner, 2026-10-29: "many streets have massive bike share depots"): a long row of grey docks along the
+ * kerb, `n` of them 0.8 m apart along z, two in three with a bike — the green mechanical ones, a third the turquoise
+ * electric — each with its wheels, frame and the basket over the front wheel; the grey terminal pillar with its map at
+ * the end. The bikes stand out toward +x.
+ */
+export function velibStation(n: number, seed: number): (out: MeshBuilder) => void {
+  return (out) => {
+    const grey: Rgb = [0.42, 0.44, 0.45]
+    const tyre: Rgb = [0.08, 0.08, 0.08]
+    const L = (n - 1) * 0.8
+    box(out, 0, 0.95, -L / 2 - 0.9, 0.22, 0.95, 0.16, grey, FIXED)
+    box(out, 0.17, 1.2, -L / 2 - 0.9, 0.06, 0.45, 0.13, [0.86, 0.86, 0.82], FIXED)
+    let h = seed >>> 0
+    const r = (): number => { h = (Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return h / 4294967296 }
+    const wheel = (x: number, z: number): void => {
+      for (let i = 0; i < 8; i++) {
+        const a0 = (i / 8) * Math.PI * 2, a1 = ((i + 1) / 8) * Math.PI * 2, R = 0.32
+        for (const f of [1, -1] as const) {
+          const pts: [number, number, number][] = [[x, 0.34, z + f * 0.02], [x + Math.cos(a0) * R, 0.34 + Math.sin(a0) * R, z + f * 0.02], [x + Math.cos(a1) * R, 0.34 + Math.sin(a1) * R, z + f * 0.02], [x, 0.34, z + f * 0.02]]
+          out.quad(f > 0 ? pts : [pts[3], pts[2], pts[1], pts[0]], [0, 0, f], [[0, 0], [1, 0], [1, 1], [0, 1]], tyre, FIXED)
+        }
+      }
+    }
+    for (let i = 0; i < n; i++) {
+      const z = -L / 2 + i * 0.8
+      box(out, 0, 0.42, z, 0.06, 0.42, 0.09, grey, FIXED)
+      if (r() < 0.33) continue
+      const c: Rgb = r() < 0.35 ? [0.32, 0.62, 0.66] : [0.42, 0.68, 0.28]
+      wheel(0.32, z); wheel(1.38, z)
+      box(out, 0.85, 0.62, z, 0.5, 0.035, 0.03, c, FIXED)
+      box(out, 0.6, 0.5, z, 0.04, 0.2, 0.03, c, FIXED)
+      box(out, 0.62, 0.86, z, 0.12, 0.03, 0.06, tyre, FIXED)
+      box(out, 1.3, 0.92, z, 0.04, 0.3, 0.03, c, FIXED)
+      box(out, 1.48, 0.95, z, 0.16, 0.1, 0.17, c, FIXED)
+    }
+  }
+}
+
+/**
+ * A row of bike PARKING hoops at the kerb (owner, 2026-10-29: "very common bike parking areas that are almost always full"):
+ * the inverted-U stands 0.9 m apart along z, nearly every one with a bike or two locked to it in their owners' colours, the
+ * shared e-bikes' greens and greys among them. The bikes stand out toward +x.
+ */
+export function bikeParking(n: number, seed: number): (out: MeshBuilder) => void {
+  return (out) => {
+    const steel: Rgb = [0.42, 0.43, 0.44]
+    const tyre: Rgb = [0.08, 0.08, 0.08]
+    const PAINT: Rgb[] = [[0.1, 0.1, 0.11], [0.12, 0.13, 0.16], [0.55, 0.56, 0.58], [0.72, 0.12, 0.12], [0.16, 0.3, 0.55], [0.48, 0.74, 0.2],
+      [0.88, 0.88, 0.86], [0.3, 0.32, 0.3], [0.75, 0.45, 0.2]]
+    let h = seed >>> 0
+    const r = (): number => { h = (Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return h / 4294967296 }
+    const L = (n - 1) * 0.9
+    const bike = (z: number, x0: number, c: Rgb): void => {
+      for (const wx of [x0, x0 + 1.05]) box(out, wx, 0.33, z, 0.33, 0.33, 0.012, tyre, FIXED)
+      box(out, x0 + 0.52, 0.6, z, 0.45, 0.03, 0.025, c, FIXED)
+      box(out, x0 + 0.3, 0.48, z, 0.035, 0.2, 0.025, c, FIXED)
+      box(out, x0 + 0.3, 0.84, z, 0.11, 0.025, 0.05, tyre, FIXED)
+      box(out, x0 + 0.95, 0.9, z, 0.03, 0.28, 0.025, c, FIXED)
+    }
+    for (let i = 0; i < n; i++) {
+      const z = -L / 2 + i * 0.9
+      // the hoop: two legs and the bar across, 0.8 m tall
+      for (const x of [0.15, 0.75]) box(out, x, 0.4, z, 0.025, 0.4, 0.025, steel, FIXED)
+      box(out, 0.45, 0.8, z, 0.32, 0.025, 0.025, steel, FIXED)
+      if (r() < 0.9) bike(z + 0.12, -0.05, PAINT[Math.floor(r() * PAINT.length)])
+      if (r() < 0.6) bike(z - 0.12, 0.05, PAINT[Math.floor(r() * PAINT.length)])
     }
   }
 }

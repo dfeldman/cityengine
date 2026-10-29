@@ -32,7 +32,7 @@ import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
   bench, bikeDocks, bollard, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
-  morrisColumn, parisBusStop, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
+  morrisColumn, parisBusStop, parisLamp, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
 import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
@@ -3363,6 +3363,9 @@ export class City {
             if (this.region.furniture.benches && !nearStairMouth(px, pz)) placeModel(furniture, bench, px, 0.15, pz, Math.atan2(dz * side, -dx * side))
           } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
             placeModel(furniture, market ? pathOfGold : lampPost, px, 0.15, pz, heading)
+          } else if (this.region.furniture.boulevardLamps && e.width >= 11 && walk >= 3 && n % 2 === 0 && !nearStairMouth(px, pz)) {
+            // Paris: the boulevards' tall lanterns, every other slot (the side streets light from the walls)
+            placeModel(furniture, parisLamp, px, 0.15, pz, heading)
           }
           // (Market's Path of Gold stands closer: about every 30 m each side, so ~15 m alternating)
           acc += market ? 15 : 22 + ((e.id + n) % 9)
@@ -3739,6 +3742,32 @@ export class City {
       }
     }
 
+    const signalKerb = new Carriageways(kerbEdges)
+    /*
+     * PARIS'S KERB BARRIERS (owner, 2026-10-29: "a lot of inexplicable low black fences, probably to stop people from
+     * crossing outside crosswalks"): from each corner, just past the crossing, a run of the black X-panels along the kerb
+     * of every street leaving a signalled junction, and of four junctions in ten of the rest, where the pavement has room.
+     */
+    if (this.region.furniture.bollards && this.region.roadPaint === 'paris') {
+      for (const id of pads) {
+        const n = this.nodes.get(id)
+        if (!n) continue
+        const drive = n.arms.filter((a) => !a.foot && a.half >= 3)
+        if (drive.length < 3 || (!lights.has(id) && (id * 2654435761 >>> 0) % 10 >= 4) || n.walk < 2) continue
+        for (const a of drive) {
+          for (const side of [-1, 1] as const) {
+            const kerb = (a.half + 0.4) * side
+            for (let i = 0; i < 7; i++) {
+              const s0 = n.radius + 4.8 + i * 1.27
+              const px = n.at.x + a.ux * s0 - a.uz * kerb, pz = n.at.z + a.uz * s0 + a.ux * kerb
+              if (signalKerb.whyNoFurniture(px, pz, 0.6) !== null) break
+              placeModel(furniture, parisBarrier, px, 0.15, pz, Math.atan2(a.ux, a.uz))
+            }
+          }
+        }
+      }
+    }
+
     /**
      * Traffic lights, on the approach to a junction big enough to warrant them.
      *
@@ -3747,7 +3776,6 @@ export class City {
      * roads merely cross and starts being a place that is controlled — which is most of what separates a
      * city street from a road through a field.
      */
-    const signalKerb = new Carriageways(kerbEdges)
     for (const id of pads) {
       const n = this.nodes.get(id)
       if (!n) continue
@@ -4161,13 +4189,15 @@ export class City {
       }
       // a subway entrance a model draws itself (its `coversRaised` footprint): the open BART plazas on Mission Street
       if (f.kind === 'metro' && this.inCover(f.x, f.z)) continue
-      const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'column')
+      const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'bikeparking' || f.kind === 'column')
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
         : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
-        : f.kind === 'bikeshare' ? bikes
+        // (Paris's Vélib': a long row, 18 to 30 docks, its length by the station's own place)
+        : f.kind === 'bikeparking' ? (pf.bikeParking ? bikeParking(5 + (Math.abs(Math.round(f.x * 11 + f.z * 7)) % 6), Math.round(f.x * 13 + f.z * 29)) : null)
+        : f.kind === 'bikeshare' ? (pf.bikeShare === 'velib' ? velibStation(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), Math.round(f.x * 31 + f.z * 17)) : bikes)
         // the American street's (render/us-furniture.ts), in the regions that have one
         : pf.american && f.kind === 'stop' ? stopSign
         : pf.american && f.kind === 'postbox' ? uspsBox
@@ -4260,6 +4290,11 @@ export class City {
         }
       }
       placeModel(furniture, model, px, 0.15, pz, heading + turn)
+      // and beside a Paris entrance, its totem: the yellow M in its ring on a post, what a rider sees from down the street
+      if (f.kind === 'metro' && pf.metro === 'guimard') {
+        const tx = px + Math.sin(heading) * 2.5, tz = pz + Math.cos(heading) * 2.5
+        if (!pointKerb.inside(tx, tz, 0.3)) placeModel(furniture, metroTotem, tx, 0.15, tz, heading + Math.PI / 2)
+      }
     }
 
     /*

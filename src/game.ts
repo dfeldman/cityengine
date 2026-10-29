@@ -880,6 +880,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const signs = off.has('signs') ? null : new Signs(scene, pkg.id, region(pkg.region), city.terrain, junctions, noSign,
     (x, z) => parkMap.contains(x, z, TILE), (x, z) => shopRings.find((d) => insideShopRing(d.ring, x, z))?.lang ?? null)
   if (signs) city.addLayer(signs)
+  // the wayfinding boards' destinations: Paris's own signs name the big stations and places, as the Métro list does
+  if (signs && pkg.region === 'paris') {
+    const pr = new Projection(pkg.origin)
+    signs.destinations = stationsFor('paris').map((st) => ({ name: st.name, ...pr.toLocal({ lat: st.lat, lon: st.lon }) }))
+  }
   mark('signs')
   const level = opts.traffic ?? 'some'
   /*

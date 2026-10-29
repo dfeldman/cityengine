@@ -869,6 +869,8 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
     if (!s) failed.set(a, (s = new WeakSet()))
     s.add(b)
   }
+  /** each street's pieces when a whole scan of them last found no pair to merge */
+  const clean = new Map<string, RideEdge[]>()
   for (let guard = 0; guard < 5000; guard++) {
     const byName = new Map<string, RideEdge[]>()
     for (const e of cur) {
@@ -878,7 +880,11 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
       g.push(e)
     }
     let pair: [RideEdge, RideEdge] | null = null
-    search: for (const g of byName.values()) {
+    search: for (const [name, g] of byName) {
+      // (a street whose pieces are the very ones a whole scan of it found nothing in has nothing now: skipped whole, so a
+      //  pass after a merge looks only at the streets that merge touched)
+      const was = clean.get(name)
+      if (was && was.length === g.length && was.every((e, i) => e === g[i])) continue
       for (let i = 0; i < g.length; i++) {
         for (let j = i + 1; j < g.length; j++) {
           if (failed.get(g[i])?.has(g[j])) continue
@@ -886,6 +892,7 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
           fail(g[i], g[j])
         }
       }
+      clean.set(name, g)
     }
     if (!pair) return cur
     const m = midline(pair[0], pair[1], ids, false)!

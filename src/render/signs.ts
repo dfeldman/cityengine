@@ -366,6 +366,9 @@ export class Signs implements TileLayer {
   private readonly words: TextAtlas
   private readonly plates: TextAtlas
   private readonly counts = new Map<string, { count: number; plaques: number; named: number; blank: number; projecting: number }>()
+  /** where the wayfinding panels point (game.ts: Paris's Métro stations), local metres; empty, none are put up */
+  destinations: { name: string; x: number; z: number }[] = []
+  private way: TextAtlas | null = null
 
   /**
    * `inPark`: a corner in open country gets no name blade. The owner, of Golden Gate Park: *"there are
@@ -421,6 +424,10 @@ export class Signs implements TileLayer {
         meshes.push(...r.meshes)
         c.plaques = r.n
       }
+    }
+    if (this.destinations.length && js.length) {
+      this.way ??= wayfindingAtlas(this.scene)
+      meshes.push(...wayfinding(this.scene, this.way, k, js, this.destinations, terrain))
     }
     const lm = landmarkPlates(this.scene, this.plates, k, reg, near.tile.landmarks.filter((l) => !this.noSign.has(l.id)), terrain)
     meshes.push(...lm.meshes)
@@ -595,9 +602,108 @@ function drawPlaque(ctx: CanvasRenderingContext2D, x0: number, y0: number, name:
   lines.forEach((t, k) => ctx.fillText(t, cx, (small ? (lines.length > 1 ? y0 + 58 : y0 + 76) : top) + k * size * 1.1))
 }
 
+const WAY_W = 512
+const WAY_H = 128
+/**
+ * Paris's WAYFINDING panels (owner, 2026-10-29: "distinctive wayfinding signs. there aren't many, but they're very prominent
+ * and hard to miss"): white boards with a blue border, blue capitals and the arrow's end pointing the way, two or three on a
+ * grey post at the big crossings. One cell a destination and a direction: `NAME|L` or `NAME|R` (the board is read from both
+ * sides, and from the other side the arrow points the other way). `|post` is blank: the post is the quad's own grey.
+ */
+function drawWayfinding(ctx: CanvasRenderingContext2D, x0: number, y0: number, text: string): void {
+  const [name, dir] = text.split('|')
+  if (dir === 'post') return
+  const right = dir === 'R'
+  const tip = 70
+  ctx.lineWidth = 7
+  ctx.beginPath()
+  const l = x0 + 8, r = x0 + WAY_W - 8, t = y0 + 10, b = y0 + WAY_H - 10, m = (t + b) / 2
+  if (right) { ctx.moveTo(l, t); ctx.lineTo(r - tip, t); ctx.lineTo(r, m); ctx.lineTo(r - tip, b); ctx.lineTo(l, b) } else {
+    ctx.moveTo(r, t); ctx.lineTo(l + tip, t); ctx.lineTo(l, m); ctx.lineTo(l + tip, b); ctx.lineTo(r, b)
+  }
+  ctx.closePath()
+  ctx.stroke()
+  const upper = name.toUpperCase()
+  let px = 64
+  const font = (n: number): string => `700 ${n}px ui-sans-serif, Helvetica, Arial, sans-serif`
+  ctx.font = font(px)
+  while (ctx.measureText(upper).width > WAY_W - tip - 50 && px > 20) ctx.font = font(--px)
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(upper, x0 + (right ? (WAY_W - tip) / 2 + 4 : tip + (WAY_W - tip) / 2 - 4), m + 2)
+}
+
+export function wayfindingAtlas(scene: Scene): TextAtlas {
+  return new TextAtlas(scene, 'wayfinding', { pageW: 2048, pageH: 1024, cellW: WAY_W, cellH: WAY_H, maxPages: 3 },
+    drawWayfinding, { ink: new Color3(0.12, 0.28, 0.62), cull: true })
+}
+
 export function plaqueAtlas(scene: Scene): TextAtlas {
   return new TextAtlas(scene, 'plaques', { pageW: PLAQUE_PAGE, pageH: PLAQUE_PAGE, cellW: PLAQUE_W, cellH: PLAQUE_H, maxPages: 4 },
     drawPlaque, { ink: new Color3(0.96, 0.95, 0.92), cull: true })
+}
+
+/**
+ * The wayfinding posts of one tile (drawWayfinding): at a crossing of four or more streets all 7 m or wider — one in two
+ * of them, there are not many — a grey post on the corner pavement and a board for each of up to three of its streets,
+ * naming the destination that lies most nearly that way, 300 m to 3 km off.
+ */
+function wayfinding(scene: Scene, atlas: TextAtlas, owner: string, junctions: SignedJunction[],
+  dests: { name: string; x: number; z: number }[], terrain: Terrain): Mesh[] {
+  const out = new PageOut()
+  const GREY: [number, number, number] = [0.6, 0.62, 0.63]
+  const WHITE: [number, number, number] = [0.95, 0.95, 0.93]
+  for (const j of junctions) {
+    if (j.arms.length < 4 || j.arms.some((a) => a.width < 7)) continue
+    if (((Math.round(j.at.x * 7) * 73856093) ^ (Math.round(j.at.z * 7) * 19349663)) >>> 0 & 1) continue
+    const boards: { arm: SignedJunction['arms'][number]; name: string }[] = []
+    for (const arm of j.arms) {
+      const dx = Math.sin(arm.bearing), dz = Math.cos(arm.bearing)
+      let best: { name: string; score: number } | null = null
+      for (const d of dests) {
+        const vx = d.x - j.at.x, vz = d.z - j.at.z, dist = Math.hypot(vx, vz)
+        if (dist < 300 || dist > 3000) continue
+        const off = Math.acos(Math.max(-1, Math.min(1, (vx * dx + vz * dz) / dist)))
+        if (off > Math.PI / 6) continue
+        const score = off + dist / 6000
+        if (!best || score < best.score) best = { name: d.name.replace(/ \(.*\)$/, ''), score }
+      }
+      if (best && !boards.some((b) => b.name === best!.name)) boards.push({ arm, name: best.name })
+      if (boards.length === 3) break
+    }
+    if (boards.length < 2) continue
+    // the post on the corner pavement, right of the first street's mouth
+    const a0 = boards[0].arm
+    const d0x = Math.sin(a0.bearing), d0z = Math.cos(a0.bearing)
+    const reach = a0.width / 2 + a0.walk * 0.7
+    const px = j.at.x + d0x * (reach + 1.5) + d0z * reach, pz = j.at.z + d0z * (reach + 1.5) - d0x * reach
+    const g = terrain.heightAt(px, pz)
+    const post = atlas.acquire('|post', owner)
+    if (!post) continue
+    for (const [nx, nz] of [[1, 0], [0, 1]] as const) {
+      const ax = -nz * 0.05, az = nx * 0.05
+      for (const f of [1, -1]) {
+        out.on(post.page).quad([[px - ax * f, g, pz - az * f], [px + ax * f, g, pz + az * f], [px + ax * f, g + 3.6, pz + az * f], [px - ax * f, g + 3.6, pz - az * f]],
+          [nx * f, 0, nz * f], quadUV(post), GREY, 0)
+      }
+    }
+    boards.forEach((b, i) => {
+      const dx = Math.sin(b.arm.bearing), dz = Math.cos(b.arm.bearing)
+      const w = 0.62, h = 0.155, y = g + 3.25 - i * 0.4
+      const cx = px + dx * (w + 0.06), cz = pz + dz * (w + 0.06)
+      // its two faces: from its right side the way is to the reader's right, from its left side to the left
+      for (const [side, dir] of [[1, 'R'], [-1, 'L']] as const) {
+        const cell = atlas.acquire(`${b.name}|${dir}`, owner)
+        if (!cell) continue
+        const nx = dz * side, nz = -dx * side
+        const ax = -nz, az = nx
+        const ox = cx + nx * 0.02, oz = cz + nz * 0.02
+        out.on(cell.page).quad([[ox - ax * w, y - h, oz - az * w], [ox + ax * w, y - h, oz + az * w], [ox + ax * w, y + h, oz + az * w], [ox - ax * w, y + h, oz - az * w]],
+          [nx, 0, nz], quadUV(cell), WHITE, 0)
+      }
+    })
+  }
+  return out.meshes(scene, atlas, `wayfinding:${owner}`)
 }
 
 /** The plaques of the junctions in one tile, on the corner walls of the buildings round them. */

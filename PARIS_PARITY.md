@@ -65,6 +65,10 @@ the box change and the re-bake together.
 - [ ] cobblestone (`surface=sett`) — check how much shows; some pavements red-tinted
 - [ ] food and craft stands (the bouquinistes are done on their quays)
 - [ ] La Défense's towers (inside the box's north-west corner now) and the Grande Arche
+- [x] street lamps: rarer and different — the tall dark lanterns on the boulevards only (parisLamp), the walls' lamps elsewhere
+- [x] the Métro's "M" totem by every entrance (the stairs down are hard to see; the totem is what you see)
+- [ ] the low black barriers (the Saint-Andrew's-cross panels) along the kerb from the corners, between the bollards,
+      to keep people crossing at the crossings
 - [ ] the decorated métro viaducts (Lines 2 and 6: the lattice girders, the stone piers, the city's arms) — check
 
 So the generic building is ONE colour family (cream limestone), told apart by AGE, not by palette; what breaks the

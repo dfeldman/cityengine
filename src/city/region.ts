@@ -59,6 +59,8 @@ export interface Region {
   palettes: Partial<Record<StyleId, Palette[]>>
   /** `terraces`: café tables and chairs on the pavement in front of every named café (render/terraces.ts) */
   furniture: { lampPosts: boolean; wallLamps: boolean; benches: boolean; bollards: Bollards | null; terraces?: boolean
+    /** Paris: tall lanterns on the boulevards and avenues only, where `lampPosts` is off (render/models.ts parisLamp) */
+    boulevardLamps?: boolean
     /** the busy pavement (SF): newspaper racks and cans at the corners, parking meters along commercial kerbs,
      *  wooden utility poles and their wires down residential streets, and on brick streets the chain kerb */
     clutter?: boolean }
@@ -200,6 +202,10 @@ export interface Region {
     american?: boolean
     /** what a bus stop is: Muni's yellow-banded pole, or a plain pole with a flag */
     busStop?: 'muni' | 'plain' | 'paris'
+    /** the bike share's stations: Paris's Vélib' rows (render/models.ts velibStation), else the short rack */
+    bikeShare?: 'velib'
+    /** bike parking at the kerb (PackedFurniture `bikeparking`), drawn full (render/models.ts bikeParking) */
+    bikeParking?: boolean
     /** the street fire alarm box (render/us-furniture.ts): San Francisco's gabled Gamewell head, New York's ERS post */
     callBox?: 'sf' | 'nyc'
     /** the share of street junctions (three streets or more) that get a box where OSM has mapped none near: 0–1 */

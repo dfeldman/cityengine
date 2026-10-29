@@ -2840,6 +2840,8 @@ async function bake(spec: CitySpec): Promise<void> {
         : t.advertising === 'billboard' && /^(ground|pole|pedestal)$/.test(t.support ?? '') ? 'billboard'
         : t.highway === 'stop' ? 'stop'
         : t.highway === 'bus_stop' ? 'busstop'
+        // (bike parking at the kerb, Paris's, almost always full — owner, 2026-10-29: drawn where the region asks)
+        : t.amenity === 'bicycle_parking' && t.covered !== 'yes' && t.indoor !== 'yes' && (t.bicycle_parking ?? 'stands') !== 'building' ? 'bikeparking'
         : t.amenity === 'post_box' ? 'postbox'
         : t.emergency === 'fire_hydrant' ? 'hydrant'
         // the street fire alarm box (render/us-furniture.ts); one inside a building is a pull station on a wall
