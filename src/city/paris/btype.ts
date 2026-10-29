@@ -32,7 +32,9 @@ export const classifyParis: Classifier = (b: BuildingFacts) => {
   const hospital = /^(hospital|clinic)$/.test(t.amenity ?? '') || /^(hospital|clinic)$/.test(t.building ?? '') || t.healthcare === 'hospital' || t.healthcare === 'clinic'
   if (hospital) return period <= 5 ? out('civic', 'classical', `hospital, ${period}`) : out('hospital', 'skyscraper', `hospital, ${period}`)
   if (period <= 2) return out('old', 'marais', `period ${period}`)
-  if (period === 3) return out('haussmann', 'haussmann', 'period 3')
+  // (and now and then one of the period in brick, the late century's brick-and-stone — owner, 2026-10-29: "most blocks do
+  //  have one random red brick building, it's not all perfectly consistent"; with the interwar blocks, about one a block)
+  if (period === 3) return ((Math.imul(b.id, 2654435761) >>> 0) % 14 === 0) ? out('brick', 'brick', 'period 3, brick and stone') : out('haussmann', 'haussmann', 'period 3')
   if (period <= 5) return out('interwar', 'brick', `period ${period}`)
   return (b.levels ?? 0) >= 12 ? out('tower', 'towerblock', `period ${period}, ${b.levels} levels`) : out('postwar', 'bauhaus', `period ${period}`)
 }
