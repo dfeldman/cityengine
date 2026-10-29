@@ -1,4 +1,4 @@
-import type { MeshBuilder } from '../../../buildings.ts'
+import { MeshBuilder } from '../../../buildings.ts'
 import { box, prism } from '../../../models.ts'
 import { block } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
@@ -23,10 +23,16 @@ const HZ = 30
  * The water is the city's (OSM's basin); this draws its kerb.
  */
 export function medicisFountain(out: MeshBuilder, fit: Fit): void {
-  fitted(out, fit, HX, HZ, (q) => draw(q))
+  // the alley falls toward the palace: each piece stands on the ground under it, not on the footprint's lowest point
+  const sx = fit.hx / HX
+  const sz = fit.hz / HZ
+  const g = (x: number, z: number): number => fit.groundAt?.(x * sx, z * sz) ?? 0
+  fitted(out, fit, HX, HZ, (q) => draw(q, g))
 }
 
-function draw(out: MeshBuilder): void {
+function draw(base: MeshBuilder, g: (x: number, z: number) => number): void {
+  // the fountain itself, drawn at its own ground and lifted there
+  const out = new MeshBuilder()
   const p = palette('#cfc5ad')
   const rock = [0.55, 0.52, 0.46] as [number, number, number]
   const marble = [0.93, 0.92, 0.88] as [number, number, number]
@@ -78,21 +84,39 @@ function draw(out: MeshBuilder): void {
     prism(out, s * (w - 0.2), z0 - 0.3, 8.7, 9.4, 0.42, 8, p.trim, FIXED, 0.28)
     prism(out, s * (w - 0.2), z0 - 0.3, 9.4, 9.8, 0.12, 6, p.trim, FIXED, 0.02)
   }
-  // ---- the basin's kerb, and the urns down its sides
+  lifted(base, out, g(0, 28))
+  // ---- the basin's kerb in lengths that each stand on their own ground, and the urns down its sides
   const bz0 = -29.8
   const bz1 = z0 - 1.6
   const bw = 6.0
   const kerb = p.trim
-  block(out, -bw - 0.5, -bw, bz0 - 0.5, bz1, 0, 0.55, kerb)
-  block(out, bw, bw + 0.5, bz0 - 0.5, bz1, 0, 0.55, kerb)
-  block(out, -bw - 0.5, bw + 0.5, bz0 - 0.5, bz0, 0, 0.55, kerb)
-  block(out, -bw, bw, bz1 - 0.5, bz1, 0, 0.55, kerb)
+  const n = 14
+  for (let i = 0; i < n; i++) {
+    const za = bz0 - 0.5 + ((bz1 - bz0 + 0.5) * i) / n
+    const zb = bz0 - 0.5 + ((bz1 - bz0 + 0.5) * (i + 1)) / n
+    for (const s of [-1, 1]) {
+      const y = g(s * (bw + 0.25), (za + zb) / 2)
+      block(base, s < 0 ? -bw - 0.5 : bw, s < 0 ? -bw : bw + 0.5, za, zb, y - 0.4, y + 0.55, kerb)
+    }
+  }
+  for (const [z, y] of [[bz0, g(0, bz0)], [bz1, g(0, bz1)]]) block(base, -bw, bw, z - 0.5, z, y - 0.4, y + 0.55, kerb)
   for (let z = bz0 + 3; z < bz1 - 2; z += 7.2) {
     for (const s of [-1, 1]) {
       const x = s * (bw + 0.25)
-      box(out, x, 0.95, z, 0.3, 0.4, 0.3, kerb, FIXED)
-      prism(out, x, z, 1.35, 1.55, 0.18, 8, kerb, FIXED, 0.38)
-      prism(out, x, z, 1.55, 2.15, 0.38, 8, kerb, FIXED, 0.24)
+      const y = g(x, z)
+      box(base, x, y + 0.95, z, 0.3, 0.4, 0.3, kerb, FIXED)
+      prism(base, x, z, y + 1.35, y + 1.55, 0.18, 8, kerb, FIXED, 0.38)
+      prism(base, x, z, y + 1.55, y + 2.15, 0.38, 8, kerb, FIXED, 0.24)
     }
   }
+}
+
+/** `part` appended to `out`, raised `y`. */
+function lifted(out: MeshBuilder, part: MeshBuilder, y: number): void {
+  const b = out.positions.length / 3
+  for (let i = 0; i < part.positions.length; i += 3) out.positions.push(part.positions[i], part.positions[i + 1] + y, part.positions[i + 2])
+  for (const v of part.normals) out.normals.push(v)
+  for (const v of part.uvs) out.uvs.push(v)
+  for (const v of part.colors) out.colors.push(v)
+  for (const i of part.indices) out.indices.push(b + i)
 }

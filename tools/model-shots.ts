@@ -108,6 +108,17 @@ const SETS: Record<string, V[]> = {
     ['back-3q', 0.85, 1.3, 230, 0, 14, 0], ['top', -1.4, 0.55, 300, 0, 0, 0], ['street', -1.9, 1.52, 120, 0, 16, -40]],
   'palace-big': [['front', -1.57, 1.4, 420, 0, 14, 0], ['front-3q', -2.25, 1.3, 380, 0, 14, 0], ['back', 1.57, 1.4, 420, 0, 14, 0],
     ['back-3q', 0.85, 1.3, 380, 0, 14, 0], ['top', -1.4, 0.55, 480, 0, 0, 0], ['street', -1.9, 1.52, 170, 0, 16, -90]],
+  /*
+   * A Paris TERMINUS (render/landmarks/paris/stations): front −z, the tracks running off to +z. The front's
+   * elevation from the forecourt, a three-quarter, a high oblique from over the throat (the sheds as the bridges
+   * over the track fan see them), and a rider's eye on the forecourt. Framed for a ~200 m station at its origin.
+   */
+  station: [
+    ['front', -1.57, 1.45, 260, 0, 18, -80],
+    ['three-quarter', -0.95, 1.32, 280, 0, 15, -40],
+    ['throat', 1.57, 1.05, 380, 0, 10, 40],
+    ['forecourt', -1.75, 1.55, 70, 0, 14, -110],
+  ],
   court: [
     ['plan', -1.57, 0.04, 34, 0, 0, 0],
     ['three-quarter', -0.9, 1.15, 34, 0, 1, 0],

@@ -774,14 +774,14 @@
   {
     "name": "Assemblée nationale — portico",
     "procedural": "assembleePortico",
-    "lat": 48.86232,
-    "lon": 2.31825,
-    "rotateDeg": 180,
+    "lat": 48.86222,
+    "lon": 2.31878,
+    "rotateDeg": 205.6,
     "size": [
       48,
       20
     ],
-    "note": "The Palais Bourbon's twelve-column portico and pediment to the Seine, standing on its quai front; the palace behind is OSM's massing."
+    "note": "The Palais Bourbon's twelve-column portico and pediment to the Seine, standing on its quai front; the palace behind is OSM's massing. Moved 2026-10-29 onto OSM's own portico parts (w380420446 steps, w1459531653 colonnade), facing the Concorde–Madeleine axis at 25.6°: it stood 39 m west facing due north, beside the real one the palaces' Bourbon restyle dresses."
   },
   {
     "name": "Institut de France",

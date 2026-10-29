@@ -131,6 +131,8 @@ const BY_MODULE: [Record<string, unknown>, NonbuildingKind][] = [
  * derived. Keep it sorted by kind; add a name here the day a nonbuilding builder is written.
  */
 export const EXPLICIT: Record<string, NonbuildingKind> = {
+  // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
+  medicisFountain: 'fountain', tokyoParvis: 'plaza',
   // bridges — these bind through the city SKYLINE (tools/cities.ts), not through any manifest
   goldenGateBridge: 'bridge', bayBridge: 'bridge', bayBridgeNear: 'bridge',
   // masts and lattices: a tower with no floors is not a building

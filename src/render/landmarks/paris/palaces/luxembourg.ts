@@ -3,7 +3,7 @@ import { box, prism } from '../../../models.ts'
 import { block, dome } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import {
-  archOn, balustrade, clockOn, dormers, fitted, hipRoof, mansard, pairOn, palette, pavilionRoof, pedimentOn, range,
+  balustrade, clockOn, dormers, fitted, hipRoof, mansard, pairOn, palette, pavilionRoof, pedimentOn, range,
   segmentOn, squareDome, statue, terrace, type Pal, type RangeOpts,
 } from './common.ts'
 

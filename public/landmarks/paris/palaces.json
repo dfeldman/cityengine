@@ -39,5 +39,180 @@
     "levels": 2,
     "height": 13,
     "note": "The old orangery of the palace on the Rue de Vaugirard: two storeys of tall windows in stone under a slate roof."
+  },
+  {
+    "name": "Hôtel des Invalides",
+    "procedural": "invalides",
+    "osm": [
+      "relation/1463538",
+      "way/64955027"
+    ],
+    "lat": 48.855967,
+    "lon": 2.312616,
+    "rotateDeg": 184,
+    "size": [
+      273.6,
+      256.4
+    ],
+    "height": 31,
+    "note": "Placed on OSM relation 1463538's box turned 4° to its axes (measured with osmium, 2026-10-29), front (−z) to the Esplanade (bearing 4); the relation's building:part relations and Saint-Louis-des-Invalides (way 64955027, with its five parts) are replaced. The Église du Dôme (way 112452790 and its parts) is NOT claimed: it stays as OSM maps it under `invalidesDome`, in the notch the plan leaves empty at the south. The moat parapet and the batterie triomphale stand ~12 m in front of the footprint, on the esplanade."
+  },
+  {
+    "name": "Palais Bourbon — cour d'honneur gate",
+    "procedural": "bourbonGate",
+    "osm": [
+      "way/1459866038",
+      "way/1459866039",
+      "way/1459866062",
+      "way/1459919806",
+      "way/1459919807"
+    ],
+    "lat": 48.860882,
+    "lon": 2.318403,
+    "rotateDeg": 8.5,
+    "size": [
+      54,
+      14
+    ],
+    "height": 20,
+    "note": "The entrance on the Place du Palais-Bourbon: the Corinthian colonnade on its steps between the two pavilions. Placed on the box of the five OSM building:parts it replaces (measured with osmium, 2026-10-29), front (−z) to the place, bearing 188.5."
+  },
+  {
+    "name": "Palais Bourbon",
+    "osm": [
+      "relation/1019368"
+    ],
+    "restyle": "classical",
+    "note": "The Assemblée nationale's palace round its courts: OSM maps it in 3D as ~45 building:parts (heights and roof shapes, the hemicycle's dome among them), so the massing is OSM's and this gives it the stone dress; the court gate is `bourbonGate` and the Seine portico `assembleePortico` (paris.json). No height, levels or roof here: they would flatten the parts' own (styleOnly drops them for parts anyway)."
+  },
+  {
+    "name": "Hôtel de Lassay",
+    "osm": [
+      "way/175448743"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "levels": 2,
+    "height": 12,
+    "note": "The residence of the Assemblée's president beside the Palais Bourbon (1722–28, raised a storey in the 1840s): two storeys of tall windows in stone under a balustrade."
+  },
+  {
+    "name": "Palais de l'Élysée",
+    "procedural": "elysee",
+    "osm": [
+      "relation/1060803"
+    ],
+    "lat": 48.870264,
+    "lon": 2.31668,
+    "rotateDeg": 206,
+    "size": [
+      106.6,
+      121.4
+    ],
+    "height": 17,
+    "note": "The President's palace. Placed on OSM relation 1060803's box turned 26° to its axes (osmium, 2026-10-29), its plan and courts extruded; −z (bearing 26) is the Rue du Faubourg-Saint-Honoré with the portal, +z the gardens. (The brief's 'Hôtel d'Évreux relation/542353' is a different Hôtel d'Évreux — no. 19 Place Vendôme — and is not touched.)"
+  },
+  {
+    "name": "Ministère de l'Économie et des Finances (Bercy)",
+    "procedural": "bercyMinistry",
+    "osm": [
+      "way/217512456",
+      "way/1227184966",
+      "way/1227184965"
+    ],
+    "lat": 48.83999,
+    "lon": 2.376945,
+    "rotateDeg": 320.5,
+    "size": [
+      336,
+      31.6
+    ],
+    "height": 41,
+    "note": "The Bâtiment Colbert (OSM way 217512456 and its parts; the entrance block 1227184966 and 1227184965 inside its outline). Placed on the slab's box turned to its axis (osmium, 2026-10-29), the footprint stopping at the quai so the river bed under its foot does not set its base: the model's river end reaches 26 m beyond the footprint (−x, south-west) on two legs into the Seine."
+  },
+  {
+    "name": "Palais Brongniart",
+    "procedural": "brongniart",
+    "osm": [
+      "way/54657155"
+    ],
+    "lat": 48.869139,
+    "lon": 2.341367,
+    "rotateDeg": 197.5,
+    "size": [
+      71.4,
+      79.2
+    ],
+    "height": 28,
+    "note": "The old Bourse: the Corinthian peristyle on its podium, steps at both ends, Cavel's wings making the cross. Placed on OSM way 54657155's box turned 17.5° to its axes (osmium, 2026-10-29)."
+  },
+  {
+    "name": "Palais de la Légion d'Honneur",
+    "procedural": "legionHonneur",
+    "osm": [
+      "relation/1002192"
+    ],
+    "lat": 48.860535,
+    "lon": 2.324442,
+    "rotateDeg": 206,
+    "size": [
+      70.2,
+      84
+    ],
+    "height": 15,
+    "note": "The Hôtel de Salm: the rotunda on the Quai Anatole-France (−z, bearing 26), the triumphal gate and colonnaded court on the Rue de Lille (+z). OSM relation 1002192's plan and court extruded, placed on its box turned 26° (osmium, 2026-10-29)."
+  },
+  {
+    "name": "Palais de Tokyo — the parvis",
+    "procedural": "tokyoParvis",
+    "lat": 48.864225,
+    "lon": 2.297144,
+    "rotateDeg": 162,
+    "size": [
+      40,
+      96
+    ],
+    "height": 15,
+    "sign": false,
+    "note": "Standalone in the court between the two wings (OSM ways 79219351 and 79219308, which stay, dressed below): the colonnades of square piers on both inner faces (on OSM's mapped pier bumps), the portico across the top, the terraces down toward the Seine (+z, bearing 162) with the pool. Its terraces read the ground (Fit.groundAt): the court falls toward the river."
+  },
+  {
+    "name": "Palais de Tokyo and the Musée d'Art Moderne",
+    "osm": [
+      "way/79219351",
+      "way/79219308"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "note": "The two 1937 wings in their limestone, flat-roofed; OSM's 14 m kept. (The MUSEUMS family leaves the Palais de Tokyo to this file.)"
+  },
+  {
+    "name": "Hôtel de Matignon",
+    "osm": [
+      "relation/1076880"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 3,
+    "note": "The Prime Minister's hôtel on the Rue de Varenne, between its court and its garden: stone, slate."
+  },
+  {
+    "name": "Ministère des Affaires étrangères — Quai d'Orsay",
+    "osm": [
+      "way/448794899"
+    ],
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 3,
+    "note": "Lacornée's Second Empire palace of the ministry on the Quai d'Orsay, under its tall mansard."
+  },
+  {
+    "name": "Banque de France",
+    "osm": [
+      "relation/541080"
+    ],
+    "restyle": "classical",
+    "roof": "mansard",
+    "note": "The Hôtel de Toulouse (Mansart, 1635–40) and the bank's ranges round it on the Rue de la Vrillière and the Rue Croix-des-Petits-Champs."
   }
 ]

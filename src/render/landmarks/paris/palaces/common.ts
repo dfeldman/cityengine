@@ -14,6 +14,8 @@
 import { MeshBuilder } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { block, hex, roof, shade } from '../../kit.ts'
+import { capPolygonWithHoles } from '../../../buildings.ts'
+import { boxAlong, edgeAt, offsetRing } from '../../parts.ts'
 import type { Fit } from '../../fit.ts'
 
 const FIXED = 0
@@ -330,4 +332,67 @@ export function squareDome(out: MeshBuilder, cx: number, cz: number, y0: number,
     const yb = y0 + Math.sin(a1) * h
     roof(out, cx - hw * w0, cx + hw * w0, cz - hz * w0, cz + hz * w0, ya, yb - ya, hw * (w0 - w1), hz * (w0 - w1), c)
   }
+}
+
+type P2 = { x: number; z: number }
+
+/** [x, z, x, z, …] as points. */
+export const pts = (a: number[]): P2[] => Array.from({ length: a.length / 2 }, (_, i) => ({ x: a[2 * i], z: a[2 * i + 1] }))
+
+const signedArea = (r: P2[]): number => {
+  let a = 0
+  for (let i = 0; i < r.length; i++) { const p = r[i]; const q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+  return a / 2
+}
+
+/**
+ * A plan EXTRUDED: an outline and its courtyards (OSM's, in the builder's frame), walls up to `eaves` with windows in
+ * each storey along every wall of 3 m or more, a cornice, and a mansard — a steep skirt `inset` in and `rise` up from
+ * every wall, slate leads over. For the irregular plans a set of rectangles cannot say (the Élysée's, a ministry's
+ * round its courts). The outline is wound anticlockwise and the courts clockwise here, so every wall faces away from
+ * the building whichever way OSM drew them.
+ */
+export function extrude(out: MeshBuilder, rings: P2[][], p: Pal, o: { eaves: number; storeys: Storey[]; bay: number; win?: number;
+  rise?: number; inset?: number; frames?: boolean; dormers?: boolean }): void {
+  const fixed = rings.map((r, i) => ((signedArea(r) > 0) === (i === 0) ? r : [...r].reverse()))
+  const rise = o.rise ?? 3.2
+  const inset = o.inset ?? 1.3
+  const win = o.win ?? 1.5
+  const inner = fixed.map((r) => offsetRing(r, -inset))
+  for (let k = 0; k < fixed.length; k++) {
+    const r = fixed[k]
+    for (let i = 0; i < r.length; i++) {
+      const e = edgeAt(r, i)
+      const P = (u: number, y: number, d: number): [number, number, number] => [e.a.x + e.tx * u + e.nx * d, y, e.a.z + e.tz * u + e.nz * d]
+      const n: [number, number, number] = [e.nx, 0, e.nz]
+      out.quad([P(0, 0, 0), P(e.L, 0, 0), P(e.L, o.eaves, 0), P(0, o.eaves, 0)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], p.stone, FIXED)
+      // the cornice, and the mansard's skirt from the wall's head to the offset line
+      boxAlong(out, e.mid.x + e.nx * 0.15, o.eaves - 0.35, e.mid.z + e.nz * 0.15, e.L / 2 + 0.2, 0.35, 0.45, e.heading, p.trim)
+      const ia = inner[k][i]
+      const ib = inner[k][(i + 1) % r.length]
+      out.quad([[e.a.x, o.eaves, e.a.z], [e.b.x, o.eaves, e.b.z], [ib.x, o.eaves + rise, ib.z], [ia.x, o.eaves + rise, ia.z]],
+        [e.nx * 0.9, inset / Math.hypot(inset, rise), e.nz * 0.9], [[0, 0], [1, 0], [1, 1], [0, 1]], p.slate, FIXED)
+      if (e.L < 3) continue
+      const nb = Math.max(1, Math.round((e.L - 1.2) / o.bay))
+      const step = (e.L - 1.2) / nb
+      const q = (u0: number, u1: number, y0: number, y1: number, d: number, c: Rgb): void =>
+        out.quad([P(u0, y0, d), P(u1, y0, d), P(u1, y1, d), P(u0, y1, d)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+      for (let j = 0; j < nb; j++) {
+        const u = 0.6 + step * (j + 0.5)
+        for (const s of o.storeys) {
+          const sill = s.y + (s.sill ?? 0.9)
+          if (o.frames !== false) q(u - win / 2 - 0.2, u + win / 2 + 0.2, sill - 0.18, sill + s.h + 0.16, 0.05, p.trim)
+          q(u - win / 2, u + win / 2, sill, sill + s.h, 0.09, p.glass)
+        }
+        // a dormer in every other bay
+        if (o.dormers !== false && j % 2 === 0 && step > 2.2) {
+          const yd = o.eaves + rise * 0.15
+          const dz = inset * 0.15
+          boxAlong(out, e.a.x + e.tx * u - e.nx * (0.7 - dz), yd + 0.9, e.a.z + e.tz * u - e.nz * (0.7 - dz), 0.65, 0.9, 0.7, e.heading, p.trim)
+          q(u - 0.4, u + 0.4, yd + 0.25, yd + 1.5, dz + 0.03, p.glass)
+        }
+      }
+    }
+  }
+  capPolygonWithHoles(out, inner, o.eaves + rise, shade(p.slate, 0.9), FIXED)
 }
