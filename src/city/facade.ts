@@ -929,6 +929,33 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     }
   }
 
+  /*
+   * …and its SHOPS framed in paint (owner, 2026-10-29: "often a first floor shop will be painted blue, red or green around
+   * the edges … Italian restaurants sometimes have the Italian stripes but that's about it for multicolor"): each run of
+   * shop bays on the street front a painted pier at each end and a band across the top, in one colour of its own — one run
+   * in four ("Sorry.. I meant that exists but is uncommon"); of those, one in twenty-five Italian, its band in three stripes.
+   */
+  if (plan.dress?.paris && shown !== null && plan.storeys[0].kind === 'ground') {
+    const g = plan.storeys[0]
+    const sr = rng(seed ^ 0x5409f)
+    const SHOP = ['#1f2a44', '#1f2a44', '#5a1f22', '#24382d', '#24382d', '#141516', '#2e3f52', '#6b2232']
+    const shopsAt = cells.filter((c) => c.y0 <= g.y0 + 0.01 && c.element.endsWith('/shopfront')).map((c) => [c.x0, c.x1] as [number, number]).sort((a, b) => a[0] - b[0])
+    for (let i = 0; i < shopsAt.length;) {
+      let j = i
+      while (j + 1 < shopsAt.length && Math.abs(shopsAt[j + 1][0] - shopsAt[j][1]) < 0.05 && j - i < 2) j++
+      const x0 = shopsAt[i][0], x1 = shopsAt[j][1]
+      i = j + 1
+      // (uncommon, not the rule: "that exists but is uncommon" — one run in four; the rest keep the stone)
+      if (sr() >= 0.25) continue
+      const paint = SHOP[Math.floor(sr() * SHOP.length)]
+      const top = g.y1 - 0.15
+      for (const x of [x0, x1 - 0.22]) features.push({ kind: 'pilaster', y0: 0.05, y1: top, depth: 0.1, x0: x, x1: x + 0.22, colour: paint, flat: true })
+      if (sr() < 0.04) {
+        const w = (x1 - x0) / 3
+        ;['#1d7a3a', '#f2f0ea', '#b8262c'].forEach((c, k) => features.push({ kind: 'panel', y0: top - 0.3, y1: top, depth: 0.11, x0: x0 + k * w, x1: x0 + (k + 1) * w, colour: c, flat: true }))
+      } else features.push({ kind: 'panel', y0: top - 0.3, y1: top, depth: 0.11, x0, x1, colour: paint, flat: true })
+    }
+  }
   // a Haussmann front's carriage door in its own paint (ParisDress.door): navy, green, oxblood, black — the street's colour
   if (plan.dress?.paris && carriageBay >= 0 && shown !== null && plan.storeys[0].kind === 'ground') {
     const g = plan.storeys[0], x0 = margin + carriageBay * bayW
