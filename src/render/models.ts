@@ -604,10 +604,21 @@ export function trafficLight(out: MeshBuilder): void {
  * because the colour belongs to the region.
  */
 export function bollard(colour: Rgb, height: number): (out: MeshBuilder) => void {
+  // (the post and its ring with no faces underneath, and no cap: forty vertices, not seventy-two — Paris has hundreds of
+  // thousands of them, and a tile's worth of pavement is thousands: owner, 2026-10-29, "paris has them very commonly")
+  const open = (out: MeshBuilder, cy: number, h: number, r: number): void => {
+    const P = (sx: number, sy: number, sz: number): [number, number, number] => [sx * r, cy + sy * h, sz * r]
+    for (const [c, n] of [
+      [[P(-1, -1, 1), P(1, -1, 1), P(1, 1, 1), P(-1, 1, 1)], [0, 0, 1]],
+      [[P(1, -1, -1), P(-1, -1, -1), P(-1, 1, -1), P(1, 1, -1)], [0, 0, -1]],
+      [[P(1, -1, 1), P(1, -1, -1), P(1, 1, -1), P(1, 1, 1)], [1, 0, 0]],
+      [[P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1), P(-1, 1, -1)], [-1, 0, 0]],
+      [[P(-1, 1, 1), P(1, 1, 1), P(1, 1, -1), P(-1, 1, -1)], [0, 1, 0]],
+    ] as [[number, number, number][], [number, number, number]][]) out.quad(c, n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, FIXED)
+  }
   return (out) => {
-    box(out, 0, height / 2, 0, 0.045, height / 2, 0.045, colour, FIXED)
-    box(out, 0, height - 0.09, 0, 0.062, 0.025, 0.062, colour, FIXED)
-    box(out, 0, height + 0.02, 0, 0.035, 0.02, 0.035, colour, FIXED)
+    open(out, height / 2, height / 2, 0.045)
+    open(out, height - 0.09, 0.025, 0.062)
   }
 }
 

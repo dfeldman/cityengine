@@ -3709,17 +3709,42 @@ export class City {
     }
 
     /*
-     * Bollards along the kerb of a narrow pavement, where the region has them (Paris). Kept clear of the
-     * last few metres before each junction, which is where the crossings and the corners are.
+     * Bollards along the kerb, where the region has them (Paris). Kept clear of the last few metres before each
+     * junction, which is where the crossings and the corners are. A narrow pavement has them all the way along; a
+     * wider one (to `BROAD_PAVEMENT`) at its corners and in runs along a stretch in three (owner, 2026-10-29: "we are
+     * missing the characteristic french bollards on the sidewalk" — "well there are some, but paris has them very
+     * commonly"): where a car could get up onto it, which on a street of shops is most of the way.
      */
     const bol = this.region.furniture.bollards
     if (bol) {
       const post = bollard(hexRgb(bol.colour), bol.height)
+      const BROAD_PAVEMENT = 7
+      const CORNER_RUN = 9
+      const STRETCH = 28
+      // clear of the point furniture — a bus shelter's length, a kiosk, a column (their mapped points, before any
+      // of them is moved to the kerb)
+      const clear = (x: number, z: number): boolean => {
+        const tx = Math.floor(x / TILE), tz = Math.floor(z / TILE)
+        for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+          for (const f of this.pointsIn.get(key(tx + dx, tz + dz)) ?? []) {
+            if (Math.hypot(f.x - x, f.z - z) < (f.kind === 'busstop' ? 5 : 1.4)) return false
+          }
+        }
+        return true
+      }
       for (const e of groundEdges) {
-        if (e.foot || e.walk < 0.9 || e.walk > bol.maxPavement) continue
+        if (e.foot || e.walk < 0.5 || e.walk > BROAD_PAVEMENT) continue
+        const narrow = e.walk <= bol.maxPavement
         const pts = unpackPoints(e.points)
         const total = lengthOf(pts)
         const off = e.width / 2 + 0.28
+        // on a broad pavement: by the corners, and a run in some stretches (each side its own pick)
+        const wanted = (s: number, side: number): boolean => {
+          if (narrow || s < 7 + CORNER_RUN || s > total - 7 - CORNER_RUN) return true
+          const k = Math.floor(s / STRETCH)
+          if (s - k * STRETCH > STRETCH * 0.55) return false
+          return (Math.imul(e.id * 31 + k * 2 + (side > 0 ? 1 : 0), 2654435761) >>> 0) % 3 === 0
+        }
         let travelled = 0
         let acc = 7
         for (let i = 1; i < pts.length; i++) {
@@ -3730,9 +3755,11 @@ export class City {
             if (travelled + acc > total - 7) break
             const t = acc / seg
             for (const side of [-1, 1]) {
-              placeModel(furniture, post,
-                pts[i - 1].x + dx * t + (-dz / seg) * off * side, 0.15,
-                pts[i - 1].z + dz * t + (dx / seg) * off * side, 0)
+              if (!wanted(travelled + acc, side)) continue
+              const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
+              const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
+              if (!clear(px, pz)) continue
+              placeModel(furniture, post, px, 0.15, pz, 0)
             }
             acc += bol.spacing
           }

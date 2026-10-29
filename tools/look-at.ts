@@ -93,5 +93,6 @@ if (arg('probe')) {
   // and whatever mesh at all is drawn there
   console.log('any', JSON.stringify(await page.evaluate(`(() => { const s = window.__scene; for (const m of s.meshes) m.isPickable = true; const h = s.pick(${px2}, ${py2}); return h && h.hit ? { mesh: h.pickedMesh.name, at: h.pickedPoint.asArray().map((v) => Math.round(v * 10) / 10) } : null })()`)))
 }
+console.log('camera', JSON.stringify(await page.evaluate('window.__scene.activeCamera.position.asArray().map((v) => Math.round(v * 10) / 10)')))
 console.log('instance at', found)
 await browser.close()
