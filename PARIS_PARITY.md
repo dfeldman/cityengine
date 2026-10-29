@@ -1,0 +1,181 @@
+# Paris to San Francisco parity
+
+What Paris needs to stand beside San Francisco. Written 2026-10-29 from a survey of the code and data. The owner's
+framing:
+
+> "Paris has few public parks, few skyscrapers or highrises, and little surface public transit so those parts are
+> unnecessary. But there are a bunch of unique buildings in the box that are presently unmodeled."
+
+> "paris does have different plants, cars, outfits on NPCs, surfaces, and most of all generic buildings. we should
+> probably expand the box in Paris to include a bit more, maybe some hillscapes."
+
+So: no parks programme, no towers, no surface-transit network (the Métro, RER and boats Paris already has are
+enough). The work is the **generic buildings**, a **bigger box with hills**, the **city's own plants, cars,
+clothes and surfaces**, and the **unmodelled landmarks**.
+
+The plan of record for the box itself is [PARIS_EXPAND.md](PARIS_EXPAND.md) (its §8 is the progress log); the
+ranked landmark ledger is [docs/landmarks/paris-centre.txt](docs/landmarks/paris-centre.txt).
+
+## Where Paris stands
+
+| | Paris (`paris-centre`) | San Francisco |
+|---|---|---|
+| box | 6.7 × 3.5 km, ~23 km² (lon 2.286–2.378, lat 48.845–48.876) | 17.6 × 13.8 km, mostly water |
+| tiles | 1,539 | 9,206 |
+| bake | 2026-09-22 (bake 20261014T2238), legacy inline terrain: no `terrain.bin`, no `datumMsl`, no per-tile terrain | current pipeline |
+| `live` | false (tools/cities.ts) | true |
+| landmark builders | 45 files in `src/render/landmarks/paris/`; 70 entries in `public/landmarks/paris.json` | 271 files; ~2,600 entries across 134 manifests |
+| statues / fountains / info cards | 12 / 6 / 46 | 89 statues |
+| bridges | 26 designs (`PARIS_BRIDGES`) | — |
+
+`paris-marais` has a spec in tools/cities.ts but no bake on disk (BUGS.md's "433 tiles still on disk" is stale).
+
+Because the bake is on the old terrain format, **any expansion is a re-bake on the current pipeline anyway**; do
+the box change and the re-bake together.
+
+## 1. Generic buildings (the owner's first priority)
+
+Paris already has its own palettes, shop names, porte cochère, awnings, chimneys, dormers, terracotta pots and three
+generic styles (`haussmann`, `marais`, `classical`, plus the `vosges` and `opera` restyles). What SF has and Paris
+lacks:
+
+- [ ] **A classifier.** `classifierFor` knows only SF (`src/city/sf/btype.ts`, `classifySF`, 442 lines). Paris
+      needs its own: Haussmannian immeuble (the bulk of the box), pre-Haussmann faubourg house, Marais hôtel
+      particulier, 17th–18th c. stone, Belle Époque, 1930s brick (HBM, on the boulevards des Maréchaux if the box
+      reaches them), post-war slab, modern infill. OSM gives `building:levels`, `roof:shape`, `start_date` here and
+      there; the Paris open data's building-age layer (APUR / "BDTOPO", to check) would give the rest.
+- [ ] **The Haussmann grammar, in full.** The type the eye judges Paris by: rez-de-chaussée and entresol in rusticated
+      stone, the 2nd floor's continuous balcony (étage noble), the 5th floor's second balcony, the zinc mansard
+      with lucarnes and the chimney stacks on the party walls, the cut corner (pan coupé) at junctions, the
+      repeated cornice line along a street. Check how much of this the `haussmann` style already says.
+- [ ] **Appearance data.** SF has 85,694 street-photo rows (`public/appearance/imputed.json`) and the Assessor's
+      records; Paris has nothing. Decide the source (street photos via Mapillary, as SF; the Paris "PLU" heritage
+      layer) before building the pipeline.
+- [ ] **Shopfronts at street level**: boulangerie, café-tabac (the red carrot sign), pharmacie (green cross), the
+      brasserie's terrace under its awning. Shop names exist; check what is drawn.
+- [ ] **Quick landmarks.** Buildings with no entry get dressed by kind (`render/prepare.ts` QUICK,
+      `render/quickmarks.ts`): churches get classical dress and a generic bell tower. Most Paris churches are
+      Gothic or Baroque, so a Paris church quickmark (buttresses, a rose window, a flèche) would lift dozens at once.
+
+## 2. A bigger box, with hills
+
+The terrain grid already covers all of these (x ±6,740 m, z ±5,100 m around the centre, 20 m step, from the global
+terrarium tiles, `tools/bake.ts:1840`), so the box can grow without a new elevation source.
+
+| hill | from the box edge | height in the grid* |
+|---|---|---|
+| Montmartre (Sacré-Cœur) | ~1.2 km N (the foot of the butte at Clichy / Rochechouart ~0.8 km) | 91 |
+| Buttes-Chaumont | ~0.55 km N, ~0.35 km E of the NE corner | 31 |
+| Parc de Belleville | ~0.5 km E | 50 |
+| Ménilmontant | ~0.7 km E | 37 |
+| Père-Lachaise | ~1.1 km E | 53 |
+| Rue du Télégraphe (summit of Belleville) | ~1.6 km E | 95 |
+| Montagne Sainte-Geneviève | already inside; the Panthéon is 0.13 km from the south edge, its south slope 0.3–0.5 km out | 33 |
+
+\* the grid's datum is not stated and is not MSL (the Seine at the Concorde reads −3.9).
+
+- [ ] **Push the north edge to take in Montmartre** (~+1.5 km): the one real hill, the funicular, the stairs (SF's
+      `stairways` machinery), Sacré-Cœur, the Moulin Rouge and Pigalle. Just past today's north edge already: Saint-
+      Augustin, Gare Saint-Lazare, Notre-Dame-de-Lorette, La Trinité.
+- [ ] **Push the north-east corner to take in Belleville / Buttes-Chaumont** (~+1 km E and N): the park's cliff and
+      temple, the Belleville slopes, the view back over the city from the Parc de Belleville.
+- [ ] **Push the south edge ~0.5 km**: the rest of the Montagne Sainte-Geneviève (rue Mouffetard), and the Panthéon
+      stops being an edge object.
+- [ ] **Fine elevation.** The fine lidar is USGS 3DEP only (`tools/lidar/ept.py`). For Montmartre's stairs and
+      Belleville's streets, IGN's RGE ALTI (1 m, open) or LiDAR HD would be the French equivalent; the 20 m grid will
+      round the butte off.
+- [ ] Mind the cost: the box is 23 km²; the four pushes above roughly double it. Check tile count and load time
+      against SF's before committing to all of them.
+
+## 3. The city's own plants, cars, clothes and surfaces
+
+Each of these falls back to the SF/US default today.
+
+- [ ] **Trees.** `render/region-kits.ts` gives `paris` only `stock` and `fleet`; only SF has `flora`. Paris gets
+      `DEFAULT_FLORA` (maple, birch, ash, beech). It needs **London planes** (most of the boulevards and quais),
+      **horse chestnuts**, **limes**, the clipped alignments of the Tuileries and the Palais-Royal, and the
+      **Paris tree grille** round each trunk. The comment in `render/flora.ts` points at a `render/paris/flora.ts`
+      that does not exist. Street-tree data: Paris's open "Les arbres" dataset (~200,000 trees, species and
+      position) is the counterpart of `'datasf'`; `streetTrees` can only be `'datasf'` today. No planting zones
+      either (`data/zones/` has only san-francisco.json), so Paris uses the old scatter rules
+      (`city/plantings.ts:255`).
+- [ ] **Cars.** `render/street-fleet.ts` has one global `MIX` with no region hook: US pickups and US police cars.
+      Paris wants small hatchbacks and city cars, scooters and mopeds, Renault/Peugeot-shaped vans, the G7 taxi
+      (black or white with the roof light, not yellow), the white-and-blue police van, the RATP bus livery (green
+      and white, today's buses are hard-coded Muni silver and red). Paris's rail and boat stock already exist
+      (`render/paris/trains.ts`, `render/paris/boats.ts`).
+- [ ] **Clothes.** `render/crowd-baked.ts` has one `CITY_WARDROBE` and `cityClothes()`, with no region key. Paris: darker
+      and more tailored, coats and scarves, fewer shorts and team shirts.
+- [ ] **Surfaces.** `city/pavement.ts` sets pavement by width only. Paris's region entry has `crossings: bands` and
+      one `pavedSquares` entry (Trocadéro), and none of SF's `streetWidths`, `streetPaint`, `brickStreets`,
+      `stripedStreets`, `touristStrips`, `centreLine`. Paris wants:
+      - **pavés** (granite setts) where OSM says `surface=sett`: the quais' lower banks, the Place de la Concorde's
+        edges, Montmartre, the Marais's old lanes; the ride now feels them (sim/ride.ts `SURFACE_TOP`);
+      - asphalt pavements with the **granite kerb** and the gutter (caniveau), the **cast-iron tree grilles**, the
+        Place's stone paving;
+      - the **bus and bike lanes** in their paint (green-tinted bike lanes, the "BUS" lettering), the dashed edge
+        lines, the Paris pedestrian crossing (`bands` is there).
+      The road textures (`public/roads/`, including cobblestone) are shared by every city already.
+- [ ] Street furniture is already Paris's own (wall lamps, bollards, Guimard entrances, Wallace fountains, Morris
+      columns, kiosks, blue plaques, Vélib). Nothing to do beyond what the expansion adds (Montmartre's lamps,
+      the funicular).
+
+## 4. Unmodelled landmarks in today's box
+
+From the ledger, against the manifests (by OSM id, and within 80 m of a modelled entry). About 2,480 heritage,
+wikidata or worship buildings in the box are unmatched; many are Marais hôtels the `Hôtel …` name restyle already
+dresses in stone. The top thirty by prominence:
+
+1. Église Saint-Roch, way/42722202 (ledger #2)
+2. Palais du Luxembourg, relation/975955, with the Fontaine Médicis node/782601793 and the Musée du Luxembourg
+   way/170226810
+3. Porte Saint-Denis, relation/3170072
+4. Porte Saint-Martin, relation/3178897
+5. Saint-Sulpice, way/16077204
+6. Saint-Germain-des-Prés, way/62287173
+7. Saint-Eustache, way/53762963 (4,207 m²)
+8. Saint-Germain-l'Auxerrois, way/53770908, and its belfry way/200452261
+9. **Panthéon**, way/16407465: only a skyline stand-in today (`pantheon.ts`, five primitives)
+10. Saint-Étienne-du-Mont, way/55343672
+11. Saint-Séverin, way/19740659
+12. Arc de Triomphe du Carrousel, way/227483542
+13. **Hôtel des Invalides**, relation/1463538 (49,870 m²; only the Dôme is modelled), with Saint-Louis-des-Invalides
+    way/64955027
+14. Palais Bourbon, relation/1019368 (portico only), with the Hôtel de Lassay way/175448743
+15. Palais de l'Élysée, relation/1060803 (= Hôtel d'Évreux relation/542353)
+16. Ministère des Affaires étrangères, Quai d'Orsay, way/448794899
+17. Tribunal de commerce (the dome on the Île de la Cité), way/53601032
+18. Basilique Sainte-Clotilde, way/64952290
+19. Saint-François-Xavier, way/68893289
+20. Saint-Nicolas-des-Champs, way/56290843
+21. Notre-Dame-des-Victoires, way/54661742
+22. Odéon, way/338641511
+23. Opéra-Comique, way/54572719
+24. Palais Brongniart (the Bourse), way/54657155
+25. Banque de France, relation/541080 (20,889 m², no wikidata tag), with BnF Richelieu relation/545655 and the Galerie
+    Vivienne relation/546789
+26. Musée de l'Orangerie way/54188996 and the Jeu de Paume way/54188994
+27. Palais de Tokyo way/79219351 and the Musée d'Art Moderne way/79219308; the Palais d'Iéna way/79657345; the Musée
+    Guimet way/79641993
+28. Hôtel Biron (Musée Rodin) way/68568682; Palais de la Légion d'Honneur relation/1002192
+29. Chapelle expiatoire way/67557301; Grande Synagogue de la Victoire way/69363730
+30. Carreau du Temple way/30612670, Bibliothèque de l'Arsenal way/56217774, Musée de Cluny way/56640163, Hôpital
+    Saint-Louis relation/10714750, Bon Marché relation/10166422, BHV way/29168869
+
+Not checked: whether the 80 m test marks a neighbour of a modelled building as covered when it is not.
+
+## 5. Already planned (PARIS_EXPAND.md §8)
+
+The progress log's own next steps, still open: the Step 3 ride-graph overrides (Étoile, Concorde, Trocadéro, Opéra,
+Châtelet, Saint-Michel), Bir-Hakeim's Métro deck and the Alexandre III arch (BUGS #37), box hedges for the formal
+gardens. Statue priorities are in MODELS_NEEDED.md (Louis XIV, Foch, the Alexandre III Renommées, the Concorde
+figures, Garnier's Apollo, Saint Michael).
+
+## Suggested order
+
+1. Box and re-bake together (§2): the bake has to move to the current pipeline anyway, and every later step is judged
+   in the bigger box.
+2. Generic buildings (§1): the classifier and the Haussmann grammar.
+3. Trees and the street-tree register (§3), then cars, clothes, surfaces.
+4. Landmarks (§4) from the top, with Montmartre's own (Sacré-Cœur, the funicular, the Moulin Rouge) once the box
+   takes it in.
