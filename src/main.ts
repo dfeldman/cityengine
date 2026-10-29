@@ -142,7 +142,8 @@ if (params.get('model')) {
     q.delete('at')
     return `?${q}`
   }
-  if (cities.length > 0 && !cities.some((c) => c.id === city)) {
+  // (`&dev=1` opens a city baked but not yet live — Paris, while it is worked on: owner, 2026-10-29, "how can i preview this")
+  if (cities.length > 0 && !cities.some((c) => c.id === city) && params.get('dev') !== '1') {
     const box = document.createElement('div')
     box.className = 'sr-nocity'
     box.innerHTML = `<h1>No city called “${city.replace(/[<>&"]/g, '')}”</h1><p>These are baked:</p><ul>`
