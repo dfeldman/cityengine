@@ -1,7 +1,8 @@
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, disc, prism, type Rgb } from '../../models.ts'
+import { disc, prism, type Rgb } from '../../models.ts'
 import { archedPane, beam, block, hex, roof, shade } from '../kit.ts'
 import type { Fit } from '../fit.ts'
+import { clockFace } from '../parts.ts'
 
 const FIXED = 0
 
@@ -57,14 +58,8 @@ export function museeOrsay(out: MeshBuilder, fit: Fit): void {
     // the clock: a great white face in a stone and gilt frame, its numerals as ticks, its two hands
     const z = -hz - 1.56
     disc(out, cx, 22, z, 6.2, deep, FIXED, 32)
-    disc(out, cx, 22, z - 0.03, 5.6, goldC, FIXED, 32)
-    disc(out, cx, 22, z - 0.06, 5.1, face, FIXED, 32)
-    for (let h = 0; h < 12; h++) {
-      const a = (h / 12) * Math.PI * 2
-      box(out, cx + Math.sin(a) * 4.4, 22 + Math.cos(a) * 4.4, z - 0.09, 0.18, 0.45, 0.02, dark, FIXED)
-    }
-    beam(out, [cx, 22, z - 0.12], [cx + 2.2, 23.4, z - 0.12], 0.14, dark)                   // ten past two
-    beam(out, [cx, 22, z - 0.14], [cx - 1.2, 25.6, z - 0.14], 0.1, dark)
+    // (the face itself a working clock: the real time, as every clock in the city — owner, 2026-10-29: "Sf has working clocks")
+    clockFace(out, cx, 22, z - 0.03, 0, -1, 5.6, { dial: face, rim: goldC, marks: dark, hands: dark })
     // an arched window under it, and a small one either side
     archedPane(out, -hz - 1.53, cx, 3, 7, 12, glass)
   }

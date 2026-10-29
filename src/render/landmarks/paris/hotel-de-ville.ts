@@ -1,7 +1,8 @@
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, disc, prism } from '../../models.ts'
+import { prism } from '../../models.ts'
 import { block, column, dome, hex, pane, pediment, roof, shade, windows } from '../kit.ts'
 import type { Fit } from '../fit.ts'
+import { clockFace } from '../parts.ts'
 
 const FIXED = 0
 
@@ -105,9 +106,8 @@ export function hotelDeVille(out: MeshBuilder, fit: Fit): void {
   const cz = -hz + 6
   block(out, -4.2, 4.2, cz - 4.2, cz + 4.2, 30, 42, stone)
   block(out, -4.6, 4.6, cz - 4.6, cz + 4.6, 41.4, 42.2, trim)
-  disc(out, 0, 38, cz - 4.25, 1.9, hex('#f4f0e6'), FIXED, 16)
-  box(out, 0, 38.6, cz - 4.3, 0.08, 1.2, 0.02, hex('#222222'), FIXED)                 // the hands at noon
-  box(out, 0.5, 38, cz - 4.3, 0.9, 0.08, 0.02, hex('#222222'), FIXED)
+  // the campanile's clock, telling the real time (render/clocks.ts)
+  clockFace(out, 0, 38, cz - 4.22, 0, -1, 1.9, { dial: hex('#f4f0e6'), hands: hex('#222222') })
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2 + Math.PI / 8
     column(out, Math.sin(a) * 2.8, cz + Math.cos(a) * 2.8, 42.2, 47, 0.28, stone)
