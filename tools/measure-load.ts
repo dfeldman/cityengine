@@ -13,7 +13,7 @@ const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=me
 for (let run = 0; run < Number(arg('runs', '1')); run++) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
   const t0 = Date.now()
-  await page.goto(`http://localhost:${arg('port', '5200')}/?city=${city}&freeze=1${arg('without') ? `&without=${arg('without')}` : ''}`)
+  await page.goto(`http://localhost:${arg('port', '5200')}/?city=${city}&dev=1&freeze=1${arg('without') ? `&without=${arg('without')}` : ''}`)
   await page.waitForFunction('window.__marks && window.__marks.firstFrame !== undefined', null, { timeout: 300_000 })
   const ready = Date.now() - t0
   await page.waitForTimeout(4000)

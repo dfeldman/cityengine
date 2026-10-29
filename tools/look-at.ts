@@ -29,7 +29,7 @@ if (at) {
 }
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
-await page.goto(`${process.env.SHOTS_BASE ?? 'http://localhost:5200'}/?city=${city}${place}${arg('without') ? `&without=${arg('without')}` : ''}${arg('extra') ? `&${arg('extra')}` : ''}`)
+await page.goto(`${process.env.SHOTS_BASE ?? 'http://localhost:5200'}/?city=${city}${place}&dev=1${arg('without') ? `&without=${arg('without')}` : ''}${arg('extra') ? `&${arg('extra')}` : ''}`)
 await page.waitForFunction('window.riderReady === true', null, { timeout: 90_000 })
 // the tiles round the rider, and the landmarks on them, arrive after the rider does
 await page.waitForFunction('window.__cityIdle && window.__cityIdle()', null, { timeout: 90_000 }).catch(() => {})

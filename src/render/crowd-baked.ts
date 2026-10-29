@@ -464,8 +464,18 @@ const CITY_WARDROBE = {
  */
 const PARIS_WARDROBE = {
   ...CITY_WARDROBE,
-  topsF: [...CITY_WARDROBE.topsF, 'punkduck_winter_coat', 'punkduck_winter_coat'],
-  topsM: [...CITY_WARDROBE.topsM, 'punkduck_winter_coat', 'toigo_male_suit_tie_and_jacket'],
+  /*
+   * Not San Francisco's T-shirts (owner, 2026-10-29: "paris is not SF in clothing, people tend not to wear shorts and T
+   * shirts, partly due to cold, partly due to dressier standards. except runners and cyclists of course"): sweaters,
+   * cardigans, coats, a blouse, the Breton stripe, a suit jacket; one T-shirt in the lot. The bottoms are trousers, jeans
+   * and skirts already, and the athletic kit is the runners' and the cyclists'.
+   */
+  topsF: ['mindfront_knitted_sweater_01', 'mindfront_knitted_sweater_02', 'mindfront_knitted_sweater_01', 'mindfront_cardigan_long_open_front',
+    'mindfront_cardigan_long_open_front', 'punkduck_winter_coat', 'punkduck_winter_coat', 'punkduck_winter_coat', 'punkduck_lace_up_blouse',
+    'janexx_old_female_sweater', 'ews_striped_shirt', 'joepal_crude_t-shirt_female'],
+  topsM: ['mindfront_knitted_sweater_01', 'mindfront_knitted_sweater_02', 'toigo_fisherman_sweater', 'namuhekam_male_polo_shirt',
+    'punkduck_winter_coat', 'punkduck_winter_coat', 'toigo_male_suit_tie_and_jacket', 'toigo_male_suit_tie_and_jacket',
+    'ews_striped_shirt', 'elvs_crude_t-shirt_male'],
 }
 let wardrobe = CITY_WARDROBE
 export function wardrobeFor(region: string | undefined): void { wardrobe = region === 'paris' ? PARIS_WARDROBE : CITY_WARDROBE }

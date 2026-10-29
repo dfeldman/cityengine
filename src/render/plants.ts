@@ -125,7 +125,7 @@ export function bedPlanting(ring: number[], rect: { x0: number; z0: number; x1: 
 }
 
 export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1: number; z1: number },
-  edges?: PackedEdge[], trees?: Planting[], zones?: PlantZones | null): Planted[] {
+  edges?: PackedEdge[], trees?: Planting[], zones?: PlantZones | null, woodWalls = false): Planted[] {
   // how thick the zone here asks for it (ZonePlant.shrubs.density, 1 where no zone says): scales every keep chance
   const thick = (x: number, z: number): number => zones?.shrubs(x, z)?.density ?? 1
   const out: Planted[] = []
@@ -225,6 +225,19 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
         // under the canopy first: most of the lattice is kept, and what it grows is undergrowth rather than
         // a gardener's shrub — smaller, and scattered instead of lining a path
         const w = wood ? wood(jx, jz) : 0
+        /*
+         * …and in a city's WOODS (`woodWalls`: Paris's Bois — owner, 2026-10-29: "reality has a dense wall of plants on each
+         * side"; of the scattered undergrowth, "it reads more as weeds than a park"): along a road or a path through the
+         * trees, from just off its edge to five metres out, a continuous band of big shrubs and saplings, two to a lattice
+         * cell — the green walls you ride between — with the open litter of the wood beyond.
+         */
+        if (woodWalls && w >= 0.4 && paved && paved.onPaving(jx, jz, 5) && !paved.onPaving(jx, jz, 0.9) && !onLawn(jx, jz)) {
+          if (hash(x, z, 23) < 0.92) out.push({ x: jx, z: jz, s: 1.3 + hash(x, z, 24) * 1.1, spin: hash(x, z, 25) * Math.PI * 2, kind: 'shrub' })
+          const kx = jx + (hash(x, z, 26) - 0.5) * STEP * 0.7, kz = jz + (hash(x, z, 27) - 0.5) * STEP * 0.7
+          if (hash(x, z, 28) < 0.8 && paved.onPaving(kx, kz, 5) && !paved.onPaving(kx, kz, 0.9) && !built(kx, kz))
+            out.push({ x: kx, z: kz, s: 1.0 + hash(x, z, 29) * 1.0, spin: hash(x, z, 30) * Math.PI * 2, kind: 'shrub' })
+          continue
+        }
         // two trunks within fourteen metres before any undergrowth at all: the threshold is deliberately
         // high because the failure it guards against is the one the owner named — *"some areas that DON'T
         // have vegetation, like fields and the polo field"* — and a meadow with scrub scattered over it is
@@ -267,6 +280,8 @@ export class Plants {
   models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number; named?: boolean; own?: number }[] = []
   /** the city's planting zones, when it has them (map format v3): which shrubs and flowers grow where */
   zones: PlantZones | null = null
+  /** a city's woods walled with undergrowth along their roads and paths (plantTile `woodWalls`: Paris) */
+  woodWalls = false
   private dirty = false
 
   constructor(scene: Scene, terrain: Terrain, assetBase: string) {
@@ -327,7 +342,7 @@ export class Plants {
       name: 'plants',
       range: 2,
       build: (near, rect) => {
-        this.byTile.set(near.key, this.cleared(plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones)))
+        this.byTile.set(near.key, this.cleared(plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones, this.woodWalls)))
         this.dirty = true
         return []
       },

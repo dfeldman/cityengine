@@ -1216,7 +1216,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     : crowdLevel, crowdZone)
   // (Paris: "just on a random paris block it's common to see 30 pedestrians, often more … More pedestrians than cars" —
   //  owner, 2026-10-29, from street view; three times the default, to be checked by counting a block in the city)
-  if (pkg.region === 'paris') { crowd.cycling = 1.6; crowd.density = 3 }
+  //  — and then balanced against memory, owner: "just do your best to find a good balance": twice on its streets, the parks
+  //  as anywhere else)
+  if (pkg.region === 'paris') { crowd.cycling = 1.6; crowd.density = 2 }
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
   /*
@@ -1235,8 +1237,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         people: Math.min(40000, Math.max(3000, Math.round((crowdN ?? 95) * 60))),
       }
     : dense ? { cars: 900, buses: 80, people: 3000 } : undefined
-  // (Paris's crowd is three times the default: room for it, or a full pool just stops drawing people)
-  const peopled = pkg.region === 'paris' && crowdN === null ? { ...(budget ?? { cars: 90, buses: 16, people: 3000 }), people: Math.max(budget?.people ?? 3000, 8000) } : budget
+  // (Paris's crowd is twice the default on its streets: room for it, or a full pool just stops drawing people)
+  const peopled = pkg.region === 'paris' && crowdN === null ? { ...(budget ?? { cars: 90, buses: 16, people: 3000 }), people: Math.max(budget?.people ?? 3000, 5000) } : budget
   if (peopled) console.log('[density] pools', peopled, 'traffic', trafficN, 'crowd', crowdN)
   // the cars and buses by carkit (render/street-fleet.ts); `?without=carkit` for the old stand-ins
   const life = new Life(scene, pkg as unknown as CityPackage, peopled, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'), regionKit(pkg.region).cars)
@@ -1399,6 +1401,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const plants = new Plants(scene, city.terrain, new URL('plants/', document.baseURI).href)
   // which shrubs grow where, by zone (map format v3; a v2 city has none and gets the defaults everywhere)
   if (index.zones?.length) plants.zones = new PlantZones(index.zones)
+  if (pkg.region === 'paris') plants.woodWalls = true
   // (the clearings the landmarks have asked for so far, and every one from now on)
   for (const r of clearingsEarly) plants.clearings.push(r)
   plantsClear = (ring) => plants.clear(ring)

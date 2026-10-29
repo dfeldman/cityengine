@@ -457,7 +457,9 @@ export class Crowd {
 
       // a different draw each time the street is populated: the same seed twice gave exact clones
       const r = rng(e.id ^ 0x51ed270b ^ Math.imul(++this.generation, 0x9e3779b9))
-      const want = (e.length / 1000) * this.cfg.perKm * this.zoneFactor(mid) * this.density
+      // (the city's crowding on its streets, not its parks: "the bois doesn't have THAT many NPCs... a lot but we're showing
+      //  hundreds")
+      const want = (e.length / 1000) * this.cfg.perKm * this.zoneFactor(mid) * (e.park ? 1 : this.density)
       let n = Math.floor(want)
       if (r() < want - n) n++
       for (let i = 0; i < n; i++) {
