@@ -520,6 +520,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * for the mid ring) out to MID + 1. Central Paris held a gigabyte with every tile full (PARIS_EXPAND §2).
    */
   const tileLevel = new Map<string, 'mid' | 'full'>()
+  /** the tiles whose full detail is in the city (a jump waits on the ones round where it lands: `__jump`) */
+  const fullReady = new Set<string>()
   let keepArrived = true
   /** told of every tile's raw data, mid or full (the landmarks); the raw tiles seen before they subscribe */
   const anyTile: ((raw: TileData) => void)[] = []
@@ -634,6 +636,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       return
     }
     prepared.tiles.set(k, ready)
+    fullReady.add(k)
     city.ingest(ready)
     const t3 = performance.now()
     const fresh = mapEdges(ready.edges.filter((e) => !graph.edges.has(e.id)), city.terrain)
@@ -709,6 +712,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const [kx, kz] = k.split(',').map(Number)
       if (Math.max(Math.abs(kx - cx), Math.abs(kz - cz)) > keep) {
         tileLevel.delete(k)
+        fullReady.delete(k)
         src.forget(k)
         prepared.tiles.delete(k)
         const [dx, dz] = k.split(',').map(Number)
@@ -2088,6 +2092,44 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let liftUsed = -1
   /** why the rider is held this frame, for the probes (`__ride().hold`) */
   let holdWhy = ''
+  /*
+   * AFTER A JUMP, THE STREETS ROUND THE LANDING (owner, 2026-10-29, Paris: "teleporting on the map takes a really long
+   * time … and you have to press f to actually move, and there's no loading indicator"). The rider waits — held, with
+   * a banner counting the tiles in — until the nine tiles round the landing have their full detail, so they do not
+   * ride off across bare ground; at most `LANDING_MS`, after which they go on whatever has arrived.
+   */
+  const LANDING_MS = 20_000
+  let landing: { x: number; z: number; since: number; said: number } | null = null
+  /** the landing's tiles: how many of those that exist are in */
+  const landingTiles = (l: { x: number; z: number }): { have: number; of: number } => {
+    const cx = Math.floor(l.x / TILE)
+    const cz = Math.floor(l.z / TILE)
+    let have = 0
+    let of = 0
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      const k = tileKey(cx + dx, cz + dz)
+      if (!src.has(k)) continue
+      of++
+      if (fullReady.has(k)) have++
+    }
+    return { have, of }
+  }
+  /** still waiting on the landing (and the banner kept saying so): false once it is in, or has taken too long */
+  const jumpWait = (): boolean => {
+    if (!landing) return false
+    const { have, of } = landingTiles(landing)
+    const now = performance.now()
+    if (have >= of || now - landing.since > LANDING_MS) {
+      landing = null
+      hud.banner('Ready', placeName(nav.at()), 2500)
+      return false
+    }
+    if (now - landing.said > 400) {
+      landing.said = now
+      hud.banner('Loading the streets…', `${have} of ${of} · ${placeName(nav.at())}`, 1500)
+    }
+    return true
+  }
   let welcomeFor = 0
   let welcomePedal = 0
   /** what the rider was held behind last frame, for the probes (tools/trainer-soak.ts) */
@@ -2988,11 +3030,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (welcomePedal > 2 || welcomeFor > 20) closeWelcome()
       }
       // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
-      const hold = frozen || menuHeld || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen() || tourPicking
+      const hold = frozen || menuHeld || jumpWait() || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen() || tourPicking
         // (waiting at the gondola's station: the cabin is boarded, the track is not ridden; and in a lift)
         || (!riding && nav.edge.name === GONDOLA_NAME)
         || (!riding && nav.edge.name === LIFT_NAME && liftUsed !== nav.position.edgeId)
-      if (hold) holdWhy = frozen ? 'frozen' : menuHeld ? 'menu' : controls.paused() ? 'paused' : riding ? 'riding' : rider?.tumbling ? 'tumbling'
+      if (hold) holdWhy = frozen ? 'frozen' : menuHeld ? 'menu' : landing ? 'landing' : controls.paused() ? 'paused' : riding ? 'riding' : rider?.tumbling ? 'tumbling'
         : welcomeOpen() ? 'welcome' : nav.edge.name === GONDOLA_NAME ? 'gondola' : nav.edge.name === LIFT_NAME ? 'lift' : 'in the way'
       else holdWhy = ''
       // the watts the rider gets: what was measured (or typed), less what an empty energy bar will not pay for
@@ -3685,10 +3727,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     destination = null
     tour = null
     clearRoute()
+    // out of a look-around or an observation: frozen, the tiles stream round the old view and the rider stays put, so
+    // the jump seemed to take forever and needed an F to get going (owner, 2026-10-29)
+    held = null
+    if (frozen) comeDown()
     const at = nav.at()
     city.update(at.x, at.z)
     trees.update(new Vector3(at.x, 0, at.z))
-    hud.banner(forfeit.length ? 'Jumped — delivery forfeit' : 'Jumped', `${lat.toFixed(5)}, ${lon.toFixed(5)} · ${placeName(at)}`)
+    void wantTiles(at.x, at.z)
+    landing = { x: at.x, z: at.z, since: performance.now(), said: 0 }
+    if (forfeit.length) hud.banner('Jumped — delivery forfeit', placeName(at))
+    else jumpWait()
     return true
   }
   w.__pick = (x: number, y: number) => {
