@@ -93,6 +93,82 @@ const patch = (x: number, z: number, scale: number): number => {
   return (a + (b - a) * sx) + ((c + (d - c) * sx) - (a + (b - a) * sx)) * sz
 }
 
+/**
+ * The water as drawn, rasterised once per tile at a metre (owner, 2026-10-29: "the game slows down greatly whenever rocks
+ * are in the picture … near Cliff House"). Asked point by point — the cell, and twelve points round it for the shore —
+ * against the coastline's polygons of thousands of points, a tile at Lands End took up to three quarters of a second on
+ * the main thread, and riding by it built 24 of them: 6.5 s of stalls in 40 s. Here each ring's edges are dropped into
+ * the rows they cross, and each row filled between its crossings, even-odd as `inside` counts them; a point off the grid
+ * (none should be: it reaches past the shore's furthest look) falls back to the polygons.
+ */
+function waterMask(water: { ring: { x: number; z: number }[]; holes: { x: number; z: number }[][] }[], x0: number, z0: number, x1: number, z1: number): (x: number, z: number) => boolean {
+  const cols = Math.ceil(x1 - x0), rows = Math.ceil(z1 - z0)
+  const mask = new Uint8Array(cols * rows)
+  for (const w of water) {
+    const cross: number[][] = Array.from({ length: rows }, () => [])
+    for (const ring of [w.ring, ...w.holes]) {
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const a = ring[i], b = ring[j]
+        if (a.z === b.z) continue
+        // the rows whose centre line (z0 + r + 0.5) the edge crosses, half-open as `inside` takes it
+        const lo = Math.min(a.z, b.z), hi = Math.max(a.z, b.z)
+        const r0 = Math.max(0, Math.ceil(lo - z0 - 0.5)), r1 = Math.min(rows - 1, Math.ceil(hi - z0 - 0.5) - 1)
+        for (let r = r0; r <= r1; r++) {
+          const z = z0 + r + 0.5
+          if ((a.z > z) === (b.z > z)) continue
+          cross[r].push(((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x)
+        }
+      }
+    }
+    for (let r = 0; r < rows; r++) {
+      const c = cross[r]
+      if (c.length < 2) continue
+      c.sort((p, q) => p - q)
+      for (let k = 0; k + 1 < c.length; k += 2) {
+        const cA = Math.max(0, Math.ceil(c[k] - x0 - 0.5)), cB = Math.min(cols - 1, Math.ceil(c[k + 1] - x0 - 0.5) - 1)
+        for (let col = cA; col <= cB; col++) mask[r * cols + col] = 1
+      }
+    }
+  }
+  return (x, z) => {
+    const col = Math.floor(x - x0), r = Math.floor(z - z0)
+    if (col < 0 || r < 0 || col >= cols || r >= rows) return water.some((w) => inside(w.ring, x, z) && !w.holes.some((h) => inside(h, x, z)))
+    return mask[r * cols + col] === 1
+  }
+}
+
+/** The ways near a point, bucketed in 10 m cells (each segment filed with its half-width and `REACH` to spare). */
+function wayIndex(ways: { p: { x: number; z: number }[]; half: number }[]): (x: number, z: number, r: number) => boolean {
+  const REACH = 4.5
+  const cells = new Map<number, { ax: number; az: number; bx: number; bz: number; half: number }[]>()
+  const key = (i: number, j: number): number => (i + 50000) * 100000 + (j + 50000)
+  for (const { p, half } of ways) {
+    for (let i = 1; i < p.length; i++) {
+      const a = p[i - 1], b = p[i], m = half + REACH
+      const seg = { ax: a.x, az: a.z, bx: b.x, bz: b.z, half }
+      for (let gx = Math.floor((Math.min(a.x, b.x) - m) / 10); gx <= Math.floor((Math.max(a.x, b.x) + m) / 10); gx++) {
+        for (let gz = Math.floor((Math.min(a.z, b.z) - m) / 10); gz <= Math.floor((Math.max(a.z, b.z) + m) / 10); gz++) {
+          const k = key(gx, gz)
+          const list = cells.get(k)
+          if (list) list.push(seg)
+          else cells.set(k, [seg])
+        }
+      }
+    }
+  }
+  return (x, z, r) => {
+    // (every reach asked here is under REACH: a block's corner and the one behind it, 3.9 m at most)
+    const list = cells.get(key(Math.floor(x / 10), Math.floor(z / 10)))
+    if (!list) return false
+    for (const sg of list) {
+      const dx = sg.bx - sg.ax, dz = sg.bz - sg.az, L2 = dx * dx + dz * dz || 1e-6
+      const t = Math.max(0, Math.min(1, ((x - sg.ax) * dx + (z - sg.az) * dz) / L2))
+      if (Math.hypot(x - sg.ax - dx * t, z - sg.az - dz * t) < r + sg.half) return true
+    }
+    return false
+  }
+}
+
 export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: number | null | undefined): TileLayer | null {
   const cliffs = zones.filter((z) => z.props.cliffs)
   if (!cliffs.length) return null
@@ -107,20 +183,12 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
       // came out as a pale rock line out in the water with the lawn running down to the real edge
       const water = [...near.tile.areas, ...near.around.areas].filter((a) => a.kind === 'water')
         .map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) }))
-      const wet = (x: number, z: number): boolean =>
-        water.some((w) => inside(w.ring, x, z) && !w.holes.some((h) => inside(h, x, z)))
+      // (out past the tile by the shore's furthest look, SHORE × 1.4, and a block's jitter)
+      const wet = waterMask(water, rect.x0 - 28, rect.z0 - 28, rect.x1 + 28, rect.z1 + 28)
       // the ways here, so no boulder lies on a path (Alcatraz's Agave Trail ran through one — BUGS.md #263)
       // (with their half-widths: the rock and the crags keep off a path's own width, not only its centreline — the
       // trail under the Cliff House went "underground" under the new crags, owner 2026-10-06)
-      const ways = [...near.tile.edges, ...near.around.edges].map((e) => ({ p: unpackPoints(e.points), half: (e.width ?? 2) / 2 + (e.walk ?? 0) }))
-      const onWay = (x: number, z: number, r: number): boolean => ways.some(({ p, half }) => {
-        for (let i = 1; i < p.length; i++) {
-          const a = p[i - 1], b = p[i], dx = b.x - a.x, dz = b.z - a.z, L2 = dx * dx + dz * dz || 1e-6
-          const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / L2))
-          if (Math.hypot(x - a.x - dx * t, z - a.z - dz * t) < r + half) return true
-        }
-        return false
-      })
+      const onWay = wayIndex([...near.tile.edges, ...near.around.edges].map((e) => ({ p: unpackPoints(e.points), half: (e.width ?? 2) / 2 + (e.walk ?? 0) })))
       const out = new MeshBuilder()
       const rock = surfaceTag('granite')
       const wideSlope = (x: number, z: number): number => Math.hypot(

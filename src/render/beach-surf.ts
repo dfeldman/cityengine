@@ -432,7 +432,8 @@ export function beachRuns(zones: Zone[], seaRings: { ring: P[]; holes: P[][] }[]
 export function shoreRamp(runs: Run[], sea: number): ((x: number, z: number, h: number) => number) | null {
   if (!runs.length) return null
   const LAND = 90, SEA = 40, SLOPE = 0.05, CELL = 20
-  const grid = new Map<string, { x: number; z: number; nx: number; nz: number; w: number }[]>()
+  type Q = { x: number; z: number; nx: number; nz: number; w: number }
+  const pts: Q[] = []
   let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
   for (const r of runs) {
     let along = 0
@@ -443,24 +444,35 @@ export function shoreRamp(runs: Run[], sea: number): ((x: number, z: number, h: 
       along = lens[i]
       const p = r.pts[i]
       const w = Math.max(0, Math.min(1, along / 40, (total - along) / 40))
-      const k = `${Math.floor(p.x / CELL)},${Math.floor(p.z / CELL)}`
-      const list = grid.get(k) ?? []
-      list.push({ x: p.x, z: p.z, nx: r.nx[i], nz: r.nz[i], w })
-      grid.set(k, list)
+      pts.push({ x: p.x, z: p.z, nx: r.nx[i], nz: r.nz[i], w })
       x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
     }
   }
   x0 -= LAND; x1 += LAND; z0 -= LAND; z1 += LAND
   const reach = Math.ceil(LAND / CELL)
+  /*
+   * Each cell's candidates, gathered once: every coastline point within `reach` cells of it (owner, 2026-10-29: "the game
+   * slows down greatly whenever rocks are in the picture … near Cliff House"). This runs inside `rawHeightAt` wherever
+   * a beach is near, and it looked up the 9 × 9 cells round the point by a string key each time — 81 strings made per
+   * height asked; the cliffs at Lands End ask 150,000 heights a tile, and a tile took up to three quarters of a second.
+   */
+  const i0 = Math.floor(x0 / CELL), j0 = Math.floor(z0 / CELL)
+  const cols = Math.floor(x1 / CELL) - i0 + 1, rows = Math.floor(z1 / CELL) - j0 + 1
+  const cells: (Q[] | undefined)[] = new Array(cols * rows)
+  for (const q of pts) {
+    const ci = Math.floor(q.x / CELL) - i0, cj = Math.floor(q.z / CELL) - j0
+    for (let j = Math.max(0, cj - reach); j <= Math.min(rows - 1, cj + reach); j++) {
+      for (let i = Math.max(0, ci - reach); i <= Math.min(cols - 1, ci + reach); i++) (cells[j * cols + i] ??= []).push(q)
+    }
+  }
   return (x, z, h) => {
     if (x < x0 || x > x1 || z < z0 || z > z1 || h < sea - 2) return h
-    const cx = Math.floor(x / CELL), cz = Math.floor(z / CELL)
-    let best = Infinity, near: { x: number; z: number; nx: number; nz: number; w: number } | null = null
-    for (let j = cz - reach; j <= cz + reach; j++) for (let i = cx - reach; i <= cx + reach; i++) {
-      for (const q of grid.get(`${i},${j}`) ?? []) {
-        const d2 = (q.x - x) ** 2 + (q.z - z) ** 2
-        if (d2 < best) { best = d2; near = q }
-      }
+    const list = cells[(Math.floor(z / CELL) - j0) * cols + (Math.floor(x / CELL) - i0)]
+    if (!list) return h
+    let best = Infinity, near: Q | null = null
+    for (const q of list) {
+      const d2 = (q.x - x) ** 2 + (q.z - z) ** 2
+      if (d2 < best) { best = d2; near = q }
     }
     if (!near || best > LAND * LAND) return h
     const s = (x - near.x) * near.nx + (z - near.z) * near.nz       // seaward positive
