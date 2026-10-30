@@ -17,7 +17,8 @@ const STONE: Rgb = [0.84, 0.81, 0.74]
 const DARK_STONE: Rgb = [0.66, 0.63, 0.57]
 const BRONZE: Rgb = [0.3, 0.34, 0.28]
 const GILT: Rgb = [0.78, 0.62, 0.26]
-const GRASS: Rgb = [0.36, 0.52, 0.28]
+// (darker than it looks: under the cartoon light the first value came out lime beside the city's own lawns, Place d'Italie 2026-10-30)
+const GRASS: Rgb = [0.24, 0.36, 0.19]
 const WATER: Rgb = [0.34, 0.48, 0.56]
 
 /** a standing figure of `h` metres at (x, y, z): the body, the head, an arm raised or not */
