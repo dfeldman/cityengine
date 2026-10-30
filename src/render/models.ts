@@ -1118,6 +1118,48 @@ export function bikeParking(n: number, seed: number): (out: MeshBuilder) => void
   }
 }
 
+/**
+ * Two-wheelers parked in a row at the kerb (OSM amenity=motorcycle_parking): Paris's scooters and motorbikes, nose to
+ * the kerb, a metre apart, the bay rarely empty (owner, 2026-10-29: two-wheelers parked in rows along the kerb). Each
+ * along +x, the row along z, like bikeParking.
+ */
+export function motoParking(n: number, seed: number): (out: MeshBuilder) => void {
+  return (out) => {
+    const tyre: Rgb = [0.07, 0.07, 0.07]
+    const seat: Rgb = [0.1, 0.09, 0.09]
+    const chrome: Rgb = [0.55, 0.56, 0.58]
+    const PAINT: Rgb[] = [[0.08, 0.08, 0.09], [0.9, 0.9, 0.88], [0.55, 0.56, 0.58], [0.2, 0.21, 0.24], [0.62, 0.1, 0.1],
+      [0.14, 0.24, 0.45], [0.7, 0.72, 0.62], [0.1, 0.1, 0.11]]
+    let h = seed >>> 0
+    const r = (): number => { h = (Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return h / 4294967296 }
+    const L = (n - 1) * 1.0
+    for (let i = 0; i < n; i++) {
+      if (r() < 0.12) continue
+      const z = -L / 2 + i * 1.0 + (r() - 0.5) * 0.15
+      const c = PAINT[Math.floor(r() * PAINT.length)]
+      if (r() < 0.7) {
+        // a scooter: small wheels, the floor between them, the leg shield and its column, the seat over the engine
+        for (const wx of [0.25, 1.55]) box(out, wx, 0.22, z, 0.22, 0.22, 0.05, tyre, FIXED)
+        box(out, 0.9, 0.32, z, 0.4, 0.06, 0.17, c, FIXED)
+        box(out, 1.4, 0.65, z, 0.08, 0.33, 0.2, c, FIXED)
+        box(out, 0.45, 0.5, z, 0.3, 0.16, 0.18, c, FIXED)
+        box(out, 0.5, 0.71, z, 0.32, 0.05, 0.15, seat, FIXED)
+        box(out, 1.42, 1.02, z, 0.05, 0.03, 0.33, chrome, FIXED)
+        // (one in three carries the top case)
+        if (r() < 0.35) box(out, 0.08, 0.9, z, 0.16, 0.14, 0.19, PAINT[0], FIXED)
+      } else {
+        // a motorbike: bigger wheels, the tank and the seat on the frame, the bars and the fork
+        for (const wx of [0.3, 1.75]) box(out, wx, 0.32, z, 0.32, 0.32, 0.06, tyre, FIXED)
+        box(out, 1.0, 0.55, z, 0.45, 0.14, 0.13, chrome, FIXED)
+        box(out, 1.2, 0.85, z, 0.25, 0.12, 0.16, c, FIXED)
+        box(out, 0.65, 0.83, z, 0.3, 0.05, 0.14, seat, FIXED)
+        box(out, 1.62, 0.75, z, 0.04, 0.35, 0.05, chrome, FIXED)
+        box(out, 1.55, 1.08, z, 0.04, 0.03, 0.36, tyre, FIXED)
+      }
+    }
+  }
+}
+
 /** A fire hydrant: a barrel (red unless painted otherwise), a domed cap — its bonnet — two side nozzles and a chain-ring. 0.75 m. */
 export function hydrant(out: MeshBuilder, body: Rgb = [0.78, 0.16, 0.12], top: Rgb = body): void {
   prism(out, 0, 0, 0, 0.08, 0.17, 8, body)

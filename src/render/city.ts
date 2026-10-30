@@ -31,7 +31,7 @@ import { groundLayerMaterial, roadMaterial } from './road-material.ts'
 import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
-  bench, bikeDocks, bollard, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
+  bench, bikeDocks, bollard, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
   morrisColumn, parisBusStop, parisLamp, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
@@ -4216,7 +4216,7 @@ export class City {
       }
       // a subway entrance a model draws itself (its `coversRaised` footprint): the open BART plazas on Mission Street
       if (f.kind === 'metro' && this.inCover(f.x, f.z)) continue
-      const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'bikeparking' || f.kind === 'column')
+      const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'bikeparking' || f.kind === 'motoparking' || f.kind === 'column')
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
         : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
@@ -4224,6 +4224,7 @@ export class City {
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
         // (Paris's Vélib': a long row, 18 to 30 docks, its length by the station's own place)
         : f.kind === 'bikeparking' ? (pf.bikeParking ? bikeParking(5 + (Math.abs(Math.round(f.x * 11 + f.z * 7)) % 6), Math.round(f.x * 13 + f.z * 29)) : null)
+        : f.kind === 'motoparking' ? (pf.motoParking ? motoParking(4 + (Math.abs(Math.round(f.x * 17 + f.z * 5)) % 7), Math.round(f.x * 19 + f.z * 23)) : null)
         : f.kind === 'bikeshare' ? (pf.bikeShare === 'velib' ? velibStation(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), Math.round(f.x * 31 + f.z * 17)) : bikes)
         // the American street's (render/us-furniture.ts), in the regions that have one
         : pf.american && f.kind === 'stop' ? stopSign

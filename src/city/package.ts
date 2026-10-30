@@ -257,6 +257,8 @@ export interface PackedFurniture {
     | 'clock'
     // bike parking (amenity=bicycle_parking): a row of hoops, full of bikes, where the region draws it (pointFurniture.bikeParking)
     | 'bikeparking'
+    // two-wheeler parking (amenity=motorcycle_parking): a row of scooters at the kerb (pointFurniture.motoParking)
+    | 'motoparking'
   /** a Wallace fountain, as opposed to any drinking tap */
   wallace?: true
   /** a bus stop with a shelter (OSM shelter=yes): the shelter drawn, not only the post */

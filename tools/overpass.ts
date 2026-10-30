@@ -214,6 +214,8 @@ export function furnitureQuery(b: Bbox): string {
   node["emergency"="fire_hydrant"](${box});
   node["emergency"="fire_alarm_box"](${box});
   node["amenity"="clock"](${box});
+  node["amenity"="bicycle_parking"](${box});
+  node["amenity"="motorcycle_parking"](${box});
 );
 out qt;`
 }

@@ -2842,6 +2842,7 @@ async function bake(spec: CitySpec): Promise<void> {
         : t.highway === 'bus_stop' ? 'busstop'
         // (bike parking at the kerb, Paris's, almost always full — owner, 2026-10-29: drawn where the region asks)
         : t.amenity === 'bicycle_parking' && t.covered !== 'yes' && t.indoor !== 'yes' && (t.bicycle_parking ?? 'stands') !== 'building' ? 'bikeparking'
+        : t.amenity === 'motorcycle_parking' && t.covered !== 'yes' && t.indoor !== 'yes' && t.parking !== 'underground' ? 'motoparking'
         : t.amenity === 'post_box' ? 'postbox'
         : t.emergency === 'fire_hydrant' ? 'hydrant'
         // the street fire alarm box (render/us-furniture.ts); one inside a building is a pull station on a wall
@@ -2860,7 +2861,8 @@ async function bake(spec: CitySpec): Promise<void> {
     console.log(`  furniture: ${count('metro')} métro entrances, ${count('fountain')} fountains `
       + `(${furniture.filter((x) => x.wallace).length} Wallace), ${count('column')} columns, ${count('kiosk')} kiosks, `
       + `${count('bikeshare')} bike docks, ${count('signals')} signal nodes, ${count('tramstop')} tram stops, `
-      + `${count('billboard')} billboards, ${count('stop')} stop signs, ${count('busstop')} bus stops, ${count('postbox')} post boxes, ${count('hydrant')} hydrants, ${count('callbox')} fire alarm boxes`)
+      + `${count('billboard')} billboards, ${count('stop')} stop signs, ${count('busstop')} bus stops, ${count('postbox')} post boxes, ${count('hydrant')} hydrants, ${count('callbox')} fire alarm boxes, `
+      + `${count('bikeparking')} bike parkings, ${count('motoparking')} two-wheeler parkings`)
   }
 
   const trees = nodes.filter((n) => n.tags.natural === 'tree')

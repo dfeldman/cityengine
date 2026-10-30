@@ -206,6 +206,8 @@ export interface Region {
     bikeShare?: 'velib'
     /** bike parking at the kerb (PackedFurniture `bikeparking`), drawn full (render/models.ts bikeParking) */
     bikeParking?: boolean
+    /** two-wheeler parking at the kerb (PackedFurniture `motoparking`), a row of scooters (render/models.ts motoParking) */
+    motoParking?: boolean
     /** the street fire alarm box (render/us-furniture.ts): San Francisco's gabled Gamewell head, New York's ERS post */
     callBox?: 'sf' | 'nyc'
     /** the share of street junctions (three streets or more) that get a box where OSM has mapped none near: 0–1 */
