@@ -31,6 +31,12 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       265 4–8 m, 143 8–15, 127 15–30, 206 > 30) — the rest are other causes (the Périphérique's interchanges, footbridge
       stairs, Pont de Sèvres). Script: scratchpad bridge-gaps.cjs; re-run on the new bake. The sidewalk bridges
       (112160/112322 at Mirabeau) need checking too: the rider's path in the screenshot is the sidewalk.
+      Second pattern (scan of the 0150 bake, named bridges): the bridge's end steps 2–6 m onto its own bank-side
+      approach or a sidewalk stub — Pont de l'Alma (2.8–4.5 m onto its 27 m approach), Carrousel, Royal, Saint-Michel,
+      Sully, Pont au Change (6 m). The street levelling runs before `bridgeHeights` and gives every end at a node the
+      highest of them, so the bridge's end matched its street then; something after the bridge pass takes it back to the
+      raw ground (suspects: the bridge-over-a-cut restore ~bake.ts 2600, the deck conform, `rampFootBridgeEnds`).
+      Re-scan on the next bake (scratchpad seine-gaps.cjs) before chasing it.
 - [ ] **Overpasses over the tracks are tiny hops** ("wouldn't actually clear a train"): `bridgeRise` never counted
       railways, so a bridge over tracks got the 2 m culvert default. Fix written: tools/bridges.ts counts surface rails
       (5.8 m over the rail's ground) — **but in Paris this must not lift streets**: owner, "any train track that is not
@@ -74,6 +80,12 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       as a 'mediatheque' landmark but I don't see it on the map".
 
 ## Open — render-side
+
+- [ ] **Park railings and walls** (48.848863, 2.338636, the Luxembourg's Porte Gay-Lussac): owner, "parks are often surrounded
+      by tall fences or even walls … probably because they are palace grounds that close". Tall black iron railings with
+      gilded spear tips on a stone plinth, gates at the entrances. OSM `barrier=fence|wall` round the parks, or the park
+      outline itself where a gate (`barrier=gate`) says it is closed; the bake keeps `barrier` ways (retaining walls,
+      hedges) — add fence/wall and draw the Paris railing.
 
 - [x] **BUS lettering** in Paris bus lanes: it was drawn all along — the checks looked in the wrong place (the scene keeps
       no CPU copy of vertex data, so a vertex search finds nothing). Seen from above on the Boulevard de Magenta.
