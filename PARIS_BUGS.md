@@ -127,7 +127,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [x] **Storefronts too repetitive** — six paintings each for the Haussmann and Marais ground storeys (was two: OPTIQUE and LIBRAIRIE in turn down every street), a trade's word on one fascia in three and plain painted boards on the rest, so the real shops' names (signs.ts) stand alone. Original: — owner: "quite repetitive with only a few signs, some of the signs are covered by
       specific POI signs. I think maybe we dont show so many signs and make it a bit random". Fewer generic shop signs
       (OPTIQUE, LIBRAIRIE …), more variety, and none where a real POI sign stands.
-- [ ] **A few tours of Paris** (owner, 2026-10-30: "add a few tours of Paris like we have for SF. Just a few is fine, since
+- [x] **A few tours of Paris** — four (src/city/paris/tours.ts): The Seine and its Bridges 6.9 km, Monuments of the Right Bank 8.2 km, Montmartre and the Stations 6.4 km (+95 m), The Bois de Boulogne 9.3 km; every leg routes (tools/check-tours.ts --city=paris-centre) and the picker lists them. Original: (owner, 2026-10-30: "add a few tours of Paris like we have for SF. Just a few is fine, since
       Paris has less variety in terrain for cyclists"): src/game/tour data; the Seine's bridges and quays, the Marais to
       Bastille, Montmartre.
 - [ ] **Corner shops** (48.856774, 2.377890, Rue de la Roquette at Rue Popincourt): owner, "we dont have any special handling

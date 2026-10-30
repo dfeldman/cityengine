@@ -1,0 +1,26 @@
+{
+ "paris-seine": {
+  "km": 6.9,
+  "climb": 30,
+  "descent": 33,
+  "steepest": 0.7
+ },
+ "paris-right-bank": {
+  "km": 8.2,
+  "climb": 12,
+  "descent": 33,
+  "steepest": 0.5
+ },
+ "paris-montmartre": {
+  "km": 6.4,
+  "climb": 95,
+  "descent": 91,
+  "steepest": 4.8
+ },
+ "paris-bois": {
+  "km": 9.3,
+  "climb": 23,
+  "descent": 34,
+  "steepest": 0.5
+ }
+}

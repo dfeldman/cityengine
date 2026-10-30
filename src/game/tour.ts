@@ -10,17 +10,19 @@
  * tools/check-tours.ts, in src/city/sf/tour-stats.json (the picker is up before there is a graph to route on).
  */
 import { SF_TOURS, type Tour, type TourStop } from '../city/sf/tours.ts'
+import { PARIS_TOURS } from '../city/paris/tours.ts'
 import STATS from '../city/sf/tour-stats.json'
+import PARIS_STATS from '../city/paris/tour-stats.json'
 
 export type { Tour, TourStop }
 
-/** the tours of a city, by its id (only San Francisco has any) */
+/** the tours of a city, by its id */
 export function toursFor(city: string): Tour[] {
-  return city === 'san-francisco' ? SF_TOURS : []
+  return city === 'san-francisco' ? SF_TOURS : city === 'paris-centre' ? PARIS_TOURS : []
 }
 
 export interface TourStats { km: number; climb: number; descent: number; steepest: number }
-export const statsOf = (t: Tour): TourStats | null => (STATS as Record<string, TourStats>)[t.id] ?? null
+export const statsOf = (t: Tour): TourStats | null => (STATS as Record<string, TourStats>)[t.id] ?? (PARIS_STATS as Record<string, TourStats>)[t.id] ?? null
 
 export type Difficulty = 'Easy' | 'Moderate' | 'Hard' | 'Extreme'
 /**

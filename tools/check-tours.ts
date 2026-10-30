@@ -15,9 +15,11 @@ import { unpackRide, type RideFile } from '../src/city/ridefile.ts'
 import type { RideEdge, RideGraph } from '../src/city/ridegraph.ts'
 import { Projection } from '../src/city/geo.ts'
 import { SF_TOURS } from '../src/city/sf/tours.ts'
+import { PARIS_TOURS } from '../src/city/paris/tours.ts'
 import { nearestOnGraph, planRoute, type Route } from '../src/sim/route.ts'
 
-const city = 'san-francisco'
+const city = process.argv.find((a) => a.startsWith('--city='))?.slice(7) ?? 'san-francisco'
+const TOURS = city === 'paris-centre' ? PARIS_TOURS : SF_TOURS
 const write = process.argv.includes('--write')
 const legs = process.argv.includes('--legs')
 const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8'))
@@ -75,7 +77,7 @@ function climbOf(hs: number[]): { up: number; down: number } {
 
 let bad = 0
 const stats: Record<string, { km: number; climb: number; descent: number; steepest: number }> = {}
-for (const t of SF_TOURS) {
+for (const t of TOURS) {
   const pts = t.stops.map((s) => proj.toLocal({ lat: s.lat, lon: s.lon }))
   for (let i = 0; i < pts.length; i++) {
     const n = nearestOnGraph(g, pts[i])!
@@ -103,7 +105,8 @@ for (const t of SF_TOURS) {
     + `+${Math.round(up)} m / −${Math.round(down)} m, steepest leg ${(steepest * 100).toFixed(1)} %`)
 }
 if (write && !bad) {
-  writeFileSync(resolve(import.meta.dirname, '../src/city/sf/tour-stats.json'), JSON.stringify(stats, null, 1) + '\n')
-  console.log('wrote src/city/sf/tour-stats.json')
+  const file = city === 'paris-centre' ? '../src/city/paris/tour-stats.json' : '../src/city/sf/tour-stats.json'
+  writeFileSync(resolve(import.meta.dirname, file), JSON.stringify(stats, null, 1) + '\n')
+  console.log(`wrote ${file.slice(3)}`)
 }
 process.exit(bad ? 1 : 0)
