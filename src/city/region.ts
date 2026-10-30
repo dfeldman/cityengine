@@ -139,6 +139,8 @@ export interface Region {
    */
   /** OSM ways tagged bridge/layer that are ridden at grade (tools/bake.ts): their bridge and layer tags are dropped */
   atGrade?: number[]
+  /** bridges by name whose model draws the deck bank to bank: the way runs straight between its ends, for the rider to be on it */
+  straightDecks?: string[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -252,6 +254,7 @@ export function region(id: string | undefined): Region {
     lanternStreets: own?.lanternStreets ?? base.lanternStreets,
     stripedStreets: own?.stripedStreets ?? base.stripedStreets,
     atGrade: own?.atGrade ?? base.atGrade,
+    straightDecks: own?.straightDecks ?? base.straightDecks,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,

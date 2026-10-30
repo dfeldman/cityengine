@@ -4447,7 +4447,7 @@ export class City {
     // signals, tram and bus stops and métro entrances do stand in the middle of a road)
     // (from this tile and its neighbours: a stop near the edge of the tile stands by a street that may be in the next one)
     const pointKerb = new Carriageways(around.filter((e) => !this.raisedIds.has(e.id)))
-    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain', 'litter', 'recycling', 'sanisette', 'crepes', 'glaces', 'souvenirs'])
+    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'bikeparking', 'motoparking', 'fountain', 'litter', 'recycling', 'sanisette', 'crepes', 'glaces', 'souvenirs'])
     // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
     //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
     const boards: { x: number; z: number }[] = []
@@ -4494,15 +4494,33 @@ export class City {
       // a subway entrance a model draws itself (its `coversRaised` footprint): the open BART plazas on Mission Street
       if (f.kind === 'metro' && this.inCover(f.x, f.z)) continue
       const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'bikeparking' || f.kind === 'motoparking' || f.kind === 'column')
+      /*
+       * A ROW is long, and only its middle was asked about: at the corner of the Rue Malar and the Rue Saint-Dominique a row
+       * of racks along one street stood out across the other (owner, 2026-10-30, 48.859468, 2.306296). As long as its
+       * pavement lets it be, and none at all where even the shortest would reach a lane.
+       */
+      const rowOf = (n: number, pitch: number, least: number): number => {
+        const ax = Math.sin(heading), az = Math.cos(heading)
+        const fits = (m: number): boolean => [1, -1].every((s) => {
+          const half = ((m - 1) * pitch) / 2 + 1
+          return pointKerb.whyNoFurniture(f.x + s * ax * half, f.z + s * az * half) === null
+        })
+        for (let m = n; m >= least; m--) if (fits(m)) return m
+        return 0
+      }
+      const row = f.kind === 'bikeparking' ? rowOf(5 + (Math.abs(Math.round(f.x * 11 + f.z * 7)) % 6), 0.9, 2)
+        : f.kind === 'motoparking' ? rowOf(4 + (Math.abs(Math.round(f.x * 17 + f.z * 5)) % 7), 1, 2)
+        : f.kind === 'bikeshare' && pf.bikeShare === 'velib' ? rowOf(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), 0.8, 6) : 1
+      if (!row) continue
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
         : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
         // (Paris's Vélib': a long row, 18 to 30 docks, its length by the station's own place)
-        : f.kind === 'bikeparking' ? (pf.bikeParking ? bikeParking(5 + (Math.abs(Math.round(f.x * 11 + f.z * 7)) % 6), Math.round(f.x * 13 + f.z * 29)) : null)
-        : f.kind === 'motoparking' ? (pf.motoParking ? motoParking(4 + (Math.abs(Math.round(f.x * 17 + f.z * 5)) % 7), Math.round(f.x * 19 + f.z * 23)) : null)
-        : f.kind === 'bikeshare' ? (pf.bikeShare === 'velib' ? velibStation(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), Math.round(f.x * 31 + f.z * 17)) : bikes)
+        : f.kind === 'bikeparking' ? (pf.bikeParking ? bikeParking(row, Math.round(f.x * 13 + f.z * 29)) : null)
+        : f.kind === 'motoparking' ? (pf.motoParking ? motoParking(row, Math.round(f.x * 19 + f.z * 23)) : null)
+        : f.kind === 'bikeshare' ? (pf.bikeShare === 'velib' ? velibStation(row, Math.round(f.x * 31 + f.z * 17)) : bikes)
         // the American street's (render/us-furniture.ts), in the regions that have one
         : pf.american && f.kind === 'stop' ? stopSign
         : pf.american && f.kind === 'postbox' ? uspsBox

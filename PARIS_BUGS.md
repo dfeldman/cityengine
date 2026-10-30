@@ -189,3 +189,28 @@ time is the run graph's merge of parallel ways (ridegraph.ts `mergeParallel`), w
 - [ ] **Sunk courts the ground cannot dig**: the Canopée's patio and the Arènes de Lutèce and the Mémorial de la Déportation are all drawn at grade or raised, because a model cannot cut the city's ground.
 - [ ] **Not modelled**: Stade Charléty (no building way in the extract). Moving water for the Fontaine Stravinsky and the Fontaine de Varsovie (paris-fountains.json).
 - [ ] **Roads under the new furniture bake**: litter hoops, glass bells, Sanisettes, statues, markets, stands, painters, red pavements, bus shelters and cutting rails all await their first look in the city.
+
+## Found 2026-10-30, after the kit
+
+Fixed in code, and they want the next bake unless noted:
+
+- [x] **Search: most landmarks "not placed".** Paris had never been run through `tools/landmark-where.ts`, so only entries
+      with their own lat/lon had a position. Written by hand for the current bake (no bake needed), and every bake now writes it.
+- [x] **The Buttes-Chaumont's island is flat at the lake (48.880332, 2.383315).** The 60 m opening that takes rooftops off a
+      surface model also ran over IGN's lidar, which has none, and took off any ground narrower than 120 m: a rock 31 m high.
+      Lidar posts now keep their relief. **Everything narrow in Paris moves with this: check** the embankments, the Temple de
+      la Sibylle, Montmartre's spurs, the quays, and the streets beside them.
+- [x] **Pont des Suicidés and Pont Suspendu: a default deck and the model on top of each other, no way on either.** The way
+      was humped over the lakeside path while the model's deck lay on the ground, 0.4 m out of the band that hands a deck to
+      its model. `straightDecks` runs both ways bank to bank, on the line the models now draw. Check both in the city.
+- [x] **Gare du Nord: grass under the shed.** `trainShed` paves its outline (no bake needed). Railway land (`landuse=railway`)
+      is drawn as a lot rather than the default lawn (next bake). Check how the Petite Ceinture's corridor looks.
+- [x] **Bike rows in the road (48.859468, 2.306296, Rue Malar at Rue Saint-Dominique).** Racks, two-wheelers and Vélib' rows
+      were tested at their middle only: now both ends, shortened to fit, and dropped where even the shortest reaches a lane
+      (no bake needed). The next bake also moves their nodes onto the pavement.
+
+Open:
+
+- [ ] Are there other bridges doubled like the Buttes'? Only these two Paris models claim a way's deck; the owner said "a few".
+- [ ] Facade photos: Mapillary coverage, measured. Panorama within ~30 m of a street: SF 68%, Paris 27% (15% since 2021), on the
+      29 central Paris tiles cached of the 79 the box needs. `photo.ts` throws away flat frames, and Paris has 70% with those.

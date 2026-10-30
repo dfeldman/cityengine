@@ -77,6 +77,22 @@ describe('ramps stop where they should (Stockton at Bush, 2026-09-29)', () => {
   })
 })
 
+describe('a deck a model draws (Region.straightDecks)', () => {
+  it('runs straight from bank to bank, over what the rule would have cleared', () => {
+    const deck = (): BridgeEdge => ({ id: 1, a: 1, b: 2, points: [-20, 0, 20, 0], heights: [6, 3], bridge: true, foot: true, layer: 1 })
+    const path = (): BridgeEdge => ({ id: 2, a: 3, b: 4, points: [0, -20, 0, 20], heights: [3, 3], foot: true })
+    const humped = deck()
+    bridgeHeights([humped, path()], { water: [], ground: flat })
+    expect(Math.max(...humped.heights!)).toBeGreaterThan(6)
+    const line = deck()
+    const r = bridgeHeights([line, path()], { water: [], ground: flat, straight: new Set([1]) })
+    expect(line.heights![0]).toBeCloseTo(6)
+    expect(line.heights![line.heights!.length - 1]).toBeCloseTo(3)
+    expect(Math.max(...line.heights!)).toBeCloseTo(6)
+    expect(r.raised.has(1)).toBe(true)
+  })
+})
+
 describe('a bridge in several pieces', () => {
   it('is one hump, not one per piece', () => {
     const pieces: BridgeEdge[] = [

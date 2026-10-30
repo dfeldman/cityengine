@@ -43,6 +43,9 @@ export const KEPT_KEYS = [
    * The cut's cache key includes this list, so adding a key simply re-cuts.
    */
   'surface',
+  // (furnitureQuery's bins, statues and busts: three clauses that sent the whole query, and five hours of a bake, to the
+  //  public servers at twenty tiles an hour, 2026-10-30. tests/osm-local-queries.test.ts now fails on the next one)
+  'recycling_type', 'artwork_type', 'memorial',
 ]
 
 // ---------------------------------------------------------------------------------------------- extracts

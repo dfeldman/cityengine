@@ -147,6 +147,8 @@ function section(s: Span, glazed: number): { x: number; y: number; glass: boolea
 export function trainShed(out: MeshBuilder, data: ShedData, spec: ShedSpec): void {
   const rings = data.sheds.map(toP)
   const plats = data.platforms.map(toP)
+  // the floor: under a roof of glass and iron the city's default ground is a lawn (owner, 2026-10-30, the Gare du Nord)
+  for (const r of rings) out.grounds.push(r)
   const roofC = spec.roof ?? [0.4, 0.43, 0.45]
   const glassC = spec.glass ?? [0.46, 0.56, 0.6]
   const iron = spec.iron ?? [0.2, 0.24, 0.25]

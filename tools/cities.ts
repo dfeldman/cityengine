@@ -112,8 +112,8 @@ export const CITIES: CitySpec[] = [
      * About 6.7 × 3.5 km. Centred on the Palais-Royal, so the ride starts in the middle of it.
      */
     id: 'paris-centre',
-    // (not live: only San Francisco is published until it is right — owner, 2026-10-14)
-    live: false,
+    // (live: owner, 2026-10-30, "fully enable paris outside dev mode")
+    live: true,
     region: 'paris',
     skyline: [
       // placeholders on the horizon until each has its model (PARIS_EXPAND §6 step 4); those beyond the box stay

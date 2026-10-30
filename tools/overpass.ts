@@ -133,7 +133,7 @@ export function cityQuery(b: Bbox): string {
   way["building"](${box});
   way["building:part"](${box});
   way["leisure"~"^(park|garden|pitch|nature_reserve|sports_centre|stadium|track|swimming_pool|playground|dog_park|marina|bandstand)$"](${box});
-  way["landuse"~"^(grass|forest|meadow|cemetery|orchard|vineyard|recreation_ground|village_green)$"](${box});
+  way["landuse"~"^(grass|forest|meadow|cemetery|orchard|vineyard|recreation_ground|village_green|railway)$"](${box});
   way["natural"~"^(water|wood|scrub|sand|beach|shingle|bare_rock|reef|cliff|heath|grassland|wetland)$"](${box});
   way["waterway"~"^(riverbank|stream|ditch|canal|dam|weir)$"](${box});
   way["barrier"~"^(retaining_wall|city_wall|hedge)$"](${box});
@@ -152,7 +152,7 @@ export function cityQuery(b: Bbox): string {
   relation["natural"="water"](${box});
   relation["waterway"="riverbank"](${box});
   relation["leisure"~"^(park|garden|nature_reserve)$"](${box});
-  relation["landuse"~"^(grass|forest|meadow)$"](${box});
+  relation["landuse"~"^(grass|forest|meadow|railway)$"](${box});
   relation["natural"~"^(wood|scrub|sand|beach|heath|grassland|wetland|bare_rock)$"](${box});
   relation["building"](${box});
   relation["leisure"~"^(pitch|sports_centre|stadium|track|swimming_pool|playground)$"](${box});

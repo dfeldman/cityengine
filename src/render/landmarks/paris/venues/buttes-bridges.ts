@@ -10,7 +10,8 @@
  *   lattice parapet (Commons: "Paris - Buttes Chaumont - Pont des suicidés 01.jpg"). Local x along the deck, the
  *   island (north) at +x.
  *
- * Both draw their own deck (`coversRaised` in the manifest), from the ground at one end to the ground at the other.
+ * Both draw their own deck (`coversRaised` in the manifest), from the ground at one end to the ground at the other: the
+ * line their ways run on (Region.straightDecks), so the rider is on what is drawn.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import { box, prism, strut, type Rgb } from '../../../models.ts'
@@ -98,13 +99,14 @@ export function buttesSuicidesBridge(out: MeshBuilder, fit: Fit): void {
   const W = 2.2
   const yS = (fit.groundAt?.(-half, 0) ?? 0.5) + 0.15
   const yN = (fit.groundAt?.(half, 0) ?? 0.5) + 0.15
-  const deck = Math.max(yS, yN)
+  // the deck, on the way's own line from bank to bank
+  const deck = (x: number): number => yS + ((x + half) / (2 * half)) * (yN - yS)
   const BRICK: Rgb = [0.72, 0.6, 0.45]
   const VOUS: Rgb = [0.8, 0.76, 0.68]
   // the arch: 13 m span, springing well down the gorge, the barrel in brick under a ring of stone voussoirs
   const span = 6.5
   const rise = 8
-  const spring = deck - 1.2 - rise
+  const spring = Math.min(yS, yN) - 1.2 - rise
   const seg = 14
   for (let k = 0; k < seg; k++) {
     const a0 = Math.PI - (k / seg) * Math.PI, a1 = Math.PI - ((k + 1) / seg) * Math.PI
@@ -113,26 +115,29 @@ export function buttesSuicidesBridge(out: MeshBuilder, fit: Fit): void {
     quadN(out, [[p0[0], p0[1], -W], [p1[0], p1[1], -W], [p1[0], p1[1], W], [p0[0], p0[1], W]], [-(p0[0] + p1[0]) / 2, -1, 0], BRICK, brick)
     for (const s of [-1, 1]) {
       // the spandrel above the arch, the voussoir ring
-      quadN(out, [[p0[0], p0[1], s * W], [p1[0], p1[1], s * W], [p1[0], deck - 0.6, s * W], [p0[0], deck - 0.6, s * W]], [0, 0, s], BRICK, brick)
+      quadN(out, [[p0[0], p0[1], s * W], [p1[0], p1[1], s * W], [p1[0], deck(p1[0]) - 0.6, s * W], [p0[0], deck(p0[0]) - 0.6, s * W]], [0, 0, s], BRICK, brick)
       const q0 = [Math.cos(a0) * (span + 0.7), spring + Math.sin(a0) * (rise + 0.7)], q1 = [Math.cos(a1) * (span + 0.7), spring + Math.sin(a1) * (rise + 0.7)]
       quadN(out, [[p0[0], p0[1], s * (W + 0.06)], [p1[0], p1[1], s * (W + 0.06)], [q1[0], q1[1], s * (W + 0.06)], [q0[0], q0[1], s * (W + 0.06)]], [0, 0, s], VOUS, ash)
     }
   }
-  // the abutments down into the rock either side, and the walls out to the banks
+  // the abutments down into the rock either side, to the floor of the gorge where it reaches them
   for (const e of [-1, 1]) {
-    const gy = fit.groundAt?.(e * half, 0) ?? 0.5
-    box(out, e * (span + (half - span) / 2 + 0.3), (spring - 3 + deck - 0.6) / 2, 0, (half - span) / 2 + 0.3, (deck - 0.6 - spring + 3) / 2, W, BRICK, brick)
-    void gy
+    const foot = Math.min(spring - 3, (fit.groundAt?.(e * span, 0) ?? spring - 3) - 0.5)
+    const top = Math.min(deck(e * span), deck(e * half)) - 0.6
+    box(out, e * (span + (half - span) / 2 + 0.3), (foot + top) / 2, 0, (half - span) / 2 + 0.3, (top - foot) / 2, W, BRICK, brick)
   }
   // the deck, its cornice, the red cast-iron lattice parapets on stone dies
-  box(out, 0, deck - 0.3, 0, half + 0.6, 0.3, W + 0.25, VOUS, ash)
+  const [x0, x1, w] = [-half - 0.6, half + 0.6, W + 0.25]
+  quadN(out, [[x0, deck(x0), -w], [x1, deck(x1), -w], [x1, deck(x1), w], [x0, deck(x0), w]], [0, 1, 0], VOUS, ash)
+  quadN(out, [[x0, deck(x0) - 0.6, w], [x1, deck(x1) - 0.6, w], [x1, deck(x1) - 0.6, -w], [x0, deck(x0) - 0.6, -w]], [0, -1, 0], VOUS, ash)
   for (const s of [-1, 1]) {
-    for (const x of [-half, -half / 2, 0, half / 2, half]) box(out, x, deck + 0.55, s * (W + 0.05), 0.25, 0.55, 0.25, VOUS, ash)
-    meshRail(out, [-half, deck + 0.2, s * (W + 0.05)], [half, deck + 0.2, s * (W + 0.05)], 0.85, s)
+    quadN(out, [[x0, deck(x0), s * w], [x1, deck(x1), s * w], [x1, deck(x1) - 0.6, s * w], [x0, deck(x0) - 0.6, s * w]], [0, 0, s], VOUS, ash)
+    for (const x of [-half, -half / 2, 0, half / 2, half]) box(out, x, deck(x) + 0.55, s * (W + 0.05), 0.25, 0.55, 0.25, VOUS, ash)
+    meshRail(out, [-half, deck(-half) + 0.2, s * (W + 0.05)], [half, deck(half) + 0.2, s * (W + 0.05)], 0.85, s)
     // the lattice: diagonals in the panel
     for (let x = -half; x < half - 0.1; x += 1.1) {
-      strut(out, [x, deck + 0.25, s * (W + 0.08)], [x + 1.1, deck + 1.0, s * (W + 0.08)], 0.05, 0.05, RAIL_RED, surfaceTag('metal'), false)
-      strut(out, [x + 1.1, deck + 0.25, s * (W + 0.08)], [x, deck + 1.0, s * (W + 0.08)], 0.05, 0.05, RAIL_RED, surfaceTag('metal'), false)
+      strut(out, [x, deck(x) + 0.25, s * (W + 0.08)], [x + 1.1, deck(x + 1.1) + 1.0, s * (W + 0.08)], 0.05, 0.05, RAIL_RED, surfaceTag('metal'), false)
+      strut(out, [x + 1.1, deck(x + 1.1) + 0.25, s * (W + 0.08)], [x, deck(x) + 1.0, s * (W + 0.08)], 0.05, 0.05, RAIL_RED, surfaceTag('metal'), false)
     }
   }
 }

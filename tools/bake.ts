@@ -1663,8 +1663,10 @@ async function bake(spec: CitySpec): Promise<void> {
    * MNT is bare earth at 0.5–1 m. Where it has a value it replaces the fine sample, and the coarse posts inside it too, so
    * the far ground and the near agree; elsewhere (beyond the survey, a withheld zone) the terrarium stands.
    */
+  let lidarPosts: Uint8Array | null = null
   if (spec.region === 'paris') {
     const lidar = await (await import('./ign-lidar.ts')).ignLidar(fineBox)
+    lidarPosts = new Uint8Array(fine.length)
     let taken = 0
     const diffs: number[] = []
     for (let r = 0; r < frows; r++) {
@@ -1675,6 +1677,7 @@ async function bake(spec: CitySpec): Promise<void> {
         const i = r * fcols + c
         if ((r * 7 + c) % 97 === 0) diffs.push(v - fine[i])
         fine[i] = v
+        lidarPosts[i] = 1
         taken++
       }
     }
@@ -1785,6 +1788,18 @@ async function bake(spec: CitySpec): Promise<void> {
       }
     }
     if (n) console.log(`  raw relief kept in ${rawZones.length} zone(s): ${n} fine samples unopened`)
+  }
+  /*
+   * …nor where the ground is IGN's lidar: an MNT is bare earth already, so there are no rooftops for the opening to take,
+   * and all it can take is real ground narrower than 120 m. The Buttes-Chaumont's island, a rock 31 m over its lake, came
+   * out flat at the water, the Temple de la Sibylle at the foot of its own cliff, and the Pont des Suicidés (on the rock
+   * either side of a gorge, 18 m up) a way humped over the lakeside path (owner, 2026-10-30, 48.880332, 2.383315).
+   */
+  if (lidarPosts) {
+    const bare = bareEarthF(fine, fcols, frows, 0, fineWet)
+    let n = 0
+    for (let i = 0; i < fineGround.length; i++) if (lidarPosts[i] && !fineWet[i]) { fineGround[i] = bare[i]; n++ }
+    console.log(`  lidar's relief kept: ${n} fine samples unopened`)
   }
   /*
    * …and where a zone says `lidar: true`, the LIDAR bare earth (tools/lidar/dtm.py → tools/cache/lidar/dtm-<city>.json):
@@ -2459,6 +2474,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // (each way's heights before any bridge lifts them: a bridge found later to be at grade over a cut goes back to them)
   const preBridge = new Map(kept.map((e) => [e.id, e.heights ? [...e.heights] : undefined]))
   const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps,
+    straight: new Set(kept.filter((e) => e.bridge && (streetRegion.straightDecks ?? []).includes(e.name ?? '')).map((e) => e.id)),
     // (not in Paris, whose tracks are all on viaducts, in cuttings or in tunnels: there the bridge stays at grade and the
     //  rail goes down — owner, 2026-10-30; PARIS_BUGS.md "Sunken rails")
     rails: streetRegion.roadPaint === 'paris' ? [] : rails.filter((r) => !r.bridge && !r.heights && r.kind !== 'tram').map((r) => ({ points: r.points, layer: r.layer })) })
@@ -3210,7 +3226,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * (city/carriageways.ts `toPavement`), and dropped when there is none to move to.
    */
   {
-    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain', 'billboard',
+    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'bikeparking', 'motoparking', 'fountain', 'billboard',
       'litter', 'recycling', 'sanisette', 'crepes', 'glaces', 'souvenirs'])
     const lanes = new Carriageways(kept.filter((e) => !e.bridge && !e.tunnel && !e.bore))
     let moved = 0, dropped = 0
@@ -3854,6 +3870,8 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
   //  Only a pier on FILL, at grade, is ground: Pier 30-32's deck is mapped `man_made=pier` with a `surface`.)
   if (t.man_made === 'pier' && t.floating !== 'yes' && t.surface !== undefined) return 'lot'
   if (t.amenity === 'parking' && !/^(multi-storey|underground|rooftop)$/.test(t.parking ?? '')) return 'lot'
+  // (a station's throat and yards: unclaimed they were the default lawn, the Gare du Nord's fan laid on grass, owner 2026-10-30)
+  if (t.landuse === 'railway') return 'lot'
   return null
 }
 
@@ -4232,6 +4250,18 @@ async function main(): Promise<void> {
     return
   }
   for (const c of list) await bake(c)
+  /*
+   * The Search screen's positions come from the bake (tools/landmark-where.ts), so they are written with it: Paris was
+   * never run through the tool by hand, and 2,600 of its 2,800 landmarks read "not placed" (owner, 2026-10-30).
+   */
+  {
+    const { execFileSync } = await import('node:child_process')
+    for (const c of list) {
+      try {
+        execFileSync(process.execPath, ['--experimental-strip-types', resolve(import.meta.dirname, 'landmark-where.ts'), c.id], { stdio: ['ignore', 'pipe', 'inherit'] })
+      } catch (e) { console.warn(`  landmark-where ${c.id}: ${(e as Error).message}`) }
+    }
+  }
   // what the page's city menu lists: every city in cities.ts that has been baked
   const { existsSync } = await import('node:fs')
   // with where each one is, so a pasted "lat, lon" (the page's go-to) can find the city it falls in

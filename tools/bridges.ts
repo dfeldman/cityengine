@@ -40,6 +40,8 @@ export interface BridgeWorld {
   layerCaps?: { x: number; z: number; radius: number; layer: number }[]
   /** the railways drawn at the surface (not on a viaduct): a bridge over one clears a train (`RAIL_CLEARANCE`) */
   rails?: { points: number[]; layer?: number }[]
+  /** decks a model draws (Region.straightDecks): a straight line from bank to bank, no crown and no clearance over what is under */
+  straight?: Set<number>
 }
 
 /** above the water's surface: with Paris's 2.5 m drop to the river, a gentle 1 m hump over its quays */
@@ -365,6 +367,15 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     const last = segs[segs.length - 1]
     const g0 = segs[0].h[0]
     const g1 = last.h[last.h.length - 1]
+    if (chain.some(({ e }) => world.straight?.has(e.id))) {
+      segs.forEach((sg, k) => {
+        const hs = cumulative(sg.p).map((c) => Math.round((g0 + (g1 - g0) * (L > 0 ? (starts[k] + c) / L : 0)) * 100) / 100)
+        sg.e.heights = sg.reversed ? hs.reverse() : hs
+        raised.add(sg.e.id)
+      })
+      bridges++
+      continue
+    }
     const isFreeway = chain.every(({ e }) => FREEWAY.has(e.kind ?? ''))
     // (an end at a junction in the air is that junction's height, not the ground's: see above)
     const [na, nb] = ends(chain)
