@@ -217,5 +217,8 @@ Open:
       stairs too, or the graph prunes it.
 - [ ] After the lidar relief: Pont Neuf's approach at 48.857, 2.341 has short pale parapets standing on the way and a hard
       band in the river beside the Vert-Galant. Check whether these are new.
+- [ ] Memory with the kit, at the start point only (tools/measure-load.ts, bake 20261030T1557): heap 1,072 MB, textures 1,736 MB,
+      vertices 1,055 MB, about 3.9 GB, 36 ms a frame. Not yet measured along a ride, nor where kit buildings are densest.
+- [ ] `tools/r2-prune.sh` was not run with this upload: the bucket still holds what the last build dropped.
 - [ ] Facade photos: Mapillary coverage, measured. Panorama within ~30 m of a street: SF 68%, Paris 27% (15% since 2021), on the
       29 central Paris tiles cached of the 79 the box needs. `photo.ts` throws away flat frames, and Paris has 70% with those.
