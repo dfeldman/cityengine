@@ -85,7 +85,7 @@ export async function fetchApur(): Promise<ApurRow[]> {
  * period among them, a facility if any is — else the nearest centroid within ~15 m of its own. The record's shape is
  * the bake's (BuildingFacts.record).
  */
-export function apurIndex(rows: ApurRow[]): (ring: { lat: number; lon: number }[]) => { year?: number; stories?: number; construction?: string; use?: string; units: number; parcels: number } | null {
+export function apurIndex(rows: ApurRow[]): (ring: { lat: number; lon: number }[]) => { year?: number; stories?: number; construction?: string; use?: string; units: number; parcels: number; height?: number } | null {
   const C = 0.0005
   const key = (lon: number, lat: number): number => Math.floor(lon / C) * 1e6 + Math.floor(lat / C)
   const cells = new Map<number, ApurRow[]>()
@@ -121,7 +121,12 @@ export function apurIndex(rows: ApurRow[]): (ring: { lat: number; lon: number }[
     for (const r of pool) if (r[2] !== 99) votes.set(r[2], (votes.get(r[2]) ?? 0) + 1)
     const period = [...votes.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 99
     const year = pool.find((r) => r[2] === period && r[3] > 0)?.[3]
-    return { construction: String(period), ...(year ? { year } : {}), ...(pool.some((r) => r[4] === 1) ? { use: 'facility' } : {}), units: 0, parcels: 1 }
+    // its height: the median of the footprints' own (h_med, the survey's median roof height) — the measured building, where
+    // OSM mostly has none and the bake guessed seven storeys for all of Paris
+    const hs = pool.map((r) => r[5]).filter((h) => h >= 3 && h <= 120).sort((a, b) => a - b)
+    const height = hs.length ? hs[hs.length >> 1] : undefined
+    return { construction: String(period), ...(year ? { year } : {}), ...(pool.some((r) => r[4] === 1) ? { use: 'facility' } : {}), units: 0, parcels: 1,
+      ...(height ? { height } : {}) }
   }
 }
 

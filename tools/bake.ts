@@ -812,7 +812,16 @@ async function bake(spec: CitySpec): Promise<void> {
       reg.levelInference)
     if (lv !== undefined && tags['building:part'] === undefined && recordOf) {
       const ll = ring.map((q) => proj.toLatLon(q))
-      const rec = recordOf(ll)
+      const rec = recordOf(ll) as (ReturnType<NonNullable<typeof recordOf>> & { height?: number }) | null
+      /*
+       * Paris: the building's MEASURED height (APUR's survey median, tools/paris-apur.ts) where the mapper gave none — OSM
+       * has a height for few of Paris's buildings, and the guess was seven storeys everywhere (owner, 2026-10-30: OSM "is
+       * often weird on buildings"). Storeys from it at about 3.1 m, the ground storey taller.
+       */
+      if (spec.region === 'paris' && rec?.height) {
+        const levels = Math.max(1, Math.round((rec.height - 1) / 3.1))
+        return { tags: { ...tags, height: rec.height.toFixed(1), 'building:levels': String(levels) }, inferred: true }
+      }
       if (rec?.stories && rec.stories > lv && rec.stories <= 60 && rec.parcels <= 2 && rec.use && rec.use !== 'SRES' && rec.use !== 'MRES'
         && districtOf(ll[0].lat, ll[0].lon) === 'fidi') {
         return { tags: { ...tags, 'building:levels': String(rec.stories) }, inferred: true }
@@ -1515,6 +1524,39 @@ async function bake(spec: CitySpec): Promise<void> {
     }
   }
   console.log(`  fine ground sampled: ${fcols}x${frows} at ${FINE_STEP} m from zoom ${FINE_ZOOM} (${(fcols * frows / 1e6).toFixed(1)} M samples)`)
+  /*
+   * PARIS'S LIDAR (owner, 2026-10-30: the Seine banks "way too wavy", "the ways are out of sync with the ground many times";
+   * tools/ign-lidar.ts). The terrarium is SRTM-class over France and smears every quay wall into a slope; IGN's LiDAR HD
+   * MNT is bare earth at 0.5–1 m. Where it has a value it replaces the fine sample, and the coarse posts inside it too, so
+   * the far ground and the near agree; elsewhere (beyond the survey, a withheld zone) the terrarium stands.
+   */
+  if (spec.region === 'paris') {
+    const lidar = await (await import('./ign-lidar.ts')).ignLidar(fineBox)
+    let taken = 0
+    const diffs: number[] = []
+    for (let r = 0; r < frows; r++) {
+      for (let c = 0; c < fcols; c++) {
+        const ll = proj.toLatLon({ x: fx0 + c * FINE_STEP, z: fz0 + r * FINE_STEP })
+        const v = lidar.at(ll.lat, ll.lon)
+        if (v === null) continue
+        const i = r * fcols + c
+        if ((r * 7 + c) % 97 === 0) diffs.push(v - fine[i])
+        fine[i] = v
+        taken++
+      }
+    }
+    let coarse = 0
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const ll = proj.toLatLon({ x: tx0 + c * STEP, z: tz0 + r * STEP })
+        const v = lidar.at(ll.lat, ll.lon)
+        if (v !== null) { heights[r * cols + c] = v; coarse++ }
+      }
+    }
+    diffs.sort((a, b) => a - b)
+    console.log(`  IGN LiDAR HD: ${lidar.tiles} tiles; ${taken} of ${fcols * frows} fine samples and ${coarse} coarse posts from the lidar `
+      + `(lidar − terrarium: median ${diffs[diffs.length >> 1]?.toFixed(2)} m, 5–95% ${diffs[Math.floor(diffs.length * 0.05)]?.toFixed(1)}…${diffs[Math.floor(diffs.length * 0.95)]?.toFixed(1)} m)`)
+  }
   // everything is relative to where the rider starts, so the numbers stay small and the HUD reads sensibly
   /**
    * Bare earth, not rooftops.
