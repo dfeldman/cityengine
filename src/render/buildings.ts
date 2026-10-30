@@ -24,7 +24,7 @@ import type { WaterFeature } from './water.ts'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
 import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
-import { artOf, groundArtOf, planWall, rng, type Cell, type FacadePlan, type Feature } from '../city/facade.ts'
+import { artOf, groundArtOf, planWall, rng, type Cell, type CornerShop, type FacadePlan, type Feature } from '../city/facade.ts'
 import { addRoofscape, buildRoof, buildRoofAroundCourts, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
 import type { PlacedSign } from './landmarks/signage.ts'
@@ -452,6 +452,8 @@ export interface StreetFacing {
   pavement?: number | null
   /** the way in front is an ALLEY — a few metres between the walls: no shops, no awnings (city.ts `streetOf`) */
   alley?: boolean
+  /** this wall carries part of the block's corner shop (facade.ts CornerShop; `cornerShops` below) */
+  corner?: CornerShop
 }
 
 const AWNING_COLOURS: [number, number, number][] = [
@@ -778,7 +780,7 @@ export function buildBuilding(
   /** the arches cut through each outer wall i by passages (render/passages.ts `passageArches`) */
   arches?: (i: number) => Arch[],
 ): void {
-  const streets = ring.map((_, i) => facesStreet?.(i) ?? null)
+  const streets = cornerShops(ring, ring.map((_, i) => facesStreet?.(i) ?? null), plan, seed)
   const roles = fronts(ring, streets)
   for (let i = 0; i < ring.length; i++) {
     wall(out, ring[i], ring[(i + 1) % ring.length], plan, atlas, seed ^ (i * 0x9e3779b1), baseY,
@@ -814,6 +816,46 @@ export function buildBuilding(
       dormerUV: uvFor(atlas, `${artOf(plan.style)}/dormer`, 0) ?? uvFor(atlas, `${artOf(plan.style)}/window`, 0),
     })
   }
+}
+
+/**
+ * A Paris building's corner shop, if it has one: where two street walls meet at a real angle, or a short cut corner (a pan
+ * coupé, under 8 m) joins them, six buildings in ten give the corner to one shop (facade.ts CornerShop).
+ */
+const CORNER_PAINT = ['#1f2a44', '#22272b', '#5a1f22', '#24382d', '#2e3f52', '#6b2232', '#141516', '#3d2f24']
+function cornerShops(ring: Ring, streets: (StreetFacing | null)[], plan: FacadePlan, seed: number): (StreetFacing | null)[] {
+  if (!plan.dress?.paris || plan.storeys[0]?.kind !== 'ground') return streets
+  const n = ring.length
+  const r = rng(seed ^ 0xc0e4)
+  if (r() >= 0.6) return streets
+  const on = (i: number): boolean => { const s = streets[(i + n) % n]; return !!s && !s.alley }
+  const dir = (i: number): { x: number; z: number; L: number } => {
+    const a = ring[(i + n) % n], b = ring[(i + 1 + n) % n]
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { x: (b.x - a.x) / L, z: (b.z - a.z) / L, L }
+  }
+  const paint = CORNER_PAINT[Math.floor(r() * CORNER_PAINT.length)]
+  const variant = r()
+  const mark = (i: number, atStart: boolean, atEnd: boolean, out: (StreetFacing | null)[]): void => {
+    const k = (i + n) % n
+    out[k] = { ...out[k]!, corner: { atStart, atEnd, paint, variant } }
+  }
+  for (let i = 0; i < n; i++) {
+    const a = dir(i), b = dir(i + 1), c = dir(i + 2)
+    // the cut corner: a short street wall between two street walls that turn through a real angle
+    if (on(i) && on(i + 1) && on(i + 2) && b.L < 8 && a.L >= 4 && c.L >= 4 && a.x * c.x + a.z * c.z < 0.5) {
+      const out = [...streets]
+      mark(i, false, true, out); mark(i + 1, true, true, out); mark(i + 2, true, false, out)
+      return out
+    }
+    // the plain corner
+    if (on(i) && on(i + 1) && a.L >= 4 && b.L >= 4 && a.x * b.x + a.z * b.z < 0.5) {
+      const out = [...streets]
+      mark(i, false, true, out); mark(i + 1, true, false, out)
+      return out
+    }
+  }
+  return streets
 }
 
 /**

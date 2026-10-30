@@ -796,9 +796,18 @@ export function planFacade(
  * the REMAINDER goes into the corner margins rather than into the bays. That is also what real buildings do —
  * the wall returns at the corner in solid masonry, not in half a window.
  */
+/**
+ * THE CORNER SHOP (owner, 2026-10-30, Rue de la Roquette at Rue Popincourt: "we dont have any special handling of corner
+ * stores, but this is a very common thing"): one shop wrapping the corner of a Paris block, its ground floor all
+ * shopfront within `CORNER_SHOP` metres of the corner and one painted fascia running across the bays and round the cut.
+ * Handed down from render/buildings.ts `cornerShops`, which finds the corner: which ends of this wall it reaches.
+ */
+export interface CornerShop { atStart: boolean; atEnd: boolean; paint: string; variant: number }
+export const CORNER_SHOP = 9
+
 export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   /** this wall faces a street (and how far it is to the kerb): where a dressed building puts its ornament */
-  street: { pavement?: number | null; main?: boolean; alley?: boolean } | null = null,
+  street: { pavement?: number | null; main?: boolean; alley?: boolean; corner?: CornerShop } | null = null,
   /**
    * Which of the building's features this wall carries (render/buildings.ts `fronts`). `front`: the narrow street front
    * a Victorian's one bay window and gable go on; `face`: a wall the street sees, where an apartment block hangs its fire
@@ -835,8 +844,11 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
    * bay of the ground floor, full storey height, where a shop would otherwise be. It is the single most
    * Parisian thing at eye level, and it breaks up a row of shops the way the real street is broken up.
    */
-  const carriageBay = (plan.style === 'haussmann' || plan.style === 'marais') && bays >= 3
+  const corner = street?.corner
+  const inCorner = (b: number): boolean => !!corner && ((corner.atStart && margin + b * bayW < CORNER_SHOP) || (corner.atEnd && wallLength - (margin + (b + 1) * bayW) < CORNER_SHOP))
+  const carriage0 = (plan.style === 'haussmann' || plan.style === 'marais') && bays >= 3
     && rng(seed ^ 0x0c0c4e)() < 1 / 3 ? Math.floor(bays / 2) : -1
+  const carriageBay = carriage0 >= 0 && inCorner(carriage0) ? -1 : carriage0
   // a dressed building's shops (Dress.shops): on the street front only, and there all of it, or one shop of a bay or two
   // in the middle, or none
   const d = plan.dress
@@ -850,7 +862,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   const blockBay = (b: number): boolean => !!d?.blocks && street !== null && (b + off) % period < width
   // (never on an alley — a way a few metres between the walls is a passage, not a shopping street: owner, 2026-10-30, "when a
   //  way is extremely narrow between buildings, we should assume its more of an alley than a street and not display shops")
-  const shopBay = (b: number): boolean => !street?.alley && (!d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN))))
+  const shopBay = (b: number): boolean => !street?.alley && (inCorner(b) || !d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN))))
   // a label's ground floor (Dress.ground): every bay of the street front named, from any style's painting
   // (on the walls the building shows the street, whether or not the street index found a street there: a label read them
   // off a photograph of one — wave 5, a corner block's box bays went missing on a side the index had no street for)
@@ -878,7 +890,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       const shopGround = s.kind === 'ground' && (mix ? mix[b] === 'shop' : plan.ground !== 'plain' && b !== carriageBay && shopBay(b))
       // (a label's garage is always the garage door: the edwardian garage painting's second variant is an arched entry up
       //  steps, and one garage bay in two came out as a church door — the arches judges blamed on the labels, waves 6-11)
-      const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : s.kind === 'ground' && mix?.[b] === 'garage' ? 0 : vr()
+      const variant = shopGround && inCorner(b) ? corner!.variant : shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : s.kind === 'ground' && mix?.[b] === 'garage' ? 0 : vr()
 
       let element: string
       if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/${d?.blank ? 'wall' : 'window'}` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt, d?.shopGlass)
@@ -941,7 +953,24 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     const g = plan.storeys[0]
     const sr = rng(seed ^ 0x5409f)
     const SHOP = ['#1f2a44', '#1f2a44', '#5a1f22', '#24382d', '#24382d', '#141516', '#2e3f52', '#6b2232']
-    const shopsAt = cells.filter((c) => c.y0 <= g.y0 + 0.01 && c.element.endsWith('/shopfront')).map((c) => [c.x0, c.x1] as [number, number]).sort((a, b) => a[0] - b[0])
+    const shopsAll = cells.filter((c) => c.y0 <= g.y0 + 0.01 && c.element.endsWith('/shopfront')).map((c) => [c.x0, c.x1] as [number, number]).sort((a, b) => a[0] - b[0])
+    // the corner shop's bays have the one fascia, painted right across them and on round the corner; a pier where it ends
+    const cornerEnds: ['start' | 'end', boolean][] = corner ? [['start', corner.atStart], ['end', corner.atEnd]] : []
+    const isCorner = (r: [number, number]): boolean => !!corner && ((corner.atStart && r[0] < CORNER_SHOP) || (corner.atEnd && wallLength - r[1] < CORNER_SHOP))
+    for (const [end, on] of cornerEnds) {
+      if (!on) continue
+      const run = shopsAll.filter((r) => (end === 'start' ? r[0] < CORNER_SHOP : wallLength - r[1] < CORNER_SHOP))
+      if (!run.length) continue
+      // (from the wall's very end, so the band meets its neighbour's at the corner)
+      const x0 = end === 'start' ? 0 : run[0][0]
+      const x1 = end === 'start' ? run[run.length - 1][1] : wallLength
+      const top = g.y1 - 0.1
+      features.push({ kind: 'panel', y0: top - 0.85, y1: top, depth: 0.12, x0, x1, colour: corner!.paint, flat: true })
+      features.push({ kind: 'panel', y0: top - 0.1, y1: top, depth: 0.14, x0, x1, colour: shadeHex(corner!.paint, 1.35), flat: true })
+      const pier = end === 'start' ? x1 - 0.22 : x0
+      features.push({ kind: 'pilaster', y0: 0.05, y1: top, depth: 0.1, x0: pier, x1: pier + 0.22, colour: corner!.paint, flat: true })
+    }
+    const shopsAt = shopsAll.filter((r) => !isCorner(r))
     for (let i = 0; i < shopsAt.length;) {
       let j = i
       while (j + 1 < shopsAt.length && Math.abs(shopsAt[j + 1][0] - shopsAt[j][1]) < 0.05 && j - i < 2) j++

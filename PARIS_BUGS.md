@@ -130,7 +130,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [x] **A few tours of Paris** — four (src/city/paris/tours.ts): The Seine and its Bridges 6.9 km, Monuments of the Right Bank 8.2 km, Montmartre and the Stations 6.4 km (+95 m), The Bois de Boulogne 9.3 km; every leg routes (tools/check-tours.ts --city=paris-centre) and the picker lists them. Original: (owner, 2026-10-30: "add a few tours of Paris like we have for SF. Just a few is fine, since
       Paris has less variety in terrain for cyclists"): src/game/tour data; the Seine's bridges and quays, the Marais to
       Bastille, Montmartre.
-- [ ] **Corner shops** (48.856774, 2.377890, Rue de la Roquette at Rue Popincourt): owner, "we dont have any special handling
+- [x] **Corner shops** — six Paris buildings in ten with a street corner give it to one shop: all shopfront within 9 m of the corner, no carriage door there, one painted fascia across the bays and round a cut corner, a pier where it ends (facade.ts CornerShop, buildings.ts cornerShops). The hanging sign on the corner itself is not done. Original: (48.856774, 2.377890, Rue de la Roquette at Rue Popincourt): owner, "we dont have any special handling
       of corner stores, but this is a very common thing". The Paris corner: the building's cut corner (pan coupé), and one
       shop wrapping it — a boulangerie, café or pharmacie with its painted fascia and lettering running round both faces
       and the cut, the pharmacie's green cross or a hanging sign on the corner, the street-name plates on it. Facade
