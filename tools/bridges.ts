@@ -38,11 +38,15 @@ export interface BridgeWorld {
   buried?: Pt[][]
   /** foot bridges near these points take at most this layer (Region.footBridgeLayers, in local metres) */
   layerCaps?: { x: number; z: number; radius: number; layer: number }[]
+  /** the railways drawn at the surface (not on a viaduct): a bridge over one clears a train (`RAIL_CLEARANCE`) */
+  rails?: { points: number[]; layer?: number }[]
 }
 
 /** above the water's surface: with Paris's 2.5 m drop to the river, a gentle 1 m hump over its quays */
 const CLEARANCE_WATER = 3.5
 const PER_LAYER = 5.5
+/** over a railway at the surface: a train and its contact wire under the deck */
+const RAIL_CLEARANCE = 5.8
 const RAMP = 60
 const MAX_HUMP_GRADE = 0.06
 /** A freeway through a city runs elevated or in a cut, not at grade (BUGS.md #157). */
@@ -209,6 +213,22 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
       }
     }
   }
+  /*
+   * A RAILWAY passing under it (owner, 2026-10-30: "several overpasses over the train tracks … displayed as tiny hops
+   * that wouldn't actually clear a train"). The rails were not counted at all, so a road bridge over the tracks fell
+   * through to the 2 m of a culvert. Measured from the ground under the rail where it crosses: a line in a trench the
+   * terrain shows needs little or nothing; one the terrain has at grade lifts the deck clear of the wire.
+   */
+  for (const r of world.rails ?? []) {
+    if ((r.layer ?? 0) >= layer) continue
+    const q = pts(r.points)
+    for (let i = 1; i < p.length; i++) {
+      for (let j = 1; j < q.length; j++) {
+        if (cross(p[i - 1], p[i], q[j - 1], q[j]) === null) continue
+        need = Math.max(need, world.ground((q[j - 1].x + q[j].x) / 2, (q[j - 1].z + q[j].z) / 2) + RAIL_CLEARANCE - top)
+      }
+    }
+  }
   if (need > -Infinity) return { rise: Math.max(0, need), over: 'way' }
   /*
    * Over nothing but footpaths — the Pont Morland over the Port de l'Arsenal promenade, which runs beneath in a
@@ -258,6 +278,28 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   // the deck height at each bridge end node, for the ramps
   const deckAt = new Map<number, number>()
   let bridges = 0
+  /*
+   * A SCRAP of way between two bridge pieces is bridge (owner, 2026-10-30, Pont Mirabeau: "notice the discontinuous path
+   * and car in the air" — "essentially every seine bridge is messed up. they all have an underpass on each side"). OSM
+   * maps a Seine bridge as its span over the river, a short deck over the riverside road below, and between them a few
+   * metres of way with no bridge tag. That scrap cut the chain, so the river span started on the ground under its end —
+   * the lower quay, 5.8 m below the street — and climbed 15 m to its crest while the street met it in the air.
+   */
+  {
+    const bridgeAt = new Map<number, number>()
+    for (const e of edges) if (e.bridge) for (const n of [e.a, e.b]) bridgeAt.set(n, (bridgeAt.get(n) ?? 0) + 1)
+    let joined = 0
+    for (const e of edges) {
+      if (e.bridge || e.tunnel || !bridgeAt.has(e.a) || !bridgeAt.has(e.b)) continue
+      const q = pts(e.points)
+      let L = 0
+      for (let i = 1; i < q.length; i++) L += Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z)
+      if (L >= 8) continue
+      e.bridge = true
+      joined++
+    }
+    if (joined) console.log(`  bridges: ${joined} scraps of way between bridge pieces joined to their bridges`)
+  }
   const deckEdges = edges.filter((e) => e.bridge)
   for (const e of deckEdges) densify(e, world)
   /*

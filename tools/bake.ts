@@ -682,7 +682,9 @@ async function bake(spec: CitySpec): Promise<void> {
           const walk = foot || freeway ? 0 : kerbToKerb ? pavementForNA(corridor) : separate ? 0.6 : pavementFor(corridor)
           edges.push({
             id: edgeId++, a: w.nodes[startIdx], b: w.nodes[i],
-            points: packPoints(pts), surface: surfaceOf(w.tags),
+            // (Paris's lower quays, the "Port de …" roads along the Seine, are cobbled whatever OSM says — owner, 2026-10-30,
+            //  at the Port de Javel: "this road is actually cobblestone which may not be reflected in OSM")
+            points: packPoints(pts), surface: streetRegion.roadPaint === 'paris' && w.tags.highway === 'service' && /^Port (de|du|des|d') /.test(w.tags.name ?? '') && /^(|paving_stones|concrete|sett|cobblestone)$/.test(w.tags.surface ?? '') ? 'cobblestone' : surfaceOf(w.tags),
             // the carriageway is the corridor less its two pavements, never narrower than a single lane —
             // or, where the region measures kerb to kerb, the width itself
             width: foot || kerbToKerb || separate || freeway ? corridor : Math.max(2.8, corridor - 2 * walk),
@@ -1352,6 +1354,13 @@ async function bake(spec: CitySpec): Promise<void> {
     if (w.tags.tunnel && w.tags.tunnel !== 'no') continue
     if (w.tags.covered === 'yes') continue
     if (parseInt(w.tags.layer ?? '0', 10) < 0) continue
+    /*
+     * …and a railway OSM puts below the street some other way: `level` below zero, or `cutting=yes`, with no layer to
+     * say otherwise. The RER C along the Quai André-Citroën is mapped so (level=-1, cutting=yes, no layer), and drawn at
+     * the surface it ran at grade across the port roads — when, as the owner says (2026-10-30), "Paris has essentially
+     * no at-grade rail crossings, so when one appears … it is because the levels are coded incorrectly in OSM".
+     */
+    if (!(parseInt(w.tags.layer ?? '', 10) >= 0) && (parseFloat(w.tags.level ?? '') < 0 || w.tags.cutting === 'yes')) continue
     const pts = w.geometry.map((g) => proj.toLocal(g))
     let len = 0
     for (let k = 1; k < w.geometry.length; k++) len += haversine(w.geometry[k - 1], w.geometry[k])
@@ -2274,7 +2283,10 @@ async function bake(spec: CitySpec): Promise<void> {
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
   // (each way's heights before any bridge lifts them: a bridge found later to be at grade over a cut goes back to them)
   const preBridge = new Map(kept.map((e) => [e.id, e.heights ? [...e.heights] : undefined]))
-  const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps })
+  const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps,
+    // (not in Paris, whose tracks are all on viaducts, in cuttings or in tunnels: there the bridge stays at grade and the
+    //  rail goes down — owner, 2026-10-30; PARIS_BUGS.md "Sunken rails")
+    rails: streetRegion.roadPaint === 'paris' ? [] : rails.filter((r) => !r.bridge && !r.heights && r.kind !== 'tram').map((r) => ({ points: r.points, layer: r.layer })) })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
   // the walks over the bay off the sea bed: onto their piers' decks, or a float (tools/bridges.ts `liftWalksOffTheSea`)

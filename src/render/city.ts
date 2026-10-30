@@ -734,6 +734,40 @@ function zigzag(out: MeshBuilder, pts: { x: number; z: number }[], s0: number, s
   }
 }
 
+/**
+ * BUS painted across a Paris bus lane: three letters side by side across the lane, stretched 2.4 m along it so a driver
+ * reads them foreshortened, in strokes (a glyph is lines in a unit box: x across to the driver's right, y ahead).
+ */
+const BUS_GLYPHS: [number, number, number, number][][] = [
+  [[0, 0, 0, 1], [0, 1, 0.7, 1], [0.7, 1, 0.9, 0.85], [0.9, 0.85, 0.9, 0.65], [0.9, 0.65, 0.7, 0.5], [0, 0.5, 0.7, 0.5],
+    [0.7, 0.5, 1, 0.35], [1, 0.35, 1, 0.15], [1, 0.15, 0.8, 0], [0.8, 0, 0, 0]],
+  [[0, 1, 0, 0.2], [0, 0.2, 0.2, 0], [0.2, 0, 0.8, 0], [0.8, 0, 1, 0.2], [1, 0.2, 1, 1]],
+  [[1, 0.9, 0.8, 1], [0.8, 1, 0.2, 1], [0.2, 1, 0, 0.85], [0, 0.85, 0, 0.62], [0, 0.62, 0.2, 0.5], [0.2, 0.5, 0.8, 0.5],
+    [0.8, 0.5, 1, 0.38], [1, 0.38, 1, 0.15], [1, 0.15, 0.8, 0], [0.8, 0, 0.2, 0], [0.2, 0, 0, 0.1]],
+]
+function busWord(out: MeshBuilder, pts: { x: number; z: number }[], s: number, offset: number, ahead: boolean): void {
+  const m = alongLine(pts, s)
+  const dir = ahead ? 1 : -1
+  // forward, and the driver's right (the left normal of the line is (−uz, ux))
+  const fx = m.ux * dir, fz = m.uz * dir
+  const rx = fz, rz = -fx
+  const cx = m.x - m.uz * offset, cz = m.z + m.ux * offset
+  const at = (letter: number, gx: number, gy: number): [number, number] => {
+    const a = (letter - 1) * 0.95 + (gx - 0.5) * 0.7
+    const f = gy * 2.4 - 1.2
+    return [cx + rx * a + fx * f, cz + rz * a + fz * f]
+  }
+  const w = 0.07
+  BUS_GLYPHS.forEach((g, letter) => {
+    for (const [x0, y0, x1, y1] of g) {
+      const [ax, az] = at(letter, x0, y0), [bx, bz] = at(letter, x1, y1)
+      const dx = bx - ax, dz = bz - az, L = Math.hypot(dx, dz) || 1e-6, nx = -dz / L * w, nz = dx / L * w
+      out.quad([[ax - nx, 0.065, az - nz], [bx - nx, 0.065, bz - nz], [bx + nx, 0.065, bz + nz], [ax + nx, 0.065, az + nz]],
+        [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.86, 0.85, 0.79], 0)
+    }
+  })
+}
+
 function dashedLine(out: MeshBuilder, pts: { x: number; z: number }[], offset: number, y: number,
                     width: number, on: number, period: number,
                     white: [number, number, number] = [0.86, 0.85, 0.79]): void {
@@ -3157,10 +3191,19 @@ export class City {
         }
       }
       // the red bus lanes along their curbs (PackedEdge `busSide`; owner: "render bus lanes as red"), just under the paint
+      // — San Francisco's. Paris's are not red (owner, 2026-10-30, Boulevard de Magenta: "They just have a solid white
+      // line and say BUS periodically"): the line along the lane's inner edge, and BUS across the lane every 45 m.
       if (e.busSide && e.width >= 7) {
         const W = Math.min(3.3, e.width / 2 - 0.8)
         for (const [bit, side] of [[1, -1], [2, 1]] as const) {
-          if (e.busSide & bit) dashedLine(markings, pts, side * (e.width / 2 - 0.55 - W / 2), 0.058, W, 1, 1, BUS_RED)
+          if (!(e.busSide & bit)) continue
+          if (!parisPaint) { dashedLine(markings, pts, side * (e.width / 2 - 0.55 - W / 2), 0.058, W, 1, 1, BUS_RED); continue }
+          dashedLine(markings, pts, side * (e.width / 2 - 0.55 - W), 0.064, 0.15, 1, 1)
+          const total = lengthOf(pts)
+          // the lane's traffic goes along the line on its right-hand kerb, against it on the left — on a one-way street, along
+          const ahead = side < 0 || !!e.oneway
+          // (the first 10 m in, or mid-way along a piece shorter than that: a boulevard is cut into short pieces at its junctions)
+          for (let s = Math.min(10, total / 2); s + 1.3 < total && total > 6; s += 45) busWord(markings, pts, s, side * (e.width / 2 - 0.55 - W / 2), ahead)
         }
       }
     }
