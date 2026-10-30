@@ -64,7 +64,7 @@ import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
-import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds } from './bridges.ts'
+import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks } from './bridges.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -772,6 +772,11 @@ async function bake(spec: CitySpec): Promise<void> {
       if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; n++ }
     }
     if (n) console.log(`  ${n} trails opened to bikes (zones with trails: 'bike')`)
+    if (region(spec.region).rideFootBridges) {
+      const ids = footBridgeLinks(edges)
+      for (const e of edges) if (ids.has(e.id)) e.trail = true
+      console.log(`  ${ids.size} ways of named foot bridges opened to bikes`)
+    }
   }
   // (and the islands a ferry serves: their paths are kept though no street reaches them — region `ferryIslands`)
   const ferryIslands = (region(spec.region ?? spec.id).ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius }))
@@ -4154,6 +4159,10 @@ async function main(): Promise<void> {
         const pts = unpackPoints(e.points)
         const mid = pts[Math.floor(pts.length / 2)]
         if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; opened++ }
+      }
+      if (region(spec.region).rideFootBridges) {
+        const ids = footBridgeLinks(pkg.edges as unknown as Parameters<typeof footBridgeLinks>[0])
+        for (const e of pkg.edges) if (ids.has(e.id) && !e.trail) { e.trail = true; opened++ }
       }
       if (opened) { console.log(`  ${opened} more trails opened to bikes`); await writeFile(packageFile(spec.id), JSON.stringify(pkg)) }
       await writeRides(pkg)

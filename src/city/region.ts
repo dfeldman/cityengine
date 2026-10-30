@@ -141,6 +141,8 @@ export interface Region {
   atGrade?: number[]
   /** bridges by name whose model draws the deck bank to bank: the way runs straight between its ends, for the rider to be on it */
   straightDecks?: string[]
+  /** the named foot bridges are ridden, with the footways joining them to the bike network (tools/bridges.ts footBridgeLinks) */
+  rideFootBridges?: boolean
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -255,6 +257,7 @@ export function region(id: string | undefined): Region {
     stripedStreets: own?.stripedStreets ?? base.stripedStreets,
     atGrade: own?.atGrade ?? base.atGrade,
     straightDecks: own?.straightDecks ?? base.straightDecks,
+    rideFootBridges: own?.rideFootBridges ?? base.rideFootBridges,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,

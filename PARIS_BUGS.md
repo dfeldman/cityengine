@@ -212,13 +212,17 @@ Fixed in code, and they want the next bake unless noted:
 Open:
 
 - [ ] Are there other bridges doubled like the Buttes'? Only these two Paris models claim a way's deck; the owner said "a few".
-- [ ] **41 named foot bridges are not in the bike graph**: the Pont des Arts, the Passerelles Debilly, Senghor, Beauvoir among them.
-      The Buttes-Chaumont's two are open now (data/zones/paris.json, `trails: 'bike'`). Opening one means its stubs and
-      stairs too, or the graph prunes it.
+- [x] **Named foot bridges and bikes.** 18 of the 41 now ride (`rideFootBridges`, tools/bridges.ts `footBridgeLinks`): the Pont des
+      Arts, the Passerelle Simone-de-Beauvoir and others. 23 still don't, because an end reaches the network only by stairs:
+      the Passerelles Debilly and Senghor among them. Riding those wants a ramp or a decision about bikes on stairs.
 - [ ] After the lidar relief: Pont Neuf's approach at 48.857, 2.341 has short pale parapets standing on the way and a hard
       band in the river beside the Vert-Galant. Check whether these are new.
-- [ ] Memory with the kit, at the start point only (tools/measure-load.ts, bake 20261030T1557): heap 1,072 MB, textures 1,736 MB,
-      vertices 1,055 MB, about 3.9 GB, 36 ms a frame. Not yet measured along a ride, nor where kit buildings are densest.
+- [x] **Memory (owner: "smarter about unloading textures that aren't in use. Or use ktx2").** `tools/measure-load.ts` counted one
+      shared texture once per material: its 1.7 GB is really ~450 MB, the same as San Francisco. Sign plates were never released,
+      so the footprint grew with the ride, and a long name was 6 MB. Now capped at 1,536 px and released out of reading range:
+      ~150 MB to under 10 MB. Measured over a 12-stop jump: footprint 1.6-2.7 GB with no upward trend.
+- [ ] KTX2: not done. About 250 MB of textures are static and could convert, so ~180 MB at best; the rest are canvases. No
+      `toktx` or `basisu` installed. Worth doing for phones more than for this.
 - [ ] `tools/r2-prune.sh` was not run with this upload: the bucket still holds what the last build dropped.
 - [ ] Facade photos: Mapillary coverage, measured. Panorama within ~30 m of a street: SF 68%, Paris 27% (15% since 2021), on the
       29 central Paris tiles cached of the 79 the box needs. `photo.ts` throws away flat frames, and Paris has 70% with those.

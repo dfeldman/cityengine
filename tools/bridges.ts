@@ -272,6 +272,81 @@ function closeFreewayGaps(edges: BridgeEdge[]): void {
  * Give every bridge edge its heights, and ramp the ways that lead onto a raised deck. Mutates `edges`;
  * returns the ids it raised (bridges and ramps), for the report and for the renderer's own test.
  */
+/**
+ * THE NAMED FOOT BRIDGES, OPEN TO BIKES (owner, 2026-10-30: "the seine is a natural focal point for cyclists"; 41 of them,
+ * the Pont des Arts and the Passerelles Debilly and Senghor among them, were footways and so not in the bike graph). A bridge
+ * goes with the footways that join each of its ends to a way a bike rides, within `reach` metres, and only if it can be crossed
+ * so: half a bridge is a dead end over the river, and the graph would prune it. Stairs do not count. Returns the ways to open.
+ */
+export function footBridgeLinks(edges: (Pick<BridgeEdge, 'id' | 'a' | 'b' | 'points' | 'bridge' | 'kind'> & { name?: string; trail?: boolean })[], reach = 300): Set<number> {
+  const FOOT = /^(footway|path)$/
+  const notBike = /^(footway|path|steps|track|bridleway)$/
+  const at = new Map<number, typeof edges>()
+  for (const e of edges) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
+  const rideable = (e: typeof edges[number]): boolean => !!e.trail || !notBike.test(e.kind ?? 'residential')
+  const lengthOf = (e: typeof edges[number]): number => {
+    const q = pts(e.points)
+    let L = 0
+    for (let i = 1; i < q.length; i++) L += Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z)
+    return L
+  }
+  const groups = new Map<string, typeof edges>()
+  for (const e of edges) {
+    if (e.bridge && e.name && FOOT.test(e.kind ?? '') && /^(Pont|Passerelle)\b/.test(e.name)) (groups.get(e.name) ?? groups.set(e.name, []).get(e.name)!).push(e)
+  }
+  const open = new Set<number>()
+  for (const group of groups.values()) {
+    const own = new Set(group.map((e) => e.id))
+    const count = new Map<number, number>()
+    for (const e of group) for (const n of [e.a, e.b]) count.set(n, (count.get(n) ?? 0) + 1)
+    const ends = [...count].filter(([, c]) => c === 1).map(([n]) => n)
+    if (ends.length < 2) continue
+    // (a big bridge is many ways with many ends, its stairs' landings among them: two that reach the network from opposite
+    //  sides are a way across, and a piece that goes nowhere is pruned with the other stubs)
+    const links = new Map<number, number[]>()
+    for (const end of ends) {
+      const best = new Map<number, { d: number; via: number | null; from: number | null }>([[end, { d: 0, via: null, from: null }]])
+      const todo = [end]
+      while (todo.length) {
+        todo.sort((p, q) => best.get(p)!.d - best.get(q)!.d)
+        const n = todo.shift()!
+        const here = at.get(n) ?? []
+        if (here.some(rideable)) {
+          const via: number[] = []
+          for (let k: number | null = n; k !== null && best.get(k)!.via !== null; k = best.get(k)!.from) via.push(best.get(k)!.via!)
+          links.set(end, via)
+          break
+        }
+        for (const e of here) {
+          if (own.has(e.id) || !FOOT.test(e.kind ?? '')) continue
+          const m = e.a === n ? e.b : e.a
+          const d = best.get(n)!.d + lengthOf(e)
+          if (d > reach || d >= (best.get(m)?.d ?? Infinity)) continue
+          best.set(m, { d, via: e.id, from: n })
+          todo.push(m)
+        }
+      }
+    }
+    const where = new Map<number, Pt>()
+    let span = 0
+    for (const e of group) {
+      const q = pts(e.points)
+      where.set(e.a, q[0])
+      where.set(e.b, q[q.length - 1])
+      for (const u of q) span = Math.max(span, Math.hypot(u.x - q[0].x, u.z - q[0].z))
+    }
+    const all = [...where.values()]
+    for (const u of all) for (const v of all) span = Math.max(span, Math.hypot(u.x - v.x, u.z - v.z))
+    const reached = [...links.keys()]
+    const across = reached.some((u) => reached.some((v) => Math.hypot(where.get(u)!.x - where.get(v)!.x, where.get(u)!.z - where.get(v)!.z) >= span * 0.6))
+    if (across) {
+      for (const e of group) open.add(e.id)
+      for (const via of links.values()) for (const id of via) open.add(id)
+    }
+  }
+  return open
+}
+
 export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridges: number; ramps: number; raised: Set<number> } {
   closeFreewayGaps(edges)
   const raised = new Set<number>()

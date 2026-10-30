@@ -2,6 +2,7 @@
  * The delivery game logic (src/game/delivery.ts), on a synthetic grid town: buildings on a 100 m grid of blocks,
  * intersections named "N<i> St & E<j> Ave".
  */
+import PARIS_KITCHENS from '../src/city/paris/restaurants.json'
 import { describe, expect, it } from 'vitest'
 import { CROSSING_LEVEL, DEFAULTS, Delivery, distanceToRing, rate, type DeliveryWorld, type Source } from '../src/game/delivery.ts'
 
@@ -226,5 +227,29 @@ describe('the rating (2026-10-01)', () => {
     expect(rate(job, 80, 0, 3, 13, 0).tip).toBeGreaterThan(a.tip)
     expect(rate(job, 400, 0, 1, 13, 0).tip).toBe(0)
     expect(a.line.length).toBeGreaterThan(0)
+  })
+})
+
+describe("Paris's kitchens (owner, 2026-10-30: \"regionally appropriate\", \"a smattering of curry and bagels\")", () => {
+  const FOREIGN = new Set(['indian', 'bagel', 'falafel', 'japanese', 'vietnamese', 'chinese', 'maghrebi'])
+  const all = PARIS_KITCHENS.restaurants
+  const names = all.flatMap((k) => k.items.map((i) => i.name)).join(' ')
+  it('are mostly French, with the rest a smattering', () => {
+    const foreign = all.filter((k) => FOREIGN.has(k.kind)).length
+    expect(foreign).toBeGreaterThan(3)
+    expect(foreign / all.length).toBeLessThan(0.35)
+  })
+  it('send out what the owner asked for', () => {
+    for (const food of ['baguette', 'croissant', 'camembert', 'quiche', 'escargot', 'bouillabaisse', 'curry|vindaloo|butter chicken', 'bagel']) {
+      expect(names).toMatch(new RegExp(food))
+    }
+  })
+  it('have unique ids, and lie in the Paris box', () => {
+    expect(new Set(all.map((k) => k.id)).size).toBe(all.length)
+    for (const k of all) {
+      expect(k.items.length).toBeGreaterThan(0)
+      expect(k.lat).toBeGreaterThan(48.81); expect(k.lat).toBeLessThan(48.91)
+      expect(k.lon).toBeGreaterThan(2.22); expect(k.lon).toBeLessThan(2.42)
+    }
   })
 })

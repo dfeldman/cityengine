@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bridgeHeights, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
+import { bridgeHeights, footBridgeLinks, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
 
 const flat: BridgeWorld['ground'] = () => 0
 const river = (x0: number, x1: number): BridgeWorld['water'][number] =>
@@ -90,6 +90,33 @@ describe('a deck a model draws (Region.straightDecks)', () => {
     expect(line.heights![line.heights!.length - 1]).toBeCloseTo(3)
     expect(Math.max(...line.heights!)).toBeCloseTo(6)
     expect(r.raised.has(1)).toBe(true)
+  })
+})
+
+describe('named foot bridges open to bikes', () => {
+  const way = (id: number, a: number, b: number, kind: string, x0: number, x1: number, more = {}) =>
+    ({ id, a, b, kind, points: [x0, 0, x1, 0], ...more })
+  it('takes the stubs to the bike network at both ends', () => {
+    const open = footBridgeLinks([
+      way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Pont des Arts' }),
+      way(2, 2, 3, 'footway', 100, 120), way(3, 3, 4, 'residential', 120, 200),
+      way(4, 1, 5, 'footway', -30, 0), way(5, 5, 6, 'pedestrian', -90, -30),
+    ])
+    expect([...open].sort()).toEqual([1, 2, 4])
+  })
+  it('leaves a bridge alone when an end reaches the network only by stairs, or too far off', () => {
+    const stairs = footBridgeLinks([
+      way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Passerelle' }),
+      way(2, 2, 3, 'steps', 100, 110), way(3, 3, 4, 'residential', 110, 200),
+      way(4, 1, 5, 'residential', -30, 0),
+    ])
+    expect(stairs.size).toBe(0)
+    const far = footBridgeLinks([
+      way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Passerelle' }),
+      way(2, 2, 3, 'footway', 100, 500), way(3, 3, 4, 'residential', 500, 600),
+      way(4, 1, 5, 'residential', -30, 0),
+    ])
+    expect(far.size).toBe(0)
   })
 })
 

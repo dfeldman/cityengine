@@ -1,0 +1,672 @@
+{
+ "_note": "Street Runner's delivery sources in Paris (src/game/delivery.ts `sources`). Every name is INVENTED, on purpose: no real business is named or implied. Invented kitchens at plausible places (owner, 2026-10-30: 'regionally appropriate (baguettes, croissants, camembert, quiche, escargot, bouillabaise, but then also with a smattering of curry and bagels and such)'). Mostly French, with the rest where Paris keeps it: curry in the Passage Brady and at La Chapelle, bagels and falafel in the Rue des Rosiers, ramen in the Rue Sainte-Anne, pho on the Avenue de Choisy, couscous at the Goutte d'Or, dumplings in Belleville, crêpes by Montparnasse.",
+ "restaurants": [
+  {
+   "id": "moulin-a-selle",
+   "name": "Le Moulin à Selle",
+   "kind": "boulangerie",
+   "lat": 48.88525,
+   "lon": 2.33435,
+   "blurb": "Up the Rue Lepic, where the only thing rising faster than the dough is your heart rate.",
+   "items": [
+    {
+     "name": "baguette tradition",
+     "emoji": "🥖",
+     "blurb": "Still warm. Carry it under your arm, as the law more or less requires."
+    },
+    {
+     "name": "pain au chocolat",
+     "emoji": "🥐",
+     "blurb": "Do not call it a chocolatine this far north."
+    },
+    {
+     "name": "pain de campagne",
+     "emoji": "🍞",
+     "blurb": "Weighs about the same as a touring pannier."
+    }
+   ]
+  },
+  {
+   "id": "grand-plateau",
+   "name": "Boulangerie du Grand Plateau",
+   "kind": "boulangerie",
+   "lat": 48.8647,
+   "lon": 2.347,
+   "blurb": "Flat ride, flaky crust, and a queue out of the door by seven.",
+   "items": [
+    {
+     "name": "dozen croissants",
+     "emoji": "🥐",
+     "fragile": true,
+     "blurb": "Two hundred layers of butter and no crash protection."
+    },
+    {
+     "name": "baguette",
+     "emoji": "🥖",
+     "blurb": "The end is already missing. The baker swears it wasn't him."
+    },
+    {
+     "name": "chausson aux pommes",
+     "emoji": "🥧",
+     "blurb": "Apple turnover, molten inside, smug outside."
+    }
+   ]
+  },
+  {
+   "id": "escargot-a-pignon",
+   "name": "L'Escargot à Pignon",
+   "kind": "bistro",
+   "lat": 48.8655,
+   "lon": 2.3468,
+   "blurb": "Fixed-gear snails. They have never once been late, because nobody expects them.",
+   "items": [
+    {
+     "name": "dozen escargots",
+     "emoji": "🐌",
+     "fragile": true,
+     "blurb": "In garlic butter, in their shells, on a dimpled dish. Corner gently."
+    },
+    {
+     "name": "cuisses de grenouille",
+     "emoji": "🐸",
+     "blurb": "Frogs' legs: the only legs in this city fresher than yours."
+    },
+    {
+     "name": "soupe à l'oignon",
+     "emoji": "🍲",
+     "fragile": true,
+     "blurb": "A lid of molten Gruyère holding back a lake."
+    }
+   ]
+  },
+  {
+   "id": "roue-libre",
+   "name": "Fromagerie de la Roue Libre",
+   "kind": "fromagerie",
+   "lat": 48.8574,
+   "lon": 2.3063,
+   "blurb": "Coast down the Rue Cler and let your nose do the navigating.",
+   "items": [
+    {
+     "name": "camembert de Normandie",
+     "emoji": "🧀",
+     "blurb": "Runny by the Pont de l'Alma. Riders behind you will know."
+    },
+    {
+     "name": "wedge of comté",
+     "emoji": "🧀",
+     "blurb": "Aged twenty-four months, which is longer than your last chain."
+    },
+    {
+     "name": "plateau de fromages",
+     "emoji": "🧀",
+     "fragile": true,
+     "blurb": "Seven cheeses arranged by someone who will check."
+    }
+   ]
+  },
+  {
+   "id": "bon-camembert",
+   "name": "Au Camembert Sans Frein",
+   "kind": "fromagerie",
+   "lat": 48.88369,
+   "lon": 2.31695,
+   "blurb": "Brakeless cheese, on the market street at Lévis. It stops when it wants to.",
+   "items": [
+    {
+     "name": "baked camembert",
+     "emoji": "🧀",
+     "fragile": true,
+     "blurb": "Liquid in the box. Keep it level, whatever the cobbles say."
+    },
+    {
+     "name": "baguette and brie",
+     "emoji": "🥖",
+     "blurb": "Lunch, according to every Parisian's doctor but their own."
+    }
+   ]
+  },
+  {
+   "id": "petit-derailleur",
+   "name": "Au Petit Dérailleur",
+   "kind": "bistro",
+   "lat": 48.8797,
+   "lon": 2.3397,
+   "blurb": "On the Rue des Martyrs, which is named for what the climb does to you.",
+   "items": [
+    {
+     "name": "quiche lorraine",
+     "emoji": "🥧",
+     "blurb": "Bacon, cream, and absolutely no cheese, or Lorraine will hear about it."
+    },
+    {
+     "name": "quiche aux poireaux",
+     "emoji": "🥧",
+     "blurb": "Leek quiche, for the rider who has made peace with leeks."
+    },
+    {
+     "name": "salade de chèvre chaud",
+     "emoji": "🥗",
+     "blurb": "Warm goat's cheese on toast, on lettuce, on borrowed time."
+    }
+   ]
+  },
+  {
+   "id": "chat-qui-pedale",
+   "name": "Le Chat Qui Pédale",
+   "kind": "bistro",
+   "lat": 48.8424,
+   "lon": 2.35,
+   "blurb": "Down the Mouffetard, and mind the cobbles with that dish.",
+   "items": [
+    {
+     "name": "quiche du jour",
+     "emoji": "🥧",
+     "blurb": "What day is it? The quiche knows."
+    },
+    {
+     "name": "ratatouille",
+     "emoji": "🍆",
+     "blurb": "Yes, like the film. No, the chef is not a rat. Probably."
+    },
+    {
+     "name": "gratin dauphinois",
+     "emoji": "🥔",
+     "blurb": "Potatoes and cream, a recovery drink in solid form."
+    }
+   ]
+  },
+  {
+   "id": "vieux-port",
+   "name": "La Bouillabaisse du Vieux-Port",
+   "kind": "seafood",
+   "lat": 48.8531,
+   "lon": 2.3462,
+   "blurb": "Eight hundred kilometres from Marseille and still arguing about the recipe.",
+   "items": [
+    {
+     "name": "bouillabaisse",
+     "emoji": "🍲",
+     "fragile": true,
+     "blurb": "Saffron, rockfish and a very full pot. Every pothole is a tragedy."
+    },
+    {
+     "name": "moules marinière",
+     "emoji": "🦪",
+     "blurb": "A kilo of mussels, rattling like a loose mudguard."
+    },
+    {
+     "name": "sole meunière",
+     "emoji": "🐟",
+     "blurb": "Browned butter, one lemon, no second chances."
+    }
+   ]
+  },
+  {
+   "id": "eternel-second",
+   "name": "L'Éternel Second",
+   "kind": "brasserie",
+   "lat": 48.8532,
+   "lon": 2.333,
+   "blurb": "Never once first to your door, and proud of the podiums.",
+   "items": [
+    {
+     "name": "confit de canard",
+     "emoji": "🦆",
+     "blurb": "Duck, slow in its own fat. The opposite of your delivery."
+    },
+    {
+     "name": "steak frites",
+     "emoji": "🥩",
+     "blurb": "Saignant. The frites have about four minutes to live."
+    },
+    {
+     "name": "tarte tatin",
+     "emoji": "🥧",
+     "blurb": "Upside down on purpose, unlike you on the Boulevard."
+    }
+   ]
+  },
+  {
+   "id": "peloton-gourmand",
+   "name": "Le Peloton Gourmand",
+   "kind": "brasserie",
+   "lat": 48.8426,
+   "lon": 2.328,
+   "blurb": "A great mirrored room on the Boulevard du Montparnasse, and everybody drafting the waiter.",
+   "items": [
+    {
+     "name": "choucroute garnie",
+     "emoji": "🥘",
+     "blurb": "Sauerkraut and five kinds of pig, all in the breakaway."
+    },
+    {
+     "name": "plateau de fruits de mer",
+     "emoji": "🦞",
+     "fragile": true,
+     "blurb": "Oysters on crushed ice, in a box, on a bike, in the sun."
+    }
+   ]
+  },
+  {
+   "id": "col-du-tourmalet",
+   "name": "Crêperie du Tourmalet",
+   "kind": "creperie",
+   "lat": 48.843,
+   "lon": 2.3234,
+   "blurb": "On the crêperie street behind the Breton trains' old station, flat as the batter.",
+   "items": [
+    {
+     "name": "galette complète",
+     "emoji": "🥞",
+     "blurb": "Buckwheat, ham, cheese, an egg, and a cider you may not carry."
+    },
+    {
+     "name": "crêpe Suzette",
+     "emoji": "🥞",
+     "fragile": true,
+     "blurb": "Flambéed to order. The flames are out. Mostly."
+    },
+    {
+     "name": "kouign-amann",
+     "emoji": "🧈",
+     "blurb": "Breton for 'butter cake', and for 'that was the climb sorted'."
+    }
+   ]
+  },
+  {
+   "id": "lanterne-rouge",
+   "name": "La Lanterne Rouge",
+   "kind": "bistro",
+   "lat": 48.8652,
+   "lon": 2.3762,
+   "blurb": "Dead last into every stage and the kitchen has never apologised.",
+   "items": [
+    {
+     "name": "bœuf bourguignon",
+     "emoji": "🍲",
+     "fragile": true,
+     "blurb": "Six hours in the pot. Six minutes on your bike. Don't waste it."
+    },
+    {
+     "name": "coq au vin",
+     "emoji": "🍗",
+     "blurb": "A whole bottle went into this bird. Ride straight."
+    }
+   ]
+  },
+  {
+   "id": "maillot-jaune",
+   "name": "Pâtisserie du Maillot Jaune",
+   "kind": "patisserie",
+   "lat": 48.8551,
+   "lon": 2.3262,
+   "blurb": "The Rue du Bac's lightest climbers, in a box with a ribbon.",
+   "items": [
+    {
+     "name": "box of macarons",
+     "emoji": "🍬",
+     "fragile": true,
+     "blurb": "Twelve colours, each one crushed by a stern look."
+    },
+    {
+     "name": "éclair au café",
+     "emoji": "🍫",
+     "fragile": true,
+     "blurb": "Glazed, slender, and aerodynamically your best effort today."
+    },
+    {
+     "name": "mille-feuille",
+     "emoji": "🍰",
+     "fragile": true,
+     "blurb": "A thousand leaves, and each of them is going to end up on your jersey."
+    }
+   ]
+  },
+  {
+   "id": "tartine-guidon",
+   "name": "Tartine & Guidon",
+   "kind": "cafe",
+   "lat": 48.8626,
+   "lon": 2.3622,
+   "blurb": "By the Marché des Enfants-Rouges, with handlebars over the bar.",
+   "items": [
+    {
+     "name": "croque-monsieur",
+     "emoji": "🥪",
+     "blurb": "Ham, béchamel, a good crust. The croque-madame is the same with an egg, and a warning."
+    },
+    {
+     "name": "jambon-beurre",
+     "emoji": "🥖",
+     "blurb": "Half a baguette, ham, butter, and nothing else, ever."
+    }
+   ]
+  },
+  {
+   "id": "le-bidon",
+   "name": "Le Bidon du Canal",
+   "kind": "cafe",
+   "lat": 48.8722,
+   "lon": 2.3648,
+   "blurb": "Picnics for the Canal Saint-Martin, its iron bridges and its long afternoons.",
+   "items": [
+    {
+     "name": "picnic hamper",
+     "emoji": "🧺",
+     "blurb": "Bread, saucisson, cheese. The corkscrew is your problem."
+    },
+    {
+     "name": "pot de rillettes",
+     "emoji": "🐖",
+     "blurb": "Pork, shredded and potted. Holds up better than you will."
+    }
+   ]
+  },
+  {
+   "id": "petit-braquet",
+   "name": "Le Petit Braquet",
+   "kind": "bistro",
+   "lat": 48.8538,
+   "lon": 2.3798,
+   "blurb": "Low gear, low lights, Rue de Charonne.",
+   "items": [
+    {
+     "name": "blanquette de veau",
+     "emoji": "🍲",
+     "fragile": true,
+     "blurb": "A white stew in a white box. You are wearing black. Good."
+    },
+    {
+     "name": "moules-frites",
+     "emoji": "🍟",
+     "blurb": "Belgian, they say. Do not say so at this door."
+    }
+   ]
+  },
+  {
+   "id": "halles-du-velo",
+   "name": "Le Pied de Pédale",
+   "kind": "brasserie",
+   "lat": 48.86301,
+   "lon": 2.34499,
+   "blurb": "Open all night by the old Halles, for market porters who no longer exist.",
+   "items": [
+    {
+     "name": "onion soup gratinée",
+     "emoji": "🍲",
+     "fragile": true,
+     "blurb": "Three in the morning in a bowl."
+    },
+    {
+     "name": "pied de cochon",
+     "emoji": "🐖",
+     "blurb": "Pig's trotter, breadcrumbed, grilled, and a fine joke about your cadence."
+    }
+   ]
+  },
+  {
+   "id": "sprint-etoile",
+   "name": "Le Sprint de l'Étoile",
+   "kind": "brasserie",
+   "lat": 48.8693,
+   "lon": 2.2868,
+   "blurb": "White tablecloths off the Avenue Victor-Hugo, for the people who really did finish on the Champs.",
+   "items": [
+    {
+     "name": "foie gras",
+     "emoji": "🍽️",
+     "fragile": true,
+     "blurb": "On a tiny toast, in a large box, with a card."
+    },
+    {
+     "name": "gratin de homard",
+     "emoji": "🦞",
+     "fragile": true,
+     "blurb": "Half a lobster, whose ride ends better than yours."
+    }
+   ]
+  },
+  {
+   "id": "guinguette-du-lac",
+   "name": "La Guinguette du Lac",
+   "kind": "cafe",
+   "lat": 48.8632,
+   "lon": 2.269,
+   "blurb": "Sandwiches for the Bois, and an accordion you can't escape.",
+   "items": [
+    {
+     "name": "sandwich au saucisson",
+     "emoji": "🥖",
+     "blurb": "Dry sausage, salted butter, and a very long way to the car."
+    },
+    {
+     "name": "tarte aux pommes",
+     "emoji": "🥧",
+     "blurb": "Whole, in its tin. Do not race the joggers."
+    }
+   ]
+  },
+  {
+   "id": "batignolles-flamme",
+   "name": "La Flamme Rouge",
+   "kind": "bistro",
+   "lat": 48.8862,
+   "lon": 2.3218,
+   "blurb": "One kilometre to go, and nobody here has ever hurried it. The Batignolles' neighbourhood table.",
+   "items": [
+    {
+     "name": "tarte flambée",
+     "emoji": "🍕",
+     "blurb": "Alsace's thin one: crème fraîche, onions, lardons, and don't call it pizza."
+    },
+    {
+     "name": "cassoulet",
+     "emoji": "🥘",
+     "blurb": "Beans, duck, sausage. Your climbing is over for today."
+    }
+   ]
+  },
+  {
+   "id": "cave-bercy",
+   "name": "Le Tonneau de Bercy",
+   "kind": "bistro",
+   "lat": 48.8332,
+   "lon": 2.386,
+   "blurb": "In the old wine warehouses, where the rails still run through the cobbles.",
+   "items": [
+    {
+     "name": "planche de charcuterie",
+     "emoji": "🥓",
+     "blurb": "Saucisson, terrine, cornichons: all the food groups."
+    },
+    {
+     "name": "œufs mayonnaise",
+     "emoji": "🥚",
+     "blurb": "The classic. Soft eggs, stiff mayo, hard cobbles."
+    }
+   ]
+  },
+  {
+   "id": "passage-curry",
+   "name": "Curry du Passage",
+   "kind": "indian",
+   "lat": 48.872,
+   "lon": 2.3541,
+   "blurb": "Under the Passage Brady's cracked glass, where it has smelled wonderful since the seventies.",
+   "items": [
+    {
+     "name": "butter chicken",
+     "emoji": "🍛",
+     "fragile": true,
+     "blurb": "Paris's favourite curry, and it stains like a chain."
+    },
+    {
+     "name": "lamb vindaloo",
+     "emoji": "🍛",
+     "blurb": "You'll be the fastest thing on the Boulevard de Strasbourg."
+    },
+    {
+     "name": "garlic naan",
+     "emoji": "🫓",
+     "blurb": "Folded in foil. Rolls nicely in a bottle cage."
+    }
+   ]
+  },
+  {
+   "id": "petite-jaffna",
+   "name": "Petite Jaffna",
+   "kind": "indian",
+   "lat": 48.8842,
+   "lon": 2.3603,
+   "blurb": "Up at La Chapelle, the Faubourg's Little Sri Lanka.",
+   "items": [
+    {
+     "name": "masala dosa",
+     "emoji": "🥞",
+     "blurb": "A crisp crêpe as long as your top tube. Paris understands."
+    },
+    {
+     "name": "chicken kottu roti",
+     "emoji": "🍛",
+     "blurb": "Chopped on the griddle, loud enough to hear from the Métro."
+    }
+   ]
+  },
+  {
+   "id": "anneau-magique",
+   "name": "L'Anneau Magique",
+   "kind": "bagel",
+   "lat": 48.8571,
+   "lon": 2.3592,
+   "blurb": "Rue des Rosiers: hand-boiled rings, two doors from an argument about the best falafel.",
+   "items": [
+    {
+     "name": "bagel with salmon",
+     "emoji": "🥯",
+     "blurb": "Lox and cream cheese. Hole included at no extra charge."
+    },
+    {
+     "name": "bagel pastrami",
+     "emoji": "🥯",
+     "blurb": "New York's, by way of the Marais, and vice versa."
+    },
+    {
+     "name": "babka",
+     "emoji": "🍫",
+     "blurb": "Chocolate, twisted. Like your frame after that kerb."
+    }
+   ]
+  },
+  {
+   "id": "falafel-guidon",
+   "name": "Falafel au Guidon",
+   "kind": "falafel",
+   "lat": 48.85745,
+   "lon": 2.35865,
+   "blurb": "Eaten standing up in the Rue des Rosiers, or in your case, moving.",
+   "items": [
+    {
+     "name": "falafel pita",
+     "emoji": "🧆",
+     "fragile": true,
+     "blurb": "Stuffed past what any pita should bear. Mind the tahini."
+    },
+    {
+     "name": "shawarma plate",
+     "emoji": "🥙",
+     "blurb": "Off the spit, and off your route if you take the wrong cobbles."
+    }
+   ]
+  },
+  {
+   "id": "tonkotsu-tandem",
+   "name": "Tonkotsu Tandem",
+   "kind": "japanese",
+   "lat": 48.8668,
+   "lon": 2.3351,
+   "blurb": "On the Rue Sainte-Anne, where the queue for ramen is its own arrondissement.",
+   "items": [
+    {
+     "name": "tonkotsu ramen",
+     "emoji": "🍜",
+     "fragile": true,
+     "blurb": "Twelve-hour broth. Two-minute noodles, on the clock."
+    },
+    {
+     "name": "gyoza",
+     "emoji": "🥟",
+     "blurb": "Six pan-fried dumplings, crisp side up."
+    }
+   ]
+  },
+  {
+   "id": "pho-choisy",
+   "name": "Phở de la Porte de Choisy",
+   "kind": "vietnamese",
+   "lat": 48.8267,
+   "lon": 2.3612,
+   "blurb": "Deep in the 13th's towers, the real Chinatown of Paris.",
+   "items": [
+    {
+     "name": "phở bò",
+     "emoji": "🍜",
+     "fragile": true,
+     "blurb": "A quart of hot broth in a bag. It's fine. It's fine."
+    },
+    {
+     "name": "bánh mì",
+     "emoji": "🥖",
+     "blurb": "A baguette that has seen the world and come home better."
+    }
+   ]
+  },
+  {
+   "id": "dragon-belleville",
+   "name": "Le Dragon de Belleville",
+   "kind": "chinese",
+   "lat": 48.87154,
+   "lon": 2.37875,
+   "blurb": "Dumplings at the top of a long, steep street. You have been warned.",
+   "items": [
+    {
+     "name": "steamed dumplings",
+     "emoji": "🥟",
+     "blurb": "Wenzhou-style, by the dozen, straight up the hill."
+    },
+    {
+     "name": "duck with rice",
+     "emoji": "🦆",
+     "blurb": "Lacquered and hanging in the window until you came along."
+    }
+   ]
+  },
+  {
+   "id": "couscous-goutte",
+   "name": "Le Couscous de la Goutte d'Or",
+   "kind": "maghrebi",
+   "lat": 48.8862,
+   "lon": 2.3527,
+   "blurb": "Behind Barbès, on Friday, with everybody's uncle.",
+   "items": [
+    {
+     "name": "couscous royal",
+     "emoji": "🥘",
+     "blurb": "Lamb, merguez, chicken, and enough semolina to re-ballast the Ligne 2."
+    },
+    {
+     "name": "tagine aux pruneaux",
+     "emoji": "🍲",
+     "fragile": true,
+     "blurb": "Lamb and prunes, in a pot with a very pointy hat."
+    },
+    {
+     "name": "mint tea",
+     "emoji": "🍵",
+     "fragile": true,
+     "blurb": "Sweet, scalding, and poured from a height you can't match."
+    }
+   ]
+  }
+ ]
+}

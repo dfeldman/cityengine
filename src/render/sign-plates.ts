@@ -152,8 +152,7 @@ interface Layout {
  * in cap heights, which is how an engraved capital on stone is specified (SAKS FIFTH AVENUE is mostly
  * tracking); it is applied glyph by glyph rather than through `ctx.letterSpacing`, which not every engine has.
  */
-export function layout(ctx: CanvasRenderingContext2D, spec: SignSpec): Layout {
-  const fontPx = 160
+export function layout(ctx: CanvasRenderingContext2D, spec: SignSpec, fontPx = 160): Layout {
   const capPx = capPixels(ctx, spec, fontPx)
   ctx.font = cssFont(spec, fontPx)
   const chars = [...spec.text]
@@ -275,9 +274,14 @@ export interface Plate {
   /** the width of the quad, as a multiple of the cap height the builder asked for */
   wOverCap: number
   hOverCap: number
+  key: string
+  /** how many meshes wear it: at none its textures go (`letGo`), and they are painted again if it is wanted again */
+  refs: number
 }
 
 const plates = new Map<string, Plate>()
+const MAX_PLATE = 1536
+const MIN_FONT = 56
 
 /** Everything about a sign that changes its PICTURE (not where it stands): the cache key. */
 const recipe = (s: SignSpec): string => JSON.stringify([s.text, s.face, s.weight, s.italic, s.colour, s.panel,
@@ -296,7 +300,13 @@ export function signPlate(scene: Scene, spec: SignSpec): Plate | null {
   // measured on a throwaway context, because the real one cannot be sized until the layout is known
   const probe = document.createElement('canvas').getContext('2d')
   if (!probe) return null
-  const L = layout(probe, spec)
+  /*
+   * A long name at the full 160 px was a picture 4,658 wide and 6 MB (AUX GRANDS HOMMES…), and the Paris kit puts a long name
+   * on 2,400 buildings. The same name at a third of the size is as sharp as any rider can read it from the street.
+   */
+  const first = layout(probe, spec)
+  const long = Math.max(first.width, first.height)
+  const L = long > MAX_PLATE ? layout(probe, spec, Math.max(MIN_FONT, Math.floor((first.fontPx * MAX_PLATE) / long))) : first
   const tex = new DynamicTexture(`signPlate:${spec.text}`, { width: L.width, height: L.height }, scene, true,
     Texture.TRILINEAR_SAMPLINGMODE)
   tex.hasAlpha = true
@@ -340,7 +350,7 @@ export function signPlate(scene: Scene, spec: SignSpec): Plate | null {
   // see the header: the standoff separates the surfaces, this separates the DEPTH TEST (BUGS.md #15)
   mat.zOffset = -2
   mat.zOffsetUnits = -4
-  const plate: Plate = { mat, wOverCap: L.wOverCap, hOverCap: L.hOverCap }
+  const plate: Plate = { mat, wOverCap: L.wOverCap, hOverCap: L.hOverCap, key, refs: 0 }
   plates.set(key, plate)
   return plate
 }
@@ -387,9 +397,40 @@ export function flatSignMesh(scene: Scene, p: PlacedSign, name: string): Mesh | 
     normal, uvs, [1, 1, 1], 0)
   const m = new Mesh(name, scene)
   mb.toVertexData().applyToMesh(m)
-  m.material = plate.mat
+  wear(m, plate)
+  m.onDisposeObservable.addOnce(() => letGo(m))
   m.isPickable = false
   return m
+}
+
+/*
+ * THE TEXTURES GO WHEN NOTHING WEARS THEM (owner, 2026-10-30: "smarter about unloading textures that aren't in use"). A plate
+ * was kept for the life of the scene, so every name the rider ever passed stayed in memory: the city's footprint grew with the
+ * ride. Now a sign out of reading range lets its plate go (`sleepSign`), and so does one whose tile is dropped.
+ */
+const worn = new WeakMap<Mesh, Plate>()
+function wear(m: Mesh, plate: Plate): void {
+  plate.refs++
+  worn.set(m, plate)
+  m.material = plate.mat
+}
+function letGo(m: Mesh): void {
+  const p = worn.get(m)
+  if (!p) return
+  worn.delete(m)
+  m.material = null
+  if (--p.refs > 0 || plates.get(p.key) !== p) return
+  plates.delete(p.key)
+  p.mat.dispose(true, true)
+}
+
+/** Out of reading range: the mesh stays, disabled, and its picture may go. */
+export function sleepSign(m: Mesh): void { letGo(m) }
+
+/** Back in range: its picture again, the same picture, so the quad it was sized for still fits. */
+export function wakeSign(scene: Scene, m: Mesh, spec: SignSpec): void {
+  const plate = signPlate(scene, spec)
+  if (plate) wear(m, plate)
 }
 
 /** Only for the tests and the shot tool: forget the cached plates (a scene was thrown away). */

@@ -52,7 +52,7 @@ const shed = (m: Mesh): void => {
   m.geometry?.clearCachedData()
 }
 import { signCut, type PlacedSign } from './landmarks/signage.ts'
-import { flatSignMesh } from './sign-plates.ts'
+import { flatSignMesh, sleepSign, wakeSign } from './sign-plates.ts'
 import { Clocks } from './clocks.ts'
 import { Rotors } from './rotors.ts'
 import { Water } from './water.ts'
@@ -781,7 +781,7 @@ export class Landmarks {
    * one distance per copy, tested against the eye each frame and switched with `setEnabled`. There is no
    * Babylon `addLODLevel` anywhere in this project and this is not the place to introduce one.
    */
-  private readonly signs: { mesh: Mesh; x: number; z: number; cut: number; on: boolean }[] = []
+  private readonly signs: { mesh: Mesh; x: number; z: number; cut: number; on: boolean; plate?: PlacedSign['spec'] }[] = []
 
   private readonly scene: Scene
   private readonly base: string
@@ -1393,7 +1393,7 @@ export class Landmarks {
         // gated at the SIGN, not the host's origin: on a 438 m terminal the gondola's board is 150 m from it
         // and was never switched on for a rider standing under it
         const at = Vector3.TransformCoordinates(new Vector3(p.x, p.y, p.z), host.computeWorldMatrix(true))
-        this.signs.push({ mesh: m, x: at.x, z: at.z, cut, on: true })
+        this.signs.push({ mesh: m, x: at.x, z: at.z, cut, on: true, plate: p.spec })
       } else if (p.spec.model) {
         void this.loadSignModel(p, host, name, cut)
       } else {
@@ -1443,7 +1443,11 @@ export class Landmarks {
     for (const s of this.signs) {
       const d = Math.hypot(s.x - eye.x, s.z - eye.z)
       const on = s.on ? d < s.cut * 1.05 : d < s.cut
-      if (on !== s.on) { s.on = on; s.mesh.setEnabled(on) }
+      if (on !== s.on) {
+        s.on = on
+        s.mesh.setEnabled(on)
+        if (s.plate) { if (on) wakeSign(this.scene, s.mesh, s.plate); else sleepSign(s.mesh) }
+      }
     }
     const R = 800
     for (const s of this.sky) {

@@ -87,6 +87,7 @@ import { Signs, setTextScale, type SignedJunction } from './render/signs.ts'
 import { GPU_PER_TILE_MB, HEAP_PER_TILE_MB, TIERS, type Tier } from './tier.ts'
 import { MODES, type GameMode } from './modes.ts'
 import SF_KITCHENS from './city/sf/restaurants.json'
+import PARIS_KITCHENS from './city/paris/restaurants.json'
 import SF_SLOW_STREETS from './city/sf/slow-streets.json'
 import { Energy } from './sim/energy.ts'
 import { capTextures } from './render/texture-cap.ts'
@@ -1584,7 +1585,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   })
   /*
    * THE KITCHENS (game/delivery.ts `Source`; owner, 2026-10-01): invented restaurants at fixed places, where jobs
-   * start. San Francisco's are in src/city/sf/restaurants.json; a city without any keeps the old building-to-building
+   * start. San Francisco's are in src/city/sf/restaurants.json, Paris's in src/city/paris/restaurants.json; a city without any keeps the old building-to-building
    * jobs. The LEVEL sets how far a drop-off may be (500 m at level 1): it rises every three deliveries in this city
    * (kept in the browser), or `?level=` sets it.
    */
@@ -1593,10 +1594,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * and more are coming (owner, 2026-10-27) — each turns this off and brings its own.
    */
   const deliveries = !opts.tour
-  const kitchens: Source[] = src.index.region === 'san-francisco' ? (() => {
+  const kitchenList = src.index.region === 'san-francisco' ? SF_KITCHENS.restaurants : src.index.region === 'paris' ? PARIS_KITCHENS.restaurants : []
+  const kitchens: Source[] = (() => {
     const pr = new Projection(pkg.origin)
-    return SF_KITCHENS.restaurants.map((k) => ({ ...k, ...pr.toLocal({ lat: k.lat, lon: k.lon }) }))
-  })() : []
+    return kitchenList.map((k) => ({ ...k, ...pr.toLocal({ lat: k.lat, lon: k.lon }) }))
+  })()
   const builtTiles = new Set((index.tiles ?? []).filter((t) => t.buildings > 0).map((t) => tileKey(t.tx, t.tz)))
   const DELIVERED_KEY = `sr-delivered:${opts.city}`
   // what the deliveries have earned, kept like the count (the receipt adds to it; shown by the energy bar)
