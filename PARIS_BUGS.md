@@ -159,7 +159,11 @@ Paris against San Francisco: 165,622 buildings to 89,932; 394,565 street and pat
 Paris's pavements as their own footways, every crossing and square path); ride-run.json 50.7 MB to 17.7 MB. Most of the
 time is the run graph's merge of parallel ways (ridegraph.ts `mergeParallel`), which grows faster than linearly.
 
-- [ ] **Index `mergeParallel` spatially** — candidate pairs from a grid of segment buckets instead of rescans; the biggest
+- [x] **The run graph in 42 s, not 21 minutes** (profiled 2026-10-30: `collapseClusters` scanned every edge of the graph once
+      per junction cluster — 981 of 1,181 s; now each node's own edges, in their original order, so the result is
+      identical — 534 s; and `mergeParallel` merges every disjoint pair a pass with one re-attachment — 42 s, 0.9% of
+      edges merged in a different order, none worse).
+- [ ] ~~Index `mergeParallel` spatially~~ (not needed: see above) — candidate pairs from a grid of segment buckets instead of rescans; the biggest
       single saving.
 - [ ] **Drop pavement footways that shadow their street** before graph building (a `footway=sidewalk` running beside a
       street that already draws its pavement), as the centreline duplicates already are.

@@ -65,6 +65,50 @@ async function page(offset: number): Promise<{ rows: ApurRow[]; more: boolean }>
   }
 }
 
+/*
+ * THE FOOTPRINTS THEMSELVES (owner, 2026-10-30: "try … APUR footprints and heights for Paris"): 13,548 of APUR's 128,206
+ * have no OSM building at their centre, 9,780 of them 6 m or taller (median 15.8 m) — the gaps in the street wall. Kept
+ * apart from the rows: [period, height, facility, ring as lon,lat pairs], the ring as the layer gives it (simplified to
+ * 2 m by the query's maxAllowableOffset).
+ */
+export type ApurFootprint = [period: number, height: number, facility: 0 | 1, ring: number[]]
+export const APUR_RINGS_FILE = resolve(DIR, 'emprise-paris-rings.json')
+
+export async function fetchApurRings(): Promise<ApurFootprint[]> {
+  if (existsSync(APUR_RINGS_FILE)) return JSON.parse(readFileSync(APUR_RINGS_FILE, 'utf8')) as ApurFootprint[]
+  mkdirSync(DIR, { recursive: true })
+  const all: ApurFootprint[] = []
+  for (let off = 0; ; off += 3000) {
+    const q = new URLSearchParams({
+      where: '1=1', outFields: 'c_perconst,h_med,b_ee', returnGeometry: 'true', outSR: '4326', geometryPrecision: '6',
+      maxAllowableOffset: '0.00002', orderByFields: 'OBJECTID', resultOffset: String(off), resultRecordCount: '3000', f: 'json',
+    })
+    type Page = { features?: { attributes: Record<string, unknown>; geometry?: { rings?: number[][][] } }[]; exceededTransferLimit?: boolean }
+    let d = null as Page | null
+    for (let attempt = 0; attempt < 5 && !d; attempt++) {
+      try {
+        const r = await fetch(`${LAYER}/query?${q}`)
+        if (!r.ok) throw new Error(String(r.status))
+        d = await r.json() as Page
+        if (!d?.features) throw new Error('no features')
+      } catch { d = null; await new Promise((ok) => setTimeout(ok, 2000 * (attempt + 1))) }
+    }
+    if (!d?.features) throw new Error(`apur rings: page at ${off} not fetched`)
+    for (const f of d.features) {
+      const ring = f.geometry?.rings?.[0]
+      if (!ring || ring.length < 4) continue
+      const t = f.attributes
+      all.push([Number(t.c_perconst ?? 99), Math.round(Number(t.h_med ?? 0) * 10) / 10, t.b_ee === 'O' || t.b_ee === '1' || t.b_ee === 'oui' ? 1 : 0,
+        ring.slice(0, -1).flatMap(([lon, lat]) => [+lon.toFixed(6), +lat.toFixed(6)])])
+    }
+    process.stdout.write(`\r  apur rings: ${all.length}`)
+    if (!(d.features.length > 0 && (d.exceededTransferLimit ?? d.features.length === 3000))) break
+  }
+  process.stdout.write('\n')
+  writeFileSync(APUR_RINGS_FILE, JSON.stringify(all))
+  return all
+}
+
 export async function fetchApur(): Promise<ApurRow[]> {
   if (existsSync(APUR_FILE)) return JSON.parse(readFileSync(APUR_FILE, 'utf8')) as ApurRow[]
   mkdirSync(DIR, { recursive: true })

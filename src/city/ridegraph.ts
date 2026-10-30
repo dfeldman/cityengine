@@ -483,6 +483,19 @@ export function collapseClusters(edges: RideEdge[], ids = new Ids(), wide = fals
     g.push(n)
   }
   const moved = new Map<number, { id: number; at: Point }>()
+  /*
+   * Each node's own edges, with their place in `edges` (PARIS_BUGS.md, bake speed): the arms of a cluster were found by
+   * scanning EVERY edge in the graph once per cluster — 981 of the 1,181 s Paris's run graph took (profiled 2026-10-30).
+   * Now only the cluster members' own edges, taken in their order in `edges`, so the arms and the result are the same.
+   */
+  const incident = new Map<number, number[]>()
+  edges.forEach((e, i) => {
+    for (const n of e.a === e.b ? [e.a] : [e.a, e.b]) {
+      const l = incident.get(n)
+      if (l) l.push(i)
+      else incident.set(n, [i])
+    }
+  })
   for (const members of groups.values()) {
     if (members.length < 2) continue
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, sx = 0, sz = 0
@@ -509,7 +522,9 @@ export function collapseClusters(edges: RideEdge[], ids = new Ids(), wide = fals
      */
     const inCluster = new Set(members)
     const arms: { dir: Point; len: number; from: Point }[] = []
-    for (const e of edges) {
+    const own = [...new Set(members.flatMap((n) => incident.get(n) ?? []))].sort((x, y) => x - y)
+    for (const k of own) {
+      const e = edges[k]
       const aIn = inCluster.has(e.a)
       const bIn = inCluster.has(e.b)
       if (aIn === bIn) continue
@@ -879,25 +894,53 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
       if (!g) byName.set(e.name, (g = []))
       g.push(e)
     }
-    let pair: [RideEdge, RideEdge] | null = null
-    search: for (const [name, g] of byName) {
+    /*
+     * A BATCH of pairs a pass, not one (PARIS_BUGS.md, bake speed: the run graph took 19 minutes of Paris's bake). Every
+     * merge rebuilt the street index and re-attached every edge in the graph — the whole graph once per merge, thousands of
+     * merges. Now a pass takes every pair it finds whose edges and end nodes no pair already taken this pass touches, and
+     * merges them all with one re-attachment: pairs that share nothing do not affect each other, so merging them together
+     * is merging them one after another. A pair passed over for touching one taken is left for the next pass.
+     */
+    const batch: [RideEdge, RideEdge][] = []
+    const takenEdge = new Set<RideEdge>()
+    const takenNode = new Set<number>()
+    const free = (e: RideEdge): boolean => !takenEdge.has(e) && !takenNode.has(e.a) && !takenNode.has(e.b)
+    for (const [name, g] of byName) {
       // (a street whose pieces are the very ones a whole scan of it found nothing in has nothing now: skipped whole, so a
       //  pass after a merge looks only at the streets that merge touched)
       const was = clean.get(name)
       if (was && was.length === g.length && was.every((e, i) => e === g[i])) continue
+      let whole = true
       for (let i = 0; i < g.length; i++) {
+        if (!free(g[i])) { whole = false; continue }
         for (let j = i + 1; j < g.length; j++) {
           if (failed.get(g[i])?.has(g[j])) continue
-          if (isParallelPair(g[i], g[j], ground) && midline(g[i], g[j], ids, true)) { pair = [g[i], g[j]]; break search }
+          if (!free(g[j])) { whole = false; continue }
+          if (isParallelPair(g[i], g[j], ground) && midline(g[i], g[j], ids, true)) {
+            batch.push([g[i], g[j]])
+            for (const e of [g[i], g[j]]) { takenEdge.add(e); takenNode.add(e.a); takenNode.add(e.b) }
+            whole = false
+            break
+          }
           fail(g[i], g[j])
         }
       }
-      clean.set(name, g)
+      if (whole) clean.set(name, g)
     }
-    if (!pair) return cur
-    const m = midline(pair[0], pair[1], ids, false)!
-    cur = reattach(cur.filter((e) => e !== pair![0] && e !== pair![1]), m.moved, true)
-    cur.push(m.edge)
+    if (!batch.length) return cur
+    const moved = new Map<number, { id: number; at: Point }>()
+    const made: RideEdge[] = []
+    const gone = new Set<RideEdge>()
+    for (const [e, f] of batch) {
+      const m = midline(e, f, ids, false)
+      if (!m) { fail(e, f); continue }
+      for (const [k, v] of m.moved) moved.set(k, v)
+      made.push(m.edge)
+      gone.add(e); gone.add(f)
+    }
+    if (!made.length) continue
+    cur = reattach(cur.filter((e) => !gone.has(e)), moved, true)
+    cur.push(...made)
   }
   return cur
 }
