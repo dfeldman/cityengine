@@ -1249,6 +1249,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const life = new Life(scene, pkg as unknown as CityPackage, peopled, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'), regionKit(pkg.region).cars)
   /** seconds to the next refresh of the parked cars round the rider (city/parking.ts) */
   let parkClock = 0
+  /** the parked cars now standing (the car parks' and the kerb bays'): solid, as the standing traffic is */
+  let parkedSolid: { x: number; z: number; heading: number }[] = []
   /*
    * SALESFORCE PARK'S GONDOLA (docs/SALESFORCE-PARK.md; the owner, 2026-10-02: "the gondola should be like a cable car
    * or streetcar"): a transit line of one cabin, shuttling between Salesforce Plaza and the park, boarded like the
@@ -3108,6 +3110,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         }
         const blocked = (): ReturnType<typeof traffic.solidAt> | 'cyclist' | null => {
           const b = riderBox()
+          /*
+           * …and the PARKED cars (owner, 2026-10-30: "being able to go through parked cars, but not moving cars, is very odd
+           * since it is not usually obvious which is which"): the kerb bays' and the car parks' cars are solid too.
+           */
+          const parked = parkedSolid.find((s) => Math.hypot(s.x - b.x, s.z - b.z) < 4 && overlap(b, boxOf(s.x, s.z, s.heading, SIZE.car)))
+          if (parked) return { kind: 'car', speed: 0, heading: parked.heading, why: 'parked', inBox: false } as unknown as ReturnType<typeof traffic.solidAt>
           return traffic.solidAt(lastRider!, b) ?? (cyclistInside(b, lastRider!.box) ? 'cyclist' : null)
         }
         const wall = blocked()
@@ -3391,7 +3399,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const focus = frozen ? (held ? held.to : orbit.look) : at
         // the car parks' parked cars, refreshed once a second round the rider (city/parking.ts)
         parkClock -= dt
-        if (parkClock <= 0) { parkClock = 1; life.park(city.parkedNear(focus.x, focus.z, 260), city.terrain) }
+        if (parkClock <= 0) { parkClock = 1; const st = city.parkedNear(focus.x, focus.z, 260); life.park(st, city.terrain); parkedSolid = st }
         life.balls = courtPlayers.balls
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
         cableRiders?.update(dt, life.transitBodies, focus)

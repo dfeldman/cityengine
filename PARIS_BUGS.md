@@ -93,7 +93,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [x] **Alleys get no shops** (owner: "when a way is extremely narrow between buildings, we should assume its more of an
       alley than a street and not display shops and awnings"): a wall whose way's centre line is within 2.6 m (about 5 m
       wall to wall) is an alley's — no shopfronts, no awnings (frontage.ts `centreDistance`, StreetFacing.alley).
-- [ ] **Parked cars can be ridden through, moving ones can't** — owner: "very odd since it is not usually obvious which is
+- [x] **Parked cars can be ridden through, moving ones can't** — the parked cars (kerb bays, car parks) are solid now, as standing traffic is: a step into one is undone and the rider slides round it (checked: 84 m along the Rue de Vaugirard's bays, no false stops). Original: — owner: "very odd since it is not usually obvious which is
       which". The kerb bays' and car parks' cars (street-fleet.ts `park`) are not in the collision test the traffic is;
       add them (they never move: a static list of boxes per tile).
 - [ ] **Submerged path, Place Léon Blum** (48.857659, 2.380151): the streets round the place are all held at 15.4 m, the
