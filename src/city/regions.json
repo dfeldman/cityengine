@@ -223,6 +223,8 @@
     ],
     "straightDecks": ["Pont des Suicidés", "Pont Suspendu"],
     "rideFootBridges": true,
+    "footBridgeLayers": [{ "name": "La Défense", "lat": 48.8905, "lon": 2.2385, "radius": 1200, "layer": 1, "_note": "La Défense (owner, 2026-10-30, 48.887286, 2.235754): OSM layers its paths to 2 and 4 over a dalle the lidar already has, and at 5.5 m a layer they stood 11-22 m up" }],
+    "bareViaducts": [{ "lat": 48.8905, "lon": 2.2385, "radius": 1200 }],
     "brickStreets": { "names": [], "share": 0.08, "colour": [0.5, 0.37, 0.33] },
     "pointFurniture": {
       "metro": "guimard",

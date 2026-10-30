@@ -10,7 +10,9 @@
   },
   {
     "osm": [
-      "way/55742120"
+      "way/55742120",
+      "way/1205045978",
+      "way/1205045979"
     ],
     "name": "Église Saint-Merri",
     "procedural": "saintMerri",
@@ -594,7 +596,10 @@
       "way/822290991",
       "way/822290992",
       "way/822291001",
-      "way/822290990"
+      "way/822290990",
+      "way/822290988",
+      "way/822290989",
+      "way/822291000"
     ],
     "front": 165,
     "note": "Fitted to OSM's main footprint (way 822291002); front to the Place de l'Opéra (south-south-east); OSM's dome, stage and wing parts replaced."
@@ -1206,5 +1211,11 @@
   },
   {
     "include": "paris/civic.json"
+  },
+  {
+    "include": "paris/extras.json"
+  },
+  {
+    "include": "paris/portals.json"
   }
 ]

@@ -216,7 +216,10 @@
     "osm": [
       "way/64040845",
       "way/251644330",
-      "way/251644331"
+      "way/251644331",
+      "way/461446289",
+      "way/251644328",
+      "way/251644329"
     ],
     "front": 143,
     "height": 34,
@@ -375,7 +378,7 @@
     "lat": 48.857328,
     "lon": 2.33416,
     "size": [
-      116.0,
+      116,
       126.9
     ],
     "front": 20,
@@ -541,7 +544,8 @@
     "name": "Rotonde de la Villette",
     "procedural": "rotondeVillette",
     "osm": [
-      "way/63971487"
+      "way/63971487",
+      "way/681657410"
     ],
     "lat": 48.883463,
     "lon": 2.369544,
@@ -703,5 +707,290 @@
     "front": 176.5,
     "height": 19,
     "note": "Parent's private palace (1869–75) on the Boulevard Haussmann. Placed on OSM way 68804399's box turned to its walls (osmium, 2026-10-30), its straight side (−z) to the boulevard and the court OSM cuts out of the north behind it. Which side the cour d'honneur's ramps stand on could not be confirmed; the dressing is from memory."
+  },
+  {
+    "name": "Mairie du 13e arrondissement",
+    "procedural": "mairie13e",
+    "osm": [
+      "relation/1187504"
+    ],
+    "lat": 48.832558,
+    "lon": 2.355547,
+    "size": [
+      81.4,
+      55.2
+    ],
+    "front": 178.3,
+    "height": 32,
+    "note": "Bonnet's mairie (1866–77) on the north side of the Place d'Italie. Placed on OSM relation 1187504's box turned to its front (osmium, 2026-10-30), the front (−z) to the place, the outline's slanting wings and main court with it. The front, its clock gable and the bell lantern are from the Commons photographs of the Mairie; heights are read off them, not measured."
+  },
+  {
+    "name": "Tribunal de Paris",
+    "procedural": "tribunal",
+    "osm": [
+      "way/481196425",
+      "way/482221345",
+      "way/482221346",
+      "way/482221347",
+      "way/541308879",
+      "way/541308880",
+      "way/541312189",
+      "way/882311358",
+      "way/882311359",
+      "way/882311360"
+    ],
+    "lat": 48.894848,
+    "lon": 2.309563,
+    "size": [
+      177.7,
+      169.8
+    ],
+    "front": 63.5,
+    "height": 163,
+    "stone": false,
+    "note": "Renzo Piano Building Workshop's courthouse at the Porte de Clichy, on OSM way 481196425's box turned to its walls (osmium, 2026-10-30), the glass wall of the socle (−z) to the Cours des Avocats. The blocks' extents and levels (8, 19, 30, 38) are OSM's building:parts, all claimed; the 160 m is the height usually given, not an OSM tag. Materials, spine, stairs and trees from Commons photographs. The doors' place on the parvis was not seen: an estimate."
+  },
+  {
+    "name": "Hexagone Balard",
+    "procedural": "hexagoneBalard",
+    "osm": [
+      "relation/4665863"
+    ],
+    "lat": 48.835696,
+    "lon": 2.275864,
+    "size": [
+      271.9,
+      169.4
+    ],
+    "front": 17,
+    "height": 44,
+    "stone": false,
+    "note": "The Ministry of the Armed Forces (ANMA, opened 2015), on OSM relation 4665863's box turned to its walls (osmium, 2026-10-30), the long wall (−z) to the Boulevard du Général Martial Valin; the plan and its fourteen courts are OSM's. OSM has no heights. The 24 m wall and the roof's peaks are from Commons views from the Ballon de Paris and the Suzanne-Lenglen fields; which knot of the plan each peak stands on is judged from those views."
+  },
+  {
+    "name": "Mobilier National — Perret",
+    "procedural": "mobilierNational",
+    "osm": [
+      "way/78406776"
+    ],
+    "lat": 48.833661,
+    "lon": 2.35105,
+    "size": [
+      76.4,
+      73.9
+    ],
+    "front": 157.5,
+    "height": 26,
+    "stone": false,
+    "note": "Perret's concrete store for the state's furniture (1934–36), on OSM way 78406776's box turned to its walls (osmium, 2026-10-30), the arch over the court's mouth (−z) to the Rue Berbier-du-Mets. The plan is OSM's; the arch, the wings' windows and the leaning attic panels from three Commons photographs (Siège du Mobilier national, 2024). Replaces the civic kit's entry for the same way, which tools/paris-civic.ts will drop when next run."
+  },
+  {
+    "name": "Réservoir de Montsouris",
+    "procedural": "reservoirMontsouris",
+    "osm": [
+      "way/79804222",
+      "way/339801804",
+      "way/339801805",
+      "way/339801806"
+    ],
+    "lat": 48.824761,
+    "lon": 2.333535,
+    "size": [
+      304.7,
+      165.2
+    ],
+    "front": 172,
+    "height": 15,
+    "stone": false,
+    "note": "Belgrand's covered reservoir (1868–74): a wall, a grass bank and a meadow, on OSM way 79804222's box turned to its walls (osmium, 2026-10-30), the Avenue Reille at −z. The pavilions stand on the three building=service ways inside the outline, which I take to be them from their places along the avenue. Wall and pavilions from the Commons photograph taken on the Avenue Reille; heights read off it."
+  },
+  {
+    "name": "Faculté de Pharmacie de Paris",
+    "procedural": "facultePharmacie",
+    "osm": [
+      "relation/1004404",
+      "way/63826735",
+      "way/63826785",
+      "way/63826814",
+      "way/63826750"
+    ],
+    "lat": 48.843149,
+    "lon": 2.334989,
+    "size": [
+      105.2,
+      196.5
+    ],
+    "front": 92.5,
+    "height": 25,
+    "note": "Laisné's school (1876–82) on the Avenue de l'Observatoire, on OSM relation 1004404's box turned to its walls (osmium, 2026-10-30), the cour d'honneur's mouth (−z) on the avenue; the plan is OSM's with its metre jogs ironed flat. The front across the court from Commons photographs, heights read off them; the garden's ranges only from an 1880s engraving."
+  },
+  {
+    "name": "Ancienne Faculté de médecine",
+    "procedural": "faculteMedecine",
+    "osm": [
+      "relation/659699",
+      "way/56645233"
+    ],
+    "lat": 48.851617,
+    "lon": 2.340982,
+    "size": [
+      139.8,
+      81.6
+    ],
+    "front": 226.5,
+    "height": 25,
+    "note": "Gondouin's École de chirurgie (1769–76) and Ginain's extension, OSM's 'Siège de l'Université Paris Cité', on relation 659699's box turned to the colonnade (osmium, 2026-10-30), the colonnade (−z) on the Rue de l'École-de-Médecine, the court opened through to it. The colonnade from a Commons photograph; the count of its columns, the temple front across the court and the boulevard side from memory. Not OSM way 791813178, the H-plan block to the south, which stays a kit building."
+  },
+  {
+    "name": "École nationale supérieure d'Arts et Métiers",
+    "procedural": "ensam",
+    "osm": [
+      "relation/3403133",
+      "way/253946428",
+      "way/354286006",
+      "way/354286011",
+      "way/354286015",
+      "way/354286019",
+      "way/354286023",
+      "way/354286026",
+      "way/354286030",
+      "way/354286034",
+      "way/354286042",
+      "way/354286045",
+      "way/354286048",
+      "way/354286052",
+      "way/354286055",
+      "way/354286058",
+      "way/354286061",
+      "way/354286063",
+      "way/354286066",
+      "way/354286070",
+      "way/354286073",
+      "way/354286077",
+      "way/354286081",
+      "way/354286086",
+      "way/354286090",
+      "way/354292818",
+      "way/354292820",
+      "way/354292824",
+      "way/354292829",
+      "way/354292833",
+      "way/354292836",
+      "way/354303757",
+      "way/354311740",
+      "way/354311741",
+      "way/354311742",
+      "way/354311743",
+      "way/354311744",
+      "way/354311745",
+      "way/354311746",
+      "way/354311747",
+      "way/354311748",
+      "way/354311749",
+      "way/354311750",
+      "way/354311751",
+      "way/354311752",
+      "way/354311753",
+      "way/253946427"
+    ],
+    "lat": 48.83351,
+    "lon": 2.358369,
+    "size": [
+      159.4,
+      135.5
+    ],
+    "front": 296,
+    "height": 28,
+    "note": "The Paris centre of the École (OSM's date 1912), on OSM relation 3403133's box turned to its walls (osmium, 2026-10-30), the front (−z) to the Boulevard de l'Hôpital; plan and courts OSM's, all its parts claimed. Its middle, stripes and tiled roof from Commons photographs; the ranges behind from the plan alone. OSM's parts say 3 levels, which reads lower than the front does."
+  },
+  {
+    "name": "Préfecture de police — Caserne de la Cité",
+    "procedural": "prefecturePolice",
+    "osm": [
+      "relation/537263",
+      "way/249517093",
+      "way/249517094",
+      "way/249517095",
+      "way/249517096",
+      "way/249517097",
+      "way/249517098",
+      "way/249517099",
+      "way/249517100",
+      "way/249517101",
+      "way/249517779",
+      "way/249517780",
+      "way/249517781",
+      "way/249517782",
+      "way/249517783"
+    ],
+    "lat": 48.854368,
+    "lon": 2.346731,
+    "size": [
+      127.7,
+      96.7
+    ],
+    "front": 111,
+    "height": 38,
+    "note": "Calmels's barracks (1863–67) on the Île de la Cité, on OSM relation 537263's box turned to its walls (osmium, 2026-10-30), the Rue de la Cité and the Parvis at −z and the Quai du Marché-Neuf at −x, with its parts (h 30 m). Rhythm and roofs from Commons views of about 1900, not compared with the building today. The pavilions' places follow OSM's jogs and those views."
+  },
+  {
+    "name": "Bibliothèque nationale de France — Richelieu",
+    "procedural": "bnfRichelieu",
+    "osm": [
+      "relation/545655"
+    ],
+    "lat": 48.867283,
+    "lon": 2.33845,
+    "size": [
+      175.9,
+      94
+    ],
+    "front": 289,
+    "height": 30,
+    "note": "The old royal library (Labrouste, then Pascal), on OSM relation 545655's box turned to its walls (osmium, 2026-10-30), the long wall (−z) to the Rue de Richelieu. The wall from Commons photographs and an old survey elevation; where its door stands and the reading room's domes from memory."
+  },
+  {
+    "name": "Crédit Municipal de Paris",
+    "procedural": "creditMunicipal",
+    "osm": [
+      "relation/570126",
+      "way/55984142",
+      "way/1206655698",
+      "way/1206655699",
+      "way/1208084635",
+      "way/1208084636",
+      "way/1208084637",
+      "way/1208084638",
+      "way/1354622730"
+    ],
+    "lat": 48.859282,
+    "lon": 2.357196,
+    "size": [
+      96,
+      76.5
+    ],
+    "front": 226,
+    "height": 24,
+    "note": "The old Mont-de-Piété, on OSM relation 570126's box turned to its walls (osmium, 2026-10-30), the Rue des Blancs-Manteaux at −z, with its parts. The portal from the Commons photograph 'Mont de Piété de Paris'; its place along the wall is an estimate."
+  },
+  {
+    "name": "Hôpital du Val-de-Grâce — the modern block",
+    "procedural": "valDeGraceHopital",
+    "osm": [
+      "relation/946121",
+      "relation/4046930",
+      "relation/4046963",
+      "way/303746502",
+      "way/303746504"
+    ],
+    "lat": 48.839102,
+    "lon": 2.344394,
+    "size": [
+      96.6,
+      139.9
+    ],
+    "front": 202,
+    "height": 27,
+    "note": "The military hospital's post-war block (shut 2016), on OSM relation 946121's box turned to its walls (osmium, 2026-10-30), its parts claimed with it. The dome is the church's own entry, Église du Val-de-Grâce, in monuments.json. Bands and slate top from one Commons photograph; the date from memory. The gatehouse on the boulevard in that photograph is not on OSM and not drawn."
   }
 ]

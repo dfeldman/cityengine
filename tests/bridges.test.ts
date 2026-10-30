@@ -93,6 +93,28 @@ describe('a deck a model draws (Region.straightDecks)', () => {
   })
 })
 
+describe('the hole under an abutment (the Pont de Puteaux, 2026-10-30)', () => {
+  const mk = (): BridgeEdge[] => [
+    { id: 1, a: 1, b: 2, points: [0, 0, 200, 0], heights: [-7, 0], bridge: true, layer: 1, name: 'Pont de Puteaux' },
+    { id: 2, a: 3, b: 1, points: [-16, 0, 0, 0], heights: [-1.6, -7], name: 'Pont de Puteaux' },
+    { id: 3, a: 4, b: 3, points: [-100, 0, -16, 0], heights: [-1.6, -1.6], name: 'Pont de Puteaux' },
+    { id: 4, a: 5, b: 6, points: [-30, 30, 30, 30], heights: [-3, 8], name: 'Rue Haute' },
+  ]
+  it('runs the deck through to the street it meets', () => {
+    const es = mk()
+    bridgeHeights(es, { water: [], ground: flat, liftAbutments: true })
+    expect(es[1].bridge).toBe(true)
+    expect(Math.min(...es[0].heights!, ...es[1].heights!)).toBeGreaterThan(-1.7)
+    expect(es[1].heights!.find((_, i) => i === 0)).toBeCloseTo(-1.6, 0)
+    expect(es[3].bridge).toBeUndefined()
+  })
+  it('leaves it to a city whose ground has its bridges in it', () => {
+    const es = mk()
+    bridgeHeights(es, { water: [], ground: flat })
+    expect(es[1].bridge).toBeUndefined()
+  })
+})
+
 describe('named foot bridges open to bikes', () => {
   const way = (id: number, a: number, b: number, kind: string, x0: number, x1: number, more = {}) =>
     ({ id, a, b, kind, points: [x0, 0, x1, 0], ...more })

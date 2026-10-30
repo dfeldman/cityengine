@@ -1,0 +1,1937 @@
+[
+ {
+  "name": "railway tunnel mouth 1",
+  "procedural": "railPortal",
+  "lat": 48.888243,
+  "lon": 2.235471,
+  "size": [
+   12,
+   6
+  ],
+  "front": 183,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 2",
+  "procedural": "railPortal",
+  "lat": 48.894476,
+  "lon": 2.239737,
+  "size": [
+   14,
+   6
+  ],
+  "front": 48,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 3",
+  "procedural": "railPortal",
+  "lat": 48.881987,
+  "lon": 2.361595,
+  "size": [
+   50,
+   6
+  ],
+  "front": 202,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 4",
+  "procedural": "railPortal",
+  "lat": 48.882883,
+  "lon": 2.362066,
+  "size": [
+   42,
+   6
+  ],
+  "front": 22,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 5",
+  "procedural": "railPortal",
+  "lat": 48.816171,
+  "lon": 2.340559,
+  "size": [
+   16,
+   6
+  ],
+  "front": 164,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 6",
+  "procedural": "railPortal",
+  "lat": 48.806175,
+  "lon": 2.302977,
+  "size": [
+   12,
+   6
+  ],
+  "front": 31,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 7",
+  "procedural": "railPortal",
+  "lat": 48.898394,
+  "lon": 2.414967,
+  "size": [
+   12,
+   6
+  ],
+  "front": 275,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 8",
+  "procedural": "railPortal",
+  "lat": 48.844146,
+  "lon": 2.216583,
+  "size": [
+   12,
+   6
+  ],
+  "front": 28,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 9",
+  "procedural": "railPortal",
+  "lat": 48.838476,
+  "lon": 2.269892,
+  "size": [
+   17,
+   6
+  ],
+  "front": 211,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 10",
+  "procedural": "railPortal",
+  "lat": 48.838339,
+  "lon": 2.27095,
+  "size": [
+   12,
+   6
+  ],
+  "front": 85,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 11",
+  "procedural": "railPortal",
+  "lat": 48.838216,
+  "lon": 2.27022,
+  "size": [
+   12,
+   6
+  ],
+  "front": 244,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 12",
+  "procedural": "railPortal",
+  "lat": 48.898001,
+  "lon": 2.392186,
+  "size": [
+   16,
+   6
+  ],
+  "front": 283,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 13",
+  "procedural": "railPortal",
+  "lat": 48.878601,
+  "lon": 2.323149,
+  "size": [
+   56,
+   6
+  ],
+  "front": 158,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 14",
+  "procedural": "railPortal",
+  "lat": 48.878683,
+  "lon": 2.324189,
+  "size": [
+   24,
+   6
+  ],
+  "front": 147,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 15",
+  "procedural": "railPortal",
+  "lat": 48.879247,
+  "lon": 2.323405,
+  "size": [
+   51,
+   6
+  ],
+  "front": 327,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 16",
+  "procedural": "railPortal",
+  "lat": 48.879247,
+  "lon": 2.322862,
+  "size": [
+   62,
+   6
+  ],
+  "front": 343,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 17",
+  "procedural": "railPortal",
+  "lat": 48.878829,
+  "lon": 2.323607,
+  "size": [
+   42,
+   6
+  ],
+  "front": 162,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 18",
+  "procedural": "railPortal",
+  "lat": 48.878566,
+  "lon": 2.324544,
+  "size": [
+   16,
+   6
+  ],
+  "front": 147,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 19",
+  "procedural": "railPortal",
+  "lat": 48.882333,
+  "lon": 2.320699,
+  "size": [
+   44,
+   6
+  ],
+  "front": 327,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 20",
+  "procedural": "railPortal",
+  "lat": 48.882002,
+  "lon": 2.320937,
+  "size": [
+   51,
+   6
+  ],
+  "front": 147,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 21",
+  "procedural": "railPortal",
+  "lat": 48.837917,
+  "lon": 2.316707,
+  "size": [
+   53,
+   6
+  ],
+  "front": 218,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 22",
+  "procedural": "railPortal",
+  "lat": 48.838191,
+  "lon": 2.316371,
+  "size": [
+   38,
+   6
+  ],
+  "front": 212,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 23",
+  "procedural": "railPortal",
+  "lat": 48.837741,
+  "lon": 2.317262,
+  "size": [
+   40,
+   6
+  ],
+  "front": 222,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 24",
+  "procedural": "railPortal",
+  "lat": 48.837067,
+  "lon": 2.314393,
+  "size": [
+   27,
+   6
+  ],
+  "front": 218,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 25",
+  "procedural": "railPortal",
+  "lat": 48.838329,
+  "lon": 2.316149,
+  "size": [
+   15,
+   6
+  ],
+  "front": 208,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 26",
+  "procedural": "railPortal",
+  "lat": 48.814844,
+  "lon": 2.241361,
+  "size": [
+   12,
+   6
+  ],
+  "front": 113,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 27",
+  "procedural": "railPortal",
+  "lat": 48.82069,
+  "lon": 2.295712,
+  "size": [
+   16,
+   6
+  ],
+  "front": 41,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 28",
+  "procedural": "railPortal",
+  "lat": 48.820192,
+  "lon": 2.295053,
+  "size": [
+   15,
+   6
+  ],
+  "front": 221,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 29",
+  "procedural": "railPortal",
+  "lat": 48.820527,
+  "lon": 2.295326,
+  "size": [
+   16,
+   6
+  ],
+  "front": 216,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 30",
+  "procedural": "railPortal",
+  "lat": 48.821427,
+  "lon": 2.296273,
+  "size": [
+   16,
+   6
+  ],
+  "front": 34,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 31",
+  "procedural": "railPortal",
+  "lat": 48.806425,
+  "lon": 2.398755,
+  "size": [
+   12,
+   6
+  ],
+  "front": 345,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 32",
+  "procedural": "railPortal",
+  "lat": 48.893429,
+  "lon": 2.368329,
+  "size": [
+   16,
+   6
+  ],
+  "front": 28,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 33",
+  "procedural": "railPortal",
+  "lat": 48.888894,
+  "lon": 2.365859,
+  "size": [
+   38,
+   6
+  ],
+  "front": 18,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 34",
+  "procedural": "railPortal",
+  "lat": 48.881736,
+  "lon": 2.361742,
+  "size": [
+   12,
+   6
+  ],
+  "front": 188,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 35",
+  "procedural": "railPortal",
+  "lat": 48.880283,
+  "lon": 2.361048,
+  "size": [
+   13,
+   6
+  ],
+  "front": 187,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 36",
+  "procedural": "railPortal",
+  "lat": 48.884567,
+  "lon": 2.362856,
+  "size": [
+   25,
+   6
+  ],
+  "front": 20,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 37",
+  "procedural": "railPortal",
+  "lat": 48.884234,
+  "lon": 2.362698,
+  "size": [
+   28,
+   6
+  ],
+  "front": 200,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 38",
+  "procedural": "railPortal",
+  "lat": 48.841014,
+  "lon": 2.380166,
+  "size": [
+   21,
+   6
+  ],
+  "front": 120,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 39",
+  "procedural": "railPortal",
+  "lat": 48.837131,
+  "lon": 2.389594,
+  "size": [
+   12,
+   6
+  ],
+  "front": 325,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 40",
+  "procedural": "railPortal",
+  "lat": 48.836348,
+  "lon": 2.39029,
+  "size": [
+   16,
+   6
+  ],
+  "front": 145,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 41",
+  "procedural": "railPortal",
+  "lat": 48.836846,
+  "lon": 2.389755,
+  "size": [
+   16,
+   6
+  ],
+  "front": 325,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 42",
+  "procedural": "railPortal",
+  "lat": 48.839799,
+  "lon": 2.384493,
+  "size": [
+   16,
+   6
+  ],
+  "front": 285,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 43",
+  "procedural": "railPortal",
+  "lat": 48.840423,
+  "lon": 2.384499,
+  "size": [
+   12,
+   6
+  ],
+  "front": 299,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 44",
+  "procedural": "railPortal",
+  "lat": 48.837687,
+  "lon": 2.388967,
+  "size": [
+   12,
+   6
+  ],
+  "front": 319,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 45",
+  "procedural": "railPortal",
+  "lat": 48.840333,
+  "lon": 2.383434,
+  "size": [
+   12,
+   6
+  ],
+  "front": 100,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 46",
+  "procedural": "railPortal",
+  "lat": 48.831269,
+  "lon": 2.397512,
+  "size": [
+   26,
+   6
+  ],
+  "front": 150,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 47",
+  "procedural": "railPortal",
+  "lat": 48.8316,
+  "lon": 2.397119,
+  "size": [
+   16,
+   6
+  ],
+  "front": 326,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 48",
+  "procedural": "railPortal",
+  "lat": 48.831171,
+  "lon": 2.395542,
+  "size": [
+   12,
+   6
+  ],
+  "front": 332,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 49",
+  "procedural": "railPortal",
+  "lat": 48.830744,
+  "lon": 2.395881,
+  "size": [
+   12,
+   6
+  ],
+  "front": 152,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 50",
+  "procedural": "railPortal",
+  "lat": 48.894489,
+  "lon": 2.355924,
+  "size": [
+   12,
+   6
+  ],
+  "front": 347,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 51",
+  "procedural": "railPortal",
+  "lat": 48.904576,
+  "lon": 2.353216,
+  "size": [
+   12,
+   6
+  ],
+  "front": 174,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 52",
+  "procedural": "railPortal",
+  "lat": 48.907833,
+  "lon": 2.353004,
+  "size": [
+   12,
+   6
+  ],
+  "front": 184,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 53",
+  "procedural": "railPortal",
+  "lat": 48.893667,
+  "lon": 2.356322,
+  "size": [
+   16,
+   6
+  ],
+  "front": 166,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 54",
+  "procedural": "railPortal",
+  "lat": 48.894259,
+  "lon": 2.356101,
+  "size": [
+   15,
+   6
+  ],
+  "front": 346,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 55",
+  "procedural": "railPortal",
+  "lat": 48.899349,
+  "lon": 2.299498,
+  "size": [
+   24,
+   6
+  ],
+  "front": 59,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 56",
+  "procedural": "railPortal",
+  "lat": 48.898865,
+  "lon": 2.298276,
+  "size": [
+   24,
+   6
+  ],
+  "front": 239,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 57",
+  "procedural": "railPortal",
+  "lat": 48.88791,
+  "lon": 2.314769,
+  "size": [
+   15,
+   6
+  ],
+  "front": 314,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 58",
+  "procedural": "railPortal",
+  "lat": 48.886905,
+  "lon": 2.316129,
+  "size": [
+   15,
+   6
+  ],
+  "front": 141,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 59",
+  "procedural": "railPortal",
+  "lat": 48.881831,
+  "lon": 2.320734,
+  "size": [
+   12,
+   6
+  ],
+  "front": 146,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 60",
+  "procedural": "railPortal",
+  "lat": 48.836984,
+  "lon": 2.314547,
+  "size": [
+   12,
+   6
+  ],
+  "front": 217,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 61",
+  "procedural": "railPortal",
+  "lat": 48.893973,
+  "lon": 2.355077,
+  "size": [
+   15,
+   6
+  ],
+  "front": 340,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 62",
+  "procedural": "railPortal",
+  "lat": 48.89322,
+  "lon": 2.355544,
+  "size": [
+   12,
+   6
+  ],
+  "front": 155,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 63",
+  "procedural": "railPortal",
+  "lat": 48.892003,
+  "lon": 2.356806,
+  "size": [
+   13,
+   6
+  ],
+  "front": 343,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 64",
+  "procedural": "railPortal",
+  "lat": 48.819537,
+  "lon": 2.295021,
+  "size": [
+   12,
+   6
+  ],
+  "front": 197,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 65",
+  "procedural": "railPortal",
+  "lat": 48.820227,
+  "lon": 2.295466,
+  "size": [
+   12,
+   6
+  ],
+  "front": 27,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 66",
+  "procedural": "railPortal",
+  "lat": 48.902516,
+  "lon": 2.354008,
+  "size": [
+   16,
+   6
+  ],
+  "front": 165,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 67",
+  "procedural": "railPortal",
+  "lat": 48.90266,
+  "lon": 2.353307,
+  "size": [
+   15,
+   6
+  ],
+  "front": 160,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 68",
+  "procedural": "railPortal",
+  "lat": 48.83337,
+  "lon": 2.201844,
+  "size": [
+   12,
+   6
+  ],
+  "front": 7,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 69",
+  "procedural": "railPortal",
+  "lat": 48.896807,
+  "lon": 2.415829,
+  "size": [
+   49,
+   6
+  ],
+  "front": 267,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 70",
+  "procedural": "railPortal",
+  "lat": 48.853116,
+  "lon": 2.280363,
+  "size": [
+   16,
+   6
+  ],
+  "front": 131,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 71",
+  "procedural": "railPortal",
+  "lat": 48.853041,
+  "lon": 2.286426,
+  "size": [
+   28,
+   6
+  ],
+  "front": 221,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 72",
+  "procedural": "railPortal",
+  "lat": 48.836219,
+  "lon": 2.370842,
+  "size": [
+   40,
+   6
+  ],
+  "front": 327,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 73",
+  "procedural": "railPortal",
+  "lat": 48.835926,
+  "lon": 2.371098,
+  "size": [
+   13,
+   6
+  ],
+  "front": 157,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 74",
+  "procedural": "railPortal",
+  "lat": 48.891678,
+  "lon": 2.309393,
+  "size": [
+   49,
+   6
+  ],
+  "front": 296,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 75",
+  "procedural": "railPortal",
+  "lat": 48.822223,
+  "lon": 2.379745,
+  "size": [
+   76,
+   6
+  ],
+  "front": 329,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 76",
+  "procedural": "railPortal",
+  "lat": 48.822225,
+  "lon": 2.379741,
+  "size": [
+   12,
+   6
+  ],
+  "front": 328,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 77",
+  "procedural": "railPortal",
+  "lat": 48.822159,
+  "lon": 2.380259,
+  "size": [
+   34,
+   6
+  ],
+  "front": 148,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 78",
+  "procedural": "railPortal",
+  "lat": 48.822465,
+  "lon": 2.380147,
+  "size": [
+   12,
+   6
+  ],
+  "front": 328,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 79",
+  "procedural": "railPortal",
+  "lat": 48.821863,
+  "lon": 2.379763,
+  "size": [
+   12,
+   6
+  ],
+  "front": 147,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 80",
+  "procedural": "railPortal",
+  "lat": 48.881605,
+  "lon": 2.32156,
+  "size": [
+   12,
+   6
+  ],
+  "front": 328,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 81",
+  "procedural": "railPortal",
+  "lat": 48.841992,
+  "lon": 2.378574,
+  "size": [
+   12,
+   6
+  ],
+  "front": 89,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 82",
+  "procedural": "railPortal",
+  "lat": 48.8799,
+  "lon": 2.323145,
+  "size": [
+   12,
+   6
+  ],
+  "front": 147,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 83",
+  "procedural": "railPortal",
+  "lat": 48.891531,
+  "lon": 2.311506,
+  "size": [
+   15,
+   6
+  ],
+  "front": 95,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 84",
+  "procedural": "railPortal",
+  "lat": 48.891866,
+  "lon": 2.313311,
+  "size": [
+   16,
+   6
+  ],
+  "front": 239,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 85",
+  "procedural": "railPortal",
+  "lat": 48.886297,
+  "lon": 2.316326,
+  "size": [
+   12,
+   6
+  ],
+  "front": 323,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 86",
+  "procedural": "railPortal",
+  "lat": 48.885181,
+  "lon": 2.357962,
+  "size": [
+   15,
+   6
+  ],
+  "front": 4,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 87",
+  "procedural": "railPortal",
+  "lat": 48.88525,
+  "lon": 2.357985,
+  "size": [
+   12,
+   6
+  ],
+  "front": 176,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 88",
+  "procedural": "railPortal",
+  "lat": 48.891492,
+  "lon": 2.356934,
+  "size": [
+   16,
+   6
+  ],
+  "front": 342,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 89",
+  "procedural": "railPortal",
+  "lat": 48.882009,
+  "lon": 2.321161,
+  "size": [
+   12,
+   6
+  ],
+  "front": 328,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 90",
+  "procedural": "railPortal",
+  "lat": 48.88165,
+  "lon": 2.321515,
+  "size": [
+   12,
+   6
+  ],
+  "front": 147,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 91",
+  "procedural": "railPortal",
+  "lat": 48.841996,
+  "lon": 2.378656,
+  "size": [
+   12,
+   6
+  ],
+  "front": 263,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 92",
+  "procedural": "railPortal",
+  "lat": 48.899549,
+  "lon": 2.214672,
+  "size": [
+   12,
+   6
+  ],
+  "front": 294,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 93",
+  "procedural": "railPortal",
+  "lat": 48.833538,
+  "lon": 2.393152,
+  "size": [
+   22,
+   6
+  ],
+  "front": 326,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 94",
+  "procedural": "railPortal",
+  "lat": 48.83192,
+  "lon": 2.394842,
+  "size": [
+   22,
+   6
+  ],
+  "front": 146,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 95",
+  "procedural": "railPortal",
+  "lat": 48.826054,
+  "lon": 2.401088,
+  "size": [
+   29,
+   6
+  ],
+  "front": 316,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 96",
+  "procedural": "railPortal",
+  "lat": 48.824601,
+  "lon": 2.403597,
+  "size": [
+   34,
+   6
+  ],
+  "front": 123,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 97",
+  "procedural": "railPortal",
+  "lat": 48.825878,
+  "lon": 2.400847,
+  "size": [
+   35,
+   6
+  ],
+  "front": 325,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 98",
+  "procedural": "railPortal",
+  "lat": 48.824417,
+  "lon": 2.403395,
+  "size": [
+   28,
+   6
+  ],
+  "front": 117,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 99",
+  "procedural": "railPortal",
+  "lat": 48.827721,
+  "lon": 2.398044,
+  "size": [
+   55,
+   6
+  ],
+  "front": 323,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 100",
+  "procedural": "railPortal",
+  "lat": 48.826143,
+  "lon": 2.399816,
+  "size": [
+   55,
+   6
+  ],
+  "front": 143,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 101",
+  "procedural": "railPortal",
+  "lat": 48.836462,
+  "lon": 2.370852,
+  "size": [
+   12,
+   6
+  ],
+  "front": 322,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 102",
+  "procedural": "railPortal",
+  "lat": 48.890755,
+  "lon": 2.310654,
+  "size": [
+   15,
+   6
+  ],
+  "front": 133,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 103",
+  "procedural": "railPortal",
+  "lat": 48.836632,
+  "lon": 2.370432,
+  "size": [
+   12,
+   6
+  ],
+  "front": 329,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 104",
+  "procedural": "railPortal",
+  "lat": 48.836236,
+  "lon": 2.370806,
+  "size": [
+   12,
+   6
+  ],
+  "front": 148,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 105",
+  "procedural": "railPortal",
+  "lat": 48.836495,
+  "lon": 2.370814,
+  "size": [
+   12,
+   6
+  ],
+  "front": 145,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 106",
+  "procedural": "railPortal",
+  "lat": 48.837054,
+  "lon": 2.370364,
+  "size": [
+   12,
+   6
+  ],
+  "front": 164,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 107",
+  "procedural": "railPortal",
+  "lat": 48.840201,
+  "lon": 2.383806,
+  "size": [
+   12,
+   6
+  ],
+  "front": 104,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 108",
+  "procedural": "railPortal",
+  "lat": 48.897379,
+  "lon": 2.365701,
+  "size": [
+   16,
+   6
+  ],
+  "front": 276,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 109",
+  "procedural": "railPortal",
+  "lat": 48.893035,
+  "lon": 2.36765,
+  "size": [
+   16,
+   6
+  ],
+  "front": 208,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 110",
+  "procedural": "railPortal",
+  "lat": 48.838409,
+  "lon": 2.383057,
+  "size": [
+   12,
+   6
+  ],
+  "front": 122,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 111",
+  "procedural": "railPortal",
+  "lat": 48.881974,
+  "lon": 2.36157,
+  "size": [
+   12,
+   6
+  ],
+  "front": 15,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 112",
+  "procedural": "railPortal",
+  "lat": 48.901695,
+  "lon": 2.355048,
+  "size": [
+   12,
+   6
+  ],
+  "front": 151,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 113",
+  "procedural": "railPortal",
+  "lat": 48.825336,
+  "lon": 2.381215,
+  "size": [
+   31,
+   6
+  ],
+  "front": 152,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 114",
+  "procedural": "railPortal",
+  "lat": 48.825152,
+  "lon": 2.380669,
+  "size": [
+   23,
+   6
+  ],
+  "front": 149,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 115",
+  "procedural": "railPortal",
+  "lat": 48.825531,
+  "lon": 2.380335,
+  "size": [
+   14,
+   6
+  ],
+  "front": 329,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 116",
+  "procedural": "railPortal",
+  "lat": 48.825253,
+  "lon": 2.380981,
+  "size": [
+   16,
+   6
+  ],
+  "front": 146,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 117",
+  "procedural": "railPortal",
+  "lat": 48.822015,
+  "lon": 2.38002,
+  "size": [
+   12,
+   6
+  ],
+  "front": 148,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 118",
+  "procedural": "railPortal",
+  "lat": 48.823567,
+  "lon": 2.382609,
+  "size": [
+   43,
+   6
+  ],
+  "front": 149,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 119",
+  "procedural": "railPortal",
+  "lat": 48.8238,
+  "lon": 2.382379,
+  "size": [
+   48,
+   6
+  ],
+  "front": 329,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 120",
+  "procedural": "railPortal",
+  "lat": 48.8224,
+  "lon": 2.380672,
+  "size": [
+   12,
+   6
+  ],
+  "front": 168,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 121",
+  "procedural": "railPortal",
+  "lat": 48.896556,
+  "lon": 2.232785,
+  "size": [
+   12,
+   6
+  ],
+  "front": 307,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 122",
+  "procedural": "railPortal",
+  "lat": 48.814111,
+  "lon": 2.340847,
+  "size": [
+   12,
+   6
+  ],
+  "front": 190,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 123",
+  "procedural": "railPortal",
+  "lat": 48.814242,
+  "lon": 2.340906,
+  "size": [
+   16,
+   6
+  ],
+  "front": 10,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 124",
+  "procedural": "railPortal",
+  "lat": 48.897454,
+  "lon": 2.37016,
+  "size": [
+   12,
+   6
+  ],
+  "front": 276,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 125",
+  "procedural": "railPortal",
+  "lat": 48.897335,
+  "lon": 2.371225,
+  "size": [
+   12,
+   6
+  ],
+  "front": 105,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 126",
+  "procedural": "railPortal",
+  "lat": 48.898828,
+  "lon": 2.299673,
+  "size": [
+   12,
+   6
+  ],
+  "front": 239,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 127",
+  "procedural": "railPortal",
+  "lat": 48.835873,
+  "lon": 2.371122,
+  "size": [
+   12,
+   6
+  ],
+  "front": 339,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 128",
+  "procedural": "railPortal",
+  "lat": 48.820576,
+  "lon": 2.339007,
+  "size": [
+   16,
+   6
+  ],
+  "front": 2,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ },
+ {
+  "name": "railway tunnel mouth 129",
+  "procedural": "railPortal",
+  "lat": 48.897405,
+  "lon": 2.41648,
+  "size": [
+   37,
+   6
+  ],
+  "front": 268,
+  "height": 8,
+  "shadow": false,
+  "sign": false,
+  "note": "Written by tools/paris-portals.ts: where OSM takes this track into a tunnel."
+ }
+]

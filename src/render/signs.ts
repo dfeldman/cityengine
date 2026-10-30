@@ -44,11 +44,13 @@ attribute vec4 color;
 uniform mat4 worldViewProjection;
 varying vec2 vUV;
 varying vec3 vTint;
+varying float vInk;
 varying float vDepth;
 void main(void) {
   gl_Position = worldViewProjection * vec4(position, 1.0);
   vUV = uv;
   vTint = color.rgb;
+  vInk = color.a;
   vDepth = gl_Position.w;
 }
 `
@@ -57,6 +59,7 @@ const FRAGMENT = `
 precision highp float;
 varying vec2 vUV;
 varying vec3 vTint;
+varying float vInk;
 varying float vDepth;
 uniform sampler2D signs;
 uniform vec3 fogColour;
@@ -68,7 +71,9 @@ void main(void) {
   // the board is the tint, the lettering is the texture's own alpha. After dark the board falls away and
   // the letters do not: they read as lit, which is all a lit sign is from across a street
   vec3 board = vTint * (1.0 - 0.7 * night);
-  vec3 c = mix(board, ink, t.a);
+  // a sign's own lettering colour, in the vertex's alpha (0 is the atlas's: frenchSign)
+  vec3 own = vInk < 0.05 ? ink : vInk < 0.3 ? vec3(0.83, 0.68, 0.34) : vInk < 0.55 ? vec3(0.07, 0.07, 0.08) : vInk < 0.8 ? vec3(0.95, 0.91, 0.8) : vec3(0.97, 0.97, 0.96);
+  vec3 c = mix(board, own, t.a);
   float fog = 1.0 - exp(-vDepth * fogDensity);
   gl_FragColor = vec4(mix(c, fogColour, clamp(fog, 0.0, 1.0)), 1.0);
 }
@@ -295,12 +300,59 @@ export interface SignedJunction {
   arms: { name: string; bearing: number; width: number; walk: number }[]
 }
 
+/*
+ * PARIS'S SHOP SIGNS (owner, 2026-10-30: "more french-ish. There is very wide variety in fonts, from cursive, to courier, to caps.
+ * variety in color too"). A shop's lettering and colours come from its name, so it is the same wherever it is drawn: the key handed to
+ * the atlas is `<lettering>|<name>`. System faces, because a canvas cannot wait for a web font, each stack ending in what every
+ * machine has. Ink: 0 the atlas's white, 0.2 gold, 0.45 black, 0.7 cream, 0.9 white.
+ */
+interface Lettering { font: (px: number) => string; upper: boolean; track: number }
+const LETTERING: Lettering[] = [
+  { font: (px) => `${px * 1.15}px "Snell Roundhand", "Savoye LET", "Segoe Script", "Brush Script MT", cursive`, upper: false, track: 0 },
+  { font: (px) => `700 ${px}px Didot, "Bodoni 72", "Bodoni MT", "Times New Roman", serif`, upper: true, track: 2 },
+  { font: (px) => `700 ${px}px "Courier New", Courier, monospace`, upper: false, track: 0 },
+  { font: (px) => `${px}px Copperplate, "Copperplate Gothic Light", Georgia, serif`, upper: true, track: 2 },
+  { font: (px) => `600 ${px}px Futura, "Gill Sans", "Century Gothic", "Trebuchet MS", sans-serif`, upper: true, track: 3 },
+  { font: (px) => `italic 700 ${px}px Georgia, "Times New Roman", serif`, upper: false, track: 0 },
+  { font: (px) => `700 ${px}px Rockwell, "American Typewriter", Georgia, serif`, upper: true, track: 1 },
+  { font: (px) => `700 ${px}px ui-sans-serif, Helvetica, Arial, sans-serif`, upper: true, track: 0 },
+]
+/** by trade, how often each lettering: a bakery's script and gold, a shop's plain caps */
+const BY_KIND: Record<PackedPoi['kind'], number[]> = {
+  food: [0, 0, 0, 1, 1, 2, 3, 5, 5, 6, 7],
+  shop: [0, 1, 2, 2, 3, 4, 4, 5, 6, 7, 7],
+  culture: [1, 1, 3, 3, 4, 5, 7],
+  service: [2, 4, 4, 6, 7, 7, 7],
+}
+const COLOURS: Record<PackedPoi['kind'], [[number, number, number], number][]> = {
+  food: [[[0.08, 0.2, 0.14], 0.2], [[0.3, 0.07, 0.09], 0.7], [[0.07, 0.12, 0.25], 0.2], [[0.05, 0.05, 0.06], 0.2], [[0.88, 0.83, 0.7], 0.45], [[0.5, 0.13, 0.1], 0.7], [[0.16, 0.3, 0.3], 0.7], [[0.62, 0.72, 0.68], 0.45]],
+  shop: [[[0.05, 0.05, 0.06], 0.9], [[0.13, 0.14, 0.16], 0.7], [[0.88, 0.85, 0.77], 0.45], [[0.23, 0.33, 0.44], 0.9], [[0.32, 0.12, 0.2], 0.7], [[0.72, 0.74, 0.72], 0.45], [[0.12, 0.24, 0.2], 0.2], [[0.65, 0.3, 0.2], 0.9]],
+  culture: [[[0.08, 0.1, 0.22], 0.2], [[0.3, 0.06, 0.08], 0.2], [[0.05, 0.05, 0.06], 0.7], [[0.86, 0.82, 0.72], 0.45]],
+  service: [[[0.1, 0.24, 0.3], 0.9], [[0.05, 0.05, 0.06], 0.9], [[0.86, 0.86, 0.84], 0.45], [[0.16, 0.28, 0.26], 0.9]],
+}
+const nameHash = (s: string): number => {
+  let h = 2166136261
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619)
+  return h >>> 0
+}
+function frenchSign(name: string, kind: PackedPoi['kind']): { key: string; tint: [number, number, number]; ink: number } {
+  const h = nameHash(name)
+  const l = BY_KIND[kind]
+  const c = COLOURS[kind]
+  const [tint, ink] = c[(h >>> 8) % c.length]
+  return { key: `${l[h % l.length]}|${name}`, tint, ink }
+}
+
 /** A shop's name on its fascia board: as large as fits, onto two lines before it is allowed to get small. */
 function drawShop(ctx: CanvasRenderingContext2D, x0: number, y0: number, name: string): void {
   const cx = x0 + CELL_W / 2
   const cy = y0 + CELL_H / 2
-  const text = name.toUpperCase()
-  const font = (px: number): string => `700 ${px}px ui-sans-serif, Helvetica, Arial, sans-serif`
+  const styled = /^(\d)\|(.*)$/.exec(name)
+  const look = styled ? LETTERING[Number(styled[1])] : LETTERING[7]
+  const said = styled ? styled[2] : name
+  const text = look.upper ? said.toUpperCase() : said
+  const font = look.font
+  ;(ctx as unknown as { letterSpacing: string }).letterSpacing = `${look.track}px`
   const fit = (t: string, max: number): number => {
     let px = max
     ctx.font = font(px)
@@ -327,6 +379,7 @@ function drawShop(ctx: CanvasRenderingContext2D, x0: number, y0: number, name: s
     ctx.fillText(a, cx, cy - px * 0.55)
     ctx.fillText(b, cx, cy + px * 0.6)
   }
+  ;(ctx as unknown as { letterSpacing: string }).letterSpacing = '0px'
 }
 
 /** Real names given boards per tile, at most: the rest of the tile's shopfronts get invented ones. */
@@ -465,18 +518,21 @@ export class Signs implements TileLayer {
     }
     const fascia = (id: number): number => {
       const g = planOf(id)?.storeys.find((st) => st.index === 0)
-      return g ? Math.max(2.8, g.y1 - 0.85) : 3.4
+      // (over the whole of the painted fascia, from 6 to 20% down the ground storey: at 0.85 under the top the board left the painted one's upper edge showing)
+      return g ? Math.max(2.8, g.y1 - 0.62) : 3.4
     }
     const signed = new Set<number>()
     const hung: Hung[] = []
+    const french = reg.roadPaint === 'paris'
     chosen.forEach((poi) => {
       const spot = faceFor(poi, index)
       if (!spot) return
-      const cell = this.shops.acquire(poi.name, k)
+      const look = french ? frenchSign(poi.name, poi.kind) : { key: poi.name, tint: BOARD[poi.kind], ink: 0 }
+      const cell = this.shops.acquire(look.key, k)
       if (!cell) return
       signed.add(spot.building)
-      board(pages.on(cell.page), spot, BOARD[poi.kind], cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z), fascia(spot.building))
-      hung.push({ spot, name: poi.name, tint: BOARD[poi.kind], ground: terrain.heightAt(spot.x, spot.z),
+      board(pages.on(cell.page), spot, look.tint, cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z), fascia(spot.building), look.ink)
+      hung.push({ spot, name: poi.name, tint: look.tint, ground: terrain.heightAt(spot.x, spot.z),
         fascia: fascia(spot.building), kind: poi.kind, real: true })
       placed++
     })
@@ -522,11 +578,12 @@ export class Signs implements TileLayer {
         list.push({ x: spot.x, z: spot.z })
         used.set(j, list)
         if (!mine) continue
-        const cell = this.shops.acquire(pickd.name, k)
+        const look = french ? frenchSign(pickd.name, pickd.kind) : { key: pickd.name, tint: BOARD[pickd.kind], ink: 0 }
+        const cell = this.shops.acquire(look.key, k)
         if (!cell) continue
-        board(pages.on(cell.page), spot, BOARD[pickd.kind], cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z),
-          fascia(b.id))
-        hung.push({ spot, name: pickd.name, tint: BOARD[pickd.kind], ground: terrain.heightAt(spot.x, spot.z),
+        board(pages.on(cell.page), spot, look.tint, cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z),
+          fascia(b.id), look.ink)
+        hung.push({ spot, name: pickd.name, tint: look.tint, ground: terrain.heightAt(spot.x, spot.z),
           fascia: fascia(b.id), kind: pickd.kind, real: false })
         placed++
       }
@@ -1361,7 +1418,7 @@ export function faceFor(poi: PackedPoi, index: Map<string, PackedBuilding[]>): S
 
 /** One sign board, standing proud of the wall it is on. */
 function board(out: MeshBuilder, s: Spot, tint: [number, number, number], u0: number, v0: number,
-               groundY: number, fasciaY: number): void {
+               groundY: number, fasciaY: number, ink = 0): void {
   const h = 0.42
   const y = fasciaY + groundY   // on the fascia, under the ledge that ends the ground floor
   const w = s.width / 2
@@ -1378,6 +1435,6 @@ function board(out: MeshBuilder, s: Spot, tint: [number, number, number], u0: nu
      [px + ax * w, y + h, pz + az * w], [px - ax * w, y + h, pz - az * w]],
     [s.nx, 0, s.nz],
     [[u0, v1], [u1, v1], [u1, v0], [u0, v0]],
-    tint, 0,
+    tint, ink,
   )
 }

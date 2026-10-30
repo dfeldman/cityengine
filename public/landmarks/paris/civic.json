@@ -382,23 +382,6 @@
  },
  {
   "osm": [
-   "way/30612670"
-  ],
-  "name": "Carreau du Temple",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 3,
-   "word": "CARREAU DU TEMPLE",
-   "seed": 5533
-  },
-  "height": 11.4,
-  "front": 127,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 3."
- },
- {
-  "osm": [
    "way/30617096"
   ],
   "name": "Bâtiments A, B et C",
@@ -5208,23 +5191,6 @@
  },
  {
   "osm": [
-   "way/62819702"
-  ],
-  "name": "Palais de la Porte Dorée",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "equipement",
-   "p": 5,
-   "word": "PALAIS DE LA PORTE DORÉE",
-   "seed": 9748
-  },
-  "height": 19,
-  "front": 118,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: equipement, APUR period 5."
- },
- {
-  "osm": [
    "way/62848411"
   ],
   "name": "equipement 62848411",
@@ -8186,23 +8152,6 @@
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: caserne, APUR period 8."
- },
- {
-  "osm": [
-   "way/63638302"
-  ],
-  "name": "Palais de la Femme",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "PALAIS DE LA FEMME",
-   "seed": 589
-  },
-  "height": 21.4,
-  "front": -20,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
  },
  {
   "osm": [
@@ -17273,23 +17222,6 @@
  },
  {
   "osm": [
-   "way/73247228"
-  ],
-  "name": "Bibliothèque François-Mitterrand",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "bibliotheque",
-   "p": 99,
-   "word": "BIBLIOTHÈQUE FRANÇOIS-MITTERRAND",
-   "seed": 5516
-  },
-  "height": 28,
-  "front": -91,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: bibliotheque, APUR period 99."
- },
- {
-  "osm": [
    "way/73247797"
   ],
   "name": "ecole 73247797",
@@ -20042,6 +19974,23 @@
  },
  {
   "osm": [
+   "way/78144317"
+  ],
+  "name": "MK2 Nation",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "salle",
+   "p": 12,
+   "word": "MK2 NATION",
+   "seed": 5862
+  },
+  "height": 24.7,
+  "front": 170,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: salle, APUR period 12."
+ },
+ {
+  "osm": [
    "way/78144373"
   ],
   "name": "École Supérieure de Génie Informatique",
@@ -20574,23 +20523,6 @@
   "front": 104,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 10."
- },
- {
-  "osm": [
-   "way/78406776"
-  ],
-  "name": "Mobilier National",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "equipement",
-   "p": 5,
-   "word": "MOBILIER NATIONAL",
-   "seed": 9023
-  },
-  "height": 25.7,
-  "front": 67,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: equipement, APUR period 5."
  },
  {
   "osm": [
@@ -32057,6 +31989,23 @@
   "front": 54,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/130909647"
+  ],
+  "name": "Abel 14",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "salle",
+   "p": 1,
+   "word": "ABEL 14",
+   "seed": 4049
+  },
+  "height": 8.5,
+  "front": 48,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: salle, APUR period 1."
  },
  {
   "osm": [

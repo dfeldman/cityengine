@@ -25,6 +25,18 @@ import { hotelDieu } from './hotel-dieu.ts'
 import { jacquemartAndre } from './jacquemart-andre.ts'
 import { mairie1er } from './mairie-1er.ts'
 import { mairie5e } from './mairie-5e.ts'
+import { mairie13e } from './mairie-13e.ts'
+import { tribunal } from './tribunal.ts'
+import { hexagoneBalard } from './hexagone-balard.ts'
+import { mobilierNational } from './mobilier-national.ts'
+import { reservoirMontsouris } from './reservoir-montsouris.ts'
+import { facultePharmacie } from './faculte-pharmacie.ts'
+import { faculteMedecine } from './faculte-medecine.ts'
+import { ensam } from './ensam.ts'
+import { prefecturePolice } from './prefecture-police.ts'
+import { bnfRichelieu } from './bnf-richelieu.ts'
+import { creditMunicipal } from './credit-municipal.ts'
+import { valDeGraceHopital } from './val-de-grace-hopital.ts'
 import { pagode } from './pagode.ts'
 import { piscineJosephineBaker } from './piscine-josephine-baker.ts'
 import { tourZamansky } from './tour-zamansky.ts'
@@ -40,4 +52,5 @@ export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void>
   geode, citeDesSciences, philharmonie, bnfTower,
   sorbonne, chapelleSorbonne, hotelDieu, sainteGenevieve, beauxArts, hopitalSaintLouis, salpetriere, citeDeLaMode, rotondeVillette, pavillonArsenal, collegeDeFrance,
   tourZamansky, pagode, mairie5e, mairie1er, piscineJosephineBaker, zenith, jacquemartAndre,
+  mairie13e, tribunal, hexagoneBalard, mobilierNational, reservoirMontsouris, facultePharmacie, faculteMedecine, ensam, prefecturePolice, bnfRichelieu, creditMunicipal, valDeGraceHopital,
 }

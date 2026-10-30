@@ -132,6 +132,11 @@ function portico(out: MeshBuilder): void {
   for (const x of [3.55, 10.3, 16.65]) for (const s of [-1, 1]) {
     classicalColumn(out, s * x, -41.2, 1.8, 21.0, 0.85, STONE, { order: 'corinthian', tier: 'mid', heading: Math.PI, trim: TRIM })
   }
+  // the great tricolore, hung in the portico from the entablature (owner, 2026-10-30: "the pantheon does have a huge french flag on it";
+  // "not a lot of french flags, but when they do use them, they mean it"). Where it hangs is a guess: no photograph was checked
+  for (const [x0, x1, c] of [[-4.5, -1.5, [0.05, 0.18, 0.5]], [-1.5, 1.5, [0.95, 0.95, 0.93]], [1.5, 4.5, [0.82, 0.12, 0.14]]] as [number, number, Rgb][]) {
+    block(out, x0, x1, -47.05, -46.95, 6.5, 20.8, c)
+  }
   // the door in the wall behind, bronze
   rectOn(out, '-z', -40.6, -2.6, 2.6, 1.8, 10.5, [0.28, 0.24, 0.18], 0.1)
   // the entablature: architrave, the frieze with the inscription, the cornice

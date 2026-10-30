@@ -172,7 +172,21 @@
       "way/1175316121",
       "way/1175316274",
       "way/1175316401",
-      "way/1175316412"
+      "way/1175316412",
+      "way/1175314810",
+      "way/1175314821",
+      "way/1175315015",
+      "way/1175315104",
+      "way/1175315136",
+      "way/1175315164",
+      "way/1175315359",
+      "way/1175315489",
+      "way/1175315564",
+      "way/1175315956",
+      "way/1175315991",
+      "way/1175316215",
+      "way/1175316302",
+      "way/1175316512"
     ],
     "name": "Roland-Garros: Suzanne-Lenglen",
     "procedural": "rgLenglen",
@@ -233,7 +247,8 @@
   },
   {
     "osm": [
-      "way/63224946"
+      "way/63224946",
+      "way/436563839"
     ],
     "name": "Temple de la Sibylle",
     "procedural": "sibylleTemple",
@@ -1004,5 +1019,147 @@
     "height": 8,
     "front": 0,
     "note": "The garden behind the Médiathèque Françoise-Sagan: a zigzag path between raised beds under windmill palms (owner's street view, 2026-10-30). OSM maps only a paved court."
+  },
+  {
+    "osm": [
+      "relation/1309184"
+    ],
+    "name": "Stade Pierre-de-Coubertin",
+    "procedural": "stadeCoubertin",
+    "front": 315,
+    "height": 21,
+    "note": "venues/coubertin.ts: the 1937 hall (rebuilt 1946, renovated 1990; Wikipedia fr) at the Porte de Saint-Cloud. A rider on the Avenue Georges Lafont sees a giant order of red brick piers against cream wall under a deep concrete eave, with the 1990 silver stair drums and glass between the piers (Commons, Stade Pierre de Coubertin, November 2016). Height estimated from the photographs; the drums' places are inferred from the plan's notches."
+  },
+  {
+    "osm": [
+      "way/76847587"
+    ],
+    "name": "Halle Georges-Carpentier",
+    "procedural": "halleCarpentier",
+    "front": 334,
+    "height": 17,
+    "note": "venues/carpentier.ts: the Palais des sports de la Porte d'Ivry of 1960, renovated and renamed 1988 (Wikipedia fr). From the Boulevard Masséna: a white base, pale ribbed panels between dark blue posts rising to a shallow gable, red brick entrance blocks at the ends (Commons, Halle Carpentier - Face avant, Entrée du public, F8495). Heights estimated from the photographs."
+  },
+  {
+    "osm": [
+      "way/44326511"
+    ],
+    "lat": 48.832756,
+    "lon": 2.286285,
+    "size": [
+      80,
+      71
+    ],
+    "name": "Dôme de Paris - Palais des Sports",
+    "procedural": "domeParis",
+    "front": 45,
+    "height": 29,
+    "note": "venues/dome-paris.ts: Dufau and de Larivière on Buckminster Fuller's geodesic process, 1959-60; about 70 m across, 1,100 aluminium panels (Wikipedia fr). A shallow geodesic cap of dished triangular panels over low corrugated annexes on OSM's outline, the blue boards to the Place de la Porte de Versailles (Commons, DÔME de Paris; Dôme de Paris (Palais des Sports) façade). Height and roof height OSM's. Placed by point so the dome stands on its own centre, not the middle of its parts' hull."
+  },
+  {
+    "name": "Stade Sébastien-Charléty",
+    "lat": 48.818522,
+    "lon": 2.346654,
+    "size": [
+      220,
+      184
+    ],
+    "procedural": "stadeCharlety",
+    "front": 280.5,
+    "height": 31,
+    "kind": "structure",
+    "note": "venues/charlety.ts: Henri and Bruno Gaudin, 1991-94, 19,151 seats, the blue track of 2019-20 (Wikipedia fr). OSM maps only the grounds (way/663183242), the pitch and the track, so this is a point on the track's middle, turned to the pitch's long edges; 220 x 184 m is the room the grounds leave. The rider sees a pale ring of concrete fins with four tall white masts, thin long roofs over the high long sides, white sails at the corners (Commons, Paris Stade Sébastien Charléty; Stade Charléty 145, 230, 700). Heights estimated from the photographs."
+  },
+  {
+    "osm": [
+      "relation/14479234",
+      "way/443073294"
+    ],
+    "lat": 48.895742,
+    "lon": 2.22971,
+    "size": [
+      201.4,
+      165
+    ],
+    "name": "Plenitude Arena",
+    "procedural": "plenitudeArena",
+    "front": 116,
+    "height": 49,
+    "note": "venues/plenitude-arena.ts: Christian de Portzamparc, 2013-17, the Paris La Défense Arena; 592 aluminium-and-glass scales, a fixed roof (Wikipedia fr). From the Jardins de l'Arche: a great rounded block in overlapping pale scales over a glazed ground floor, the dark screen in its white frame, the green name (Commons, Entrée 4 Paris Défense Arena; Enseignes Naming Plenitude Arena). Height and roof height OSM's; the 11-level wing is way/443073294, the Conseil départemental's. The scale's outline and the screen's place are read from the photographs."
+  },
+  {
+    "osm": [
+      "relation/3950441"
+    ],
+    "name": "Piscine Molitor",
+    "procedural": "piscineMolitor",
+    "front": 163,
+    "height": 13,
+    "note": "venues/molitor.ts: Lucien Pollet, 1929, rebuilt and reopened 2014, its outdoor pool 46 m (Wikipedia fr). Yellow walls with dark bands and the name at the door on Rue Nungesser-et-Coli (Commons, Hôtel Piscine Molitor); from above the summer pool in three tiers of white railings and blue cabin doors, OSM's courtyard; the winter pool's glass roof to the east. Heights estimated from the photographs; the glass roof's outline is an estimate from the plan."
+  },
+  {
+    "osm": [
+      "relation/1103345"
+    ],
+    "name": "Piscine Georges-Vallerey",
+    "procedural": "piscineVallerey",
+    "front": 255,
+    "height": 21,
+    "note": "venues/vallerey.ts: the Piscine des Tourelles of the 1924 Olympics, Roger Taillibert's renovation of 1986-89, redone 2024 (Wikipedia fr). From the Avenue Gambetta: the end of a glass barrel vault with a pale rim over beige masses, the glazed bay between two great round columns, the name, the pale green tower with a round window (Commons, Piscine Georges Vallerey 8 April 2017 and 2024-11-01). Vault width and heights estimated from the photographs."
+  },
+  {
+    "osm": [
+      "way/547024399",
+      "way/547024392",
+      "way/1041475775",
+      "way/1041475776",
+      "way/1162787545"
+    ],
+    "lat": 48.826081,
+    "lon": 2.229813,
+    "size": [
+      338,
+      101.8
+    ],
+    "name": "La Seine Musicale",
+    "procedural": "seineMusicale",
+    "front": 50,
+    "height": 24,
+    "note": "venues/seine-musicale.ts: Shigeru Ban and Jean de Gastines, 2017: the auditorium's egg of braided wood under moving solar sails, the Grande Seine, the Jardin Bellini on its roof (Wikipedia fr). From the bridges and the Meudon bank: a long white ship on the point of the Île Seguin, the great lawn, the egg and the tall sail in front of it (Commons, La Seine musicale at night, (64634), (84847)). The plan is OSM's; heights and the sail's outline are estimated from the photographs; the sail is drawn to the south."
+  },
+  {
+    "osm": [
+      "relation/3074644",
+      "relation/3074648",
+      "relation/3074646",
+      "way/393519519",
+      "way/393519497",
+      "way/393519507",
+      "way/393519529",
+      "way/393519530",
+      "way/394227910",
+      "way/394227911"
+    ],
+    "lat": 48.879354,
+    "lon": 2.283585,
+    "size": [
+      173.6,
+      181.2
+    ],
+    "name": "Palais des Congrès",
+    "procedural": "palaisCongres",
+    "front": 208,
+    "height": 40,
+    "note": "venues/palais-congres.ts: the 1974 block (Gillet, Maloletenkov, Betin, Guibout) with Christian de Portzamparc's 1999 inclined facade and the Bordeaux amphitheatre's inverted cone showing on it (Wikipedia fr; Commons, L'escalier du Palais des Congrés à Paris). The plan and the 21 and 40 m heights are OSM's; the plane's foot, its glazing and the cone's place on it are from memory, no elevation having been found. The Hyatt tower is its own building and stays."
+  },
+  {
+    "osm": [
+      "relation/3705800"
+    ],
+    "name": "Le Cent Quatre",
+    "procedural": "centQuatre",
+    "front": 195,
+    "height": 24,
+    "note": "venues/cent-quatre.ts: the old municipal undertakers', its inscription over the arch (Commons, Le Centquatre, les anciennes pompes funèbres de Paris). The glass-roofed iron halls and the stone gable striped with brick, its fan-headed window and oculi (Commons, Le Cent Quatre à Paris, juin 2012); stone ranges on both streets. Courts are OSM's; the halls' sections and range heights estimated from the photographs."
   }
 ]

@@ -27,6 +27,7 @@ export interface BridgeEdge {
   foot?: boolean
   /** OSM `highway`, so a freeway chain can be told from an ordinary bridge (BUGS.md #157) */
   kind?: string
+  name?: string
 }
 
 export interface BridgeWorld {
@@ -40,6 +41,8 @@ export interface BridgeWorld {
   layerCaps?: { x: number; z: number; radius: number; layer: number }[]
   /** the railways drawn at the surface (not on a viaduct): a bridge over one clears a train (`RAIL_CLEARANCE`) */
   rails?: { points: number[]; layer?: number }[]
+  /** the ground is lidar (an MNT, bare earth): it has no bridge in it, so it dips to the quay road under an abutment */
+  liftAbutments?: boolean
   /** decks a model draws (Region.straightDecks): a straight line from bank to bank, no crown and no clearance over what is under */
   straight?: Set<number>
 }
@@ -376,6 +379,33 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
       joined++
     }
     if (joined) console.log(`  bridges: ${joined} scraps of way between bridge pieces joined to their bridges`)
+  }
+  /*
+   * THE HOLE UNDER AN ABUTMENT (owner, 2026-10-30, the Pont de Puteaux, 48.878156, 2.243674). Bare earth has no bridge in it: where
+   * the deck comes ashore it reads the quay road passing beneath, so the bridge's end stood at -7 m and the street it meets at
+   * -1.6, the road diving into the hole and climbing out in 16 m, with spikes of parapet along it. A short way of the bridge's own
+   * name that climbs away from its end like that is still the bridge: the chain then ends on the street.
+   */
+  if (world.liftAbutments) {
+    let lifted = 0
+    for (let pass = 0; pass < 3; pass++) {
+      const decksAt = new Map<number, Set<string>>()
+      for (const e of edges) if (e.bridge && e.name) for (const n of [e.a, e.b]) (decksAt.get(n) ?? decksAt.set(n, new Set()).get(n)!).add(e.name)
+      for (const e of edges) {
+        if (e.bridge || e.tunnel || e.foot || !e.name || !e.heights || e.heights.length < 2) continue
+        const q = pts(e.points)
+        let L = 0
+        for (let i = 1; i < q.length; i++) L += Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z)
+        if (L >= 45) continue
+        const first = e.heights[0], last = e.heights[e.heights.length - 1]
+        const away = decksAt.get(e.a)?.has(e.name) ? last - first : decksAt.get(e.b)?.has(e.name) ? first - last : -1
+        if (away < 1.5 || away / Math.max(L, 1) < 0.08) continue
+        e.bridge = true
+        e.layer ??= 1
+        lifted++
+      }
+    }
+    if (lifted) console.log(`  bridges: ${lifted} ways out of the hole under an abutment joined to their bridges`)
   }
   const deckEdges = edges.filter((e) => e.bridge)
   for (const e of deckEdges) densify(e, world)

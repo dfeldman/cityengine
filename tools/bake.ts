@@ -65,6 +65,7 @@ import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
 import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks } from './bridges.ts'
+import { bridgesOverStreets, straightDeck } from './rail-levels.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -1803,9 +1804,54 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   if (lidarPosts) {
     const bare = bareEarthF(fine, fcols, frows, 0, fineWet)
-    let n = 0
-    for (let i = 0; i < fineGround.length; i++) if (lidarPosts[i] && !fineWet[i]) { fineGround[i] = bare[i]; n++ }
-    console.log(`  lidar's relief kept: ${n} fine samples unopened`)
+    /*
+     * …except a sharp bump at a big building: there the survey has taken the building for ground (owner, 2026-10-30, the Fondation
+     * Louis Vuitton: 18 m of "hill" over a lawn at 36 m, 40 m across, its slopes through the sails). Within 25 m of a footprint of
+     * 800 m² or more, what stands over a 48 m opening of the ground by more than 2-4 m goes back to it. The small buildings on the
+     * Buttes-Chaumont's rock are too small to count, and the wider things are real: the esplanade of the Bibliothèque François-
+     * Mitterrand is in the survey, 60 m and more across, 22 m over its sunken garden, with its footways on it.
+     */
+    const narrow = bareEarthF(fine, fcols, frows, Math.round(24 / FINE_STEP), fineWet)
+    const reach = new Float32Array(fineGround.length)
+    const REACH = 25
+    for (const b of buildings) {
+      const r = b.ring
+      let a2 = 0, x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        a2 += r[j] * r[i + 1] - r[i] * r[j + 1]
+        x0 = Math.min(x0, r[i]); x1 = Math.max(x1, r[i]); z0 = Math.min(z0, r[i + 1]); z1 = Math.max(z1, r[i + 1])
+      }
+      if (Math.abs(a2) / 2 < 800) continue
+      for (let rr = Math.max(0, Math.floor((z0 - REACH - fz0) / FINE_STEP)); rr <= Math.min(frows - 1, Math.ceil((z1 + REACH - fz0) / FINE_STEP)); rr++) {
+        for (let c = Math.max(0, Math.floor((x0 - REACH - fx0) / FINE_STEP)); c <= Math.min(fcols - 1, Math.ceil((x1 + REACH - fx0) / FINE_STEP)); c++) {
+          const i = rr * fcols + c
+          if (reach[i] >= 1) continue
+          const x = fx0 + c * FINE_STEP, z = fz0 + rr * FINE_STEP
+          let w = 0
+          if (inRing(r, x, z)) w = 1
+          else {
+            let d = Infinity
+            for (let q = 0, j = r.length - 2; q < r.length; j = q, q += 2) {
+              const ax = r[j], az = r[j + 1], dx = r[q] - ax, dz = r[q + 1] - az
+              const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)))
+              d = Math.min(d, Math.hypot(ax + dx * t - x, az + dz * t - z))
+            }
+            w = 1 - d / REACH
+          }
+          if (w > reach[i]) reach[i] = w
+        }
+      }
+    }
+    let n = 0, flattened = 0
+    for (let i = 0; i < fineGround.length; i++) {
+      if (!lidarPosts[i] || fineWet[i]) continue
+      const bump = bare[i] - narrow[i]
+      const k = reach[i] > 0 ? reach[i] * Math.max(0, Math.min(1, (bump - 2) / 2)) : 0
+      if (k > 0.5) flattened++
+      fineGround[i] = bare[i] - bump * k
+      n++
+    }
+    console.log(`  lidar's relief kept: ${n} fine samples unopened, ${flattened} of them buildings the survey took for ground`)
   }
   /*
    * …and where a zone says `lidar: true`, the LIDAR bare earth (tools/lidar/dtm.py → tools/cache/lidar/dtm-<city>.json):
@@ -2493,11 +2539,21 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     if (lawnZones.length) console.log(`  ${lawnZones.length} lawn(s) laid by zone`)
   }
+  // (the Boulevard Circulaire: a narrow lane between two wide pavements, on a viaduct with no pedestrians, read as a promenade)
+  for (const v of streetRegion.bareViaducts ?? []) {
+    const c = proj.toLocal({ lat: v.lat, lon: v.lon })
+    for (const e of kept) {
+      if (!e.bridge || e.foot || !/^(primary|secondary|trunk|tertiary)(_link)?$/.test(e.kind ?? '') || Math.hypot(e.points[0] - c.x, e.points[1] - c.z) > v.radius) continue
+      e.walk = 0.6
+      e.width = Math.max(e.width, 7)
+    }
+  }
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
   // (each way's heights before any bridge lifts them: a bridge found later to be at grade over a cut goes back to them)
   const preBridge = new Map(kept.map((e) => [e.id, e.heights ? [...e.heights] : undefined]))
   const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps,
     straight: new Set(kept.filter((e) => e.bridge && (streetRegion.straightDecks ?? []).includes(e.name ?? '')).map((e) => e.id)),
+    liftAbutments: spec.region === 'paris',
     // (not in Paris, whose tracks are all on viaducts, in cuttings or in tunnels: there the bridge stays at grade and the
     //  rail goes down — owner, 2026-10-30; PARIS_BUGS.md "Sunken rails")
     rails: streetRegion.roadPaint === 'paris' ? [] : rails.filter((r) => !r.bridge && !r.heights && r.kind !== 'tram').map((r) => ({ points: r.points, layer: r.layer })) })
@@ -2898,9 +2954,30 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     if (sunkRails.length) console.log(`  ${lying} of ${sunkRails.length} sunk railways lie in a cutting the ground has`)
   }
+  // (Paris: which is on top at a crossing, from the lidar's ground: tools/rail-levels.ts. Its decks and the short tagged ones are
+  //  straight from bank to bank; a long tagged viaduct is still lifted below)
+  const levelled = new Set<PackedRail>()
+  if (spec.region === 'paris') {
+    let nextRail = 900_000_000_000
+    const got = bridgesOverStreets(rails, kept, groundAt, levelled, () => nextRail++)
+    rails.length = 0
+    rails.push(...got.rails)
+    let straight = 0
+    for (const r of rails) {
+      if (r.kind !== 'rail' || !r.bridge || r.heights) continue
+      const q = unpackPoints(r.points)
+      let L = 0
+      for (let i = 1; i < q.length; i++) L += Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z)
+      if (L >= 120) continue
+      straightDeck(r, groundAt)
+      levelled.add(r)
+      straight++
+    }
+    console.log(`  rail crossings: ${got.spans} untagged bridges over streets, ${straight} short tagged decks straight from bank to bank, ${got.flat} crossings with no bank to stand on`)
+  }
   let railDecks = 0
   for (const r of rails) {
-    if (!r.bridge) continue
+    if (!r.bridge || levelled.has(r)) continue
     const ps = unpackPoints(r.points)
     const cum = [0]
     for (let i = 1; i < ps.length; i++) cum.push(cum[i - 1] + Math.hypot(ps[i].x - ps[i - 1].x, ps[i].z - ps[i - 1].z))
@@ -2929,7 +3006,7 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   {
     const decks2 = rails.filter((r) => r.bridge && r.heights)
-    const ends = decks2.map((r) => { const p = unpackPoints(r.points); return { r, a: p[0], b: p[p.length - 1] } })
+    const ends = decks2.filter((r) => !levelled.has(r)).map((r) => { const p = unpackPoints(r.points); return { r, a: p[0], b: p[p.length - 1] } })
     const joined = (me: PackedRail, q: { x: number; z: number }): boolean => ends.some((o) => o.r !== me
       && (Math.hypot(o.a.x - q.x, o.a.z - q.z) < 5 || Math.hypot(o.b.x - q.x, o.b.z - q.z) < 5))
     let eased = 0
@@ -3413,6 +3490,60 @@ async function bake(spec: CitySpec): Promise<void> {
   const nested = insetNested(buildings)
   buildings.length = 0
   for (const b of nested) buildings.push(b)
+  /*
+   * APUR'S PUBLIC BUILDINGS OF THE OLD CITY (its `b_ee`), whatever OSM calls them: most of a government quarter is `building=yes`, and
+   * had shops, balconies and shutters. No shops, which is what asks for the government's front (city/facade.ts); and the old hôtels
+   * among them in stone, not in the Marais's plaster and shutters.
+   */
+  if (recordOf && spec.region === 'paris') {
+    let dressed = 0
+    for (const b of buildings) {
+      if ((b.minHeight ?? 0) > 2 || !/^(haussmann|marais|brick)$/.test(b.style ?? '')) continue
+      const rec = recordOf(unpackPoints(b.ring).map((q) => proj.toLatLon(q))) as { use?: string; construction?: string } | null
+      if (rec?.use !== 'facility' || Number(rec.construction) > 5) continue
+      b.noShops = true
+      if (b.style === 'marais') b.style = 'haussmann'
+      dressed++
+    }
+    console.log(`  ${dressed} public buildings of the old city: no shops, balconies or shutters`)
+  }
+  /*
+   * A SLAB IN THE AIR inside an outline that has parts is one of them, whatever OSM's relation says: four of the Panthéon's parapets
+   * (1459134825…) are in no relation, so when its model took the outline away they stayed, hanging over the roof (owner, 2026-10-30:
+   * "some random floating stuff near the roof").
+   */
+  {
+    // (the outline itself is gone by now: what stands for it is its parts on the ground, within a metre or two of the slab)
+    const CELL = 50
+    const grounded = new Map<string, PackedBuilding[]>()
+    for (const b of buildings) {
+      if (b.partOf === undefined || (b.minHeight ?? 0) > 2) continue
+      const keys = new Set<string>()
+      for (let i = 0; i < b.ring.length; i += 2) keys.add(`${Math.floor(b.ring[i] / CELL)},${Math.floor(b.ring[i + 1] / CELL)}`)
+      for (const k of keys) (grounded.get(k) ?? grounded.set(k, []).get(k)!).push(b)
+    }
+    let adopted = 0
+    for (const b of buildings) {
+      if (b.partOf !== undefined || (b.minHeight ?? 0) <= 2) continue
+      let cx = 0, cz = 0
+      for (let i = 0; i < b.ring.length; i += 2) { cx += b.ring[i]; cz += b.ring[i + 1] }
+      cx /= b.ring.length / 2; cz /= b.ring.length / 2
+      const inside = (r: number[], x: number, z: number): boolean => {
+        let o = false
+        for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+          if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+        }
+        return o
+      }
+      const near = new Set<PackedBuilding>()
+      const gx = Math.floor(cx / CELL), gz = Math.floor(cz / CELL)
+      for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) for (const o of grounded.get(`${gx + dx},${gz + dz}`) ?? []) near.add(o)
+      // a slab is thin and may ring a court: inside a part at its middle, or at any of its own corners
+      const host = [...near].find((o) => inside(o.ring, cx, cz) || (() => { for (let i = 0; i < b.ring.length; i += 2) if (inside(o.ring, b.ring[i], b.ring[i + 1])) return true; return false })())
+      if (host) { b.partOf = host.partOf; adopted++ }
+    }
+    if (adopted) console.log(`  ${adopted} floating slabs adopted by the outline they hang inside`)
+  }
   /*
    * A BUILDING IN THE AIR with nothing under it (BUGS.md #279, 2026-10-16): OSM raises a whole building by
    * `building:min_level` where its shop floor is a separate way — or is not mapped at all, and then the apartments over

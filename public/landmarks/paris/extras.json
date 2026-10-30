@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Barrière d'Enfer: the Catacombs' pavilion",
+    "procedural": "barriereEnfer",
+    "osm": [
+      "way/79628544"
+    ],
+    "front": 4,
+    "height": 13,
+    "note": "extras.ts: one of Ledoux's twin customs pavilions of the 1780s on the Place Denfert-Rochereau (OSM way/79628544, Wikidata Q2885653). Drawn from general knowledge of the pavilions, not from a survey: check against a photograph. Faces the Lion de Belfort, by calculation."
+  },
+  {
+    "name": "Musée de la Libération de Paris",
+    "procedural": "barriereEnfer",
+    "osm": [
+      "way/79633987",
+      "way/1409491818",
+      "way/1409491819"
+    ],
+    "front": 61,
+    "height": 13,
+    "note": "extras.ts: the other Ledoux pavilion (OSM way/79633987, tagged a museum). Drawn from general knowledge of the pavilions, not from a survey: check against a photograph. Faces the Lion de Belfort, by calculation."
+  },
+  {
+    "name": "Fontaine de la place Gambetta",
+    "procedural": "fontaineGambetta",
+    "lat": 48.864903,
+    "lon": 2.398487,
+    "size": [
+      22,
+      22
+    ],
+    "height": 12,
+    "shadow": false,
+    "note": "extras.ts: from the owner's street view, 2026-10-30, at OSM's fountain and sculpture nodes. OSM gives it no name; this is a description of where it stands, not its title."
+  },
+  {
+    "name": "Bibliothèque François-Mitterrand",
+    "procedural": "bnfEsplanade",
+    "osm": [
+      "way/73247228"
+    ],
+    "lat": 48.83362,
+    "lon": 2.37572,
+    "size": [
+      330,
+      170
+    ],
+    "front": 50,
+    "height": 22,
+    "shadow": false,
+    "sign": false,
+    "note": "extras.ts: the timber esplanade and glass cloister of Dominique Perrault's library (1996). The lidar has the deck and the sunken garden as ground, so nothing here makes the hill; the four towers are in museums.json. way/73247228 was the kit's generic block."
+  },
+  {
+    "name": "École de Droit (Université Paris 1 Panthéon-Sorbonne)",
+    "procedural": "ecoleDeDroit",
+    "osm": [
+      "relation/10997171",
+      "relation/20280993"
+    ],
+    "lat": 48.84706,
+    "lon": 2.34377,
+    "size": [
+      81.4,
+      53.8
+    ],
+    "front": 52.5,
+    "height": 22,
+    "note": "extras.ts: Soufflot's law school on the Place du Panthéon, the Mairie du 5e's model mirrored across the Rue Soufflot, since the mairie was built to its elevation. Plan and heights are the mairie's, not surveyed here: check the fit in the city."
+  }
+]

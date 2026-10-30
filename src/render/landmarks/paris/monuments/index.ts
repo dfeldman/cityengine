@@ -37,21 +37,37 @@ import { saintJeanMontmartre } from './saint-jean-montmartre.ts'
 import { arenesLutece } from './arenes-lutece.ts'
 import { fontaineStravinsky } from './fontaine-stravinsky.ts'
 import { saintAlexandreNevsky } from './saint-alexandre-nevsky.ts'
+import { fontaineDuPalmier } from './fontaine-palmier.ts'
+import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
+import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
+import { fontaineChateauEau } from './fontaine-chateau-eau.ts'
+import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
+import { araigneeRouge, cnitVault, domeImax, lePouce, quatreTemps, tourFirst } from './la-defense.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  araigneeRouge,
   arenesLutece,
   carrouselArch,
   chapelleExpiatoire,
   chapelleSalpetriere,
+  cnitVault,
+  domeImax,
+  fontaineChateauEau,
+  fontaineDuPalmier,
+  fontaineQuatreSaisons,
+  fontaineSaintSulpice,
   fontaineStravinsky,
   fontaineVarsovie,
   grandeArche,
   grandeMosquee,
   jeanSansPeur,
   laTrinite,
+  lePouce,
   lionDeBelfort,
   memorialDeportation,
   memorialShoah,
+  monumentMoncey,
+  monumentPasteur,
   montparnasseFull,
   moulinGalette,
   moulinRadet,
@@ -59,6 +75,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   pantheonFull,
   porteSaintDenis,
   porteSaintMartin,
+  quatreTemps,
   sacreCoeurFull,
   sacreCoeurTerraces,
   saintAlexandreNevsky,
@@ -79,9 +96,12 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   saintSeverin,
   saintSulpice,
   saintVincentDePaul,
+  statueLiberte,
   synagogueVictoire,
+  tourFirst,
   triompheRepublique,
   troneColumnPhilippeAuguste,
   troneColumnSaintLouis,
   valDeGrace,
+  washingtonIena,
 }

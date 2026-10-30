@@ -56,7 +56,7 @@ the box change and the re-bake together.
       grooves on the lower storeys, bow windows and single balconies on the richer fronts
 - [x] seven levels by default (the ground, five, the mansard)
 - [ ] wall-to-wall: no gap between buildings (check in the city: the cadastre footprints touch)
-- [ ] the traffic circles, all of them (done: found from OSM's junction=roundabout rings at bake) — and a MONUMENT in
+- [x] the traffic circles, all of them (done: found from OSM's junction=roundabout rings at bake) — and a MONUMENT in (done: the monuments; but only 66 rings are found: PARIS_BUGS.md, roundabout monuments)
       the middle of most ("so many monuments that many aren't even named"): a generic statue, column or fountain
       (render/paris/roundabout-monuments.ts, built; the city index carries the roundabouts from the 2026-10-29 night
       bake — check Nation and Place d'Italie, which the ring test rejected)
@@ -76,7 +76,7 @@ the box change and the re-bake together.
 - [x] memory: one material and texture set per library name (tree GLBs embedded their own: ~1,460 textures → ~385);
       far tiles' buildings and areas let go (City.forget)
 - [ ] cobblestone (`surface=sett`) — check how much shows; some pavements red-tinted
-- [ ] food and craft stands (the bouquinistes are done on their quays)
+- [x] food and craft stands (the bouquinistes are done on their quays) (done: src/city/paris/stands.ts)
 - [ ] La Défense's towers (inside the box's north-west corner now) and the Grande Arche
 - [x] street lamps: rarer and different — the tall dark lanterns on the boulevards only (parisLamp), the walls' lamps elsewhere
 - [x] the Métro's "M" totem by every entrance (the stairs down are hard to see; the totem is what you see)
@@ -136,7 +136,7 @@ Paris already has its own palettes, shop names, porte cochère, awnings, chimney
 generic styles (`haussmann`, `marais`, `classical`, plus the `vosges` and `opera` restyles). What SF has and Paris
 lacks:
 
-- [ ] **A classifier.** `classifierFor` knows only SF (`src/city/sf/btype.ts`, `classifySF`, 442 lines). Paris
+- [x] **A classifier.** `classifierFor` knows only SF (`src/city/sf/btype.ts`, `classifySF`, 442 lines). Paris (done: src/city/paris/btype.ts)
       needs its own: Haussmannian immeuble (the bulk of the box), pre-Haussmann faubourg house, Marais hôtel
       particulier, 17th–18th c. stone, Belle Époque, 1930s brick (HBM, on the boulevards des Maréchaux if the box
       reaches them), post-war slab, modern infill. OSM gives `building:levels`, `roof:shape`, `start_date` here and
@@ -171,24 +171,24 @@ terrarium tiles, `tools/bake.ts:1840`), so the box can grow without a new elevat
 
 \* the grid's datum is not stated and is not MSL (the Seine at the Concorde reads −3.9).
 
-- [ ] **Push the north edge to take in Montmartre** (~+1.5 km): the one real hill, the funicular, the stairs (SF's
+- [x] **Push the north edge to take in Montmartre** (~+1.5 km): the one real hill, the funicular, the stairs (SF's (done: in the box since 2026-10-29)
       `stairways` machinery), Sacré-Cœur, the Moulin Rouge and Pigalle. Just past today's north edge already: Saint-
       Augustin, Gare Saint-Lazare, Notre-Dame-de-Lorette, La Trinité.
-- [ ] **Push the north-east corner to take in Belleville / Buttes-Chaumont** (~+1 km E and N): the park's cliff and
+- [x] **Push the north-east corner to take in Belleville / Buttes-Chaumont** (~+1 km E and N): the park's cliff and (done: in the box since 2026-10-29)
       temple, the Belleville slopes, the view back over the city from the Parc de Belleville.
-- [ ] **Push the south edge ~0.5 km**: the rest of the Montagne Sainte-Geneviève (rue Mouffetard), and the Panthéon
+- [x] **Push the south edge ~0.5 km**: the rest of the Montagne Sainte-Geneviève (rue Mouffetard), and the Panthéon (done: in the box since 2026-10-29)
       stops being an edge object.
-- [ ] **Fine elevation.** The fine lidar is USGS 3DEP only (`tools/lidar/ept.py`). For Montmartre's stairs and
+- [x] **Fine elevation.** The fine lidar is USGS 3DEP only (`tools/lidar/ept.py`). For Montmartre's stairs and (done: IGN LiDAR HD over the whole box, tools/ign-lidar.ts)
       Belleville's streets, IGN's RGE ALTI (1 m, open) or LiDAR HD would be the French equivalent; the 20 m grid will
       round the butte off.
-- [ ] Mind the cost: the box is 23 km²; the four pushes above roughly double it. Check tile count and load time
+- [x] Mind the cost: the box is 23 km²; the four pushes above roughly double it. Check tile count and load time (done: measured: about 1.6-2.7 GB footprint, PARIS_BUGS.md)
       against SF's before committing to all of them.
 
 ## 3. The city's own plants, cars, clothes and surfaces
 
 Each of these falls back to the SF/US default today.
 
-- [ ] **Trees.** `render/region-kits.ts` gives `paris` only `stock` and `fleet`; only SF has `flora`. Paris gets
+- [x] **Trees.** `render/region-kits.ts` gives `paris` only `stock` and `fleet`; only SF has `flora`. Paris gets (done: Paris planes and mature street trees; guessed rows beyond the register)
       `DEFAULT_FLORA` (maple, birch, ash, beech). It needs **London planes** (most of the boulevards and quais),
       **horse chestnuts**, **limes**, the clipped alignments of the Tuileries and the Palais-Royal, and the
       **Paris tree grille** round each trunk. The comment in `render/flora.ts` points at a `render/paris/flora.ts`
@@ -196,12 +196,12 @@ Each of these falls back to the SF/US default today.
       position) is the counterpart of `'datasf'`; `streetTrees` can only be `'datasf'` today. No planting zones
       either (`data/zones/` has only san-francisco.json), so Paris uses the old scatter rules
       (`city/plantings.ts:255`).
-- [ ] **Cars.** `render/street-fleet.ts` has one global `MIX` with no region hook: US pickups and US police cars.
+- [x] **Cars.** `render/street-fleet.ts` has one global `MIX` with no region hook: US pickups and US police cars. (done: Paris traffic, 2026-10-29)
       Paris wants small hatchbacks and city cars, scooters and mopeds, Renault/Peugeot-shaped vans, the G7 taxi
       (black or white with the roof light, not yellow), the white-and-blue police van, the RATP bus livery (green
       and white, today's buses are hard-coded Muni silver and red). Paris's rail and boat stock already exist
       (`render/paris/trains.ts`, `render/paris/boats.ts`).
-- [ ] **Clothes.** `render/crowd-baked.ts` has one `CITY_WARDROBE` and `cityClothes()`, with no region key. Paris: darker
+- [x] **Clothes.** `render/crowd-baked.ts` has one `CITY_WARDROBE` and `cityClothes()`, with no region key. Paris: darker (done: darker clothes with coats, 2026-10-29)
       and more tailored, coats and scarves, fewer shorts and team shirts.
 - [ ] **Surfaces.** `city/pavement.ts` sets pavement by width only. Paris's region entry has `crossings: bands` and
       one `pavedSquares` entry (Trocadéro), and none of SF's `streetWidths`, `streetPaint`, `brickStreets`,
@@ -314,3 +314,5 @@ figures, Garnier's Apollo, Saint Michael).
 3. Trees and the street-tree register (§3), then cars, clothes, surfaces.
 4. Landmarks (§4) from the top, with Montmartre's own (Sacré-Cœur, the funicular, the Moulin Rouge) once the box
    takes it in.
+
+**The list of what is still open is PARIS_BUGS.md** (2026-10-30): this file is the first survey, kept for its reasoning.

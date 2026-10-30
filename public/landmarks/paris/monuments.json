@@ -238,7 +238,31 @@
     "name": "Église Saint-Eustache",
     "procedural": "saintEustache",
     "osm": [
-      "way/53762963"
+      "way/53762963",
+      "way/273063678",
+      "way/273063679",
+      "way/273063680",
+      "way/273063681",
+      "way/273063682",
+      "way/273063683",
+      "way/273063684",
+      "way/273063685",
+      "way/273063686",
+      "way/273063687",
+      "way/273063689",
+      "way/273063690",
+      "way/273063691",
+      "way/273063692",
+      "way/273063693",
+      "way/273063694",
+      "way/273063695",
+      "way/273063696",
+      "way/273063697",
+      "way/273063698",
+      "way/273063699",
+      "way/273063700",
+      "way/273063702",
+      "way/273063703"
     ],
     "lat": 48.863394,
     "lon": 2.345198,
@@ -270,7 +294,10 @@
     "name": "Église Saint-Roch",
     "procedural": "saintRoch",
     "osm": [
-      "way/42722202"
+      "way/42722202",
+      "way/1197114667",
+      "way/1197114668",
+      "way/1197114669"
     ],
     "lat": 48.865415,
     "lon": 2.332673,
@@ -359,7 +386,7 @@
     "rotateDeg": 103.7,
     "size": [
       34.7,
-      76.0
+      76
     ],
     "height": 53,
     "note": "The Renaissance-fronted Gothic church beside the Panthéon. Placed on OSM way 55343672's box turned to its axis (osmium, 2026-10-29), the front (−z) on the Place Sainte-Geneviève at bearing 283.7, +x south; the way and its ~80 building:parts nested under it (the front drawn by the city as a mansarded block, the belfry as a plain shaft) are replaced. Heights follow the parts: nave ridge 34.4, the belfry tower 46 and its dome and lantern to 53, the stair turret's cone 48. The church's south annex (way 255080058, building=church, inside the footprint along the south aisle and choir) goes with it; the Chapelle des Catéchismes (way 255080046) is OSM's and stays."
@@ -658,7 +685,7 @@
     "lat": 48.85491,
     "lon": 2.356056,
     "size": [
-      23.0,
+      23,
       44.1
     ],
     "height": 19.2,
@@ -752,7 +779,7 @@
     "lat": 48.874774,
     "lon": 2.358309,
     "size": [
-      48.0,
+      48,
       70.5
     ],
     "height": 53,
@@ -792,5 +819,272 @@
     "front": 134,
     "sign": false,
     "note": "The long basin of the Jardins du Trocadéro (1937). Centred on OSM way 79738429's box (natural=water; osmium, 2026-10-30), −z down the axis at bearing 134; the kerb and water are its ring, without its side channels, and follow the ground. The twenty cannons, side jets and plumes are placed by their reported pattern, not surveyed, and stand still. The size is the pool, not the head's cross-basin, so that it does not clear the garden's trees either side."
+  },
+  {
+    "name": "Fontaine du Palmier",
+    "procedural": "fontaineDuPalmier",
+    "kind": "fountain",
+    "osm": [
+      "way/261092850"
+    ],
+    "lat": 48.857501,
+    "lon": 2.347286,
+    "size": [
+      16,
+      16
+    ],
+    "height": 21.6,
+    "front": 203,
+    "sign": false,
+    "note": "The column of 1808 and its palm-leaf capital on the Place du Châtelet, the gilt Victory, Boizot's four allegories, the four sphinxes (Wikipedia fr). Centred on OSM way 261092850 (building=yes, 9.9 × 10 m, the upper basin), which is replaced; the frame along that way's edges at bearing 23/113. Four-square, so `front` matters little. Heights and the kerb's radius by proportion from a Commons elevation scaled on OSM's 10 m: the reference gave no height in metres."
+  },
+  {
+    "name": "Fontaine Saint-Sulpice",
+    "procedural": "fontaineSaintSulpice",
+    "kind": "fountain",
+    "lat": 48.85087,
+    "lon": 2.333278,
+    "size": [
+      22,
+      22
+    ],
+    "height": 12.5,
+    "front": 352,
+    "sign": false,
+    "note": "Visconti's fountain of the four bishops on the Place Saint-Sulpice: three octagonal basins, four lions, four vases, the square shrine 12 m high with Bossuet to the north (Wikipedia fr). Centred on OSM way 40068036's octagonal kerb (amenity=fountain, 22 m across its flats); front −z north, along the flat at bearing 352. Tiers and proportions from two Commons photographs."
+  },
+  {
+    "name": "Fontaine des Quatre-Saisons",
+    "procedural": "fontaineQuatreSaisons",
+    "kind": "fountain",
+    "osm": [
+      "way/64952163"
+    ],
+    "lat": 48.854688,
+    "lon": 2.325099,
+    "size": [
+      29.2,
+      9.2
+    ],
+    "height": 11.3,
+    "front": 33,
+    "sign": false,
+    "note": "Bouchardon's palace front at 57–59 rue de Grenelle. OSM way 64952163 (an unnamed building=yes, replaced) is the arc of the wall itself, 3 m deep, and the node 1687173492 carries the name; the wall's arc (radius 22 m, concave to the street) and the block on its centre are measured from that way and mirrored about the block, because the west half is mapped only in part in its neighbours' outlines. Front −z faces the street at bearing 33 (osmium: the wall is on the street's south side). Wikipedia fr gives about ten metres high and nearly twenty wide; OSM's outline reads about 29 wide. Elevation from three Commons photographs."
+  },
+  {
+    "name": "Fontaine du Château-d'Eau",
+    "procedural": "fontaineChateauEau",
+    "kind": "fountain",
+    "lat": 48.839597,
+    "lon": 2.395795,
+    "size": [
+      30.4,
+      30.4
+    ],
+    "height": 12.2,
+    "sign": false,
+    "note": "Davioud's fountain, moved in 1880 from what is now the Place de la République to the Place Félix-Éboué (Wikipedia fr). Centred on OSM way 78008833 (natural=water, 29.7 m across). Steps, tazzas and the pairs of bronze lions on their piers from a Commons photograph and an old print: the number and placing of the lions is read from those, not a text."
+  },
+  {
+    "name": "Statue de la Liberté — Île aux Cygnes",
+    "procedural": "statueLiberte",
+    "kind": "statue",
+    "lat": 48.850024,
+    "lon": 2.279701,
+    "size": [
+      7.6,
+      7.6
+    ],
+    "height": 21.2,
+    "front": 228,
+    "sign": false,
+    "note": "The bronze at the downstream tip of the island. OSM node 465294103 (height 11.5). Sources agree she was turned toward the west in 1937; the bearing, 228, is taken along the island's own footway, not measured. The figure, the gilt flame and the tablet's two dates from a Commons photograph; the pedestal by eye, no source for its height found."
+  },
+  {
+    "name": "Monument du Maréchal Moncey",
+    "procedural": "monumentMoncey",
+    "kind": "statue",
+    "lat": 48.883521,
+    "lon": 2.327432,
+    "size": [
+      7.3,
+      7.3
+    ],
+    "height": 14,
+    "front": 338,
+    "sign": false,
+    "note": "Doublemard's bronze on Guillaume's pedestal (1869), 14 m (Wikipedia fr), the middle of the Place de Clichy. Centred on OSM way 68247750 (historic=memorial, round, 7.3 m). Group and pedestal from a Commons photograph. The bearing is a guess, up the Avenue de Clichy: no source for which way the group faces was found."
+  },
+  {
+    "name": "Monument à Pasteur",
+    "procedural": "monumentPasteur",
+    "kind": "statue",
+    "lat": 48.847272,
+    "lon": 2.311622,
+    "size": [
+      58,
+      58
+    ],
+    "height": 12.4,
+    "front": 184,
+    "sign": false,
+    "note": "Falguière's monument, finished by Peter and Dubois, on the Place de Breteuil (Wikipedia fr). Centred on OSM way 238841686, the square of its plinth, and standing in the ring of 39 m the bake found, so the generic place monument gives way. The lawn's radius is the ring's less the road, as in render/paris/roundabout-monuments.ts. Figures placed roughly, from two Commons photographs. Bearing 184 read off one of them, not confirmed."
+  },
+  {
+    "name": "George Washington — Place d'Iéna",
+    "procedural": "washingtonIena",
+    "kind": "statue",
+    "lat": 48.864736,
+    "lon": 2.293906,
+    "size": [
+      24,
+      24
+    ],
+    "height": 12.9,
+    "front": 23,
+    "sign": false,
+    "note": "French and Potter's bronze, dedicated 3 July 1900, the sword raised. OSM node 570349020, at the centre of the ring of 21 m the bake found, so the generic place monument gives way. Pedestal and pose from a 1913 autochrome on Commons; the bearing, up the Avenue d'Iéna, is read from the same picture's background and not confirmed."
+  },
+  {
+    "name": "CNIT",
+    "procedural": "cnitVault",
+    "kind": "monument",
+    "osm": [
+      "relation/3071527",
+      "relation/3071528",
+      "relation/3071529",
+      "relation/3071530",
+      "relation/3071531",
+      "relation/3071532",
+      "relation/3071533",
+      "way/628583334",
+      "way/628760503"
+    ],
+    "lat": 48.892985,
+    "lon": 2.239677,
+    "size": [
+      215.4,
+      187.8
+    ],
+    "height": 46.3,
+    "front": 206,
+    "note": "The vault of 1958, three glazed arches on a triangle of 215 m (OSM relation 3071527 and its parts, all replaced) and 46.3 m at the crown (Wikipedia fr; OSM says 50). Front −z toward the Quatre Temps, along the edge at bearing 116. The rim's curve is by eye from a 1991 Commons photograph; the shell between is an interpolation."
+  },
+  {
+    "name": "Tour First",
+    "procedural": "tourFirst",
+    "kind": "monument",
+    "osm": [
+      "way/82466977",
+      "way/226254481",
+      "way/226254482",
+      "way/226254483",
+      "way/226254484",
+      "way/227324158",
+      "way/227324159",
+      "way/227324160",
+      "way/227353363",
+      "way/227353364",
+      "way/227353365"
+    ],
+    "lat": 48.888815,
+    "lon": 2.251592,
+    "size": [
+      75.2,
+      69.4
+    ],
+    "height": 231,
+    "front": 206,
+    "note": "A simple model for the skyline: 225 m to the roof and 231 to the spike (Wikipedia fr), OSM way 82466977's outline and its colour. Its OSM building:parts, whose heights run to 259 m, are replaced and not followed. The stepped crown is from a Commons skyline photograph and is only an approximation."
+  },
+  {
+    "name": "Les 4 Temps",
+    "procedural": "quatreTemps",
+    "kind": "monument",
+    "osm": [
+      "way/396802664",
+      "way/68086778",
+      "way/68850359",
+      "way/636957676",
+      "way/68086777",
+      "way/68086784",
+      "way/68086785",
+      "way/68086789",
+      "way/68086790",
+      "way/68852382",
+      "way/68852506",
+      "way/68852668",
+      "way/68853332",
+      "way/638154286",
+      "way/638154287",
+      "way/638154288",
+      "way/638154289",
+      "way/638154290",
+      "way/21145238",
+      "way/250145895",
+      "way/250145896"
+    ],
+    "lat": 48.890542,
+    "lon": 2.237526,
+    "size": [
+      526.6,
+      204.6
+    ],
+    "height": 24,
+    "front": 206,
+    "note": "The podium of the shopping centre, OSM way 396802664's outline. The steps to Le Dôme where OSM's wide flights are (lat 48.89142, lon 2.2365), the porch from a Commons photograph of 2013. Its roof's height is by eye over the parvis: no figure was found, and most of the centre is under the slab."
+  },
+  {
+    "name": "Dôme Imax",
+    "procedural": "domeImax",
+    "kind": "monument",
+    "osm": [
+      "way/186981683"
+    ],
+    "lat": 48.891298,
+    "lon": 2.235711,
+    "size": [
+      38,
+      38
+    ],
+    "height": 27,
+    "sign": false,
+    "note": "The glass ball by the Grande Arche: OSM part way 186981683, named, 38 m across and height 27. Its grid of panes from the same Commons photograph as Le Dôme's."
+  },
+  {
+    "name": "L'Araignée Rouge",
+    "procedural": "araigneeRouge",
+    "kind": "statue",
+    "osm": [
+      "way/186981704"
+    ],
+    "lat": 48.891306,
+    "lon": 2.241611,
+    "size": [
+      25,
+      17
+    ],
+    "height": 15,
+    "front": 206,
+    "sign": false,
+    "note": "Calder's Grand Stabile Rouge: OSM way 186981704 (height 15), which is replaced. Its silhouette traced from one Commons photograph; the cross plates from memory. Which side of it faces bearing 206 was not checked against the outline."
+  },
+  {
+    "name": "Le Pouce",
+    "procedural": "lePouce",
+    "kind": "statue",
+    "osm": [
+      "way/186981693"
+    ],
+    "lat": 48.89355,
+    "lon": 2.238749,
+    "size": [
+      4.5,
+      4.5
+    ],
+    "height": 12.5,
+    "front": 206,
+    "sign": false,
+    "note": "César's bronze thumb, height 12 and 4.4 × 4.5 m from OSM way 186981693, which is replaced. No usable photograph was fetched: the shape is simply a thumb's, and the bearing, nail side toward 206, is a guess."
   }
 ]

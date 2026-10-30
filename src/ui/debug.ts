@@ -12,7 +12,7 @@
  *   C  copy — the latitude and longitude of whatever the camera is looking at (the rider, or the frozen
  *      focus) go on the clipboard as "lat, lon", which pastes straight into Google Maps for comparing the
  *      render with reality. The toast also names the street edge, which is what the shot harness takes
- *      (`--edge=`) to come back to exactly this spot.
+ *      (`--edge=`) to come back to exactly this spot, what is in the middle of the view, and the nearest landmarks.
  *
  *   J  paths — the ride graph drawn on the ground: every path the rider can take, each junction where there
  *      is a choice, and the exits of the next one (render/pathmap.ts).
@@ -223,11 +223,11 @@ export class DebugPanel {
       : 'riding')
   }
 
-  toast(text: string): void {
+  toast(text: string, ms = 3200): void {
     this.toastEl.textContent = text
     this.toastEl.style.opacity = '1'
     clearTimeout(this.timer)
-    this.timer = window.setTimeout(() => { this.toastEl.style.opacity = '0' }, 3200)
+    this.timer = window.setTimeout(() => { this.toastEl.style.opacity = '0' }, ms)
   }
 }
 

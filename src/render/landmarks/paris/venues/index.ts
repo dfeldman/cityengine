@@ -7,6 +7,16 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { accorArena } from './accor-arena.ts'
+import { halleCarpentier } from './carpentier.ts'
+import { centQuatre } from './cent-quatre.ts'
+import { stadeCharlety } from './charlety.ts'
+import { stadeCoubertin } from './coubertin.ts'
+import { domeParis } from './dome-paris.ts'
+import { piscineMolitor } from './molitor.ts'
+import { palaisCongres } from './palais-congres.ts'
+import { plenitudeArena } from './plenitude-arena.ts'
+import { seineMusicale } from './seine-musicale.ts'
+import { piscineVallerey } from './vallerey.ts'
 import { jeanBouin } from './jean-bouin.ts'
 import { parcDesPrinces } from './parc-des-princes.ts'
 import { chateauBagatelle, CITROEN, rotondeChartres, sibylleTemple } from './parks.ts'
@@ -46,4 +56,14 @@ export const PARIS_VENUES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   longchampGrandstand,
   ...AUTEUIL,
   acclimatationEntrance,
+  stadeCoubertin,
+  halleCarpentier,
+  domeParis,
+  stadeCharlety,
+  plenitudeArena,
+  piscineMolitor,
+  piscineVallerey,
+  seineMusicale,
+  palaisCongres,
+  centQuatre,
 }

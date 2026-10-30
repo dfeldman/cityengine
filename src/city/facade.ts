@@ -760,7 +760,15 @@ export function planFacade(
   const y = storeys[storeys.length - 1].y1
 
   // (its own stream, so the draws above — and every building of the styles that do not dress — stay as they were)
-  const drawn = osm.noShops ? undefined : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
+  /*
+   * THE GOVERNMENT'S HAUSSMANN (owner, 2026-10-30, the Banque de France's Rue Croix-des-Petits-Champs: "haussmann-ish facades, but
+   * with no balconies, shutters, or storefronts - just miles of blank walls"): the same stone and the same rhythm, its base heavily
+   * rusticated, its windows plain in their frames, not a rail or a plant on it, for the whole length of the street.
+   */
+  const drawn = osm.noShops
+    ? (styleId === 'haussmann' ? { dress: { ...NO_DRESS, paris: { balconies: [], centre: [], railings: 'none', hoods: [], deep: false, consoles: false, surrounds: true,
+        modillions: false, door: '#141516', plants: 0, rustic: 2, oriel: false, single: [] } as ParisDress } } : undefined)
+    : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
   // (a Haussmann front's balconies are its own: ParisDress)
   const balconyLevels = new Set(drawn?.dress.paris?.balconies ?? st.balcony?.levels ?? [])
   // (a label's answers win over the draws, and dress a style that has no dresser of its own)

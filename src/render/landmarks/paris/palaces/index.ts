@@ -24,6 +24,7 @@ import { luxembourgPalace } from './luxembourg.ts'
 import { louxor } from './louxor.ts'
 import { lutetia } from './lutetia.ts'
 import { maisonRadio } from './maison-radio.ts'
+import { marcheSaintGermain } from './marche-saint-germain.ts'
 import { medicisFountain } from './medicis-fountain.ts'
 import { moulinRouge } from './moulin-rouge.ts'
 import { observatoire } from './observatoire.ts'
@@ -35,6 +36,18 @@ import { palaisRoyal } from './palais-royal.ts'
 import { theatreChampsElysees } from './champs-elysees-theatre.ts'
 import { tokyoParvis } from './tokyo.ts'
 import { tribunalCommerce } from './tribunal-commerce.ts'
+import { carreauTemple } from './carreau-temple.ts'
+import { halleFreyssinet } from './halle-freyssinet.ts'
+import { porteDoree } from './porte-doree.ts'
+import { palaisFemme } from './palais-femme.ts'
+import { bhv } from './bhv.ts'
+import { posteLouvre } from './poste-louvre.ts'
+import { drouot } from './drouot.ts'
+import { courComptes } from './cour-comptes.ts'
+import { decouverte } from './decouverte.ts'
+import { rochechouart } from './rochechouart.ts'
+import { hotelToulouse } from './hotel-toulouse.ts'
+import { grandsMoulins } from './grands-moulins.ts'
 
 export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   bataclan,
@@ -57,6 +70,7 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   louxor,
   lutetia,
   maisonRadio,
+  marcheSaintGermain,
   medicisFountain,
   moulinRouge,
   observatoire,
@@ -69,4 +83,16 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   theatreDeLaVille,
   tokyoParvis,
   tribunalCommerce,
+  carreauTemple,
+  halleFreyssinet,
+  porteDoree,
+  palaisFemme,
+  bhv,
+  posteLouvre,
+  drouot,
+  courComptes,
+  decouverte,
+  rochechouart,
+  hotelToulouse,
+  grandsMoulins,
 }

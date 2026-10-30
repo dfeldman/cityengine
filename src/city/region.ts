@@ -143,6 +143,8 @@ export interface Region {
   straightDecks?: string[]
   /** the named foot bridges are ridden, with the footways joining them to the bike network (tools/bridges.ts footBridgeLinks) */
   rideFootBridges?: boolean
+  /** where a road on a bridge is a traffic viaduct, no pavements on it and a real width (La Défense's Boulevard Circulaire) */
+  bareViaducts?: { lat: number; lon: number; radius: number }[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -258,6 +260,7 @@ export function region(id: string | undefined): Region {
     atGrade: own?.atGrade ?? base.atGrade,
     straightDecks: own?.straightDecks ?? base.straightDecks,
     rideFootBridges: own?.rideFootBridges ?? base.rideFootBridges,
+    bareViaducts: own?.bareViaducts ?? base.bareViaducts,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,

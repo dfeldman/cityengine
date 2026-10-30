@@ -1079,9 +1079,12 @@ def ground_shopfront(size, rnd, accent, words):
     # a trade's word on one fascia in three; the rest a plain painted board (owner, 2026-10-30: "we dont show so many signs
     # and make it a bit random" — and the real shops' names, src/render/signs.ts, go on these boards without a painted word
     # under them)
+    # (no painted word at all, 2026-10-30, the owner: "we also overwrite the built-in signs on the facade generator with POI signs ...
+    # it is weird to have two overlapping signs". The board's own words are the invented and the real names, signs.ts. The draws
+    # stay in step, so nothing else on the atlas moves.)
     if words and rnd.random() < 0.34:
-        _sign(d, (x0 - 4, int(size * 0.06), x1 + 4, fascia_y), rnd, rnd.choice(AWNING), words)
-    else:
+        rnd.choice(AWNING); rnd.choice(words)
+    if True:
         board = rnd.choice(AWNING + [(34, 36, 40), (24, 46, 38), (92, 30, 34), (40, 44, 70)])
         rect(d, [x0 - 4, int(size * 0.06), x1 + 4, fascia_y], board, KEEP)
         line(d, [(x0 - 4, fascia_y - 2), (x1 + 4, fascia_y - 2)], shade(board, 1.4), KEEP, 2)
@@ -1297,8 +1300,7 @@ def ground_woodfront(size, rnd, accent):
     rect(d, [x0 + 8, top + 6, x1 - 8, fy], shade(wood, 1.15), KEEP)              # the fascia board
     # the Marais front: French trades only, on one board in three — the rest left plain for the real shop's own name
     if rnd.random() < 0.34:
-        word = rnd.choice(SIGN_WORDS_FR)
-        _word(img, d, (x0 + 22, top + 8, x1 - 22, fy - 2), word, (226, 206, 150))          # gilt letters
+        rnd.choice(SIGN_WORDS_FR)   # (no painted word: see ground_shopfront)
     for px0 in (x0, x1 - 14):                                                     # panelled pilasters
         rect(d, [px0, top, px0 + 14, bottom], shade(wood, 1.2), KEEP)
         d.rectangle([px0 + 3, fy + 8, px0 + 11, bottom - 8], outline=(*shade(wood, 0.8), KEEP), width=1)

@@ -18,6 +18,7 @@ import { PARIS_MONUMENTS } from './paris/monuments/index.ts'
 import { PARIS_VENUES } from './paris/venues/index.ts'
 import { PARIS_MUSEUMS } from './paris/museums/index.ts'
 import { parisCivic, type KitArgs } from './paris/kit/recipes.ts'
+import { barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal } from './paris/extras.ts'
 import { colonneDeJuillet } from './paris/colonne-de-juillet.ts'
 import { pompidou } from './paris/pompidou.ts'
 import { eiffelTower } from './paris/eiffel-tower.ts'
@@ -73,5 +74,6 @@ export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitAr
   ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS,
   // (the exceptions, said by kind and date: paris/kit/)
   parisCivic,
+  barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal,
   colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, cornerDome, louisXIV, fochTrocadero,
 }

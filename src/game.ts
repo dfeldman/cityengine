@@ -101,7 +101,13 @@ import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { Menu, type MenuItem } from './ui/menu.ts'
-import { SearchScreen, landmarkPlaces, loadWhere } from './ui/search.ts'
+import { SearchScreen, landmarkPlaces, loadWhere, type Place } from './ui/search.ts'
+import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
+import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { BugReports, type BugPlace } from './ui/bugs.ts'
 import { autoReduced, recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
 import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
@@ -2198,6 +2204,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       return
     }
     if (e.code !== 'KeyB') return
+    // (`&dev=1`: a bug report, unless there is something here to get on or off; flying about paused, always)
+    // (and no B in the box it opens: the key's character would land in it)
+    if (bugs && (e.shiftKey || frozen || (!transit.aboard && !transit.boardable))) { e.preventDefault(); reportBug(); return }
     transitAction()
   })
   /** B, or a tap on the transit line: off if aboard, on if something is boardable (owner, 2026-10-03: no way to board on mobile) */
@@ -2310,13 +2319,115 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     debug.frozen(frozen)
     lookPad?.show(frozen)
   }
+  /** every landmark with a place, once (Search's list, and C's "nearest") */
+  let placesOnce: Promise<Place[]> | null = null
+  const allPlaces = (): Promise<Place[]> => placesOnce ??= (async () => {
+    const where = await loadWhere(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city])
+    return landmarkPlaces(landmarkList, where, pkg.landmarks ?? [], (p) => proj.toLatLon(p))
+  })()
+  /** what is in the middle of the picture, and where: a model's name, or a building's name in the manifests or its OSM way */
+  const lookingAt = (): { label: string; x: number; y: number; z: number } | null => {
+    const eng = scene.getEngine()
+    const hit = scene.pick(eng.getRenderWidth() / 2, eng.getRenderHeight() / 2, (m) => m.isEnabled() && m.isVisible && /^(b:|fringe|landmark:(?!shadow))/.test(m.name))
+    if (!hit?.hit || !hit.pickedMesh || !hit.pickedPoint) return null
+    const mesh = hit.pickedMesh
+    const { x, y, z } = hit.pickedPoint
+    if (mesh.name.startsWith('landmark:')) return { label: mesh.name.slice(9), x, y, z }
+    let id: number | null = null
+    for (const [start, bid] of (mesh.metadata?.buildingSpans ?? []) as [number, number][]) if (start <= hit.faceId) id = bid
+    if (id === null) return null
+    const ref = id % 2 === 1 && id > 2e10 ? `relation/${(id - 1) / 2}` : `way/${id}`
+    const entry = landmarkList.find((e) => (Array.isArray(e.osm) ? e.osm : e.osm ? [e.osm] : []).includes(ref))
+    return { label: entry?.name ? `${entry.name} (${ref})` : `an ordinary building (${ref})`, x, y, z }
+  }
+  /** the landmarks round a point, nearest first, by name and distance */
+  const nearestNames = async (at: { x: number; z: number }): Promise<string[]> => {
+    const places = await allPlaces().catch(() => [] as Place[])
+    // (not the kit's unnamed ones, "fac 23757707": a number tells nobody what they are looking at)
+    const near = places.filter((q) => q.lat !== undefined && q.lon !== undefined && !/^[a-z]+ \d+$/.test(q.name))
+      .map((q) => { const p = proj.toLocal({ lat: q.lat!, lon: q.lon! }); return { name: q.name, d: Math.hypot(p.x - at.x, p.z - at.z) } })
+      .filter((q) => q.d < 400).sort((a, b) => a.d - b.d)
+    const seen = new Set<string>()
+    return near.filter((q) => !seen.has(q.name) && !!seen.add(q.name)).slice(0, 3).map((q) => `${q.name} (${Math.round(q.d)} m)`)
+  }
+  /*
+   * BUG REPORTS (ui/bugs.ts): the camera's place is taken as the key goes down, and the names joined to it as they come.
+   */
+  const bugs = new URLSearchParams(location.search).get('dev') === '1' ? new BugReports() : null
+  const reportBug = (): void => {
+    if (!bugs) return
+    const facing = lookingAt()
+    const dir = camera.getForwardRay().direction
+    // the spot pointed at: what the middle of the view is on, else where its ray meets the ground, else what the camera is about
+    let spot: { x: number; y: number; z: number } | null = facing
+    for (let d = 2; !spot && d < 900 && dir.y < 0; d += 2) {
+      const x = camera.position.x + dir.x * d, y = camera.position.y + dir.y * d, z = camera.position.z + dir.z * d
+      if (y <= city.terrain.heightAt(x, z)) spot = { x, y, z }
+    }
+    if (!spot) { const a = frozen ? orbit.look : lastAt; spot = { x: a.x, y: city.terrain.heightAt(a.x, a.z), z: a.z } }
+    const ll = proj.toLatLon({ x: spot.x, z: spot.z })
+    const cl = proj.toLatLon({ x: camera.position.x, z: camera.position.z })
+    const place: BugPlace = {
+      city: opts.city, bake: (index as { bake?: string }).bake, lat: ll.lat, lon: ll.lon, spot,
+      camLat: cl.lat, camLon: cl.lon, cam: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
+      bearing: ((Math.atan2(dir.x, dir.z) * 180) / Math.PI + 360) % 360,
+      pitch: (Math.asin(Math.max(-1, Math.min(1, dir.y))) * 180) / Math.PI,
+      street: frozen ? undefined : nav.edge.name || undefined, facing: facing?.label,
+    }
+    bugs.report(place)
+    void nearestNames(spot).then((near) => { place.near = near })
+  }
+  /*
+   * WHERE I HAVE BEEN ("a ball or something at the location of past bug reports, so i'd know if i reported it before"): a ball at each
+   * report's spot on a thin post, so it shows over the roofs, red until it has been copied, then grey. Drawn through nothing else.
+   */
+  const bugMarkers: Mesh[] = []
+  const showBugs = (): void => {
+    for (const m of bugMarkers.splice(0)) m.dispose()
+    if (!bugs) return
+    const red = bugMarkerMaterial('bug-new', [1, 0.12, 0.1])
+    const grey = bugMarkerMaterial('bug-copied', [0.62, 0.62, 0.66])
+    for (const b of bugs.all) {
+      if (b.city !== opts.city || !b.spot) continue
+      const ball = CreateSphere('bug-ball', { diameter: 1.6, segments: 8 }, scene)
+      ball.position.set(b.spot.x, b.spot.y + 1, b.spot.z)
+      const post = CreateCylinder('bug-post', { height: 40, diameter: 0.14, tessellation: 5 }, scene)
+      post.position.set(b.spot.x, b.spot.y + 21, b.spot.z)
+      for (const m of [ball, post]) { m.material = b.copied ? grey : red; m.isPickable = false; m.renderingGroupId = 3; bugMarkers.push(m) }
+    }
+  }
+  const bugMarkerMaterial = (name: string, c: [number, number, number]): StandardMaterial => {
+    const had = scene.getMaterialByName(name) as StandardMaterial | null
+    if (had) return had
+    const m = new StandardMaterial(name, scene)
+    m.emissiveColor = new Color3(c[0], c[1], c[2])
+    m.diffuseColor = new Color3(0, 0, 0)
+    m.specularColor = new Color3(0, 0, 0)
+    m.disableLighting = true
+    return m
+  }
+  if (bugs) {
+    bugs.onChanged = showBugs
+    showBugs()
+    bugs.onSaved = (n, stored) => debug.toast(stored ? `bug report saved: ${n} in all (Menu → Bug reports)` : 'could not save the bug report: browser storage is full or off')
+    bugs.onGo = (b) => { if (opts.goTo) { const why = opts.goTo(`${b.lat}, ${b.lon}`, true); if (why) debug.toast(why) } }
+  }
   const debug = new DebugPanel(toggleLook, () => {
     const at = frozen ? { x: orbit.look.x, z: orbit.look.z } : lastAt
     const ll = proj.toLatLon(at)
     const text = `${ll.lat.toFixed(6)}, ${ll.lon.toFixed(6)}`
-    void copyText(text).then((ok) => debug.toast(
-      `${ok ? 'copied' : 'could not copy'}  ${text}\nedge ${nav.mapEdgeId()}${nav.edge.name ? ` · ${nav.edge.name}` : ''}`
-      + `   ?city=${opts.city}&start=${nav.mapEdgeId()}`))
+    /*
+     * AND WHAT IT IS (owner, 2026-10-30: "is there any way to see what the nearest landmark is? I'm unfamiliar with paris and don't
+     * know french"): the building in the middle of the view by its name or its OSM way, and the nearest landmarks by distance.
+     * The clipboard stays a bare "lat, lon", which is what pastes into Google Maps.
+     */
+    const facing = lookingAt()
+    void Promise.all([copyText(text), nearestNames(at)]).then(([ok, names]) => {
+      debug.toast(`${ok ? 'copied' : 'could not copy'}  ${text}`
+        + (facing ? `\nlooking at: ${facing.label}` : '')
+        + (names.length ? `\nnearest: ${names.join(' · ')}` : '')
+        + `\nedge ${nav.mapEdgeId()}${nav.edge.name ? ` · ${nav.edge.name}` : ''}   ?city=${opts.city}&start=${nav.mapEdgeId()}`, 9000)
+    })
   }, opts.goTo && (() => {
     const text = prompt('Go to — paste "lat, lon" (from Street View or Google Maps):')
     if (text) { const why = opts.goTo!(text); if (why) debug.toast(why) }
@@ -2457,10 +2568,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * there by the same road as a pasted "lat, lon" (ui/goto.ts). It replaces the `?dev=1` box over the large map,
    * which knew where barely a tenth of them were. The list is built the first time it is opened.
    */
-  const search = opts.goTo ? new SearchScreen(async () => {
-    const where = await loadWhere(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city])
-    return landmarkPlaces(landmarkList, where, pkg.landmarks ?? [], (p) => proj.toLatLon(p))
-  }) : null
+  const search = opts.goTo ? new SearchScreen(allPlaces) : null
   if (search) {
     search.onPick = (p) => {
       const why = opts.goTo!(`${p.lat}, ${p.lon}`, true)
@@ -2690,6 +2798,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         ? `${(nav.travelled / simSeconds * 2.23694).toFixed(1)} mph` : `${(nav.travelled / simSeconds * 3.6).toFixed(1)} km/h` }] : []),
       ...(energy ? [{ label: 'Energy', info: `${Math.round(energy.level * 100)}%` }] : []),
     ] },
+    ...(!bugs ? [] : [{ label: 'Bug reports', sub: (): MenuItem[] => [
+      { label: 'Report a bug here', hint: keyHint('B'), run: reportBug },
+      { label: 'All reports', info: String(bugs.count), run: () => bugs.list() },
+    ] }]),
     { label: 'Settings', sub: (): MenuItem[] => groups.map((g) => ({ label: g, sub: () => settingsGroup(g) })) },
     { label: 'Help', sub: helpItems },
     { label: 'About', sub: (): MenuItem[] => [
@@ -2708,6 +2820,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   ])
   menu.onChange = (open) => { menuHeld = open }
   if (search) search.onChange = (open) => { menuHeld = open }
+  if (bugs) bugs.onChange = (open) => { menuHeld = open }
   // `/` opens it from the ride, as in most things with a search box
   addEventListener('keydown', (e) => {
     if (!search || e.key !== '/' || e.repeat || menu.isOpen || search.isOpen) return

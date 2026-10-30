@@ -236,13 +236,21 @@
     "note": "Lacornée's Second Empire palace of the ministry on the Quai d'Orsay, under its tall mansard."
   },
   {
-    "name": "Banque de France",
+    "name": "Hôtel de Toulouse (Banque de France)",
+    "procedural": "hotelToulouse",
     "osm": [
-      "relation/541080"
+      "relation/541080",
+      "way/54046037"
     ],
-    "restyle": "classical",
-    "roof": "mansard",
-    "note": "The Hôtel de Toulouse (Mansart, 1635–40) and the bank's ranges round it on the Rue de la Vrillière and the Rue Croix-des-Petits-Champs."
+    "lat": 48.864856,
+    "lon": 2.339569,
+    "rotateDeg": 290,
+    "size": [
+      250.5,
+      112.3
+    ],
+    "height": 26,
+    "note": "Replaces the `classical` restyle on the same relation. Way 54046037 (named Hôtel de Toulouse in OSM) is the relation's outer ring, so one footprint. Placed on its box turned to the Rue Croix-des-Petits-Champs (osmium, 2026-10-30), −z bearing 110. The long elevation and the door at no. 39 from Commons \"Façade principale BDF\" and \"Façade de la Banque de France, angle de la rue Baillif et de la rue Croix-des-Petits-Champs\"; the other fronts unchecked. Mansart's hôtel and the Galerie Dorée are inside the block and not drawn."
   },
   {
     "name": "Théâtre de l'Odéon",
@@ -367,7 +375,7 @@
     "lon": 2.348049,
     "rotateDeg": 112.5,
     "size": [
-      46.0,
+      46,
       48.2
     ],
     "height": 30,
@@ -576,7 +584,7 @@
     "lon": 2.328339,
     "rotateDeg": 345,
     "size": [
-      9.0,
+      9,
       12.4
     ],
     "height": 23,
@@ -650,7 +658,8 @@
     "name": "La Cigale",
     "procedural": "cigale",
     "osm": [
-      "way/77807777"
+      "way/77807777",
+      "way/1202855025"
     ],
     "lat": 48.882503,
     "lon": 2.340194,
@@ -688,7 +697,7 @@
     "lon": 2.3275,
     "rotateDeg": 79.4,
     "size": [
-      97.0,
+      97,
       49.5
     ],
     "height": 33,
@@ -726,5 +735,199 @@
     ],
     "height": 25,
     "note": "Placed on OSM way 63201555's box turned to its street (osmium, 2026-10-30), −z to the Rue du Château-d'Eau, bearing 38.8. Bouvard's front from photographs from the street; way 1448693889 is the octagonal great hall inside, roofed over here."
+  },
+  {
+    "name": "Marché Saint-Germain",
+    "procedural": "marcheSaintGermain",
+    "osm": [
+      "way/22618451"
+    ],
+    "lat": 48.852089,
+    "lon": 2.335949,
+    "rotateDeg": 176,
+    "size": [
+      92.4,
+      75.8
+    ],
+    "height": 16.5,
+    "note": "Placed on OSM way 22618451's box turned to its street (osmium, 2026-10-30), −z to the Rue Clément, bearing 356. The arcade, the stepped-back storey, the tile roof and the name over the middle arches from photographs from the street (Commons); heights scaled off them. Arch counts are the bays' rhythm read off those photographs, not a survey."
+  },
+  {
+    "name": "Carreau du Temple",
+    "procedural": "carreauTemple",
+    "osm": [
+      "way/30612670"
+    ],
+    "lat": 48.864448,
+    "lon": 2.362625,
+    "rotateDeg": 128,
+    "size": [
+      66.1,
+      72.3
+    ],
+    "height": 21,
+    "note": "Placed on OSM way 30612670's box turned to its street (osmium, 2026-10-30), −z to the Rue Eugène Spuller, bearing 308. The iron gables, frames and flank from Commons \"Carreau du Temple, Paris 9 April 2014\", which shows three gables in line and a flank of great arches; that those gables are the ones on the Rue Eugène Spuller is a reading of the photograph against OSM's plan, not a survey. The way also has a generic parisCivic entry in civic.json until that file is regenerated (tools/paris-civic.ts skips any way another manifest claims)."
+  },
+  {
+    "name": "Halle Freyssinet",
+    "procedural": "halleFreyssinet",
+    "osm": [
+      "way/540442288"
+    ],
+    "lat": 48.833295,
+    "lon": 2.371838,
+    "rotateDeg": 59,
+    "size": [
+      307.6,
+      72
+    ],
+    "height": 14,
+    "note": "Station F. Placed on OSM way 540442288's box along its length (osmium, 2026-10-30), −z to the Rue Eugène Freyssinet, bearing 239. The section, small arc, great arc, great arc, small arc across the 72 m, from Commons \"Halle Freyssinet, Paris 13e\" and \"Halle Freyssinet - Station F - Outside\"; heights and bay scaled off those. Which end carries the STATION F letters is unconfirmed."
+  },
+  {
+    "name": "Palais de la Porte Dorée",
+    "procedural": "porteDoree",
+    "osm": [
+      "way/62819702"
+    ],
+    "lat": 48.83528,
+    "lon": 2.409401,
+    "rotateDeg": 28,
+    "size": [
+      88.6,
+      66.8
+    ],
+    "height": 19,
+    "note": "Placed on OSM way 62819702's box turned to its front (osmium, 2026-10-30), −z to the Avenue Daumesnil, bearing 208 (the entrance bay stands forward on that side of the plan, and the street lies there). The peristyle, the steps and the door from Commons \"Palais Porte Doree Facade droite\"; Janniot's relief drawn as a texture of carved shapes, not its figures. The way also has a generic parisCivic entry in civic.json until that file is regenerated (tools/paris-civic.ts skips any way another manifest claims)."
+  },
+  {
+    "name": "Palais de la Femme",
+    "procedural": "palaisFemme",
+    "osm": [
+      "way/63638302"
+    ],
+    "lat": 48.85386,
+    "lon": 2.383115,
+    "rotateDeg": 160,
+    "size": [
+      73.9,
+      53.2
+    ],
+    "height": 27,
+    "note": "Placed on OSM way 63638302's box turned to its street (osmium, 2026-10-30), −z to the Rue de Charonne, bearing 340; the cut corner on the Rue Faidherbe at +x −z. Meulière, yellow brick, arches, pavilions and wide roofs from Commons \"Palais de la Femme, vu depuis la Rue de Charonne, Paris\" and the old postcard \"Rue Charonne-Palais de la Femme 5\"; the name band over the corner arches is drawn from the postcard and may not read that way today. The way also has a generic parisCivic entry in civic.json until that file is regenerated (tools/paris-civic.ts skips any way another manifest claims)."
+  },
+  {
+    "name": "Le BHV Marais",
+    "procedural": "bhv",
+    "osm": [
+      "way/29168869"
+    ],
+    "lat": 48.857485,
+    "lon": 2.353347,
+    "rotateDeg": 20,
+    "size": [
+      102.8,
+      67
+    ],
+    "height": 47,
+    "note": "Placed on OSM way 29168869's box turned to the Rue de Rivoli (osmium, 2026-10-30), −z bearing 200; the rotunda on the Rue du Temple corner, where the outline curves. The dome, the sign round the drum, the glazed bays and the banners from Commons \"Bazar Hôtel Ville - Paris IV (FR75) - 2020-09-30 - 3\"; heights scaled off that photograph."
+  },
+  {
+    "name": "Poste centrale du Louvre",
+    "procedural": "posteLouvre",
+    "osm": [
+      "way/29560121",
+      "way/1050626961",
+      "way/1097410546"
+    ],
+    "lat": 48.864666,
+    "lon": 2.343779,
+    "rotateDeg": 110,
+    "size": [
+      76.6,
+      123.6
+    ],
+    "height": 28,
+    "note": "Placed on OSM way 29560121's box turned to the Rue du Louvre (osmium, 2026-10-30), −z bearing 290, +z to the slant at the back. OSM's height of 28 m. The arcade, the pier grid and the clock and lantern on the corner of the Rue Étienne-Marcel from Commons \"Post office street of Louvre (Paris)\" and \"Bureau Poste Central Louvre - Paris I (FR75) - 2024-09-22 - 1\", the corner cut wider than OSM's to what they show. The other two walls are unchecked."
+  },
+  {
+    "name": "Hôtel des Ventes de Drouot",
+    "procedural": "drouot",
+    "osm": [
+      "relation/1085247"
+    ],
+    "lat": 48.8733,
+    "lon": 2.340051,
+    "rotateDeg": 278,
+    "size": [
+      70,
+      57.6
+    ],
+    "height": 24.5,
+    "note": "Placed on OSM relation 1085247's box turned to the Rue Drouot (osmium, 2026-10-30), −z bearing 98, the Rue Rossini at −x. The ribbed metal bays, the ovals, the banners and the red canopy from Commons \"P1030038 Paris IX Rue Drouot\", the one photograph used; the Rue Rossini is drawn as the same front on that reading."
+  },
+  {
+    "name": "Palais Cambon — Cour des comptes",
+    "procedural": "courComptes",
+    "osm": [
+      "relation/542460"
+    ],
+    "lat": 48.867134,
+    "lon": 2.325209,
+    "rotateDeg": 299,
+    "size": [
+      59,
+      84.8
+    ],
+    "height": 23.6,
+    "note": "Placed on OSM relation 542460's box turned to the Rue Cambon (osmium, 2026-10-30), −z bearing 119; its outer ring and courts are the plan. The portal, the tablet, the balcony and the flags from Commons \"Cour des comptes Paris entrée\", \"Cambon\" and \"Cour des comptes (façade du bâtiment sur la rue Cambon)\"; heights scaled off them. The bay rhythm either side of the frontispiece is approximate."
+  },
+  {
+    "name": "Palais de la découverte",
+    "procedural": "decouverte",
+    "osm": [
+      "way/188108997"
+    ],
+    "lat": 48.866208,
+    "lon": 2.310848,
+    "rotateDeg": 88,
+    "size": [
+      149,
+      52
+    ],
+    "height": 26,
+    "note": "The Grand Palais's west wing, a separate OSM way the Grand Palais entry does not claim. Placed on way 188108997's box turned to its avenue (osmium, 2026-10-30), −z to the Avenue Franklin-Roosevelt, bearing 268; its back stands about 4 m from the Grand Palais model's edge, and that model has a low stone stand-in for this wing behind it. The portal, the bronzes, the colonnade and the attic from Commons \"Paris 8e - Palais de la découverte - Façade principale 01\"."
+  },
+  {
+    "name": "Hôtel de Rochechouart",
+    "procedural": "rochechouart",
+    "osm": [
+      "relation/1020065"
+    ],
+    "lat": 48.856955,
+    "lon": 2.321048,
+    "rotateDeg": 25,
+    "size": [
+      67.5,
+      82.9
+    ],
+    "height": 20,
+    "note": "The Ministry of Education, 110 Rue de Grenelle. Placed on OSM relation 1020065's box turned to its street (osmium, 2026-10-30), −z to the Rue de Grenelle, bearing 205; the Rue de Bellechasse at +x. The gate and the street range from Commons \"Ministère de l'Éducation Nationale - Paris - 1\" and \"- 2\"; the eighteenth-century house behind is not drawn in detail."
+  },
+  {
+    "name": "Grands Moulins",
+    "procedural": "grandsMoulins",
+    "osm": [
+      "relation/973246"
+    ],
+    "lat": 48.829953,
+    "lon": 2.381155,
+    "rotateDeg": 327,
+    "size": [
+      115.4,
+      62
+    ],
+    "height": 41,
+    "note": "Placed on OSM relation 973246's box turned to its long front (osmium, 2026-10-30), −z to the Esplanade Pierre-Vidal-Naquet, bearing 147. The relation also carries the Cour des Grands Moulins, its court, which stays open. The grid of mill windows, the name band and the square tower with its slate dome from one Mapillary view (1098224344799431) from the Rue Marguerite-Duras: the other walls are drawn as that one's rhythm, unchecked, and which face is the front was chosen by length, not by a photograph."
   }
 ]

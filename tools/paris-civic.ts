@@ -27,7 +27,7 @@ function kindOf(t: Tags): string | null {
   if (a === 'police') return 'police'
   if (a === 'post_office') return 'poste'
   if (a === 'library') return 'bibliotheque'
-  if (/^(theatre|cinema|arts_centre|community_centre)$/.test(a ?? '') || b === 'theatre') return 'salle'
+  if (/^(theatre|cinema|arts_centre|community_centre)$/.test(a ?? '') || b === 'theatre' || b === 'cinema') return 'salle'
   if (a === 'hospital' || a === 'clinic' || a === 'social_facility' || b === 'hospital') return /hospice|institution nationale/i.test(n) ? 'hospice' : 'hopital'
   if (a === 'university' || b === 'university' || a === 'college' || b === 'college') return 'fac'
   if (a === 'school' || a === 'kindergarten' || b === 'school' || b === 'kindergarten') return /lyc[ée]e|coll[èe]ge/i.test(n) ? 'lycee' : 'ecole'
