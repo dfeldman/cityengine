@@ -3962,12 +3962,14 @@ export class City {
     {
       const list = this.railingsOf(k)
       if (list.length) {
-        const ways = aroundEdges.map((e) => ({ pts: unpackPoints(e.points), half: e.width / 2 + 1.2 }))
-        const onWay = (x: number, z: number): boolean => ways.some((w) => {
-          for (let i = 1; i < w.pts.length; i++) {
-            const a = w.pts[i - 1], b = w.pts[i], dx = b.x - a.x, dz = b.z - a.z
-            const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
-            if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < w.half) return true
+        const ways = aroundEdges.map((e) => unpackPoints(e.points))
+        // (a way that CROSSES this piece of fence, not one running beside it: a railing's pavement runs right along it)
+        const side = (ax: number, az: number, bx: number, bz: number, x: number, z: number): number => (bx - ax) * (z - az) - (bz - az) * (x - ax)
+        const crossed = (x0: number, z0: number, x1: number, z1: number): boolean => ways.some((w) => {
+          for (let i = 1; i < w.length; i++) {
+            const a = w[i - 1], b = w[i]
+            if (Math.max(a.x, b.x) < Math.min(x0, x1) || Math.min(a.x, b.x) > Math.max(x0, x1) || Math.max(a.z, b.z) < Math.min(z0, z1) || Math.min(a.z, b.z) > Math.max(z0, z1)) continue
+            if (side(x0, z0, x1, z1, a.x, a.z) * side(x0, z0, x1, z1, b.x, b.z) <= 0 && side(a.x, a.z, b.x, b.z, x0, z0) * side(a.x, a.z, b.x, b.z, x1, z1) <= 0) return true
           }
           return false
         })
@@ -3985,7 +3987,7 @@ export class City {
             const n = Math.max(1, Math.ceil(L / 3)), step = L / n
             for (let p = 0; p < n; p++) {
               const mx = a.x + ux * step * (p + 0.5), mz = a.z + uz * step * (p + 0.5)
-              if (onWay(mx, mz)) continue
+              if (crossed(a.x + ux * step * p, a.z + uz * step * p, a.x + ux * step * (p + 1), a.z + uz * step * (p + 1))) continue
               placeModel(furniture, (o) => {
                 if (wall) { box(o, 0, 1.3, 0, 0.18, 1.3, step / 2 + 0.02, stone, 0); box(o, 0, 2.65, 0, 0.24, 0.06, step / 2 + 0.02, [0.63, 0.6, 0.54], 0); return }
                 box(o, 0, 0.25, 0, 0.16, 0.25, step / 2 + 0.02, stone, 0)                   // the plinth
