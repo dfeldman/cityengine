@@ -628,8 +628,10 @@ def win_curtain(size, rnd):
 
 
 # All one family. The grammar picks a window variant per BAY, so a red shutter among green ones made every
-# building a patchwork; a real building's shutters are painted together, in one colour.
-SHUTTERS = [(47, 74, 54), (50, 78, 58), (44, 70, 52)]
+# building a patchwork; a real building's shutters are painted together, in one colour. Paris's are the pale
+# painted persiennes — off-white, putty, a light grey — not the provincial green they were here (owner's street
+# view and Mapillary, 2026-10-29: the cream fronts with white folding shutters; the green read as a country town).
+SHUTTERS = [(222, 218, 207), (214, 211, 202), (206, 205, 198)]
 
 
 def win_casement(size, rnd):
