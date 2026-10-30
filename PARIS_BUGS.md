@@ -212,5 +212,10 @@ Fixed in code, and they want the next bake unless noted:
 Open:
 
 - [ ] Are there other bridges doubled like the Buttes'? Only these two Paris models claim a way's deck; the owner said "a few".
+- [ ] **41 named foot bridges are not in the bike graph**: the Pont des Arts, the Passerelles Debilly, Senghor, Beauvoir among them.
+      The Buttes-Chaumont's two are open now (data/zones/paris.json, `trails: 'bike'`). Opening one means its stubs and
+      stairs too, or the graph prunes it.
+- [ ] After the lidar relief: Pont Neuf's approach at 48.857, 2.341 has short pale parapets standing on the way and a hard
+      band in the river beside the Vert-Galant. Check whether these are new.
 - [ ] Facade photos: Mapillary coverage, measured. Panorama within ~30 m of a street: SF 68%, Paris 27% (15% since 2021), on the
       29 central Paris tiles cached of the 79 the box needs. `photo.ts` throws away flat frames, and Paris has 70% with those.

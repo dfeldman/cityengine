@@ -765,7 +765,8 @@ async function bake(spec: CitySpec): Promise<void> {
     const trailZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.trails === 'bike')
     let n = 0
     if (trailZones.length) for (const e of edges) {
-      if (!/^(footway|path|track|bridleway)$/.test(e.kind ?? '') || /^(sand|mud|grass|rock|stone|wood)$/.test(e.surface ?? '')) continue
+      // (a bridge rides whatever its deck is: the Pont Suspendu's is timber)
+      if (!/^(footway|path|track|bridleway)$/.test(e.kind ?? '') || (!e.bridge && /^(sand|mud|grass|rock|stone|wood)$/.test(e.surface ?? ''))) continue
       const pts = unpackPoints(e.points)
       const mid = pts[Math.floor(pts.length / 2)]
       if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; n++ }
@@ -4149,7 +4150,7 @@ async function main(): Promise<void> {
       const trailZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.trails === 'bike')
       let opened = 0
       for (const e of pkg.edges) {
-        if (e.trail || !/^(footway|path|track|bridleway)$/.test(e.kind ?? '') || /^(sand|mud|grass|rock|stone|wood)$/.test(e.surface ?? '')) continue
+        if (e.trail || !/^(footway|path|track|bridleway)$/.test(e.kind ?? '') || (!e.bridge && /^(sand|mud|grass|rock|stone|wood)$/.test(e.surface ?? ''))) continue
         const pts = unpackPoints(e.points)
         const mid = pts[Math.floor(pts.length / 2)]
         if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; opened++ }

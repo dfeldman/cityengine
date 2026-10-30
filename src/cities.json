@@ -1,18 +1,5 @@
 [
   {
-    "id": "san-francisco",
-    "name": "San Francisco",
-    "lat": 37.793,
-    "lon": -122.412,
-    "radius": 3340,
-    "box": {
-      "x0": -9800,
-      "x1": 7800,
-      "z0": -4500,
-      "z1": 9300
-    }
-  },
-  {
     "id": "paris-centre",
     "name": "Central Paris",
     "lat": 48.8605,
@@ -23,6 +10,19 @@
       "x1": 5715,
       "z0": -4510,
       "z1": 4175
+    }
+  },
+  {
+    "id": "san-francisco",
+    "name": "San Francisco",
+    "lat": 37.793,
+    "lon": -122.412,
+    "radius": 3340,
+    "box": {
+      "x0": -9800,
+      "x1": 7800,
+      "z0": -4500,
+      "z1": 9300
     }
   }
 ]
