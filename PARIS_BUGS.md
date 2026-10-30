@@ -18,6 +18,9 @@ the owner saw, what is known, and its state. Tick when fixed AND checked in the 
 
 ## Open — bake-side (one rebake carries them)
 
+Owner's priority (2026-10-30): "biggest issue is the seine bridges since the seine is a natural focal point for cyclists".
+
+
 - [ ] **Seine bridges broken at their ends** — Pont Mirabeau (48.846201, 2.276475): "discontinuous path and car in the
       air"; owner: "essentially every seine bridge is messed up. they all have an underpass on each side". Cause found:
       OSM maps a Seine bridge as the river span, a short deck over the riverside road below, and between them a few metres
@@ -72,8 +75,20 @@ the owner saw, what is known, and its state. Tick when fixed AND checked in the 
 
 ## Open — render-side
 
-- [ ] **BUS lettering** in Paris bus lanes: `busWord` (render/city.ts) runs but its strokes are not in the markings
-      mesh at the word's position. Debug next: compare with `zigzag` (same corner order) and `dashedLine`.
+- [x] **BUS lettering** in Paris bus lanes: it was drawn all along — the checks looked in the wrong place (the scene keeps
+      no CPU copy of vertex data, so a vertex search finds nothing). Seen from above on the Boulevard de Magenta.
+- [x] **Parked cars submerged and tilted on steep streets** (48.854568, 2.354598): the kerb bays' cars stood on the raw
+      ground under them, which on a graded street is off the street and slopes another way. They take the street's own
+      profile now (Stall.y and grade). To check in the city.
+- [x] **No lampposts** ("a key part of the city's look"): the dark lanterns stood on the boulevards only, every other
+      slot. Now every slot (22–31 m, staggered) on pavements of 1.8 m and more; the narrowest rues keep their wall lamps.
+- [ ] **Terrain wavy along the Seine banks; ways out of sync with the ground** (owner: "there's something seriously buggy
+      with the way we handle terrain in paris. the ways are out of sync with the ground many times"). Not yet looked at.
+      Suspects: the coarse terrarium DEM (≈30 m) round the quay walls, fine ground shipped only near cuts, the street
+      grade not imposed on the ground in Paris.
+- [ ] **Memory close to the limit again** (2026-10-30, after the forget fix put back the buildings it was wrongly losing).
+      Measure: the jump test (heap after GC per jump), the bollards (40 vertices each, every 1.7 m both sides of most
+      streets), the crowd pool, the plants.
 - [ ] **Storefronts too repetitive** — owner: "quite repetitive with only a few signs, some of the signs are covered by
       specific POI signs. I think maybe we dont show so many signs and make it a bit random". Fewer generic shop signs
       (OPTIQUE, LIBRAIRIE …), more variety, and none where a real POI sign stands.

@@ -703,6 +703,22 @@ function drawnSurface(e: { surface: string; foot?: boolean }): string {
   return !e.foot && e.surface === 'concrete' ? 'asphalt' : e.surface
 }
 
+/** A street's own height (its baked profile) at the point of it nearest (x, z). */
+function heightOnEdge(e: { points: number[]; heights?: number[] }, x: number, z: number): number | null {
+  const h = e.heights
+  if (!h) return null
+  const p = e.points
+  let best = Infinity, y: number | null = null
+  for (let i = 1; i < p.length / 2; i++) {
+    const ax = p[2 * i - 2], az = p[2 * i - 1], bx = p[2 * i], bz = p[2 * i + 1]
+    const dx = bx - ax, dz = bz - az, l2 = dx * dx + dz * dz || 1e-9
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / l2))
+    const d = Math.hypot(ax + dx * t - x, az + dz * t - z)
+    if (d < best) { best = d; y = h[i - 1] + (h[i] - h[i - 1]) * t }
+  }
+  return y
+}
+
 /** A point `s` metres along a polyline, and the unit direction there. */
 function alongLine(pts: { x: number; z: number }[], s: number): { x: number; z: number; ux: number; uz: number } {
   let left = Math.max(0, s)
@@ -1580,8 +1596,12 @@ export class City {
         const off = b.side * (e.width / 2 - 1.05)
         const id = (Math.imul(e.id, 2654435761) ^ Math.imul(Math.round(b.s) + (b.side > 0 ? 7919 : 0), 40503)) >>> 0
         const ahead = e.oneway || b.side < 0
-        stalls.push({ x: m.x - m.uz * off, z: m.z + m.ux * off, heading: Math.atan2(m.ux, m.uz) + (ahead ? 0 : Math.PI),
-          ux: m.ux, uz: m.uz, occupied: id % 5 !== 0, id })
+        const x = m.x - m.uz * off, z = m.z + m.ux * off
+        // (on the street's own profile: its height here, and its fall along the bay)
+        const y0 = e.heights ? heightOnEdge(e, m.x - m.ux * 2.5, m.z - m.uz * 2.5) : null
+        const y1 = e.heights ? heightOnEdge(e, m.x + m.ux * 2.5, m.z + m.uz * 2.5) : null
+        stalls.push({ x, z, heading: Math.atan2(m.ux, m.uz) + (ahead ? 0 : Math.PI),
+          ux: m.ux, uz: m.uz, occupied: id % 5 !== 0, id, ...(y0 !== null && y1 !== null ? { y: (y0 + y1) / 2, grade: (y1 - y0) / 5 } : {}) })
       }
     }
     if (this.areasIn.has(k) || this.edgesIn.has(k)) this.stallCache.set(k, stalls)
@@ -3506,8 +3526,10 @@ export class City {
             if (this.region.furniture.benches && !nearStairMouth(px, pz)) placeModel(furniture, bench, px, 0.15, pz, Math.atan2(dz * side, -dx * side))
           } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
             placeModel(furniture, market ? pathOfGold : lampPost, px, 0.15, pz, heading)
-          } else if (this.region.furniture.boulevardLamps && e.width >= 11 && walk >= 3 && n % 2 === 0 && !nearStairMouth(px, pz)) {
-            // Paris: the boulevards' tall lanterns, every other slot (the side streets light from the walls)
+          } else if (this.region.furniture.boulevardLamps && walk >= 1.8 && !nearStairMouth(px, pz)) {
+            // Paris: the dark lanterns on their posts along every street with the pavement for them, staggered side to side
+            // every 22–31 m (owner, 2026-10-30: "we also don't have any lampposts in paris. They are a key part of the
+            // city's look" — they had stood on the boulevards only, every other slot; the narrow rues keep their wall lamps)
             placeModel(furniture, parisLamp, px, 0.15, pz, heading)
           }
           // (Market's Path of Gold stands closer: about every 30 m each side, so ~15 m alternating)

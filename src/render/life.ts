@@ -446,7 +446,7 @@ export class Life {
 
   /** the car parks' parked cars near the rider (render/street-fleet.ts `park`), from city.parkedNear */
   private parkedStalls: readonly { x: number; z: number; heading: number; id: number }[] = []
-  park(stalls: readonly { x: number; z: number; heading: number; id: number }[], terrain: Terrain): void {
+  park(stalls: readonly { x: number; z: number; heading: number; id: number; ux?: number; uz?: number; y?: number; grade?: number }[], terrain: Terrain): void {
     if (!this.fleet) return
     this.parkedStalls = stalls
     // (the terrain passed in, not `this.terrain`: the first call comes before the first update, and a car placed at 0 hung

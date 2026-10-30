@@ -266,7 +266,8 @@ export class StreetFleet {
    * never driven, removed when it goes out of range. Keyed by where they stand.
    */
   private readonly parked = new Map<string, Car>()
-  park(stalls: readonly { x: number; z: number; heading: number; id: number }[], groundAt: (x: number, z: number) => number): void {
+  park(stalls: readonly { x: number; z: number; heading: number; id: number; ux?: number; uz?: number; y?: number; grade?: number }[],
+       groundAt: (x: number, z: number) => number): void {
     const want = new Set<string>()
     for (const s of stalls) {
       const k = `${Math.round(s.x * 10)},${Math.round(s.z * 10)}`
@@ -281,7 +282,9 @@ export class StreetFleet {
       for (const m of mix) { x -= m[1]; if (x < 0) { pick = m; break } }
       const car = this.fleet.add(randomSpec(pick[0], 1 + (h % SEEDS), 'none'))
       car.paint = [...PARKED_PAINT[(h >>> 4) % PARKED_PAINT.length]]
-      car.place(s.x, s.z, s.heading, groundAt)
+      // (a kerb bay's car on its street's profile, not the raw ground: city/parking.ts Stall.y)
+      const sy = s.y, sg = s.grade ?? 0, ux = s.ux ?? 0, uz = s.uz ?? 0
+      car.place(s.x, s.z, s.heading, sy !== undefined ? (x, z) => sy + sg * ((x - s.x) * ux + (z - s.z) * uz) : groundAt)
       this.parked.set(k, car)
     }
     for (const [k, car] of this.parked) {

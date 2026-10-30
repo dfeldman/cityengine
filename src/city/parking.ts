@@ -23,6 +23,13 @@ export interface Stall {
   occupied: boolean
   /** a stable id from its world position, for the fleet */
   id: number
+  /**
+   * A kerb bay's street level at its centre and its fall per metre along (ux, uz): the car stands on the street, not on
+   * the raw ground under it, which on a graded street is a metre off and slopes another way (owner, 2026-10-30, a steep
+   * street by the Seine: "on steeply graded streets parked cars are submerged"). A car park's stall has none.
+   */
+  y?: number
+  grade?: number
 }
 
 const W = 2.6          // stall width
