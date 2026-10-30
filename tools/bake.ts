@@ -128,6 +128,23 @@ const PARK_RING_M2 = 40000
 
 const bbox = (c: CitySpec, pad = 0): Bbox => bboxOf(c, pad)
 
+/** Where a region's landmark entries stand by point (lat, lon and a size): each one's centre and the half of its larger side. */
+function landmarkSpots(region: string): { lat: number; lon: number; r: number }[] {
+  const out: { lat: number; lon: number; r: number }[] = []
+  const dir = resolve(import.meta.dirname, '..', 'public', 'landmarks')
+  const files = [resolve(dir, `${region}.json`)]
+  const sub = resolve(dir, region)
+  if (existsSync(sub)) for (const f of readdirSync(sub)) if (f.endsWith('.json')) files.push(resolve(sub, f))
+  for (const f of files) {
+    if (!existsSync(f)) continue
+    const d = JSON.parse(readFileSync(f, 'utf8')) as { lat?: number; lon?: number; size?: number[] }[] | { landmarks?: { lat?: number; lon?: number; size?: number[] }[] }
+    for (const e of Array.isArray(d) ? d : d.landmarks ?? []) {
+      if (typeof e.lat === 'number' && typeof e.lon === 'number') out.push({ lat: e.lat, lon: e.lon, r: Math.max(6, ...(e.size ?? [12, 12])) / 2 })
+    }
+  }
+  return out
+}
+
 /** The OSM ways a region's landmark manifests claim (public/landmarks/<region>/*.json and <region>.json), packed ids. */
 function landmarkClaims(region: string): Set<number> {
   const out = new Set<number>()
@@ -1314,6 +1331,11 @@ async function bake(spec: CitySpec): Promise<void> {
       }
     }
     for (const b of buildings) file(unpackPoints(b.ring))
+    // …and the landmarks' ground: every way a manifest claims, whatever the bake made of it, and every entry placed by
+    // point (a Villette folie came back as a generic block under its model, its own OSM way not among the buildings)
+    const claimed = landmarkClaims(spec.region ?? spec.id)
+    for (const w of ways) if (claimed.has(w.id) && w.geometry && w.geometry.length >= 4) file(w.geometry.slice(0, -1).map((g) => proj.toLocal(g)))
+    const spots = landmarkSpots(spec.region ?? spec.id).map((s) => ({ ...proj.toLocal({ lat: s.lat, lon: s.lon }), r: s.r }))
     const near = (x: number, z: number): { x: number; z: number }[][] => cellsOf.get(`${Math.floor(x / CELL)},${Math.floor(z / CELL)}`) ?? []
     const covered = (x: number, z: number): boolean => near(x, z).some((r) => pointInRing(r, x, z))
     let added = 0
@@ -1324,6 +1346,7 @@ async function bake(spec: CitySpec): Promise<void> {
       if (pts.length < 3 || area(pts) < 15) return
       const c = centroid(pts)
       if (covered(c.x, c.z)) return
+      if (spots.some((s) => Math.hypot(s.x - c.x, s.z - c.z) < s.r + 4)) return
       if (pts.some((q) => covered(q.x + (c.x - q.x) * 0.15, q.z + (c.z - q.z) * 0.15))) return
       const others = new Set<{ x: number; z: number }[]>()
       for (const q of pts) for (const r of near(q.x, q.z)) others.add(r)

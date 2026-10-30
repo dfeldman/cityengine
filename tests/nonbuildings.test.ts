@@ -56,9 +56,6 @@ const KNOWN: Record<string, string[]> = {
     "intersects | Jardin d'Acclimatation: the Porte des Sablons",
     // #109 — the ground under it
     'height | Square Louis-XIII',
-    'ground | Étienne Marcel',
-    // the 2026-10-29 bake's finer ground on the parvis of Notre-Dame: 1.6 m under the statue, which its 2.4 m plinth takes
-    'ground | Charlemagne et ses Leudes',
     // #110 — z-fighting candidates
     'coplanar | Square Louis-XIII',
     'coplanar | Tour Eiffel',
