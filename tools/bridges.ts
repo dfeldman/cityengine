@@ -742,7 +742,7 @@ export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: 
  * 2.9 m under Pont Mirabeau's deck). Mutates `edges`; returns the ids it changed. Run after `bridgeHeights` and again after
  * a modelled bridge's deck is conformed to its model (tools/deck-conform.ts), which moves the deck after the first pass.
  */
-export function meetDecks(edges: BridgeEdge[]): number[] {
+export function meetDecks(edges: BridgeEdge[], upOnly = false): number[] {
   const changedIds: number[] = []
   const deckEnd = new Map<number, number>()
   for (const e of edges) {
@@ -766,6 +766,8 @@ export function meetDecks(edges: BridgeEdge[]): number[] {
       const own = fromA ? hs[0] : hs[hs.length - 1]
       // (a step a flight of stairs takes — not a skyway's 16 m, whose ends are in buildings: see the footbridge rule above)
       if (Math.abs(deck - own) < 0.3 || Math.abs(deck - own) > 6) continue
+      // (once the ground is final: a way under its deck climbs to it, but none is taken down into the ground)
+      if (upOnly && deck < own) continue
       hs = hs.map((h, i) => {
         const d = fromA ? cum[i] : L - cum[i]
         return d >= EASE ? h : Math.round((deck + (h - deck) * (d / EASE)) * 100) / 100

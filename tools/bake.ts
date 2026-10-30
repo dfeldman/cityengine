@@ -3272,6 +3272,9 @@ async function bake(spec: CitySpec): Promise<void> {
       if (moved) { e.points = packPoints(outP); e.heights = outH; lifted++ }
     }
     console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it), ${inserted} vertices added on humps`)
+    // (the lift can take a deck's end up from the way that met it, so they meet once more: the Alma's and the Carrousel's cycleways)
+    const met = meetDecks(kept.filter((e) => !e.authored), true)
+    if (met.length) console.log(`  ${met.length} ways met their decks again after the lift`)
   }
   /*
    * A FOOTWAY ON A STREET'S CENTRELINE is the same alley mapped twice (owner, 2026-10-17, BUGS.md #307: "a street that has
