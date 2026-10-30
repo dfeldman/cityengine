@@ -36,7 +36,8 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, campusQuery, fencesQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
+import { bakeGardens, rowPoints } from './gardens/index.ts'
+import { bridgesQuery, campusQuery, fencesQuery, gardenPartsQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
 
 /** the trees a city plants by hand (data/trees/<city>.json: the Japanese Tea Garden's lanes), local metres */
 function handTreesOf(id: string, toLocal: (lat: number, lon: number) => { x: number; z: number }): Planting[] {
@@ -52,6 +53,8 @@ import { PARIS_STANDS } from '../src/city/paris/stands.ts'
 import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
 import { waterLookup } from '../src/render/watermask.ts'
 import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, handTrees, type Planting, type PlantReport } from '../src/city/plantings.ts'
+import { inside } from '../src/city/park-planting.ts'
+import { formCode } from '../src/city/tree-forms.ts'
 import { PlantZones } from '../src/city/zone-planting.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
@@ -3664,6 +3667,26 @@ async function bake(spec: CitySpec): Promise<void> {
     pkg.walls = walls
     console.log(`  ${walls.length} retaining/sea walls`)
   }
+  /*
+   * PARIS'S GARDENS ARE PLANTED BY HAND (owner, 2026-10-30: "hedges, neat rows of shrubs, flowers etc and not a wild landscape of
+   * trees"). OSM maps some 1,600 hedges, 1,000 beds and 900 rows of trees in the box; tools/gardens/ adds what the aerial photographs
+   * show of the gardens it does not, and takes those gardens out of the scatter (city/plantings.ts).
+   */
+  let gardenRows: Planting[] = []
+  let gardenClears: { x: number; z: number }[][] = []
+  if (spec.region === 'paris') {
+    const got = await overpassTiled(gardenPartsQuery, detailBboxOf(spec)).catch((e) => {
+      console.warn(`  garden parts: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+      return null
+    })
+    const g = bakeGardens(got?.ways ?? [], (q) => proj.toLocal(q))
+    pkg.garden = g.garden
+    gardenClears = g.clearMapped
+    gardenRows = g.rows.flatMap((r, ri) => rowPoints(r).filter((p) => !r.osm || !g.clearMapped.some((c) => inside(c, p.x, p.z))).map((p, i) => ({
+      ...p, height: r.h ?? 11 + ((ri * 7 + i * 3) % 5), spin: (i * 2.399) % 6.28, park: true, ...(r.form ? { form: formCode(r.form) } : {}),
+    })))
+    console.log(`  gardens: ${g.counts.hedges} hedges, ${g.counts.beds} beds and ${g.counts.rows} tree rows from OSM, ${g.counts.plans} plans traced; ${gardenRows.length} trees in rows`)
+  }
   // the bridges' outlines, what each bridge's structure is built from (render/bridges.ts)
   {
     const got = await overpassTiled(bridgesQuery, bbox(spec)).catch((e) => {
@@ -3700,7 +3723,21 @@ async function bake(spec: CitySpec): Promise<void> {
   // zone says the register does not reach. A city with no planting zones keeps the old rules.
   const plantZones = new PlantZones(zones)
   const planted = newPlantReport()
-  pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted, handTreesOf(spec.id, (lat, lon) => proj.toLocal({ lat, lon }))))
+  // the gardens' rows are planted by hand, ahead of the rest. A planned garden's rows replace the trees mapped in it; anywhere else
+  // the register's own tree stands where it stands, and a row only fills what it has not got
+  if (gardenClears.length) {
+    const kept: number[] = []
+    for (let i = 0; i < pkg.trees.length; i += 2) if (!gardenClears.some((r) => inside(r, pkg.trees[i], pkg.trees[i + 1]))) kept.push(pkg.trees[i], pkg.trees[i + 1])
+    pkg.trees = kept
+  }
+  const mappedNear = new Set<string>()
+  for (let i = 0; i < pkg.trees.length; i += 2) mappedNear.add(`${Math.floor(pkg.trees[i] / 5)},${Math.floor(pkg.trees[i + 1] / 5)}`)
+  const rowed = gardenRows.filter((p) => {
+    const gx = Math.floor(p.x / 5), gz = Math.floor(p.z / 5)
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) if (mappedNear.has(`${gx + dx},${gz + dz}`)) return false
+    return true
+  })
+  pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted, [...rowed, ...handTreesOf(spec.id, (lat, lon) => proj.toLocal({ lat, lon }))]))
   logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
   await mkdir(workDir(spec.id), { recursive: true })
   // (bake-private: what the secondary tools read — tools/bake-files.ts; never published)

@@ -7,7 +7,7 @@ import * as q from '../tools/overpass.ts'
  * the whole query to the public servers, silently, and a bake that should take an hour takes a day.
  */
 const box = { south: 48.8, west: 2.2, north: 48.9, east: 2.4 }
-const QUERIES = { bridgesQuery: q.bridgesQuery, campusQuery: q.campusQuery, fencesQuery: q.fencesQuery, sandQuery: q.sandQuery, wallsQuery: q.wallsQuery,
+const QUERIES = { bridgesQuery: q.bridgesQuery, campusQuery: q.campusQuery, fencesQuery: q.fencesQuery, gardenPartsQuery: q.gardenPartsQuery, sandQuery: q.sandQuery, wallsQuery: q.wallsQuery,
   squaresQuery: q.squaresQuery, stepsQuery: q.stepsQuery, wideQuery: q.wideQuery, fringeQuery: q.fringeQuery, cityQuery: q.cityQuery,
   furnitureQuery: q.furnitureQuery, partRelationsQuery: q.partRelationsQuery }
 

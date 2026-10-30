@@ -57,34 +57,46 @@ export function railPortal(out: MeshBuilder, fit: Fit): void {
   const ash = surfaceTag('ashlar')
   const stone: Rgb = [0.5, 0.48, 0.44]
   const hx = fit.hx, hz = fit.hz
-  const top = Math.max(7, fit.height)
+  /*
+   * On its track, not on the street over it (owner, 2026-10-30, Rue de Londres: "wall in the middle of the road"; "the hole should be
+   * facing toward the tracks"). The face looks along +z down the track, so the track's level is the ground in front; the wall comes up
+   * to the street behind and no higher, where there is one. In the open it stands as high as its arch.
+   */
+  const g = (x: number, z: number): number => fit.groundAt ? fit.groundAt(x, z) : 0
+  const track = g(0, hz + 2)
+  const street = Math.max(g(0, -hz - 5), g(-hx * 0.6, -hz - 5), g(hx * 0.6, -hz - 5)) - track
   const span = Math.max(4.5, hx - 3)
-  const rise = Math.min(span * 0.75, 5.5)
+  const room = street > 7 ? street - 0.4 : Math.max(7, fit.height)
+  const rise = Math.max(1.2, Math.min(span * 0.75, 5.5, room - 5))
+  const springing = Math.min(4, room - rise - 0.5)
+  const top = track + Math.max(room, springing + rise + 0.5)
+  const foot = track - 2
+  const mid = (top + foot) / 2, half = (top - foot) / 2
   // the wall, in stone either side of and over the opening, reaching down below the track for a slope, and a coping
   const face = hz - 0.3
-  box(out, -(span + hx) / 2, top / 2 - 1, face, (hx - span) / 2, top / 2 + 1, 0.3, stone, ash)
-  box(out, (span + hx) / 2, top / 2 - 1, face, (hx - span) / 2, top / 2 + 1, 0.3, stone, ash)
+  box(out, -(span + hx) / 2, mid, face, (hx - span) / 2, half, 0.3, stone, ash)
+  box(out, (span + hx) / 2, mid, face, (hx - span) / 2, half, 0.3, stone, ash)
   const seg = 28
   for (let k = 0; k < seg; k++) {
     const x0 = -span + (2 * span * k) / seg, x1 = -span + (2 * span * (k + 1)) / seg
-    const y = (x: number): number => 4 + rise * Math.sqrt(Math.max(0, 1 - (x / span) ** 2))
+    const y = (x: number): number => track + springing + rise * Math.sqrt(Math.max(0, 1 - (x / span) ** 2))
     const low = Math.min(y(x0), y(x1))
     box(out, (x0 + x1) / 2, (low + top) / 2, face, (x1 - x0) / 2, (top - low) / 2, 0.3, stone, ash)
   }
-  box(out, 0, top + 0.2, face + 0.05, hx + 0.3, 0.25, 0.45, shade(stone, 1.2), ash)
+  box(out, 0, top + 0.1, face + 0.05, hx + 0.3, 0.15, 0.45, shade(stone, 1.2), ash)
   // the dark inside, going back, lined in black and clad on its outsides in the same stone: from behind it is a culvert, not a box
-  box(out, 0, 3, -hz + 0.2, span, 7, 0.2, DARK, FIXED)
-  box(out, 0, 3, -hz, span + 0.4, 7.2, 0.02, stone, ash)
+  box(out, 0, mid, -hz + 0.2, span, half, 0.2, DARK, FIXED)
+  box(out, 0, mid, -hz, span + 0.4, half + 0.2, 0.02, stone, ash)
   for (const s of [-1, 1]) {
-    box(out, s * span, 3, 0, 0.1, 7, hz - 0.5, DARK, FIXED)
-    box(out, s * (span + 0.25), 3, 0, 0.12, 7.2, hz - 0.5, stone, ash)
+    box(out, s * span, mid, 0, 0.1, half, hz - 0.5, DARK, FIXED)
+    box(out, s * (span + 0.25), mid, 0, 0.12, half + 0.2, hz - 0.5, stone, ash)
   }
   box(out, 0, top - 0.1, 0, span, 0.1, hz - 0.5, DARK, FIXED)
   box(out, 0, top + 0.05, 0, span + 0.35, 0.05, hz - 0.5, stone, ash)
   // and the voussoirs round the arch, a paler ring
   for (let k = 0; k < seg; k++) {
     const a = ((k + 0.5) / seg) * Math.PI
-    box(out, Math.cos(a) * (span + 0.25), 4 + Math.sin(a) * (rise + 0.25), face + 0.32, 0.3, 0.3, 0.05, shade(stone, 1.25), ash)
+    box(out, Math.cos(a) * (span + 0.25), track + springing + Math.sin(a) * (rise + 0.25), face + 0.32, 0.3, 0.3, 0.05, shade(stone, 1.25), ash)
   }
 }
 

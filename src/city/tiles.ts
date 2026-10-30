@@ -117,6 +117,8 @@ export interface CityIndex {
   /** mapped retaining walls and seawalls, whole: small, global, and the beach's revetment band is built
    * from them (render/shore.ts, BUGS.md #200). Optional — a city baked before them has none. */
   walls?: CityPackage['walls']
+  /** the formal planting, whole, filed by tile when it is first drawn (render/garden.ts) */
+  garden?: CityPackage['garden']
   attribution: string[]
   baked: string
   tile: number
@@ -324,6 +326,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
     region: pkg.region, start: pkg.start, terrain: pkg.terrain, sea: pkg.seaLevel ?? null, skyline: pkg.skyline, landmarks: pkg.landmarks ?? [],
     water: pkg.areas.filter((a) => a.kind === 'water'),
     ...(pkg.walls && pkg.walls.length > 0 ? { walls: pkg.walls } : {}),
+    ...(pkg.garden ? { garden: pkg.garden } : {}),
     ...(pkg.roundabouts && pkg.roundabouts.length > 0 ? { roundabouts: pkg.roundabouts } : {}),
     attribution: pkg.attribution, baked: pkg.baked, tile: TILE,
   }

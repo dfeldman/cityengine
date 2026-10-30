@@ -348,3 +348,24 @@ export function parkTile<T extends {
     furniture: t.furniture.filter((f) => keep.has(f.kind) || !mask(f.x, f.z)),
   }
 }
+
+/** A tile's footways that run through a `park` of any size, drawn by the park's rules: a walk, not a pavement (Paris's squares). */
+export function gardenWalks<T extends { edges: PackedEdge[]; areas: PackedArea[] }>(t: T, style: ParkStyle, bounds: { x0: number; z0: number; x1: number; z1: number }): T {
+  const rings = t.areas.filter((a) => a.kind === 'park').map((a) => a.ring)
+  if (!rings.length) return t
+  const inRing = (r: number[], x: number, z: number): boolean => {
+    let c = false
+    for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+      if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) c = !c
+    }
+    return c
+  }
+  return {
+    ...t,
+    edges: t.edges.map((e) => {
+      if (e.park || !e.foot || (e.kind !== 'footway' && e.kind !== 'path')) return e
+      const [x, z] = midWithin(e.points, bounds)
+      return rings.some((r) => inRing(r, x, z)) ? parkEdge(e, style) : e
+    }),
+  }
+}

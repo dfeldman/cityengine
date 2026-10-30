@@ -482,7 +482,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return Number.isFinite(x0) ? { x0, x1, z0, z1 } : undefined
   })()
   const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain, sea: index.sea,
-    water: pkg.water, box: index.box, walls: index.walls, contentBox }, atlas, ASSETS).omit(off)
+    water: pkg.water, box: index.box, walls: index.walls, garden: index.garden, contentBox }, atlas, ASSETS).omit(off)
   /*
    * The sandy beaches' coastline (render/beach-surf.ts), and the beach face it gives the ground: the elevation data has
    * the sand 3 m over the sea at the waterline. Set before any tile drapes its ground.
@@ -1418,6 +1418,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (pkg.region === 'paris') plants.woodWalls = true
   // (the clearings the landmarks have asked for so far, and every one from now on)
   for (const r of clearingsEarly) plants.clearings.push(r)
+  // (a formal garden has only its planned plants: render/garden.ts draws them)
+  for (const r of index.garden?.formal ?? []) plants.clearings.push(unpackPoints(r))
+  plants.garden = city.gardenTiles()
   plantsClear = (ring) => plants.clear(ring)
   if (!off.has('trees') && !off.has('plants')) {
     city.addLayer(plants.layer())

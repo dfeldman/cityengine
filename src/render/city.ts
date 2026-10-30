@@ -21,6 +21,7 @@ import { stopSign, uspsBox, sfFireAlarmBox, nycFireAlarmBox, billboard, muniStop
 import { streetClockPost } from './street-clock.ts'
 import { clockFace } from './landmarks/parts.ts'
 import { Clocks } from './clocks.ts'
+import { GardenTiles, GARDEN_TINT, insideRing as inGardenRing } from './garden.ts'
 import { MeshBuilder, buildBuilding, capPolygon, fronts, type StreetFacing, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
@@ -177,7 +178,7 @@ interface Junction {
 }
 
 /** What the city needs up front: the index's global part (city/tiles.ts `CityIndex`). */
-export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain' | 'water' | 'box' | 'walls'>
+export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain' | 'water' | 'box' | 'walls' | 'garden'>
   & {
     /**
      * Where the city's CONTENT actually is, in local metres, from the index's own tile list (BUGS.md #225,
@@ -2316,6 +2317,12 @@ export class City {
     return this.railingIn.get(k) ?? []
   }
 
+  private gardenFiled: GardenTiles | null = null
+  gardenTiles(): GardenTiles | null {
+    if (!this.gardenFiled && this.pkg.garden) this.gardenFiled = new GardenTiles(this.pkg.garden, TILE)
+    return this.gardenFiled
+  }
+
   private revetments(k: string): Point[][] {
     if (!this.revetmentIn) {
       const REVETMENT_OF_SHORE = 250
@@ -2825,7 +2832,10 @@ export class City {
           const c = r.reduce((q, p) => ({ x: q.x + p.x / r.length, z: q.z + p.z / r.length }), { x: 0, z: 0 })
           return this.terrain.heightAt(c.x, c.z) <= seaLevel + 0.5
         })()
-        const tint = a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
+        // (the paved walks of a Paris square are its raked stabilisé, not a street's flagstones)
+        const walkInGarden = a.kind === 'paved' && !a.surface && !a.brick && this.pkg.region === 'paris'
+          && areasHere.some((p) => p.kind === 'park' && inGardenRing(unpackPoints(p.ring), unpackPoints(a.ring)[0].x, unpackPoints(a.ring)[0].z))
+        const tint = walkInGarden ? GARDEN_TINT.gravel : a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         /*
@@ -2854,6 +2864,14 @@ export class City {
             into.colors[v * 4] = t[0]; into.colors[v * 4 + 1] = t[1]; into.colors[v * 4 + 2] = t[2]
           }
         }
+      }
+    }
+    // a formal garden's gravel, lawns and beds (render/garden.ts), over the park they lie in and under what a landmark paves
+    {
+      const bx0 = ktx * TILE, bz0 = ktz * TILE
+      for (const f of this.gardenTiles()?.flatsIn(ktx, ktz) ?? []) {
+        const piece = clipToBox(f.ring, bx0, bz0, bx0 + TILE, bz0 + TILE)
+        if (piece.length >= 3) capPolygonWithHoles(areas, [piece], f.kind === 'gravel' ? 0.03 : f.kind === 'lawn' ? 0.045 : 0.06, GARDEN_TINT[f.kind], 0, 30, AREA_MAX_EDGE)
       }
     }
     // the paving landmarks asked for (`paveGround`), clipped to this tile, over every area
@@ -2968,7 +2986,9 @@ export class City {
        * its own mesh in the corridor's group, so a drive that crosses a trail paints over it.
        */
       else if (e.foot && e.kind !== 'steps') {
-        const page = TRAIL_PAGE[e.surface] ?? 'asphalt'
+        // (a Paris garden's walks are the pale raked stabilisé. The bake calls an untagged way asphalt, and nearly all of them are untagged)
+        const stabilise = this.pkg.region === 'paris' && (e.kind === 'footway' || e.kind === 'path') && (e.surface === 'gravel' || e.surface === 'asphalt' || e.surface === 'concrete')
+        const page = stabilise ? 'sand' : TRAIL_PAGE[e.surface] ?? 'asphalt'
         const out = trails.get(page) ?? new MeshBuilder()
         trails.set(page, out)
         // (a footway or a path is drawn no wider than 2.2 m: the bake's 3 m default laid the Botanical Garden's web of
@@ -4009,6 +4029,20 @@ export class City {
               }, mx, 0.15, mz, heading)
             }
           }
+        }
+      }
+    }
+
+    this.gardenTiles()?.plant(furniture, ktx, ktz)
+    // (the lawns of a square, inside a park: a lawn mapped on its own in a housing estate or on a verge has no gardener's edge)
+    {
+      const g = this.gardenTiles()
+      const parks = areasHere.filter((a) => a.kind === 'park').map((a) => unpackPoints(a.ring))
+      if (g && parks.length) {
+        for (const a of areasHere) {
+          if (a.kind !== 'grass') continue
+          const lawn = unpackPoints(a.ring)
+          if (parks.some((r) => inGardenRing(r, lawn[0].x, lawn[0].z))) g.lawnEdge(furniture, lawn, ktx, ktz)
         }
       }
     }

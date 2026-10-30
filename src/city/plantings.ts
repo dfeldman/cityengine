@@ -70,7 +70,7 @@ export const TREES_PER_KM2 = 1000
  * in place of step 3's guessed boulevard rows, and kept whole: the cap thins only
  * the park scatter then, since a tree that is really there is not one to thin.
  */
-export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings' | 'region'>>, cap = TREE_CAP,
+export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings' | 'region' | 'garden'>>, cap = TREE_CAP,
                           given?: Planting[], parks?: ParkRule | PlantZones, report?: PlantReport, hand: Planting[] = []): Planting[] {
   // (the trees planted by HAND — data/trees/<city>.json: the Japanese Tea Garden's Cherry Tree Lane and Maple Lane —
   //  come first and are not moved: everything else keeps its spacing from them)
@@ -253,7 +253,7 @@ const pick = <T extends { weight: number }>(l: T[], u: number): T => {
 }
 
 /** The rules before zones, which a city with no planting zones (Paris) still plants by. */
-function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings' | 'region'>>, cap: number,
+function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings' | 'region' | 'garden'>>, cap: number,
                      given?: Planting[], parks?: ParkRule): Planting[] {
   const street = given ? seatTrees(given, pkg) : undefined
   const out: Planting[] = []
@@ -292,6 +292,28 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
    * Without a rule, the old rejection scatter, which is what Paris is tuned for.
    */
   const parked = parks ? plantParks(pkg, parks) : []
+  // (a formal garden's trees are its plan's and the map's: nothing is scattered in it)
+  const formal = (pkg.garden?.formal ?? []).map(unpackPoints)
+  const planned = (x: number, z: number): boolean => formal.some((f) => inside(f, x, z))
+  /*
+   * NOR WHERE THE TREES HAVE BEEN COUNTED (owner, 2026-10-30: "right now we scatter trees like for a US park"). Paris's register
+   * has the city's gardens tree by tree, 50 to 175 a hectare: an open lawn in one of them is open, and the scatter stood trees on
+   * it. Three mapped trees within 60 m says a surveyor has been here. A wood is planted regardless: the register has its edges.
+   */
+  const SURVEY_CELL = 60
+  const surveyed = new Map<string, number>()
+  if (mature) {
+    for (let i = 0; i < pkg.trees.length; i += 2) {
+      const k = `${Math.floor(pkg.trees[i] / SURVEY_CELL)},${Math.floor(pkg.trees[i + 1] / SURVEY_CELL)}`
+      surveyed.set(k, (surveyed.get(k) ?? 0) + 1)
+    }
+  }
+  const counted = (x: number, z: number): boolean => {
+    const gx = Math.floor(x / SURVEY_CELL), gz = Math.floor(z / SURVEY_CELL)
+    let n = 0
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) n += surveyed.get(`${gx + dx},${gz + dz}`) ?? 0
+    return n >= 3
+  }
   for (const a of parks ? [] : pkg.areas) {
     if (!GREEN.has(a.kind)) continue
     const ring = unpackPoints(a.ring)
@@ -314,7 +336,7 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
     for (let i = 0, tries = 0; i < want && tries < want * 8; tries++) {
       const x = minx + r() * (maxx - minx)
       const z = minz + r() * (maxz - minz)
-      if (!inside(ring, x, z)) continue
+      if (!inside(ring, x, z) || planned(x, z) || (a.kind !== 'wood' && counted(x, z))) continue
       out.push({ x, z, height: parkH(), spin: r() * 6.28, park: true })
       i++
     }

@@ -288,6 +288,19 @@ out geom qt;`
  * `osm-local.ts`'s `KEPT_KEYS`, so this answers from the local extract and never touches the network.
  */
 /** Fences and walls (Paris's parks are railed: tools/bake.ts keeps those along a park's edge). */
+/** the planting of a formal garden: hedges, flower beds, shrubberies and rows of trees (tools/gardens/) */
+export function gardenPartsQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:180];
+(
+  way["barrier"="hedge"](${box});
+  way["natural"="tree_row"](${box});
+  way["landuse"="flowerbed"](${box});
+  way["natural"="shrubbery"](${box});
+);
+out geom qt;`
+}
+
 export function fencesQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:180];

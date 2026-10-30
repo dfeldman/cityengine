@@ -53,7 +53,8 @@ const out = groups.map((g, i) => {
   const ox = g[0].ox, oz = g[0].oz
   let wide = 0
   for (const m of g) wide = Math.max(wide, Math.abs((m.x - x) * oz - (m.z - z) * ox))
-  const front = Math.round(((Math.atan2(ox, oz) * 180) / Math.PI + 360) % 360)
+  // (a point entry's `front` turns local −z to that bearing, and this model's opening is on +z: it looks out along the track, so the other way)
+  const front = Math.round(((Math.atan2(ox, oz) * 180) / Math.PI + 540) % 360)
   return { name: `railway tunnel mouth ${i + 1}`, procedural: 'railPortal', lat: +(48.8605 + (z - oz * 3) / 111320).toFixed(6), lon: +(2.332 + (x - ox * 3) / 73270).toFixed(6),
     size: [Math.round(2 * wide + 12), 6], front, height: 8, shadow: false, sign: false, note: 'Written by tools/paris-portals.ts: where OSM takes this track into a tunnel.' }
 })

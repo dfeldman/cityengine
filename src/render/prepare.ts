@@ -7,7 +7,7 @@ import { style as styleOf, type StyleId } from '../city/facade.ts'
 import { specialFor } from '../city/specials.ts'
 import { TILE, type CityIndex, type TileData } from '../city/tiles.ts'
 import { isReplaced, replacedIds, restyles, type LandmarkEntry } from './landmarks.ts'
-import { parkTile, type ParkMap } from '../city/park-area.ts'
+import { gardenWalks, parkTile, type ParkMap } from '../city/park-area.ts'
 import { region } from '../city/region.ts'
 
 const hexRgb = (h: string): [number, number, number] =>
@@ -41,7 +41,9 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
   return (t0) => {
     parkMap?.add(t0.key, t0.areas, t0.buildings.length)
     const [ktx, ktz] = t0.key.split(',').map(Number)
-    const t = parkTile(t0, parkStyle, { x0: ktx * TILE, z0: ktz * TILE, x1: (ktx + 1) * TILE, z1: (ktz + 1) * TILE })
+    const parked = parkTile(t0, parkStyle, { x0: ktx * TILE, z0: ktz * TILE, x1: (ktx + 1) * TILE, z1: (ktz + 1) * TILE })
+    // (and a Paris square, however small: its walks are a garden's raked gravel, where a footway elsewhere is a pavement)
+    const t = index.region === 'paris' ? gardenWalks(parked, parkStyle, { x0: ktx * TILE, z0: ktz * TILE, x1: (ktx + 1) * TILE, z1: (ktz + 1) * TILE }) : parked
     /*
      * And a restyle keeps its buildings but changes their dress — the Place des Vosges's brick and stone —
      * with the steep slate roof that goes with it.

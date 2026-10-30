@@ -173,6 +173,18 @@ export interface PackedFringe {
   baseY?: number
 }
 
+/** Hedges, beds and clipped yews (tools/gardens/). Local metres; heights off the ground. */
+export interface PackedGarden {
+  /** a clipped row. With `y0` it is a pleached crown on trunks `spacing` apart, its underside `y0` up */
+  hedges: { points: number[]; h: number; w: number; y0?: number; spacing?: number }[]
+  /** the gravel, lawns and flower beds, flat on the ground */
+  flats: { ring: number[]; kind: 'gravel' | 'lawn' | 'bed'; rim?: true }[]
+  /** x, z, height, shape (0 cone, 1 ball, 2 cube) */
+  topiary: number[]
+  /** where nothing is scattered: the only plants inside are the ones planned or mapped */
+  formal: number[][]
+}
+
 export interface PackedArea {
   /**
    * `sand` and `dirt` were missing and the beach was a lawn (BUGS.md #200). The owner: *"the beach should
@@ -371,6 +383,8 @@ export interface CityPackage {
   areas: PackedArea[]
   /** mapped retaining walls and seawalls (optional: absent on a package baked before them) */
   walls?: PackedWall[]
+  /** a city's formal planting: OSM's hedges and beds and the plans traced from aerial photographs (render/garden.ts) */
+  garden?: PackedGarden
   /** x,z pairs of individual mapped trees */
   trees: number[]
   rails: PackedRail[]
