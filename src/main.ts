@@ -245,10 +245,10 @@ if (params.get('model')) {
     const tours = toursFor(city)
     tourPick = tours.find((t) => t.id === tourParam) ?? null
     if (!tourPick && tourParam !== 'free' && tours.length) {
-      // (the tours are all in the United States: miles unless Settings says kilometres)
+      // (miles unless Settings says kilometres)
       tourPick = await pickTour(tours, { speedup: params.get('speedup') ? Number(params.get('speedup')) : MODES[mode].speedup,
         imperial: settings().units !== 'kmh', touch: compactScreen(params.get('compact')) || matchMedia('(pointer: coarse)').matches,
-        platform: !!platform })
+        platform: !!platform, city: cities.find((c) => c.id === city)?.name })
     }
   }
   const { game } = await import('./game.ts')

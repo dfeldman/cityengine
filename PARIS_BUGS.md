@@ -215,14 +215,17 @@ Open:
 - [x] **Named foot bridges and bikes.** 18 of the 41 now ride (`rideFootBridges`, tools/bridges.ts `footBridgeLinks`): the Pont des
       Arts, the Passerelle Simone-de-Beauvoir and others. 23 still don't, because an end reaches the network only by stairs:
       the Passerelles Debilly and Senghor among them. Riding those wants a ramp or a decision about bikes on stairs.
-- [ ] After the lidar relief: Pont Neuf's approach at 48.857, 2.341 has short pale parapets standing on the way and a hard
-      band in the river beside the Vert-Galant. Check whether these are new.
+- [x] Grey-blue mudflats along the Seine: the lidar reads the water's surface, a metre out in places, and strips of it stood over
+      the plane. Interior river posts now go 3 m under. Pont Neuf's "parapets" were only the bridge's own end. Check after the bake.
+- [ ] Kit fronts, measured (`front` against the package's streets): 2,449 of 2,458 face a street, 2,259 of them the nearest.
+      8 have a street only on another side, the Mairie du 17e and the churches Sainte-Claire d'Assise and Sainte-Odile among them.
 - [x] **Memory (owner: "smarter about unloading textures that aren't in use. Or use ktx2").** `tools/measure-load.ts` counted one
       shared texture once per material: its 1.7 GB is really ~450 MB, the same as San Francisco. Sign plates were never released,
       so the footprint grew with the ride, and a long name was 6 MB. Now capped at 1,536 px and released out of reading range:
       ~150 MB to under 10 MB. Measured over a 12-stop jump: footprint 1.6-2.7 GB with no upward trend.
-- [ ] KTX2: not done. About 250 MB of textures are static and could convert, so ~180 MB at best; the rest are canvases. No
-      `toktx` or `basisu` installed. Worth doing for phones more than for this.
+- [ ] **Backlog: KTX2 (owner, 2026-10-30).** Convert the static textures: about 250 MB could shrink, ~180 MB at best, chiefly
+      the façade atlas (59 MB), skins, clothes and leaves. Canvas textures (plates, words, signs, ~200 MB) can't. Needs `toktx` or
+      `basisu` in the tools, the Basis transcoder in the build, and a look at the atlas for artefacts. Matters most on phones.
 - [ ] `tools/r2-prune.sh` was not run with this upload: the bucket still holds what the last build dropped.
 - [ ] Facade photos: Mapillary coverage, measured. Panorama within ~30 m of a street: SF 68%, Paris 27% (15% since 2021), on the
       29 central Paris tiles cached of the 79 the box needs. `photo.ts` throws away flat frames, and Paris has 70% with those.

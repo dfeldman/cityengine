@@ -65,13 +65,13 @@ export function duration(min: number): string {
  * The picker: resolves with the chosen tour, or null for a free ride. `speedup` is the mode's (modes.ts), for how long
  * each tour takes in the game; `imperial` for miles and feet.
  */
-export function pickTour(tours: Tour[], o: { speedup: number; imperial: boolean; touch: boolean; platform: boolean }): Promise<Tour | null> {
+export function pickTour(tours: Tour[], o: { speedup: number; imperial: boolean; touch: boolean; platform: boolean; city?: string }): Promise<Tour | null> {
   return new Promise((resolve) => {
     const root = document.createElement('div')
     root.className = 'sr-tours'
     const card = document.createElement('div')
     card.className = 'sr-card'
-    card.innerHTML = '<span class="sr-pill">Dandyhorse</span><h1>Tours of San Francisco</h1>'
+    card.innerHTML = '<span class="sr-pill">Dandyhorse</span><h1>Tours of ' + (o.city ?? 'San Francisco') + '</h1>'
       + '<p class="lede">Pick a tour: the route guides you from stop to stop, and you can always turn off and find your own way.</p>'
     const list = document.createElement('div')
     list.className = 'list'

@@ -2006,7 +2006,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     tourPicking = true
     tourEndOffered = false
     tourCard?.hide()
-    const t = await pickTour(toursFor(opts.city), { speedup: play.speedup, imperial: imperialNow(), touch: touchScreen(), platform: !!opts.platform })
+    const t = await pickTour(toursFor(opts.city), { speedup: play.speedup, imperial: imperialNow(), touch: touchScreen(), platform: !!opts.platform, city: src.index?.name })
     tourPicking = false
     if (!t) { endTour(); hud.banner('Free ride', 'ride wherever you like'); return }
     const jump = (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump
@@ -2235,7 +2235,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           const top = life.gondolaTop(a.x, a.z)
           hud.banner('Aboard the funicular', top !== null && a.y < top - 10 ? 'up to the Sacré-Cœur' : 'down to the Place Saint-Pierre')
         } else hud.banner('Aboard the gondola', a.y - city.terrain.heightAt(a.x, a.z) > 8 ? 'down to Salesforce Plaza' : 'up to Salesforce Park')
-      } else hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, `${keyed('B', 'get off')} anywhere there is a street`)
+      } else hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : pkg.region === 'paris' ? 'tram' : 'streetcar')}`, `${keyed('B', 'get off')} anywhere there is a street`)
     }
   }
   hud.onTransitTap = transitAction
@@ -3599,7 +3599,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (recovered) setTimeout(tell, 800)
       // and the welcome screen over the city, gone at the first key (BUGS.md #165)
       // (in tour mode the picker was the welcome: main.ts)
-      if (!opts.freeze && !opts.tour) welcomeScreen(src.index?.name ?? opts.city, !nav.fast, !!opts.platform)
+      if (!opts.freeze && !opts.tour) welcomeScreen(src.index?.name ?? opts.city, !nav.fast, !!opts.platform, pkg.region)
       else if (opts.tour) {
         tourFrom = { m: nav.travelled, s: simSeconds }
         hud.banner(guide ? guide.tour.name : 'Free ride', guide ? `${guide.count} stops` : 'ride wherever you like · Esc → Tour to choose one', 6000)
@@ -3813,8 +3813,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const out: { id: string; label: string }[] = []
         const v = transit.boardable
         if (transit.aboard) out.push({ id: 'transit', label: transit.aboard.kind === 'wheel' ? '🎡 Get off at the bottom' : '🚋 Get off' })
-        else if (v) out.push({ id: 'transit', label: v.kind === 'wheel' ? '🎡 Ride the SkyStar wheel' : v.kind === 'gondola' ? '🚡 Take the gondola'
-          : `🚋 Board the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}` })
+        else if (v) out.push({ id: 'transit', label: v.kind === 'wheel' ? '🎡 Ride the SkyStar wheel' : v.kind === 'gondola' ? (pkg.region === 'paris' ? '🚡 Take the funicular' : '🚡 Take the gondola')
+          : `🚋 Board the ${v.name ?? (v.kind === 'cable' ? 'cable car' : pkg.region === 'paris' ? 'tram' : 'streetcar')}` })
         const top = !frozen && !transit.aboard ? nearTop(lastAt) : null
         if (observing && frozen) out.push({ id: 'observe', label: '🔭 Come down' })
         else if (top) out.push({ id: 'observe', label: `🔭 ${top.obscura ? 'Look in' : top.skyspace ? 'Sit in' : 'Observe from'} ${top.name.replace(/^the /, '')}` })

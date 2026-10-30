@@ -171,6 +171,11 @@ const HIGHLIGHTS: [string, string, string][] = [
   ['🚋', 'Hop aboard', 'ride a cable car or a streetcar and get your breath back'],
   ['🌉', 'Explore', 'Nob Hill, Chinatown, the waterfront, both bridges'],
 ]
+const PARIS_HIGHLIGHTS: [string, string, string][] = [
+  ['🥐', 'Deliver', 'take a job, find the kitchen, beat the clock for stars and tips'],
+  ['🚋', 'Hop aboard', 'ride a tram or the Montmartre funicular and get your breath back'],
+  ['🗼', 'Explore', 'the Seine and its bridges, Montmartre, the Marais, the Bois'],
+]
 
 export const WELCOME_CSS = `
 .sr-welcome { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
@@ -213,14 +218,14 @@ let dismissWelcome: (() => void) | null = null
 export const closeWelcome = (): void => { dismissWelcome?.() }
 
 /** Show it, and take it away at the first key or click. */
-export function welcomeScreen(cityName: string, slowInput = false, platform = false): void {
+export function welcomeScreen(cityName: string, slowInput = false, platform = false, region = ''): void {
   welcomeUp = true
   const root = document.createElement('div')
   root.className = 'sr-welcome'
   // slow input (?input=slow, trainers): a press declares the turn at the next junction, well before it
   const touch = touchScreen()
-  const rows = (platform ? PLATFORM_CONTROLS : CONTROLS).map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
-  const hl = HIGHLIGHTS.map(([e, t, d]) => `<div><span class="e">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')
+  const rows = (platform ? PLATFORM_CONTROLS.map(([k, d]): [string, string] => [k, region === 'paris' ? d.replace('a cable car', 'a tram') : d]) : CONTROLS).map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
+  const hl = (region === 'paris' ? PARIS_HIGHLIGHTS : HIGHLIGHTS).map(([e, t, d]) => `<div><span class="e">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')
   root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>
     <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
     <div class="hl">${hl}</div>

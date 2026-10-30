@@ -1912,6 +1912,23 @@ async function bake(spec: CitySpec): Promise<void> {
     if (ponds) console.log(`  pond beds: ${beds} fine posts in ${ponds} ponds lowered to half a metre under their water`)
   }
   /*
+   * THE LIDAR'S RIVER IS ITS SURFACE, not its bed: an MNT reads the water, not unevenly but a metre out here and there, and the
+   * plane is drawn from the banks, so strips of "bed" stood over the water all along the Seine as flat grey-blue mudflats (Pont
+   * Neuf, 2026-10-30). So every wet post not on the shore goes under. The shore keeps its height, and the quays their walls.
+   */
+  if (lidarPosts) {
+    let under = 0
+    for (let r = 1; r < frows - 1; r++) {
+      for (let c = 1; c < fcols - 1; c++) {
+        const i = r * fcols + c
+        if (!lidarPosts[i] || !fineWet[i] || !fineWet[i - 1] || !fineWet[i + 1] || !fineWet[i - fcols] || !fineWet[i + fcols]) continue
+        fineGround[i] -= 3
+        under++
+      }
+    }
+    console.log(`  river beds: ${under} fine posts of lidar's water surface taken 3 m down`)
+  }
+  /*
    * The sea bed is not the ground (BUGS.md #58). The elevation tiles carry BATHYMETRY: off the Embarcadero the
    * bay floor drops to −108 m, so the shoreline came out as a cliff, the water plane sat in a pit far out from
    * the quays, and the piers — which stand on the bed — hung over a canyon or appeared to be on dry land.
