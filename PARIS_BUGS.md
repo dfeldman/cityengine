@@ -76,7 +76,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       actually has a lot of roads going through buildings. Very unusual". `tunnel=building_passage` is a `passage`
       (render/passages.ts draws an arch); check why this one isn't — the way may be `covered=yes` on a cycleway, or the
       building is a landmark model that doesn't cut its arch.
-- [ ] **The Bercy ministry**: "multiple roads going under it which we don't render. it also has a helipad!" — the
+- [x] **The Bercy ministry**: the helipad added (a round railed deck on raking struts over the roof near the river end, its H and circle); the roads under the two spans render (the quai and the Rue de Bercy pass under — seen in the city; the service road through the grounded middle gets its passage vault with the claimed-building fix). Original: "multiple roads going under it which we don't render. it also has a helipad!" — the
       `bercyMinistry` builder (palaces family) spans the Quai de Bercy and Rue de Bercy on piers; the ways under it and
       the helipad (the round deck at the top, river end).
 - [ ] **The Seine's industrial banks** (around Javel/Grenelle): "the river side is all industrial buildings … if OSM has

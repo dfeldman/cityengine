@@ -1,5 +1,5 @@
 import type { MeshBuilder } from '../../../buildings.ts'
-import { box, type Rgb } from '../../../models.ts'
+import { box, prism, type Rgb } from '../../../models.ts'
 import { block, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import { fitted, palette, rectOn, type F } from './common.ts'
@@ -69,4 +69,37 @@ function draw(out: MeshBuilder): void {
   block(out, RIVER + 30, BERCY - 30, -6, 6, top + 1.1, top + 3.4, shade(p.stone, 0.9))          // plant on the roof
   // the undersides of the spans, in shadow
   for (const [a, b] of spans) box(out, (a + b) / 2, 19.95, 0, (b - a) / 2, 0.05, 15.6, shade(p.stone, 0.6), FIXED)
+  /*
+   * THE HELIPAD (owner, 2026-10-30, from street view: "it also has a helipad!"): the great round deck over the roof near
+   * the river end, wider than the slab, on a ring of raking struts, its rim railed — seen from the quai as the dark curved
+   * underside of a saucer. The pad white with its H and its circle.
+   */
+  {
+    const hx = RIVER + 34
+    const deck = top + 7
+    const R = 19
+    const steel: Rgb = [0.55, 0.57, 0.58]
+    prism(out, hx, 0, deck - 1.2, deck, R, 32, shade(p.stone, 0.62))                   // the deck's dark underside
+    prism(out, hx, 0, deck, deck + 0.15, R - 0.4, 32, [0.86, 0.86, 0.84])              // the pad
+    prism(out, hx, 0, deck - 6.5, deck - 1.2, 3.2, 12, shade(p.stone, 0.9))           // the core it stands on
+    for (let k = 0; k < 12; k++) {                                                     // raking struts out to the rim
+      const a = (k / 12) * Math.PI * 2
+      for (let t = 0; t < 1; t += 0.2) {
+        const r = 3 + (R - 4) * t
+        box(out, hx + Math.cos(a) * r, deck - 6 + 4.6 * t, Math.sin(a) * r, 0.25, 0.25, 0.25, steel, FIXED)
+      }
+    }
+    for (let k = 0; k < 48; k++) {                                                     // the rim's railing posts
+      const a = (k / 48) * Math.PI * 2
+      box(out, hx + Math.cos(a) * (R - 0.2), deck + 0.7, Math.sin(a) * (R - 0.2), 0.05, 0.55, 0.05, steel, FIXED)
+    }
+    // the H, and the circle round it
+    const mark: Rgb = [0.18, 0.2, 0.22]
+    for (let k = 0; k < 40; k++) {
+      const a = (k / 40) * Math.PI * 2
+      box(out, hx + Math.cos(a) * 12, deck + 0.17, Math.sin(a) * 12, 0.5, 0.02, 0.5, mark, FIXED)
+    }
+    for (const zz of [-3, 3]) box(out, hx, deck + 0.17, zz, 4, 0.02, 0.5, mark, FIXED)
+    box(out, hx, deck + 0.17, 0, 0.5, 0.02, 3, mark, FIXED)
+  }
 }
