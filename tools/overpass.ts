@@ -281,6 +281,16 @@ out geom qt;`
  * which is its cache key, and would refetch every chunk of every city on disk. `barrier` is already in
  * `osm-local.ts`'s `KEPT_KEYS`, so this answers from the local extract and never touches the network.
  */
+/** Fences and walls (Paris's parks are railed: tools/bake.ts keeps those along a park's edge). */
+export function fencesQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:180];
+(
+  way["barrier"~"^(fence|wall)$"](${box});
+);
+out geom qt;`
+}
+
 export function wallsQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:180];

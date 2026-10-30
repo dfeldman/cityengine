@@ -36,7 +36,7 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, campusQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
+import { bridgesQuery, campusQuery, fencesQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
 
 /** the trees a city plants by hand (data/trees/<city>.json: the Japanese Tea Garden's lanes), local metres */
 function handTreesOf(id: string, toLocal: (lat: number, lon: number) => { x: number; z: number }): Planting[] {
@@ -3340,6 +3340,57 @@ async function bake(spec: CitySpec): Promise<void> {
       if (!w.geometry || w.geometry.length < 2) continue
       const pts = w.geometry.map((g) => proj.toLocal(g))
       walls.push({ id: w.id, points: packPoints(pts), ...(w.tags?.barrier === 'seawall' ? { sea: true as const } : {}) })
+    }
+    /*
+     * PARIS'S PARKS ARE RAILED (owner, 2026-10-30, the Luxembourg at the Porte Gay-Lussac: "parks are often surrounded by tall
+     * fences or even walls … probably because they are palace grounds that close"). OSM has 13,700 fences and walls in the
+     * box, nearly all private; those along a park's edge (within 12 m of its boundary, and a park of real size) are kept,
+     * as bars — or stone where OSM says a wall — and drawn by the city (render/city.ts `railings`).
+     */
+    if (spec.region === 'paris') {
+      const fences = await overpassTiled(fencesQuery, detailBboxOf(spec)).catch((e) => {
+        console.warn(`  fences: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+        return null
+      })
+      const CELL = 40
+      const edges = new Map<string, number[][]>()
+      for (const a of areas) {
+        if (a.kind !== 'park') continue
+        const r = unpackPoints(a.ring)
+        if (area(r) < 3000) continue
+        for (let i = 0; i < r.length; i++) {
+          const q = r[i], n = r[(i + 1) % r.length]
+          const steps = Math.max(1, Math.ceil(Math.hypot(n.x - q.x, n.z - q.z) / CELL))
+          for (let s = 0; s <= steps; s++) {
+            const k = `${Math.floor((q.x + (n.x - q.x) * s / steps) / CELL)},${Math.floor((q.z + (n.z - q.z) * s / steps) / CELL)}`
+            const l = edges.get(k)
+            if (l) l.push([q.x, q.z, n.x, n.z])
+            else edges.set(k, [[q.x, q.z, n.x, n.z]])
+          }
+        }
+      }
+      const nearEdge = (x: number, z: number): boolean => {
+        const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL)
+        for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+          for (const [ax, az, bx, bz] of edges.get(`${gx + dx},${gz + dz}`) ?? []) {
+            const sx = bx - ax, sz = bz - az
+            const t = Math.max(0, Math.min(1, ((x - ax) * sx + (z - az) * sz) / (sx * sx + sz * sz || 1)))
+            if (Math.hypot(ax + sx * t - x, az + sz * t - z) < 12) return true
+          }
+        }
+        return false
+      }
+      let kept = 0
+      for (const w of fences?.ways ?? []) {
+        if (!w.geometry || w.geometry.length < 2) continue
+        const pts = w.geometry.map((g) => proj.toLocal(g))
+        // (most of it along the edge, not a garden fence that merely starts there)
+        const along = pts.filter((q) => nearEdge(q.x, q.z)).length
+        if (along < Math.max(2, pts.length * 0.6)) continue
+        walls.push({ id: w.id, points: packPoints(pts), railing: w.tags?.barrier === 'wall' ? 'wall' : 'bars' })
+        kept++
+      }
+      console.log(`  ${kept} park railings and walls (of ${fences?.ways.length ?? 0} fences and walls)`)
     }
     pkg.walls = walls
     console.log(`  ${walls.length} retaining/sea walls`)

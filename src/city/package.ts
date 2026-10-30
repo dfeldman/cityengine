@@ -318,6 +318,8 @@ export interface PackedWall {
   points: number[]
   /** a seawall as such, as opposed to any retaining wall (a terraced garden's is one too) */
   sea?: true
+  /** a park's enclosure, not a retaining wall at all (Paris's parks close at night): iron bars, or a stone wall */
+  railing?: 'bars' | 'wall'
 }
 
 /** A railway, for the trains that run on it. Straight through; trains do not steer. */

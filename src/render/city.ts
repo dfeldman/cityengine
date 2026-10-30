@@ -31,7 +31,7 @@ import { groundLayerMaterial, roadMaterial } from './road-material.ts'
 import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
-  bench, bikeDocks, bollard, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
+  bench, bikeDocks, bollard, box, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
   morrisColumn, parisBusStop, parisLamp, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
@@ -2294,6 +2294,25 @@ export class City {
    * the water with no sand near it is a wall.
    */
   private revetmentIn: Map<string, Point[][]> | null = null
+  private railingIn: Map<string, { pts: Point[]; wall: boolean }[]> | null = null
+
+  /** the park railings and walls (PackedWall.railing) in a tile, each piece filed by the tile it starts in */
+  private railingsOf(k: string): { pts: Point[]; wall: boolean }[] {
+    if (!this.railingIn) {
+      this.railingIn = new Map()
+      for (const w of this.pkg.walls ?? []) {
+        if (!w.railing) continue
+        const pts = unpackPoints(w.points)
+        for (let i = 1; i < pts.length; i++) {
+          const at = key(...tileOf(pts[i - 1].x, pts[i - 1].z))
+          const list = this.railingIn.get(at) ?? []
+          list.push({ pts: [pts[i - 1], pts[i]], wall: w.railing === 'wall' })
+          this.railingIn.set(at, list)
+        }
+      }
+    }
+    return this.railingIn.get(k) ?? []
+  }
 
   private revetments(k: string): Point[][] {
     if (!this.revetmentIn) {
@@ -2301,6 +2320,7 @@ export class City {
       this.revetmentIn = new Map()
       const shore = this.shoreIndex()
       for (const w of this.pkg.walls ?? []) {
+        if (w.railing) continue          // (a park's enclosure, not a revetment: `railingsOf`)
         const pts = unpackPoints(w.points)
         if (pts.length < 2) continue
         if (!w.sea) {
@@ -3930,6 +3950,60 @@ export class City {
           }
           acc -= seg
           travelled += seg
+        }
+      }
+    }
+
+    /*
+     * PARIS'S PARK RAILINGS (PackedWall.railing; owner, 2026-10-30: "parks are often surrounded by tall fences or even
+     * walls"): tall black bars with gilded tips on a stone plinth, or a plain stone wall, along what the bake kept — with a
+     * gap wherever a way passes through (a gate, a path), so nothing is ridden through iron.
+     */
+    {
+      const list = this.railingsOf(k)
+      if (list.length) {
+        const ways = aroundEdges.map((e) => ({ pts: unpackPoints(e.points), half: e.width / 2 + 1.2 }))
+        const onWay = (x: number, z: number): boolean => ways.some((w) => {
+          for (let i = 1; i < w.pts.length; i++) {
+            const a = w.pts[i - 1], b = w.pts[i], dx = b.x - a.x, dz = b.z - a.z
+            const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+            if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < w.half) return true
+          }
+          return false
+        })
+        const iron: [number, number, number] = [0.07, 0.08, 0.09]
+        const gilt: [number, number, number] = [0.78, 0.62, 0.26]
+        const stone: [number, number, number] = [0.7, 0.67, 0.6]
+        for (const { pts, wall } of list) {
+          for (let i = 1; i < pts.length; i++) {
+            const a = pts[i - 1], b = pts[i]
+            const L = Math.hypot(b.x - a.x, b.z - a.z)
+            if (L < 0.2) continue
+            const ux = (b.x - a.x) / L, uz = (b.z - a.z) / L
+            const heading = Math.atan2(ux, uz)
+            // in pieces of up to 3 m, so a piece follows the ground and a gap is a piece left out
+            const n = Math.max(1, Math.ceil(L / 3)), step = L / n
+            for (let p = 0; p < n; p++) {
+              const mx = a.x + ux * step * (p + 0.5), mz = a.z + uz * step * (p + 0.5)
+              if (onWay(mx, mz)) continue
+              placeModel(furniture, (o) => {
+                if (wall) { box(o, 0, 1.3, 0, 0.18, 1.3, step / 2 + 0.02, stone, 0); box(o, 0, 2.65, 0, 0.24, 0.06, step / 2 + 0.02, [0.63, 0.6, 0.54], 0); return }
+                box(o, 0, 0.25, 0, 0.16, 0.25, step / 2 + 0.02, stone, 0)                   // the plinth
+                box(o, 0, 0.72, 0, 0.025, 0.03, step / 2, iron, 0)                          // the lower rail
+                box(o, 0, 2.3, 0, 0.025, 0.03, step / 2, iron, 0)                           // the upper rail
+                if (p % 2 === 0) box(o, 0, 1.5, -step / 2 + 0.05, 0.05, 1.1, 0.05, iron, 0)  // a post
+                const bars = Math.max(2, Math.round(step / 0.4))
+                for (let q = 0; q < bars; q++) {
+                  const z = -step / 2 + (q + 0.5) * (step / bars)
+                  o.quad([[0, 0.5, z - 0.015], [0, 0.5, z + 0.015], [0, 2.55, z + 0.015], [0, 2.55, z - 0.015]], [1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], iron, 0)
+                  o.quad([[0, 0.5, z + 0.015], [0, 0.5, z - 0.015], [0, 2.55, z - 0.015], [0, 2.55, z + 0.015]], [-1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], iron, 0)
+                  // its gilded spear
+                  o.quad([[0, 2.55, z - 0.03], [0, 2.55, z + 0.03], [0, 2.72, z], [0, 2.72, z]], [1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], gilt, 0)
+                  o.quad([[0, 2.55, z + 0.03], [0, 2.55, z - 0.03], [0, 2.72, z], [0, 2.72, z]], [-1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], gilt, 0)
+                }
+              }, mx, 0.15, mz, heading)
+            }
+          }
         }
       }
     }

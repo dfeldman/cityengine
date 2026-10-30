@@ -19,9 +19,33 @@ import type { StyleId } from '../facade.ts'
 
 export const classifyParis: Classifier = (b: BuildingFacts) => {
   const rec = b.record
-  const period = Number(rec?.construction ?? 99)
-  if (!rec || !(period >= 1 && period <= 12)) return null
   const out = (archetype: string, style: StyleId, rule: string) => ({ archetype, style, district: 'paris', rule })
+  /*
+   * NOT ALL CREAM (owner, 2026-10-30: "we also should have more variety of modern buildings. quite a few that we've rendered
+   * as cream imitation hausmann are actually curtain wall"). APUR dates Paris proper only, so the suburbs in the box — Neuilly,
+   * Levallois, Boulogne, round La Défense — had no record and took the default stone; and APUR leaves 7,794 of its own
+   * undated, "most of them post-war" by its own note. So: an office or a shop block of no known age is modern glass; a
+   * tower of no known age is a modern tower; a large undated footprint counts as post-war. Glass by a seeded share of
+   * the rest, more of it the later and the larger the building.
+   */
+  const hash = (Math.imul(b.id, 2654435761) >>> 0) % 100
+  const kind = b.tags.building ?? ''
+  const business = !!b.tags.office || /^(office|commercial|retail|supermarket)$/.test(kind)
+  const tall = (b.levels ?? 0) >= 9 || (b.height ?? 0) >= 30
+  const known = rec ? Number(rec.construction ?? 99) : 99
+  const dated = known >= 1 && known <= 12
+  if (!dated) {
+    if (business) return out('office', 'skyscraper', 'undated office or shops: glass')
+    if (tall) return hash < 50 ? out('office', 'skyscraper', 'undated tower: glass') : out('tower', 'towerblock', 'undated tower')
+    if (b.area >= 400) return hash < 30 ? out('office', 'skyscraper', 'undated, large: glass') : out('postwar', 'bauhaus', 'undated, large: post-war')
+    return null
+  }
+  const period = known
+  if (period >= 6) {
+    // the later and the larger, the likelier the glass: 1968 on 20%, 1982 on 40%, offices and shops always from 1968
+    const glassShare = period >= 9 ? 40 : period >= 7 ? 20 : 0
+    if ((period >= 7 && business) || hash < glassShare + (b.area >= 1500 ? 25 : 0)) return out('office', 'skyscraper', `period ${period}: curtain wall`)
+  }
   /*
    * The one kind that is never Haussmann (owner, 2026-10-29, from street view: "the only buildings i've found that are not
    * really ever hausmann is hospitals and clinics, which of course are a more modern style, often glass or metal

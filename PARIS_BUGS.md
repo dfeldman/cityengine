@@ -96,7 +96,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [x] **Parked cars can be ridden through, moving ones can't** — the parked cars (kerb bays, car parks) are solid now, as standing traffic is: a step into one is undone and the rider slides round it (checked: 84 m along the Rue de Vaugirard's bays, no false stops). Original: — owner: "very odd since it is not usually obvious which is
       which". The kerb bays' and car parks' cars (street-fleet.ts `park`) are not in the collision test the traffic is;
       add them (they never move: a static list of boxes per tile).
-- [ ] **Submerged path, Place Léon Blum** (48.857659, 2.380151): the streets round the place are all held at 15.4 m, the
+- [x] **Submerged path, Place Léon Blum** — gone on the lidar bake (roads 7.5–7.7 m, foot ways 7.0–7.7 m); the terrarium's buildings-as-ground drove that plateau. Original: (48.857659, 2.380151): the streets round the place are all held at 15.4 m, the
       footways inside it at 13.3–13.6 — the levelling takes each street's highest ground across its width, then each node
       the highest of its ends, and on a broad sloping place those maxima cascade into one plateau at the top. The same
       cascade is a likely cause of "the ways are out of sync with the ground" across Paris (wide boulevards, big places).
@@ -127,6 +127,9 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [x] **Storefronts too repetitive** — six paintings each for the Haussmann and Marais ground storeys (was two: OPTIQUE and LIBRAIRIE in turn down every street), a trade's word on one fascia in three and plain painted boards on the rest, so the real shops' names (signs.ts) stand alone. Original: — owner: "quite repetitive with only a few signs, some of the signs are covered by
       specific POI signs. I think maybe we dont show so many signs and make it a bit random". Fewer generic shop signs
       (OPTIQUE, LIBRAIRIE …), more variety, and none where a real POI sign stands.
+- [ ] **A few tours of Paris** (owner, 2026-10-30: "add a few tours of Paris like we have for SF. Just a few is fine, since
+      Paris has less variety in terrain for cyclists"): src/game/tour data; the Seine's bridges and quays, the Marais to
+      Bastille, Montmartre.
 - [ ] **Corner shops** (48.856774, 2.377890, Rue de la Roquette at Rue Popincourt): owner, "we dont have any special handling
       of corner stores, but this is a very common thing". The Paris corner: the building's cut corner (pan coupé), and one
       shop wrapping it — a boulangerie, café or pharmacie with its painted fascia and lettering running round both faces
