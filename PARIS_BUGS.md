@@ -155,5 +155,5 @@ time is the run graph's merge of parallel ways (ridegraph.ts `mergeParallel`), w
       single saving.
 - [ ] **Drop pavement footways that shadow their street** before graph building (a `footway=sidewalk` running beside a
       street that already draws its pavement), as the centreline duplicates already are.
-- [ ] **Cache the OSM-only stages** (ride graphs, APUR matching) keyed on their inputs, so a change to bridges or paint does
-      not rebuild them.
+- ~~Cache the OSM-only stages~~ — not wanted (owner, 2026-10-30: "I'd prefer not to cache any computed values as that will
+  just cause state issues (caching network downloads is fine)"). Speed comes from doing less work, not from storing it.
