@@ -16,10 +16,11 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
+import { buildingIndex, faceFor } from './signs.ts'
 
 const FIXED = 0
 
-function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz: number, paris: boolean, eu = false): void {
+function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz: number, paris: boolean, eu = false, own?: Rgb[]): void {
   // the pole, out from the wall and up at 35°, and the flag hanging from its end, turned along the wall
   const L = 3
   const tx = x + nx * L * 0.82
@@ -48,14 +49,14 @@ function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz:
     }
     return
   }
-  const bands: Rgb[] = paris ? [[0.18, 0.28, 0.62], [0.95, 0.95, 0.95], [0.82, 0.15, 0.18]] : [[0.72, 0.12, 0.16], [0.95, 0.95, 0.95], [0.72, 0.12, 0.16]]
+  const bands: Rgb[] = own ?? (paris ? [[0.18, 0.28, 0.62], [0.95, 0.95, 0.95], [0.82, 0.15, 0.18]] : [[0.72, 0.12, 0.16], [0.95, 0.95, 0.95], [0.72, 0.12, 0.16]])
   for (let b = 0; b < 3; b++) {
     const t0 = 1 - (w / L) + (b / 3) * (w / L)
     const t1 = 1 - (w / L) + ((b + 1) / 3) * (w / L)
     const p0 = [x + (tx - x) * t0, y + (ty - y) * t0, z + (tz - z) * t0] as const
     const p1 = [x + (tx - x) * t1, y + (ty - y) * t1, z + (tz - z) * t1] as const
     // Paris's bands are vertical (hoist to fly); the US flag's stripes run along it
-    if (paris) {
+    if (paris || own) {
       out.quad([[p0[0], p0[1] - h, p0[2]], [p1[0], p1[1] - h, p1[2]], [p1[0], p1[1], p1[2]], [p0[0], p0[1], p0[2]]], [-nz, 0, nx], [[0, 0], [1, 0], [1, 1], [0, 1]], bands[b], FIXED)
     } else {
       const q0 = [x + (tx - x) * (1 - w / L), y + (ty - y) * (1 - w / L), z + (tz - z) * (1 - w / L)] as const
@@ -63,12 +64,19 @@ function flag(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz:
       out.quad([[q0[0], q0[1] + yb(b + 1), q0[2]], [tx, ty + yb(b + 1), tz], [tx, ty + yb(b), tz], [q0[0], q0[1] + yb(b), q0[2]]], [-nz, 0, nx], [[0, 0], [1, 0], [1, 1], [0, 1]], bands[b], FIXED)
     }
   }
-  if (!paris) {
+  if (!paris && !own) {
     const q0 = [x + (tx - x) * (1 - w / L), y + (ty - y) * (1 - w / L), z + (tz - z) * (1 - w / L)] as const
     const mid = [x + (tx - x) * (1 - w / L / 2.2), y + (ty - y) * (1 - w / L / 2.2), z + (tz - z) * (1 - w / L / 2.2)] as const
     out.quad([[q0[0], q0[1] - h * 0.55, q0[2]], [mid[0], mid[1] - h * 0.55, mid[2]], [mid[0], mid[1] + 0.01, mid[2]], [q0[0], q0[1] + 0.01, q0[2]]], [-nz, 0, nx], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.15, 0.2, 0.45], FIXED)
   }
 }
+
+/** a hotel's third flag, beside the tricolour and the EU's: Italy, Belgium, Ireland — vertical tricolours all */
+const GUESTS: Rgb[][] = [
+  [[0.0, 0.55, 0.27], [0.95, 0.95, 0.95], [0.8, 0.13, 0.17]],
+  [[0.08, 0.08, 0.08], [0.98, 0.85, 0.15], [0.86, 0.15, 0.18]],
+  [[0.08, 0.6, 0.35], [0.95, 0.95, 0.95], [0.98, 0.52, 0.15]],
+]
 
 export function quickMarksLayer(scene: Scene, terrain: Terrain, region: string | undefined): TileLayer {
   const paris = region === 'paris'
@@ -77,6 +85,27 @@ export function quickMarksLayer(scene: Scene, terrain: Terrain, region: string |
     range: 4,
     build(near) {
       const out = new MeshBuilder()
+      /*
+       * A HOTEL's flags over its door (Mapillary, Rue du Faubourg-Saint-Martin, 2026-10-29): the tricolour, the EU's and
+       * a guest's, on short poles above the entrance. OSM gives a hotel only as a named `service` point, so it is found
+       * by name and put on the wall of the building it stands in, as a shop's sign is (render/signs.ts `faceFor`).
+       */
+      if (paris) {
+        let index: ReturnType<typeof buildingIndex> | null = null
+        for (const p of near.tile.pois ?? []) {
+          if (p.kind !== 'service' || !p.name || !/\bh[oô]tel\b/i.test(p.name) || /h[oô]tel (de ville|des ventes|de police|particulier)/i.test(p.name)) continue
+          index ??= buildingIndex(near.tile.buildings)
+          const s = faceFor(p, index)
+          if (!s) continue
+          const g = terrain.heightAt(s.x, s.z)
+          const ax = -s.nz, az = s.nx
+          const h = Math.imul(Math.round(p.x * 10) ^ Math.round(p.z * 10), 2654435761) >>> 0
+          for (let i = 0; i < 3; i++) {
+            const o = (i - 1) * 1.7
+            flag(out, s.x + s.nx * 0.1 + ax * o, g + 4.3, s.z + s.nz * 0.1 + az * o, s.nx, s.nz, true, i === 1, i === 2 ? GUESTS[h % GUESTS.length] : undefined)
+          }
+        }
+      }
       const byId = new Map(near.tile.buildings.map((b) => [b.id, b]))
       for (const l of near.tile.landmarks) {
         const b = byId.get(l.id)

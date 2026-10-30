@@ -33,7 +33,9 @@ export function convertIndex(v2: CityIndex, zFloor: number, dict: MapDict, tiles
   const m: MapIndex = {
     v: 3, id: v2.id, name: v2.name, origin: v2.origin, tile: v2.tile, unit: 'cm', zFloor, radius: v2.radius,
     ground: v2.ground, start: v2.start, attribution: v2.attribution, baked: v2.baked, dict, zones: [],
-    legacy: { water: v2.water, landmarks: v2.landmarks, ...(v2.walls ? { walls: v2.walls } : {}) },
+    legacy: { water: v2.water, landmarks: v2.landmarks, ...(v2.walls ? { walls: v2.walls } : {}),
+      // (the roundabouts OSM maps: the ride graph's, and the monuments in their middles — dropped here until 2026-10-30)
+      ...(v2.roundabouts && v2.roundabouts.length ? { roundabouts: v2.roundabouts } : {}) },
     tiles,
   }
   if (v2.box) m.box = v2.box

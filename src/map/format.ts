@@ -8,7 +8,7 @@
  */
 import type { Simple } from './simple.ts'
 import type { RingForm } from '../city/ring-forms.ts'
-import type { PackedArea, PackedLandmark, PackedWall, RoofShape } from '../city/package.ts'
+import type { CityPackage, PackedArea, PackedLandmark, PackedWall, RoofShape } from '../city/package.ts'
 import type { PackedTerrain } from '../city/terrain.ts'
 import type { CityIndex } from '../city/tiles.ts'
 
@@ -170,7 +170,7 @@ export interface MapIndex {
    * v2 index records not yet moved into tiles (MAP-FORMAT §11), carried verbatim IN THE V2 FRAME: whole water
    * bodies, retaining walls, the landmark list the menu and minimap read.
    */
-  legacy: { water: PackedArea[]; walls?: PackedWall[]; landmarks: PackedLandmark[] }
+  legacy: { water: PackedArea[]; walls?: PackedWall[]; landmarks: PackedLandmark[]; roundabouts?: CityPackage['roundabouts'] }
   /**
    * `buildings` and `edges` are counts, and not decoration: game.ts bounds the ground occluder by the tiles that
    * hold anything (BUGS.md #225), so a zero here changes what hides what.

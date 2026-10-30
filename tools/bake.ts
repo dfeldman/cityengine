@@ -423,7 +423,9 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   const roundabouts: NonNullable<CityPackage['roundabouts']> = []
   {
-    const rings = ways.filter((w) => w.tags.junction === 'roundabout' && w.tags.highway && !/^(footway|path|cycleway|steps|pedestrian)$/.test(w.tags.highway) && w.geometry && w.geometry.length >= 2)
+    // (Paris tags its great places — the Étoile, the Nation, the Place d'Italie — junction=circular: 483 ways in the box to
+    //  117 junction=roundabout, 2026-10-30; the first two bakes found 14 rings, nearly all in the suburbs)
+    const rings = ways.filter((w) => /^(roundabout|circular)$/.test(w.tags.junction ?? '') && w.tags.highway && !/^(footway|path|cycleway|steps|pedestrian)$/.test(w.tags.highway) && w.geometry && w.geometry.length >= 2)
     const key = (g: LatLon): string => `${g.lat.toFixed(6)},${g.lon.toFixed(6)}`
     const parent = rings.map((_, i) => i)
     const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])))

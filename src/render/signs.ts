@@ -1309,7 +1309,7 @@ function frontage(b: PackedBuilding, streets: StreetIndex): Spot | null {
 }
 
 /** Buildings bucketed by 100 m cell, so finding the wall behind a shop is not a scan of three thousand. */
-function buildingIndex(buildings: PackedBuilding[]): Map<string, PackedBuilding[]> {
+export function buildingIndex(buildings: PackedBuilding[]): Map<string, PackedBuilding[]> {
   const grid = new Map<string, PackedBuilding[]>()
   for (const b of buildings) {
     const k = `${Math.floor(b.ring[0] / 100)},${Math.floor(b.ring[1] / 100)}`
@@ -1327,7 +1327,7 @@ function buildingIndex(buildings: PackedBuilding[]): Map<string, PackedBuilding[
  * normal of that segment is the direction the sign has to face. Getting the normal backwards puts every
  * sign in the city facing into the building it is on, which is invisible and would take a while to notice.
  */
-function faceFor(poi: PackedPoi, index: Map<string, PackedBuilding[]>): Spot | null {
+export function faceFor(poi: PackedPoi, index: Map<string, PackedBuilding[]>): Spot | null {
   const gx = Math.floor(poi.x / 100)
   const gz = Math.floor(poi.z / 100)
   let best: Spot | null = null
