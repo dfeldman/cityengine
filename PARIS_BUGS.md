@@ -104,6 +104,13 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [ ] **Storefronts too repetitive** — owner: "quite repetitive with only a few signs, some of the signs are covered by
       specific POI signs. I think maybe we dont show so many signs and make it a bit random". Fewer generic shop signs
       (OPTIQUE, LIBRAIRIE …), more variety, and none where a real POI sign stands.
+- [ ] **Corner shops** (48.856774, 2.377890, Rue de la Roquette at Rue Popincourt): owner, "we dont have any special handling
+      of corner stores, but this is a very common thing". The Paris corner: the building's cut corner (pan coupé), and one
+      shop wrapping it — a boulangerie, café or pharmacie with its painted fascia and lettering running round both faces
+      and the cut, the pharmacie's green cross or a hanging sign on the corner, the street-name plates on it. Facade
+      grammar: when a wall's run ends at a street corner, make the ground floor there one continuous shopfront round the
+      corner (render the cut-corner wall's ground storey as shop, carry the fascia band across the joint), with the chosen
+      shop kind's sign on each face.
 - [ ] **More modern buildings** — "quite a few that we've rendered as cream imitation haussmann are actually curtain
       wall". APUR periods 6+ give `bauhaus`; check the dated-but-modern ones that come out `haussmann` (undated → default),
       and give the 1970s+ office blocks a curtain-wall style.
