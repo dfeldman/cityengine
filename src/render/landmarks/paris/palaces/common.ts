@@ -396,3 +396,17 @@ export function extrude(out: MeshBuilder, rings: P2[][], p: Pal, o: { eaves: num
   }
   capPolygonWithHoles(out, inner, o.eaves + rise, shade(p.slate, 0.9), FIXED)
 }
+
+/**
+ * A SLAB over any outline (a portico's roof, a terrace, an attic band that follows a street's slant): the top and the
+ * soffit capped, the edges walled. Either winding; the walls are drawn both sides like every landmark's.
+ */
+export function slab(out: MeshBuilder, ring: P2[], y0: number, y1: number, c: Rgb, soffit: Rgb = shade(c, 0.72)): void {
+  capPolygonWithHoles(out, [ring], y1, c, FIXED)
+  capPolygonWithHoles(out, [ring], y0, soffit, FIXED)
+  const r = signedArea(ring) > 0 ? ring : [...ring].reverse()
+  for (let i = 0; i < r.length; i++) {
+    const e = edgeAt(r, i)
+    out.quad([[e.a.x, y0, e.a.z], [e.b.x, y0, e.b.z], [e.b.x, y1, e.b.z], [e.a.x, y1, e.a.z]], [e.nx, 0, e.nz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+  }
+}

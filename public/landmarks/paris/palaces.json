@@ -165,16 +165,45 @@
   {
     "name": "Palais de Tokyo — the parvis",
     "procedural": "tokyoParvis",
+    "osm": [
+      "way/79219265",
+      "way/1214526961",
+      "way/1214526962",
+      "way/1214526963",
+      "way/1214526964",
+      "way/1214526965",
+      "way/1214526966",
+      "way/1214526967",
+      "way/1214526968",
+      "way/1214526969",
+      "way/1214526970",
+      "way/1214526971",
+      "way/1214526972",
+      "way/1214526973",
+      "way/1214526974",
+      "way/1214526975",
+      "way/1214526976",
+      "way/1214526977",
+      "way/1214526978",
+      "way/1214526979",
+      "way/1214526980",
+      "way/1214526981",
+      "way/1214526982",
+      "way/1214526983",
+      "way/1214526984",
+      "way/1214526985",
+      "way/1214526986"
+    ],
     "lat": 48.864225,
     "lon": 2.297144,
     "rotateDeg": 162,
     "size": [
-      40,
-      96
+      20,
+      52
     ],
     "height": 15,
     "sign": false,
-    "note": "Standalone in the court between the two wings (OSM ways 79219351 and 79219308, which stay, dressed below): the colonnades of square piers on both inner faces (on OSM's mapped pier bumps), the portico across the top, the terraces down toward the Seine (+z, bearing 162) with the pool. Its terraces read the ground (Fit.groundAt): the court falls toward the river."
+    "note": "Standalone in the court between the two wings (OSM ways 79219351 and 79219308, which stay, dressed below): the peristyle of square columns standing free before both inner faces and across the head of the court, roofed back to the walls (the 26 column parts, ways 1214526961–986, and the portico roof, way 79219265, are claimed: the model draws every one of them), the portico on the Avenue du Président-Wilson slant, the terraces down toward the Seine (+z, bearing 162) with the pool. The builder draws in plain metres; `size` is only the world-square box inscribed in the court round this point (±10 m E–W, ±26 m N–S: the nonbuildings audit measures a standalone entry by its unrotated box, and the court runs 18° off the meridian). Its terraces read the ground (Fit.groundAt): the court falls toward the river."
   },
   {
     "name": "Palais de Tokyo and the Musée d'Art Moderne",
@@ -214,5 +243,238 @@
     "restyle": "classical",
     "roof": "mansard",
     "note": "The Hôtel de Toulouse (Mansart, 1635–40) and the bank's ranges round it on the Rue de la Vrillière and the Rue Croix-des-Petits-Champs."
+  },
+  {
+    "name": "Théâtre de l'Odéon",
+    "procedural": "odeon",
+    "osm": [
+      "way/338641511",
+      "way/23290904",
+      "way/338637687",
+      "way/338637698",
+      "way/338637701",
+      "way/338637702",
+      "way/338637703",
+      "way/338637704",
+      "way/338637707",
+      "way/338637710",
+      "way/338637712",
+      "way/338637715",
+      "way/338637720",
+      "way/338637722",
+      "way/338637724",
+      "way/338637727",
+      "way/338637730",
+      "way/338637733",
+      "relation/4791435",
+      "relation/4791436",
+      "way/338637739",
+      "way/338637742",
+      "way/338637744",
+      "way/338637746",
+      "way/338637747",
+      "way/338637749",
+      "way/338637751",
+      "way/338637753",
+      "way/338637755",
+      "way/338637757",
+      "way/338637759",
+      "way/338637761",
+      "way/338637763",
+      "way/338637765",
+      "way/338637767",
+      "way/338637771",
+      "way/338637772",
+      "way/338637776",
+      "way/338637779",
+      "way/338637781",
+      "way/338637784",
+      "way/338637787",
+      "way/338637790",
+      "way/338637791",
+      "way/338641504",
+      "way/338641505",
+      "way/338641506",
+      "way/338641507",
+      "way/338641508",
+      "way/338641509",
+      "way/338641510"
+    ],
+    "lat": 48.849503,
+    "lon": 2.338726,
+    "rotateDeg": 178.5,
+    "size": [
+      36.8,
+      59.8
+    ],
+    "height": 28,
+    "note": "Peyre and de Wailly's theatre on the Place de l'Odéon. Placed on OSM way 338641511's box turned 1.5° to its axes (osmium, 2026-10-29), front (−z) to the place, bearing 358.5; the outline and its ~50 building:parts (the sixteen portico columns, their bases, the steps, the string courses, the roofs) are replaced. The eight-column Doric portico two deep, the arcades down both flanks, the hall's hipped roof and the stage house, where OSM's 3D maps them."
+  },
+  {
+    "name": "Théâtre du Châtelet",
+    "procedural": "chateletTheatre",
+    "osm": [
+      "way/53574718",
+      "way/248804634",
+      "way/248804636",
+      "way/248804637",
+      "relation/3349071",
+      "way/248804640",
+      "way/248804641",
+      "way/248804649",
+      "way/248804650",
+      "way/248804652",
+      "way/248804653",
+      "way/248804654",
+      "way/248804655",
+      "way/248804656",
+      "way/248804659",
+      "way/248804660",
+      "way/248804664",
+      "way/1540960690"
+    ],
+    "lat": 48.857792,
+    "lon": 2.34626,
+    "rotateDeg": 292.5,
+    "size": [
+      46.2,
+      91.5
+    ],
+    "height": 30,
+    "note": "Davioud's west theatre on the Place du Châtelet. Placed on OSM way 53574718's box turned to its axes (osmium, 2026-10-29), front (−z) to the place, bearing 112.5; the outline and its building:parts (the block, the auditorium's round-hipped roof, the lantern's posts) are replaced — paris.json's restyle of the pair is overridden by this replace. Arcaded porch, terrace and five-window loggia, the attic with its allegories, the arcaded flanks, the slate roofs and the auditorium's roof and lantern rising out of them."
+  },
+  {
+    "name": "Théâtre de la Ville",
+    "procedural": "theatreDeLaVille",
+    "osm": [
+      "way/53582122",
+      "way/248804635",
+      "way/248804638",
+      "way/248804642",
+      "way/248804644",
+      "way/248804645",
+      "way/248804646",
+      "way/248804647",
+      "way/248804648",
+      "way/248804651",
+      "way/248804657",
+      "way/248804661",
+      "way/248804662",
+      "way/248804663",
+      "way/248804665"
+    ],
+    "lat": 48.857293,
+    "lon": 2.348049,
+    "rotateDeg": 112.5,
+    "size": [
+      46.0,
+      48.2
+    ],
+    "height": 30,
+    "note": "Davioud's east theatre on the Place du Châtelet, the Châtelet's twin facing it across the fountain. Placed on OSM way 53582122's box turned to its axes (osmium, 2026-10-29), front (−z) to the place, bearing 292.5; outline and parts replaced (overriding paris.json's restyle of the pair)."
+  },
+  {
+    "name": "Opéra-Comique (Salle Favart)",
+    "procedural": "operaComique",
+    "osm": [
+      "way/54572719"
+    ],
+    "lat": 48.871103,
+    "lon": 2.337842,
+    "rotateDeg": 15.5,
+    "size": [
+      30.4,
+      57.1
+    ],
+    "height": 28,
+    "note": "Bernier's Salle Favart. Placed on OSM way 54572719's box turned 15.5° to its axes (osmium, 2026-10-29), front (−z) to the Place Boieldieu, bearing 195.5: the perron, the three arched doorways, the great windows between paired Corinthian columns, the attic of windows and caryatids, the statues in the side niches, the mansard and the stage house."
+  },
+  {
+    "name": "Tribunal de commerce de Paris",
+    "procedural": "tribunalCommerce",
+    "osm": [
+      "way/53601032",
+      "way/248434984",
+      "way/248434986",
+      "way/248434987",
+      "way/248434988",
+      "way/248434991",
+      "way/248437069",
+      "relation/17416175"
+    ],
+    "lat": 48.855668,
+    "lon": 2.346808,
+    "rotateDeg": 22.3,
+    "size": [
+      58.8,
+      72.2
+    ],
+    "height": 45,
+    "note": "Bailly's Tribunal de commerce on the Île de la Cité. Placed on OSM way 53601032's box turned 22.3° to its axes (osmium, 2026-10-29), +z to the Quai de la Corse (bearing 22.3), −x the Boulevard du Palais; the block, its mansard part (relation 17416175), the court's glass roof and the dome's five parts are replaced. The dome stands off-centre where OSM maps it (x −9.5), on the Boulevard de Sébastopol's axis: square base, octagonal drum with paired columns, eight-sided ribbed dome, lantern, 45 m."
+  },
+  {
+    "name": "Observatoire de Paris",
+    "procedural": "observatoire",
+    "osm": [
+      "way/79611305"
+    ],
+    "lat": 48.83645,
+    "lon": 2.33652,
+    "rotateDeg": 0,
+    "size": [
+      95.3,
+      46.2
+    ],
+    "height": 30,
+    "note": "Perrault's Observatoire with its 1830s wings (OSM way 79611305, the whole range), square to the meridian: +z is the north front at the end of the Avenue de l'Observatoire with its square tower, −z the south front with the two octagonal towers; the Arago dome on the east tower, the wings' round towers and little domes at x ±44 (osmium, 2026-10-29)."
+  },
+  {
+    "name": "Fontaine de l'Observatoire",
+    "procedural": "observatoireFountain",
+    "kind": "fountain",
+    "lat": 48.8410891,
+    "lon": 2.3368145,
+    "rotateDeg": 0,
+    "size": [
+      24,
+      24
+    ],
+    "height": 12,
+    "sign": false,
+    "note": "The Fontaine des Quatre-Parties-du-Monde (OSM node 1248594605), centred on Carpeaux's group in its basin (OSM relation 1004052, the water the city's own): the four women holding the armillary sphere, Frémiet's eight sea-horses and the turtles, the basin's kerb. +z north up the Jardin Marco-Polo."
+  },
+  {
+    "name": "Palais d'Iéna",
+    "procedural": "iena",
+    "osm": [
+      "way/79657345"
+    ],
+    "lat": 48.863809,
+    "lon": 2.291937,
+    "rotateDeg": 214.4,
+    "size": [
+      84.3,
+      113.7
+    ],
+    "height": 21,
+    "note": "Perret's Palais d'Iéna (the CESE). Placed on OSM way 79657345's box turned to the rotunda's axis (osmium, 2026-10-29), the rotunda (−z) to the Place d'Iéna, bearing 34.4; OSM's plan extruded flat-roofed in the warm concrete, Perret's swelling, capital-less columns every 4.4 m round every street face under the deep cornice."
+  },
+  {
+    "name": "Palais-Royal — the Conseil d'État and the Cour d'honneur",
+    "procedural": "palaisRoyal",
+    "osm": [
+      "relation/3300400",
+      "way/1196614753",
+      "way/1196614754"
+    ],
+    "lat": 48.863554,
+    "lon": 2.336848,
+    "rotateDeg": 19.5,
+    "size": [
+      143.6,
+      136.8
+    ],
+    "height": 24,
+    "note": "The palace round its two courts (OSM relation 3300400 and its two parts, replaced; it was dressed by paris.json's 'Palais-Royal — galleries' restyle, which still dresses the garden's ranges). Placed on the relation's box turned 19.5° to its axes (osmium, 2026-10-29), front (−z) to the Place du Palais-Royal, bearing 199.5: the wings' frontispieces on the place, the Cour de l'Horloge's colonnade between its grilled arcades, the clock pavilion; the Cour d'honneur arcaded round Buren's columns (burenColumns, paris.json — the court floor is left to it), Contant d'Ivry's front; the Galerie d'Orléans' two low colonnades toward the garden."
   }
 ]

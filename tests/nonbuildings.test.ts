@@ -45,13 +45,9 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Louvre Pyramid',
     'intersects | Colonnes de Buren',
     'intersects | Danton',
-    // the palaces family's terraced court (2026-10-29): the parvis spans the museum wings it sits between — reads right
-    // in the city shot, to be claimed or trimmed on the contact sheet
-    'intersects | Palais de Tokyo — the parvis',
     // #109 — the ground under it
     'height | Square Louis-XIII',
     'ground | Étienne Marcel',
-    'height | Palais de Tokyo — the parvis',
     // the 2026-10-29 bake's finer ground on the parvis of Notre-Dame: 1.6 m under the statue, which its 2.4 m plinth takes
     'ground | Charlemagne et ses Leudes',
     // #110 — z-fighting candidates

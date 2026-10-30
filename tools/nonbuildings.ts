@@ -132,7 +132,7 @@ const BY_MODULE: [Record<string, unknown>, NonbuildingKind][] = [
  */
 export const EXPLICIT: Record<string, NonbuildingKind> = {
   // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
-  medicisFountain: 'fountain', tokyoParvis: 'plaza',
+  medicisFountain: 'fountain', tokyoParvis: 'plaza', observatoireFountain: 'fountain',
   // …the monuments family (paris/monuments/): the gates, the columns, the Triomphe, the Lion, the Sacré-Cœur's terraces
   carrouselArch: 'monument', porteSaintDenis: 'monument', porteSaintMartin: 'monument', triompheRepublique: 'monument',
   troneColumnSaintLouis: 'monument', troneColumnPhilippeAuguste: 'monument', lionDeBelfort: 'statue', sacreCoeurTerraces: 'plaza',
