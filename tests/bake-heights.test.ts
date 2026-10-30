@@ -35,8 +35,9 @@ describe('inferring the height nobody tagged', () => {
   })
 
   it('falls back to the regional default by kind', () => {
-    expect(infer({ building: 'yes' })).toBe(5)
-    expect(infer({ building: 'office' })).toBe(6)
+    // (Paris's own default, seven: the ground, five and the mansard — owner, 2026-10-29)
+    expect(infer({ building: 'yes' })).toBe(paris.defaultLevels.residential)
+    expect(infer({ building: 'office' })).toBe(paris.defaultLevels.commercial)
     expect(infer({ building: 'house' })).toBe(2)
     expect(infer({ building: 'warehouse' })).toBe(2)
     expect(infer({ building: 'garage' })).toBe(1)

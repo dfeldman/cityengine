@@ -1468,6 +1468,51 @@ export class City {
   /** each loaded tile's car-park stalls (city/parking.ts), laid out once on first asking */
   private readonly stallCache = new Map<string, Stall[]>()
 
+  /*
+   * PARIS'S KERB BAYS (owner, 2026-10-29, street view: parking bays marked in dashes along the kerb). A bay is 5 m of
+   * kerb, 2 m deep, laid end to end from 6 m past each junction; most hold a parked car (`stallsIn`). Only where a parked
+   * car clears the moving traffic — sim/traffic.ts `laneOf` puts each direction's lane min(2.6, 0.24 w) right of the
+   * centre — so on the LEFT kerb of a one-way street 5.6 m wide or more (the lane is on the right), and on both kerbs of
+   * a two-way street from 11.6 m. Never at a bus stop's zigzag, a red bus lane, a Vélib' row or a scooter or bike bay
+   * standing in the parking lane, on a bridge, or on a park road. Offsets are to the LEFT of the line (dashedLine's).
+   */
+  private readonly bayCache = new Map<number, { side: 1 | -1; s: number; pts: { x: number; z: number }[] }[]>()
+  private kerbBays(e: PackedEdge): { side: 1 | -1; s: number; pts: { x: number; z: number }[] }[] {
+    const got = this.bayCache.get(e.id)
+    if (got) return got
+    const out: { side: 1 | -1; s: number; pts: { x: number; z: number }[] }[] = []
+    this.bayCache.set(e.id, out)
+    if (this.region.roadPaint !== 'paris' || e.foot || e.bridge || e.park || e.walk < 0.5) return out
+    if (!/^(residential|tertiary|secondary|primary|unclassified|living_street)$/.test(e.kind ?? '')) return out
+    const sides: (1 | -1)[] = e.oneway ? (e.width >= 5.6 ? [1] : []) : e.width >= 11.6 ? [-1, 1] : []
+    if (!sides.length) return out
+    const pts = slice(unpackPoints(e.points), this.cutback(e.a) + 6, this.cutback(e.b) + 6)
+    if (pts.length < 2) return out
+    const total = lengthOf(pts)
+    if (total < 10) return out
+    // what stands in the parking lane: a bus stop (its zigzag, 9 m each side), a Vélib' row, the two-wheelers, bike hoops
+    const near: { x: number; z: number; r: number }[] = []
+    const [tx, tz] = tileOf(pts[0].x, pts[0].z)
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+      for (const f of this.pointsIn.get(key(tx + dx, tz + dz)) ?? []) {
+        const r = f.kind === 'busstop' ? 12 : f.kind === 'bikeshare' ? 16 : f.kind === 'motoparking' || f.kind === 'bikeparking' ? 6 : 0
+        if (r) near.push({ x: f.x, z: f.z, r })
+      }
+    }
+    for (const side of sides) {
+      // (the red bus lane on that kerb: busSide bit 1 is the right, 2 the left)
+      if (e.busSide && e.busSide & (side < 0 ? 1 : 2)) continue
+      for (let s = 0; s + 5 <= total; s += 5) {
+        const m = alongLine(pts, s + 2.5)
+        const off = side * (e.width / 2 - 1)
+        const x = m.x - m.uz * off, z = m.z + m.ux * off
+        if (near.some((q) => Math.hypot(q.x - x, q.z - z) < q.r)) continue
+        out.push({ side, s, pts })
+      }
+    }
+    return out
+  }
+
   /** the stalls of the car parks (PackedArea `parking`) in one tile, avoiding the buildings standing on them */
   stallsIn(k: string): Stall[] {
     const got = this.stallCache.get(k)
@@ -1494,7 +1539,18 @@ export class City {
       const blocked = (x: number, z: number): boolean => near.some((r) => pointInFlatRing(r, x, z)) || onWay(x, z)
       for (const a of lots) stalls = stalls.concat(layoutLot(unpackPoints(a.ring), blocked))
     }
-    if (this.areasIn.has(k)) this.stallCache.set(k, stalls)
+    // the kerb bays' cars (`kerbBays`): four bays in five taken, facing the way their side's traffic goes
+    for (const e of this.edgesIn.get(k) ?? []) {
+      for (const b of this.kerbBays(e)) {
+        const m = alongLine(b.pts, b.s + 2.5)
+        const off = b.side * (e.width / 2 - 1.05)
+        const id = (Math.imul(e.id, 2654435761) ^ Math.imul(Math.round(b.s) + (b.side > 0 ? 7919 : 0), 40503)) >>> 0
+        const ahead = e.oneway || b.side < 0
+        stalls.push({ x: m.x - m.uz * off, z: m.z + m.ux * off, heading: Math.atan2(m.ux, m.uz) + (ahead ? 0 : Math.PI),
+          ux: m.ux, uz: m.uz, occupied: id % 5 !== 0, id })
+      }
+    }
+    if (this.areasIn.has(k) || this.edgesIn.has(k)) this.stallCache.set(k, stalls)
     return stalls
   }
 
@@ -1505,7 +1561,7 @@ export class City {
     const n = Math.ceil(r / TILE)
     for (let dz = -n; dz <= n; dz++) for (let dx = -n; dx <= n; dx++) {
       const k = key(cx + dx, cz + dz)
-      if (!this.areasIn.has(k)) continue
+      if (!this.areasIn.has(k) && !this.edgesIn.has(k)) continue
       for (const s of this.stallsIn(k)) if (s.occupied && Math.hypot(s.x - x, s.z - z) < r) out.push(s)
     }
     return out
@@ -3054,6 +3110,22 @@ export class City {
           if (best.d > e.width / 2 + e.walk + 5) continue
           const total = lengthOf(pts)
           zigzag(markings, pts, Math.max(0.5, best.s - 9), Math.min(total - 0.5, best.s + 9), best.side * (e.width / 2 - 0.55), 0.064, 0.32, 1.1, YELLOW)
+        }
+        // the kerb bays (`kerbBays`): a dashed line 2 m out from the kerb along each bay, a short stroke at each end
+        for (const b of this.kerbBays(e)) {
+          const inner = b.side * (e.width / 2 - 2)
+          const run = slice(b.pts, b.s, Math.max(0, lengthOf(b.pts) - b.s - 5))
+          if (run.length >= 2) dashedLine(markings, run, inner, 0.064, 0.1, 0.5, 1)
+          for (const at of [b.s + 0.05, b.s + 4.95]) {
+            const m = alongLine(b.pts, at)
+            const w = 0.05
+            const p0 = { x: m.x - m.uz * inner, z: m.z + m.ux * inner }
+            const p1 = { x: m.x - m.uz * (inner + b.side * 0.7), z: m.z + m.ux * (inner + b.side * 0.7) }
+            // (wound to face up whichever kerb it is on)
+            const q: [number, number, number][] = [[p0.x - m.ux * w, 0.064, p0.z - m.uz * w], [p0.x + m.ux * w, 0.064, p0.z + m.uz * w],
+              [p1.x + m.ux * w, 0.064, p1.z + m.uz * w], [p1.x - m.ux * w, 0.064, p1.z - m.uz * w]]
+            markings.quad(b.side > 0 ? q : [q[3], q[2], q[1], q[0]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.86, 0.85, 0.79], 0)
+          }
         }
       }
       // the red bus lanes along their curbs (PackedEdge `busSide`; owner: "render bus lanes as red"), just under the paint

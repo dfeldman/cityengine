@@ -8,24 +8,20 @@ const FIXED = 0
  * The Tour Saint-Jacques: the Flamboyant belfry of a church that is gone, standing alone in its square. A
  * white 10 m tower, a stepped buttress at each corner ending in a cluster of pinnacles above the balustrade,
  * tall lancets in three stages, the stair turret at one corner rising higher and Saint James on top of it.
- * The square is part of the model: a lawn round the foot and a ring of clipped trees.
+ * The square is part of the model: a lawn round the foot (its trees are the city's).
  */
 export function tourSaintJacques(out: MeshBuilder): void {
   const stone = hex('#ece6d8')
   const shadow = hex('#3a3a40')
   const lawn = hex('#6f9a4e')
   const gravel = hex('#cfc4ad')
-  const leaf = hex('#4f7a3a')
   const h = 46
   const w = 5
   // the square: gravel paths round a lawn, the tower on a low plinth in the middle
   block(out, -24, 24, -24, 24, 0, 0.55, gravel)
   block(out, -21, 21, -21, 21, 0.55, 0.62, lawn)
   block(out, -w - 2, w + 2, -w - 2, w + 2, 0.55, 1.1, shade(stone, 0.92))
-  for (const [x, z] of [[-18, -18], [18, -18], [-18, 18], [18, 18], [0, -19], [0, 19], [-19, 0], [19, 0]]) {
-    prism(out, x, z, 0.6, 2.8, 0.25, 6, hex('#5a4a3a'))
-    prism(out, x, z, 2.8, 6.2, 2.3, 10, leaf, FIXED, 1.4)
-  }
+  // (no trees of its own: the city plants the square's — these were ten-sided lime lollipops among real planes)
   const y0 = 1.1
   // the shaft
   block(out, -w, w, -w, w, y0, h, stone)

@@ -58,16 +58,22 @@ the box change and the re-bake together.
 - [ ] wall-to-wall: no gap between buildings (check in the city: the cadastre footprints touch)
 - [ ] the traffic circles, all of them (done: found from OSM's junction=roundabout rings at bake) — and a MONUMENT in
       the middle of most ("so many monuments that many aren't even named"): a generic statue, column or fountain
-      where OSM has a memorial or artwork there
-- [ ] the wayfinding signs: white arrow panels with blue lettering, 2–4 on a grey post, at the big junctions only
-- [ ] two-wheelers parked in rows along the kerb (scooters, motorbikes)
-- [ ] parking bays marked in dashes along the kerb
+      (render/paris/roundabout-monuments.ts, built; the city index carries the roundabouts from the 2026-10-29 night
+      bake — check Nation and Place d'Italie, which the ring test rejected)
+- [x] the wayfinding signs: white arrow panels with blue lettering, 2–4 on a grey post, at the big junctions only
+- [x] two-wheelers parked in rows along the kerb (scooters, motorbikes): OSM motorcycle_parking, from the night bake
+- [x] parking bays marked in dashes along the kerb, most with a car in: where the baked carriageway leaves room beside
+      the traffic lane (the left kerb of one-way streets from 5.6 m, both kerbs of two-way from 11.6 m — ~85 of ~450 km;
+      most rues are baked one lane wide, 3.4 m, and have none)
+- [x] bollards along most pavements ("paris has them very commonly"): all narrow pavements down to 0.5 m, corners
+      and runs on the broad ones
+- [x] a map jump: out of look-around first, the rider held with a loading banner until the landing's tiles are in
 - [ ] cobblestone (`surface=sett`) — check how much shows; some pavements red-tinted
 - [ ] food and craft stands (the bouquinistes are done on their quays)
 - [ ] La Défense's towers (inside the box's north-west corner now) and the Grande Arche
 - [x] street lamps: rarer and different — the tall dark lanterns on the boulevards only (parisLamp), the walls' lamps elsewhere
 - [x] the Métro's "M" totem by every entrance (the stairs down are hard to see; the totem is what you see)
-- [ ] the low black barriers (the Saint-Andrew's-cross panels) along the kerb from the corners, between the bollards,
+- [x] the low black barriers (the Saint-Andrew's-cross panels) along the kerb from the corners, between the bollards,
       to keep people crossing at the crossings
 - [ ] the decorated métro viaducts (Lines 2 and 6: the lattice girders, the stone piers, the city's arms) — check
 
