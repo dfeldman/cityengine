@@ -21,7 +21,11 @@ the owner saw, what is known, and its state. Tick when fixed AND checked in the 
 Owner's priority (2026-10-30): "biggest issue is the seine bridges since the seine is a natural focal point for cyclists".
 
 
-- [ ] **Seine bridges broken at their ends** — Pont Mirabeau (48.846201, 2.276475): "discontinuous path and car in the
+- [~] **Seine bridges broken at their ends** — (2026-10-30, bakes 0150→0545) the scraps joined (48), mid-river junctions
+      held in the air (the Pont de Sully's dip gone), the foot ways off a deck eased onto it: bridge ends more than 1.5 m off
+      a way that meets them went 1,077 → 995 (lidar) → 474. Mirabeau seen continuous from above. Left: the rest of the 474
+      (the Périphérique's interchanges, Pont de Sèvres, footbridges into buildings) — re-run bridge-gaps.cjs and look.
+      Original report: — Pont Mirabeau (48.846201, 2.276475): "discontinuous path and car in the
       air"; owner: "essentially every seine bridge is messed up. they all have an underpass on each side". Cause found:
       OSM maps a Seine bridge as the river span, a short deck over the riverside road below, and between them a few metres
       of way with no bridge tag. That scrap cuts the chain, so the river span starts on the ground under its end (the
@@ -140,6 +144,11 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 Kerb bays and parked cars; parking lanes in the bake; two-wheeler and bike parking; bollards; pale shutters; tree
 material sharing (memory); hotel flags; roundabouts from `junction=circular` (66) and the v3 index carrying them;
 roundabout islands' grass; the three landmark waves.
+
+- [x] **APUR's footprints** where OSM has no building (the 0545 bake): 1,514 added — where no OSM building overlaps them
+      at all and off every landmark's ground (claimed ways, point-placed entries). Strict: a footprint touching any OSM
+      building is skipped, so the 9,780 candidates came down to 1,514; partial overlaps (OSM drawing two buildings as one,
+      or the other way round) are the next refinement.
 
 ## Better data than OSM for Paris (owner, 2026-10-30: "our OSM data source for Paris is just not very good. it gets roads
 ## but is often weird on buildings. are there better data sources we can try?")
