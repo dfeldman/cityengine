@@ -4573,10 +4573,9 @@ export class City {
          * block. Slid along the street until it is clear of both, else not drawn — an entrance with no room for a
          * headhouse is one built into the building, which the building already is.
          */
-        blockRings()
-        const inBlock = (cx: number, cz: number): boolean => [{ x: cx, z: cz }, ...corners(cx, cz)].some((q) => metroRings!.some((r) => insideRing(r, q.x, q.z)))
+        const inBlock = (cx: number, cz: number): boolean => [{ x: cx, z: cz }, ...corners(cx, cz)].some((q) => blockRings().some((r) => insideRing(r, q.x, q.z)))
         // OSM's node itself inside a building: the entrance is IN it (Chinatown–Rose Pak's headhouse is its own building)
-        if (metroRings.some((r) => insideRing(r, f.x, f.z)) && skippedIf('building', f.x, f.z, 'metro entrance')) continue
+        if (blockRings().some((r) => insideRing(r, f.x, f.z)) && skippedIf('building', f.x, f.z, 'metro entrance')) continue
         if (inBlock(px, pz)) {
           let found = false
           for (let k = 1; k <= 24 && !found; k++) {

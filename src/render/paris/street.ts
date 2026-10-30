@@ -11,7 +11,6 @@ export const PARIS_STREET = new Set<string>(['litter', 'recycling', 'sanisette',
 
 const STONE: Rgb = [0.8, 0.77, 0.7]
 const DARK_STONE: Rgb = [0.62, 0.6, 0.55]
-const IRON: Rgb = [0.09, 0.1, 0.1]
 const BRONZE: Rgb = [0.24, 0.28, 0.23]
 const VERDIGRIS: Rgb = [0.34, 0.47, 0.41]
 const MARBLE: Rgb = [0.88, 0.87, 0.83]
