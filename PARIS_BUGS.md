@@ -124,7 +124,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [ ] **Memory close to the limit again** (2026-10-30, after the forget fix put back the buildings it was wrongly losing).
       Measure: the jump test (heap after GC per jump), the bollards (40 vertices each, every 1.7 m both sides of most
       streets), the crowd pool, the plants.
-- [ ] **Storefronts too repetitive** — owner: "quite repetitive with only a few signs, some of the signs are covered by
+- [x] **Storefronts too repetitive** — six paintings each for the Haussmann and Marais ground storeys (was two: OPTIQUE and LIBRAIRIE in turn down every street), a trade's word on one fascia in three and plain painted boards on the rest, so the real shops' names (signs.ts) stand alone. Original: — owner: "quite repetitive with only a few signs, some of the signs are covered by
       specific POI signs. I think maybe we dont show so many signs and make it a bit random". Fewer generic shop signs
       (OPTIQUE, LIBRAIRIE …), more variety, and none where a real POI sign stands.
 - [ ] **Corner shops** (48.856774, 2.377890, Rue de la Roquette at Rue Popincourt): owner, "we dont have any special handling

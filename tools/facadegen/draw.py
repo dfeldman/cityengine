@@ -1076,7 +1076,15 @@ def ground_shopfront(size, rnd, accent, words):
     img, d = _bay(size, rnd, (238, 234, 226))
     x0, x1 = int(size * 0.05), int(size * 0.95)
     fascia_y = int(size * 0.2)
-    _sign(d, (x0 - 4, int(size * 0.06), x1 + 4, fascia_y), rnd, rnd.choice(AWNING), words)
+    # a trade's word on one fascia in three; the rest a plain painted board (owner, 2026-10-30: "we dont show so many signs
+    # and make it a bit random" — and the real shops' names, src/render/signs.ts, go on these boards without a painted word
+    # under them)
+    if words and rnd.random() < 0.34:
+        _sign(d, (x0 - 4, int(size * 0.06), x1 + 4, fascia_y), rnd, rnd.choice(AWNING), words)
+    else:
+        board = rnd.choice(AWNING + [(34, 36, 40), (24, 46, 38), (92, 30, 34), (40, 44, 70)])
+        rect(d, [x0 - 4, int(size * 0.06), x1 + 4, fascia_y], board, KEEP)
+        line(d, [(x0 - 4, fascia_y - 2), (x1 + 4, fascia_y - 2)], shade(board, 1.4), KEEP, 2)
     y0, y1 = fascia_y + 6, int(size * 0.88)
     reveal(d, (x0, y0, x1, y1), 4)
     glass(img, (x0 + 4, y0 + 4, x1 - 4, y1 - 4), rnd, lit=0.5)
@@ -1287,8 +1295,10 @@ def ground_woodfront(size, rnd, accent):
     rect(d, [x0, top, x1, bottom], wood, KEEP)                                   # the whole front
     fy = int(size * 0.23)
     rect(d, [x0 + 8, top + 6, x1 - 8, fy], shade(wood, 1.15), KEEP)              # the fascia board
-    word = rnd.choice(SIGN_WORDS_FR)          # the Marais front: French trades only
-    _word(img, d, (x0 + 22, top + 8, x1 - 22, fy - 2), word, (226, 206, 150))              # gilt letters
+    # the Marais front: French trades only, on one board in three — the rest left plain for the real shop's own name
+    if rnd.random() < 0.34:
+        word = rnd.choice(SIGN_WORDS_FR)
+        _word(img, d, (x0 + 22, top + 8, x1 - 22, fy - 2), word, (226, 206, 150))          # gilt letters
     for px0 in (x0, x1 - 14):                                                     # panelled pilasters
         rect(d, [px0, top, px0 + 14, bottom], shade(wood, 1.2), KEEP)
         d.rectangle([px0 + 3, fy + 8, px0 + 11, bottom - 8], outline=(*shade(wood, 0.8), KEEP), width=1)

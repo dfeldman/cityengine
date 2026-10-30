@@ -54,7 +54,7 @@ CELL = 256          # one element's slot in the atlas
 BLEED = 8           # margin smeared with edge pixels so mips do not sample the neighbour
 ART = CELL - 2 * BLEED
 COLS = 8            # 8 across…
-ROWS = 20           # …by 20 down: 2048 × 5120 (a 17th row for the Presidio's two styles, 2026-10-02; an 18th and 19th for
+ROWS = 21           # …by 21 down: 2048 × 5376 (a 21st for Paris's six shopfronts each, 2026-10-30; a 17th row for the Presidio's two styles, 2026-10-02; an 18th and 19th for
                     # the Wharf's five shopfronts and the generic storefront's five treatments, 2026-10-16; a 20th for the
                     # Presidio's third style and its three-way ground storeys, 2026-10-17). It was 8 × 8 until the three American styles filled it; two
                     # pages tall keeps every UV the manifest gives and needs nothing new of the material
@@ -63,6 +63,9 @@ VARIANTS = 3        # how many paintings of each element; the grammar picks betw
 # ground storeys painted more than twice: the Wharf's five themed shopfronts, and the generic storefront's five treatments
 # where most of San Francisco's shops are (brick, tenement)
 GROUND_VARIANTS = {'wharf': 5, 'brick': 5, 'tenement': 5,
+                   # …and Paris's six each (owner, 2026-10-30: the storefronts "quite repetitive with only a few signs" — two
+                   # paintings, OPTIQUE and LIBRAIRIE turn about down every street)
+                   'haussmann': 6, 'marais': 6,
                    # …and the Presidio's three: an entrance and two windows, so about one bay in three is a door
                    'presidio': 3, 'presidioBrick': 3, 'presidioStucco': 3}
 
