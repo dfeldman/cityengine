@@ -989,5 +989,20 @@
     "levels": 3,
     "height": 12,
     "note": "The two long ways just south-west of Perrault's stand along the same line (140 and 81 m, no height in OSM), likely the stone stands of 1904 that Wikipedia fr says were kept and moved south-west of the course; the city drew them as seven-storey apartment blocks (2026-10-30 shot). Held to three storeys of stone under a flat roof until they are modelled."
+  },
+  {
+    "name": "Enclos Saint-Lazare: the palm garden",
+    "drape": true,
+    "procedural": "enclosSaintLazare",
+    "kind": "garden",
+    "lat": 48.87564,
+    "lon": 2.35345,
+    "size": [
+      34,
+      24
+    ],
+    "height": 8,
+    "front": 0,
+    "note": "The garden behind the Médiathèque Françoise-Sagan: a zigzag path between raised beds under windmill palms (owner's street view, 2026-10-30). OSM maps only a paved court."
   }
 ]

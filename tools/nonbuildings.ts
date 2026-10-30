@@ -137,7 +137,7 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   carrouselArch: 'monument', porteSaintDenis: 'monument', porteSaintMartin: 'monument', triompheRepublique: 'monument',
   troneColumnSaintLouis: 'monument', troneColumnPhilippeAuguste: 'monument', lionDeBelfort: 'statue', sacreCoeurTerraces: 'plaza',
   // …and the venues family (paris/venues/): Roland-Garros's outside courts, the Buttes-Chaumont's folly
-  rgCourts: 'plaza', sibylleTemple: 'monument',
+  rgCourts: 'plaza', sibylleTemple: 'monument', enclosSaintLazare: 'garden',
   // bridges — these bind through the city SKYLINE (tools/cities.ts), not through any manifest
   goldenGateBridge: 'bridge', bayBridge: 'bridge', bayBridgeNear: 'bridge',
   // masts and lattices: a tower with no floors is not a building

@@ -10,6 +10,7 @@ import { accorArena } from './accor-arena.ts'
 import { jeanBouin } from './jean-bouin.ts'
 import { parcDesPrinces } from './parc-des-princes.ts'
 import { chateauBagatelle, CITROEN, rotondeChartres, sibylleTemple } from './parks.ts'
+import { enclosSaintLazare } from './enclos-saint-lazare.ts'
 import { rgChatrier, rgCourts, rgLenglen, rgSimonneMathieu } from './roland-garros.ts'
 import { FOLIES, grandeHalle } from './villette.ts'
 import { grandesSerres } from './serres.ts'
@@ -27,6 +28,7 @@ export const PARIS_VENUES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   accorArena,
   jeanBouin,
   sibylleTemple,
+  enclosSaintLazare,
   chateauBagatelle,
   rotondeChartres,
   ...CITROEN,

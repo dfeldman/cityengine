@@ -79,13 +79,13 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [x] **The Bercy ministry**: the helipad added (a round railed deck on raking struts over the roof near the river end, its H and circle); the roads under the two spans render (the quai and the Rue de Bercy pass under — seen in the city; the service road through the grounded middle gets its passage vault with the claimed-building fix). Original: "multiple roads going under it which we don't render. it also has a helipad!" — the
       `bercyMinistry` builder (palaces family) spans the Quai de Bercy and Rue de Bercy on piers; the ways under it and
       the helipad (the round deck at the top, river end).
-- [ ] **The Seine's industrial banks** (around Javel/Grenelle): "the river side is all industrial buildings … if OSM has
+- [x] **The Seine's industrial banks** — checked: OSM has almost nothing industrial along the bank at Javel and Grenelle (no plants, silos or riverside warehouses mapped there; 54 features in that stretch, nearly all inland or bare nodes), so nothing is being dropped ("If OSM doesn't have these, it's fine"). Original: (around Javel/Grenelle): "the river side is all industrial buildings … if OSM has
       these and we're not rendering them, that is not ideal". Check the package against an osmium count of `building=*`
       on the left bank there; find the filter if short.
 - [x] **The Institut du monde arabe's parvis kiosks** — four 14–17 m² `building=yes historic=yes` cubes; every building under 30 m² is now a plain flat box with no shops (cubes, kiosks, vents, sheds). The spiral's glass: the Tour des Livres' cage glazed on its two outer faces (landmark glass is reflective, so the drum shows above the roof, not through the panes). Original: (48.849176, 2.356543): "the plaza has little default buildings which are
       in fact plaza elements" (OSM building ways for the parvis's kiosks/vents, drawn as houses with chimneys); "the glass
       around the spiral also doesn't appear" (the Tour des Livres' glazed cage, museums/institut-monde-arabe.ts).
-- [ ] **Saint-Lazare garden** (48.875637, 2.353635): a palm garden behind the médiathèque (Françoise-Sagan); "we have that
+- [x] **Saint-Lazare garden** — a small model (venues/enclos-saint-lazare.ts): kerbed beds, shrubs, a zigzag path and a dozen windmill palms, from the street-view photograph; OSM maps only a paved court. Its plan is approximate. Original: (48.875637, 2.353635): a palm garden behind the médiathèque (Françoise-Sagan); "we have that
       as a 'mediatheque' landmark but I don't see it on the map".
 
 ## Open — render-side
