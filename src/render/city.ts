@@ -4561,7 +4561,20 @@ export class City {
        * traffic: turned 35° off the street line, half toward each direction, the face reads from a block away and the
        * board overhangs the kerb by no more than its catwalk.
        */
-      const turn = f.kind === 'billboard' ? (Math.round(f.x * 7 + f.z * 13) % 2 ? 1 : -1) * 0.61 : 0
+      let turn = f.kind === 'billboard' ? (Math.round(f.x * 7 + f.z * 13) % 2 ? 1 : -1) * 0.61 : 0
+      /*
+       * A PARIS SHELTER runs along the kerb, its open side to the road (owner, 2026-10-30: "bus shelters are often perpendicular
+       * to the road"): the model is long in x, and everything here is placed with local z along the street, so every one of them
+       * stood across the pavement. Turned so local +z points at the nearest carriageway.
+       */
+      if (f.kind === 'busstop' && pf.busStop === 'paris' && f.shelter) {
+        const nr = pointKerb.near(px, pz).sort((a, b) => a.d - b.d)[0]
+        if (nr) {
+          const sx = nr.s.bx - nr.s.ax, sz = nr.s.bz - nr.s.az
+          const t = Math.max(0, Math.min(1, ((px - nr.s.ax) * sx + (pz - nr.s.az) * sz) / (sx * sx + sz * sz || 1)))
+          turn = Math.atan2(nr.s.ax + sx * t - px, nr.s.az + sz * t - pz) - heading
+        } else turn = Math.PI / 2
+      }
       /*
        * A SUBWAY ENTRANCE is big — BART's is 4.4 m wide and 13 m long, laid along the street — and OSM's node is its
        * middle: a node 3 m from the kerb put its outer half in the traffic lane (owner, 2026-10-15, Market at New

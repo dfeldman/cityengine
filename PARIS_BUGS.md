@@ -217,6 +217,11 @@ Open:
       the Passerelles Debilly and Senghor among them. Riding those wants a ramp or a decision about bikes on stairs.
 - [x] Grey-blue mudflats along the Seine: the lidar reads the water's surface, a metre out in places, and strips of it stood over
       the plane. Interior river posts now go 3 m under. Pont Neuf's "parapets" were only the bridge's own end. Check after the bake.
+- [x] **Trees beyond the city limits.** The register stops at the limit: 0-6% of suburban street length had a tree beside it, against
+      15-35% inside. Where nothing is mapped, streets are lined by name and low houses get garden trees (`beyondTheRegister`). Guessed
+      positions: Hauts-de-Seine and the other départements publish street-tree lists that could replace them. Not looked into.
+- [x] **Bus shelters stood across the pavement**, every one: the model is long in x. They now run along the kerb, open to the road.
+- `--replant` really is stale (6,270 tiles against 6,544, on Paris too): don't use it, run a full bake.
 - [ ] Kit fronts, measured (`front` against the package's streets): 2,449 of 2,458 face a street, 2,259 of them the nearest.
       8 have a street only on another side, the Mairie du 17e and the churches Sainte-Claire d'Assise and Sainte-Odile among them.
 - [x] **Memory (owner: "smarter about unloading textures that aren't in use. Or use ktx2").** `tools/measure-load.ts` counted one

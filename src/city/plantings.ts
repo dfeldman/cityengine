@@ -372,7 +372,84 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
   // the park pass has already kept off the roads and the paths; it still goes through seatTrees for the
   // buildings, which the park polygons happily cover (the Conservatory, the de Young, the Main Post)
   const inParks = parked.length > 0 && pkg.buildings ? seatTrees(parked, pkg, false) : parked
-  return [...(street ?? []), ...rest, ...inParks]
+  // (past the ceiling, which is for the city's own list: thinned along with it, every guess outside Paris cost a surveyed tree inside)
+  const beyond = mature && !street ? beyondTheRegister(pkg, r) : []
+  const suburbs = beyond.length && pkg.buildings ? seatTrees(beyond, pkg, false) : beyond
+  return [...(street ?? []), ...rest, ...suburbs, ...inParks]
+}
+
+/**
+ * WHERE THE REGISTER STOPS (owner, 2026-10-30: "outside paris city limits we're completely missing trees"). OSM's trees are
+ * the City of Paris's own list, and it ends at the city limit: from Boulogne to Montreuil 0-6% of a street's length had a tree
+ * beside it, against 15-35% inside. Where there are next to no mapped trees, the suburbs' planting is guessed: some streets
+ * lined, by name so a street is lined all along or not at all, and the small trees of the gardens behind the low houses.
+ */
+const BARE_CELL = 250
+const BARE_BELOW = 60
+const ROW_SHARE: Record<string, number> = { residential: 0.35, living_street: 0.35, unclassified: 0.5, tertiary: 0.5, secondary: 0.75, primary: 0.75 }
+function beyondTheRegister(pkg: Pick<CityPackage, 'trees' | 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, r: () => number): Planting[] {
+  const mapped = new Map<string, number>()
+  const cellOf = (x: number, z: number): [number, number] => [Math.floor(x / BARE_CELL), Math.floor(z / BARE_CELL)]
+  for (let i = 0; i < pkg.trees.length; i += 2) {
+    const [cx, cz] = cellOf(pkg.trees[i], pkg.trees[i + 1])
+    mapped.set(`${cx},${cz}`, (mapped.get(`${cx},${cz}`) ?? 0) + 1)
+  }
+  const bare = (x: number, z: number): boolean => {
+    const [cx, cz] = cellOf(x, z)
+    let n = 0
+    for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) n += mapped.get(`${cx + a},${cz + b}`) ?? 0
+    return n < BARE_BELOW
+  }
+  const hash = (s: string): number => {
+    let h = 2166136261
+    for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619)
+    return (h >>> 0) / 4294967296
+  }
+  const out: Planting[] = []
+  for (const e of pkg.edges) {
+    const share = ROW_SHARE[e.kind ?? '']
+    // (a street wide enough for the boulevard rows above already has them)
+    if (!share || e.foot || e.walk < 0.8 || (e.width >= 9 && e.walk >= 1.8) || !onSurface(e) || e.bridge || e.ramp || (e.layer ?? 0) > 0) continue
+    const pts = unpackPoints(e.points)
+    if (pts.length < 2 || !bare(pts[0].x, pts[0].z)) continue
+    const h = hash(e.name ?? String(e.id))
+    if (h >= share) continue
+    const sides = e.width >= 7 ? [-1, 1] : [h < share / 2 ? -1 : 1]
+    const off = e.width / 2 + e.walk * 0.75
+    let total = 0
+    for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+    const clear = 12
+    let run = 0
+    let next = clear
+    for (let i = 1; i < pts.length; i++) {
+      const dx = pts[i].x - pts[i - 1].x, dz = pts[i].z - pts[i - 1].z
+      const seg = Math.hypot(dx, dz)
+      while (next < run + seg && next < total - clear) {
+        const t = (next - run) / seg
+        for (const side of sides) {
+          out.push({ x: pts[i - 1].x + dx * t + (-dz / seg) * off * side, z: pts[i - 1].z + dz * t + (dx / seg) * off * side,
+            height: 7 + r() * 7, spin: r() * 6.28, park: false })
+        }
+        next += 8 + r() * 5
+      }
+      run += seg
+    }
+  }
+  for (const b of pkg.buildings ?? []) {
+    if ((b.height ?? 0) > 14 || (b.minHeight ?? 0) > 0 || b.ring.length < 6 || !bare(b.ring[0], b.ring[1])) continue
+    const q = r()
+    const n = q < 0.45 ? 1 : q < 0.6 ? 2 : 0
+    if (!n) continue
+    let cx = 0, cz = 0, rad = 0
+    for (let i = 0; i < b.ring.length; i += 2) { cx += b.ring[i]; cz += b.ring[i + 1] }
+    cx /= b.ring.length / 2; cz /= b.ring.length / 2
+    for (let i = 0; i < b.ring.length; i += 2) rad = Math.max(rad, Math.hypot(b.ring[i] - cx, b.ring[i + 1] - cz))
+    for (let k = 0; k < n; k++) {
+      const a = r() * 6.28, d = rad + 2.5 + r() * 5
+      out.push({ x: cx + Math.sin(a) * d, z: cz + Math.cos(a) * d, height: 5 + r() * 7, spin: r() * 6.28, park: false })
+    }
+  }
+  return out
 }
 
 function thin(out: Planting[], cap: number): Planting[] {

@@ -122,3 +122,22 @@ describe('planting by zone', () => {
     expect(at(500).form).toBeUndefined()
   })
 })
+
+describe('beyond the tree register (Paris, owner 2026-10-30: "outside paris city limits we\'re completely missing trees")', () => {
+  const street = (id: number, z: number, name: string): PackedEdge => ({ id, a: id * 10, b: id * 10 + 1, points: [0, z, 400, z], heights: [0, 0], width: 6, walk: 1.8, kind: 'residential', name, foot: false, surface: 'asphalt' }) as unknown as PackedEdge
+  const edges = Array.from({ length: 40 }, (_, i) => street(i + 1, i * 40, `Rue ${i}`))
+  const plant = (trees: number[]) => plantCity({ trees, areas: [], edges, region: 'paris' }, 100000)
+  it('lines some of the streets where nothing is mapped', () => {
+    const out = plant([])
+    expect(out.length).toBeGreaterThan(100)
+    // whole streets, not every street
+    const lined = new Set(out.map((t) => Math.round(t.z / 40)))
+    expect(lined.size).toBeGreaterThan(5)
+    expect(lined.size).toBeLessThan(35)
+  })
+  it('leaves the register alone where it reaches', () => {
+    const trees: number[] = []
+    for (let x = 0; x < 1000; x += 8) for (let z = -500; z < 2000; z += 8) trees.push(x, z)
+    expect(plant(trees).length).toBeLessThanOrEqual(trees.length / 2)
+  })
+})
