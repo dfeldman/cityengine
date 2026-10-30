@@ -8,6 +8,7 @@
  * `window.__rebuild(fit)` builds the model again to a given fit — a real footprint (a tower-grammar building is
  * its own outline raised), which the tool reads from the Overpass cache — and returns its bounds.
  */
+import type { KitArgs } from './render/landmarks/paris/kit/recipes.ts'
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Engine } from '@babylonjs/core/Engines/engine'
@@ -158,7 +159,7 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   ;(window as unknown as Record<string, unknown>).__modelTris = mb.triangles + signTris
   ;(window as unknown as Record<string, unknown>).__rebuild = (fit: { hx: number; hz: number; height: number; ring?: { x: number; z: number }[] }) => {
     mb = new MeshBuilder()
-    if (build) build(mb, fit)
+    if (build) build(mb, fit, (fit as { kit?: KitArgs }).kit)
     mb.toVertexData().applyToMesh(m, true)
     signTris = raiseSigns()
     raiseWater()

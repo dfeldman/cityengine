@@ -1214,5 +1214,8 @@
   },
   {
     "include": "paris/museums.json"
+  },
+  {
+    "include": "paris/civic.json"
   }
 ]

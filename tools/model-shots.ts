@@ -187,6 +187,7 @@ type FitFor = { hx: number; hz: number; height: number; ring: { x: number; z: nu
  * featureless dark slab, on the very contact sheet meant to catch exactly that kind of fault.
  */
 export async function fitForEntry(entryName: string, cityArg = 'san-francisco', frontArg = ''): Promise<{ model: string; fit: FitFor; spin: number }> {
+  let kit: unknown
   let model = ''
   let fitFor: FitFor | null = null
   let spin = 0
@@ -199,6 +200,7 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
   const mf = [city, city.split('-')[0]].map((n) => resolve(import.meta.dirname, '..', 'public', 'landmarks', `${n}.json`)).find((f) => existsSync(f))!
   const e = (await readManifestFile<{ name: string; osm?: string | string[]; procedural?: string; height?: number; size?: [number, number]; lat?: number; lon?: number; rotateDeg?: number; front?: number | string }>(mf)).find((x) => x.name === entryName)
   if (!e?.procedural) throw new Error(`no procedural entry "${entryName}"`)
+  kit = (e as { kit?: unknown }).kit
   model = e.procedural
   const ids = (Array.isArray(e.osm) ? e.osm : e.osm ? [e.osm] : [])
   type G = { lat: number; lon: number }
@@ -295,6 +297,8 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
   spin = e.rotateDeg !== undefined ? (e.rotateDeg * Math.PI) / 180
     : typeof e.front === 'number' ? ((e.front + 180) * Math.PI) / 180 : 0
   }
+  // (a kit builder's words, which the fit carries to the showcase's rebuild)
+  if (kit) (fitFor as unknown as { kit: unknown }).kit = kit
   return { model, fit: fitFor!, spin }
 }
 
