@@ -1,1 +1,293 @@
-[]
+[
+  {
+    "osm": [
+      "relation/152838",
+      "way/87832955",
+      "way/87833006",
+      "way/87833032",
+      "way/87833060",
+      "way/87833104",
+      "way/87833153",
+      "way/87833226",
+      "way/87833281",
+      "way/87936887",
+      "way/87936888",
+      "way/87936890",
+      "way/87936891",
+      "way/87936892",
+      "way/87936894",
+      "way/87936895",
+      "way/87936896",
+      "way/87936898",
+      "way/87936899",
+      "way/87936900",
+      "way/87936902",
+      "way/87936903",
+      "way/87936907",
+      "way/87936908",
+      "way/87936909"
+    ],
+    "name": "Parc des Princes",
+    "procedural": "parcDesPrinces",
+    "front": 125,
+    "height": 48,
+    "note": "venues/parc-des-princes.ts: Taillibert's 1972 bowl, 50 curved concrete portiques carrying the roof ring, two tiers of blue seats (the Paris stand's red and white bands), the striped pitch. relation/152838 is building=stadium (height 48) with the pitch's void as its inner ring. front 125 lays local x along the pitch's axis (OSM way/88005247, bearing 35°) with the Paris stand (−z) on the east side. The 24 two-metre ways (87832955…87936909) are the ticket booths and turnstiles round the bowl, which the city drew as little houses with chimneys against the portiques (2026-10-29 bake): removed."
+  },
+  {
+    "osm": [
+      "relation/6048947"
+    ],
+    "name": "Stade Jean-Bouin",
+    "procedural": "jeanBouin",
+    "front": 187,
+    "height": 24,
+    "note": "venues/jean-bouin.ts: Ricciotti's 2013 rugby ground, one skin of pale UHPC lattice pierced with irregular openings over facade and roof, a single steep tier round the pitch, the H posts. relation/6048947 is building=stadium (no height in OSM; ~24 m drawn) with the pitch's void as inner ring. front 187 lays local x along the pitch (way/403524547, bearing 97°)."
+  },
+  {
+    "osm": [
+      "relation/11004030",
+      "way/1175316752",
+      "way/1175316802",
+      "way/1175316823",
+      "way/1175316873",
+      "way/1175316993"
+    ],
+    "name": "Roland-Garros: Philippe-Chatrier",
+    "procedural": "rgChatrier",
+    "front": 111,
+    "height": 36,
+    "note": "venues/roland-garros.ts: the square bowl of green seats round the clay, cream louvred drum, the retractable roof's two rack rails and its eleven white wings parked at the north end (+x, bearing 21°; the parking end is not confirmed by the sources read). relation/11004030 (building=stadium) carries 304 building:parts, claimed with it. (Named without 'court': render/landmarks.ts skips the footprint for /court/.) The five raised slabs on the south stand (ways 1175316752…993) the bake did not file under the outline are named too."
+  },
+  {
+    "osm": [
+      "relation/11004031",
+      "way/1175314776",
+      "way/1175314794",
+      "way/1175314836",
+      "way/1175314852",
+      "way/1175314863",
+      "way/1175314870",
+      "way/1175314882",
+      "way/1175314890",
+      "way/1175314895",
+      "way/1175314910",
+      "way/1175314936",
+      "way/1175314941",
+      "way/1175314983",
+      "way/1175315105",
+      "way/1175315150",
+      "way/1175315198",
+      "way/1175315209",
+      "way/1175315211",
+      "way/1175315213",
+      "way/1175315215",
+      "way/1175315254",
+      "way/1175315263",
+      "way/1175315291",
+      "way/1175315296",
+      "way/1175315303",
+      "way/1175315308",
+      "way/1175315313",
+      "way/1175315336",
+      "way/1175315380",
+      "way/1175315418",
+      "way/1175315458",
+      "way/1175315461",
+      "way/1175315511",
+      "way/1175315525",
+      "way/1175315573",
+      "way/1175315588",
+      "way/1175315593",
+      "way/1175315606",
+      "way/1175315644",
+      "way/1175315662",
+      "way/1175315679",
+      "way/1175315710",
+      "way/1175315739",
+      "way/1175315754",
+      "way/1175315763",
+      "way/1175315782",
+      "way/1175315814",
+      "way/1175315860",
+      "way/1175315870",
+      "way/1175315872",
+      "way/1175315877",
+      "way/1175315959",
+      "way/1175315964",
+      "way/1175315999",
+      "way/1175316009",
+      "way/1175316036",
+      "way/1175316039",
+      "way/1175316060",
+      "way/1175316070",
+      "way/1175316128",
+      "way/1175316130",
+      "way/1175316156",
+      "way/1175316198",
+      "way/1175316238",
+      "way/1175316245",
+      "way/1175316255",
+      "way/1175316256",
+      "way/1175316290",
+      "way/1175316301",
+      "way/1175316312",
+      "way/1175316321",
+      "way/1175316324",
+      "way/1175316351",
+      "way/1175316359",
+      "way/1175316370",
+      "way/1175316399",
+      "way/1175316456",
+      "way/1175316474",
+      "way/1175316486",
+      "way/1175316553",
+      "way/1175316567",
+      "way/1175316597",
+      "way/1175316623",
+      "way/1175316625",
+      "way/1175316651",
+      "way/1175316658",
+      "way/1175316664",
+      "way/1175314804",
+      "way/1175314835",
+      "way/1175315270",
+      "way/1175315727",
+      "way/1175316104",
+      "way/1175316258",
+      "way/1175316296",
+      "way/1175316376",
+      "relation/15897415",
+      "relation/15897522",
+      "relation/15897530",
+      "relation/15897568",
+      "relation/15897563",
+      "way/1175314900",
+      "way/1175315152",
+      "way/1175315197",
+      "way/1175315237",
+      "way/1175315306",
+      "way/1175315332",
+      "way/1175315724",
+      "way/1175316005",
+      "way/1175316121",
+      "way/1175316274",
+      "way/1175316401",
+      "way/1175316412"
+    ],
+    "name": "Roland-Garros: Suzanne-Lenglen",
+    "procedural": "rgLenglen",
+    "front": 111,
+    "height": 23,
+    "note": "venues/roland-garros.ts: the round open bowl, green seats, clay court, white piers and a green band round the drum. relation/11004031 (building=stadium, the court its inner ring) with its 186 parts; the other ids are the stands' ground-layer building=roof ways and five raised building:part relations (15897415…563) that the bake keeps as canopy slabs inside the bowl, not as the outline's parts (checked against the 2026-10-29 bake's tiles)."
+  },
+  {
+    "osm": [
+      "relation/11004029"
+    ],
+    "name": "Roland-Garros: Simonne-Mathieu",
+    "procedural": "rgSimonneMathieu",
+    "front": 92,
+    "height": 10,
+    "note": "venues/roland-garros.ts: Mimram's 2019 court in the Serres d'Auteuil, low stands round the clay walled by four glass greenhouses with the plants against the panes. The real court is sunk ~4 m in the garden; the model cannot dig into the terrain, so it stands at grade. relation/11004029 (building=stadium) and its 468 seat-row parts. Placed by point and size (OSM's outline centre and its 82 x 66 rectangle at bearing 2°): the bake keeps only one of the 468 parts under the dropped outline, and fitted to that hull the court would have come out 41 x 57.",
+    "lat": 48.846034,
+    "lon": 2.253633,
+    "size": [
+      82,
+      66
+    ]
+  },
+  {
+    "osm": [
+      "relation/11004024",
+      "relation/11004028"
+    ],
+    "lat": 48.846666,
+    "lon": 2.248474,
+    "size": [
+      10,
+      10
+    ],
+    "front": 180,
+    "drape": true,
+    "kind": "plaza",
+    "height": 9,
+    "name": "Roland-Garros: the outside courts",
+    "procedural": "rgCourts",
+    "note": "venues/roland-garros.ts COURTS: the clay of courts 2-16 in their white lines, nets and green windbreaks, at their OSM positions (leisure=pitch surface=clay ways 792571216/18/59/60/69/77-80/82-85/160/161) relative to a point 110 m west and 20 m north of this one (COURTS' origin; the entry's own point is on open lawn between courts 6/8 and the Chatrier and its size a token 10 m, so the nonbuildings audit's footprint rectangle does not take in the whole grounds — the builder draws 520 m of courts whatever the size). The city draws those pitches as green pitch areas (no surface in the area kind) - this lays the clay over them. Court 14's round stand is drawn here too; relation/11004024 is its ring. The stand round courts 7 and 9 (relation/11004028, building=yes with the courts as holes, which the city drew as a 28 m block with the clay at the bottom of two wells) is drawn here as a 4.5 m terrace of seats."
+  },
+  {
+    "osm": [
+      "way/252506849"
+    ],
+    "lat": 48.838607,
+    "lon": 2.378562,
+    "size": [
+      168,
+      196
+    ],
+    "front": 51,
+    "height": 34,
+    "name": "Accor Arena",
+    "procedural": "accorArena",
+    "note": "venues/accor-arena.ts: the POPB's truncated pyramid of lawn, the glass band and Prouvé's dark steel roof frame, the four concrete shafts at the cut corners, DVVD's 2015 glazed hall on the Rue de Bercy (−z, north-east) and the podium on the Boulevard de Bercy (+x). Placed by point and size, not fitted: way/252506849 also holds the parvis and podiums, and its 177 stepped parts are claimed with it. Centre and size from the parts' 19-20 m terrace (177 x 146 in the 51° frame) grown to the slopes' foot."
+  },
+  {
+    "osm": [
+      "way/63224946"
+    ],
+    "name": "Temple de la Sibylle",
+    "procedural": "sibylleTemple",
+    "height": 11,
+    "note": "venues/parks.ts: Davioud's 1869 tholos on the Buttes-Chaumont's rock (after the Temple of Vesta at Tivoli): eight Corinthian columns on a stepped podium, the entablature ring, the low dome. OSM's way is the 5.7 m ring of columns. The cliff and island under it are the terrain's (the DEM), not drawn here."
+  },
+  {
+    "osm": [
+      "way/83064970"
+    ],
+    "name": "Château de Bagatelle",
+    "procedural": "chateauBagatelle",
+    "front": 23,
+    "height": 15,
+    "note": "venues/parks.ts: Bélanger's 1777 folly in the Bois de Boulogne, two balustraded storeys of pale stone, the garden front's shallow bow (OSM's ring swells ~3 m out of its north-north-east face, hence front 23) under a low zinc dome, four Tuscan columns on the court front (+z)."
+  },
+  {
+    "osm": [
+      "relation/3066029"
+    ],
+    "name": "Rotonde de Chartres",
+    "procedural": "rotondeChartres",
+    "height": 20,
+    "note": "venues/parks.ts: Ledoux's 1787 barrière at the Parc Monceau's gate on the Boulevard de Courcelles: sixteen Tuscan columns round the core drum, the upper drum of twelve arched windows, the low zinc dome. relation/3066029 (height 20, heritage 2), 15 m across."
+  },
+  {
+    "osm": [
+      "way/53400953"
+    ],
+    "name": "Parc André-Citroën: the north greenhouse",
+    "procedural": "citroenSerreNord",
+    "front": 30,
+    "height": 18,
+    "note": "venues/parks.ts citroenGreenhouse: Patrick Berger's 1992 glass nave at the head of the lawn, 45 x 15 m, 15 m to the eaves, the mullion grid, the plants against the lower panes, a glass ridge roof. front 30 lays the long axis (bearing 120) along x, the +x gable to the lawn and the Seine (north-west)."
+  },
+  {
+    "osm": [
+      "way/53401227"
+    ],
+    "name": "Parc André-Citroën: the south greenhouse",
+    "procedural": "citroenSerreSud",
+    "front": 30,
+    "height": 18,
+    "note": "venues/parks.ts citroenGreenhouse, its twin across the water jets' peristyle (OSM way/163863438)."
+  },
+  {
+    "osm": [
+      "way/83115461"
+    ],
+    "name": "Le Pré Catelan",
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 2,
+    "height": 12,
+    "note": "The Napoleon III pavilion (1856) in the Bois de Boulogne's Pré Catelan, now Lenôtre's restaurant: two storeys of tall windows in pale stone under a slate roof - a restyle, its silhouette is OSM's (way/83115461, 45 x 58)."
+  }
+]

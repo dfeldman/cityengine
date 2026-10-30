@@ -119,10 +119,28 @@ const SETS: Record<string, V[]> = {
     ['throat', 1.57, 1.05, 380, 0, 10, 40],
     ['forecourt', -1.75, 1.55, 70, 0, 14, -110],
   ],
+  /*
+   * A DOMED CHURCH or monument (paris/monuments/: Sacré-Cœur, the Panthéon): ~100 m long and 80 m tall, front −z.
+   * The front as the terraces see it, a three-quarter, the long side, the back, from above for the domes' plan, and
+   * a rider at the head of the steps under the porch.
+   */
+  basilica: [['front', -1.57, 1.42, 240, 0, 34, 0], ['front-3q', -2.25, 1.32, 230, 0, 34, 0], ['side', 0.0, 1.45, 240, 0, 34, 0],
+    ['back-3q', 0.85, 1.3, 230, 0, 34, 0], ['top', -1.3, 0.6, 250, 0, 20, 0], ['porch', -1.75, 1.5, 75, 0, 14, -40]],
+  // a GATE or arch of 18–25 m (paris/monuments/gates.ts): head-on, three-quarter, a rider's eye in the street through it, above
+  gate: [['front', -1.57, 1.45, 62, 0, 10, 0], ['three-quarter', -2.3, 1.35, 62, 0, 10, 0], ['rider', -1.45, 1.55, 24, 0, 5, 0],
+    ['top', -1.2, 0.7, 62, 0, 6, 0]],
   court: [
     ['plan', -1.57, 0.04, 34, 0, 0, 0],
     ['three-quarter', -0.9, 1.15, 34, 0, 1, 0],
     ['rider', 0.45, 1.50, 26, 0, 1.4, 0],
+  ],
+  // a stadium or arena 150–250 m across (paris/venues): from high over a corner, three-quarter, a rider on the
+  // boulevard outside the −z side, from the top of the far stand across the pitch; targets scale with --fit
+  stadium: [
+    ['aerial', -1.0, 0.65, 430, 0, 15, 0],
+    ['three-quarter', -0.9, 1.22, 380, 0, 20, 0],
+    ['rider', -1.4, 1.45, 95, 0, 22, -95],
+    ['inside', 1.4, 1.05, 120, 0, 8, 0],
   ],
 }
 let views = SETS[arg('views', 'tower')] ?? SETS.tower

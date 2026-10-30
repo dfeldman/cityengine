@@ -1,1 +1,318 @@
-[]
+[
+  {
+    "name": "Sacré-Cœur",
+    "procedural": "sacreCoeurFull",
+    "osm": [
+      "way/23762981"
+    ],
+    "lat": 48.886796,
+    "lon": 2.343018,
+    "size": [
+      50.4,
+      96.2
+    ],
+    "height": 84,
+    "note": "The basilica on the summit of Montmartre. Placed on OSM way 23762981's box turned to its axis (osmium, 2026-10-29), the porch (−z) facing the city at bearing 175.6, the campanile at +z; the way and its ~45 building:parts (226727320…226727369, whose heights the model follows) are replaced. Named exactly as the skyline stand-in in tools/cities.ts, so the stand-in gives way to it within 1.3 km (render/landmarks.ts `update`). `front` (not rotateDeg, which the skyline code would copy onto the stand-in, whose own frame is long on x while this model is long on z): the same turn, 355.6°, for the model.",
+    "front": 175.6
+  },
+  {
+    "name": "Panthéon",
+    "procedural": "pantheonFull",
+    "osm": [
+      "way/16407465"
+    ],
+    "lat": 48.846202,
+    "lon": 2.346083,
+    "size": [
+      85,
+      112.2
+    ],
+    "height": 83,
+    "note": "Soufflot's church on the Montagne Sainte-Geneviève. Placed on OSM way 16407465's box turned to its axis (osmium, 2026-10-29), the portico (−z) facing the Rue Soufflot at bearing 288.2; the way and its ~75 building:parts (IGN Lidar heights, which the model follows; the portico's 16 mapped columns among them) are replaced. Named exactly as the skyline stand-in in tools/cities.ts, so the stand-in gives way to it within 1.3 km. `front` (not rotateDeg, which the skyline code would copy onto the stand-in, whose own frame is long on x while this model is long on z): the same turn, 108.2°, for the model.",
+    "front": 288.2
+  },
+  {
+    "name": "Square Louise-Michel — the terraces",
+    "procedural": "sacreCoeurTerraces",
+    "kind": "plaza",
+    "lat": 48.885919,
+    "lon": 2.343141,
+    "rotateDeg": 355.6,
+    "size": [
+      78,
+      86
+    ],
+    "height": 6,
+    "sign": false,
+    "shadow": false,
+    "note": "The stonework of the terraced garden below the basilica: the parvis balustrade (its west run stopping short of the Réservoirs de Montmartre), the fountain's grotto wall, basin and kerb (OSM way 570241111), the candelabra up the central flights. In the basilica's frame moved to basilica-local (1.5, −98), the middle of the stonework; each piece on Fit.groundAt (the square falls ~35 m). The flights themselves are OSM's highway=steps, drawn by the city (render/stairs.ts); the lawns are the park's (way 45189726)."
+  },
+  {
+    "name": "Arc de Triomphe du Carrousel",
+    "procedural": "carrouselArch",
+    "kind": "monument",
+    "osm": [
+      "way/227483542",
+      "way/227483548",
+      "way/227483549",
+      "way/227483568",
+      "way/227483585",
+      "way/227483586",
+      "way/227483596",
+      "way/227483600",
+      "way/227483601"
+    ],
+    "lat": 48.861727,
+    "lon": 2.332909,
+    "rotateDeg": 115.7,
+    "size": [
+      18.4,
+      10.3
+    ],
+    "height": 21.5,
+    "note": "Napoleon's arch between the Louvre and the Tuileries. Placed on OSM way 227483542's box turned to its axis (osmium, 2026-10-29), −z toward the Tuileries (bearing 295.7), the axis of the Louvre–Étoile; the way and its 58 building:parts (whose heights the model follows: arches to 9 and 5 m, columns 2–10.5, attic to 16, plinth 17.5) are replaced. The quadriga takes it to ~21.5 m. The building:parts the bake nests under the outline are also named outright (they go with it either way), so the nonbuildings check sees them claimed."
+  },
+  {
+    "name": "Porte Saint-Denis",
+    "procedural": "porteSaintDenis",
+    "kind": "monument",
+    "osm": [
+      "relation/3170072",
+      "relation/3170073",
+      "relation/3170074",
+      "relation/3170075"
+    ],
+    "lat": 48.869793,
+    "lon": 2.352687,
+    "rotateDeg": 18.2,
+    "size": [
+      23.9,
+      7.2
+    ],
+    "height": 24.65,
+    "note": "Blondel's gate (1672) astride the Rue Saint-Denis on the boulevard. Placed on OSM relation 3170072's box turned to its axis (osmium, 2026-10-29), −z facing south (bearing 198.2); the arch is open for the street. The building:parts the bake nests under the outline are also named outright (they go with it either way), so the nonbuildings check sees them claimed."
+  },
+  {
+    "name": "Porte Saint-Martin",
+    "procedural": "porteSaintMartin",
+    "kind": "monument",
+    "osm": [
+      "relation/3178897",
+      "way/236262715",
+      "relation/3178898",
+      "relation/3178899",
+      "relation/3178901",
+      "relation/3178902"
+    ],
+    "lat": 48.869146,
+    "lon": 2.355652,
+    "rotateDeg": 20,
+    "size": [
+      18.1,
+      4.8
+    ],
+    "height": 18,
+    "note": "Bullet's gate (1674) astride the Rue Saint-Martin. Placed on OSM relation 3178897's box turned to its axis (osmium, 2026-10-29), −z facing south (bearing 200); the three arches are open. The building:parts the bake nests under the outline are also named outright (they go with it either way), so the nonbuildings check sees them claimed."
+  },
+  {
+    "name": "Le Triomphe de la République",
+    "procedural": "triompheRepublique",
+    "kind": "monument",
+    "lat": 48.848387,
+    "lon": 2.395915,
+    "rotateDeg": 90,
+    "size": [
+      20,
+      20
+    ],
+    "height": 15,
+    "note": "Dalou's bronze group in the middle of the Place de la Nation, on its pedestal in a round basin. Standalone at the centre of OSM way 114877477 (historic=monument, not a building); −z faces west toward the Bastille, where the procession goes."
+  },
+  {
+    "name": "Barrière du Trône — Saint Louis",
+    "procedural": "troneColumnSaintLouis",
+    "kind": "monument",
+    "osm": [
+      "way/63638975"
+    ],
+    "lat": 48.848339,
+    "lon": 2.398503,
+    "rotateDeg": 7.8,
+    "size": [
+      10.7,
+      10.7
+    ],
+    "height": 30.5,
+    "note": "Ledoux's north column on the Cours de Vincennes (1787), Étex's Saint Louis on top (1845). Placed on OSM way 63638975's box (osmium, 2026-10-29)."
+  },
+  {
+    "name": "Barrière du Trône — Philippe Auguste",
+    "procedural": "troneColumnPhilippeAuguste",
+    "kind": "monument",
+    "osm": [
+      "way/77385192",
+      "way/285276897",
+      "way/285276898",
+      "way/285276899",
+      "way/285276900"
+    ],
+    "lat": 48.847977,
+    "lon": 2.398429,
+    "rotateDeg": 7.9,
+    "size": [
+      11.6,
+      11.6
+    ],
+    "height": 30.5,
+    "note": "Ledoux's south column, Dumont's Philippe Auguste on top. Placed on OSM way 77385192's box and its cross-shaped base (parts 285276897…900, 286455821/3; osmium, 2026-10-29). The building:parts the bake nests under the outline are also named outright (they go with it either way), so the nonbuildings check sees them claimed."
+  },
+  {
+    "name": "Le Lion de Belfort",
+    "procedural": "lionDeBelfort",
+    "kind": "statue",
+    "osm": [
+      "way/79629168"
+    ],
+    "lat": 48.834332,
+    "lon": 2.332465,
+    "rotateDeg": 119.5,
+    "size": [
+      11.2,
+      6.4
+    ],
+    "height": 8.2,
+    "note": "Bartholdi's copper lion on the Place Denfert-Rochereau. Placed on its pedestal, OSM way 79629168's box turned to its long axis (osmium, 2026-10-29); the lion looks along local +x (bearing 209.5) — its real heading not checked against a photograph."
+  },
+  {
+    "name": "Grande Arche de la Défense",
+    "procedural": "grandeArche",
+    "osm": [
+      "way/19441489",
+      "way/621620714",
+      "way/225694316"
+    ],
+    "lat": 48.892564,
+    "lon": 2.235875,
+    "rotateDeg": 302.1,
+    "size": [
+      106.9,
+      112.3
+    ],
+    "height": 110,
+    "note": "Spreckelsen and Andreu's hollow cube closing the axis. Placed on OSM way 19441489's box turned to its sides (osmium, 2026-10-29); the opening runs through along local z, −z toward Paris (bearing 122.1). The outline, its duplicate 621620714, the roof's office way 225694316 and their ~30 building:parts (the steps' 13 treads, the soffit's steps, whose heights the model follows) are replaced."
+  },
+  {
+    "name": "Tour Montparnasse",
+    "procedural": "montparnasseFull",
+    "osm": [
+      "way/16406633"
+    ],
+    "lat": 48.842112,
+    "lon": 2.321979,
+    "size": [
+      39.2,
+      61.9
+    ],
+    "height": 210,
+    "note": "The tower, on OSM way 16406633's box turned to its long axis (osmium, 2026-10-29): the bowed faces at local ±x, the notched ends at ±z, −z toward bearing 219.5. Named exactly as the skyline stand-in in tools/cities.ts, so the stand-in gives way to it within 1.3 km. `front` (not rotateDeg, which the skyline code would copy onto the stand-in, whose own frame is long on x while this model is long on z): the same turn, 39.5°, for the model.",
+    "stone": false,
+    "front": 219.5
+  },
+  {
+    "name": "Église Saint-Sulpice",
+    "procedural": "saintSulpice",
+    "osm": [
+      "way/16077204"
+    ],
+    "lat": 48.851006,
+    "lon": 2.33489,
+    "rotateDeg": 82.6,
+    "size": [
+      57.8,
+      122.4
+    ],
+    "height": 73,
+    "note": "Placed on OSM way 16077204's box turned to the church's axis (osmium, 2026-10-29), the front (−z) to the Place Saint-Sulpice (bearing 262.6), the north tower at −x; the way and its building:parts are replaced. Tower tops Wikipedia's 73/68 m (OSM's tower parts stop at 58.4/56.4)."
+  },
+  {
+    "name": "Église Saint-Eustache",
+    "procedural": "saintEustache",
+    "osm": [
+      "way/53762963"
+    ],
+    "lat": 48.863394,
+    "lon": 2.345198,
+    "rotateDeg": 97.9,
+    "size": [
+      48.9,
+      108.5
+    ],
+    "height": 52,
+    "note": "OSM way 53762963 is tagged building=church AND building:part=yes with height=10, so the bake keeps a 10 m block and drops its parts (273063678…690: nave 40 m, towers 38/24): the model gives the body back. Placed on the way's box turned to its axis (osmium, 2026-10-29), the west front (−z) at bearing 277.9, +x south."
+  },
+  {
+    "name": "Église de la Sainte-Trinité",
+    "procedural": "laTrinite",
+    "osm": [
+      "way/49872150"
+    ],
+    "lat": 48.877312,
+    "lon": 2.331393,
+    "rotateDeg": 343.9,
+    "size": [
+      34.7,
+      92
+    ],
+    "height": 65,
+    "note": "Ballu's church at the head of the Chaussée-d'Antin. OSM way 49872150 has no parts or height (a flat block in the city); placed on its box turned to its axis (osmium, 2026-10-29), the front and tower (−z) to the square at bearing 163.9."
+  },
+  {
+    "name": "Église Saint-Roch",
+    "procedural": "saintRoch",
+    "osm": [
+      "way/42722202"
+    ],
+    "lat": 48.865415,
+    "lon": 2.332673,
+    "rotateDeg": 306,
+    "size": [
+      126.8,
+      39.1
+    ],
+    "height": 33,
+    "note": "OSM way 42722202 has no parts or height; placed on its box turned to its long axis (osmium, 2026-10-29), local x along it with the front at −x on the Rue Saint-Honoré (bearing 216)."
+  },
+  {
+    "name": "Église Saint-Germain-l'Auxerrois",
+    "procedural": "saintGermainAuxerrois",
+    "osm": [
+      "way/53770908",
+      "way/200452261"
+    ],
+    "lat": 48.859495,
+    "lon": 2.341346,
+    "rotateDeg": 12.4,
+    "size": [
+      78.3,
+      40.6
+    ],
+    "height": 50,
+    "note": "The church (way 53770908, a 20 m block in OSM) and Ballu's belfry beside it on the place (way 200452261, 50 m), both replaced and drawn together: placed on the church's box turned to its axis (osmium, 2026-10-29), the porch (−x) facing the Louvre's colonnade (bearing 282.4), the belfry at local (−34, +29), outside the box."
+  },
+  {
+    "name": "Église Saint-Germain-des-Prés",
+    "procedural": "saintGermainDesPres",
+    "osm": [
+      "way/62287173"
+    ],
+    "lat": 48.853956,
+    "lon": 2.334457,
+    "rotateDeg": 105.7,
+    "size": [
+      38.1,
+      104.2
+    ],
+    "height": 60,
+    "note": "Placed on OSM way 62287173's box turned to the church's own axis (osmium, 2026-10-29: 6.5° off the footprint's minimum box), the tower (−z) to the west at bearing 285.7; the way and its building:parts (the tower 1461285707…717, which the city drew as a windowed block with its pinnacles floating over the roofs) are replaced. The Chapelle Saint-Symphorien (way 495635817) stays."
+  }
+]

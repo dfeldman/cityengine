@@ -133,6 +133,11 @@ const BY_MODULE: [Record<string, unknown>, NonbuildingKind][] = [
 export const EXPLICIT: Record<string, NonbuildingKind> = {
   // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
   medicisFountain: 'fountain', tokyoParvis: 'plaza',
+  // …the monuments family (paris/monuments/): the gates, the columns, the Triomphe, the Lion, the Sacré-Cœur's terraces
+  carrouselArch: 'monument', porteSaintDenis: 'monument', porteSaintMartin: 'monument', triompheRepublique: 'monument',
+  troneColumnSaintLouis: 'monument', troneColumnPhilippeAuguste: 'monument', lionDeBelfort: 'statue', sacreCoeurTerraces: 'plaza',
+  // …and the venues family (paris/venues/): Roland-Garros's outside courts, the Buttes-Chaumont's folly
+  rgCourts: 'plaza', sibylleTemple: 'monument',
   // bridges — these bind through the city SKYLINE (tools/cities.ts), not through any manifest
   goldenGateBridge: 'bridge', bayBridge: 'bridge', bayBridgeNear: 'bridge',
   // masts and lattices: a tower with no floors is not a building
@@ -397,6 +402,8 @@ export const SLOPE_OK: Record<string, string> = {
   alcatrazSmokestack: 'a 3 m chimney on the cliff edge: its foot set into the rock',
   operaPlazaCourtyard: 'the raised courtyard deck (+3.8 m, docs/BUGFIX): flat, its pool level, its edge the courtyard wall',
   pointBonitaBridge: 'a footbridge high over the chasm between the cliffs: its towers stand on the rock either side',
+  porteSaintDenis: '2.1 m along the boulevard over 24 m: the foot of the gate meets the street as the real one does (city shot, 2026-10-29)',
+  tourSaintJacques: 'the tower stands on the raised mound of its square; the low side is the edge of the mound (city shot, 2026-10-29)',
 }
 
 /**
