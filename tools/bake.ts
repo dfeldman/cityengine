@@ -1020,6 +1020,7 @@ async function bake(spec: CitySpec): Promise<void> {
     console.log(`  street widths by hand: ${n.join(' / ')} edges`)
   }
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
+  if (streetRegion.roadPaint === 'paris') parisParkingLanes(kept, buildings)
 
   // ---- the green and the wet, and the paved squares (their own query: only as areas, never as streets)
   const squares = await overpassTiled(squaresQuery, detailBboxOf(spec)).catch((e) => {
@@ -3349,61 +3350,84 @@ function reportLevels(buildings: PackedBuilding[], inferred: number): void {
  * the sums is the street's real corridor. Only ever shrinks: the pavements first (to 1 m), then the roadway
  * (to 3 m). Streets with open ground on a side (a park, a plaza) keep their width.
  */
-function fitStreetsBetweenBuildings(edges: PackedEdge[], buildings: PackedBuilding[]): void {
-  const CELL = 40
+const GAP_CELL = 40
+/** the buildings' walls, filed by 40 m cell, for `medianGap` */
+function wallGrid(buildings: PackedBuilding[]): Map<string, number[][]> {
   const grid = new Map<string, number[][]>()
   for (const b of buildings) {
     const r = b.ring
     for (let i = 0; i < r.length; i += 2) {
       const j = (i + 2) % r.length
       const seg = [r[i], r[i + 1], r[j], r[j + 1]]
-      const k = `${Math.floor((seg[0] + seg[2]) / 2 / CELL)},${Math.floor((seg[1] + seg[3]) / 2 / CELL)}`
-      grid.set(k, [...(grid.get(k) ?? []), seg])
+      const k = `${Math.floor((seg[0] + seg[2]) / 2 / GAP_CELL)},${Math.floor((seg[1] + seg[3]) / 2 / GAP_CELL)}`
+      // (pushed, not spread into a fresh array: that copied every cell's list once per wall — fine for a borough,
+      //  quadratic for Paris's 150,000 buildings)
+      const list = grid.get(k)
+      if (list) list.push(seg)
+      else grid.set(k, [seg])
     }
   }
+  return grid
+}
+
+/** Every 10 m along a street, the distance to the nearest wall on each side: the median of the sums, or null */
+function medianGap(e: PackedEdge, grid: Map<string, number[][]>): number | null {
+  const pts = unpackPoints(e.points)
+  const gaps: number[] = []
+  let acc = 0
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i].x - pts[i - 1].x
+    const dz = pts[i].z - pts[i - 1].z
+    const L = Math.hypot(dx, dz)
+    if (L < 0.01) continue
+    const nx = -dz / L
+    const nz = dx / L
+    for (let t = acc; t < L; t += 10) {
+      const px = pts[i - 1].x + (dx * t) / L
+      const pz = pts[i - 1].z + (dz * t) / L
+      let left = 20
+      let right = 20
+      const gx = Math.floor(px / GAP_CELL)
+      const gz = Math.floor(pz / GAP_CELL)
+      for (let ox = -1; ox <= 1; ox++) {
+        for (let oz = -1; oz <= 1; oz++) {
+          for (const [ax, az, bx, bz] of grid.get(`${gx + ox},${gz + oz}`) ?? []) {
+            // where the perpendicular through p meets this wall, if it does
+            const sx = bx - ax
+            const sz = bz - az
+            const den = nx * sz - nz * sx
+            if (Math.abs(den) < 1e-6) continue
+            const d = ((ax - px) * sz - (az - pz) * sx) / den
+            const u = ((ax - px) * nz - (az - pz) * nx) / den
+            if (u < 0 || u > 1) continue
+            if (d > 0) left = Math.min(left, d)
+            else right = Math.min(right, -d)
+          }
+        }
+      }
+      if (left < 20 && right < 20) gaps.push(left + right)
+    }
+    acc = (acc + 10 - (L % 10)) % 10
+  }
+  if (gaps.length < 2) return null
+  gaps.sort((a, b) => a - b)
+  return gaps[Math.floor(gaps.length / 2)]
+}
+
+/**
+ * Fit each street into the gap its buildings actually leave. Kerb-to-kerb defaults are right for a Brooklyn
+ * avenue and far too wide for Love Lane, where they put the roadway wall to wall and the sidewalks inside
+ * the buildings. Every 10 m along a street, the distance to the nearest wall on each side; the median of
+ * the sums is the street's real corridor. Only ever shrinks: the pavements first (to 1 m), then the roadway
+ * (to 3 m). Streets with open ground on a side (a park, a plaza) keep their width.
+ */
+function fitStreetsBetweenBuildings(edges: PackedEdge[], buildings: PackedBuilding[]): void {
+  const grid = wallGrid(buildings)
   let shrunk = 0
   for (const e of edges) {
     if (e.foot) continue
-    const pts = unpackPoints(e.points)
-    const gaps: number[] = []
-    let acc = 0
-    for (let i = 1; i < pts.length; i++) {
-      const dx = pts[i].x - pts[i - 1].x
-      const dz = pts[i].z - pts[i - 1].z
-      const L = Math.hypot(dx, dz)
-      if (L < 0.01) continue
-      const nx = -dz / L
-      const nz = dx / L
-      for (let t = acc; t < L; t += 10) {
-        const px = pts[i - 1].x + (dx * t) / L
-        const pz = pts[i - 1].z + (dz * t) / L
-        let left = 20
-        let right = 20
-        const gx = Math.floor(px / CELL)
-        const gz = Math.floor(pz / CELL)
-        for (let ox = -1; ox <= 1; ox++) {
-          for (let oz = -1; oz <= 1; oz++) {
-            for (const [ax, az, bx, bz] of grid.get(`${gx + ox},${gz + oz}`) ?? []) {
-              // where the perpendicular through p meets this wall, if it does
-              const sx = bx - ax
-              const sz = bz - az
-              const den = nx * sz - nz * sx
-              if (Math.abs(den) < 1e-6) continue
-              const d = ((ax - px) * sz - (az - pz) * sx) / den
-              const u = ((ax - px) * nz - (az - pz) * nx) / den
-              if (u < 0 || u > 1) continue
-              if (d > 0) left = Math.min(left, d)
-              else right = Math.min(right, -d)
-            }
-          }
-        }
-        if (left < 20 && right < 20) gaps.push(left + right)
-      }
-      acc = (acc + 10 - (L % 10)) % 10
-    }
-    if (gaps.length < 2) continue
-    gaps.sort((a, b) => a - b)
-    const gap = gaps[Math.floor(gaps.length / 2)]
+    const gap = medianGap(e, grid)
+    if (gap === null) continue
     const want = e.width + 2 * e.walk
     if (want <= gap) continue
     const walk = Math.max(e.walk > 0 ? 1 : 0, Math.min(e.walk, (gap - e.width) / 2))
@@ -3412,6 +3436,31 @@ function fitStreetsBetweenBuildings(edges: PackedEdge[], buildings: PackedBuildi
     shrunk++
   }
   console.log(`  ${shrunk} streets fitted between their buildings`)
+}
+
+/**
+ * PARIS'S PARKING LANE (Mapillary sampling and the owner's street view, 2026-10-29: cars parked along the kerbs of
+ * nearly every street; "parking bays marked in dashes along the kerb"). The class defaults make a Paris rue one lane
+ * between its pavements — 3.4 m of carriageway on 184 km of one-way street in the core — where the real street is
+ * that lane AND a parking lane, 6 m kerb to kerb. Where the buildings leave the room (the median gap between the walls
+ * has 2.4 m to spare beyond the street as drawn), the carriageway gains the parking lane: to 5.6 m on a one-way rue, and
+ * on a two-way street of 6 m or more one each side (render/city.ts `kerbBays` paints the bays and parks the cars,
+ * only where a parked car clears the traffic lane). Never narrows anything; a street with open ground beside it (no
+ * wall within 20 m on a side) is left as it is.
+ */
+function parisParkingLanes(edges: PackedEdge[], buildings: PackedBuilding[]): void {
+  const grid = wallGrid(buildings)
+  let widened = 0
+  for (const e of edges) {
+    if (e.foot || e.bridge || e.tunnel || !/^(residential|tertiary|secondary|unclassified)$/.test(e.kind ?? '')) continue
+    const need = e.oneway ? (e.width < 5.6 ? 5.6 - e.width : 0) : e.width >= 6 && e.width < 11.6 ? 11.6 - e.width : 0
+    if (need <= 0 || need > 5.6) continue
+    const gap = medianGap(e, grid)
+    if (gap === null || gap < e.width + 2 * e.walk + need + 0.4) continue
+    e.width = Math.round((e.width + need) * 100) / 100
+    widened++
+  }
+  console.log(`  ${widened} Paris streets given their parking lane`)
 }
 
 function centroidOf(ring: { x: number; z: number }[]): { x: number; z: number } {
