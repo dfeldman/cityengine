@@ -1290,6 +1290,60 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   if (fromRelations > 0) console.log(`  ${fromRelations} more from relations (multipolygons)`)
   if (hugeAreas > 0) console.log(`  ${hugeAreas} reserve-sized green relations dropped (over ${HUGE_AREA_SPAN / 1000} km across)`)
+  /*
+   * PARIS: THE BUILDINGS OSM DOES NOT HAVE, from APUR's footprints (owner, 2026-10-30: OSM "gets roads but is often weird
+   * on buildings" — "try … APUR footprints and heights for Paris"; and earlier, "there is almost never a visible gap
+   * between buildings"). Of APUR's 128,206 footprints 13,548 have no OSM building at their centre, 9,780 of them 6 m or
+   * more: the holes in the street wall. Each is added where no OSM building overlaps it at all — not at its centre, nor
+   * at any of its corners pulled a little inward, nor any OSM building's corner inside it — so a landmark's claimed
+   * building (hidden at run time under its model) keeps its ground clear too. Style by its period, as the classifier
+   * dresses OSM's; height APUR's measured median.
+   */
+  if (spec.region === 'paris') {
+    const rings = await import('./paris-apur.ts').then((m) => m.fetchApurRings()).catch((e: unknown) => { console.warn(`  apur rings: not fetched (${String(e).slice(0, 120)})`); return [] })
+    const CELL = 40
+    const cellsOf = new Map<string, { x: number; z: number }[][]>()
+    const file = (r: { x: number; z: number }[]): void => {
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of r) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      for (let gx = Math.floor(x0 / CELL); gx <= Math.floor(x1 / CELL); gx++) for (let gz = Math.floor(z0 / CELL); gz <= Math.floor(z1 / CELL); gz++) {
+        const k = `${gx},${gz}`
+        const l = cellsOf.get(k)
+        if (l) l.push(r)
+        else cellsOf.set(k, [r])
+      }
+    }
+    for (const b of buildings) file(unpackPoints(b.ring))
+    const near = (x: number, z: number): { x: number; z: number }[][] => cellsOf.get(`${Math.floor(x / CELL)},${Math.floor(z / CELL)}`) ?? []
+    const covered = (x: number, z: number): boolean => near(x, z).some((r) => pointInRing(r, x, z))
+    let added = 0
+    rings.forEach(([period, h, facility, flat], i) => {
+      if (!(h >= 3)) return
+      const pts: { x: number; z: number }[] = []
+      for (let k = 0; k < flat.length; k += 2) pts.push(proj.toLocal({ lon: flat[k], lat: flat[k + 1] }))
+      if (pts.length < 3 || area(pts) < 15) return
+      const c = centroid(pts)
+      if (covered(c.x, c.z)) return
+      if (pts.some((q) => covered(q.x + (c.x - q.x) * 0.15, q.z + (c.z - q.z) * 0.15))) return
+      const others = new Set<{ x: number; z: number }[]>()
+      for (const q of pts) for (const r of near(q.x, q.z)) others.add(r)
+      for (const r of near(c.x, c.z)) others.add(r)
+      for (const r of others) {
+        const rc = centroid(r)
+        if (r.some((q) => pointInRing(pts, q.x + (rc.x - q.x) * 0.15, q.z + (rc.z - q.z) * 0.15)) || pointInRing(pts, rc.x, rc.z)) return
+      }
+      const id = 2e12 + i * 2
+      const levels = Math.max(1, Math.round((h - 1) / 3.1))
+      const style: StyleId = facility && period >= 6 ? 'bauhaus' : period <= 2 ? 'marais'
+        : period === 3 ? ((Math.imul(id % 2147483647, 2654435761) >>> 0) % 14 === 0 ? 'brick' : 'haussmann')
+        : period <= 5 ? 'brick' : levels >= 12 ? 'towerblock' : period <= 12 ? 'bauhaus' : 'haussmann'
+      const ring = ccw(pts)
+      buildings.push({ id, ring: packPoints(ring), style, levels, height: h, ...roofFor({}, {}, style, ring, id) })
+      file(ring)
+      added++
+    })
+    console.log(`  APUR: ${added} buildings OSM does not have, added from their footprints (of ${rings.length})`)
+  }
   reportLevels(buildings, inferredCount)
 
   /*
