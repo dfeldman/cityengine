@@ -57,9 +57,9 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       `need ≤ 0` and the bridge over it stays at grade); trains then run unseen. Real version: carve the cut (the street
       carver in tools/bake.ts, never under a street — the street keeps an earth bridge), draw track at its heights
       (render/street-rails.ts skips rails with heights), walls.
-- [ ] **Pont Rouelle** (RER C's own bridge, 48.852558, 2.285579): "looks great, but has a dropoff at the end" — the rail
+- [~] (fix written, in the next bake: a rail deck's true end eases to the ground over up to 80 m) **Pont Rouelle** (RER C's own bridge, 48.852558, 2.285579): "looks great, but has a dropoff at the end" — the rail
       deck's end has to ease into the next rail's level (bake.ts rail decks ~2645).
-- [ ] **Pont de Bir-Hakeim** (48.856278, 2.287123): "an elevated track and a lower car level … sort of works ok, but
+- [~] (same fix: the métro deck ends at +11.7 m at the Passy end, the next pieces non-bridge at the ground) **Pont de Bir-Hakeim** (48.856278, 2.287123): "an elevated track and a lower car level … sort of works ok, but
       again is discontinuous on one end".
 - [ ] **Sunk into the bridge** (48.849487, 2.357019, the Pont de Sully): the deck dipped to −3.7 m in mid-river where its
       sidewalk foot bridges meet the roadway — three deck edges at a node, the chains ended there and eased to the ground

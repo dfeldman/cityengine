@@ -2841,6 +2841,36 @@ async function bake(spec: CitySpec): Promise<void> {
     })
     railDecks++
   }
+  /*
+   * …and a deck's TRUE END comes down to the ground (owner, 2026-10-30: "the train only bridge at 48.852558, 2.285579 looks
+   * great, but has a dropoff at the end"; Bir-Hakeim "is discontinuous on one end"). The lift above runs the whole length of
+   * the way, so where the next track is not a bridge — a line going into a hill or a cutting — the deck stopped in the air.
+   * An end with no other bridge rail's end within 5 m eases to the ground over up to 80 m.
+   */
+  {
+    const decks2 = rails.filter((r) => r.bridge && r.heights)
+    const ends = decks2.map((r) => { const p = unpackPoints(r.points); return { r, a: p[0], b: p[p.length - 1] } })
+    const joined = (me: PackedRail, q: { x: number; z: number }): boolean => ends.some((o) => o.r !== me
+      && (Math.hypot(o.a.x - q.x, o.a.z - q.z) < 5 || Math.hypot(o.b.x - q.x, o.b.z - q.z) < 5))
+    let eased = 0
+    for (const { r, a, b } of ends) {
+      const ps = unpackPoints(r.points)
+      const cum = [0]
+      for (let i = 1; i < ps.length; i++) cum.push(cum[i - 1] + Math.hypot(ps[i].x - ps[i - 1].x, ps[i].z - ps[i - 1].z))
+      const L = cum[cum.length - 1]
+      const EASE = Math.min(80, L * 0.45)
+      const atA = !joined(r, a), atB = !joined(r, b)
+      if (!atA && !atB) continue
+      r.heights = r.heights!.map((h, i) => {
+        const d = Math.min(atA ? cum[i] : Infinity, atB ? L - cum[i] : Infinity)
+        if (d >= EASE) return h
+        const g = groundAt(ps[i].x, ps[i].z)
+        return Math.round((g + (h - g) * (d / EASE)) * 100) / 100
+      })
+      eased++
+    }
+    if (eased) console.log(`  ${eased} rail decks eased down to the ground at their true ends`)
+  }
   console.log(`  bridges: ${decks.bridges} deck edges, ${decks.ramps} ramps; ${railDecks} elevated rail ways`)
   /*
    * Walks on a viaduct's roof (BUGS.md #32): the Coulée Verte runs along the top of the Viaduc des Arts, which
