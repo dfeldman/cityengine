@@ -12,7 +12,7 @@ import { apseWall, domeOf, drumArches, FIXED, quarter } from './common.ts'
  * footprint, measured in its frame with osmium (2026-10-29), and fitted.
  */
 
-const pal = (stone: string, slate = '#4b5357'): Pal => {
+export const pal = (stone: string, slate = '#4b5357'): Pal => {
   const s = hex(stone)
   return {
     stone: s, trim: shade(s, 1.05), deep: shade(s, 0.82), glass: [0.2, 0.21, 0.24], slate: hex(slate),
@@ -21,7 +21,7 @@ const pal = (stone: string, slate = '#4b5357'): Pal => {
 }
 
 /** A pointed (Gothic) opening on a face: a rectangle under a steep triangle meeting at a point, `h` to the point. */
-function pointedOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: number, t: number, y0: number, w: number, h: number, c: Rgb, d = 0.08): void {
+export function pointedOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: number, t: number, y0: number, w: number, h: number, c: Rgb, d = 0.08): void {
   const r = w / 2
   const spring = y0 + Math.max(0.3, h - w * 0.86)
   rectOn(out, f, plane, t - r, t + r, y0, spring, c, d)
@@ -32,7 +32,7 @@ function pointedOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: number
 }
 
 /** A rose window: a round disc of glass flat on a face, `r` across, with a lighter ring round it. */
-function roseOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: number, t: number, y: number, r: number, c: Rgb, ring: Rgb): void {
+export function roseOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: number, t: number, y: number, r: number, c: Rgb, ring: Rgb): void {
   const n: [number, number, number] = f === '-z' ? [0, 0, -1] : f === '+z' ? [0, 0, 1] : f === '-x' ? [-1, 0, 0] : [1, 0, 0]
   const P = (u: number, v: number, d: number): [number, number, number] => {
     const off = f === '-z' || f === '-x' ? -d : d
@@ -49,7 +49,7 @@ function roseOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: number, t
 }
 
 /** A pinnacle: a slim square shaft and a pointed cap. */
-function pinnacle(out: MeshBuilder, x: number, z: number, y0: number, h: number, w: number, c: Rgb): void {
+export function pinnacle(out: MeshBuilder, x: number, z: number, y0: number, h: number, w: number, c: Rgb): void {
   block(out, x - w / 2, x + w / 2, z - w / 2, z + w / 2, y0, y0 + h * 0.55, c)
   prism(out, x, z, y0 + h * 0.55, y0 + h, w * 0.7, 4, c, FIXED, 0.03)
 }

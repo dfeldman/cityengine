@@ -314,5 +314,226 @@
     ],
     "height": 60,
     "note": "Placed on OSM way 62287173's box turned to the church's own axis (osmium, 2026-10-29: 6.5° off the footprint's minimum box), the tower (−z) to the west at bearing 285.7; the way and its building:parts (the tower 1461285707…717, which the city drew as a windowed block with its pinnacles floating over the roofs) are replaced. The Chapelle Saint-Symphorien (way 495635817) stays."
+  },
+  {
+    "name": "Église Saint-Augustin",
+    "procedural": "saintAugustin",
+    "osm": [
+      "way/67501490"
+    ],
+    "lat": 48.876209,
+    "lon": 2.318903,
+    "rotateDeg": 335,
+    "size": [
+      38.8,
+      95.1
+    ],
+    "height": 85,
+    "note": "Baltard's iron-framed church on the Boulevard Malesherbes. Placed on OSM way 67501490's box turned to its axis (osmium, 2026-10-29), the front (−z) on the Place Saint-Augustin at bearing 155, the dome toward +z; the way (dropped by the bake) and its 20 building:parts nested under it (the dome drawn by the city as a flat-topped windowed tower, the turrets as box chimneys) are replaced. Heights follow the parts: drum and cap to 70, the red lantern to 83, the cross ~85."
+  },
+  {
+    "name": "Basilique Sainte-Clotilde",
+    "procedural": "sainteClotilde",
+    "osm": [
+      "way/64952290"
+    ],
+    "lat": 48.858299,
+    "lon": 2.31917,
+    "rotateDeg": 205.9,
+    "size": [
+      38.5,
+      93.4
+    ],
+    "height": 69,
+    "note": "Gau and Ballu's neo-Gothic basilica over the Square Samuel-Rousseau. Placed on OSM way 64952290's box turned to its axis (osmium, 2026-10-29), the front (−z) on the Parvis Maurice-Druon at bearing 25.9, the apse toward +z; the way and its building:parts nested under it (the towers drawn by the city as two flat-topped shafts) are replaced. Heights follow the parts: the nave's eaves 28.2 and ridge 37, the towers' octagonal spires 44.4–66, the crosses ~68.5."
+  },
+  {
+    "name": "Église Saint-Étienne-du-Mont",
+    "procedural": "saintEtienneDuMont",
+    "osm": [
+      "way/55343672",
+      "way/255080058"
+    ],
+    "lat": 48.846532,
+    "lon": 2.348081,
+    "rotateDeg": 103.7,
+    "size": [
+      34.7,
+      76.0
+    ],
+    "height": 53,
+    "note": "The Renaissance-fronted Gothic church beside the Panthéon. Placed on OSM way 55343672's box turned to its axis (osmium, 2026-10-29), the front (−z) on the Place Sainte-Geneviève at bearing 283.7, +x south; the way and its ~80 building:parts nested under it (the front drawn by the city as a mansarded block, the belfry as a plain shaft) are replaced. Heights follow the parts: nave ridge 34.4, the belfry tower 46 and its dome and lantern to 53, the stair turret's cone 48. The church's south annex (way 255080058, building=church, inside the footprint along the south aisle and choir) goes with it; the Chapelle des Catéchismes (way 255080046) is OSM's and stays."
+  },
+  {
+    "name": "Église Saint-Séverin",
+    "procedural": "saintSeverin",
+    "osm": [
+      "way/19740659"
+    ],
+    "lat": 48.852091,
+    "lon": 2.345734,
+    "rotateDeg": 110.3,
+    "size": [
+      38.9,
+      52.9
+    ],
+    "height": 46,
+    "note": "The flamboyant church of the Latin Quarter. Placed on OSM way 19740659's box turned to its axis (osmium, 2026-10-29), the west front (−z) at bearing 290.3, +x south; the way and its ~50 building:parts nested under it are replaced. Heights follow the parts: the aisles' gables ~12.5, the nave ridge 28.5, the tower 29.2 and its spire to 45.2."
+  },
+  {
+    "name": "Grande Mosquée de Paris",
+    "procedural": "grandeMosquee",
+    "osm": [
+      "relation/569853",
+      "way/320013175",
+      "way/437771430",
+      "way/437773723",
+      "way/437773724",
+      "way/437773725",
+      "way/437773726",
+      "way/437773727",
+      "way/437774297",
+      "way/437776176",
+      "way/437793032",
+      "way/437777020"
+    ],
+    "lat": 48.842085,
+    "lon": 2.355053,
+    "rotateDeg": 54.8,
+    "size": [
+      127.9,
+      104.5
+    ],
+    "height": 35,
+    "note": "The Hispano-Moorish mosque on the Place du Puits-de-l'Ermite. Placed on the box of OSM relation 569853 (the complex's 1-level outline, which the bake keeps as a 4 m slab) turned to bearing 54.8 (osmium and the bake's rings, 2026-10-29); the relation and the standalone parts on it are replaced: way/320013175 is NOT the minaret but the prayer hall's green pyramid (5 levels + a 2-level pyramidal roof, roof:colour green), which the bake drew as a 28 m tower; the minaret is way/437776176 (27 m) with its lantern 437776174/5 to 33 (not in the bake). Drawn: the white enclosure coped in green tile, the institute and entrance ranges, the gate pavilion, the prayer hall and its pyramid to ~23, the patio with kiosks and fountain dome, the hammam dome, and the minaret to 33 with its jamur ~35."
+  },
+  {
+    "name": "Église Saint-Pierre de Montmartre",
+    "procedural": "saintPierreMontmartre",
+    "osm": [
+      "way/23884336"
+    ],
+    "lat": 48.886726,
+    "lon": 2.342071,
+    "rotateDeg": 94.6,
+    "size": [
+      31.1,
+      54.2
+    ],
+    "height": 27,
+    "note": "The village church of Montmartre beside the Sacré-Cœur. Placed on OSM way 23884336's box turned to its axis (osmium, 2026-10-29), the west front (−z) on the Rue du Mont-Cenis at bearing 274.6, +x south; the way (dropped by the bake) and its ten building:parts nested under it (drawn by the city as a windowed block) are replaced. Heights follow the parts: the nave 16, the aisles 13, the bell tower 22 and its pyramid to 26."
+  },
+  {
+    "name": "Moulin de la Galette (Blute-Fin)",
+    "procedural": "moulinGalette",
+    "osm": [
+      "way/77780940"
+    ],
+    "lat": 48.887653,
+    "lon": 2.336297,
+    "rotateDeg": 10,
+    "size": [
+      8.2,
+      8.2
+    ],
+    "height": 19,
+    "note": "The Blute-Fin post mill (1622) in its garden between the Rue Lepic and the Rue Tholozé. Placed on OSM way 77780940 (8.2 m square; the city drew an 8 m box), the sails (−z) toward the Rue Lepic at bearing 190: the trestle tower, the weatherboarded body to ~13.4, the sails to ~19."
+  },
+  {
+    "name": "Moulin Radet",
+    "procedural": "moulinRadet",
+    "osm": [
+      "way/307906882"
+    ],
+    "lat": 48.8874,
+    "lon": 2.337105,
+    "rotateDeg": 330,
+    "size": [
+      5.6,
+      5.6
+    ],
+    "height": 16,
+    "note": "The Radet post mill on the corner of the Rue Lepic and the Rue Girardon. OSM's building:part 307906882 (tagged man_made=windmill, named 'Moulin de la Galette' with alt_name 'Moulin Radet') stands inside the restaurant's way 77780866 (4 m, which stays); the part is replaced by the model: a 4.4 m base under the mill, the body to ~12.4, the sails to ~16, turned toward the corner (bearing 150)."
+  },
+  {
+    "name": "Église du Val-de-Grâce",
+    "procedural": "valDeGrace",
+    "osm": [
+      "way/59846865"
+    ],
+    "lat": 48.840547,
+    "lon": 2.341857,
+    "rotateDeg": 113,
+    "size": [
+      59.4,
+      73.4
+    ],
+    "height": 64,
+    "note": "Mansart's and Lemercier's domed church at the head of the Rue du Val-de-Grâce. Placed on OSM way 59846865's box turned to the church's axis (bearing 293, from the line of the portico's mapped columns; osmium, 2026-10-29), the front (−z) on the Place Alphonse-Laveran, the dome toward +z on x = −5.85; the way and its ~45 building:parts nested under it (the dome drawn by the city as a flat-topped octagonal shaft) are replaced. Heights follow the parts: the drum to 39.3 and its attic 43, the cap to 52.8, the lantern and spire to 62, the corner turrets 36.4, the portico's columns 14 and 26 and the pediment 30.2."
+  },
+  {
+    "name": "Église Saint-Vincent-de-Paul",
+    "procedural": "saintVincentDePaul",
+    "osm": [
+      "way/63197162"
+    ],
+    "lat": 48.878988,
+    "lon": 2.351929,
+    "rotateDeg": 10.3,
+    "size": [
+      36.2,
+      94.2
+    ],
+    "height": 46,
+    "note": "Hittorff's basilica over the Place Franz-Liszt. Placed on OSM way 63197162's box turned to its axis (osmium, 2026-10-29), the portico (−z) toward the place at bearing 190.3; the way (dropped by the bake) and its nine building:parts nested under it (towers and body drawn by the city as windowed blocks) are replaced. Heights follow the parts: the portico 20, the front between the towers 27.6, the nave 31, the towers 45. The stepped ramps on the place are OSM's steps, drawn by the city; the model's own 2.4 m terrace and steps stand inside the footprint."
+  },
+  {
+    "name": "Église Saint-François-Xavier",
+    "procedural": "saintFrancoisXavier",
+    "osm": [
+      "way/68893289"
+    ],
+    "lat": 48.850635,
+    "lon": 2.313396,
+    "rotateDeg": 234.6,
+    "size": [
+      32.5,
+      93.9
+    ],
+    "height": 46,
+    "note": "The neo-Renaissance church on the Place du Président-Mithouard. Placed on OSM way 68893289's box turned to its axis (osmium, 2026-10-29), the front (−z) on the Boulevard des Invalides at bearing 54.6, the apse toward +z; OSM has no parts (8 levels, drawn by the city as a 32 m flat block). Heights from the photographs against the 29 m front: the pediment ~28, the towers' crosses ~43, the crossing dome's lantern ~46."
+  },
+  {
+    "name": "Chapelle expiatoire",
+    "procedural": "chapelleExpiatoire",
+    "osm": [
+      "relation/1068013",
+      "way/67557301"
+    ],
+    "lat": 48.873715,
+    "lon": 2.322989,
+    "rotateDeg": 264.6,
+    "size": [
+      37.1,
+      63.7
+    ],
+    "height": 20,
+    "note": "Percier and Fontaine's domed chapel and its walled garden in the Square Louis-XVI. Placed on the box of the precinct (OSM relation 1068013, which the bake drew as a 20 m block round a hole) turned to the chapel's axis (osmium and the bake's rings, 2026-10-29), the portico facing the garden (−z, bearing 84.6); the relation and the chapel (way 67557301, a 20 m box in the city) are replaced: the cenotaph galleries down both sides, the porter's pavilion at the far end, the chapel's terrace, Doric portico, vestibule, trefoil of half-domed apses and the green dome and lantern to ~19.5."
+  },
+  {
+    "name": "Grande Synagogue de la Victoire",
+    "procedural": "synagogueVictoire",
+    "osm": [
+      "way/69363730"
+    ],
+    "lat": 48.875509,
+    "lon": 2.336489,
+    "rotateDeg": 1,
+    "size": [
+      42.8,
+      61.5
+    ],
+    "height": 36,
+    "note": "Aldrophe's great synagogue on the Rue de la Victoire. Placed on OSM way 69363730's box (osmium, 2026-10-29), the front (−z) toward the Rue de la Victoire at bearing 181 (the street runs ~10 m south of it, past the forecourt railings); OSM has no parts (the city drew a 28 m flat block). The central bay's great arch to 36 m (Wikipedia), the nave's roof to 33, the ranges round it to 18."
   }
 ]

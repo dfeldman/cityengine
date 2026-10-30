@@ -12,24 +12,48 @@ import { lionDeBelfort, triompheRepublique, troneColumnPhilippeAuguste, troneCol
 import { sacreCoeurFull } from './sacre-coeur.ts'
 import { saintSulpice } from './saint-sulpice.ts'
 import { sacreCoeurTerraces } from './sacre-coeur-terraces.ts'
+import { saintAugustin } from './saint-augustin.ts'
+import { sainteClotilde } from './sainte-clotilde.ts'
+import { saintEtienneDuMont } from './saint-etienne-du-mont.ts'
+import { saintSeverin } from './saint-severin.ts'
+import { grandeMosquee } from './mosquee.ts'
+import { moulinGalette, moulinRadet, saintPierreMontmartre } from './montmartre.ts'
+import { valDeGrace } from './val-de-grace.ts'
+import { saintVincentDePaul } from './saint-vincent-de-paul.ts'
+import { saintFrancoisXavier } from './saint-francois-xavier.ts'
+import { chapelleExpiatoire } from './chapelle-expiatoire.ts'
+import { synagogueVictoire } from './synagogue-victoire.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   carrouselArch,
+  chapelleExpiatoire,
   grandeArche,
+  grandeMosquee,
   laTrinite,
   lionDeBelfort,
   montparnasseFull,
+  moulinGalette,
+  moulinRadet,
   pantheonFull,
   porteSaintDenis,
   porteSaintMartin,
   sacreCoeurFull,
   sacreCoeurTerraces,
+  saintAugustin,
+  sainteClotilde,
+  saintEtienneDuMont,
   saintEustache,
+  saintFrancoisXavier,
   saintGermainAuxerrois,
   saintGermainDesPres,
+  saintPierreMontmartre,
   saintRoch,
+  saintSeverin,
   saintSulpice,
+  saintVincentDePaul,
+  synagogueVictoire,
   triompheRepublique,
   troneColumnPhilippeAuguste,
   troneColumnSaintLouis,
+  valDeGrace,
 }

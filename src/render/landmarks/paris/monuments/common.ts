@@ -11,6 +11,8 @@ import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { beam, block, classicalColumn, lathe, shade } from '../../kit.ts'
 import { boxAlong, edgeAt } from '../../parts.ts'
+import type { Fit } from '../../fit.ts'
+import { fitted } from '../palaces/common.ts'
 
 const FIXED = 0
 const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
@@ -256,4 +258,21 @@ export function apseWall(out: MeshBuilder, cx: number, cz: number, r: number, y0
         [m.x + ex * 0.8, y0 + (eaves - y0) * 0.8, m.z + ez * 0.8], [m.x - ex * 0.8, y0 + (eaves - y0) * 0.8, m.z - ez * 0.8]], [mx / l, 0, mz / l], UV, glass, FIXED)
     }
   }
+}
+
+/**
+ * `fitted()` for a building on a slope (wave 2: Saint-Étienne on the Montagne Sainte-Geneviève, the churches and
+ * mills of the Butte): the loader seats a model at the LOWEST ground under it, so where the front's street is
+ * higher than the back the portal sinks under the pavement. As `church()` does (render/landmarks/church.ts), the
+ * whole drawing is lifted to the front's grade (less the half metre the loader sinks every model) onto a plain stone
+ * plinth — the exposed basement on the downhill side. On level ground it is `fitted()` exactly.
+ */
+export function graded(out: MeshBuilder, fit: Fit, hx: number, hz: number, draw: (q: MeshBuilder) => void, plinth: Rgb = [0.6, 0.58, 0.54]): void {
+  const lift = Math.max(0, (fit.grade ?? 0) - 0.5)
+  const p0 = out.positions.length
+  fitted(out, fit, hx, hz, draw)
+  if (lift < 0.8) return
+  for (let i = p0 + 1; i < out.positions.length; i += 3) out.positions[i] += lift
+  const base = fit.ring && fit.ring.length >= 3 ? fit.ring : ring([-fit.hx, -fit.hz, fit.hx, -fit.hz, fit.hx, fit.hz, -fit.hx, fit.hz])
+  walls(out, base, 0, lift + 0.05, plinth, plinth)
 }
