@@ -1693,7 +1693,7 @@ export class City {
   /** OSM's signal nodes, on a 30 m grid */
   private readonly signalGrid = new Map<string, Point[]>()
 
-  has(k: string): boolean { return this.ingested.has(k) }
+  has(k: string): boolean { return this.ingested.has(k) && !this.light.has(k) }
 
   /**
    * Take one tile's data in. Edges come whole in every tile they touch and are filed once, by their first
@@ -1889,7 +1889,9 @@ export class City {
     const [tx, tz] = k.split(',').map(Number)
     for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
       const n = key(tx + dx, tz + dz)
-      if (!this.ingested.has(n) && (this.exists?.(n) ?? true)) return false
+      // (a tile let go by `forget` is not in until it is ingested again: built before that, it came up with no buildings
+      //  and no landmarks, its shop signs standing in the air — owner, 2026-10-30, 48.871664 2.299175)
+      if ((!this.ingested.has(n) || this.light.has(n)) && (this.exists?.(n) ?? true)) return false
     }
     return true
   }
