@@ -276,3 +276,24 @@ export function graded(out: MeshBuilder, fit: Fit, hx: number, hz: number, draw:
   const base = fit.ring && fit.ring.length >= 3 ? fit.ring : ring([-fit.hx, -fit.hz, fit.hx, -fit.hz, fit.hx, fit.hz, -fit.hx, fit.hz])
   walls(out, base, 0, lift + 0.05, plinth, plinth)
 }
+
+/** A Russian ONION's section: a tucked-in foot, the swell a quarter of the way up, the long concave draw to a point. */
+export const onion = (t: number): number => {
+  const k: [number, number][] = [[0, 0.74], [0.07, 0.9], [0.16, 0.99], [0.25, 1], [0.35, 0.97], [0.46, 0.86], [0.56, 0.68], [0.64, 0.47], [0.71, 0.28], [0.78, 0.14], [0.86, 0.07], [0.93, 0.04], [1, 0.012]]
+  for (let i = 1; i < k.length; i++) {
+    if (t <= k[i][0]) return k[i - 1][1] + ((t - k[i - 1][0]) / (k[i][0] - k[i - 1][0])) * (k[i][1] - k[i - 1][1])
+  }
+  return k[k.length - 1][1]
+}
+
+/** A three-barred Orthodox cross `h` tall standing at (x, y0, z), its bars along x (the lowest one slanted), on a slim stem. */
+export function orthodoxCross(out: MeshBuilder, x: number, z: number, y0: number, h: number, c: Rgb): void {
+  const t = Math.max(0.05, h * 0.028)
+  const bar = (u: number, hw: number, tilt = 0): void => {
+    beam(out, [x - hw, y0 + h * u - tilt, z], [x + hw, y0 + h * u + tilt, z], t, c)
+  }
+  beam(out, [x, y0, z], [x, y0 + h, z], t, c)
+  bar(0.74, h * 0.2)
+  bar(0.88, h * 0.1)
+  bar(0.44, h * 0.13, h * 0.06)
+}

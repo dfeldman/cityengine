@@ -535,5 +535,262 @@
     ],
     "height": 36,
     "note": "Aldrophe's great synagogue on the Rue de la Victoire. Placed on OSM way 69363730's box (osmium, 2026-10-29), the front (−z) toward the Rue de la Victoire at bearing 181 (the street runs ~10 m south of it, past the forecourt railings); OSM has no parts (the city drew a 28 m flat block). The central bay's great arch to 36 m (Wikipedia), the nave's roof to 33, the ranges round it to 18."
+  },
+  {
+    "name": "Cathédrale de la Sainte-Trinité",
+    "procedural": "sainteTrinite",
+    "osm": [
+      "way/449077939",
+      "way/450618593",
+      "way/450618594",
+      "way/450618595",
+      "way/450618596",
+      "way/450618597"
+    ],
+    "lat": 48.861876,
+    "lon": 2.301017,
+    "size": [
+      22.9,
+      23.1
+    ],
+    "height": 37,
+    "front": 79,
+    "note": "Wilmotte's Russian cathedral on the Quai Branly (2016). Placed on OSM way 449077939's box (osmium, 2026-10-30), −z the door and three slits on the Avenue Rapp at bearing 79 (Mapillary; the other three faces by symmetry); the way (height 24) and its five `onion` parts are replaced. To 37 m at the cross (Wikipedia). The Centre Culturel and the parish centre beside it stay the city's."
+  },
+  {
+    "name": "Cathédrale Saint-Alexandre-Nevsky",
+    "procedural": "saintAlexandreNevsky",
+    "osm": [
+      "way/70192893",
+      "way/450615183",
+      "way/450615184",
+      "way/450615185",
+      "way/450615186",
+      "way/450615187"
+    ],
+    "lat": 48.877622,
+    "lon": 2.301975,
+    "size": [
+      27.3,
+      32.7
+    ],
+    "height": 48,
+    "front": 319,
+    "note": "The Russian cathedral of the Rue Daru (Kouzmine and Strohm, 1861). Placed on OSM way 70192893's box turned square to its arms (osmium, 2026-10-30), −z the porch toward the Rue Daru at bearing 319; the way (height 6, as a mansard) and its five pyramidal parts are replaced. Central tent to 48 m at the cross (OSM's part, Wikipedia); small towers from OSM's rings, heights read off Commons photographs (OSM's 24 is short of them)."
+  },
+  {
+    "name": "Fontaine Stravinsky",
+    "procedural": "fontaineStravinsky",
+    "kind": "fountain",
+    "lat": 48.859482,
+    "lon": 2.351486,
+    "size": [
+      18.2,
+      36.3
+    ],
+    "height": 7.6,
+    "front": 208,
+    "sign": false,
+    "note": "Tinguely and Saint Phalle's sixteen works in the basin between the Pompidou, the IRCAM and Saint-Merri (1983). Centred on OSM way 88301107's box (natural=water, height 0.75; osmium, 2026-10-30), its long axis along z, +z toward the IRCAM at bearing 28. The kerb is OSM's ring; the works' places are from Commons photographs and memory, not a survey."
+  },
+  {
+    "name": "Arènes de Lutèce",
+    "procedural": "arenesLutece",
+    "kind": "monument",
+    "drape": true,
+    "osm": [
+      "way/406229068",
+      "way/406229069"
+    ],
+    "lat": 48.845083,
+    "lon": 2.352929,
+    "size": [
+      50,
+      52
+    ],
+    "height": 6.2,
+    "front": 80,
+    "sign": false,
+    "note": "Roman Paris's amphitheatre between the Rue Monge and the Rue de Navarre. Centred on OSM way 406229046's box (historic=archaeological_site, 81 × 65 m; osmium, 2026-10-30), −z the stage toward bearing 80; the size is the arena proper, so that the box clears only the arena and not the houses and the square's trees round it (the model's stage, tiers and passages reach out past it); the two `building=ruins` ways, which the city would raise as buildings, are replaced. Walls, passages and the stage wall are OSM's rings, the tiers follow the Gradins ways. Heights are read off Commons photographs; the game's ground has no bowl here, so the floor is at ground level and the tiers rise from it, with a grass bank behind."
+  },
+  {
+    "name": "Mémorial des Martyrs de la Déportation",
+    "procedural": "memorialDeportation",
+    "kind": "monument",
+    "drape": true,
+    "osm": [
+      "relation/9396191"
+    ],
+    "lat": 48.851729,
+    "lon": 2.352512,
+    "size": [
+      28.5,
+      30.7
+    ],
+    "height": 1.4,
+    "front": 122,
+    "sign": false,
+    "note": "Pingusson's memorial at the tip of the Île de la Cité (1962). Placed on OSM relation 9396191's box (osmium, 2026-10-30), −z the prow toward bearing 122, the relation (building=yes, layer 1) replaced; its outer ring and hole are the wedge and the court. The two stairs are from photographs, not mapped. The real court lies 3–4 m below the garden and the game's ground cannot be dug: the terrace is raised about 1.35 m above the lawn, the court's floor is at the ground, and the whole follows the ground (`drape`), which falls toward the island's tip."
+  },
+  {
+    "name": "Église Saint-Jean de Montmartre",
+    "procedural": "saintJeanMontmartre",
+    "osm": [
+      "way/77807770"
+    ],
+    "lat": 48.884198,
+    "lon": 2.337891,
+    "size": [
+      28.7,
+      54.2
+    ],
+    "height": 28.5,
+    "front": 42,
+    "note": "De Baudot's church of brick, ceramic and reinforced cement on the Place des Abbesses (1904). Placed on OSM way 77807770's box (osmium, 2026-10-30), −z the portal toward bearing 42; the way is replaced. The walls are its ring, the front from one Commons elevation, heights read off it (OSM has only five levels); sides and back not checked against a photograph."
+  },
+  {
+    "name": "Mémorial de la Shoah",
+    "procedural": "memorialShoah",
+    "osm": [
+      "way/55620205",
+      "way/55620119"
+    ],
+    "lat": 48.85491,
+    "lon": 2.356056,
+    "size": [
+      23.0,
+      44.1
+    ],
+    "height": 19.2,
+    "front": 122,
+    "note": "The memorial on the Rue Geoffroy-l'Asnier. Placed on the box of OSM's museum polygon (way 124052479; osmium, 2026-10-30), −z the street at bearing 122; the main block (way 55620205) and the street front (way 55620119, building=roof) are replaced, their rings OSM's. The street front is from one Commons photograph; the court and the block's front are from memory and not confirmed by one."
+  },
+  {
+    "name": "Église Notre-Dame-de-Lorette",
+    "procedural": "notreDameDeLorette",
+    "osm": [
+      "way/25688622"
+    ],
+    "lat": 48.87644,
+    "lon": 2.338934,
+    "size": [
+      32.7,
+      69.3
+    ],
+    "height": 33,
+    "front": 193,
+    "note": "Lebas's Roman basilica closing the Rue Laffitte (1836). Placed on OSM way 25688622's box in its own axis (osmium, 2026-10-30), −z the portico at bearing 193; the way is replaced. Heights from Commons photographs (OSM gives ten levels); the belfry's place on the left flank from one of them."
+  },
+  {
+    "name": "Chapelle Saint-Louis de la Salpêtrière",
+    "procedural": "chapelleSalpetriere",
+    "osm": [
+      "way/78535716",
+      "way/236576210",
+      "way/236576211",
+      "way/236576212",
+      "way/236576213",
+      "way/236576214",
+      "way/236576215",
+      "way/236576216",
+      "way/236576217",
+      "way/236576218",
+      "way/236576219",
+      "way/236576220",
+      "way/236576221",
+      "way/236576222",
+      "way/236729470"
+    ],
+    "lat": 48.83894,
+    "lon": 2.364146,
+    "size": [
+      73.4,
+      71.6
+    ],
+    "height": 42.4,
+    "front": 334,
+    "note": "Bruant's octagonal chapel of the Salpêtrière (1677). Placed on OSM way 78535716's box turned to its main arm (osmium, 2026-10-30), −z at bearing 334: the widest arm, toward the Boulevard de l'Hôpital's gate and opposite OSM's `Abside` (way 377136988, bearing 157); no photograph of that front was found, so the choice of arm is inferred. The way and the 14 parts inside it are replaced. The octagon and lantern from OSM's parts (to 32 and 40), the drum and dome's split from Commons photographs. The main porch is from memory."
+  },
+  {
+    "name": "Tour Jean-sans-Peur",
+    "procedural": "jeanSansPeur",
+    "lat": 48.8643016,
+    "lon": 2.3480523,
+    "size": [
+      9,
+      9
+    ],
+    "height": 27.5,
+    "front": 182,
+    "note": "The keep of the Hôtel de Bourgogne (1411), Rue Étienne-Marcel. On OSM node 250657151 (height 27); stands within the school's own outline (relation 550212), which is not claimed. Its size, stages and the rubble wall from two Commons photographs; its bearing from the school's plan."
+  },
+  {
+    "name": "Église Saint-Ambroise",
+    "procedural": "saintAmbroise",
+    "osm": [
+      "way/63638108"
+    ],
+    "lat": 48.861323,
+    "lon": 2.376081,
+    "size": [
+      38.2,
+      87.6
+    ],
+    "height": 68,
+    "front": 235,
+    "note": "Ballu's twin-spired church on the Boulevard Voltaire (1868). Placed on OSM way 63638108's box (osmium, 2026-10-30), −z the portals at bearing 235; the way is replaced. Walls from its ring, the front from one Commons photograph, spires to 68 m (Wikipedia); nave and apse above the walls not checked."
+  },
+  {
+    "name": "Église Saint-Laurent",
+    "procedural": "saintLaurent",
+    "osm": [
+      "way/63200612",
+      "way/1463939173",
+      "way/1463939174",
+      "way/1463939176"
+    ],
+    "lat": 48.874774,
+    "lon": 2.358309,
+    "size": [
+      48.0,
+      70.5
+    ],
+    "height": 53,
+    "front": 270,
+    "note": "The Gothic church by the Gare de l'Est, its west front of 1866. Placed on OSM way 63200612's box in its own axis (osmium, 2026-10-30), −z the portal at bearing 270; the way and the three parts inside it are replaced. The front and tower from one Commons photograph from the south-west; the tower's side and all heights are estimated from it."
+  },
+  {
+    "name": "Église Saint-Nicolas-des-Champs",
+    "procedural": "saintNicolasDesChamps",
+    "osm": [
+      "way/56290843",
+      "way/1078317819",
+      "way/1078317820"
+    ],
+    "lat": 48.86544,
+    "lon": 2.354283,
+    "size": [
+      41.3,
+      92.6
+    ],
+    "height": 40,
+    "front": 291,
+    "note": "The wide Gothic church on the Rue Saint-Martin. Placed on OSM way 56290843's box in its own axis (osmium, 2026-10-30), −z the door at bearing 291; the way and the two parts inside it are replaced. Walls from its ring (the front runs 6.6° off square), front, tower and south flank from a Commons photograph; heights read off it; north side and choir not checked."
+  },
+  {
+    "name": "Fontaine de Varsovie",
+    "procedural": "fontaineVarsovie",
+    "kind": "fountain",
+    "drape": true,
+    "lat": 48.861163,
+    "lon": 2.289971,
+    "size": [
+      25,
+      101
+    ],
+    "height": 10.2,
+    "front": 134,
+    "sign": false,
+    "note": "The long basin of the Jardins du Trocadéro (1937). Centred on OSM way 79738429's box (natural=water; osmium, 2026-10-30), −z down the axis at bearing 134; the kerb and water are its ring, without its side channels, and follow the ground. The twenty cannons, side jets and plumes are placed by their reported pattern, not surveyed, and stand still. The size is the pool, not the head's cross-basin, so that it does not clear the garden's trees either side."
   }
 ]

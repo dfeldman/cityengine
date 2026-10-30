@@ -54,6 +54,10 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Parc de la Villette: Folie P4',
     'intersects | Parc de la Villette: Folie P8',
     "intersects | Jardin d'Acclimatation: the Porte des Sablons",
+    // the Saint-Lazare palm garden (2026-10-30): placed by point in its court, its box against the Médiathèque's walls and its
+    // beds flat on its own paving
+    'intersects | Enclos Saint-Lazare: the palm garden',
+    'coplanar | Enclos Saint-Lazare: the palm garden',
     // #109 — the ground under it
     'height | Square Louis-XIII',
     // #110 — z-fighting candidates

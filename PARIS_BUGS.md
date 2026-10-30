@@ -181,3 +181,11 @@ time is the run graph's merge of parallel ways (ridegraph.ts `mergeParallel`), w
       street that already draws its pavement), as the centreline duplicates already are.
 - ~~Cache the OSM-only stages~~ — not wanted (owner, 2026-10-30: "I'd prefer not to cache any computed values as that will
   just cause state issues (caching network downloads is fine)"). Speed comes from doing less work, not from storing it.
+
+## The Paris kit and wave 3 (2026-10-30; owner: "for Haussmann buildings it isn't really necessary anyway, so what we need to look at are the exceptions and what they have in common")
+
+- [~] **The kit** (render/landmarks/paris/kit/, tools/paris-civic.ts, public/landmarks/paris/civic.json): 2,458 exceptions said by kind and date. Check on the next bake: fronts facing their streets, slopes, doors at grade; the churches read too much like village churches and may need a second pass. Rerun tools/paris-civic.ts after any new claim.
+- [~] **Wave 3 landmarks**, 47 models, fronts set by calculation only — check in the city. Flagged by their builders: Musée Jacquemart-André's front, the Chapelle de la Salpêtrière's front (bearing 334 inferred), the Piscine Joséphine-Baker's freeboard, the Fontaine de Varsovie's draped water, the Sorbonne's and Mairie du 5e's slopes, Folies Bergère's way (identified from position; no OSM name).
+- [ ] **Sunk courts the ground cannot dig**: the Canopée's patio and the Arènes de Lutèce and the Mémorial de la Déportation are all drawn at grade or raised, because a model cannot cut the city's ground.
+- [ ] **Not modelled**: Stade Charléty (no building way in the extract). Moving water for the Fontaine Stravinsky and the Fontaine de Varsovie (paris-fountains.json).
+- [ ] **Roads under the new furniture bake**: litter hoops, glass bells, Sanisettes, statues, markets, stands, painters, red pavements, bus shelters and cutting rails all await their first look in the city.

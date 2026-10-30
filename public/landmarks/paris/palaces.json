@@ -475,6 +475,256 @@
       136.8
     ],
     "height": 24,
-    "note": "The palace round its two courts (OSM relation 3300400 and its two parts, replaced; it was dressed by paris.json's 'Palais-Royal — galleries' restyle, which still dresses the garden's ranges). Placed on the relation's box turned 19.5° to its axes (osmium, 2026-10-29), front (−z) to the Place du Palais-Royal, bearing 199.5: the wings' frontispieces on the place, the Cour de l'Horloge's colonnade between its grilled arcades, the clock pavilion; the Cour d'honneur arcaded round Buren's columns (burenColumns, paris.json — the court floor is left to it), Contant d'Ivry's front; the Galerie d'Orléans' two low colonnades toward the garden."
+    "note": "The Salle Richelieu (the Comédie-Française) on the Place Colette and the Rue de Richelieu is drawn too, at the relation's south-west corner. The palace round its two courts (OSM relation 3300400 and its two parts, replaced; it was dressed by paris.json's 'Palais-Royal — galleries' restyle, which still dresses the garden's ranges). Placed on the relation's box turned 19.5° to its axes (osmium, 2026-10-29), front (−z) to the Place du Palais-Royal, bearing 199.5: the wings' frontispieces on the place, the Cour de l'Horloge's colonnade between its grilled arcades, the clock pavilion; the Cour d'honneur arcaded round Buren's columns (burenColumns, paris.json — the court floor is left to it), Contant d'Ivry's front; the Galerie d'Orléans' two low colonnades toward the garden."
+  },
+  {
+    "name": "Moulin Rouge",
+    "procedural": "moulinRouge",
+    "osm": [
+      "way/77806977",
+      "way/77807519",
+      "relation/1528981"
+    ],
+    "lat": 48.884408,
+    "lon": 2.332607,
+    "rotateDeg": 22,
+    "size": [
+      78.5,
+      84.6
+    ],
+    "height": 25,
+    "note": "Placed on the box of OSM ways 77806977 and 77807519 and relation 1528981 turned 22° (osmium, 2026-10-30), front (−z) to the Boulevard de Clichy, bearing 202. The low front, the hall behind it, the entrance's two houses are replaced; the mill, the hood, the band and the kiosk are from photographs from the boulevard. The band and hood stand 2 m over the pavement, as they do."
+  },
+  {
+    "name": "La Canopée — Forum des Halles",
+    "procedural": "canopee",
+    "osm": [
+      "way/630511331",
+      "way/630213860",
+      "way/630222417",
+      "way/663947915"
+    ],
+    "lat": 48.86189,
+    "lon": 2.347155,
+    "rotateDeg": 19,
+    "size": [
+      129.8,
+      147.6
+    ],
+    "height": 15,
+    "sign": false,
+    "note": "Placed on the box of OSM's roof way 630511331 and its two wings 630213860 and 630222417 turned 19° (osmium, 2026-10-30), −z to the Rue Berger, bearing 199. Plan from OSM; the roof's section (8 m at the streets, 12.5 on the garden, a 14.6 m ridge, 9.6 m over the patio) from the architects' model and photographs. The patio is drawn on the grade: the city's ground has no hole for the Place Basse."
+  },
+  {
+    "name": "Maison de la Radio",
+    "procedural": "maisonRadio",
+    "osm": [
+      "relation/1255782",
+      "relation/3071860",
+      "relation/3071861",
+      "relation/3071862",
+      "relation/3071863",
+      "relation/3071864",
+      "relation/3071865",
+      "relation/3071866",
+      "relation/3071867",
+      "relation/3071868",
+      "relation/3071869",
+      "relation/3071870",
+      "relation/3071871",
+      "relation/3071872",
+      "relation/3071873",
+      "way/228376453",
+      "way/228376457",
+      "way/472873818",
+      "way/472872210",
+      "way/472873556"
+    ],
+    "lat": 48.852502,
+    "lon": 2.278307,
+    "rotateDeg": 312.65,
+    "size": [
+      152.7,
+      161.5
+    ],
+    "height": 68,
+    "note": "Placed on OSM relation 1255782's box turned so the tower's walls are square to it (osmium, 2026-10-30), −z to the Seine, bearing 132.65. The relation and all its building:parts are replaced by a drawing of the same plans at the same heights."
+  },
+  {
+    "name": "Le Grand Rex",
+    "procedural": "grandRex",
+    "osm": [
+      "way/54901181"
+    ],
+    "lat": 48.870406,
+    "lon": 2.347457,
+    "rotateDeg": 193.7,
+    "size": [
+      56.9,
+      42.1
+    ],
+    "height": 44,
+    "note": "Placed on OSM way 54901181's box turned to the boulevard (osmium, 2026-10-30), −z to the Boulevard Poissonnière, bearing 13.7; the corner tower faces the crossing with the Rue Poissonnière. OSM has no height: tower cap 26, lantern 40, letters 44 m read off photographs from the crossing."
+  },
+  {
+    "name": "L'Olympia",
+    "procedural": "olympia",
+    "osm": [
+      "way/205926201"
+    ],
+    "lat": 48.870196,
+    "lon": 2.328339,
+    "rotateDeg": 345,
+    "size": [
+      9.0,
+      12.4
+    ],
+    "height": 23,
+    "note": "The 8 m front at 28 Boulevard des Capucines, on OSM way 205926201's box turned 15° (osmium, 2026-10-30), −z to the boulevard, bearing 165. The canopy stands 2.7 m out over the pavement, as it does. Only the front is drawn: the hall behind is inside the block (the neighbouring ways stay the city's)."
+  },
+  {
+    "name": "Théâtre des Champs-Élysées",
+    "procedural": "theatreChampsElysees",
+    "osm": [
+      "way/69486335"
+    ],
+    "lat": 48.865929,
+    "lon": 2.302776,
+    "rotateDeg": 322.4,
+    "size": [
+      44.6,
+      92.6
+    ],
+    "height": 32,
+    "note": "Placed on OSM way 69486335's box turned to the avenue (osmium, 2026-10-30), −z to the Avenue Montaigne, bearing 142.4. Perret's flat marble pavilion, Bourdelle's frieze, the gilt windows and the corner drum from photographs from the avenue; the mass behind the pavilion is a guess at 24 and 32 m."
+  },
+  {
+    "name": "Le Bon Marché",
+    "procedural": "bonMarche",
+    "osm": [
+      "relation/10166422"
+    ],
+    "lat": 48.850936,
+    "lon": 2.323837,
+    "rotateDeg": 328.6,
+    "size": [
+      193.3,
+      143.1
+    ],
+    "height": 27,
+    "note": "Placed on OSM relation 10166422's box turned to its Rue de Sèvres front (osmium, 2026-10-30), −z bearing 148.6. Both of the relation's rings are drawn: the main store and the annex west of it. Heights from photographs from the street; the corners are drawn round, as they are, on OSM's sharper plan."
+  },
+  {
+    "name": "Folies Bergère",
+    "procedural": "foliesBergere",
+    "osm": [
+      "way/69220738"
+    ],
+    "lat": 48.874469,
+    "lon": 2.344924,
+    "rotateDeg": 0,
+    "size": [
+      29.5,
+      86.7
+    ],
+    "height": 22,
+    "note": "Placed on OSM way 69220738's box (osmium, 2026-10-30), −z to the Rue Richer, south. OSM has no name on the way: identified from the street number and the width of the front in photographs. Pico's front, the gilded relief as its rhythm rather than its drawing."
+  },
+  {
+    "name": "Le Bataclan",
+    "procedural": "bataclan",
+    "osm": [
+      "way/63648846"
+    ],
+    "lat": 48.862996,
+    "lon": 2.370626,
+    "rotateDeg": 221.6,
+    "size": [
+      44.3,
+      46.2
+    ],
+    "height": 30,
+    "note": "Placed on OSM way 63648846's box turned to the boulevard (osmium, 2026-10-30), −z to the Boulevard Voltaire, bearing 41.6. The painted storey and the old pagoda's tiers from photographs from the boulevard; the café on the left, the entrance on the right."
+  },
+  {
+    "name": "La Cigale",
+    "procedural": "cigale",
+    "osm": [
+      "way/77807777"
+    ],
+    "lat": 48.882503,
+    "lon": 2.340194,
+    "rotateDeg": 342.5,
+    "size": [
+      42.1,
+      45.2
+    ],
+    "height": 25,
+    "note": "Placed on OSM way 77807777's box turned to the boulevard (osmium, 2026-10-30), −z to the Boulevard de Rochechouart, bearing 162.5. Starck's white wave with its portholes and banner, the tower of bows on its right, from photographs from the boulevard."
+  },
+  {
+    "name": "Au Lapin Agile",
+    "procedural": "lapinAgile",
+    "osm": [
+      "way/316800538"
+    ],
+    "lat": 48.888618,
+    "lon": 2.339998,
+    "rotateDeg": 191,
+    "size": [
+      8.4,
+      13.4
+    ],
+    "height": 7.1,
+    "note": "Placed on OSM way 316800538's box turned 11° (osmium, 2026-10-30), −z to the Rue Saint-Vincent, bearing 11, +x to the Rue des Saules. The pink house, white gable, zinc room, fence and pier from photographs from the crossing; which part of the plan is which is a reading of them."
+  },
+  {
+    "name": "Hôtel Lutetia",
+    "procedural": "lutetia",
+    "osm": [
+      "way/63454000"
+    ],
+    "lat": 48.851116,
+    "lon": 2.3275,
+    "rotateDeg": 79.4,
+    "size": [
+      97.0,
+      49.5
+    ],
+    "height": 33,
+    "note": "Placed on OSM way 63454000's box turned to the Boulevard Raspail (osmium, 2026-10-30), −z bearing 259.4. The round corner on the crossing with its LVTETIA pediment, the billowing dormers, the awnings from photographs from the crossing; the plan's courts to the north are kept as its outline."
+  },
+  {
+    "name": "Le Louxor",
+    "procedural": "louxor",
+    "osm": [
+      "way/63198697"
+    ],
+    "lat": 48.883509,
+    "lon": 2.350072,
+    "rotateDeg": 117,
+    "size": [
+      31.2,
+      37.6
+    ],
+    "height": 19,
+    "note": "Placed on OSM way 63198697's box turned to its corner (osmium, 2026-10-30), −z to the Barbès crossing, bearing 297. The neo-Egyptian corner, canopy, frieze and crown from photographs from the crossing. The way also has a generic parisCivic entry in civic.json until that file is regenerated (tools/paris-civic.ts skips any way another manifest claims)."
+  },
+  {
+    "name": "Bourse du Travail",
+    "procedural": "bourseTravail",
+    "osm": [
+      "way/63201555",
+      "way/1448693889"
+    ],
+    "lat": 48.868885,
+    "lon": 2.361944,
+    "rotateDeg": 218.8,
+    "size": [
+      50.3,
+      43.3
+    ],
+    "height": 25,
+    "note": "Placed on OSM way 63201555's box turned to its street (osmium, 2026-10-30), −z to the Rue du Château-d'Eau, bearing 38.8. Bouvard's front from photographs from the street; way 1448693889 is the octagonal great hall inside, roofed over here."
   }
 ]

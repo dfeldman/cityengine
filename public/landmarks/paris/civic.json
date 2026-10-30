@@ -5679,23 +5679,6 @@
  },
  {
   "osm": [
-   "way/63198697"
-  ],
-  "name": "Le Louxor",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 5,
-   "word": "LE LOUXOR",
-   "seed": 9769
-  },
-  "height": 16.4,
-  "front": -6,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 5."
- },
- {
-  "osm": [
    "way/63199114"
   ],
   "name": "ecole 63199114",

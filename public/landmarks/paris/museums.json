@@ -277,5 +277,431 @@
     "stone": false,
     "sign": true,
     "note": "One of Perrault's four L-shaped glass towers (open books on end, 79 m) at the corners of the BnF's esplanade round the sunken garden: glass over the library's wooden shutters, open and shut bay by bay. Fitted to the tower's own OSM outline."
+  },
+  {
+    "name": "La Sorbonne",
+    "procedural": "sorbonne",
+    "osm": [
+      "relation/572440",
+      "way/964951825",
+      "way/964951826",
+      "way/964951827",
+      "way/964951828",
+      "way/964951829",
+      "way/964951830",
+      "way/1200917626",
+      "way/1200917627"
+    ],
+    "lat": 48.848634,
+    "lon": 2.343585,
+    "size": [
+      86.9,
+      251.2
+    ],
+    "front": 19.5,
+    "height": 24,
+    "note": "Nénot's university (1885–1901) between the Rue des Écoles and the Rue Cujas. Placed on OSM relation 572440's box turned to its walls (osmium, 2026-10-30), the main front (−z) to the Rue des Écoles; the plan is the relation's own, with its courts and the notch where the chapel stands. Its parts have no heights and are claimed with it."
+  },
+  {
+    "name": "Chapelle de la Sorbonne",
+    "procedural": "chapelleSorbonne",
+    "osm": [
+      "way/95860808"
+    ],
+    "lat": 48.848398,
+    "lon": 2.343221,
+    "size": [
+      27.8,
+      54.7
+    ],
+    "front": 290,
+    "height": 48,
+    "note": "Lemercier's domed chapel (1635–42). Placed on OSM way 95860808's box turned to its axis (osmium, 2026-10-30), the west front (−z) to the Place de la Sorbonne, the court's portico to −x."
+  },
+  {
+    "name": "Hôtel-Dieu",
+    "procedural": "hotelDieu",
+    "osm": [
+      "relation/2449758",
+      "relation/11598195",
+      "way/248494137",
+      "way/248494138",
+      "way/248494139",
+      "way/248494140",
+      "way/248494141",
+      "way/248494142",
+      "way/248494143",
+      "way/248494144",
+      "way/248494145",
+      "way/248494146",
+      "way/248494147",
+      "way/248494148",
+      "way/249518152"
+    ],
+    "lat": 48.854635,
+    "lon": 2.348765,
+    "size": [
+      136.4,
+      170.6
+    ],
+    "front": 205.5,
+    "height": 27,
+    "note": "Gilbert and Diet's hospital (1866–78) on the north side of the Parvis de Notre-Dame. Placed on OSM relation 2449758's box turned to its walls (osmium, 2026-10-30), the front (−z) to the Parvis; the plan is the relation's own, the ward pavilions and courts, with its parts and the small hospital block in the first court (relation 11598195) claimed with it. Cornice from memory: OSM's parts (9–15 m) read low."
+  },
+  {
+    "name": "Bibliothèque Sainte-Geneviève",
+    "procedural": "sainteGenevieve",
+    "osm": [
+      "way/55353486",
+      "way/1202493352"
+    ],
+    "lat": 48.84721,
+    "lon": 2.34596,
+    "size": [
+      85.3,
+      57.5
+    ],
+    "front": 198.5,
+    "height": 22,
+    "note": "Labrouste's reading room (1843–51) on the north side of the Place du Panthéon. Placed on OSM way 55353486's box turned to its walls (osmium, 2026-10-30), the arcaded front (−z) to the Place; nineteen arched bays over the lettered panels, the proportions from a Mapillary frame along it; the wings behind are the rest of the way."
+  },
+  {
+    "name": "École nationale supérieure des Beaux-Arts",
+    "procedural": "beauxArts",
+    "osm": [
+      "relation/969872",
+      "way/62298489"
+    ],
+    "lat": 48.857328,
+    "lon": 2.33416,
+    "size": [
+      116.0,
+      126.9
+    ],
+    "front": 20,
+    "height": 22,
+    "note": "Duban's exhibition building (1858–62) and the Hôtel de Chimay on the Quai Malaquais. Placed on OSM relation 969872's box (osmium, 2026-10-30), the arched front (−z) to the quai. The Palais des Études behind it, relation 3856419, is not this model."
+  },
+  {
+    "name": "Hôpital Saint-Louis — the Quadrilatère",
+    "procedural": "hopitalSaintLouis",
+    "osm": [
+      "relation/10714749",
+      "way/497371003",
+      "way/497371004",
+      "way/497371005",
+      "way/497371006",
+      "way/497371007",
+      "way/497371008",
+      "way/497371009",
+      "way/497371010",
+      "way/497371011",
+      "way/497371012",
+      "way/497371013",
+      "way/497371014",
+      "way/497371016",
+      "way/497371017",
+      "way/497371018",
+      "way/497371019",
+      "way/497404380",
+      "way/497404381",
+      "way/497404382",
+      "way/497404383",
+      "way/497404384",
+      "way/497404385",
+      "way/497404386",
+      "way/497404387",
+      "way/497404388",
+      "way/497404389",
+      "way/497404390",
+      "way/497404391",
+      "way/497404392",
+      "way/497412130",
+      "way/772465997"
+    ],
+    "lat": 48.873271,
+    "lon": 2.367512,
+    "size": [
+      120.7,
+      128.8
+    ],
+    "front": 221.7,
+    "height": 24,
+    "note": "Vellefaux's quadrangle (1607–12) of brick, stone and slate. Placed on OSM relation 10714749's box turned to its walls (osmium, 2026-10-30), the gate pavilion (−z) to the Rue Bichat side; the eight pavilions and four ranges from the ring. Its parts, all under the ranges, are claimed with it."
+  },
+  {
+    "name": "La Salpêtrière — the main front",
+    "procedural": "salpetriere",
+    "osm": [
+      "way/78536170",
+      "way/871912194",
+      "way/871912193",
+      "way/236691403",
+      "way/236691404",
+      "way/236691405",
+      "way/236691406",
+      "way/236691407",
+      "way/236691408",
+      "way/236691409",
+      "way/236691410",
+      "way/236691411",
+      "way/236691412",
+      "way/236691413",
+      "way/236728944",
+      "way/236728945",
+      "way/236728946",
+      "way/236728947",
+      "way/236728948",
+      "way/236728950",
+      "way/236728951",
+      "way/236728952",
+      "way/236728953",
+      "way/236728954",
+      "way/236728955",
+      "way/236728956",
+      "way/236728957",
+      "way/236728958",
+      "way/236728959",
+      "way/236728960",
+      "way/236728961",
+      "way/236728962",
+      "way/236728963",
+      "way/236728964",
+      "way/236728965",
+      "way/236728966",
+      "way/236728967",
+      "way/236728968",
+      "way/236728969",
+      "way/236728970",
+      "way/236728971",
+      "way/236728972",
+      "way/236728973",
+      "way/236728974",
+      "way/236728975",
+      "way/236728976",
+      "way/236728977",
+      "way/236728978",
+      "way/236728979",
+      "way/236728980",
+      "way/236728981",
+      "way/236728982",
+      "way/236728983",
+      "way/236728984",
+      "way/236728985",
+      "way/236728986",
+      "way/236728987",
+      "way/236728989",
+      "way/236728990",
+      "way/236728991",
+      "way/236728992",
+      "way/236728993",
+      "way/236728994",
+      "way/236728995",
+      "way/236728996",
+      "way/236728997",
+      "way/236728998",
+      "way/236729000",
+      "way/236729001",
+      "way/236729002",
+      "way/236732932",
+      "way/236732934",
+      "way/236732936",
+      "way/236732938",
+      "way/236732941",
+      "way/236732943"
+    ],
+    "lat": 48.839241,
+    "lon": 2.363919,
+    "size": [
+      217.1,
+      23.4
+    ],
+    "front": 334,
+    "height": 22,
+    "note": "Le Vau, Le Muet and Bruant's long range (1656–77) across the head of its garden, now the Pitié-Salpêtrière. Placed on OSM's Divisions Mazarin and Lassay and the gateway between them (osmium, 2026-10-30), with their parts, the front (−z) down the garden to the Boulevard de l'Hôpital. The chapel behind is not this model and is not claimed."
+  },
+  {
+    "name": "Les Docks — Cité de la Mode et du Design",
+    "procedural": "citeDeLaMode",
+    "osm": [
+      "way/78535563"
+    ],
+    "lat": 48.840822,
+    "lon": 2.369996,
+    "size": [
+      175.2,
+      40.3
+    ],
+    "front": 48,
+    "height": 23,
+    "stone": false,
+    "note": "Jakob + MacFarlane's lime-green tube (2008–12) over the 1907 concrete warehouses of the Magasins généraux, on the Quai d'Austerlitz. Placed on OSM way 78535563's box (osmium, 2026-10-30), the tube's side (−z) to the Seine."
+  },
+  {
+    "name": "Rotonde de la Villette",
+    "procedural": "rotondeVillette",
+    "osm": [
+      "way/63971487"
+    ],
+    "lat": 48.883463,
+    "lon": 2.369544,
+    "size": [
+      35.6,
+      35.5
+    ],
+    "front": 234,
+    "height": 24,
+    "note": "Ledoux's customs barrier (1784–88), a drum on a cube, on the Place de Stalingrad. Placed on OSM way 63971487's box turned to its walls (osmium, 2026-10-30); one of the four porticos (−z) to the Place."
+  },
+  {
+    "name": "Pavillon de l'Arsenal",
+    "procedural": "pavillonArsenal",
+    "osm": [
+      "way/56186898"
+    ],
+    "lat": 48.850611,
+    "lon": 2.362171,
+    "size": [
+      31.6,
+      37.3
+    ],
+    "front": 50.5,
+    "height": 21,
+    "note": "Bruyerre's brick and iron exhibition pavilion (1878–79), the city's architecture centre, on the Boulevard Morland. Placed on OSM way 56186898's box turned to its walls (osmium, 2026-10-30), the front (−z) to the boulevard, confirmed as the side the boulevard runs by OSM's street geometry; dressing from memory."
+  },
+  {
+    "name": "Collège de France",
+    "procedural": "collegeDeFrance",
+    "osm": [
+      "relation/572442",
+      "way/55353483",
+      "way/55353488"
+    ],
+    "lat": 48.848798,
+    "lon": 2.345457,
+    "size": [
+      120.4,
+      70.5
+    ],
+    "front": 19.5,
+    "height": 22,
+    "note": "Chalgrin's court (1774–80) open to the Rue des Écoles, with the later wings beside and behind it. Placed on OSM's three blocks' box (osmium, 2026-10-30), the court's mouth (−z) to the Rue des Écoles; plans are OSM's, the dressing from memory."
+  },
+  {
+    "name": "Tour Zamansky",
+    "procedural": "tourZamansky",
+    "osm": [
+      "way/16924888"
+    ],
+    "lat": 48.846872,
+    "lon": 2.355497,
+    "size": [
+      23.4,
+      23.5
+    ],
+    "front": 0,
+    "height": 90,
+    "stone": false,
+    "note": "Albert's Jussieu tower (1971, reclad by 2009). OSM way 16924888: 23.4 m square, 90 m, 29 levels. Dressing from memory."
+  },
+  {
+    "name": "La Pagode",
+    "procedural": "pagode",
+    "osm": [
+      "way/68739427"
+    ],
+    "lat": 48.851653,
+    "lon": 2.316394,
+    "size": [
+      29.7,
+      23.1
+    ],
+    "front": 349,
+    "height": 16,
+    "stone": false,
+    "note": "Marcel's Japanese hall (1896), a cinema since 1931, on the Rue de Babylone. Placed on OSM way 68739427's box turned to its walls (osmium, 2026-10-30). Roofs and porch from memory."
+  },
+  {
+    "name": "Mairie du 5e arrondissement",
+    "procedural": "mairie5e",
+    "osm": [
+      "relation/660657"
+    ],
+    "lat": 48.846009,
+    "lon": 2.344384,
+    "size": [
+      81.4,
+      53.8
+    ],
+    "front": 111.5,
+    "height": 22,
+    "note": "Guénepin's mairie (1844–50), the twin of Soufflot's École de Droit across the Rue Soufflot, on the Place du Panthéon. Placed on OSM relation 660657's box turned to its walls (osmium, 2026-10-30); the frontispiece is on the outline's diagonal, facing the Panthéon, between local −z and +x."
+  },
+  {
+    "name": "Ancienne Mairie du 1er and the belfry",
+    "procedural": "mairie1er",
+    "osm": [
+      "relation/538908",
+      "way/53770906"
+    ],
+    "lat": 48.859932,
+    "lon": 2.341332,
+    "size": [
+      66.4,
+      43.3
+    ],
+    "front": 262,
+    "height": 46,
+    "note": "Hittorff's mairie (1855–60, now Quartier Jeunes) and Ballu's belfry (1858–62) on the Place du Louvre, beside Saint-Germain-l'Auxerrois (its own entry). Placed on OSM's two outlines' box (osmium, 2026-10-30), the front (−z) to the Colonnade."
+  },
+  {
+    "name": "Piscine Joséphine-Baker",
+    "procedural": "piscineJosephineBaker",
+    "osm": [
+      "way/119943935"
+    ],
+    "lat": 48.836113,
+    "lon": 2.376072,
+    "size": [
+      90.6,
+      21.8
+    ],
+    "front": 54.5,
+    "height": 14,
+    "stone": false,
+    "note": "The floating pool (2006) on the Seine at the Quai François-Mauriac. On OSM way 119943935's box. Its hull goes down to the model's base, the river bed: its freeboard depends on the Seine's level, unchecked."
+  },
+  {
+    "name": "Le Zénith",
+    "procedural": "zenith",
+    "osm": [
+      "way/63971432"
+    ],
+    "lat": 48.894158,
+    "lon": 2.393138,
+    "size": [
+      75.8,
+      90.6
+    ],
+    "front": 60,
+    "height": 20,
+    "stone": false,
+    "note": "Chaix and Morel's tent (1983) at La Villette, on OSM way 63971432's box (osmium, 2026-10-30), 20 m as tagged. Ribs and mast from memory."
+  },
+  {
+    "name": "Musée Jacquemart-André",
+    "procedural": "jacquemartAndre",
+    "osm": [
+      "way/68804399"
+    ],
+    "lat": 48.875516,
+    "lon": 2.310537,
+    "size": [
+      54.9,
+      60.8
+    ],
+    "front": 176.5,
+    "height": 19,
+    "note": "Parent's private palace (1869–75) on the Boulevard Haussmann. Placed on OSM way 68804399's box turned to its walls (osmium, 2026-10-30), its straight side (−z) to the boulevard and the court OSM cuts out of the north behind it. Which side the cour d'honneur's ramps stand on could not be confirmed; the dressing is from memory."
   }
 ]

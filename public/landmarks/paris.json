@@ -1098,17 +1098,6 @@
     "note": "The Palais de Justice on the Île de la Cité; the Conciergerie's pepper-pot towers are OSM's own cone-roofed parts on the quai."
   },
   {
-    "name": "Théâtre du Châtelet and Théâtre de la Ville",
-    "osm": [
-      "way/53574718",
-      "way/53582122"
-    ],
-    "restyle": "classical",
-    "roof": "hipped",
-    "levels": 3,
-    "note": "Davioud's twin theatres facing each other across the Place du Châtelet: arcaded fronts, stone."
-  },
-  {
     "name": "Hôtel de la Monnaie",
     "osm": [
       "relation/967664"
