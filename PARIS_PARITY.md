@@ -68,6 +68,13 @@ the box change and the re-bake together.
 - [x] bollards along most pavements ("paris has them very commonly"): all narrow pavements down to 0.5 m, corners
       and runs on the broad ones
 - [x] a map jump: out of look-around first, the rider held with a loading banner until the landing's tiles are in
+- [x] shutters: pale persiennes (off-white, putty, light grey) on the old fronts, not green (Mapillary, 2026-10-29)
+- [ ] the parking lane: next bake widens a rue by 2.4 m where its walls leave room (bake.ts `parisParkingLanes`), so
+      the bays and parked cars reach the one-way rues (Mapillary: cars along nearly every kerb) — check after the bake
+- [ ] hotels' row of flags over the door (Mapillary, Rue du Faubourg-Saint-Martin): hotels are only `service` POIs
+      by name, so this needs the shop signs' wall-finding (render/signs.ts)
+- [x] memory: one material and texture set per library name (tree GLBs embedded their own: ~1,460 textures → ~385);
+      far tiles' buildings and areas let go (City.forget)
 - [ ] cobblestone (`surface=sett`) — check how much shows; some pavements red-tinted
 - [ ] food and craft stands (the bouquinistes are done on their quays)
 - [ ] La Défense's towers (inside the box's north-west corner now) and the Grande Arche
