@@ -49,10 +49,14 @@ describe('ramps stop where they should (Stockton at Bush, 2026-09-29)', () => {
   const deck = (): BridgeEdge => ({ id: 1, a: 1, b: 2, points: [-30, 0, 0, 0, 30, 0], heights: [0, 0, 0], bridge: true, layer: 1 })
   const world = { water: [river(-25, 25)], ground: flat }
 
-  it('never ramps along a footway', () => {
+  it('never ramps along a footway — its end meets the deck, and that is all', () => {
     const path: BridgeEdge = { id: 2, a: 3, b: 1, points: [-60, 0, -30, 0], heights: [0, 0], foot: true }
-    bridgeHeights([deck(), path], world)
-    expect(path.heights).toEqual([0, 0])
+    const d = deck()
+    bridgeHeights([d, path], world)
+    // (the stairs or pavement stub at a bridge's end reach the deck at their shared node, eased over 15 m: the Seine bridges'
+    //  foot ways stood 2–6 m under their decks, 2026-10-30) — and the far end, 30 m off, is where it was
+    expect(path.heights![path.heights!.length - 1]).toBeCloseTo(d.heights![0], 1)
+    expect(path.heights![0]).toBe(0)
   })
 
   it('never ramps through a footway onto a street beyond it', () => {

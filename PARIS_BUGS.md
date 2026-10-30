@@ -110,7 +110,10 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       profile now (Stall.y and grade). To check in the city.
 - [x] **No lampposts** ("a key part of the city's look"): the dark lanterns stood on the boulevards only, every other
       slot. Now every slot (22–31 m, staggered) on pavements of 1.8 m and more; the narrowest rues keep their wall lamps.
-- [ ] **Terrain wavy along the Seine banks; ways out of sync with the ground** (owner: "there's something seriously buggy
+- [x] **Terrain from IGN's LiDAR HD** (the 0336 bake, 2026-10-30): every fine sample from the lidar; it sits a median
+      3.2 m under the terrarium (5–95%: −12.5…+2.2 m), which had counted buildings and trees as ground. The quays are sheer
+      walls now (the Vert-Galant, the Conciergerie's quay), not smears. APUR's measured heights on the buildings OSM gave none.
+- [ ] **Terrain wavy along the Seine banks; ways out of sync with the ground** — re-check on the lidar bake (owner: "there's something seriously buggy
       with the way we handle terrain in paris. the ways are out of sync with the ground many times"). Not yet looked at.
       Suspects: the coarse terrarium DEM (≈30 m) round the quay walls, fine ground shipped only near cuts, the street
       grade not imposed on the ground in Paris.
