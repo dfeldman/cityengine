@@ -45,6 +45,15 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Louvre Pyramid',
     'intersects | Colonnes de Buren',
     'intersects | Danton',
+    // the parks family, wave 2 (2026-10-30): Tschumi's folies stand hard against the halls the park was built round (the
+    // Théâtre Paris-Villette, the Pavillon Janvier, the Cité de la Musique, the Argonaute, the Philharmonie), and the
+    // Acclimatation's booths against a small lodge behind them — adjacency, as built, judged on the city shots
+    'intersects | Parc de la Villette: Folie L8',
+    'intersects | Parc de la Villette: Folie N8',
+    'intersects | Parc de la Villette: Folie N9',
+    'intersects | Parc de la Villette: Folie P4',
+    'intersects | Parc de la Villette: Folie P8',
+    "intersects | Jardin d'Acclimatation: the Porte des Sablons",
     // #109 — the ground under it
     'height | Square Louis-XIII',
     'ground | Étienne Marcel',

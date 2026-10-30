@@ -289,5 +289,705 @@
     "levels": 2,
     "height": 12,
     "note": "The Napoleon III pavilion (1856) in the Bois de Boulogne's Pré Catelan, now Lenôtre's restaurant: two storeys of tall windows in pale stone under a slate roof - a restyle, its silhouette is OSM's (way/83115461, 45 x 58)."
+  },
+  {
+    "osm": [
+      "way/81704917"
+    ],
+    "name": "Parc de la Villette: Folie J5",
+    "procedural": "folieJ5",
+    "lat": 48.891851,
+    "lon": 2.386928,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.J5: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Rond-point des Canaux J5): open frame under a red roof slab (OSM building=roof, wall=no), the walkway to the canal bridge. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/64039929"
+    ],
+    "name": "Parc de la Villette: Folie L1",
+    "procedural": "folieL1",
+    "lat": 48.895971,
+    "lon": 2.384562,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L1: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Éclat de Folie L1): the north entrance (Avenue Corentin-Cariou), a canopy wing to the gate. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/64038391"
+    ],
+    "name": "Parc de la Villette: Folie L2",
+    "procedural": "folieL2",
+    "lat": 48.894982,
+    "lon": 2.385187,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L2: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie L2): the bar-restaurant: the glazed round annex OSM maps west of the cube, a quarter wheel. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704874"
+    ],
+    "name": "Parc de la Villette: Folie L3",
+    "procedural": "folieL3",
+    "lat": 48.894132,
+    "lon": 2.386104,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L3: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie de l’Écluse L3): by the Canal Saint-Denis lock, a straight stair up its face. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704915"
+    ],
+    "name": "Parc de la Villette: Folie L4",
+    "procedural": "folieL4",
+    "lat": 48.893245,
+    "lon": 2.387077,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L4: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Kiosque à Musique L4): the bandstand (kiosque): open frame, canopy wings both sides. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971539"
+    ],
+    "name": "Parc de la Villette: Folie L5",
+    "procedural": "folieL5",
+    "lat": 48.892389,
+    "lon": 2.3881,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L5: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie des visites L5): the spiral stair in its drum and the low glazed annex OSM maps south of the cube (OSM's 49 m tail along the canal is not drawn). Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971614"
+    ],
+    "name": "Parc de la Villette: Folie L6",
+    "procedural": "folieL6",
+    "lat": 48.891562,
+    "lon": 2.389049,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L6: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie des Vents et des Dunes L6): the airlock to the Jardin des vents et des dunes, a walkway out of the frame. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971193"
+    ],
+    "name": "Parc de la Villette: Folie L7",
+    "procedural": "folieL7",
+    "lat": 48.890671,
+    "lon": 2.390033,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L7: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Atelier des visites L7): a lift tower over the roof. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "relation/14001540"
+    ],
+    "name": "Parc de la Villette: Folie L8",
+    "procedural": "folieL8",
+    "lat": 48.889828,
+    "lon": 2.39104,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L8: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie du Théâtre L8): by the Théâtre Paris-Villette, a quarter wheel. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971389"
+    ],
+    "name": "Parc de la Villette: Folie L9",
+    "procedural": "folieL9",
+    "lat": 48.88902,
+    "lon": 2.392034,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.L9: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie information Villette L9): information and ticketing at the Porte de Pantin, the cube with its glazed annex (OSM way 27 × 17 m). Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704885"
+    ],
+    "name": "Parc de la Villette: Folie N1",
+    "procedural": "folieN1",
+    "lat": 48.896479,
+    "lon": 2.385387,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N1: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Horloge N1): the clock folie: the white dial on its north-west face, a mast. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704877"
+    ],
+    "name": "Parc de la Villette: Folie N4",
+    "procedural": "folieN4",
+    "lat": 48.893918,
+    "lon": 2.388393,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N4: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Observatoire N4): the observatory: open upper floors, a mast, a stair. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971495"
+    ],
+    "name": "Parc de la Villette: Folie N5",
+    "procedural": "folieN5",
+    "lat": 48.893063,
+    "lon": 2.389375,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N5: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie du Canal N5): the spiral stair drum OSM maps at its north corner. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971462"
+    ],
+    "name": "Parc de la Villette: Folie N6",
+    "procedural": "folieN6",
+    "lat": 48.892198,
+    "lon": 2.390378,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N6: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie des Fêtes N6): the round stair drum OSM maps at its west corner. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/869111631"
+    ],
+    "name": "Parc de la Villette: Folie N7",
+    "procedural": "folieN7",
+    "lat": 48.891341,
+    "lon": 2.391351,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N7: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie douce N7): a quarter wheel; the porch roof OSM maps west of it. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/869111628"
+    ],
+    "name": "Parc de la Villette: Folie N8",
+    "procedural": "folieN8",
+    "lat": 48.890447,
+    "lon": 2.392308,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N8: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Janvier N8): the Folie Janvier (offices), a lift tower. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/869111629"
+    ],
+    "name": "Parc de la Villette: Folie N9",
+    "procedural": "folieN9",
+    "lat": 48.889598,
+    "lon": 2.3933,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.N9: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Cité de la Musique N9): the entrance to the Cité de la musique, a canopy wing. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/58169109"
+    ],
+    "name": "Parc de la Villette: Folie P4",
+    "procedural": "folieP4",
+    "lat": 48.894568,
+    "lon": 2.389692,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.P4: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Argonaute P4): beside the Argonaute submarine, a straight stair. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971668"
+    ],
+    "name": "Parc de la Villette: Folie P5",
+    "procedural": "folieP5",
+    "lat": 48.893704,
+    "lon": 2.390697,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.P5: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Ateliers du Parc P5): the terrace over the Canal de l'Ourcq: the stair drum OSM maps, a walkway. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971332"
+    ],
+    "name": "Parc de la Villette: Folie P6",
+    "procedural": "folieP6",
+    "lat": 48.892889,
+    "lon": 2.391639,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.P6: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Belvédère P6): the belvedere: an open top floor, a stair up its face. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971399"
+    ],
+    "name": "Parc de la Villette: Folie P7",
+    "procedural": "folieP7",
+    "lat": 48.892005,
+    "lon": 2.392648,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.P7: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Café P7): the café, its 2012 glazed extension (OSM's wedge south of the cube, drawn as a box). Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704899"
+    ],
+    "name": "Parc de la Villette: Folie P8",
+    "procedural": "folieP8",
+    "lat": 48.89113,
+    "lon": 2.39365,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.P8: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie Musique P8): by the Philharmonie, the canopy on posts OSM maps east of the cube. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704923"
+    ],
+    "name": "Parc de la Villette: Folie R4",
+    "procedural": "folieR4",
+    "lat": 48.895228,
+    "lon": 2.391003,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.R4: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie escalier R4): the walkways the Galerie de la Villette runs through, a stair. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/81704921"
+    ],
+    "name": "Parc de la Villette: Folie R5",
+    "procedural": "folieR5",
+    "lat": 48.894358,
+    "lon": 2.392003,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.R5: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie échangeur R5): the échangeur where the galerie meets the east footbridge: two walkways. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971276"
+    ],
+    "name": "Parc de la Villette: Folie R6",
+    "procedural": "folieR6",
+    "lat": 48.89351,
+    "lon": 2.392969,
+    "size": [
+      11,
+      11
+    ],
+    "front": 233.7,
+    "height": 11,
+    "kind": "structure",
+    "note": "venues/villette.ts FOLIE.R6: Tschumi's red 10.8 m cube of 3 × 3 × 3 cells (Folie billetterie du Zénith R6): the Zénith ticket office, the stair drum OSM maps. Placed by point on the cube's centre and turned to the 120 m grid (front 233.7), see the file's header."
+  },
+  {
+    "osm": [
+      "way/63971649"
+    ],
+    "name": "Grande Halle de la Villette",
+    "procedural": "grandeHalle",
+    "front": 144,
+    "height": 19,
+    "note": "venues/villette.ts: Mérindol's cattle hall of 1867 (245 × 85 × 19 m, Wikipedia fr): the open colonnade of white cast-iron columns and fanned brackets round the ground floor under the overhanging eaves, the glazed aisles, the clerestory nave under its low gable, the glass gables, the clock on the Porte de Pantin end (front 144, the SE gable). way/63971649 (241 × 86 m, height 16 + roof 10 in OSM)."
+  },
+  {
+    "osm": [
+      "way/23758079",
+      "way/320012507",
+      "way/1476752442",
+      "way/1288442711",
+      "way/23758088"
+    ],
+    "name": "Jardin des Plantes: the Grandes Serres",
+    "procedural": "grandesSerres",
+    "lat": 48.843073,
+    "lon": 2.357113,
+    "size": [
+      176,
+      26
+    ],
+    "front": 160,
+    "height": 20,
+    "note": "venues/serres.ts: one model over the row of glasshouses on the garden's south side (local x along bearing 70, the garden at −z): Rohault de Fleury's two square pavilions of 1834–36 (the Serre des déserts, way/1288442711, and the Serre de Nouvelle-Calédonie, part way/1476752442) on their stone terrace with the ramp between, dark green iron and purple-cast panes under curved roofs and railed lanterns; Berger's 1937 Jardin d'hiver (part way/320012507) with its whitewashed glass, bracketed eaves, curved roof and lantern and the lean-to on its front; the low curved gallery to the west (way/23758088). Placed by point (the five ways' common frame) rather than fitted: the outline way/23758079 holds both the east pavilion and the winter garden. Positions from the OSM rings turned into that frame."
+  },
+  {
+    "name": "Jardin du Luxembourg: the Grand Bassin and the terraces",
+    "procedural": "luxembourgBassin",
+    "lat": 48.846913,
+    "lon": 2.3372,
+    "size": [
+      50,
+      58
+    ],
+    "front": 182,
+    "height": 9,
+    "kind": "fountain",
+    "shadow": false,
+    "note": "venues/gardens.ts: the elongated octagon of the Grand Bassin (OSM way/4294027, its long sides north-south) brim-full under a stone coping, the centre basin with the children holding up the vasque and its jet, the toy sailboats, the green chairs round it; and the balustraded terrace walls round the sunken parterre from OSM's barrier=wall ways 194193439-442 and 454094953-955 (gapped at the stairs), a Queen of France on her pedestal every ~16 m. The parterre really lies ~2 m under the terraces; the DEM's ground cannot be dug, so the walls stand on it. Placed by point at the octagon's centre, front 182 (+x east, +z to the palace); size is the basin's, which is all the tree clearing should take."
+  },
+  {
+    "name": "Jardin des Tuileries: the Grand Bassin Rond",
+    "procedural": "tuileriesBassinRond",
+    "lat": 48.862873,
+    "lon": 2.329294,
+    "size": [
+      42,
+      42
+    ],
+    "front": 206,
+    "height": 1.5,
+    "kind": "fountain",
+    "shadow": false,
+    "note": "venues/gardens.ts: the round basin at the Louvre end of the garden's axis (OSM way/14037695, 40 m), its coping and its water at the brim (the city's own water lies 2.5 m down in a pit, region riverDrop), the central jet and its ring of spouts, the green chairs. Placed by point at its centre."
+  },
+  {
+    "name": "Jardin des Tuileries: the Grand Bassin Octogonal",
+    "procedural": "tuileriesOctogone",
+    "lat": 48.864521,
+    "lon": 2.324135,
+    "size": [
+      70,
+      70
+    ],
+    "front": 206,
+    "height": 1.5,
+    "kind": "fountain",
+    "shadow": false,
+    "note": "venues/gardens.ts: the octagonal basin at the Concorde end between the ramps (OSM way/54188993, 68 m, sides 26.1 m square to the axis at bearing 116), coping, brim-full water, the jet, the green chairs. Placed by point at its centre, front 206 so local x runs along the axis."
+  },
+  {
+    "osm": [
+      "way/96364652"
+    ],
+    "name": "Jardin des Tuileries: La Terrasse de Pomone",
+    "procedural": "tuileriesPomone",
+    "front": 206,
+    "height": 6,
+    "note": "venues/gardens.ts tuileriesKiosk: the café kiosk north of the Grand Couvert's west side (OSM node 1679239832 names it): a small square pavilion of green-painted timber and glass under a hipped zinc roof and lantern, its terrace of tables under terracotta parasols round it (Commons, 'La Terrasse de Pomone brasserie.jpg'). Fitted to the OSM way."
+  },
+  {
+    "osm": [
+      "way/96364653"
+    ],
+    "name": "Jardin des Tuileries: Petit Plisson",
+    "procedural": "tuileriesPlisson",
+    "front": 206,
+    "height": 6,
+    "note": "venues/gardens.ts tuileriesKiosk: the café kiosk in the northern Grand Couvert (OSM node 1686623823): a small square pavilion of green-painted timber and glass under a hipped zinc roof and lantern, its terrace of tables under terracotta parasols round it (Commons, 'La Terrasse de Pomone brasserie.jpg'). Fitted to the OSM way."
+  },
+  {
+    "osm": [
+      "way/54188997"
+    ],
+    "name": "Jardin des Tuileries: Café des Marronniers",
+    "procedural": "tuileriesMarronniers",
+    "front": 206,
+    "height": 6,
+    "note": "venues/gardens.ts tuileriesKiosk: the café kiosk under the chestnuts by the Orangerie (OSM names the way): a small square pavilion of green-painted timber and glass under a hipped zinc roof and lantern, its terrace of tables under terracotta parasols round it (Commons, 'La Terrasse de Pomone brasserie.jpg'). Fitted to the OSM way."
+  },
+  {
+    "osm": [
+      "way/54188995"
+    ],
+    "name": "Jardin des Tuileries: the café kiosk by the Feuillants",
+    "procedural": "tuileriesCafeNord",
+    "front": 206,
+    "height": 6,
+    "note": "venues/gardens.ts tuileriesKiosk: the café pavilion at the Feuillants terrace's foot (OSM disused:amenity=cafe, 16 × 20 m): a small square pavilion of green-painted timber and glass under a hipped zinc roof and lantern, its terrace of tables under terracotta parasols round it (Commons, 'La Terrasse de Pomone brasserie.jpg'). Fitted to the OSM way."
+  },
+  {
+    "name": "Parc Monceau: the Naumachie",
+    "procedural": "naumachie",
+    "lat": 48.880083,
+    "lon": 2.310668,
+    "size": [
+      54,
+      38
+    ],
+    "front": 161,
+    "height": 12,
+    "kind": "monument",
+    "note": "venues/gardens.ts: the oval basin at the north-east end of the park's stream (the oval head of OSM's water way/55761392, ~50 x 34 m, long axis bearing 71 = local x), its coping open to the stream at the south-west, and round its far side the colonnade of fluted Corinthian columns from the Valois rotunda at Saint-Denis: 24 columns on a 210-degree arc 2.4 m back from the brim, the entablature on three runs, two broken shafts. The colonnade is not in OSM: its arc and count are from the photographs (Commons PH82662, A39089S). The stream's water is the city's (2.5 m down); no pool is drawn here, the oval being open to it."
+  },
+  {
+    "osm": [
+      "way/62848443"
+    ],
+    "name": "Jardin du Luxembourg: the Kiosque à musique",
+    "procedural": "luxembourgKiosque",
+    "height": 10,
+    "kind": "structure",
+    "note": "venues/gardens.ts: the round bandstand in the garden's east side (OSM way/62848443, 12.5 m, leisure=bandstand): a stone base and steps, sixteen slender iron columns with brackets, a railing, the concave zinc roof, lantern and finial. Fitted to its way."
+  },
+  {
+    "osm": [
+      "way/62848404"
+    ],
+    "name": "Orangerie du Luxembourg",
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 1,
+    "height": 9,
+    "note": "The Orangerie du Sénat (1839, Gisors) on the garden's west side: one tall storey of round-headed windows to the south under a slate roof, where the orange trees winter - a restyle, its silhouette is OSM's (way/62848404, 74 x 18 m)."
+  },
+  {
+    "name": "Buttes-Chaumont: the suspension bridge",
+    "procedural": "buttesSuspensionBridge",
+    "lat": 48.881013,
+    "lon": 2.381775,
+    "size": [
+      66,
+      4
+    ],
+    "front": 357,
+    "height": 8,
+    "kind": "bridge",
+    "coversRaised": true,
+    "shadow": false,
+    "note": "venues/buttes-bridges.ts: the 63 m footbridge to the island (OSM way/45777307, bridge:structure=suspension, from (3678, 2285) to (3616, 2282) local): the timber deck between red mesh railings and a polished steel handrail, the flat lattice chains swooping from a pair of faux-rock pylons at each end, the hangers and back-stays (Commons, 'Passerelle suspendue Buttes Chaumont Paris 19e.jpg'). Placed by point at its middle, front 357 so local x runs along it (the island, east, at -x); the deck runs from the ground at one end to the ground at the other with a slight sag. coversRaised: it is the bridge way's own deck."
+  },
+  {
+    "name": "Buttes-Chaumont: the Pont des Suicides bridge",
+    "procedural": "buttesSuicidesBridge",
+    "lat": 48.880272,
+    "lon": 2.383024,
+    "size": [
+      23,
+      5
+    ],
+    "front": 90,
+    "height": 2,
+    "kind": "bridge",
+    "coversRaised": true,
+    "shadow": false,
+    "note": "venues/buttes-bridges.ts: the brick arch to the island from the south (OSM way/29266078, 22 m): a 13 m brick barrel under a ring of stone voussoirs, the spandrels and abutments down into the gorge, a stone cornice and the red cast-iron lattice parapets on stone dies (Commons, 'Paris - Buttes Chaumont - Pont des suicidés 01.jpg'). Placed by point, front 90 so local x runs north along it (the island at +x); the deck at the higher bank's ground. ('bridge' in the name keeps the span rectangle from clearing the trees under it.)"
+  },
+  {
+    "osm": [
+      "way/584395763"
+    ],
+    "name": "Hippodrome de Longchamp: the grandstand",
+    "procedural": "longchampGrandstand",
+    "front": 111,
+    "height": 26,
+    "note": "venues/racecourses.ts: Dominique Perrault's 2018 stand (the '160 mètres' of Wikipedia fr): thin white trays stacked over the track, each floor reaching further out than the one below, bronze soffits and glass balustrades on the lips, terracotta seats on the low rake in front, yellow stair cores through the stack, the glazed panoramic box on top cantilevered 14 m past the north end, bronze louvres on the back to the Route des Tribunes (Commons: Perrault's own photographs). way/584395763 (152 x 30 m along bearing 21); the track's outer ring passes just east of it, so front 111 and the cantilever at local +x (north, as in the photograph from the track). No height in OSM: ~26 m from the photographs' five levels."
+  },
+  {
+    "osm": [
+      "way/83202275"
+    ],
+    "name": "Hippodrome d'Auteuil: the north stand",
+    "procedural": "auteuilStandA",
+    "front": 296,
+    "height": 18,
+    "note": "venues/racecourses.ts auteuilStand: one of the four stands in a row along bearing 25 facing the steeplechase course (front 296): the 1924 tribunes (Wikipedia fr), an arcade of round arches under the lower tier of seats, the upper deck and its rake under a cantilevered concrete canopy on square piers, the taller stair pavilions at the ends (Commons, 'Tribune hippodrome d'Auteuil - panoramio.jpg'). Fitted to way/83202275. Which of the row is which stand, and whether all four are of 1924, is not settled by the sources read."
+  },
+  {
+    "osm": [
+      "way/83202264"
+    ],
+    "name": "Hippodrome d'Auteuil: the second stand",
+    "procedural": "auteuilStandB",
+    "front": 296,
+    "height": 18,
+    "note": "venues/racecourses.ts auteuilStand: one of the four stands in a row along bearing 25 facing the steeplechase course (front 296): the 1924 tribunes (Wikipedia fr), an arcade of round arches under the lower tier of seats, the upper deck and its rake under a cantilevered concrete canopy on square piers, the taller stair pavilions at the ends (Commons, 'Tribune hippodrome d'Auteuil - panoramio.jpg'). Fitted to way/83202264. Which of the row is which stand, and whether all four are of 1924, is not settled by the sources read."
+  },
+  {
+    "osm": [
+      "way/83202316"
+    ],
+    "name": "Hippodrome d'Auteuil: the third stand",
+    "procedural": "auteuilStandC",
+    "front": 296,
+    "height": 18,
+    "note": "venues/racecourses.ts auteuilStand: one of the four stands in a row along bearing 25 facing the steeplechase course (front 296): the 1924 tribunes (Wikipedia fr), an arcade of round arches under the lower tier of seats, the upper deck and its rake under a cantilevered concrete canopy on square piers, the taller stair pavilions at the ends (Commons, 'Tribune hippodrome d'Auteuil - panoramio.jpg'). Fitted to way/83202316. Which of the row is which stand, and whether all four are of 1924, is not settled by the sources read."
+  },
+  {
+    "osm": [
+      "way/83202288"
+    ],
+    "name": "Hippodrome d'Auteuil: the south stand",
+    "procedural": "auteuilStandD",
+    "front": 296,
+    "height": 18,
+    "note": "venues/racecourses.ts auteuilStand: one of the four stands in a row along bearing 25 facing the steeplechase course (front 296): the 1924 tribunes (Wikipedia fr), an arcade of round arches under the lower tier of seats, the upper deck and its rake under a cantilevered concrete canopy on square piers, the taller stair pavilions at the ends (Commons, 'Tribune hippodrome d'Auteuil - panoramio.jpg'). Fitted to way/83202288. Which of the row is which stand, and whether all four are of 1924, is not settled by the sources read."
+  },
+  {
+    "name": "Jardin d'Acclimatation: the Porte des Sablons",
+    "procedural": "acclimatationEntrance",
+    "lat": 48.877636,
+    "lon": 2.269691,
+    "size": [
+      40,
+      6
+    ],
+    "front": 115,
+    "height": 7,
+    "kind": "structure",
+    "note": "venues/acclimatation.ts: the garden's main entrance on the Avenue du Mahatma-Gandhi (OSM node 128407713, barrier=entrance, entrance=main): the two little white lodges with gabled slate roofs and round gable windows at the ends (ways 1084917461 and 1084917464, 35.8 m apart), the two glazed ticket booths under broad shallow iron roofs between them (ways 1084917462-463), the green railings and lamps (Commons, 'Entrée Jardin d'Acclimatation.jpg'). Placed by point midway between the lodges, local x along their line (bearing 25), the avenue at -z (front 115); the four ways are claimed. The garden's pavilions (the Palais d'Hiver, the Grande Volière) are not drawn.",
+    "osm": [
+      "way/1084917461",
+      "way/1084917462",
+      "way/1084917463",
+      "way/1084917464"
+    ]
+  },
+  {
+    "osm": [
+      "way/584395765"
+    ],
+    "name": "Hippodrome de Longchamp: the low buildings behind the grandstand",
+    "restyle": "classical",
+    "roof": "flat",
+    "levels": 2,
+    "height": 8,
+    "note": "The 313 m L-shaped way behind and north of Perrault's stand (no height or name in OSM), which the city drew as a seven-storey Haussmann block with chimneys in the middle of the Bois (2026-10-30 shot). Held to two storeys under a flat roof; what it is (the stand's podium, the weighing room, the paddock buildings) is not settled by the sources read."
+  },
+  {
+    "osm": [
+      "way/83128161",
+      "way/83128182"
+    ],
+    "name": "Hippodrome de Longchamp: the 1904 stands",
+    "restyle": "classical",
+    "roof": "flat",
+    "levels": 3,
+    "height": 12,
+    "note": "The two long ways just south-west of Perrault's stand along the same line (140 and 81 m, no height in OSM), likely the stone stands of 1904 that Wikipedia fr says were kept and moved south-west of the course; the city drew them as seven-storey apartment blocks (2026-10-30 shot). Held to three storeys of stone under a flat roof until they are modelled."
   }
 ]

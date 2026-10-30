@@ -106,6 +106,10 @@ const SETS: Record<string, V[]> = {
    */
   palace: [['front', -1.57, 1.4, 250, 0, 14, 0], ['front-3q', -2.25, 1.3, 230, 0, 14, 0], ['back', 1.57, 1.4, 250, 0, 14, 0],
     ['back-3q', 0.85, 1.3, 230, 0, 14, 0], ['top', -1.4, 0.55, 300, 0, 0, 0], ['street', -1.9, 1.52, 120, 0, 16, -40]],
+  // a THEATRE or a smaller palace (paris/palaces/, wave 2): 30–90 m, front −z on its place — head-on, a three-quarter,
+  // the flank and back, from above for the roofs, and a rider's eye from across the place looking up at the front
+  theatre: [['front', -1.57, 1.42, 130, 0, 12, 0], ['front-3q', -2.3, 1.3, 130, 0, 12, 0], ['flank', 3.14, 1.42, 120, 0, 12, 0],
+    ['back-3q', 0.8, 1.25, 140, 0, 12, 0], ['top', -1.3, 0.6, 160, 0, 0, 0], ['street', -1.75, 1.58, 60, 0, 10, -20]],
   'palace-big': [['front', -1.57, 1.4, 420, 0, 14, 0], ['front-3q', -2.25, 1.3, 380, 0, 14, 0], ['back', 1.57, 1.4, 420, 0, 14, 0],
     ['back-3q', 0.85, 1.3, 380, 0, 14, 0], ['top', -1.4, 0.55, 480, 0, 0, 0], ['street', -1.9, 1.52, 170, 0, 16, -90]],
   /*
@@ -126,6 +130,17 @@ const SETS: Record<string, V[]> = {
    */
   basilica: [['front', -1.57, 1.42, 240, 0, 34, 0], ['front-3q', -2.25, 1.32, 230, 0, 34, 0], ['side', 0.0, 1.45, 240, 0, 34, 0],
     ['back-3q', 0.85, 1.3, 230, 0, 34, 0], ['top', -1.3, 0.6, 250, 0, 20, 0], ['porch', -1.75, 1.5, 75, 0, 14, -40]],
+  /*
+   * A PARISH CHURCH of 50–100 m with a dome or spires (paris/monuments/, wave 2: Saint-Augustin, Sainte-Clotilde…),
+   * front −z: head-on, three-quarter, the long side, the chevet, from above, a rider on the parvis, and the skyline
+   * from far off (the dome or the spires over the roofs).
+   */
+  church: [['front', -1.57, 1.42, 170, 0, 28, 0], ['front-3q', -2.25, 1.32, 160, 0, 28, 0], ['side', 0.0, 1.45, 170, 0, 28, 0],
+    ['back-3q', 0.85, 1.3, 160, 0, 28, 0], ['top', -1.3, 0.6, 190, 0, 15, 0], ['parvis', -1.7, 1.52, 55, 0, 14, -40],
+    ['skyline', -1.2, 1.53, 520, 0, 40, 0]],
+  // a WINDMILL, a minaret or a chapel of 8–35 m (Montmartre's mills, the Grande Mosquée's minaret): head-on, three-quarter, a rider's eye, above
+  mill: [['front', -1.57, 1.42, 45, 0, 9, 0], ['three-quarter', -2.3, 1.3, 45, 0, 9, 0], ['rider', -1.9, 1.52, 22, 0, 6, 0],
+    ['top', -1.2, 0.75, 50, 0, 4, 0]],
   // a GATE or arch of 18–25 m (paris/monuments/gates.ts): head-on, three-quarter, a rider's eye in the street through it, above
   gate: [['front', -1.57, 1.45, 62, 0, 10, 0], ['three-quarter', -2.3, 1.35, 62, 0, 10, 0], ['rider', -1.45, 1.55, 24, 0, 5, 0],
     ['top', -1.2, 0.7, 62, 0, 6, 0]],
@@ -141,6 +156,14 @@ const SETS: Record<string, V[]> = {
     ['three-quarter', -0.9, 1.22, 380, 0, 20, 0],
     ['rider', -1.4, 1.45, 95, 0, 22, -95],
     ['inside', 1.4, 1.05, 120, 0, 8, 0],
+  ],
+  // a park's folly, kiosk or basin 10–70 m across (paris/venues gardens.ts, villette.ts): from the path, three-quarter,
+  // a rider close by, and from above (a basin is read from above)
+  folly: [
+    ['path', -1.57, 1.42, 45, 0, 4, 0],
+    ['three-quarter', -0.9, 1.3, 40, 0, 4, 0],
+    ['rider', -1.2, 1.5, 18, 0, 2, 0],
+    ['above', -1.1, 0.8, 70, 0, 0, 0],
   ],
 }
 let views = SETS[arg('views', 'tower')] ?? SETS.tower
