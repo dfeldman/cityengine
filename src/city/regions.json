@@ -221,6 +221,7 @@
     "pavedSquares": [
       { "name": "Parvis du Trocadéro", "ring": [[48.86279, 2.28727], [48.86192, 2.28604], [48.86143, 2.28680], [48.86168, 2.28940], [48.86224, 2.29008], [48.86301, 2.28894]] }
     ],
+    "brickStreets": { "names": [], "share": 0.08, "colour": [0.5, 0.37, 0.33] },
     "pointFurniture": {
       "metro": "guimard",
       "fountain": "wallace",
@@ -229,7 +230,8 @@
       "busStop": "paris",
       "bikeShare": "velib",
       "bikeParking": true,
-      "motoParking": true
+      "motoParking": true,
+      "parisStreet": true
     },
     "landmarkPlate": {
       "fill": "#e9e0cc",

@@ -11,6 +11,7 @@
  * two thousand. Trail Trainer's expensive lesson was that a triangle budget goes not on detail but on things
  * drawn separately, and a city is the case where that bites hardest.
  */
+import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
@@ -231,6 +232,7 @@ const MOSS: [number, number, number] = [0.27, 0.36, 0.18]
 const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
+const hashName = (n: string): number => { let h = 7; for (let i = 0; i < n.length; i++) h = (Math.imul(h, 31) + n.charCodeAt(i)) >>> 0; return h ^ (h >>> 13) }
 /** sand's tint on the road shader's sand page (which is already sand-coloured): Ocean Beach's pale grey-tan, not gold */
 const SAND_ON_PAGE: [number, number, number] = [0.64, 0.65, 0.72]
 /** a paged square's tint on its page (PackedArea `surface`): weathered grey-brown boards, grey granite setts, red brick —
@@ -2979,7 +2981,8 @@ export class City {
       }
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
-      if (brick && !e.foot && e.walk > 0 && brick.names.includes(e.name ?? '')) {
+      // (and Paris's red-tinted pavements, the owner's from street view: one street in a dozen or so, the whole of it)
+      if (brick && !e.foot && e.walk > 0 && (brick.names.includes(e.name ?? '') || (e.name && brick.share && hashName(e.name) % 100 < brick.share * 100))) {
         quadStrip(corridor, pts, e.width + 2 * e.walk + 1.5, 0.1505, brick.colour)
       }
 
@@ -4444,12 +4447,45 @@ export class City {
     // signals, tram and bus stops and métro entrances do stand in the middle of a road)
     // (from this tile and its neighbours: a stop near the edge of the tile stands by a street that may be in the next one)
     const pointKerb = new Carriageways(around.filter((e) => !this.raisedIds.has(e.id)))
-    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain'])
+    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain', 'litter', 'recycling', 'sanisette', 'crepes', 'glaces', 'souvenirs'])
     // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
     //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
     const boards: { x: number; z: number }[] = []
     let metroRings: { x: number; z: number }[][] | null = null
+    const blockRings = (): { x: number; z: number }[][] => metroRings ??= (() => {
+      const rs: { x: number; z: number }[][] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+        for (const b of this.buildingsIn.get(key(ktx + dx, ktz + dz)) ?? []) if ((b.minHeight ?? 0) < 3) rs.push(unpackPoints(b.ring))
+      }
+      return rs
+    })()
     for (const f of this.pointsIn.get(k) ?? []) {
+      /*
+       * Paris's street (render/paris/street.ts): nothing in a building (OSM's sculptures are many in courtyards, some indoors
+       * untagged) nor in a lane. A street market is a row of stalls along its street, wherever each stall finds room.
+       */
+      if (pf.parisStreet && PARIS_STREET.has(f.kind)) {
+        const standsFree = (x: number, z: number): boolean => !pointKerb.inside(x, z, 0.4) && !blockRings().some((r) => insideRing(r, x, z))
+        const seed = Math.abs(Math.round(f.x * 13 + f.z * 29))
+        if (f.kind === 'market') {
+          const h = this.streetBearing(f.x, f.z)
+          const ax = Math.sin(h), az = Math.cos(h)
+          const n = 8 + seed % 9
+          for (let i = 0; i < n; i++) {
+            for (const side of [0, 1]) {
+              const d = (i - n / 2) * 3.4
+              const x = f.x + ax * d + az * side * 4.2, z = f.z + az * d - ax * side * 4.2
+              if (!standsFree(x, z) || !standsFree(x + ax * 1.5, z + az * 1.5) || !standsFree(x - ax * 1.5, z - az * 1.5)) continue
+              placeModel(furniture, marketStall(seed + i * 7 + side), x, 0.15, z, h)
+            }
+          }
+          continue
+        }
+        if (!standsFree(f.x, f.z)) continue
+        const model = parisStreetModel(f.kind, seed)
+        if (model) placeModel(furniture, model, f.x, 0.15, f.z, this.streetBearing(f.x, f.z))
+        continue
+      }
       if (kerbOnly.has(f.kind) && skippedIf(pointKerb.whyNoFurniture(f.x, f.z), f.x, f.z, `osm ${f.kind}`)) continue
       if (f.kind === 'billboard') {
         if (boards.some((q) => Math.hypot(q.x - f.x, q.z - f.z) < 16)) continue
@@ -4537,13 +4573,7 @@ export class City {
          * block. Slid along the street until it is clear of both, else not drawn — an entrance with no room for a
          * headhouse is one built into the building, which the building already is.
          */
-        metroRings ??= (() => {
-          const rs: { x: number; z: number }[][] = []
-          for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
-            for (const b of this.buildingsIn.get(key(ktx + dx, ktz + dz)) ?? []) if ((b.minHeight ?? 0) < 3) rs.push(unpackPoints(b.ring))
-          }
-          return rs
-        })()
+        blockRings()
         const inBlock = (cx: number, cz: number): boolean => [{ x: cx, z: cz }, ...corners(cx, cz)].some((q) => metroRings!.some((r) => insideRing(r, q.x, q.z)))
         // OSM's node itself inside a building: the entrance is IN it (Chinatown–Rose Pak's headhouse is its own building)
         if (metroRings.some((r) => insideRing(r, f.x, f.z)) && skippedIf('building', f.x, f.z, 'metro entrance')) continue

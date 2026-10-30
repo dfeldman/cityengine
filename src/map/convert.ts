@@ -355,7 +355,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
   }
   for (const f of t.furniture) {
     const base = FURNITURE_TYPE[f.kind] ?? f.kind
-    item(f.x, f.z, -1, f.kind === 'fountain' && f.wallace ? 'fountain.wallace' : base, 0)
+    item(f.x, f.z, -1, f.kind === 'fountain' && f.wallace ? 'fountain.wallace' : f.kind === 'busstop' && f.shelter ? 'busstop.shelter' : base, 0)
   }
   const items: Items | undefined = data.length ? { data, ...(anyFlag ? { flags } : {}) } : undefined
 

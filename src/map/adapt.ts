@@ -185,6 +185,7 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
       }
       const f: PackedFurniture = type === 'fountain.wallace'
         ? { x, z, kind: 'fountain', wallace: true }
+        : type === 'busstop.shelter' ? { x, z, kind: 'busstop', shelter: true }
         : { x, z, kind: (FURNITURE_KIND.get(type) ?? type) as PackedFurniture['kind'] }
       if (d[i + 2] > 0) f.y = H(d[i + 2])
       t.furniture.push(f)

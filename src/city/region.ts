@@ -125,7 +125,7 @@ export interface Region {
    * Streets whose pavements are brick rather than concrete, by name (San Francisco: Market Street's red brick,
    * Embarcadero to Octavia), and the brick's colour.
    */
-  brickStreets?: { names: string[]; colour: [number, number, number] }
+  brickStreets?: { names: string[]; colour: [number, number, number]; share?: number }
   /**
    * Streets hung with strings of lanterns from wall to wall, between two points (render/city.ts): San Francisco's
    * Grant Avenue through Chinatown, red paper lanterns on wires every few metres (2026-10-04).
@@ -208,6 +208,8 @@ export interface Region {
     bikeParking?: boolean
     /** two-wheeler parking at the kerb (PackedFurniture `motoparking`), a row of scooters (render/models.ts motoParking) */
     motoParking?: boolean
+    /** Paris's street furniture beyond the rest: litter hoops, glass bells, Sanisettes, statues, market rows, stands (render/paris/street.ts) */
+    parisStreet?: boolean
     /** the street fire alarm box (render/us-furniture.ts): San Francisco's gabled Gamewell head, New York's ERS post */
     callBox?: 'sf' | 'nyc'
     /** the share of street junctions (three streets or more) that get a box where OSM has mapped none near: 0–1 */

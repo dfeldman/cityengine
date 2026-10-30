@@ -101,7 +101,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       the highest of its ends, and on a broad sloping place those maxima cascade into one plateau at the top. The same
       cascade is a likely cause of "the ways are out of sync with the ground" across Paris (wide boulevards, big places).
 
-- [ ] **Park railings and walls** (48.848863, 2.338636, the Luxembourg's Porte Gay-Lussac): owner, "parks are often surrounded
+- [x] **Park railings and walls** (48.848863, 2.338636, the Luxembourg's Porte Gay-Lussac): owner, "parks are often surrounded
       by tall fences or even walls … probably because they are palace grounds that close". Tall black iron railings with
       gilded spear tips on a stone plinth, gates at the entrances. OSM `barrier=fence|wall` round the parks, or the park
       outline itself where a gate (`barrier=gate`) says it is closed; the bake keeps `barrier` ways (retaining walls,

@@ -48,6 +48,7 @@ function handTreesOf(id: string, toLocal: (lat: number, lon: number) => { x: num
 }
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
+import { PARIS_STANDS } from '../src/city/paris/stands.ts'
 import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
 import { waterLookup } from '../src/render/watermask.ts'
 import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, handTrees, type Planting, type PlantReport } from '../src/city/plantings.ts'
@@ -143,6 +144,21 @@ function landmarkSpots(region: string): { lat: number; lon: number; r: number }[
     }
   }
   return out
+}
+
+/** The kinds only Paris's street draws (Region pointFurniture.parisStreet). */
+function parisStreetKind(t: Record<string, string>): PackedFurniture['kind'] | null {
+  if (t.indoor === 'yes') return null
+  if (t.amenity === 'waste_basket') return 'litter'
+  if (t.amenity === 'recycling') return 'recycling'
+  // (the Sanisette: JCDecaux's, or a public one standing free; a café's or a park building's are not one)
+  if (t.amenity === 'toilets') return t.building === undefined && (t.operator === 'JCDecaux' || t.access === 'yes') ? 'sanisette' : null
+  if (t.amenity === 'marketplace') return t.covered !== 'yes' && t.building === undefined ? 'market' : null
+  if (t.tourism !== 'artwork' && t.historic !== 'memorial') return null
+  // (a figure on a wall, or on some floor of a building, is not a figure on a plinth)
+  if (t.level !== undefined || /wall|building|facade/.test(`${t.support ?? ''} ${t.location ?? ''}`)) return null
+  const what = t.artwork_type ?? t.memorial ?? ''
+  return what === 'bust' ? 'bust' : what === 'statue' ? 'statue' : what === 'sculpture' ? 'sculpture' : null
 }
 
 /** The OSM ways a region's landmark manifests claim (public/landmarks/<region>/*.json and <region>.json), packed ids. */
@@ -1471,6 +1487,7 @@ async function bake(spec: CitySpec): Promise<void> {
 
   // ---- the railways trains run on
   const rails: PackedRail[] = []
+  const sunkRails: PackedRail[] = []
   for (const w of railways) {
     if (!w.geometry || w.geometry.length < 2) continue
     // A tunnel is a railway you cannot see, and a train on one drives straight through the buildings above
@@ -1483,15 +1500,16 @@ async function bake(spec: CitySpec): Promise<void> {
      * say otherwise. The RER C along the Quai André-Citroën is mapped so (level=-1, cutting=yes, no layer), and drawn at
      * the surface it ran at grade across the port roads — when, as the owner says (2026-10-30), "Paris has essentially
      * no at-grade rail crossings, so when one appears … it is because the levels are coded incorrectly in OSM".
+     * Set aside until the ground is known: where the ground really has the cutting, the track lies in it (below).
      */
-    if (!(parseInt(w.tags.layer ?? '', 10) >= 0) && (parseFloat(w.tags.level ?? '') < 0 || w.tags.cutting === 'yes')) continue
+    const sunk = !(parseInt(w.tags.layer ?? '', 10) >= 0) && (parseFloat(w.tags.level ?? '') < 0 || w.tags.cutting === 'yes')
     const pts = w.geometry.map((g) => proj.toLocal(g))
     let len = 0
     for (let k = 1; k < w.geometry.length; k++) len += haversine(w.geometry[k - 1], w.geometry[k])
     if (len < 30) continue
     const r = w.tags.railway
     const layer = parseInt(w.tags.layer ?? '', 10)
-    rails.push({
+    ;(sunk ? sunkRails : rails).push({
       id: w.id, points: packPoints(pts),
       kind: r === 'tram' || r === 'light_rail' ? 'tram' : r === 'subway' ? 'subway' : 'rail',
       ...(r === 'tram' && w.tags.electrified === 'no' ? { cable: true as const } : {}),
@@ -2818,6 +2836,29 @@ async function bake(spec: CitySpec): Promise<void> {
    * anywhere and put the entire L 24 m up. The ground under it is taken as the highest within 40 m along the
    * track, so the deck does not dip into the river bed where it crosses the river, then smoothed.
    */
+  /*
+   * A track OSM calls sunk lies in its cutting where the ground has one: IGN's lidar does, 5.5 m under the street bridges
+   * over a main line (the median; 14 m at the Batignolles), and the track drapes down into it. Where the ground shows
+   * none (the RER C under the Quai André-Citroën, roofed over: the lidar reads the roof) it stays undrawn.
+   */
+  {
+    let lying = 0
+    for (const r of sunkRails) {
+      const ps = unpackPoints(r.points)
+      const depths: number[] = []
+      for (let i = 1; i < ps.length; i++) {
+        const dx = ps[i].x - ps[i - 1].x, dz = ps[i].z - ps[i - 1].z, len = Math.hypot(dx, dz)
+        for (let d = 15; d < len; d += 30) {
+          const x = ps[i - 1].x + (dx / len) * d, z = ps[i - 1].z + (dz / len) * d
+          const side = (s: number): number => Math.max(...[25, 40, 60, 80].map((o) => groundFine(x + (s * dz / len) * o, z - (s * dx / len) * o)))
+          depths.push(Math.min(side(1), side(-1)) - groundFine(x, z))
+        }
+      }
+      depths.sort((a, b) => a - b)
+      if (depths.length && depths[depths.length >> 1] >= 3) { rails.push(r); lying++ }
+    }
+    if (sunkRails.length) console.log(`  ${lying} of ${sunkRails.length} sunk railways lie in a cutting the ground has`)
+  }
   let railDecks = 0
   for (const r of rails) {
     if (!r.bridge) continue
@@ -3023,6 +3064,7 @@ async function bake(spec: CitySpec): Promise<void> {
       console.warn(`  furniture: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return { nodes: [] as { lat: number; lon: number; tags: Record<string, string> }[] }
     })
+    const parisStreet = streetRegion.pointFurniture.parisStreet === true
     for (const n of f.nodes) {
       const t = n.tags
       const kind: PackedFurniture['kind'] | null = t.railway === 'subway_entrance' ? 'metro'
@@ -3055,7 +3097,8 @@ async function bake(spec: CitySpec): Promise<void> {
         // the street fire alarm box (render/us-furniture.ts); one inside a building is a pull station on a wall
         : t.emergency === 'fire_alarm_box' && t.indoor !== 'yes' ? 'callbox'
         // a street clock on a post (owner, 2026-10-04: the sidewalk clock by Union Square); a wall clock needs its wall
-        : t.amenity === 'clock' && /^(pole|ground|pedestal)$/.test(t.support ?? '') ? 'clock' : null
+        : t.amenity === 'clock' && /^(pole|ground|pedestal)$/.test(t.support ?? '') ? 'clock'
+        : parisStreet ? parisStreetKind(t) : null
       if (!kind) continue
       const p = proj.toLocal(n)
       const wallace = kind === 'fountain' && /wallace/i.test(`${t.name ?? ''} ${t.brand ?? ''} ${t.model ?? ''} ${t['fountain'] ?? ''} ${t.description ?? ''}`)
@@ -3064,7 +3107,29 @@ async function bake(spec: CitySpec): Promise<void> {
       furniture.push({ x: Math.round(p.x * 10) / 10, z: Math.round(p.z * 10) / 10, kind, ...(wallace ? { wallace: true as const } : {}),
         ...(shelter ? { shelter: true as const } : {}) })
     }
+    /*
+     * …and what stands where the visitors are, which OSM does not map; no statue on a modelled landmark's ground, which draws
+     * its own (a palace's court and a park's model carry theirs), and none in a claimed way's ring.
+     */
+    if (parisStreet) {
+      for (const s of PARIS_STANDS) {
+        const p = proj.toLocal(s)
+        furniture.push({ x: Math.round(p.x * 10) / 10, z: Math.round(p.z * 10) / 10, kind: s.kind })
+      }
+      const spots = landmarkSpots(spec.region ?? spec.id).map((s) => ({ ...proj.toLocal({ lat: s.lat, lon: s.lon }), r: s.r }))
+      const claimed = landmarkClaims(spec.region ?? spec.id)
+      const rings = ways.filter((w) => claimed.has(w.id) && w.geometry && w.geometry.length >= 4).map((w) => w.geometry!.slice(0, -1).map((g) => proj.toLocal(g)))
+      const figures = new Set(['statue', 'bust', 'sculpture'])
+      // (and a roundabout's island has its monument: render/paris/roundabout-monuments.ts)
+      const isles = roundabouts.map((q) => ({ ...proj.toLocal({ lat: q.lat, lon: q.lon }), r: q.r }))
+      const clear = furniture.filter((x) => !figures.has(x.kind) || !(spots.some((s) => Math.hypot(s.x - x.x, s.z - x.z) < s.r + 2)
+        || isles.some((s) => Math.hypot(s.x - x.x, s.z - x.z) < s.r) || rings.some((r) => pointInRing(r, x.x, x.z))))
+      console.log(`  ${furniture.length - clear.length} statues on modelled ground left to the models`)
+      furniture.length = 0
+      for (const x of clear) furniture.push(x)
+    }
     const count = (k: string): number => furniture.filter((x) => x.kind === k).length
+    if (parisStreet) console.log(`  paris street: ${count('litter')} litter hoops, ${count('recycling')} glass bells, ${count('sanisette')} sanisettes, ${count('statue')} statues, ${count('bust')} busts, ${count('sculpture')} sculptures, ${count('market')} markets`)
     console.log(`  furniture: ${count('metro')} métro entrances, ${count('fountain')} fountains `
       + `(${furniture.filter((x) => x.wallace).length} Wallace), ${count('column')} columns, ${count('kiosk')} kiosks, `
       + `${count('bikeshare')} bike docks, ${count('signals')} signal nodes, ${count('tramstop')} tram stops, `
@@ -3145,7 +3210,8 @@ async function bake(spec: CitySpec): Promise<void> {
    * (city/carriageways.ts `toPavement`), and dropped when there is none to move to.
    */
   {
-    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain', 'billboard'])
+    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain', 'billboard',
+      'litter', 'recycling', 'sanisette', 'crepes', 'glaces', 'souvenirs'])
     const lanes = new Carriageways(kept.filter((e) => !e.bridge && !e.tunnel && !e.bore))
     let moved = 0, dropped = 0
     const keepF = furniture.filter((f) => {

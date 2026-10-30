@@ -259,6 +259,10 @@ export interface PackedFurniture {
     | 'bikeparking'
     // two-wheeler parking (amenity=motorcycle_parking): a row of scooters at the kerb (pointFurniture.motoParking)
     | 'motoparking'
+    // Paris's street (pointFurniture.parisStreet): the litter hoop, the glass bell, the Sanisette; a statue, a bust or a
+    // sculpture on its plinth (tourism=artwork, historic=memorial); a street market's row of stalls (amenity=marketplace);
+    // the stands OSM does not map (city/paris/stands.ts)
+    | 'litter' | 'recycling' | 'sanisette' | 'statue' | 'bust' | 'sculpture' | 'market' | 'crepes' | 'glaces' | 'souvenirs' | 'painter'
   /** a Wallace fountain, as opposed to any drinking tap */
   wallace?: true
   /** a bus stop with a shelter (OSM shelter=yes): the shelter drawn, not only the post */

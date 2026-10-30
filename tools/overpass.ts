@@ -216,6 +216,12 @@ export function furnitureQuery(b: Bbox): string {
   node["amenity"="clock"](${box});
   node["amenity"="bicycle_parking"](${box});
   node["amenity"="motorcycle_parking"](${box});
+  node["amenity"="waste_basket"](${box});
+  node["amenity"="recycling"]["recycling_type"="container"](${box});
+  node["amenity"="toilets"](${box});
+  node["amenity"="marketplace"](${box});
+  node["tourism"="artwork"]["artwork_type"~"^(statue|bust|sculpture)$"](${box});
+  node["historic"="memorial"]["memorial"~"^(statue|bust|sculpture)$"](${box});
 );
 out qt;`
 }
