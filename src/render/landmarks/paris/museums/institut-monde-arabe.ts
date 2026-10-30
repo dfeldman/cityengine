@@ -25,6 +25,8 @@ const SOUTH: [number, number][] = [[-26, -17.45], [38.7, -17.3], [38.65, -9.6], 
 const NORTH: [number, number][] = [[-28.6, -1.4], [10.3, 0], [10.3, 5.2], [25.4, 5.7], [26, -9.4], [38.65, -9.6], [36.7, 17.6], [33, 17.5],
   [23.1, 17.3], [15.7, 17.1], [9.4, 16.4], [2.9, 15.2], [-1.4, 14.4], [-8.6, 12.3], [-10.9, 11.2], [-14.6, 9.1], [-16.8, 7.3]]
 
+const GLASS = surfaceTag('glass')
+
 export function institutMondeArabe(out: MeshBuilder, fit: Fit): void {
   const sx = Math.min(Math.max(fit.hx, 32), 46) / REF.hx
   const sz = Math.min(Math.max(fit.hz, 14), 21) / REF.hz
@@ -99,6 +101,11 @@ export function institutMondeArabe(out: MeshBuilder, fit: Fit): void {
     beam(out, [x, 0, wz1], [x, H, wz1], 0.07, metal)
   }
   for (let z = wz0; z <= wz1 + 0.01; z += 2.4) beam(out, [wx0, 0, z], [wx0, H, z], 0.07, metal)
+  // …and its GLASS (owner, 2026-10-30: "the glass around the spiral also doesn't appear"): the two outer faces glazed,
+  // just inside the bars; the drum of books still rises through the roof above it
+  const pane: Rgb = [0.5, 0.6, 0.66]
+  out.quad([[wx0, 0.4, wz1 - 0.05], [wx1, 0.4, wz1 - 0.05], [wx1, H, wz1 - 0.05], [wx0, H, wz1 - 0.05]], [0, 0, 1], [[0, 0], [1, 0], [1, 1], [0, 1]], pane, GLASS)
+  out.quad([[wx0 + 0.05, 0.4, wz0], [wx0 + 0.05, 0.4, wz1], [wx0 + 0.05, H, wz1], [wx0 + 0.05, H, wz0]], [-1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], pane, GLASS)
   out.quad([[wx0, H, wz0], [wx1, H, wz0], [wx1, H, wz1], [wx0, H, wz1]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], roofC, FIXED)
   const tx = (wx0 + wx1) / 2
   const tz = (wz0 + wz1) / 2

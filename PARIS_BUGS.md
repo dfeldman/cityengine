@@ -82,7 +82,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [ ] **The Seine's industrial banks** (around Javel/Grenelle): "the river side is all industrial buildings … if OSM has
       these and we're not rendering them, that is not ideal". Check the package against an osmium count of `building=*`
       on the left bank there; find the filter if short.
-- [x] **The Institut du monde arabe's parvis kiosks** — four 14–17 m² `building=yes historic=yes` cubes; every building under 30 m² is now a plain flat box with no shops (cubes, kiosks, vents, sheds). The spiral's glass: still open. Original: (48.849176, 2.356543): "the plaza has little default buildings which are
+- [x] **The Institut du monde arabe's parvis kiosks** — four 14–17 m² `building=yes historic=yes` cubes; every building under 30 m² is now a plain flat box with no shops (cubes, kiosks, vents, sheds). The spiral's glass: the Tour des Livres' cage glazed on its two outer faces (landmark glass is reflective, so the drum shows above the roof, not through the panes). Original: (48.849176, 2.356543): "the plaza has little default buildings which are
       in fact plaza elements" (OSM building ways for the parvis's kiosks/vents, drawn as houses with chimneys); "the glass
       around the spiral also doesn't appear" (the Tour des Livres' glazed cage, museums/institut-monde-arabe.ts).
 - [ ] **Saint-Lazare garden** (48.875637, 2.353635): a palm garden behind the médiathèque (Françoise-Sagan); "we have that
