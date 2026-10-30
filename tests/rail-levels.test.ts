@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bridgesOverStreets, straightDeck } from '../tools/rail-levels.ts'
+import { bridgesOverStreets, joinTracks, straightDeck } from '../tools/rail-levels.ts'
 import type { PackedRail } from '../src/city/package.ts'
 
 // an embankment 8 m high, with a street through it at x 0: the bare earth's gap
@@ -33,6 +33,24 @@ describe('which is on top at a crossing (owner, 2026-10-30)', () => {
   it('does not touch a footpath, a tunnel or a road on its own bridge', () => {
     const others = [{ ...street, foot: true }, { ...street, tunnel: true }, { ...street, bridge: true }]
     expect(bridgesOverStreets([track()], others, bank, new Set(), () => n++).spans).toBe(0)
+  })
+  it('judges a crossing with the shoulder on the next way, a track being many ways', () => {
+    const ways: PackedRail[] = [{ id: 1, points: [-200, 0, -8, 0], kind: 'rail' }, { id: 2, points: [-8, 0, 200, 0], kind: 'rail' }]
+    const got = bridgesOverStreets(ways, [street], bank, new Set(), () => n++)
+    expect(got.spans).toBe(1)
+    expect(joinTracks(ways).length).toBe(1)
+  })
+  it('stops a chain at a junction', () => {
+    const ways: PackedRail[] = [{ id: 1, points: [-100, 0, 0, 0], kind: 'rail' }, { id: 2, points: [0, 0, 100, 0], kind: 'rail' }, { id: 3, points: [0, 0, 100, 50], kind: 'rail' }]
+    expect(joinTracks(ways).length).toBe(3)
+  })
+  it('makes a street a bridge where the track lies in a cutting under it', () => {
+    const cutting = (x: number): number => (Math.abs(x) < 6 ? 8 : 0)
+    const road = { points: [0, -50, 0, 50], heights: [8, 8], kind: 'residential' } as { points: number[]; heights: number[]; kind: string; bridge?: boolean }
+    const got = bridgesOverStreets([track()], [road], cutting, new Set(), () => n++)
+    expect(got.spans).toBe(0)
+    expect(got.over).toBe(1)
+    expect(road.bridge).toBe(true)
   })
   it('runs a short tagged deck straight between the ground at its ends', () => {
     const r: PackedRail = { id: 2, points: [-30, 0, 0, 0, 30, 0], kind: 'rail', bridge: true }

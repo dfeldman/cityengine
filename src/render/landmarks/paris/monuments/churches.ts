@@ -4,10 +4,10 @@ import { beam, block, classicalColumn, hex, roof, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import { archOn, balustrade, fitted, pedimentOn, rectOn, type Pal } from '../palaces/common.ts'
 import { apseWall, domeOf, drumArches, FIXED, quarter } from './common.ts'
+import { faceFrame, flyingButtress, gothicBalustrade, gothicPortal, pinnacle as stackedPinnacle, roseWindow, traceryWindow } from './gothic.ts'
 
 /*
- * The churches a rider passes whose silhouette OSM does not give the city: Saint-Eustache (its outline is tagged a
- * `building:part` with a 10 m height, so the bake keeps a 10 m lump and drops its parts), La Trinité, Saint-Roch and
+ * The churches a rider passes whose silhouette OSM does not give the city: La Trinité, Saint-Roch and
  * Saint-Germain-l'Auxerrois with its belfry (flat blocks at one height). Each in its own design metres off OSM's
  * footprint, measured in its frame with osmium (2026-10-29), and fitted.
  */
@@ -52,105 +52,6 @@ export function roseOn(out: MeshBuilder, f: '-z' | '+z' | '-x' | '+x', plane: nu
 export function pinnacle(out: MeshBuilder, x: number, z: number, y0: number, h: number, w: number, c: Rgb): void {
   block(out, x - w / 2, x + w / 2, z - w / 2, z + w / 2, y0, y0 + h * 0.55, c)
   prism(out, x, z, y0 + h * 0.55, y0 + h, w * 0.7, 4, c, FIXED, 0.03)
-}
-
-// ---------------------------------------------------------------------------------------------------------------
-/**
- * SAINT-EUSTACHE (1532–1632; the west front Mansart de Jouy's and Moreau-Desproux's, 1754–88), the great church of
- * Les Halles: a Gothic body in Renaissance dress. What a rider sees, from the Halles garden and the Rue Rambuteau:
- *
- * - the immense BODY: the nave and choir under one high slate roof (OSM's part 273063682: 40 m), the double aisles
- *   and the ring of chapels, and the FLYING BUTTRESSES over them, bay after bay (OSM maps them as the thin 33 m
- *   cross-walls 273063683…690);
- * - the TRANSEPT's ends, each a tall gable with its rose window and pinnacles, on the Rue Rambuteau and the Rue du Jour;
- * - the APSE at the east end, the Lady Chapel behind it under its own roof;
- * - the classical WEST FRONT: two storeys of Doric and Ionic over the porch, a pediment, its north tower finished to
- *   38 m and its south tower a stump (273063679 and 273063678).
- *
- * OSM way 53762963 in this frame: −z west (bearing 277.9), +x south.
- */
-const EX = 24.5
-const EZ = 54.3
-export function saintEustache(out: MeshBuilder, fit: Fit): void {
-  fitted(out, fit, EX, EZ, (q) => eustache(q))
-}
-
-function eustache(out: MeshBuilder): void {
-  const p = pal('#d3c9b4')
-  const nx = 7.2
-  const cx0 = 0.5
-  // the chapels round the outside, the outer and inner aisles
-  block(out, -24.5, 24.5, -40, 25, 0, 12.5, p.stone)
-  roof(out, -24.8, 24.8, -40.2, 25.2, 12.5, 2.5, 4, 1, p.slate)
-  block(out, -16.5, 17.5, -40, 25, 12.5, 20.5, p.stone)
-  roof(out, -16.8, 17.8, -40.2, 25.2, 20.5, 3.0, 4, 1, p.slate)
-  // the nave and choir, the transept, their roofs
-  block(out, cx0 - nx, cx0 + nx, -45.3, 25.4, 20.5, 30, p.stone)
-  roof(out, cx0 - nx - 0.4, cx0 + nx + 0.4, -45.5, 25.4, 30, 10, nx + 0.4, 0.01, p.slate)
-  block(out, -20.4, 22.7, -11.8, 2.8, 0, 30, p.stone)
-  roof(out, -20.6, 22.9, -12.0, 3.0, 30, 10, 0.01, 7.5, p.slate)
-  // the apse: the nave's end turned round in a half-circle, and the ambulatory and chapels round it
-  apseWall(out, cx0, 25.4, nx, 20.5, 30, 40, p.stone, p.slate, p.glass)
-  apseWall(out, cx0, 25.0, 17.0, 12.5, 20.5, 23.5, p.stone, p.slate, p.glass)
-  apseWall(out, cx0, 25.0, 24.5, 0, 12.5, 15.0, p.stone, p.slate, p.glass)
-  // the Lady Chapel behind the apse
-  block(out, -5.0, 8.8, 36, 47.6, 0, 18, p.stone)
-  roof(out, -5.2, 9.0, 35.8, 47.8, 18, 7, 6.9, 5, p.slate)
-  // the clerestory and the aisles' tall windows, every bay
-  for (let z = -38; z < 24; z += 6.2) {
-    if (z > -13 && z < 4) continue
-    for (const s of [-1, 1]) {
-      const f = s < 0 ? '-x' : '+x'
-      pointedOn(out, f, cx0 + s * nx, z, 21.5, 2.6, 7.6, p.glass)
-      pointedOn(out, f, s < 0 ? -24.5 : 24.5, z, 3.0, 2.6, 7.8, p.glass)
-      // the flying buttress: the outer pier, its pinnacle, and the arc over the aisles to the nave wall
-      const xo = s < 0 ? -18.5 : 19.5
-      block(out, xo - 1.0, xo + 1.0, z + 2.6, z + 3.8, 12.5, 27.5, p.stone)
-      pinnacle(out, xo, z + 3.2, 27.5, 4.5, 1.1, p.trim)
-      beam(out, [xo, 25.0, z + 3.2], [cx0 + s * (nx + 0.2), 28.5, z + 3.2], 0.45, p.stone)
-      beam(out, [xo, 20.5, z + 3.2], [cx0 + s * (nx + 0.2), 24.0, z + 3.2], 0.4, p.stone)
-    }
-  }
-  // the transept's ends: the gable with its rose, the great window under it, pinnacles at the corners
-  for (const s of [-1, 1]) {
-    const f = s < 0 ? '-x' : '+x'
-    const plane = s < 0 ? -20.4 : 22.7
-    const zm = -4.5
-    const P = (z: number, y: number): [number, number, number] => [plane + s * 0.02, y, z]
-    out.quad([P(-11.8, 30), P(2.8, 30), P(zm, 40), P(zm, 40)], [s, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], p.stone, FIXED)
-    pointedOn(out, f, plane, zm, 4.0, 3.4, 10.0, p.dark)
-    pointedOn(out, f, plane, zm, 15.0, 7.4, 13.5, p.glass)
-    roseOn(out, f, plane, zm, 33.6, 2.4, p.glass, p.trim)
-    for (const z of [-11.8, 2.8]) pinnacle(out, plane, z, 30, 9, 1.6, p.trim)
-  }
-  // the crossing's slender lantern
-  prism(out, cx0, -4.5, 39, 44, 1.4, 8, p.lead, FIXED)
-  prism(out, cx0, -4.5, 44, 52, 1.4, 8, p.lead, FIXED, 0.05)
-
-  // the west front: the porch, two storeys of columns and the pediment, the two towers
-  const zf = -54.3
-  block(out, -6.5, 6.0, zf + 1.5, -40, 0, 30, p.stone)
-  for (const x of [-4.6, -1.6, 1.4, 4.4]) {
-    classicalColumn(out, x - 0.25, zf + 0.9, 0.5, 13.5, 0.55, p.stone, { order: 'doric', tier: 'mid', heading: Math.PI })
-    classicalColumn(out, x - 0.25, zf + 0.9, 15.0, 25.5, 0.45, p.stone, { order: 'ionic', tier: 'mid', heading: Math.PI })
-  }
-  block(out, -6.8, 6.3, zf, zf + 1.6, 13.5, 15.0, p.trim)
-  block(out, -6.8, 6.3, zf, zf + 1.6, 25.5, 27.0, p.trim)
-  pedimentOn(out, '-z', zf, -6.8, 6.3, 27.0, 4.0, 1.4, p.trim)
-  archOn(out, '-z', zf + 1.5, -0.25, 0, 3.6, 9.0, p.dark)
-  archOn(out, '-z', zf + 1.5, -0.25, 16.0, 2.4, 6.5, p.glass)
-  // the north tower, finished to 38 m with its belfry storey; the south one a stump at 24
-  block(out, -19.5, -6.5, -52.2, -39.9, 0, 30, p.stone)
-  block(out, -18.3, -7.7, -51.0, -41.1, 30, 36.5, p.stone)
-  for (const f of ['-z', '-x'] as const) archOn(out, f, f === '-z' ? -51.0 : -18.3, f === '-z' ? -13.0 : -46.0, 30.6, 2.6, 5.0, p.dark)
-  block(out, -18.8, -7.2, -51.5, -40.6, 36.5, 38.0, p.trim)
-  balustrade(out, -18.6, -7.4, -51.3, -40.8, 38.0, p, { h: 0.9 })
-  block(out, 6.0, 19.5, -53.5, -40.6, 0, 24, p.stone)
-  block(out, 5.7, 19.8, -53.8, -40.3, 23.2, 24.2, p.trim)
-  for (const [x, f] of [[-13, '-z'], [12.75, '-z']] as const) {
-    archOn(out, f, x < 0 ? -52.2 : -53.5, x, 2.5, 2.8, 8.0, p.dark)
-    archOn(out, f, x < 0 ? -52.2 : -53.5, x, 14.0, 2.4, 6.5, p.glass)
-  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -302,11 +203,21 @@ function auxerrois(out: MeshBuilder): void {
   roof(out, -33, 30, -20.6, 20.6, 11, 2.5, 1, 4, p.slate)
   block(out, -33, 30, -7.5, 7.5, 11, 21, p.stone)
   roof(out, -33.2, 30, -7.9, 7.9, 21, 9, 0.01, 7.9, p.slate)
-  for (let x = -28; x < 28; x += 5.6) {
-    for (const s of [-1, 1]) {
-      pointedOn(out, s < 0 ? '-z' : '+z', s * 7.5, x, 12.5, 2.2, 7.0, p.glass)
-      pointedOn(out, s < 0 ? '-z' : '+z', s * 20.3, x, 2.5, 2.2, 7.0, p.glass)
+  // the windows, one to a bay, and at each division a flyer from a pier on the aisles to the nave's wall (gothic.ts)
+  for (const [sd, f] of [[-1, '-z'], [1, '+z']] as const) {
+    const nave = faceFrame(out, f, sd * 7.5)
+    const aisle = faceFrame(out, f, sd * 20.3)
+    for (let x = -28; x < 28; x += 5.6) {
+      traceryWindow(nave, x, 12.8, 3, 7.2, { stone: p.stone, glass: p.glass, head: 'pointed', lights: 2, far: true })
+      traceryWindow(aisle, x, 2.2, 3.4, 7.6, { stone: p.trim, glass: p.glass, head: 'pointed', lights: 3 })
+      const xd = x + 2.8
+      if (xd > 27) continue
+      const py = sd * 13.5
+      block(out, xd - 0.5, xd + 0.5, py - 0.6, py + 0.6, 11, 17.5, p.stone)
+      stackedPinnacle(out, xd, py, 17.5, 5, 0.75, p.trim)
+      flyingButtress(out, [xd, 17.2, py - sd * 0.6], [xd, 20.4, sd * 7.55], 0.55, shade(p.stone, 0.97), { drop: 2.8 })
     }
+    gothicBalustrade(aisle, -33, 30, 11, 0.9, { stone: p.trim, d: 0.3, pitch: 1.2 })
   }
   // the apse at +x, turned so its round end faces east
   {
@@ -328,15 +239,17 @@ function auxerrois(out: MeshBuilder): void {
   // the front: the gable with its rose, and the porch across it
   const xf = -33
   out.quad([[xf - 0.02, 21, -7.5], [xf - 0.02, 21, 7.5], [xf - 0.02, 30, 0], [xf - 0.02, 30, 0]], [-1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], p.stone, FIXED)
-  roseOn(out, '-x', xf, 0, 16.5, 3.2, p.glass, p.trim)
+  roseWindow(faceFrame(out, '-x', xf), 0, 16.2, 3.2, { stone: p.stone, glass: p.glass, spokes: 10, d: 0.25 })
   block(out, -39.15, xf, -13, 13, 0, 9.5, p.stone)
+  block(out, -39.1, xf, -12.9, 12.9, 9.5, 9.56, p.lead)
+  const porch = faceFrame(out, '-x', -39.15)
   for (let i = 0; i < 5; i++) {
     const z = -10.4 + i * 5.2
-    pointedOn(out, '-x', -39.15, z, 0, 3.6, 7.8, p.dark)
-    pinnacle(out, -39.2, z - 2.6, 9.5, 3.5, 0.9, p.trim)
+    gothicPortal(porch, z, 0, 4.2, 7.9, { stone: p.stone, dark: p.dark, door: [0.22, 0.16, 0.12], depth: 0.75, orders: 2, head: 'pointed' })
+    stackedPinnacle(out, -39.3, z - 2.6, 9.5, 4.5, 0.8, p.trim)
   }
-  pinnacle(out, -39.2, 13, 9.5, 3.5, 0.9, p.trim)
-  balustrade(out, -39.15, xf, -13, 13, 9.5, p, { sides: ['-x'], h: 0.9 })
+  stackedPinnacle(out, -39.3, 13, 9.5, 4.5, 0.8, p.trim)
+  gothicBalustrade(porch, -13, 13, 9.5, 0.95, { stone: p.trim, d: 0.3, pitch: 0.8 })
   // the belfry on the place: four storeys of Gothic openings, the corner pinnacles, the spire
   const bx = -34
   const bz = 29

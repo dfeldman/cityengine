@@ -13,6 +13,9 @@ export function parisFlora(): Flora {
   return {
     street: [['sf_plane', 6], ['sf_plane_pollard', 3], ['beech', 2], ['elm', 2], ['ash', 2], ['maple', 1]],
     park: [['oak', 4], ['beech', 3], ['sf_plane', 3], ['elm', 2], ['maple', 1], ['scots_pine', 1]],
+    // (a row a landmark asks to be planes: the Jardin des Plantes' allées. Otherwise the park pool, oaks and pines among it)
+    forms: { plane: [['sf_plane', 3], ['sf_plane_pollard', 1]] },
+    formModels: { plane: 2 },
     library: 'sftrees',
   }
 }

@@ -30,25 +30,7 @@ import { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { church } from '../church.ts'
 
-/**
- * Saint Anne of the Sunset Catholic Church, way/267102407 — active Catholic parish, `building=church`. No
- * photograph. ESCALATIONS.md/b4.ts both describe the plan as "textbook nave/aisle/apse/tower", 45 vertices, so
- * that description IS the reference: a full parish-church plan with side aisles, an apsidal chancel and one
- * corner tower — built plainly, no ornament invented beyond what "textbook Gothic/Romanesque parish church"
- * implies. `walls.material: 'brick'` is the ordinary choice for an early-20th-century Sunset District parish
- * church of this size; there is nothing in the tags or the plan that argues for stone instead.
- */
-export function saintAnneOfTheSunset(out: MeshBuilder, fit: Fit): void {
-  church(out, fit, {
-    nave: { bays: 5, storeys: 1, roof: 'gable', pitch: 'moderate' },
-    aisles: { roof: 'lean-to' },
-    transept: null,
-    chancel: { kind: 'apse' },
-    tower: { at: 'front-corner', stages: 3, plan: 'square', top: 'spire' },
-    front: { kind: 'gable', portal: 'triple', window: 'rose', steps: 3 },
-    walls: { material: 'brick', openings: 'lancet', buttresses: 'plain' },
-  })
-}
+// Saint Anne of the Sunset moved to its own model from photographs, sf/st-anne.ts (2026-10-27).
 
 // Saint Ignatius moved to its own model from photographs, sf/st-ignatius.ts (2026-10-05).
 
@@ -90,6 +72,5 @@ export function saintJosephsArtsSociety(out: MeshBuilder, fit: Fit): void {
 }
 
 export const CHURCHES_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  saintAnneOfTheSunset,
   saintJosephsArtsSociety,
 }

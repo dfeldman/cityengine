@@ -27,6 +27,7 @@ import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
 import { artOf, groundArtOf, planWall, rng, type Cell, type CornerShop, type FacadePlan, type Feature } from '../city/facade.ts'
 import { addRoofscape, buildRoof, buildRoofAroundCourts, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
+import type { TreeForm } from '../city/tree-forms.ts'
 import type { PlacedSign } from './landmarks/signage.ts'
 
 /** How many metres of wall one tile of the seamless wall page covers. */
@@ -92,7 +93,9 @@ export class MeshBuilder {
    */
   readonly grounds: { x: number; z: number }[][] = []
   /** `spacing`: trees at this pitch, past the area density (park-planting.ts `deckRow`) — a row along a path */
-  readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
+  // (`form`: one tree form and its height range for the row, in place of the deck's mix of oak, cypress, olive, laurel and queen
+  // palm: the Jardin des Plantes' allées are planes, and a queen palm in them would be a mistake)
+  readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number; form?: { form: TreeForm; h: [number, number] } }[] = []
   /**
    * Single plants from the plant library the landmark places itself, in its own frame, standing on the terrain
    * (or `dy` above it: a bed set to a road's grade rather than the raw slope) (render/plants.ts `addPlants`): Lombard Street's hydrangeas, bed by bed, where the city's lattice would scatter

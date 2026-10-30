@@ -7,6 +7,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { accorArena } from './accor-arena.ts'
+import { hallesGarden } from './halles-garden.ts'
 import { halleCarpentier } from './carpentier.ts'
 import { centQuatre } from './cent-quatre.ts'
 import { stadeCharlety } from './charlety.ts'
@@ -51,6 +52,7 @@ export const PARIS_VENUES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   tuileriesOctogone,
   ...TUILERIES_KIOSKS,
   naumachie,
+  hallesGarden,
   buttesSuspensionBridge,
   buttesSuicidesBridge,
   longchampGrandstand,

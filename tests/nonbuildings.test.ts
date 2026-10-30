@@ -42,6 +42,9 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Tour Saint-Jacques',
     'intersects | Opéra Bastille — the arch',
     'intersects | Tour Eiffel',
+    // (the check takes a turned rectangle north-up. Really turned, its 506 × 120 m between the allées touches six buildings at its
+    // west end, the Grandes Serres among them: the rectangle only clears scattered trees; the beds are OSM's and stand clear of them)
+    'intersects | Jardin des Plantes: the perspective',
     'intersects | Louvre Pyramid',
     'intersects | Colonnes de Buren',
     'intersects | Danton',
@@ -58,6 +61,29 @@ const KNOWN: Record<string, string[]> = {
     // beds flat on its own paving
     'intersects | Enclos Saint-Lazare: the palm garden',
     'coplanar | Enclos Saint-Lazare: the palm garden',
+    // wave 4 and the Halles (2026-10-30). Rectangles over neighbours the outlines clear, as above: the 4 Temps and the CNIT in the
+    // Défense's slab, the Charléty bowl in its grounds, the Quatre-Saisons in its own street front, Nelson-Mandela over the Halles
+    "intersects | CNIT",
+    "intersects | Dôme Imax",
+    "intersects | Fontaine des Quatre-Saisons",
+    "intersects | Fontaine du Palmier",
+    "intersects | Jardin Nelson-Mandela — the beds, hedges and pools",
+    "intersects | Les 4 Temps",
+    "intersects | Stade Sébastien-Charléty",
+    // and not fighting: Pasteur's stepped base counts each block's top with the underside of the next, Charléty's apron meets its
+    // track edge to edge a centimetre down, and Nelson-Mandela's pools are not over its beds (the check takes bounding boxes)
+    "coplanar | Jardin Nelson-Mandela — the beds, hedges and pools",
+    "coplanar | Monument à Pasteur",
+    "coplanar | Stade Sébastien-Charléty",
+    // the lidar's relief, kept since 2026-10-30: La Défense's slab and its stairs are real steps under these, and the Pont-Neuf's
+    // terre-plein and the parvis's edge fall to the quays. To judge in the city after each bake, not by this number
+    "ground | CNIT",
+    "ground | Charlemagne et ses Leudes",
+    "ground | Dôme Imax",
+    "ground | Fontaine Stravinsky",
+    "ground | Henri IV",
+    "ground | Tour First",
+    "height | Dôme Imax",
     // #109 — the ground under it
     'height | Square Louis-XIII',
     // #110 — z-fighting candidates
@@ -307,6 +333,10 @@ const KNOWN: Record<string, string[]> = {
     "intersects | Pier 39 upper deck galleries and stairs, middle",
     "intersects | Pier 39 upper deck galleries and stairs, north",
     "intersects | Pier 39 upper deck galleries and stairs, south",
+    // Golden Gate Park, 2026-10-27, on the backlog (PARIS_BUGS.md): the Dahlia Dell's two entries, the de Young's hedge rows
+    'height | Dahlia Dell',
+    'height | Dahlia Dell',
+    'intersects | de Young hedge rows',
   ],
 }
 

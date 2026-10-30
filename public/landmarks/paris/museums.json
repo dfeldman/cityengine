@@ -992,5 +992,36 @@
     "front": 202,
     "height": 27,
     "note": "The military hospital's post-war block (shut 2016), on OSM relation 946121's box turned to its walls (osmium, 2026-10-30), its parts claimed with it. The dome is the church's own entry, Église du Val-de-Grâce, in monuments.json. Bands and slate top from one Commons photograph; the date from memory. The gatehouse on the boulevard in that photograph is not on OSM and not drawn."
+  },
+  {
+    "name": "Bourse de Commerce — Pinault Collection",
+    "procedural": "bourseCommerce",
+    "osm": [
+      "way/19856722",
+      "relation/20087916",
+      "way/1467306818",
+      "way/227149360",
+      "way/1467306819",
+      "way/1467306820",
+      "way/1467306821",
+      "way/1467306822",
+      "way/1467306823",
+      "way/1467306824",
+      "way/1467306825",
+      "way/1467306826",
+      "way/1467306827",
+      "way/1467306828",
+      "way/942543401"
+    ],
+    "lat": 48.862816,
+    "lon": 2.342832,
+    "rotateDeg": 111.5,
+    "size": [
+      70,
+      70
+    ],
+    "height": 36.3,
+    "sign": false,
+    "note": "museums/bourse-commerce.ts: the round rotunda (owner: \"we don't seem to have the art museum at all\"; it was a restyled block). Centred on the circle of OSM's ways turned so −z is the portico, bearing 291.5 (osmium, 2026-10-30). Plan and heights are OSM's parts: drum r 33.2, roof to 19.4 m, dome r 20.4 to 34.8, glass from 28.4, crown 36.3, portico columns 17.3. The rider sees a ring of giant pilasters and tall windows, the zinc roof, the green-grey iron and glass dome, the Rue de Viarmes portico and the Médicis Column at the south-east, with its iron cage. The bay count, the dome's colour (the owner's), the column's 31 m and its cage are not from OSM; the height and cage from memory."
   }
 ]

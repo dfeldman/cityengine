@@ -47,7 +47,7 @@ for await (const l of createInterface({ input: createReadStream(seq) })) {
 rmSync(dir, { recursive: true, force: true })
 
 interface Entry { name?: string; osm?: string | string[]; procedural?: string; restyle?: string }
-const FILES = ['stations', 'palaces', 'monuments', 'venues', 'museums', 'extras', 'civic']
+const FILES = ['stations', 'palaces', 'monuments', 'venues', 'museums', 'rivegauche', 'extras', 'civic']
 const files = new Map(FILES.map((f) => [f, JSON.parse(readFileSync(resolve(ROOT, `public/landmarks/paris/${f}.json`), 'utf8')) as Entry[]]))
 const top = JSON.parse(readFileSync(resolve(ROOT, 'public/landmarks/paris.json'), 'utf8')) as Entry[]
 const refsOf = (e: Entry): string[] => (e.osm === undefined ? [] : Array.isArray(e.osm) ? e.osm : [e.osm])

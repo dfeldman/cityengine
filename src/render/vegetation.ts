@@ -35,7 +35,7 @@ import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { Mesh as BMesh } from '@babylonjs/core/Meshes/mesh'
 import type { Terrain } from '../city/terrain.ts'
 import { plantHash, unpackPlantings, type Planting } from '../city/plantings.ts'
-import { deckPlantings } from '../city/park-planting.ts'
+import { deckPlantings, singleForm } from '../city/park-planting.ts'
 import type { TileLayer } from './city.ts'
 import { DEFAULT_FLORA, type Flora } from './flora.ts'
 import { palmModel, type PalmKind } from './palms.ts'
@@ -179,8 +179,8 @@ export class Vegetation {
    * a deck adds is `y` on each planting, which `seat()` uses instead of the terrain. Held for good rather
    * than streamed: a hand-modelled landmark does not come and go the way a tile does.
    */
-  addDeck(ring: { x: number; z: number }[], y: number, keepOff?: number, spacing?: number): void {
-    const ps = deckPlantings(ring, y, keepOff, undefined, spacing)
+  addDeck(ring: { x: number; z: number }[], y: number, keepOff?: number, spacing?: number, form?: { form: TreeForm; h: [number, number] }): void {
+    const ps = deckPlantings(ring, y, keepOff, form ? singleForm(form.form, form.h) : undefined, spacing)
     if (!ps.length) return
     const key = `deck:${this.decks++}`
     this.byTile.set(key, ps)

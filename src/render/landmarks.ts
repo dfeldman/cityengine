@@ -18,6 +18,7 @@
  * toward the camera along its true direction and scaled by the same factor — so its bearing and angular size
  * are exactly right from wherever the rider is, and it never slides along the horizon as they ride.
  */
+import type { TreeForm } from '../city/tree-forms.ts'
 import type { KitArgs } from './landmarks/paris/kit/recipes.ts'
 import { dropCoincidentFaces, subdivideLong } from './landmarks/coplanar.ts'
 /** time spent in `dropCoincidentFaces`, for probes (`window.__coplanarMs`) */
@@ -748,7 +749,7 @@ export class Landmarks {
    * got. render/plants.ts reads this list (via game.ts) to lattice-plant a skypark exactly where its deck
    * actually is — including any standing placement error, which this deliberately does not correct.
    */
-  readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
+  readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number; form?: { form: TreeForm; h: [number, number] } }[] = []
   /** the single plants procedural landmarks place (MeshBuilder.plants), in world metres */
   readonly plants: { x: number; z: number; species: string; h: number; spin: number; dy?: number; raw?: boolean }[] = []
 
@@ -1298,7 +1299,7 @@ export class Landmarks {
           x: cx + ox + (p.x * cosR + p.z * sinR) * scale,
           z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
         }))
-        this.decks.push({ ring, y: y + d.y * scale, keepOff: d.keepOff, trees: d.trees, shrubs: d.shrubs, spacing: d.spacing ? d.spacing * scale : undefined })
+        this.decks.push({ ring, y: y + d.y * scale, keepOff: d.keepOff, trees: d.trees, shrubs: d.shrubs, spacing: d.spacing ? d.spacing * scale : undefined, form: d.form })
       }
       for (const q of mb.plants) {
         this.plants.push({

@@ -235,6 +235,8 @@ Open:
 - [ ] **Flags (owner, 2026-10-30): "not a lot of french flags, but when they do use them, they mean it".** The Panthéon has its tricolore now, in the portico by guess: no photograph checked where it hangs. Which others are as big, and where?
 - [ ] **The Jardin des Plantes (owner):** "we have the conservatory, but no gardens (but paths between the gardens)": OSM has the École de botanique, the Roseraie, the Jardin Alpin, the iris garden as areas, and they are drawn as lawn. The zoo's buildings are all in the package but dressed as Haussmann; the Grande Rotonde's roof is a hole. For wave 5.
 - [ ] **Government quarters (owner, 2026-10-30, 48.865286, 2.338884):** APUR's public buildings up to 1939 now get a plain stone front with no shops, balconies, rails or shutters. Check along the Rue Croix-des-Petits-Champs, and that schools still read as schools.
+- [ ] Pont de Puteaux after the bake: the deck is continuous now, but the parapets still spike along it (48.878156, 2.243674).
+- [ ] Rail crossings at Rue du Saint-Gothard (48.830189, 2.335043): tracks are now joined into lines before a crossing is judged, and an untagged street over a cutting becomes a bridge. Check after the next bake.
 - [ ] Kit fronts, measured (`front` against the package's streets): 2,449 of 2,458 face a street, 2,259 of them the nearest.
       8 have a street only on another side, the Mairie du 17e and the churches Sainte-Claire d'Assise and Sainte-Odile among them.
 - [x] **Memory (owner: "smarter about unloading textures that aren't in use. Or use ktx2").** `tools/measure-load.ts` counted one

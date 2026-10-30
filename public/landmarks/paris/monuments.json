@@ -249,6 +249,7 @@
       "way/273063685",
       "way/273063686",
       "way/273063687",
+      "way/273063688",
       "way/273063689",
       "way/273063690",
       "way/273063691",
@@ -261,18 +262,19 @@
       "way/273063698",
       "way/273063699",
       "way/273063700",
+      "way/273063701",
       "way/273063702",
       "way/273063703"
     ],
-    "lat": 48.863394,
-    "lon": 2.345198,
-    "rotateDeg": 97.9,
+    "lat": 48.863397,
+    "lon": 2.345201,
+    "rotateDeg": 99.2,
     "size": [
-      48.9,
-      108.5
+      49.4,
+      108.6
     ],
     "height": 52,
-    "note": "OSM way 53762963 is tagged building=church AND building:part=yes with height=10, so the bake keeps a 10 m block and drops its parts (273063678…690: nave 40 m, towers 38/24): the model gives the body back. Placed on the way's box turned to its axis (osmium, 2026-10-29), the west front (−z) at bearing 277.9, +x south."
+    "note": "OSM way 53762963 is tagged building=church AND building:part=yes with height=10, so the bake keeps a 10 m block and drops its parts (273063678…703: nave 40 m, towers 38/24): the model gives the body back. Placed on the way's box turned to the nave's own axis (osmium, 2026-10-30: bearing 99.2, on which OSM's cross-walls, piers and nave all agree), the west front (−z) at bearing 279.2, +x south. What the rider sees of the south transept and flank (rose, gallery, lancets, portal, round-arched tracery, flyers) is from the owner's street view from the Allée Jules-Supervielle; the positions of flyers and piers are OSM's; the dates and the architects of the west front are from memory."
   },
   {
     "name": "Église de la Sainte-Trinité",
@@ -324,7 +326,7 @@
       40.6
     ],
     "height": 50,
-    "note": "The church (way 53770908, a 20 m block in OSM) and Ballu's belfry beside it on the place (way 200452261, 50 m), both replaced and drawn together: placed on the church's box turned to its axis (osmium, 2026-10-29), the porch (−x) facing the Louvre's colonnade (bearing 282.4), the belfry at local (−34, +29), outside the box."
+    "note": "The church (way 53770908, a 20 m block in OSM) and Ballu's belfry beside it on the place (way 200452261, 50 m), both replaced and drawn together: placed on the church's box turned to its axis (osmium, 2026-10-29), the porch (−x) facing the Louvre's colonnade (bearing 282.4), the belfry at local (−34, +29), outside the box. Its flank windows, rose, porch, flyers and balustrades are the Gothic kit's (monuments/gothic.ts), on the same plan; their tracery is generic and not surveyed from this church."
   },
   {
     "name": "Église Saint-Germain-des-Prés",

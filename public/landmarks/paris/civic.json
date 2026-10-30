@@ -5124,23 +5124,6 @@
  },
  {
   "osm": [
-   "way/62379531"
-  ],
-  "name": "MK2 Bibliothèque",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 11,
-   "word": "MK2 BIBLIOTHÈQUE",
-   "seed": 8389
-  },
-  "height": 13.3,
-  "front": -122,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 11."
- },
- {
-  "osm": [
    "way/62456354"
   ],
   "name": "Institut d'Études Politiques",
@@ -20372,23 +20355,6 @@
   "front": -130,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
- },
- {
-  "osm": [
-   "way/78271296"
-  ],
-  "name": "UGC Ciné Cité Bercy",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 10,
-   "word": "UGC CINÉ CITÉ BERCY",
-   "seed": 3192
-  },
-  "height": 23.4,
-  "front": 130,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 10."
  },
  {
   "osm": [

@@ -3531,7 +3531,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           const d = landmarks.decks[decksPlanted]
           // (a bed — a deck whose trees stand close to its edge — is planted edge to edge: render/plants.ts `bedPlanting`)
           if (d.shrubs !== false) plants.addDeck(d.ring, d.y, d.keepOff !== undefined)
-          if (d.trees !== false) trees.addDeck(d.ring, d.y, d.keepOff, d.spacing)
+          if (d.trees !== false) trees.addDeck(d.ring, d.y, d.keepOff, d.spacing, d.form)
         }
       }
       // the single plants landmarks place (Lombard Street's hydrangeas), the same way: as their tiles stream in

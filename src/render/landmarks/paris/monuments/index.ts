@@ -4,7 +4,8 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { laTrinite, saintEustache, saintGermainAuxerrois, saintGermainDesPres, saintRoch } from './churches.ts'
+import { laTrinite, saintGermainAuxerrois, saintGermainDesPres, saintRoch } from './churches.ts'
+import { saintEustache } from './saint-eustache.ts'
 import { carrouselArch, porteSaintDenis, porteSaintMartin } from './gates.ts'
 import { grandeArche, montparnasseFull } from './modern.ts'
 import { pantheonFull } from './pantheon.ts'

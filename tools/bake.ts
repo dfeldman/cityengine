@@ -2973,7 +2973,7 @@ async function bake(spec: CitySpec): Promise<void> {
       levelled.add(r)
       straight++
     }
-    console.log(`  rail crossings: ${got.spans} untagged bridges over streets, ${straight} short tagged decks straight from bank to bank, ${got.flat} crossings with no bank to stand on`)
+    console.log(`  rail crossings: ${got.spans} untagged bridges over streets, ${got.over} streets made bridges over cuttings, ${straight} short tagged decks straight from bank to bank, ${got.flat} crossings with no bank to stand on`)
   }
   let railDecks = 0
   for (const r of rails) {

@@ -1161,5 +1161,19 @@
     "front": 195,
     "height": 24,
     "note": "venues/cent-quatre.ts: the old municipal undertakers', its inscription over the arch (Commons, Le Centquatre, les anciennes pompes funèbres de Paris). The glass-roofed iron halls and the stone gable striped with brick, its fan-headed window and oculi (Commons, Le Cent Quatre à Paris, juin 2012); stone ranges on both streets. Courts are OSM's; the halls' sections and range heights estimated from the photographs."
+  },
+  {
+    "name": "Jardin Nelson-Mandela — the beds, hedges and pools",
+    "procedural": "hallesGarden",
+    "kind": "garden",
+    "lat": 48.86262,
+    "lon": 2.344488,
+    "size": [
+      320,
+      260
+    ],
+    "height": 2,
+    "sign": false,
+    "note": "venues/halles-garden.ts: the planting of the garden between the Canopée and the Bourse de Commerce (owner: \"very elaborate with manicured plants\", with their aerial). Beds from OSM's natural=scrub rings, pools from its water=basin rings, skylights from its railed rings (that they are skylights is an inference), all in venues/halles-garden-layout.ts and kept off the ways. The rider sees clipped hedges and planted beds in small rooms, tiled pools and railed glass. The lawns, the paths and the trees are the city's. Hedge and planting tones are invented, the species from the plant library, chosen for the look, not from a planting list."
   }
 ]

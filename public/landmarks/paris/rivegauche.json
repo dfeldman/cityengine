@@ -1,0 +1,420 @@
+[
+  {
+    "name": "Tours Duo",
+    "procedural": "toursDuo",
+    "osm": [
+      "way/1130750788",
+      "way/942459281"
+    ],
+    "lat": 48.824952,
+    "lon": 2.382775,
+    "front": 180,
+    "size": [
+      137.4,
+      116.5
+    ],
+    "height": 180,
+    "stone": false,
+    "note": "Nouvel's leaning pair on the Boulevard Périphérique, on OSM's two ways (both named Tour Duo 1 and given 180 m there; 180 m and 122 m from memory, the wider plan taken for the taller, unconfirmed). Silhouette from Commons \"Tours Duo\" and \"Tour DUO 1\"; the widening, the lean and the panes' tones read off those or invented."
+  },
+  {
+    "name": "Cinémathèque française",
+    "procedural": "cinematheque",
+    "osm": [
+      "way/78271385"
+    ],
+    "lat": 48.837002,
+    "lon": 2.382646,
+    "front": 180,
+    "size": [
+      56.8,
+      71.8
+    ],
+    "height": 28,
+    "note": "Gehry's American Center (1994) on the corner of the Parc de Bercy. On OSM way 78271385's box (osmium, 2026-10-30), x east, z north. The regular limestone block on the Rue de Bercy, the tumbled blocks to the west, the zinc skirt and glass wall over the entrance, from Commons \"Gehrys American Center 2011\" and \"L'extérieur de la Cinémathèque Française\" and from memory; heights and the placing of each block are not surveyed."
+  },
+  {
+    "name": "Le Monde",
+    "procedural": "leMonde",
+    "osm": [
+      "way/626357932"
+    ],
+    "lat": 48.84082,
+    "lon": 2.367608,
+    "front": 61.7,
+    "size": [
+      139.7,
+      46.3
+    ],
+    "height": 30,
+    "stone": false,
+    "note": "Snøhetta and SRA's headquarters for Le Monde (2020, from memory). On OSM way 626357932's box, −z to the Avenue Pierre Mendès-France, bearing 61.7. No photograph was found: the arch through the building, its span and height, and the skin of glass pixels are from memory and want checking against one."
+  },
+  {
+    "name": "MK2 Bibliothèque",
+    "procedural": "mk2Bibliotheque",
+    "osm": [
+      "way/62379531"
+    ],
+    "lat": 48.832457,
+    "lon": 2.375436,
+    "front": 322,
+    "size": [
+      34.1,
+      99.4
+    ],
+    "height": 16,
+    "stone": false,
+    "note": "On OSM way 62379531's box, −z to the Bibliothèque's esplanade, bearing 322. The white portico, the stone box, the logo and the poster screen from Commons \"MK2 Bibliothèque\", \"MK2 Bibliothèque en aout 2024\" and \"Mk2 Bibliotheque Paris rear\". The way also has a generic parisCivic entry in civic.json; this include comes first, so this entry wins, and tools/paris-civic.ts leaves claimed ways alone when it is regenerated."
+  },
+  {
+    "name": "Les Frigos",
+    "procedural": "lesFrigos",
+    "osm": [
+      "way/62378670"
+    ],
+    "lat": 48.831211,
+    "lon": 2.378897,
+    "front": 180,
+    "size": [
+      58.1,
+      85.9
+    ],
+    "height": 32,
+    "note": "The Paris–Orléans railway's cold store, artists' studios since. On OSM way 62378670's box, x east, z north. Raw stained concrete, slate mansard, the water tower with its striped tank on OSM's rounded corner, from Commons \"Les Frigos, Paris 31 December 2012\" and \"Paris - Les Frigos\". The paint on the walls is patches in the photographs' colours, none of the real pieces."
+  },
+  {
+    "name": "Halle aux Farines",
+    "procedural": "halleAuxFarines",
+    "osm": [
+      "way/62378611",
+      "way/374148831",
+      "way/374148832",
+      "way/374148833",
+      "way/374148834"
+    ],
+    "lat": 48.829292,
+    "lon": 2.381804,
+    "front": 326.7,
+    "size": [
+      156.5,
+      32.3
+    ],
+    "height": 28,
+    "note": "On OSM way 62378611's box and its parts, −z to the north-west, bearing 326.7. Grey ribbed concrete, the barrel vault with its fans of yellow panes at the gables, tall glazed slots over dark red porches, from Commons \"P1030183 Paris XIII la Halle aux farines\", \"2024-12-12 Paris - Halle aux Farines\" and \"Halle aux farines Paris\". Heights scaled off those. Which long side the balconies and slots really fall on is approximate."
+  },
+  {
+    "name": "UGC Ciné Cité Bercy",
+    "procedural": "ugcBercy",
+    "osm": [
+      "way/78271296"
+    ],
+    "lat": 48.832185,
+    "lon": 2.385255,
+    "front": 40.7,
+    "size": [
+      70.8,
+      48.7
+    ],
+    "height": 24,
+    "stone": false,
+    "note": "On OSM way 78271296's box, −z up the Cour Saint-Émilion, bearing 40.7. Dark ribbed metal wings, the white frame and steps on the Cour's axis, the blue mesh poster towers, from Commons \"UGC Ciné Cité Bercy in 2022\", \"Cine Cite Bercy Cinema - Paris 2013\" and \"Bercy village, Paris August 2009 008\". The way also has a generic parisCivic entry in civic.json; this one comes first and wins."
+  },
+  {
+    "name": "Bercy Village — the north-west chais",
+    "procedural": "bercyVillageNorth",
+    "osm": [
+      "way/78271210"
+    ],
+    "lat": 48.833228,
+    "lon": 2.386273,
+    "front": 130.9,
+    "size": [
+      216.6,
+      34.2
+    ],
+    "height": 9,
+    "note": "Bercy's wine warehouses along the Cour Saint-Émilion, on OSM way 78271210's box, −z to the Cour, bearing 130.9. OSM has the row as one outline; a chai every 12 m is counted off Commons \"Cour Saint-Émilion, Paris 7 August 2009\" and \"Bercy village, Paris August 2009 008\", not surveyed."
+  },
+  {
+    "name": "Bercy Village — the south-east chais",
+    "procedural": "bercyVillageSouth",
+    "osm": [
+      "way/78271293"
+    ],
+    "lat": 48.832983,
+    "lon": 2.386905,
+    "front": 310.9,
+    "size": [
+      196,
+      44.8
+    ],
+    "height": 9,
+    "note": "The other row, on OSM way 78271293's box, −z to the Cour, bearing 310.9. As its neighbour."
+  },
+  {
+    "name": "Jardin des Plantes: the perspective",
+    "procedural": "jardinPerspective",
+    "drape": true,
+    "lat": 48.843535,
+    "lon": 2.360312,
+    "front": 158.7,
+    "size": [
+      505.9,
+      119.6
+    ],
+    "height": 0.5,
+    "shadow": false,
+    "sign": false,
+    "note": "The parterres of the Carrés and the École de botanique, every bed OSM's own polygon (jardin-layout.ts, generated with osmium 2026-10-30), between four rows of planes along OSM's Allée Buffon and Allée Cuvier, in the deck path with form 'plane'. Local x along the allées, −z to the Rue Buffon, bearing 158.7. This rectangle lies between the inner rows and clears the city's scattered trees and shrubs from it, deliberately: the name avoids the words that would exempt it. Colours invented for summer; the rows' 9 m offset from the allées is an estimate."
+  },
+  {
+    "name": "Jardin des Plantes: the rose, alpine and iris beds",
+    "procedural": "jardinAnnexes",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.843253,
+    "lon": 2.359706,
+    "front": 180,
+    "size": [
+      30,
+      30
+    ],
+    "height": 0.5,
+    "shadow": false,
+    "sign": false,
+    "note": "The Roseraie's and the Jardin Alpin's beds from OSM (ways 83913794, 28911106 and those inside them); the iris garden's strips across OSM's outline (way 83976107), which has no beds of its own, are an assumption. The library has no rose and the iris is dear: bush_flowering and lavender stand in. x east, z north; the size is nominal (the beds lie well outside it), and it clears nothing."
+  },
+  {
+    "name": "Grande Rotonde",
+    "procedural": "grandeRotonde",
+    "osm": [
+      "way/42332625",
+      "way/437606946",
+      "way/437606947",
+      "way/437606948",
+      "way/437606949",
+      "way/437606950",
+      "way/437606951"
+    ],
+    "lat": 48.844705,
+    "lon": 2.359951,
+    "front": 180,
+    "size": [
+      34.1,
+      32.8
+    ],
+    "height": 17,
+    "note": "The Ménagerie's rosette of five pavilions round a drum (owner, 2026-10-30, at 48.844673 2.360015: \"this one has no roof\"). OSM's plan, all six parts claimed. Red brick, stone piers, the voussoired round-headed windows, terracotta hips, the drum's skirt and lantern from Commons \"Rotonde Menagerie du Jardin des plantes\" and \"Ménagerie (Zoo) @ Jardin des Plantes\". Heights from those, not surveyed."
+  },
+  {
+    "name": "Ménagerie: the Fauverie",
+    "procedural": "fauverie",
+    "osm": [
+      "way/42332642",
+      "way/95475745",
+      "way/437572815"
+    ],
+    "lat": 48.846023,
+    "lon": 2.360851,
+    "front": 180,
+    "size": [
+      40.4,
+      49.1
+    ],
+    "height": 12,
+    "note": "The big cats' house, 1937 from memory. OSM's outline and two rings of cages. The brick range from Commons \"Paul Jouve. Lion de l'Atlas\", the half-round of bars under the stepped roof from \"Jardin des Plantes (3189983467)\". Heights not surveyed."
+  },
+  {
+    "name": "Ménagerie: the Singerie",
+    "procedural": "singerie",
+    "osm": [
+      "way/23602858"
+    ],
+    "lat": 48.845253,
+    "lon": 2.361033,
+    "front": 180,
+    "size": [
+      28.9,
+      29
+    ],
+    "height": 11,
+    "note": "OSM's plan. Commons shows only the older iron cages; the pale hall with tall glazed bays is from memory and should be checked against a photograph."
+  },
+  {
+    "name": "Ménagerie: the Reptiles",
+    "procedural": "reptiles",
+    "osm": [
+      "way/42332651"
+    ],
+    "lat": 48.845735,
+    "lon": 2.359253,
+    "front": 180,
+    "size": [
+      43.7,
+      37.7
+    ],
+    "height": 13,
+    "note": "OSM's plan. The low stone front with rounded ends, tall glazed bays and balustrade, and the plain upper range under a slate hip, from Commons \"Pavillon des reptiles du Jardin des plantes de Paris\" and \"Batiment des reptiles\". The upper range's depth is read off those."
+  },
+  {
+    "name": "Ménagerie: the Vivarium",
+    "procedural": "vivarium",
+    "osm": [
+      "way/42332653"
+    ],
+    "lat": 48.845366,
+    "lon": 2.35842,
+    "front": 180,
+    "size": [
+      27.6,
+      26.7
+    ],
+    "height": 8,
+    "note": "OSM's plan. A long low pale hall with a clerestory and a roof light, from memory: Commons gave nothing usable."
+  },
+  {
+    "name": "Ménagerie: house 1",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332635"
+    ],
+    "height": 8,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 2",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332643"
+    ],
+    "height": 15.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 3",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332652"
+    ],
+    "height": 7.6,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: Nurserie",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332641"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: Laboratoire vétérinaire",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/43547393"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 4",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332628"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: Nouvelle faisanderie",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332650"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: Ancienne faisanderie",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332649"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: Fabrique 1",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332615"
+    ],
+    "height": 5.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 5",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332632"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 6",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332589"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: Fabrique 2",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332646"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 7",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332637"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 8",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/1447668245"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 9",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/42332636"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  },
+  {
+    "name": "Ménagerie: house 10",
+    "procedural": "menagerieHouse",
+    "osm": [
+      "way/43547395"
+    ],
+    "height": 4.5,
+    "note": "menagerieHouse: raised from OSM's own outline, by kind and size, not surveyed; what the Haussmann and brick dress stood in for."
+  }
+]

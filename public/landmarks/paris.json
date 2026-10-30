@@ -1113,16 +1113,6 @@
     "note": "The Mint on the Quai de Conti, beside the Institut: a long plain classical front with its projecting centre."
   },
   {
-    "name": "Bourse de Commerce",
-    "osm": [
-      "way/19856722"
-    ],
-    "restyle": "classical",
-    "roof": "flat",
-    "levels": 2,
-    "note": "The round corn exchange by Les Halles."
-  },
-  {
     "name": "Place des Victoires — facades",
     "restyle": "classical",
     "roof": "mansard",
@@ -1208,6 +1198,9 @@
   },
   {
     "include": "paris/museums.json"
+  },
+  {
+    "include": "paris/rivegauche.json"
   },
   {
     "include": "paris/civic.json"

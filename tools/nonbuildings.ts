@@ -135,12 +135,18 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   medicisFountain: 'fountain', tokyoParvis: 'plaza', observatoireFountain: 'fountain',
   // …the museums family (paris/museums/): the floating pool, on a barge (OSM's way 119943935 is building=boat)
   piscineJosephineBaker: 'vessel',
+  // Golden Gate Park's Garfield, on his terrace (sf/garfield.ts)
+  garfieldMonument: 'statue',
+  // (wave 4's figures on their plinths: paris/monuments/plaza-statues.ts)
+  monumentMoncey: 'statue', monumentPasteur: 'statue', statueLiberte: 'statue',
   // …the monuments family (paris/monuments/): the gates, the columns, the Triomphe, the Lion, the Sacré-Cœur's terraces
   carrouselArch: 'monument', porteSaintDenis: 'monument', porteSaintMartin: 'monument', triompheRepublique: 'monument',
   troneColumnSaintLouis: 'monument', troneColumnPhilippeAuguste: 'monument', lionDeBelfort: 'statue', sacreCoeurTerraces: 'plaza',
   fontaineStravinsky: 'fountain', fontaineVarsovie: 'fountain', arenesLutece: 'monument', memorialDeportation: 'monument',
   // …and the venues family (paris/venues/): Roland-Garros's outside courts, the Buttes-Chaumont's folly
   rgCourts: 'plaza', sibylleTemple: 'monument', enclosSaintLazare: 'garden',
+  // …and the Rive Gauche family (paris/rivegauche/): the Jardin des Plantes' beds
+  jardinPerspective: 'garden', jardinAnnexes: 'garden',
   // bridges — these bind through the city SKYLINE (tools/cities.ts), not through any manifest
   goldenGateBridge: 'bridge', bayBridge: 'bridge', bayBridgeNear: 'bridge',
   // masts and lattices: a tower with no floors is not a building
@@ -185,6 +191,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
  * "everything is classified" test meaningful. Only needed for names that look like nonbuildings and are not.
  */
 export const BUILDINGS_OK: string[] = [
+  // La Défense's buildings, whatever a dome or a vault sounds like (paris/monuments/la-defense.ts)
+  'cnitVault', 'tourFirst', 'quatreTemps', 'domeImax',
   // a museum and archive on the Rue Geoffroy-l'Asnier, its "memorial" in its name (paris/monuments/memorial-shoah.ts)
   'memorialShoah',
   'hillsPlazaTower', 'baysidePlaza', 'dogpatchCopperColumns', 'dogpatchCopperBoxes', 'dogpatchGrey', 'parkingGarage',

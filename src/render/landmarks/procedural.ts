@@ -17,6 +17,7 @@ import { PARIS_PALACES } from './paris/palaces/index.ts'
 import { PARIS_MONUMENTS } from './paris/monuments/index.ts'
 import { PARIS_VENUES } from './paris/venues/index.ts'
 import { PARIS_MUSEUMS } from './paris/museums/index.ts'
+import { PARIS_RIVEGAUCHE } from './paris/rivegauche/index.ts'
 import { parisCivic, type KitArgs } from './paris/kit/recipes.ts'
 import { barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal } from './paris/extras.ts'
 import { colonneDeJuillet } from './paris/colonne-de-juillet.ts'
@@ -71,7 +72,7 @@ export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitAr
   // San Francisco's (render/landmarks/sf/index.ts)
   ...SF_BUILDERS,
   // Paris's families (PARIS_PARITY.md): each its own folder and its own manifest file
-  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS,
+  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE,
   // (the exceptions, said by kind and date: paris/kit/)
   parisCivic,
   barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal,

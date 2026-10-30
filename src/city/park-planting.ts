@@ -463,6 +463,9 @@ function deckRow(ring: { x: number; z: number }[], y: number, keepOff: number, s
  * the aerials read as, and it is a twentieth of the 2 500-odd trees a Presidio tile block already carries.
  * Lightly clumped rather than even, so the great lawn keeps a clearing or two in it.
  */
+/** A deck row of one form only (a landmark's allée of planes), where DECK_PLANTING would mix in olives and queen palms. */
+export const singleForm = (form: ParkSpecies['form'], h: [number, number]): ParkRule => () => ({ density: MAX_DENSITY, clump: 0.1, species: [{ form, weight: 1, h }] })
+
 export const DECK_PLANTING: ParkRule = () => ({
   density: MAX_DENSITY,
   clump: 0.1,

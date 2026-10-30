@@ -519,9 +519,9 @@
       129.8,
       147.6
     ],
-    "height": 15,
+    "height": 16,
     "sign": false,
-    "note": "Placed on the box of OSM's roof way 630511331 and its two wings 630213860 and 630222417 turned 19° (osmium, 2026-10-30), −z to the Rue Berger, bearing 199. Plan from OSM; the roof's section (8 m at the streets, 12.5 on the garden, a 14.6 m ridge, 9.6 m over the patio) from the architects' model and photographs. The patio is drawn on the grade: the city's ground has no hole for the Place Basse."
+    "note": "Plan from OSM (osmium, 2026-10-30): the roof way 630511331 and the two wings 630213860 and 630222417, boxed turned 19°, −z to the Rue Berger, bearing 199. The rider sees what the owner's street view shows: a gold glass roof on curved ribs floating clear of two separate long buildings with gold fins over a shop floor, and between them a well with a glass balustrade, escalators and white wayfinding poles. The roof's section (10.7 m at the streets, 14 on the garden, a 15.4 m ridge, 11.2 m over the void) is an estimate from the owner's \"about 14 m\" and their photograph, not a survey. The city's ground cannot be dug: the well goes only as deep as the IGN lidar's dip (tools/ign-lidar.ts: 3.3 m at the garden end, its returns stop under the roof), and is painted where the ground is flat; the Place Basse's real depth is not modelled. The drawing stands on the streets' grade (fit.groundAt)."
   },
   {
     "name": "Maison de la Radio",
