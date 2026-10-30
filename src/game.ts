@@ -2099,7 +2099,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * ride off across bare ground; at most `LANDING_MS`, after which they go on whatever has arrived.
    */
   const LANDING_MS = 20_000
-  let landing: { x: number; z: number; since: number; said: number } | null = null
+  let landing: { x: number; z: number; since: number; said: number; shown: boolean } | null = null
   /** the landing's tiles: how many of those that exist are in */
   const landingTiles = (l: { x: number; z: number }): { have: number; of: number } => {
     const cx = Math.floor(l.x / TILE)
@@ -2120,12 +2120,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const { have, of } = landingTiles(landing)
     const now = performance.now()
     if (have >= of || now - landing.since > LANDING_MS) {
+      if (landing.shown) hud.banner('Ready', placeName(nav.at()), 2500)
       landing = null
-      hud.banner('Ready', placeName(nav.at()), 2500)
       return false
     }
-    if (now - landing.said > 400) {
+    // (only once it has taken a while: the caller's own banner — the tour's name, the place searched for — goes first)
+    if (now - landing.since > 1500 && now - landing.said > 400) {
       landing.said = now
+      landing.shown = true
       hud.banner('Loading the streets…', `${have} of ${of} · ${placeName(nav.at())}`, 1500)
     }
     return true
@@ -3735,9 +3737,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     city.update(at.x, at.z)
     trees.update(new Vector3(at.x, 0, at.z))
     void wantTiles(at.x, at.z)
-    landing = { x: at.x, z: at.z, since: performance.now(), said: 0 }
-    if (forfeit.length) hud.banner('Jumped — delivery forfeit', placeName(at))
-    else jumpWait()
+    landing = { x: at.x, z: at.z, since: performance.now(), said: 0, shown: false }
+    hud.banner(forfeit.length ? 'Jumped — delivery forfeit' : 'Jumped', `${lat.toFixed(5)}, ${lon.toFixed(5)} · ${placeName(at)}`)
     return true
   }
   w.__pick = (x: number, y: number) => {
