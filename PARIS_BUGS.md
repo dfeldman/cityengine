@@ -57,7 +57,12 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       deck's end has to ease into the next rail's level (bake.ts rail decks ~2645).
 - [ ] **Pont de Bir-Hakeim** (48.856278, 2.287123): "an elevated track and a lower car level … sort of works ok, but
       again is discontinuous on one end".
-- [ ] **Sunk into the bridge** (48.849487, 2.357019, by the Institut du monde arabe — Pont de Sully's end).
+- [ ] **Sunk into the bridge** (48.849487, 2.357019, the Pont de Sully): the deck dipped to −3.7 m in mid-river where its
+      sidewalk foot bridges meet the roadway — three deck edges at a node, the chains ended there and eased to the ground
+      under it (the river). Fix written (tools/bridges.ts): a node where three or more deck edges meet and no way at grade
+      touches it is in the air for every class of road, not only freeways. In the 0226 bake (with the lidar).
+- [x] **Pont Mirabeau's discontinuous road** — continuous in the 2026-10-30 0150 bake… (rebaked 21:10): the bank deck −0.1 → 1.6,
+      the joined scrap 1.6 → 2.3, the river span from 2.3; seen from above, one clean span.
 - [ ] **Port de Javel is cobbled** ("may not be reflected in OSM"). OSM: Port de Javel 2 asphalt, 8 paving_stones,
       2 sett; all "Port de …" service roads in the box: 35 asphalt, 10 paving_stones, 10 sett, 1 cobblestone, 15 untagged.
       Fix written (Paris, "Port de …" service roads untagged, paving_stones, concrete or sett → cobblestone; asphalt kept).

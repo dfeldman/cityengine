@@ -318,9 +318,18 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   }
   const deckAtNode = new Map<number, BridgeEdge[]>()
   for (const e of deckEdges) for (const n of [e.a, e.b]) deckAtNode.set(n, [...(deckAtNode.get(n) ?? []), e])
+  /*
+   * …and not only a freeway's (owner, 2026-10-30, the Pont de Sully: "sunk into the bridge"). Where a Seine bridge's own
+   * sidewalks, mapped as foot bridges, meet its roadway in mid-river, three deck edges meet, the chains end there, and each
+   * was eased down to the GROUND under that node — the river: the Pont de Sully's deck dipped to −3.7 m between banks at
+   * +0.7 and the boulevard. A node where three or more deck edges meet and no way at grade touches it is in the air,
+   * whatever the class of road.
+   */
+  const atGrade = new Set<number>()
+  for (const e of edges) if (!e.bridge && !e.tunnel) { atGrade.add(e.a); atGrade.add(e.b) }
   const airJunction = (n: number): boolean => {
     const es = deckAtNode.get(n) ?? []
-    return es.length >= 3 && es.every((x) => FREEWAY.has(x.kind ?? ''))
+    return es.length >= 3 && (es.every((x) => FREEWAY.has(x.kind ?? '')) || !atGrade.has(n))
   }
   const allChains = chains(deckEdges)
   const junctionY = new Map<number, number>()
@@ -359,8 +368,8 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     const isFreeway = chain.every(({ e }) => FREEWAY.has(e.kind ?? ''))
     // (an end at a junction in the air is that junction's height, not the ground's: see above)
     const [na, nb] = ends(chain)
-    const j0 = isFreeway ? junctionY.get(na) : undefined
-    const j1 = isFreeway ? junctionY.get(nb) : undefined
+    const j0 = junctionY.get(na)
+    const j1 = junctionY.get(nb)
     const h0 = j0 ?? g0
     const h1 = j1 ?? g1
     let rise = 0
