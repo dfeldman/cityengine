@@ -35,7 +35,7 @@ import {
   morrisColumn, parisBusStop, parisLamp, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
-import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
+import { centreDistance, facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
 import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
@@ -4643,6 +4643,9 @@ export class City {
           return [a.x + (c.x - a.x) * f, a.z + (c.z - a.z) * f]
         }
         const pavement = (): number | null => pavementDepth(this.awningStreets!, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
+        // an ALLEY in front — the way's centre within 2.6 m of the wall, about five metres between the walls: no shops
+        const centre = centreDistance(this.awningStreets!, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
+        if (centre !== null && centre < 2.6) return { rate: 0, main: false, rise, pavement: pavement(), alley: true }
         for (let k = 0; k < n; k++) if (facesStreet(this.mainStreets!, ...t(k), nx, nz)) return { rate, main: true, rise, pavement: pavement() }
         for (let k = 0; k < n; k++) if (facesStreet(this.awningStreets, ...t(k), nx, nz)) return { rate: rate * 0.35, main: false, rise, pavement: pavement() }
         return null

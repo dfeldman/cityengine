@@ -81,6 +81,17 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 
 ## Open — render-side
 
+- [x] **Alleys get no shops** (owner: "when a way is extremely narrow between buildings, we should assume its more of an
+      alley than a street and not display shops and awnings"): a wall whose way's centre line is within 2.6 m (about 5 m
+      wall to wall) is an alley's — no shopfronts, no awnings (frontage.ts `centreDistance`, StreetFacing.alley).
+- [ ] **Parked cars can be ridden through, moving ones can't** — owner: "very odd since it is not usually obvious which is
+      which". The kerb bays' and car parks' cars (street-fleet.ts `park`) are not in the collision test the traffic is;
+      add them (they never move: a static list of boxes per tile).
+- [ ] **Submerged path, Place Léon Blum** (48.857659, 2.380151): the streets round the place are all held at 15.4 m, the
+      footways inside it at 13.3–13.6 — the levelling takes each street's highest ground across its width, then each node
+      the highest of its ends, and on a broad sloping place those maxima cascade into one plateau at the top. The same
+      cascade is a likely cause of "the ways are out of sync with the ground" across Paris (wide boulevards, big places).
+
 - [ ] **Park railings and walls** (48.848863, 2.338636, the Luxembourg's Porte Gay-Lussac): owner, "parks are often surrounded
       by tall fences or even walls … probably because they are palace grounds that close". Tall black iron railings with
       gilded spear tips on a stone plinth, gates at the entrances. OSM `barrier=fence|wall` round the parks, or the park
@@ -121,3 +132,15 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 Kerb bays and parked cars; parking lanes in the bake; two-wheeler and bike parking; bollards; pale shutters; tree
 material sharing (memory); hotel flags; roundabouts from `junction=circular` (66) and the v3 index carrying them;
 roundabout islands' grass; the three landmark waves.
+
+## Better data than OSM for Paris (owner, 2026-10-30: "our OSM data source for Paris is just not very good. it gets roads
+## but is often weird on buildings. are there better data sources we can try?")
+
+- **Terrain: IGN LiDAR HD MNT** (Etalab 2.0, ground-only, 0.5–1 m) — would replace the coarse terrarium DEM (≈30 m) that
+  smears the quay walls into waves; the likeliest single fix for the Seine banks and the ways out of step with the ground.
+  Coverage of Paris to be confirmed (some zones are restricted, ZICAD). geoservices.ign.fr/lidarhd.
+- **Buildings: APUR's emprise bâtie** (already fetched for the dates: 128,206 footprints with median height `h_med`,
+  roof material, morphology) as the footprints and heights inside Paris; **IGN BD TOPO** (heights, use) for the suburbs
+  in the box (the Bois's edges, La Défense, Neuilly). OSM's buildings kept only where neither has one.
+- **Street detail: Paris Open Data** (ODbL) — street trees with species and height, public lighting points, pavement
+  outlines (trottoirs), building volumes. Catalogue to be checked on opendata.paris.fr.

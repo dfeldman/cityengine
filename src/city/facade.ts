@@ -798,7 +798,7 @@ export function planFacade(
  */
 export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   /** this wall faces a street (and how far it is to the kerb): where a dressed building puts its ornament */
-  street: { pavement?: number | null; main?: boolean } | null = null,
+  street: { pavement?: number | null; main?: boolean; alley?: boolean } | null = null,
   /**
    * Which of the building's features this wall carries (render/buildings.ts `fronts`). `front`: the narrow street front
    * a Victorian's one bay window and gable go on; `face`: a wall the street sees, where an apartment block hangs its fire
@@ -848,7 +848,9 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   const br = rng(seed ^ 0xb10c)
   const period = 3 + Math.floor(br() * 2), width = 1 + Math.floor(br() * 2), off = Math.floor(br() * period)
   const blockBay = (b: number): boolean => !!d?.blocks && street !== null && (b + off) % period < width
-  const shopBay = (b: number): boolean => !d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN)))
+  // (never on an alley — a way a few metres between the walls is a passage, not a shopping street: owner, 2026-10-30, "when a
+  //  way is extremely narrow between buildings, we should assume its more of an alley than a street and not display shops")
+  const shopBay = (b: number): boolean => !street?.alley && (!d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN))))
   // a label's ground floor (Dress.ground): every bay of the street front named, from any style's painting
   // (on the walls the building shows the street, whether or not the street index found a street there: a label read them
   // off a photograph of one — wave 5, a corner block's box bays went missing on a side the index had no street for)

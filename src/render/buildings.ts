@@ -450,6 +450,8 @@ export interface StreetFacing {
   rise?: number
   /** wall to kerb (m): an awning stops short of it, so a narrow street's blinds do not roof the road */
   pavement?: number | null
+  /** the way in front is an ALLEY — a few metres between the walls: no shops, no awnings (city.ts `streetOf`) */
+  alley?: boolean
 }
 
 const AWNING_COLOURS: [number, number, number][] = [
@@ -471,7 +473,7 @@ function awnings(out: MeshBuilder, cells: Cell[], plan: FacadePlan, seed: number
                  at: (t: number, y: number) => [number, number, number],
                  ux: number, uz: number, nx: number, nz: number, street: StreetFacing): void {
   const ground = plan.storeys.find((s) => s.index === 0)
-  if (!ground || street.rate <= 0) return
+  if (!ground || street.rate <= 0 || street.alley) return
   const fascia = Math.max(2.8, ground.y1 - 0.85)
   // no higher than 3.1 m at the wall, however tall the shop: the chase camera rides at 3.5 m and passed
   // under the cloth of a tall ground floor's blind (BUGS.md #16)
