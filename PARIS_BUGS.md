@@ -144,3 +144,16 @@ roundabout islands' grass; the three landmark waves.
   in the box (the Bois's edges, La Défense, Neuilly). OSM's buildings kept only where neither has one.
 - **Street detail: Paris Open Data** (ODbL) — street trees with species and height, public lighting points, pavement
   outlines (trottoirs), building volumes. Catalogue to be checked on opendata.paris.fr.
+
+## Bake speed (owner, 2026-10-30: "why does the bake take far longer for Paris than SF")
+
+Paris against San Francisco: 165,622 buildings to 89,932; 394,565 street and path pieces to 112,440 (3.5×: OSM maps
+Paris's pavements as their own footways, every crossing and square path); ride-run.json 50.7 MB to 17.7 MB. Most of the
+time is the run graph's merge of parallel ways (ridegraph.ts `mergeParallel`), which grows faster than linearly.
+
+- [ ] **Index `mergeParallel` spatially** — candidate pairs from a grid of segment buckets instead of rescans; the biggest
+      single saving.
+- [ ] **Drop pavement footways that shadow their street** before graph building (a `footway=sidewalk` running beside a
+      street that already draws its pavement), as the centreline duplicates already are.
+- [ ] **Cache the OSM-only stages** (ride graphs, APUR matching) keyed on their inputs, so a change to bridges or paint does
+      not rebuild them.
