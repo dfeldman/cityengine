@@ -189,6 +189,8 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       }
       return lifted
     }))
-    return { ...t, buildings, fringe: t.fringe.filter((f) => !isReplaced(replaced, f)) }
+    // (and the ones the landmarks took, for the passages through them: TileData.claimedBuildings)
+    const claimedBuildings = t.buildings.filter((b) => isReplaced(replaced, b))
+    return { ...t, buildings, ...(claimedBuildings.length ? { claimedBuildings } : {}), fringe: t.fringe.filter((f) => !isReplaced(replaced, f)) }
   }
 }

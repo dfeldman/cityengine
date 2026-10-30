@@ -580,38 +580,10 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
    * ways). The stairs down to a lower quay and the pavement stubs at a bridge's end were levelled with the streets before
    * the deck was lifted, and the ramps above follow roads only, so the foot way stood 2–6 m under the deck at the node
    * they share: a step down into nothing (the Pont de Sully, +2.7 against −1.4). Each one's end at a deck node now takes
-   * the deck's height there, eased back into its own over up to 15 m — a flight of steps steeply, as steps are.
+   * the deck's height there, eased back into its own over up to 15 m — a flight of steps steeply, as steps are
+   * (`meetDecks`, below; run again by the bake after a modelled bridge's deck is conformed to its model).
    */
-  const deckEnd = new Map<number, number>()
-  for (const e of edges) {
-    if (!e.bridge || !e.heights) continue
-    const h = e.heights
-    deckEnd.set(e.a, Math.max(deckEnd.get(e.a) ?? -Infinity, h[0]))
-    deckEnd.set(e.b, Math.max(deckEnd.get(e.b) ?? -Infinity, h[h.length - 1]))
-  }
-  for (const e of edges) {
-    if (e.bridge || !e.foot || e.tunnel || !e.heights) continue
-    const p = pts(e.points)
-    const cum = cumulative(p)
-    const L = cum[cum.length - 1]
-    if (L < 1) continue
-    const EASE = Math.min(15, L * 0.6)
-    let hs = e.heights
-    let changed = false
-    for (const [node, fromA] of [[e.a, true], [e.b, false]] as const) {
-      const deck = deckEnd.get(node)
-      if (deck === undefined) continue
-      const own = fromA ? hs[0] : hs[hs.length - 1]
-      // (a step a flight of stairs takes — not a skyway's 16 m, whose ends are in buildings: see the footbridge rule above)
-      if (Math.abs(deck - own) < 0.3 || Math.abs(deck - own) > 6) continue
-      hs = hs.map((h, i) => {
-        const d = fromA ? cum[i] : L - cum[i]
-        return d >= EASE ? h : Math.round((deck + (h - deck) * (d / EASE)) * 100) / 100
-      })
-      changed = true
-    }
-    if (changed) { e.heights = hs; raised.add(e.id) }
-  }
+  for (const id of meetDecks(edges)) raised.add(id)
   return { bridges, ramps, raised }
 }
 
@@ -761,4 +733,46 @@ export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: 
     }
   }
   return changed
+}
+
+/**
+ * Every way that meets a bridge deck at a node, and stands off it by a step a stair or a short ramp takes (0.3–6 m), meets
+ * it: its end at the node takes the deck's height, eased back into its own — over up to 15 m for a foot way, up to 30 m for
+ * a road (owner, 2026-10-30: the Seine bridges "all have an underpass on each side"; the Port de Javel's ramp roads stood
+ * 2.9 m under Pont Mirabeau's deck). Mutates `edges`; returns the ids it changed. Run after `bridgeHeights` and again after
+ * a modelled bridge's deck is conformed to its model (tools/deck-conform.ts), which moves the deck after the first pass.
+ */
+export function meetDecks(edges: BridgeEdge[]): number[] {
+  const changedIds: number[] = []
+  const deckEnd = new Map<number, number>()
+  for (const e of edges) {
+    if (!e.bridge || !e.heights) continue
+    const h = e.heights
+    deckEnd.set(e.a, Math.max(deckEnd.get(e.a) ?? -Infinity, h[0]))
+    deckEnd.set(e.b, Math.max(deckEnd.get(e.b) ?? -Infinity, h[h.length - 1]))
+  }
+  for (const e of edges) {
+    if (e.bridge || e.tunnel || !e.heights) continue
+    const p = pts(e.points)
+    const cum = cumulative(p)
+    const L = cum[cum.length - 1]
+    if (L < 1) continue
+    const EASE = Math.min(e.foot ? 15 : 30, L * 0.6)
+    let hs = e.heights
+    let changed = false
+    for (const [node, fromA] of [[e.a, true], [e.b, false]] as const) {
+      const deck = deckEnd.get(node)
+      if (deck === undefined) continue
+      const own = fromA ? hs[0] : hs[hs.length - 1]
+      // (a step a flight of stairs takes — not a skyway's 16 m, whose ends are in buildings: see the footbridge rule above)
+      if (Math.abs(deck - own) < 0.3 || Math.abs(deck - own) > 6) continue
+      hs = hs.map((h, i) => {
+        const d = fromA ? cum[i] : L - cum[i]
+        return d >= EASE ? h : Math.round((deck + (h - deck) * (d / EASE)) * 100) / 100
+      })
+      changed = true
+    }
+    if (changed) { e.heights = hs; changedIds.push(e.id) }
+  }
+  return changedIds
 }

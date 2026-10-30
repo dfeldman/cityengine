@@ -63,7 +63,7 @@ import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
-import { bridgeHeights, liftWalksOffTheSea, rampFootBridgeEnds } from './bridges.ts'
+import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds } from './bridges.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -1316,6 +1316,44 @@ async function bake(spec: CitySpec): Promise<void> {
    * building (hidden at run time under its model) keeps its ground clear too. Style by its period, as the classifier
    * dresses OSM's; height APUR's measured median.
    */
+  /*
+   * A BUILDING ON THE WATER is a boat's deckhouse (owner, 2026-10-30, 48.860148 2.293350: "a classic French building ON
+   * TOP of a barge"): a moored péniche's cabin mapped as `building:part`, height 5.5, and nothing to say it floats, was
+   * dressed as the city's stone. One whose centre is in the water (not on an island in it) and no taller than a deckhouse
+   * wears the plain modern style, flat-roofed.
+   */
+  {
+    const water = areas.filter((a) => a.kind === 'water').map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map((h) => unpackPoints(h)) }))
+    let afloat = 0
+    for (const b of buildings) {
+      if ((b.height ?? 99) > 10) continue
+      const c = centroid(unpackPoints(b.ring))
+      if (!water.some((w) => pointInRing(w.ring, c.x, c.z) && !w.holes.some((h) => pointInRing(h, c.x, c.z)))) continue
+      b.style = 'bauhaus'
+      b.roof = 'flat'
+      b.roofHeight = 0
+      afloat++
+    }
+    if (afloat) console.log(`  ${afloat} buildings on the water dressed as boats' deckhouses`)
+    /*
+     * …and a TINY building is a cube, a kiosk, a vent or a shed, not a town house (owner, 2026-10-30, the Institut du monde
+     * arabe's parvis, 48.849176 2.356543: "little default buildings which are in fact plaza elements" — four 14–17 m²
+     * `building=yes historic=yes` cubes drawn with mansards, chimneys and shopfronts). Under 30 m² of footprint and no
+     * landmark's: the plain style, flat, no shops.
+     */
+    let tiny = 0
+    for (const b of buildings) {
+      if (b.style === 'bauhaus' && b.roof === 'flat') continue
+      const r = unpackPoints(b.ring)
+      if (area(r) >= 30 || (b.height ?? 0) > 8) continue
+      b.style = 'bauhaus'
+      b.roof = 'flat'
+      b.roofHeight = 0
+      b.noShops = true
+      tiny++
+    }
+    if (tiny) console.log(`  ${tiny} tiny buildings (under 30 m²) drawn as plain boxes: cubes, kiosks, sheds`)
+  }
   if (spec.region === 'paris') {
     const rings = await import('./paris-apur.ts').then((m) => m.fetchApurRings()).catch((e: unknown) => { console.warn(`  apur rings: not fetched (${String(e).slice(0, 120)})`); return [] })
     const CELL = 40
@@ -2516,6 +2554,11 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   const deckWork = conformWithUndo(spec.region ?? spec.id, spec.centre, kept, groundAt)
   if (deckWork) console.log(`  bridge decks: ${describe(deckWork.report)}`)
+  // …and the ways meeting a deck the model moved meet it again (tools/bridges.ts `meetDecks`: Pont au Change, the Alma)
+  if (deckWork) {
+    const met = meetDecks(kept.filter((e) => !e.authored))
+    if (met.length) console.log(`  ${met.length} ways met their modelled bridge's conformed deck`)
+  }
   /*
    * CARVE THE CUTS into the ground (2026-09-29): a street running down into a tunnel mouth is in a cutting the
    * elevation data does not have — the coarse ground stood over lower Stockton and over the approach to the

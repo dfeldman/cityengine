@@ -70,9 +70,9 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [ ] **Port de Javel is cobbled** ("may not be reflected in OSM"). OSM: Port de Javel 2 asphalt, 8 paving_stones,
       2 sett; all "Port de …" service roads in the box: 35 asphalt, 10 paving_stones, 10 sett, 1 cobblestone, 15 untagged.
       Fix written (Paris, "Port de …" service roads untagged, paving_stones, concrete or sett → cobblestone; asphalt kept).
-- [ ] **A classic French building on top of a barge** (48.860148, 2.293350) — probably OSM: a building way on the
+- [x] **A classic French building on top of a barge** — a péniche's cabin mapped `building:part` (h 5.5) in the Seine; any building ≤ 10 m whose centre is in the water (not on an island) is now a deckhouse: plain, flat. (The 0700 bake.) Original: (48.860148, 2.293350) — probably OSM: a building way on the
       water (a péniche mapped `building=*`). Drop buildings whose footprint is in the river, or dress them as a boat.
-- [ ] **Bike path through a building, no tunnel drawn** (48.862405, 2.335062 — the Louvre's passages): owner, "Paris
+- [x] **Bike path through a building, no tunnel drawn** — the Louvre's guichets: a passage through a landmark's building found no building (the model's claimed ones are filtered out of the tile), so no vault; the claimed buildings are kept for the passages (TileData.claimedBuildings). Arches on the façade and the vault inside now; the vault's ceiling reads open from inside — to look at. Original: (48.862405, 2.335062 — the Louvre's passages): owner, "Paris
       actually has a lot of roads going through buildings. Very unusual". `tunnel=building_passage` is a `passage`
       (render/passages.ts draws an arch); check why this one isn't — the way may be `covered=yes` on a cycleway, or the
       building is a landmark model that doesn't cut its arch.
@@ -82,7 +82,7 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
 - [ ] **The Seine's industrial banks** (around Javel/Grenelle): "the river side is all industrial buildings … if OSM has
       these and we're not rendering them, that is not ideal". Check the package against an osmium count of `building=*`
       on the left bank there; find the filter if short.
-- [ ] **The Institut du monde arabe's parvis** (48.849176, 2.356543): "the plaza has little default buildings which are
+- [x] **The Institut du monde arabe's parvis kiosks** — four 14–17 m² `building=yes historic=yes` cubes; every building under 30 m² is now a plain flat box with no shops (cubes, kiosks, vents, sheds). The spiral's glass: still open. Original: (48.849176, 2.356543): "the plaza has little default buildings which are
       in fact plaza elements" (OSM building ways for the parvis's kiosks/vents, drawn as houses with chimneys); "the glass
       around the spiral also doesn't appear" (the Tour des Livres' glazed cage, museums/institut-monde-arabe.ts).
 - [ ] **Saint-Lazare garden** (48.875637, 2.353635): a palm garden behind the médiathèque (Françoise-Sagan); "we have that

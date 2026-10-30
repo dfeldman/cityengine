@@ -118,14 +118,15 @@ export function passagesLayer(scene: Scene, terrain: Terrain): TileLayer {
   }
 }
 
-function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings'>, terrain: Terrain,
+function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings'> & { claimedBuildings?: CityPackage['buildings'] }, terrain: Terrain,
   rect: { x0: number; z0: number; x1: number; z1: number }, name: string): Mesh | null {
   const passages = pkg.edges.filter((e) => e.passage)
   if (passages.length === 0) return null
   const mine = (q: P): boolean => q.x >= rect.x0 && q.x < rect.x1 && q.z >= rect.z0 && q.z < rect.z1
   const CELL = 50
   const grid = new Map<string, { ring: P[]; x0: number; x1: number; z0: number; z1: number; top: number; wall: Rgb }[]>()
-  for (const b of pkg.buildings) {
+  // (with the buildings a landmark's model took: the Louvre's guichets are passages through a modelled wing)
+  for (const b of [...pkg.buildings, ...(pkg.claimedBuildings ?? [])]) {
     // on the ground, or a part bridging the passage low enough to be its ceiling
     if ((b.minHeight ?? 0) > 7) continue
     // (a fuel canopy stands on columns over open ground: a footway under it is not a passage through a building)

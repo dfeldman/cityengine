@@ -41,6 +41,12 @@ export interface TileData {
   key: string
   edges: PackedEdge[]
   buildings: PackedBuilding[]
+  /**
+   * The buildings a landmark's model replaced (render/prepare.ts), kept for the passages alone: a way through a modelled
+   * building — the Louvre's guichets over the Place du Carrousel — finds its building here and gets its vault (owner,
+   * 2026-10-30: "bike trails go through a tunnel through a building, we don't show the tunnel though"). Run time only.
+   */
+  claimedBuildings?: PackedBuilding[]
   fringe: PackedFringe[]
   areas: TileArea[]
   /** x,z pairs */
@@ -351,6 +357,7 @@ export function nearOf(source: TileSource, key: string, exists: (k: string) => b
       for (const e of t.edges) if (!edges.has(e.id)) { edges.add(e.id); around.edges.push(e) }
       for (const r of t.rails) if (!rails.has(r.id)) { rails.add(r.id); around.rails.push(r) }
       around.buildings.push(...t.buildings)
+      if (t.claimedBuildings?.length) (around.claimedBuildings ??= []).push(...t.claimedBuildings)
       around.fringe.push(...t.fringe)
       around.areas.push(...t.areas)
       for (const v of t.trees) around.trees.push(v)
