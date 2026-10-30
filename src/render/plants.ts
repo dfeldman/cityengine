@@ -12,6 +12,7 @@
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
+import { shareMaterials } from './shared-materials.ts'
 import '@babylonjs/loaders/glTF/2.0'
 import type { Scene } from '@babylonjs/core/scene'
 import { Carriageways } from '../city/carriageways.ts'
@@ -370,6 +371,8 @@ export class Plants {
       if (mat) { mat.transparencyMode = 1; mat.alphaCutOff = 0.35; mat.needDepthPrePass = false }
       m.setEnabled(false)
     }
+    // (one bark and one leaf for the whole library, not one per file: render/shared-materials.ts)
+    shareMaterials(this.scene, parts)
     return parts
   }
 

@@ -715,6 +715,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         fullReady.delete(k)
         src.forget(k)
         prepared.tiles.delete(k)
+        city.forget(k)
         const [dx, dz] = k.split(',').map(Number)
         city.terrain.dropTile(dx, dz)
       }

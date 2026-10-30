@@ -25,6 +25,7 @@ import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight'
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
 import { PEOPLE } from './layers.ts'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
+import { shareMaterials } from './shared-materials.ts'
 import type { Scene } from '@babylonjs/core/scene'
 import '@babylonjs/loaders/glTF/2.0'
 import { Vector3 as V3 } from '@babylonjs/core/Maths/math.vector'
@@ -345,6 +346,8 @@ export class Vegetation {
         }
         m.isPickable = false
       }
+      // (one bark and one leaf for the whole library, not one per file: render/shared-materials.ts)
+      shareMaterials(this.scene, [...new Set([...parts, ...far, ...farther])])
       const model: Model = { parts, far, farther, park, top: entry.bounds?.top ?? entry.height ?? 12 }
       models.push(model)
       return model

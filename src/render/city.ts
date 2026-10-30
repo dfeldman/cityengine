@@ -1751,7 +1751,33 @@ export class City {
   /** the highest road surface drawn over a point (city/grade.ts `deckAt`): what a car stands on */
   deckAt(x: number, z: number): number | null { return this.grade.deckAt(x, z) }
 
+  /*
+   * LETTING A FAR TILE GO (owner, 2026-10-29: "memory is hitting 3800mb"). game.ts drops a tile's raw data beyond
+   * MID + 2, but the city held its buildings, areas and courts for the session, so every tile ever visited stayed —
+   * eight jumps across Paris took the heap (after a GC) from 326 MB to 1.1 GB. `forget` lets those go, the bulk of a
+   * tile; its streets, junctions and furniture stay (they are filed across tiles behind seen-sets, and small). The
+   * tile coming back is ingested light: just what was let go, put back.
+   */
+  private readonly light = new Set<string>()
+  forget(k: string): void {
+    if (!this.ingested.has(k) || this.light.has(k)) return
+    this.buildingsIn.delete(k)
+    this.areasIn.delete(k)
+    this.courtsIn.delete(k)
+    this.stallCache.delete(k)
+    this.light.add(k)
+  }
+
   ingest(t: TileData): void {
+    if (this.light.has(t.key)) {
+      this.light.delete(t.key)
+      const [tx, tz] = t.key.split(',').map(Number)
+      this.terrain.addTile(tx, tz, t.terrain)
+      this.buildingsIn.set(t.key, t.buildings)
+      this.areasIn.set(t.key, t.areas.map((a) => ({ ...a, level: a.level })))
+      if (t.courts && t.courts.length > 0) this.courtsIn.set(t.key, t.courts)
+      return
+    }
     if (this.ingested.has(t.key)) return
     this.ingested.add(t.key)
     /*
