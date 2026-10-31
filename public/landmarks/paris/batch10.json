@@ -1,0 +1,72 @@
+[
+  {
+    "osm": [
+      "way/64384784"
+    ],
+    "name": "Tower, Rue Vandrezanne (west)",
+    "procedural": "tourVandrezanne2",
+    "height": 92,
+    "note": "batch10/towers.ts: OSM/priority height; frame g2-12: white, recessed balconies, glass base",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/1072935717"
+    ],
+    "name": "Tower, Rue Vandrezanne (east)",
+    "procedural": "tourVandrezanne2",
+    "height": 90,
+    "note": "batch10/towers.ts: OSM/priority height; frame g2-12: white, recessed balconies, glass base",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/1527120955"
+    ],
+    "name": "Tower, Quai de la Seine",
+    "procedural": "tourQuaiSeine",
+    "height": 93,
+    "note": "batch10/towers.ts: OSM/priority height; frame g2-13: white, stepped top",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/78406808"
+    ],
+    "name": "Tour Blanqui Corvisart",
+    "procedural": "tourBlanqui",
+    "height": 66,
+    "note": "batch10/towers.ts: OSM/priority height; frame g2-15: beige-cream",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/238749843"
+    ],
+    "name": "Tour Bred",
+    "procedural": "tourBred",
+    "height": 63,
+    "note": "batch10/towers.ts: OSM/priority height; frame g2-18: white fine grid, stone base",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/227927908"
+    ],
+    "name": "Tower, Place des Fêtes",
+    "procedural": "tourFetes",
+    "height": 85,
+    "note": "batch10/towers.ts: OSM/priority height; frame g2-20: tan fine grid, glass podium",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/79626702"
+    ],
+    "name": "Paris Marriott Rive Gauche",
+    "procedural": "marriottRiveGauche",
+    "height": 54,
+    "note": "batch10/towers.ts: OSM/priority height; no photo; skin a guess",
+    "madeBy": "claude-sonnet-5-5"
+  }
+]

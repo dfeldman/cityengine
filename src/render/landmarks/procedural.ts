@@ -29,6 +29,7 @@ import { PARIS_BATCH6 } from './paris/batch6/index.ts'
 import { PARIS_BATCH7 } from './paris/batch7/index.ts'
 import { PARIS_BATCH8 } from './paris/batch8/index.ts'
 import { PARIS_BATCH9 } from './paris/batch9/index.ts'
+import { PARIS_BATCH10 } from './paris/batch10/index.ts'
 import { parisCivic, type KitArgs } from './paris/kit/recipes.ts'
 import { barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal, roadPortal } from './paris/extras.ts'
 import { colonneDeJuillet } from './paris/colonne-de-juillet.ts'
@@ -86,7 +87,7 @@ export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitAr
   // San Francisco's (render/landmarks/sf/index.ts)
   ...SF_BUILDERS,
   // Paris's families (PARIS_PARITY.md): each its own folder and its own manifest file
-  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1, ...PARIS_BUGS, ...PARIS_BATCH2, ...PARIS_BATCH3, ...PARIS_BATCH4, ...PARIS_BATCH5, ...PARIS_BATCH6, ...PARIS_BATCH7, ...PARIS_BATCH8, ...PARIS_BATCH9,
+  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1, ...PARIS_BUGS, ...PARIS_BATCH2, ...PARIS_BATCH3, ...PARIS_BATCH4, ...PARIS_BATCH5, ...PARIS_BATCH6, ...PARIS_BATCH7, ...PARIS_BATCH8, ...PARIS_BATCH9, ...PARIS_BATCH10,
   // (the exceptions, said by kind and date: paris/kit/)
   parisCivic,
   barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal, roadPortal,
