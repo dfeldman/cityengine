@@ -33,10 +33,11 @@ describe('Paris\'s fronts', () => {
     for (const period of [3, 4, 5, 6, 9, 12]) expect(new Set(styles(AT.elysee, period))).toEqual(new Set(['haussmann']))
     expect(new Set(styles(AT.tour, 9, { tags: { building: 'office' } }))).toEqual(new Set(['haussmann']))
   })
-  it('the 15th and 16th are never brick, and glass only says so', () => {
+  it('the 15th and 16th are never brick, and glass only where OSM says so', () => {
     for (const at of [AT.convention, AT.passy]) for (const period of [3, 4, 5]) expect(share(styles(at, period), 'brick')).toBe(0)
     expect(share(styles(AT.convention, 9), 'skyscraper')).toBe(0)
-    expect(share(styles(AT.convention, 9, { tags: { building: 'office' } }), 'skyscraper')).toBe(1)
+    expect(share(styles(AT.convention, 9, { tags: { building: 'office' } }), 'skyscraper')).toBe(0)
+    expect(share(styles(AT.convention, 9, { tags: { 'building:material': 'glass' } }), 'skyscraper')).toBe(1)
   })
   it('further out, brick is one in many, and a school is likelier', () => {
     const flats = share(styles(AT.belleville, 4), 'brick')
@@ -45,7 +46,18 @@ describe('Paris\'s fronts', () => {
     expect(share(styles(AT.belleville, 4, { tags: { amenity: 'school' } }), 'brick')).toBeGreaterThan(0.25)
     expect(share(styles(AT.belleville, 4, { area: 2000 }), 'brick')).toBeLessThan(0.03)
   })
-  it('a hospital outside the centre is still glass', () => {
-    expect(share(styles(AT.belleville, 9, { tags: { amenity: 'hospital' } }), 'skyscraper')).toBe(1)
+  it('a hospital outside the centre is likelier glass than its neighbours, not always', () => {
+    const glass = share(styles(AT.belleville, 9, { tags: { amenity: 'hospital' } }), 'skyscraper')
+    expect(glass).toBeGreaterThan(0.25)
+    expect(glass).toBeLessThan(0.45)
+  })
+  it('a modern building is cream or white; glass is the rare one, except at La Défense', () => {
+    // (owner, 2026-10-31: "in Paris many are cream or white"; "a few curtain wall buildings around, especially in la defense")
+    expect(share(styles(AT.belleville, 9), 'skyscraper')).toBeLessThan(0.05)
+    const offices = share(styles(AT.belleville, 9, { tags: { building: 'office' } }), 'skyscraper')
+    expect(offices).toBeGreaterThan(0.1)
+    expect(offices).toBeLessThan(0.3)
+    expect(share(styles([48.8917, 2.24], 9, { tags: { building: 'office' } }), 'skyscraper')).toBeGreaterThan(0.8)
+    expect(share(styles(AT.belleville, 5), 'skyscraper')).toBe(0)
   })
 })

@@ -9,8 +9,8 @@
  *   before 1851        the old houses of the Marais and the faubourgs: plastered, shuttered, lower (`marais`)
  *   1851–1914          Haussmann's Paris and its Belle Époque (`haussmann`, each front dressed its own way)
  *   1915–1939          the interwar blocks: cream stone, a few in brick over a cream ground floor (`brick`) outside the centre
- *   1940 on            the post-war fronts: cream, flat, regular (`bauhaus` in Paris's cream), towers past 11 storeys
- *   a hospital/clinic  glass after 1939 (`skyscraper`'s curtain wall), stone before; every other facility its period
+ *   1940 on            the post-war fronts: cream or white, flat, regular (`bauhaus` in Paris's cream), towers past 11 storeys
+ *   a hospital/clinic  stone before 1940, then like any modern building but likelier glass; every other facility its period
  *   undated            the city's own mix, as before
  */
 import type { BuildingFacts, Classifier } from '../building-types.ts'
@@ -22,12 +22,13 @@ export const classifyParis: Classifier = (b: BuildingFacts) => {
   const out = (archetype: string, style: StyleId, rule: string) => ({ archetype, style, district: 'paris', rule })
   const zone = frontZone(b.lat, b.lon)
   /*
-   * NOT ALL CREAM (owner, 2026-10-30: "we also should have more variety of modern buildings. quite a few that we've rendered
-   * as cream imitation hausmann are actually curtain wall"). APUR dates Paris proper only, so the suburbs in the box — Neuilly,
-   * Levallois, Boulogne, round La Défense — had no record and took the default stone; and APUR leaves 7,794 of its own
-   * undated, "most of them post-war" by its own note. So: an office or a shop block of no known age is modern glass; a
-   * tower of no known age is a modern tower; a large undated footprint counts as post-war. Glass by a seeded share of
-   * the rest, more of it the later and the larger the building. Only outside the cream districts (paris/arrondissements.ts).
+   * GLASS IS RARE. It was everything from 1968 on that was an office or a shop, and a share of the rest (owner, 2026-10-30: "more
+   * variety of modern buildings"), which came to 8,200 dark curtain walls. But (2026-10-31): "we draw them all as dark curtain walls, which
+   * made sense for san francisco. but in Paris many are cream or white - still modern styles but not the curtain wall style. but there are a
+   * few curtain wall buildings around, especially in la defense". 13 street photographs of those buildings that could be read: one or two
+   * of glass, the rest white render, cream panels, and stone. So glass where OSM says it, in La Défense, now and then on a late office
+   * block, on some hospitals (ones "often glass or metal exteriors"), and the modern default is cream or white. APUR dates Paris proper only:
+   * the suburbs in the box, and 7,794 of its own, count as post-war when large.
    */
   const hash = (Math.imul(b.id, 2654435761) >>> 0) % 100
   const kind = b.tags.building ?? ''
@@ -38,32 +39,36 @@ export const classifyParis: Classifier = (b: BuildingFacts) => {
   /*
    * The one kind that is never Haussmann (owner, 2026-10-29, from street view: "the only buildings i've found that are not
    * really ever hausmann is hospitals and clinics, which of course are a more modern style, often glass or metal
-   * exteriors"): a hospital or a clinic built after 1939 is glass; the old ones — the Hôtel-Dieu, the Salpêtrière — stone.
+   * exteriors"): the old ones — the Hôtel-Dieu, the Salpêtrière — stone; one built after 1939 likelier glass than its neighbours.
    */
   const t = b.tags
   const hospital = /^(hospital|clinic)$/.test(t.amenity ?? '') || /^(hospital|clinic)$/.test(t.building ?? '') || t.healthcare === 'hospital' || t.healthcare === 'clinic'
+  const saysGlass = /glass|mirror/.test(`${t['building:material'] ?? ''} ${t.material ?? ''} ${t['building:facade:material'] ?? ''} ${t['building:cladding'] ?? ''}`)
+  const defense = Math.hypot((b.lon - 2.24) * 73270, (b.lat - 48.8917) * 111320) < 1300
+  /** the chance in 100 that a modern building of this period is a curtain wall */
+  const glassShare = (period: number): number => {
+    if (saysGlass) return 100
+    if (defense) return business || tall ? 90 : b.area >= 1500 ? 50 : 10
+    if (zone === 'beyond') return business ? 40 : tall ? 20 : b.area >= 1500 ? 15 : 3
+    if (hospital) return zone === 'cream' ? 15 : 35
+    if (zone === 'cream') return 0
+    if (period < 7) return 0
+    const late = period >= 9
+    return business ? (late ? 20 : 8) : late ? (tall ? 10 : b.area >= 1500 ? 8 : 2) : 0
+  }
   // "every building has a hausmann facade even if it is modern"
   if (zone === 'haussmann') {
     if (dated && known <= 2) return out('old', 'marais', `period ${known}`)
     return out('haussmann', 'haussmann', 'the centre-west: a Haussmann front whatever its age')
   }
   if (!dated) {
-    if (zone === 'cream') {
-      if (business || tall) return tall && hash < 50 ? out('tower', 'towerblock', 'undated tower') : out('office', 'skyscraper', 'undated office or tower: glass')
-      return b.area >= 400 ? out('postwar', 'bauhaus', 'undated, large: post-war') : null
-    }
-    if (business) return out('office', 'skyscraper', 'undated office or shops: glass')
-    if (tall) return hash < 50 ? out('office', 'skyscraper', 'undated tower: glass') : out('tower', 'towerblock', 'undated tower')
-    if (b.area >= 400) return hash < 30 ? out('office', 'skyscraper', 'undated, large: glass') : out('postwar', 'bauhaus', 'undated, large: post-war')
-    return null
+    if (hash < glassShare(7)) return out('office', 'skyscraper', 'undated: curtain wall')
+    if (tall) return out('tower', 'towerblock', 'undated tower')
+    return business || b.area >= 400 ? out('postwar', 'bauhaus', 'undated, large or offices: post-war') : null
   }
   const period = known
-  if (period >= 6) {
-    // the later and the larger, the likelier the glass: 1968 on 20%, 1982 on 40%, offices and shops always from 1968
-    const glassShare = zone === 'cream' ? 0 : period >= 9 ? 40 : period >= 7 ? 20 : 0
-    if ((period >= 7 && business) || hash < glassShare + (zone !== 'cream' && b.area >= 1500 ? 25 : 0)) return out('office', 'skyscraper', `period ${period}: curtain wall`)
-  }
-  if (hospital) return period <= 5 ? out('civic', 'classical', `hospital, ${period}`) : out('hospital', 'skyscraper', `hospital, ${period}`)
+  if (period >= 6 && hash < glassShare(period)) return out(hospital ? 'hospital' : 'office', 'skyscraper', `period ${period}: curtain wall`)
+  if (hospital && period <= 5) return out('civic', 'classical', `hospital, ${period}`)
   if (period <= 2) return out('old', 'marais', `period ${period}`)
   if (period <= 5) {
     /*
@@ -78,5 +83,7 @@ export const classifyParis: Classifier = (b: BuildingFacts) => {
     if (hash < share) return out('brick', 'brick', `period ${period}, ${zone}: one of the few in brick`)
     return period === 5 ? out('postwar', 'bauhaus', `period ${period}, cream`) : out('haussmann', 'haussmann', `period ${period}, cream`)
   }
-  return (b.levels ?? 0) >= 12 ? out('tower', 'towerblock', `period ${period}, ${b.levels} levels`) : out('postwar', 'bauhaus', `period ${period}`)
+  // (punched windows on a third of the mid-rises, ribbons on the rest: both white or cream)
+  const levels = b.levels ?? 0
+  return levels >= 12 || (levels >= 5 && hash % 3 === 0) ? out('tower', 'towerblock', `period ${period}, ${levels} levels`) : out('postwar', 'bauhaus', `period ${period}`)
 }

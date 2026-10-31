@@ -130,6 +130,18 @@
       ],
       "bauhaus": [
         {
+          "wall": "#f1efe8",
+          "trim": "#e3e0d7",
+          "roof": "#6f777d",
+          "accent": "#26282a"
+        },
+        {
+          "wall": "#e9e8e2",
+          "trim": "#dbdad3",
+          "roof": "#6a7278",
+          "accent": "#232527"
+        },
+        {
           "wall": "#ece5d6",
           "trim": "#dcd3c0",
           "roof": "#6f777d",
