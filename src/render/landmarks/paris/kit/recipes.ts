@@ -8,8 +8,11 @@ import { church, type ChurchSpec } from '../../church.ts'
 import type { Material } from '../../facade.ts'
 import { civic, type CivicSpec } from './civic.ts'
 
-/** (`word`, on a place of worship, is its faith: temple, synagogue, mosque, chapelle; a church has none) */
-export interface KitArgs { kind: string; p: number; word?: string; seed?: number }
+/**
+ * (`word`, on a place of worship, is its faith: temple, synagogue, mosque, chapelle; a church has none. `noTower`: a chapel
+ * hemmed in by its block, like Notre-Dame-du-Liban, whose tower would only stand through the neighbours' roofs)
+ */
+export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean }
 
 /** the building's materials and windows by its date: what the kinds share */
 function byDate(p: number): Pick<CivicSpec, 'wall' | 'windows' | 'roof'> {
@@ -95,7 +98,8 @@ function eglise(p: number, seed: number, big: boolean, faith: string): ChurchSpe
 /** the registered builder: `{"procedural": "parisCivic", "kit": {"kind": "ecole", "p": 3}}` */
 export function parisCivic(out: MeshBuilder, fit: Fit, a?: KitArgs): void {
   if (a?.kind === 'eglise') {
-    church(out, fit, eglise(a.p, a.seed ?? 0, fit.hx * fit.hz * 4 > 1400, a.word ?? ''))
+    const spec = eglise(a.p, a.seed ?? 0, fit.hx * fit.hz * 4 > 1400, a.word ?? '')
+    church(out, fit, a.noTower ? { ...spec, tower: null } : spec)
     return
   }
   const k = KINDS[a?.kind ?? 'equipement'] ?? KINDS.equipement

@@ -5,7 +5,9 @@
  * "a key i could press in dev mode that would show what the building i was looking at was") and arms it (a crosshair); a click on a
  * building or a model fills the box, I or Esc puts it away. A building: where the click landed, its baked fields, every manifest entry that
  * names it (and the file to edit), and its OSM tags — address and all — fetched from openstreetmap.org. A model: its
- * manifest entry whole, and where it was placed.
+ * manifest entry whole, and where it was placed. And Shift with a letter opens the spot in the middle of the view elsewhere (owner, 2026-10-31:
+ * "keys in dev mode to jump to street view, mapillary, or google earth for that spot"; "maybe google maps too"): V Street View, M Mapillary,
+ * E Google Earth, G Google Maps.
  */
 import type { Scene } from '@babylonjs/core/scene'
 import { arrondissementOf, frontZone } from '../city/paris/arrondissements.ts'
@@ -21,6 +23,27 @@ export interface InspectorSources {
   /** a model's manifest entry and its placement, by the model's name */
   model(name: string): { entry: Record<string, unknown> | null; placed: Record<string, unknown> | null }
 }
+
+/** Degrees as Google Earth's own search links spell them: `48%C2%B050%2707%2e5%22N+2%C2%B022%2717%2e7%22E`. */
+function earthCoord(deg: number, pos: string, neg: string): string {
+  const tenths = Math.round(Math.abs(deg) * 36000)
+  const d = Math.floor(tenths / 36000), m = Math.floor(tenths / 600) % 60, sec = tenths % 600
+  const whole = String(Math.floor(sec / 10)).padStart(2, '0')
+  return `${d}%C2%B0${String(m).padStart(2, '0')}%27${whole}%2e${sec % 10}%22${deg < 0 ? neg : pos}`
+}
+
+/** The same spot in the other maps. `heading` (degrees, 0 north) is the way Street View looks. */
+export function mapLinks(lat: number, lon: number, heading = 0): { streetView: string; mapillary: string; earth: string; maps: string } {
+  const la = lat.toFixed(6), lo = lon.toFixed(6)
+  return {
+    streetView: `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${la},${lo}&heading=${Math.round(((heading % 360) + 360) % 360)}`,
+    mapillary: `https://www.mapillary.com/app/?lat=${la}&lng=${lo}&z=18`,
+    earth: `https://earth.google.com/web/search/${earthCoord(lat, 'N', 'S')}+${earthCoord(lon, 'E', 'W')}`,
+    maps: `https://www.google.com/maps/search/?api=1&query=${la},${lo}`,
+  }
+}
+
+const JUMPS: Record<string, keyof ReturnType<typeof mapLinks>> = { KeyV: 'streetView', KeyM: 'mapillary', KeyE: 'earth', KeyG: 'maps' }
 
 const CSS = `
 .sr-inspect { position: fixed; z-index: 50; right: 12px; top: 64px; width: min(460px, 94vw); max-height: 78vh; overflow: auto;
@@ -45,10 +68,25 @@ export class Inspector {
     document.body.appendChild(this.box)
     addEventListener('keydown', (e) => {
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
-      if (e.code === 'KeyI') { this.arm(!this.armed); e.stopImmediatePropagation(); e.preventDefault() }
+      if (e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey && JUMPS[e.code]) {
+        const at = this.spot()
+        if (at) open(mapLinks(at.lat, at.lon, at.heading)[JUMPS[e.code]], '_blank')
+        e.stopImmediatePropagation(); e.preventDefault()
+      } else if (e.code === 'KeyI') { this.arm(!this.armed); e.stopImmediatePropagation(); e.preventDefault() }
       else if (e.code === 'Escape' && (this.armed || !this.box.hidden)) { this.arm(false); this.box.hidden = true }
     }, { capture: true })
     canvas.addEventListener('click', (e) => { if (this.armed) this.pick(e.offsetX, e.offsetY) })
+  }
+
+  /** the ground or building in the middle of the view, or under the camera when that's the sky; and which way it's looking */
+  private spot(): { lat: number; lon: number; heading: number } | null {
+    const s = this.src.scene, cam = s.activeCamera
+    if (!cam) return null
+    const e = s.getEngine()
+    const hit = s.pick(e.getRenderWidth() / 2, e.getRenderHeight() / 2, (m) => m.isEnabled() && m.isVisible && !/^(sky|ground:sea)/.test(m.name))
+    const p = hit?.hit && hit.pickedPoint ? hit.pickedPoint : cam.globalPosition
+    const d = cam.getForwardRay().direction
+    return { ...this.src.latLon(p.x, p.z), heading: (Math.atan2(d.x, d.z) * 180) / Math.PI }
   }
 
   private arm(on: boolean): void {
@@ -75,9 +113,11 @@ export class Inspector {
     const p = hit.pickedPoint
     const ll = this.src.latLon(p.x, p.z)
     const arr = arrondissementOf(ll.lat, ll.lon)
+    const links = mapLinks(ll.lat, ll.lon)
     const where = `<span class="k">at</span> ${ll.lat.toFixed(6)}, ${ll.lon.toFixed(6)}  <span class="k">world</span> ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}\n`
       + (arr !== null ? `<span class="k">arrondissement</span> ${arr}  <span class="k">fronts</span> ${frontZone(ll.lat, ll.lon)}\n` : '')
-      + `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${ll.lat},${ll.lon}" target="_blank">Street View</a> · `
+      + `<a href="${links.streetView}" target="_blank">Street View</a> · <a href="${links.mapillary}" target="_blank">Mapillary</a> · `
+      + `<a href="${links.earth}" target="_blank">Earth</a> · <a href="${links.maps}" target="_blank">Maps</a> · `
       + `<a href="https://www.openstreetmap.org/#map=19/${ll.lat}/${ll.lon}" target="_blank">OSM map</a>\n`
     const m = hit.pickedMesh
     const name = m.name
