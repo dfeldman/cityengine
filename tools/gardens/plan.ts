@@ -11,6 +11,8 @@ export interface GardenPlan {
   ring: LL[]
   /** the mapped trees inside `ring` go too: the plan's rows ARE those trees (OSM's and the register's would stand in its gravel) */
   clearMapped?: boolean
+  /** nothing to draw: the ring only keeps the scatter off what a landmark lays there */
+  ringOnly?: boolean
   gravel?: LL[][]
   lawn?: LL[][]
   beds?: { ring: LL[]; rim?: boolean }[]

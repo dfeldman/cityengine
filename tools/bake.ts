@@ -68,7 +68,7 @@ import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
 import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks } from './bridges.ts'
-import { bridgesOverStreets, straightDeck } from './rail-levels.ts'
+import { bridgesOverStreets, footWaysOnTracks, spanOverRailways, straightDeck } from './rail-levels.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -1431,6 +1431,12 @@ async function bake(spec: CitySpec): Promise<void> {
     })
     console.log(`  APUR: ${added} buildings OSM does not have, added from their footprints (of ${rings.length})`)
   }
+  /*
+   * OSM's `height` is to the top of the roof, and the city's walls go up to `height` with the roof on top of that. On most roofs the difference is
+   * a storey, but a tower with a tall slope (the Tours Société Générale: 167 m, roof:height=30) stood at 197 m (owner, 2026-10-30: "the roofs are
+   * tilted into the sky"). Paris's: its walls stop at the eaves.
+   */
+  if (spec.region === 'paris') for (const b of buildings) if (b.roof === 'skillion' && b.roofHeight >= 6 && (b.height ?? 0) - b.roofHeight > 3) b.height = Math.round((b.height! - b.roofHeight) * 100) / 100
   reportLevels(buildings, inferredCount)
 
   /*
@@ -1498,13 +1504,16 @@ async function bake(spec: CitySpec): Promise<void> {
   // ---- the railways trains run on
   const rails: PackedRail[] = []
   const sunkRails: PackedRail[] = []
+  // (the tracks in tunnels, not drawn: a street that dips over one near its mouth is on a deck the bare earth has not got: rail-levels.ts `spanOverRailways`)
+  const buriedRails: { points: number[] }[] = []
   for (const w of railways) {
     if (!w.geometry || w.geometry.length < 2) continue
     // A tunnel is a railway you cannot see, and a train on one drives straight through the buildings above
     // it. OSM tags Paris full of these; `layer` below zero catches the rest.
-    if (w.tags.tunnel && w.tags.tunnel !== 'no') continue
-    if (w.tags.covered === 'yes') continue
-    if (parseInt(w.tags.layer ?? '0', 10) < 0) continue
+    if ((w.tags.tunnel && w.tags.tunnel !== 'no') || w.tags.covered === 'yes' || parseInt(w.tags.layer ?? '0', 10) < 0) {
+      if (w.tags.railway === 'rail') buriedRails.push({ points: packPoints(w.geometry.map((g) => proj.toLocal(g))) })
+      continue
+    }
     /*
      * …and a railway OSM puts below the street some other way: `level` below zero, or `cutting=yes`, with no layer to
      * say otherwise. The RER C along the Quai André-Citroën is mapped so (level=-1, cutting=yes, no layer), and drawn at
@@ -1901,6 +1910,47 @@ async function bake(spec: CitySpec): Promise<void> {
         console.log(`  lidar ground in ${g.name}: ${posts.length} fine posts (datum shift ${shift.toFixed(2)} m)`)
       }
     }
+  }
+  /*
+   * THE COUR NAPOLÉON IS NOT A PIT (owner, 2026-10-30, 48.860979, 2.336218). Through the Pyramid's glass and its basins the survey read the
+   * hall under the court: bare earth at −6 m, against +1 m at the court's west end, and water drawn at its lowest bank less the river's drop
+   * stood in a stone pit 6 m deep, the pyramids at the bottom of it. A ring a region names (`levelGrounds`) is levelled at the median
+   * height of its edge, eased back into the ground over 12 m outside it.
+   */
+  for (const lv of streetRegion.levelGrounds ?? []) {
+    const r: number[] = lv.ring.flatMap(([lat, lon]) => { const q = proj.toLocal({ lat, lon }); return [q.x, q.z] })
+    const edge: number[] = []
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    const seg = (i: number, x: number, z: number): number => {
+      const j = (i + 2) % r.length, dx = r[j] - r[i], dz = r[j + 1] - r[i + 1]
+      const t = Math.max(0, Math.min(1, ((x - r[i]) * dx + (z - r[i + 1]) * dz) / (dx * dx + dz * dz || 1)))
+      return Math.hypot(r[i] + dx * t - x, r[i + 1] + dz * t - z)
+    }
+    for (let i = 0; i < r.length; i += 2) {
+      x0 = Math.min(x0, r[i]); x1 = Math.max(x1, r[i]); z0 = Math.min(z0, r[i + 1]); z1 = Math.max(z1, r[i + 1])
+      const j = (i + 2) % r.length, L = Math.hypot(r[j] - r[i], r[j + 1] - r[i + 1])
+      for (let d = 0; d < L; d += FINE_STEP) edge.push(sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, r[i] + ((r[j] - r[i]) * d) / L, r[i + 1] + ((r[j + 1] - r[i + 1]) * d) / L))
+    }
+    edge.sort((a, b) => a - b)
+    const y = lv.y ?? edge[edge.length >> 1]
+    const FADE = lv.fade ?? 12
+    let n = 0
+    for (let rr = Math.max(0, Math.floor((z0 - FADE - fz0) / FINE_STEP)); rr <= Math.min(frows - 1, Math.ceil((z1 + FADE - fz0) / FINE_STEP)); rr++) {
+      for (let c = Math.max(0, Math.floor((x0 - FADE - fx0) / FINE_STEP)); c <= Math.min(fcols - 1, Math.ceil((x1 + FADE - fx0) / FINE_STEP)); c++) {
+        const i = rr * fcols + c
+        const x = fx0 + c * FINE_STEP, z = fz0 + rr * FINE_STEP
+        let k = 1
+        if (!inRing(r, x, z)) {
+          let d = Infinity
+          for (let q = 0; q < r.length; q += 2) d = Math.min(d, seg(q, x, z))
+          if (d >= FADE) continue
+          k = 1 - d / FADE
+        }
+        fineGround[i] += (y - fineGround[i]) * k
+        n++
+      }
+    }
+    console.log(`  ${lv.name}: ${n} fine posts levelled at ${y.toFixed(2)} m`)
   }
   /*
    * POND BEDS (2026-10-26). The lidar has no ground returns over water, and the tiles' height there is a smoothed
@@ -2483,6 +2533,10 @@ async function bake(spec: CitySpec): Promise<void> {
   // drop (city/package.ts waterLevels). Taken at bank level, every bridge over the Seine — and the Pont
   // Morland over the Arsenal's mouth — was lifted the full clearance above its own quays (BUGS.md #31, #37)
   const wetAreas = areas.filter((a) => a.kind === 'water')
+  // (a river of real size, where the region knows its level: the channels and the basins that touch it take it from there)
+  if (streetRegion.riverLevel !== undefined) {
+    for (const a of wetAreas) if (Math.abs(area(unpackPoints(a.ring))) >= 8000) a.level = Math.round((streetRegion.riverLevel - datumRaw) * 100) / 100
+  }
   const wetLevels = waterLevels(wetAreas, groundAt, streetRegion.riverDrop ?? 0, seaLevel)
   const waterBodies = wetAreas.map((a, k) => ({ ring: unpackPoints(a.ring), level: wetLevels[k] }))
   /*
@@ -2672,7 +2726,7 @@ async function bake(spec: CitySpec): Promise<void> {
   if (deckWork) console.log(`  bridge decks: ${describe(deckWork.report)}`)
   // …and the ways meeting a deck the model moved meet it again (tools/bridges.ts `meetDecks`: Pont au Change, the Alma)
   if (deckWork) {
-    const met = meetDecks(kept.filter((e) => !e.authored))
+    const met = meetDecks(kept.filter((e) => !e.authored), false, spec.region === 'paris')
     if (met.length) console.log(`  ${met.length} ways met their modelled bridge's conformed deck`)
   }
   /*
@@ -2977,6 +3031,8 @@ async function bake(spec: CitySpec): Promise<void> {
       straight++
     }
     console.log(`  rail crossings: ${got.spans} untagged bridges over streets, ${got.over} streets made bridges over cuttings, ${straight} short tagged decks straight from bank to bank, ${got.flat} crossings with no bank to stand on`)
+    const dips = spanOverRailways(kept.filter((e) => !e.authored), buriedRails, rails.filter((r) => r.kind === 'rail'), groundAt)
+    console.log(`  streets dipping over a railway run straight: ${dips}`)
   }
   let railDecks = 0
   for (const r of rails) {
@@ -3392,7 +3448,7 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it), ${inserted} vertices added on humps`)
     // (the lift can take a deck's end up from the way that met it, so they meet once more: the Alma's and the Carrousel's cycleways)
-    const met = meetDecks(kept.filter((e) => !e.authored), true)
+    const met = meetDecks(kept.filter((e) => !e.authored), true, spec.region === 'paris')
     if (met.length) console.log(`  ${met.length} ways met their decks again after the lift`)
   }
   /*
@@ -3438,6 +3494,16 @@ async function bake(spec: CitySpec): Promise<void> {
       for (const e of keepE) kept.push(e)
     }
     console.log(`  ${before - kept.length} foot ways dropped that ran down a street's own centreline (the same alley mapped twice)`)
+  }
+  // (Paris: nor on the tracks, with nothing under them: tools/rail-levels.ts `footWaysOnTracks`)
+  if (spec.region === 'paris') {
+    const onTracks = footWaysOnTracks(kept, rails)
+    if (onTracks.size) {
+      const keepE = kept.filter((e) => !onTracks.has(e.id))
+      kept.length = 0
+      for (const e of keepE) kept.push(e)
+    }
+    console.log(`  ${onTracks.size} foot ways dropped that ran along a railway track`)
   }
   // ---- the ride graph, built here only to be measured (the game builds its own at load, IMPROVEMENTS §2.2)
   const asEdges: Edge[] = kept.map((e) => {

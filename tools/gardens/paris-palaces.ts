@@ -719,9 +719,37 @@ const lamoignon = (): GardenPlan => {
   }
 }
 
+/**
+ * THE ROND DU CARROUSEL (owner, 2026-10-30, 48.861462, 2.334068: "there is a patch of dirt in the carousel which is in reality a beautiful
+ * continuous hedge"): the lawn between OSM's hedges, whole, where the paved area under it came through wherever the ground was higher
+ * (the lidar has the Pyramide inversée as a pit). Its square at the middle, stone and glass flush with the lawn, from IGN's aerial.
+ */
+const rondCarrousel = (): GardenPlan => {
+  const L = (x: number, z: number): LL => [48.8605 + z / 111320, 2.332 + x / 73270]
+  const cx = 155, cz = 104.5, R = 27.7
+  const square: [number, number][] = [[148.4, 119.6], [169, 111.5], [160.9, 90.85], [140.25, 99]]
+  const angle = ([x, z]: [number, number]): number => Math.atan2(z - cz, x - cx)
+  const sector = (a: [number, number], b: [number, number]): LL[] => {
+    // (the arc behind this side of the square, clockwise from corner a to corner b as the square runs, and back along the side)
+    let a0 = angle(a), a1 = angle(b)
+    if (a1 > a0) a1 -= 2 * Math.PI
+    const arc: LL[] = []
+    for (let k = 0; k <= 8; k++) { const t = a0 + ((a1 - a0) * k) / 8; arc.push(L(cx + Math.cos(t) * R, cz + Math.sin(t) * R)) }
+    return [...arc, L(b[0], b[1]), L(a[0], a[1])]
+  }
+  const ring: LL[] = []
+  for (let k = 0; k < 32; k++) ring.push(L(cx + Math.cos((k / 32) * 2 * Math.PI) * R, cz + Math.sin((k / 32) * 2 * Math.PI) * R))
+  return {
+    name: 'Le rond du Carrousel',
+    ring,
+    gravel: [square.map(([x, z]) => L(x, z))],
+    lawn: square.map((c, i) => sector(c, square[(i + 1) % 4])),
+  }
+}
+
 export const PALACE_GARDENS: GardenPlan[] = [
   luxParterre(), luxSenate(), luxSenateWest(), luxOrangerie(), luxKiosque(), ...luxChestnuts(), luxVerger(), petitLuxembourg(), luxAvenue(),
-  tuileriesCarre(), tuileriesCouvert(), tuileriesFerACheval(), carrousel(),
+  tuileriesCarre(), tuileriesCouvert(), tuileriesFerACheval(), carrousel(), rondCarrousel(),
   ...vosges(),
   ...esplanade(), invalidesFan(), invalidesDome(), intendant(), abondance(),
   ...rodinParterres(), rodinSouth(),

@@ -147,6 +147,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   rgCourts: 'plaza', sibylleTemple: 'monument', enclosSaintLazare: 'garden',
   // …and the Rive Gauche family (paris/rivegauche/): the Jardin des Plantes' beds
   jardinPerspective: 'garden', jardinAnnexes: 'garden',
+  // the owner's round (paris/minor/, 2026-10-30): two stations by point, paint on the ground, a pavilion on a bridge, and what stands in or on a restyled building
+  nanterreUniversite: 'station', pontCardinet: 'station', auteuilGrounds: 'garden', puteauxCemetery: 'garden', ceinturePavilion: 'structure', extensionDrums: 'structure', bergeresCupolas: 'structure',
   // bridges — these bind through the city SKYLINE (tools/cities.ts), not through any manifest
   goldenGateBridge: 'bridge', bayBridge: 'bridge', bayBridgeNear: 'bridge',
   // masts and lattices: a tower with no floors is not a building

@@ -773,7 +773,7 @@ export function buildBuilding(
   atlas: AtlasManifest,
   seed: number,
   baseY = 0,
-  roofSpec?: { shape: RoofShape; height: number; direction?: number; colour: [number, number, number] },
+  roofSpec?: { shape: RoofShape; height: number; direction?: number; colour: [number, number, number]; walled?: boolean },
   /** what the region puts on its roofs — chimneys, dormers (roofs.ts `addRoofscape`) */
   roofscape?: Roofscape,
   /** whether wall i (ring[i] → ring[i+1]) faces a street, and what kind; the shop awnings go only there */
@@ -804,6 +804,7 @@ export function buildBuilding(
     y: eaves,
     height: low ? 0 : roofSpec?.height ?? 0,
     direction: roofSpec?.direction,
+    walled: roofSpec?.walled,
     // (a FLAT stucco roof is tar and gravel: the palette's roof is the colour of its tiles, and on a flat top it painted
     //  the Sunset and the Marina as acres of orange slabs from any hill — Golden Gate Heights, 2026-10-06)
     colour: roofSpec?.colour ?? ((low || (roofSpec?.shape ?? 'flat') === 'flat') && plan.style === 'stucco'

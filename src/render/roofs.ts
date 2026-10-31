@@ -225,6 +225,8 @@ export interface RoofSpec {
   height: number
   direction?: number
   colour: [number, number, number]
+  /** a skillion's walls come up to its slope (see below) */
+  walled?: boolean
 }
 
 /**
@@ -325,6 +327,21 @@ export function buildRoof(out: MeshBuilder, ring: Pt[], spec: RoofSpec): number 
       }
       // and the gable wall it leaves at the high end
       skirt(out, ring, ring, y, y, colour)
+      /*
+       * …which had no height, and the walls stop at the eaves (owner, 2026-10-30, the Tours Société Générale, 48.891995, 2.230358: "the roofs
+       * are tilted into the sky"): 30 m of open wedge under a plane in the air. Where a region asks (`walled`), up to the plane all round.
+       */
+      if (spec.walled) {
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i], b = ring[(i + 1) % ring.length]
+          const ya = y + h * ((a.x * ux + a.z * uz - lo) / span), yb = y + h * ((b.x * ux + b.z * uz - lo) / span)
+          const ex = b.x - a.x, ez = b.z - a.z, l = Math.hypot(ex, ez) || 1
+          const n: [number, number, number] = [ez / l * (area2(ring) > 0 ? 1 : -1), 0, -ex / l * (area2(ring) > 0 ? 1 : -1)]
+          // (both ways round: a ring's winding is not promised here, and the wedge is seen from outside only)
+          out.quad([[a.x, y, a.z], [b.x, y, b.z], [b.x, yb, b.z], [a.x, ya, a.z]], n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, 0)
+          out.quad([[b.x, y, b.z], [a.x, y, a.z], [a.x, ya, a.z], [b.x, yb, b.z]], [-n[0], 0, -n[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, 0)
+        }
+      }
       return y + h
     }
 

@@ -58,6 +58,11 @@ export type { Planting }
 
 /** metres from the eye within which a tree is drawn at its full detail */
 const NEAR_LOD = 90
+/** at most this many trees in view at full detail, and this many at the middle level */
+const MAX_FULL = 50
+const MAX_LIGHT = 300
+/** past this a tree is drawn as its crown alone, in cities that ask (`farCrowns`) */
+const FAR_CROWN = 350
 
 export class Vegetation {
   private readonly scene: Scene
@@ -92,6 +97,41 @@ export class Vegetation {
   /** the palms `palmChance` puts in place of a form-0 planting */
   private districtPalms: Model[] = []
   private focus: { x: number; z: number } | null = null
+  /** far trees as crowns (Paris, with its forests in view) */
+  farCrowns = false
+  private crownMesh: Mesh | null = null
+
+  /** The far tree: a mound of height 1 on its model's own leaf, made once the models are loaded. */
+  private makeCrown(): void {
+    if (this.crownMesh || !this.farCrowns) return
+    const leaf = this.models.flatMap((m) => m.far).find((q) => /leaf|leaves|foliage|crown/i.test(q.material?.name ?? '') || /primitive1/.test(q.name))
+    if (!leaf) return
+    const mb = new MeshBuilder()
+    const R = 3, S = 6
+    for (let i = 0; i <= R; i++) {
+      const t = (i / R) * Math.PI
+      for (let j = 0; j <= S; j++) {
+        const a = (j / S) * Math.PI * 2
+        const nx = Math.sin(t) * Math.cos(a), ny = Math.cos(t), nz = Math.sin(t) * Math.sin(a)
+        mb.positions.push(nx * 0.36, 0.62 + ny * 0.38, nz * 0.36)
+        mb.normals.push(nx, ny, nz)
+        mb.uvs.push((j / S) * 2, (i / R) * 1.5)
+        mb.colors.push(1, 1, 1, 1)
+      }
+    }
+    for (let i = 0; i < R; i++) for (let j = 0; j < S; j++) {
+      const k = i * (S + 1) + j, b = k + 1, c = k + S + 1, d = c + 1
+      mb.indices.push(k, d, b, k, c, d)
+    }
+    const m = new Mesh('trees:crown', this.scene)
+    mb.toVertexData().applyToMesh(m)
+    m.material = leaf.material
+    m.renderingGroupId = leaf.renderingGroupId
+    m.isPickable = false
+    m.alwaysSelectAsActiveMesh = true
+    m.setEnabled(false)
+    this.crownMesh = m
+  }
   private plantedAt: { x: number; z: number } | null = null
 
   private readonly flora: Flora
@@ -519,7 +559,31 @@ export class Vegetation {
   /** Every tree of the tiles present on its model: the instance buffers, rewritten whole. */
   private plant(): void {
     const models = this.models
+    this.makeCrown()
     const buckets = new Map<Mesh, Float32Array[]>()
+    /*
+     * A BUDGET OF DETAIL, by how many trees are near and not only how near. A fixed radius was right along a boulevard and eleven million
+     * triangles in the Luxembourg (2026-10-30: 437 trees within 150 m, its groves in rows 6 m apart, against 3.2 million for everything
+     * else in view): in a grove the radii close in, so the nearest keep their full model and the rest are the lighter ones they already
+     * look like from a few trees back.
+     */
+    let nearR = NEAR_LOD, midR = 2.5 * NEAR_LOD
+    if (this.focus) {
+      const near: number[] = []
+      for (const ps of this.byTile.values()) {
+        for (const p of ps) {
+          const d = Math.hypot(p.x - this.focus.x, p.z - this.focus.z)
+          if (d < midR) near.push(d)
+        }
+      }
+      if (near.length > MAX_FULL) {
+        near.sort((a, b) => a - b)
+        nearR = Math.min(nearR, near[MAX_FULL])
+        if (near.length > MAX_LIGHT) midR = Math.min(midR, near[MAX_LIGHT])
+      }
+    }
+
+    const crowns: number[] = []
 
     for (const [k, ps] of this.byTile) {
       let seat = this.seated.get(k)
@@ -529,7 +593,13 @@ export class Vegetation {
         // near the eye the full tree, beyond it the lighter one
         const d = this.focus ? Math.hypot(p.x - this.focus.x, p.z - this.focus.z) : 0
         const mat = seat!.mats.subarray(i * 16, i * 16 + 16)
-        for (const part of d < NEAR_LOD ? model.parts : d < 2.5 * NEAR_LOD ? model.far : model.farther) {
+        /*
+         * Past FAR_CROWN a tree is a crown, the same leaf on a mound of 36 triangles against its model's 500, and it stays where it stands
+         * (owner, 2026-10-30: "better lod culling of trees without removing trees from the model"). A forest in view is 30,000 of them.
+         * A palm keeps its model: its outline is the whole of it.
+         */
+        if (this.farCrowns && this.crownMesh && d > FAR_CROWN && !model.palm) { crowns.push(mat[12], mat[13], mat[14], p.height); return }
+        for (const part of d < nearR ? model.parts : d < midR ? model.far : model.farther) {
           const list = buckets.get(part) ?? []
           list.push(mat)
           buckets.set(part, list)
@@ -537,6 +607,20 @@ export class Vegetation {
       })
     }
     this.plantedAt = this.focus ? { ...this.focus } : null
+    if (this.crownMesh) {
+      if (!crowns.length) { this.crownMesh.thinInstanceCount = 0; this.crownMesh.setEnabled(false) } else {
+        const n = crowns.length / 4
+        const buf = new Float32Array(n * 16)
+        for (let i = 0; i < n; i++) {
+          const h = crowns[i * 4 + 3], o = i * 16
+          buf[o] = h; buf[o + 5] = h; buf[o + 10] = h; buf[o + 15] = 1
+          buf[o + 12] = crowns[i * 4]; buf[o + 13] = crowns[i * 4 + 1]; buf[o + 14] = crowns[i * 4 + 2]
+        }
+        this.crownMesh.thinInstanceSetBuffer('matrix', buf, 16)
+        this.crownMesh.thinInstanceRefreshBoundingInfo(false)
+        this.crownMesh.setEnabled(true)
+      }
+    }
 
     // trees do not move, so the matrices are written once and never touched again
     for (const model of models) {

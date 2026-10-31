@@ -54,8 +54,16 @@ export function barriereEnfer(out: MeshBuilder, fit: Fit): void {
 
 /** Local +z is the way out of the tunnel; the track comes out of the arch at the middle of the wall, at y 0. */
 export function railPortal(out: MeshBuilder, fit: Fit): void {
+  portal(out, fit, [0.5, 0.48, 0.44], false)
+}
+
+/** A road's tunnel (tools/paris-portals.ts): the same mouth in pale concrete, its opening square-headed and a lorry's height. */
+export function roadPortal(out: MeshBuilder, fit: Fit): void {
+  portal(out, fit, [0.62, 0.61, 0.58], true)
+}
+
+function portal(out: MeshBuilder, fit: Fit, stone: Rgb, road: boolean): void {
   const ash = surfaceTag('ashlar')
-  const stone: Rgb = [0.5, 0.48, 0.44]
   const hx = fit.hx, hz = fit.hz
   /*
    * On its track, not on the street over it (owner, 2026-10-30, Rue de Londres: "wall in the middle of the road"; "the hole should be
@@ -67,8 +75,8 @@ export function railPortal(out: MeshBuilder, fit: Fit): void {
   const street = Math.max(g(0, -hz - 5), g(-hx * 0.6, -hz - 5), g(hx * 0.6, -hz - 5)) - track
   const span = Math.max(4.5, hx - 3)
   const room = street > 7 ? street - 0.4 : Math.max(7, fit.height)
-  const rise = Math.max(1.2, Math.min(span * 0.75, 5.5, room - 5))
-  const springing = Math.min(4, room - rise - 0.5)
+  const rise = road ? 0.5 : Math.max(1.2, Math.min(span * 0.75, 5.5, room - 5))
+  const springing = road ? Math.min(5, room - rise - 0.5) : Math.min(4, room - rise - 0.5)
   const top = track + Math.max(room, springing + rise + 0.5)
   const foot = track - 2
   const mid = (top + foot) / 2, half = (top - foot) / 2
@@ -76,7 +84,7 @@ export function railPortal(out: MeshBuilder, fit: Fit): void {
   const face = hz - 0.3
   box(out, -(span + hx) / 2, mid, face, (hx - span) / 2, half, 0.3, stone, ash)
   box(out, (span + hx) / 2, mid, face, (hx - span) / 2, half, 0.3, stone, ash)
-  const seg = 28
+  const seg = road ? 4 : 28
   for (let k = 0; k < seg; k++) {
     const x0 = -span + (2 * span * k) / seg, x1 = -span + (2 * span * (k + 1)) / seg
     const y = (x: number): number => track + springing + rise * Math.sqrt(Math.max(0, 1 - (x / span) ** 2))
@@ -94,7 +102,7 @@ export function railPortal(out: MeshBuilder, fit: Fit): void {
   box(out, 0, top - 0.1, 0, span, 0.1, hz - 0.5, DARK, FIXED)
   box(out, 0, top + 0.05, 0, span + 0.35, 0.05, hz - 0.5, stone, ash)
   // and the voussoirs round the arch, a paler ring
-  for (let k = 0; k < seg; k++) {
+  if (!road) for (let k = 0; k < seg; k++) {
     const a = ((k + 0.5) / seg) * Math.PI
     box(out, Math.cos(a) * (span + 0.25), track + springing + Math.sin(a) * (rise + 0.25), face + 0.32, 0.3, 0.3, 0.05, shade(stone, 1.25), ash)
   }

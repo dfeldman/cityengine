@@ -45,7 +45,6 @@ const KNOWN: Record<string, string[]> = {
     // (the check takes a turned rectangle north-up. Really turned, its 506 × 120 m between the allées touches six buildings at its
     // west end, the Grandes Serres among them: the rectangle only clears scattered trees; the beds are OSM's and stand clear of them)
     'intersects | Jardin des Plantes: the perspective',
-    'intersects | Louvre Pyramid',
     'intersects | Colonnes de Buren',
     'intersects | Danton',
     // the parks family, wave 2 (2026-10-30): Tschumi's folies stand hard against the halls the park was built round (the
@@ -57,6 +56,16 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Parc de la Villette: Folie P4',
     'intersects | Parc de la Villette: Folie P8',
     "intersects | Jardin d'Acclimatation: the Porte des Sablons",
+    // the owner's round (paris/minor/, 2026-10-30). Rectangles over what their own shapes clear: the cemetery's and the course's boxes take in the streets
+    // and the stands round them; the stations' boxes the service huts beside them (at Pont Cardinet also APUR's fill, which the next bake leaves out for a
+    // model placed by point; at Nanterre three fringe parts). The drums and the cupolas stand in and on restyled buildings by design: the cupolas 32 m up
+    'intersects | Gare de Nanterre-Université',
+    'intersects | Gare de Pont Cardinet',
+    "intersects | Hippodrome d'Auteuil: the Espace Paparemborde's grounds and the course",
+    'intersects | Cimetière Nouveau de Puteaux',
+    "intersects | Bâtiment L'Extension: the red drums",
+    'intersects | Les Bergères: the cupolas',
+    'height | Les Bergères: the cupolas',
     // the Saint-Lazare palm garden (2026-10-30): placed by point in its court, its box against the Médiathèque's walls and its
     // beds flat on its own paving
     'intersects | Enclos Saint-Lazare: the palm garden',

@@ -13,8 +13,8 @@ import { archAlong, domeOf, drumArches, FIXED, onion, orthodoxCross, quarter } f
  * kokoshnik arches — a steep eight-sided pyramid of the same pale stone, its faces pricked with three rows of little
  * dormers, a neck, a gold ONION and the three-barred cross. Four small ones stand in the angles of the cross: round
  * shafts, a clock stage, an open belfry, a tent, a gold onion. Down the front, over the main cornice, the great round
- * LUNETTE of gold mosaic with Christ in it; below that the front apse under a low dome of blue slate, its gold cupola,
- * and the carved stone porch with its blue hood and dark glazed doors at the top of the steps.
+ * LUNETTE of gold mosaic with Christ in it; below that the front apse under a low dome of old copper, its gold cupola,
+ * and the carved stone porch with its copper hood and dark glazed doors at the top of the steps.
  *
  * In the city the outline (way 70192893, height 6) came out as a low mansard lump with five pyramids. The model replaces the
  * outline and its parts (450615183–7). Frame: OSM's plan turned square to the arms, −z the porch toward the Rue Daru at
@@ -29,7 +29,8 @@ const TRIM: Rgb = hex('#f2e9d0')
 const DEEP: Rgb = hex('#c4b591')
 const TENT: Rgb = hex('#e2d7bc')
 const GOLD: Rgb = hex('#e8b53f')
-const SLATE: Rgb = hex('#50678a')
+/** The apses' domes, the porch's hood: "doesn't actually have blue roofing, more copper" (owner, 2026-10-30, and Commons's "Paris Cathédrale Saint-Alexandre-Nevsky 1": a dull grey-green with pale ribs). */
+const COPPER: Rgb = hex('#62756c')
 const GLASS: Rgb = hex('#23262c')
 const DOOR: Rgb = hex('#3c2a20')
 const RED: Rgb = hex('#6c3f33')
@@ -56,11 +57,11 @@ function nevsky(out: MeshBuilder): void {
     const eaves = a === 'front' ? 10.2 : 11.6
     prism(out, x, z, F + 0.3, eaves, r, 18, STONE, FIXED, r, false)
     prism(out, x, z, eaves - 0.1, eaves + 0.45, r + 0.3, 18, TRIM, FIXED, r + 0.3, true)
-    domeOf(out, x, z, eaves + 0.45, r + 0.1, a === 'front' ? 3.1 : 2.8, SLATE, quarter, { sides: 18, steps: 6 })
+    domeOf(out, x, z, eaves + 0.45, r + 0.1, a === 'front' ? 3.1 : 2.8, COPPER, quarter, { sides: 18, steps: 6 })
     if (a !== 'front') drumArches(out, x, z, r, 5.0, 8, 1.1, 4.4, GLASS)
     else {
       // the front apse carries the gold cupola, on a slim blue drum
-      prism(out, x, z, eaves + 3.2, eaves + 4.1, 0.75, 10, SLATE, FIXED, 0.62, false)
+      prism(out, x, z, eaves + 3.2, eaves + 4.1, 0.75, 10, COPPER, FIXED, 0.62, false)
       domeOf(out, x, z, eaves + 4.0, 1.15, 2.6, GOLD, onion, { sides: 14, steps: 12 })
       orthodoxCross(out, x, z, eaves + 6.5, 1.5, GOLD)
     }
@@ -94,7 +95,7 @@ function nevsky(out: MeshBuilder): void {
     const qx = CX + nx * (R + 0.2)
     const qz = CZ + nz * (R + 0.2)
     archAlong(out, qx, qz, nz, -nx, nx, nz, 28.8, 3.9, 2.0, TRIM)
-    archAlong(out, qx + nx * 0.05, qz + nz * 0.05, nz, -nx, nx, nz, 28.95, 2.6, 1.3, SLATE)
+    archAlong(out, qx + nx * 0.05, qz + nz * 0.05, nz, -nx, nx, nz, 28.95, 2.6, 1.3, COPPER)
     prism(out, qx + nx * 0.1, qz + nz * 0.1, 29.05, 29.75, 0.28, 8, GOLD, FIXED, 0.28, true)
   }
   tent(out, CX, CZ, 28.8, 5.45, 42.6, 0.95, 3)
@@ -182,7 +183,7 @@ function gable(out: MeshBuilder, x: number, z: number, heading: number, r: numbe
     const am = (a0 + a1) / 2
     const up: [number, number, number] = [tx * Math.cos(am), Math.sin(am), tz * Math.cos(am)]
     // the extrados, from the face back 4 m
-    out.quad([P(a0, r, 0), P(a0, r, -4), P(a1, r, -4), P(a1, r, 0)], up, [[0, 0], [1, 0], [1, 1], [0, 1]], SLATE, FIXED)
+    out.quad([P(a0, r, 0), P(a0, r, -4), P(a1, r, -4), P(a1, r, 0)], up, [[0, 0], [1, 0], [1, 1], [0, 1]], COPPER, FIXED)
     // the moulded ring
     out.quad([P(a0, r - 0.55, 0.12), P(a0, r + 0.1, 0.12), P(a1, r + 0.1, 0.12), P(a1, r - 0.55, 0.12)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], TRIM, FIXED)
     // the tympanum
@@ -237,7 +238,7 @@ function porch(out: MeshBuilder): void {
     out.quad([[X(a0, r), Y(a0, r), z0 - 0.02], [X(a1, r), Y(a1, r), z0 - 0.02], [xm, 7.4, z0 - 0.02], [xm, 7.4, z0 - 0.02]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], TRIM, FIXED)
     // the hood, from the arch's crown back to the apse
     out.quad([[X(a0, r + 0.1), Y(a0, r + 0.1), z0 - 0.12], [X(a0, r + 0.1), Y(a0, r + 0.1), -9.6], [X(a1, r + 0.1), Y(a1, r + 0.1), -9.6], [X(a1, r + 0.1), Y(a1, r + 0.1), z0 - 0.12]],
-      [Math.cos((a0 + a1) / 2), Math.sin((a0 + a1) / 2), 0], [[0, 0], [1, 0], [1, 1], [0, 1]], SLATE, FIXED)
+      [Math.cos((a0 + a1) / 2), Math.sin((a0 + a1) / 2), 0], [[0, 0], [1, 0], [1, 1], [0, 1]], COPPER, FIXED)
   }
   box(out, xm, 8.75, z0 + 0.1, 0.1, 0.1, 0.1, GOLD, FIXED)
 }

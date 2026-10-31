@@ -160,6 +160,40 @@ vec3 skyReflect(vec3 n) {
 vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   vec2 p = faceCoords(n);
   float vert = abs(n.y) < 0.7 ? 1.0 : 0.0;
+  if (sid > 16.5) {
+    // 17 BLOSSOM: a bed of flowers, its colour the bloom's, in a cell of about 22 cm: a plant to a cell, most with a bloom on the leaf.
+    // Far off, the mix of the two. (After the museum's parterre carpet, courtyard_visualizer/garden.js)
+    vec2 q = p / 0.22;
+    vec2 cell = floor(q);
+    float best = 9.0;
+    float pick = 0.0;
+    for (float dx = -1.0; dx < 1.5; dx += 1.0) {
+      for (float dz = -1.0; dz < 1.5; dz += 1.0) {
+        vec2 o = cell + vec2(dx, dz);
+        vec2 at = o + vec2(hash2(o), hash2(o + 17.0));
+        float d = length(q - at);
+        if (d < best) { best = d; pick = hash2(o + 41.0); }
+      }
+    }
+    vec3 leaf = vec3(0.045, 0.1, 0.035) * (0.7 + 0.7 * vnoise(p * 7.0));
+    float bloom = (1.0 - smoothstep(0.34, 0.5, best)) * step(0.22, pick);
+    vec3 near = mix(leaf, c * (0.8 + 0.5 * pick), bloom);
+    vec3 far = mix(leaf, c, 0.62) * (0.85 + 0.3 * vnoise(p * 0.9));
+    return mix(far, near, nearFade(25.0, 80.0));
+  }
+  if (sid > 15.5) {
+    // 16 CLIPPED: box and yew and pleached lime. Big bright clumps and dark cavities carry it from afar, small leaves up close: anything
+    // finer than a clump only shimmers away. (The museum's boxwood recipe, courtyard_visualizer/garden.js)
+    // (in world space, height folded in: a clipped side's normal leans upward to take the light, and would read as a top, in streaks)
+    vec2 w = vWorld.xz + vWorld.y * vec2(0.83, 0.57);
+    float clump = vnoise(w * 0.8 + 3.0) * 0.55 + vnoise(w * 2.1) * 0.45;
+    float cavity = smoothstep(0.58, 0.8, vnoise(w * 4.3 + 11.0));
+    float small = vnoise(w * 11.0) * 0.55 + vnoise(w * 27.0) * 0.45;
+    float tip = smoothstep(0.72, 0.86, vnoise(w * 19.0 + 5.0));
+    float fine = nearFade(30.0, 110.0);
+    float tone = 0.58 + 0.9 * clump - 0.42 * cavity + fine * (0.6 * (small - 0.5) + 0.3 * tip);
+    return c * tone;
+  }
   if (sid < 1.5) {
     // 1 ASHLAR: dressed stone blocks, 1.1 x 0.55 m
     float row = floor(p.y / 0.55);
@@ -383,7 +417,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

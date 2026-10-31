@@ -2,7 +2,7 @@
  * Paris's formal gardens, traced from IGN's aerial photographs (tools/ortho.ts) where OSM has not mapped their planting.
  * One file to a family; each plan says what it was traced from.
  */
-import { closed, frame, rect, type GardenPlan } from './plan.ts'
+import { closed, frame, rect, type GardenPlan, type LL } from './plan.ts'
 import { PALACE_GARDENS } from './paris-palaces.ts'
 import { PUBLIC_GARDENS } from './paris-public.ts'
 
@@ -38,4 +38,19 @@ const palaisRoyal = (): GardenPlan => {
   }
 }
 
-export const GARDENS: GardenPlan[] = [palaisRoyal(), ...PALACE_GARDENS, ...PUBLIC_GARDENS]
+/**
+ * The low quay on the Île de la Cité's south shore, Pont Neuf to the Pont Saint-Michel (owner, 2026-10-30: "a water level quay that is not
+ * in OSM"; aerial, 48.85490 2.34250, 0.34 m/px). About 19 m wide, pale stone, a row of trees at its upstream end. The bake levels the
+ * ground to it (regions.json `levelGrounds`, the same ring).
+ */
+const quaiBasCite = (): GardenPlan => {
+  const ring: LL[] = [[48.856668, 2.341177], [48.856427, 2.341441], [48.85577, 2.342221], [48.855062, 2.343079], [48.855205, 2.343149], [48.855786, 2.342546], [48.856351, 2.341757], [48.856668, 2.341441]]
+  return {
+    name: 'Quai bas de la Cité',
+    ring,
+    gravel: [ring],
+    rows: [{ line: [[48.856503, 2.341525], [48.855847, 2.342383]], spacing: 11, h: 13 }],
+  }
+}
+
+export const GARDENS: GardenPlan[] = [palaisRoyal(), quaiBasCite(), ...PALACE_GARDENS, ...PUBLIC_GARDENS]

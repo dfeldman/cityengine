@@ -517,20 +517,37 @@
     "note": "OSM maps the palace 12 m high: its walls to 25 m, the classical stone dress, steep slate roofs (the pavilions' own taller roofs are wanted next)."
   },
   {
-    "name": "Louvre Pyramid",
-    "procedural": "louvrePyramid",
-    "lat": 48.861025,
-    "lon": 2.335843,
-    "rotateDeg": 116,
-    "stone": false,
-    "note": "Pei's pyramid in the Cour Napoléon, square to the palace (the historic axis, bearing 116°), with the three small pyramids and the basins."
+    "name": "Tours Société Générale",
+    "osm": [
+      "way/226235094",
+      "way/226235095"
+    ],
+    "restyle": "operaGlass",
+    "note": "Alicante and Chassagne, La Défense (owner, 2026-10-30, 48.891995, 2.230358: \"colors are not quite right\"): OSM has them as pale glass, building:facade:colour #A2E1FA, where the office towers' palette is dark. A silvery glass from the styles there are; not their own colour."
   },
   {
-    "name": "Louvre Pyramid — OSM building",
+    "name": "Louvre Pyramid",
+    "procedural": "louvrePyramid",
     "osm": [
-      "way/375076234"
+      "way/375076234",
+      "way/53815259",
+      "way/53815260",
+      "way/53815261"
     ],
-    "note": "Placeholder: OSM maps the Pyramid as a 21.65 m building, drawn as a glass box round the model."
+    "lat": 48.861014,
+    "lon": 2.335852,
+    "size": [
+      36,
+      36
+    ],
+    "rotateDeg": 109.4,
+    "offset": [
+      0,
+      0.5,
+      0
+    ],
+    "stone": false,
+    "note": "Pei's pyramid in the Cour Napoléon on OSM way 375076234's outline, square to the palace (bearing 109.4, 6° off the historic axis), with the three small pyramids where OSM's ways 53815259–61 have them. All four ways replaced (they drew as a glass box and two small generic buildings). The court's ground is levelled by regions.json's `levelGrounds`, the basins are OSM's water."
   },
   {
     "name": "Notre-Dame",
@@ -1201,6 +1218,9 @@
   },
   {
     "include": "paris/rivegauche.json"
+  },
+  {
+    "include": "paris/minor.json"
   },
   {
     "include": "paris/civic.json"

@@ -194,6 +194,11 @@ export interface PackedArea {
    * Neither is GREEN and neither is planted.
    */
   kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt' | 'lot'
+  /**
+   * A river's surface, metres in this package's datum, where the region knows it (`riverLevel`) and its lowest bank would not do: one
+   * level per connected body meant the whole Seine took the lowest bank anywhere along it, and ran 12 m under central Paris (2026-10-30).
+   */
+  level?: number
   /** a paved square laid in the region's street brick: it opens off a brick street (tools/street-paint.ts) */
   brick?: true
   /**
@@ -475,6 +480,19 @@ export function steeperThanWall(e: PackedEdge): boolean {
   return false
 }
 
+/** water smaller than this, in m², is a basin in a square or a garden, not a river (the seven of the Cour Napoléon come to 2,900; the Tuileries's Grand Bassin to 6,000) */
+const POND = 8000
+/** …and how far under its kerb it lies */
+const POND_DROP = 0.3
+const ringArea = (r: number[]): number => {
+  let a = 0
+  for (let i = 0; i < r.length; i += 2) {
+    const j = (i + 2) % r.length
+    a += r[i] * r[j + 1] - r[j] * r[i + 1]
+  }
+  return Math.abs(a / 2)
+}
+
 /**
  * The level of each body of water: its lowest bank less the region's drop — and ONE level for bodies that
  * touch, the lowest of them. OSM maps the Seine as several polygons meeting along lines across the river,
@@ -506,7 +524,7 @@ export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number
   const own = water.map((a) => {
     let lv = Infinity
     for (let i = 0; i < a.ring.length; i += 2) lv = Math.min(lv, heightAt(a.ring[i], a.ring[i + 1]))
-    return lv - drop
+    return lv
   })
   const parent = water.map((_, i) => i)
   const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])))
@@ -527,6 +545,15 @@ export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number
   })
   const low = new Map<number, number>()
   own.forEach((lv, k) => { const r = find(k); low.set(r, Math.min(low.get(r) ?? Infinity, lv)) })
+  /*
+   * The drop is a river's, between its quays, and not a fountain's (owner, 2026-10-30, the Place André-Malraux: "this is a fountain
+   * but looks more like a hole"): 100 m² of water at the bottom of a 2.5 m stone pit. A body this small lies just under its kerb.
+   */
+  const size = new Map<number, number>()
+  water.forEach((a, k) => { const r = find(k); size.set(r, (size.get(r) ?? 0) + ringArea(a.ring)) })
+  low.forEach((lv, r) => low.set(r, lv - ((size.get(r) ?? 0) < POND ? Math.min(drop, POND_DROP) : drop)))
+  // a river whose surface is known outright takes it (PackedArea `level`), however low one of its banks lies downstream
+  water.forEach((a, k) => { if (a.level !== undefined) low.set(find(k), a.level) })
   // a component that reaches the sea IS the sea: it takes the sea's level rather than its lowest member
   const salt = new Set<number>()
   if (seaLevel !== null) water.forEach((a, k) => { if (a.sea) salt.add(find(k)) })

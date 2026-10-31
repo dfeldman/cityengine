@@ -7,6 +7,7 @@
  * Filed by tile the first time they are asked for, like the park railings. Heights are off the ground: the tile drapes them.
  */
 import { MeshBuilder } from './buildings.ts'
+import { surfaceTag } from './cartoon-material.ts'
 import { unpackPoints, type PackedGarden } from '../city/package.ts'
 
 type Point = { x: number; z: number }
@@ -22,7 +23,7 @@ const LIME: Rgb = [0.07, 0.125, 0.05]
 const LIME_FOOT: Rgb = [0.04, 0.08, 0.028]
 const LIME_TOP: Rgb = [0.09, 0.155, 0.055]
 const TRUNK: Rgb = [0.17, 0.13, 0.1]
-const YEW: Rgb = [0.045, 0.1, 0.05]
+const YEW: Rgb = [0.05, 0.11, 0.055]
 
 /** the ground's own tints: the pale raked stabilisé, the mown grass, the bed's soil */
 export const GARDEN_TINT: Record<'gravel' | 'lawn' | 'bed', Rgb> = {
@@ -39,9 +40,10 @@ const PLANTINGS: Rgb[][] = [
   [[0.64, 0.5, 0.07], [0.68, 0.62, 0.22]],
 ]
 const LEAF: Rgb = [0.05, 0.12, 0.04]
-/** the library's flower that stands in each planting's mass, near enough to see it (render/plants.ts) */
-const SPECIES = ['poppy', 'daisy', 'dahlia', 'lavender', 'wildflower', 'tulip']
 const plantingOf = (seed: number): number => Math.floor(noise(seed, 7) * PLANTINGS.length) % PLANTINGS.length
+
+const CLIPPED = surfaceTag('clipped')
+const BLOSSOM = surfaceTag('blossom')
 
 const noise = (a: number, b: number): number => {
   const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453
@@ -56,7 +58,7 @@ function face(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: 
 
 /** the same for clipped leaves, which take the light from above whichever way they face: a hedge's shaded side is not black */
 function leafFace(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: number, nz: number, c: Rgb): void {
-  out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y1, b.z], [a.x, y1, a.z]], [nx * 0.55, 0.83, nz * 0.55], UV, c, 0)
+  out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y1, b.z], [a.x, y1, a.z]], [nx * 0.55, 0.83, nz * 0.55], UV, c, CLIPPED)
 }
 
 /** a length of clipped hedge from a to b: its sides darker at the foot, a lighter top; the ends only where it `caps` */
@@ -85,13 +87,13 @@ function hedgePiece(out: MeshBuilder, a: Point, b: Point, y0: number, h: number,
     const rise = 0.3 + noise(a.x, a.z) * 0.5
     const am: V = [a.x, y1 + rise, a.z], bm: V = [b.x, y1 + rise, b.z]
     const up = hw / Math.hypot(hw, rise), lean = rise / Math.hypot(hw, rise)
-    out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], bm, am], [nx * lean, up, nz * lean], UV, top, 0)
-    out.quad([am, bm, [br.x, y1, br.z], [ar.x, y1, ar.z]], [-nx * lean, up, -nz * lean], UV, toned(top, 1.14), 0)
-  } else out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], [br.x, y1, br.z], [ar.x, y1, ar.z]], [0, 1, 0], UV, top, 0)
+    out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], bm, am], [nx * lean, up, nz * lean], UV, top, CLIPPED)
+    out.quad([am, bm, [br.x, y1, br.z], [ar.x, y1, ar.z]], [-nx * lean, up, -nz * lean], UV, toned(top, 1.14), CLIPPED)
+  } else out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], [br.x, y1, br.z], [ar.x, y1, ar.z]], [0, 1, 0], UV, top, CLIPPED)
   if (capA) leafFace(out, al, ar, y0, y1, -ux, -uz, side)
   if (capB) leafFace(out, br, bl, y0, y1, ux, uz, side)
   // (a crown on trunks: its underside is what you ride under)
-  if (y0 > 1) out.quad([[ar.x, y0, ar.z], [br.x, y0, br.z], [bl.x, y0, bl.z], [al.x, y0, al.z]], [0, -1, 0], UV, foot, 0)
+  if (y0 > 1) out.quad([[ar.x, y0, ar.z], [br.x, y0, br.z], [bl.x, y0, bl.z], [al.x, y0, al.z]], [0, -1, 0], UV, foot, CLIPPED)
 }
 
 /**
@@ -110,7 +112,7 @@ function leafySide(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number,
   for (let j = 0; j < ROWS; j++) {
     for (let i = 0; i < COLS; i++) {
       const lit = 0.72 + (0.34 * (j + 0.5)) / ROWS + noise(a.x + i * 5.3, a.z + j * 7.9) * 0.3
-      out.quad([corner(i, j), corner(i + 1, j), corner(i + 1, j + 1), corner(i, j + 1)], [nx * 0.55, 0.83, nz * 0.55], UV, toned(c, lit), 0)
+      out.quad([corner(i, j), corner(i + 1, j), corner(i + 1, j + 1), corner(i, j + 1)], [nx * 0.55, 0.83, nz * 0.55], UV, toned(c, lit), CLIPPED)
     }
   }
 }
@@ -145,7 +147,7 @@ function topiary(out: MeshBuilder, x: number, z: number, h: number, shape: numbe
       const mx = Math.sin(((k + 0.5) / sides) * Math.PI * 2), mz = Math.cos(((k + 0.5) / sides) * Math.PI * 2)
       const up = (r0 - r1) / Math.max(0.01, y1 - y0)
       const len = Math.hypot(1, up)
-      out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [q.x, y1, q.z], [p.x, y1, p.z]], [mx / len, up / len, mz / len], UV, tone, 0)
+      out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [q.x, y1, q.z], [p.x, y1, p.z]], [mx / len, up / len, mz / len], UV, tone, CLIPPED)
     }
   }
 }
@@ -166,19 +168,18 @@ function flowers(out: MeshBuilder, ring: Point[], seed: number, step: number, x0
       const px = x + (noise(x, z + 3) - 0.5) * step * 0.5, pz = z + (noise(x + 3, z) - 0.5) * step * 0.5
       if (!insideRing(ring, px, pz)) continue
       const n = noise(x, z)
-      // (the flower's colour in its leaf: a solid top reads as a square of paint from the path, and the real flowers stand over it)
-      const f = palette[n < 0.7 ? 0 : 1]
-      const c = n < 0.35 ? toned(LEAF, 0.9) : toned([f[0] * 0.5 + LEAF[0] * 0.5, f[1] * 0.5 + LEAF[1] * 0.5, f[2] * 0.5 + LEAF[2] * 0.5], 0.8 + noise(z, x + 9) * 0.3)
+      const f = toned(palette[n < 0.7 ? 0 : 1], 0.9 + noise(z, x + 9) * 0.3)
       const h = 0.14 + noise(z, x) * 0.1
       const w = step * (0.42 + noise(x + 5, z) * 0.2)
-      // a cushion: the flowers on its top, its own leaves down its sides
+      // a cushion of its own leaves
       const P: V[] = [[px - w, 0.06, pz - w], [px + w, 0.06, pz - w], [px + w, 0.06, pz + w], [px - w, 0.06, pz + w]]
       const t = w * 0.62
       const Q: V[] = [[px - t, h, pz - t], [px + t, h, pz - t], [px + t, h, pz + t], [px - t, h, pz + t]]
       const normals: V[] = [[0, 0.7, -0.7], [0.7, 0.7, 0], [0, 0.7, 0.7], [-0.7, 0.7, 0]]
       const sides = toned(LEAF, 0.8)
-      for (let i = 0; i < 4; i++) out.quad([P[(i + 1) % 4], P[i], Q[i], Q[(i + 1) % 4]], normals[i], UV, sides, 0)
-      out.quad([Q[3], Q[2], Q[1], Q[0]], [0, 1, 0], UV, c, 0)
+      for (let i = 0; i < 4; i++) out.quad([P[(i + 1) % 4], P[i], Q[i], Q[(i + 1) % 4]], normals[i], UV, n < 0.25 ? sides : f, n < 0.25 ? CLIPPED : BLOSSOM)
+      // (its blossoms in the shader: the library's real flowers are about 5,000 triangles each, twelve million in view at the Luxembourg)
+      out.quad([Q[3], Q[2], Q[1], Q[0]], [0, 1, 0], UV, f, BLOSSOM)
     }
   }
 }
@@ -268,23 +269,6 @@ export class GardenTiles {
   flatsIn(tx: number, tz: number): { ring: Point[]; kind: 'gravel' | 'lawn' | 'bed' }[] {
     const order = { gravel: 0, lawn: 1, bed: 2 }
     return [...(this.flats.get(`${tx},${tz}`) ?? [])].sort((a, b) => order[a.kind] - order[b.kind])
-  }
-
-  /** the real flowers in a tile's beds, for the near plants layer (past 250 m the bed's mass of colour is what is seen) */
-  flowersIn(tx: number, tz: number): { x: number; z: number; species: string; h: number; spin: number }[] {
-    const out: { x: number; z: number; species: string; h: number; spin: number }[] = []
-    const bx0 = tx * this.tile, bz0 = tz * this.tile
-    for (const b of this.beds.get(`${tx},${tz}`) ?? []) {
-      const species = SPECIES[plantingOf(b.seed)]
-      const step = Math.max(1.3, b.step * 1.5)
-      for (let x = Math.ceil(Math.max(b.x0, bx0) / step) * step; x < Math.min(b.x1, bx0 + this.tile); x += step) {
-        for (let z = Math.ceil(Math.max(b.z0, bz0) / step) * step; z < Math.min(b.z1, bz0 + this.tile); z += step) {
-          const px = x + (noise(z, x + 2) - 0.5) * step * 0.6, pz = z + (noise(x + 2, z) - 0.5) * step * 0.6
-          if (insideRing(b.ring, px, pz)) out.push({ x: px, z: pz, species, h: 0.5 + noise(x, z + 1) * 0.3, spin: noise(z + 1, x) * 6.28 })
-        }
-      }
-    }
-    return out
   }
 
   /**

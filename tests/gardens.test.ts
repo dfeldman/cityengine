@@ -25,7 +25,8 @@ describe('the traced gardens', () => {
     for (const g of GARDENS) {
       expect(g.ring.length, g.name).toBeGreaterThanOrEqual(3)
       const parts = (g.gravel?.length ?? 0) + (g.lawn?.length ?? 0) + (g.beds?.length ?? 0) + (g.hedges?.length ?? 0) + (g.pleached?.length ?? 0) + (g.rows?.length ?? 0) + (g.topiary?.length ?? 0)
-      expect(parts, g.name).toBeGreaterThan(0)
+      // (a ring alone is a plan too: it clears the scatter for what a model lays on the grass, as at Auteuil)
+      if (!g.ringOnly) expect(parts, g.name).toBeGreaterThan(0)
     }
   })
 

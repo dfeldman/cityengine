@@ -94,6 +94,8 @@ describe('a restyle naming an outline the bake replaced with its parts (BUGS.md 
  * the thing is genuinely not a building.
  */
 const BIG: Record<string, number> = {
+  // (the owner: "one of the most important monuments in the world, this could use a detailed model": its four groups are figures)
+  arcDeTriomphe: 45_000,
   // 2.7 km of deck, towers and cables, and a surface the rider crosses at eye level, so its long spans must
   // be finely subdivided or the depth buffer cannot sort the deck against the water beneath it
   goldenGateBridge: 40_000,

@@ -14,7 +14,9 @@ import { basin, blob, falls, G, lyingLion, octagon, seated, set } from './plaza-
  * corners, a rounded cap. OSM (way 40068036, height 0.4) gives the outer kerb's octagon, its flats at bearings 352, 37, 82…:
  * the frame is that, −z north to Bossuet. The tiers' widths, the lions lying on the diagonals and the shrine's proportions
  * are from two Commons photographs (Fontaine Saint-Sulpice Paris 2008-03-14.jpg and "6"), scaled on that kerb, not a survey; they
- * put the first basin nearer 15 m across than the "environ 10 mètres" of Wikipedia fr, whose figure may be another tier's.
+ * put the first basin nearer 15 m across than the "environ 10 mètres" of Wikipedia fr, whose figure may be another tier's. Taller
+ * (owner, 2026-10-30, 48.850911, 2.333336: "this monument is much taller"): on that 15 m, Commons's "Fontaine Saint-Sulpice Paris.jpg" has the
+ * shrine's wall a good 6 m to its cornice and the bishop in a niche of nearly 5, so the whole stands near 14 m to the cross, not 12.
  */
 const STONE: Rgb = hex('#d6cfbf')
 const PALE: Rgb = hex('#e2dccd')
@@ -24,19 +26,21 @@ const WATER: Rgb = hex('#6d93a0')
 const FALL: Rgb = hex('#b6cbd0')
 
 const R = 11
+/** the shrine's wall, its base to its cornice */
+const SHRINE = 6
 
 function shrineFace(q: MeshBuilder, y0: number): void {
   // (drawn on the −z face; `fourSides`-style copies are `set` round the centre by the caller)
   const hw = 2.0
-  const yt = y0 + 3.9
+  const yt = y0 + SHRINE
   // the arched niche in its shadow, the bishop in it
-  archAlong(q, 0, -hw - 0.03, 1, 0, 0, -1, y0 + 0.55, 2.3, 3.2, SHADOW)
-  set(q, 0, y0 + 0.55, -hw - 0.15, Math.PI, 1.72, (m) => seated(m, FIGURE, shade(STONE, 0.92)))
+  archAlong(q, 0, -hw - 0.03, 1, 0, 0, -1, y0 + 1.1, 2.5, 4.7, SHADOW)
+  set(q, 0, y0 + 1.1, -hw - 0.15, Math.PI, 2.1, (m) => seated(m, FIGURE, shade(STONE, 0.92)))
   // the die under the niche and its tablet
-  block(q, -1.5, 1.5, -hw - 0.12, -hw, y0 + 0.08, y0 + 0.55, PALE)
+  block(q, -1.5, 1.5, -hw - 0.12, -hw, y0 + 0.08, y0 + 1.1, PALE)
   // the arch's moulding: a crown of short beams round the niche
-  const r = 1.2
-  const sy = y0 + 0.55 + 3.2 - 1.15
+  const r = 1.3
+  const sy = y0 + 1.1 + 4.7 - 1.25
   for (let i = 0; i < 6; i++) {
     const a0 = (i / 6) * Math.PI
     const a1 = ((i + 1) / 6) * Math.PI
@@ -77,7 +81,7 @@ function draw(q: MeshBuilder): void {
   // the shrine: the corner pilasters, the wall, the cornice
   const y0 = G + 4.15
   const hw = 2.0
-  const yt = y0 + 3.9
+  const yt = y0 + SHRINE
   block(q, -hw, hw, -hw, hw, y0, yt, STONE)
   for (const [x, z] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) classicalColumn(q, x * (hw - 0.05), z * (hw - 0.05), y0, yt, 0.2, PALE, { order: 'corinthian', tier: 'mid' })
   block(q, -hw - 0.3, hw + 0.3, -hw - 0.3, hw + 0.3, yt, yt + 0.28, PALE)

@@ -25,7 +25,6 @@ import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPlantings, type Planting } from '../city/plantings.ts'
 import type { PlantZones } from '../city/zone-planting.ts'
-import type { GardenTiles } from './garden.ts'
 import { assetRootAndFile, fetchAssetJson } from '../assets.ts'
 
 interface PlantEntry { species: string; file: string; height: number }
@@ -282,10 +281,9 @@ export class Plants {
   models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number; named?: boolean; own?: number }[] = []
   /** the city's planting zones, when it has them (map format v3): which shrubs and flowers grow where */
   zones: PlantZones | null = null
-  /** a city's formal planting, whose beds have flowers in them */
-  garden: GardenTiles | null = null
   /** a city's woods walled with undergrowth along their roads and paths (plantTile `woodWalls`: Paris) */
   woodWalls = false
+  private plantedAt: { x: number; z: number } | null = null
   private dirty = false
 
   constructor(scene: Scene, terrain: Terrain, assetBase: string) {
@@ -346,12 +344,7 @@ export class Plants {
       name: 'plants',
       range: 2,
       build: (near, rect) => {
-        const planted = this.cleared(plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones, this.woodWalls))
-        // (a formal garden's flowers, past the clearing that keeps the lattice out of it: render/garden.ts)
-        const [tx, tz] = near.key.split(',').map(Number)
-        const beds = this.garden?.flowersIn(tx, tz) ?? []
-        for (const sp of new Set(beds.map((q) => q.species))) if (!this.named.has(sp)) this.named.set(sp, this.loadNamed(sp))
-        this.byTile.set(near.key, [...planted, ...beds.map((q) => ({ x: q.x, z: q.z, s: q.h, spin: q.spin, kind: 'shrub' as const, species: q.species }))])
+        this.byTile.set(near.key, this.cleared(plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones, this.woodWalls)))
         this.dirty = true
         return []
       },
@@ -499,7 +492,8 @@ export class Plants {
      */
     {
       const mb = new MeshBuilder()
-      const LEAF = [0.3, 0.44, 0.2]
+      // (Paris's clipped evergreens are dark; San Francisco's mound stood out lime green among them)
+      const LEAF = this.woodWalls ? [0.1, 0.19, 0.075] : [0.3, 0.44, 0.2]
       const R = 8, S = 14
       // a smooth mound: shared vertices with radial normals (one normal per quad shaded it as facets), gentle lumps,
       // its foot just under the ground so no skirt shows
@@ -533,13 +527,28 @@ export class Plants {
   }
   private core: Mesh | null = null
 
-  update(): void {
+  update(eye?: { x: number; z: number }): void {
+    /*
+     * BY HOW FAR, in a city that plants this much (Paris; 2026-10-30). A shrub is about 900 triangles with no lighter level, and a wooded
+     * park's lattice stands thousands in the tiles round the rider: 16 million triangles in the Luxembourg, 29 million in the Bois, for
+     * things that are not seen past a street's width. All of them within 90 m, one in three to 180 m, none beyond. A landmark's own
+     * named plants stay.
+     */
+    if (this.woodWalls && eye) {
+      if (!this.plantedAt || Math.hypot(eye.x - this.plantedAt.x, eye.z - this.plantedAt.z) > 40) this.dirty = true
+    }
     if (!this.dirty || this.models.length === 0) return
     this.dirty = false
+    const thinned = this.woodWalls && eye ? eye : null
+    this.plantedAt = thinned ? { x: thinned.x, z: thinned.z } : this.plantedAt
     const buckets = new Map<Mesh, Matrix[]>()
     const cores: Matrix[] = []
     for (const list of this.byTile.values()) {
       for (const p of list) {
+        if (thinned && !p.species) {
+          const d = Math.hypot(p.x - thinned.x, p.z - thinned.z)
+          if (d > 180 || (d > 90 && hash(p.x, p.z, 41) > 0.34)) continue
+        }
         // the zone's own species where it names them, else the defaults; a name listed twice is picked twice as often
         const z = this.zones?.shrubs(p.x, p.z)
         const names = p.kind === 'shrub' ? z?.shrubs : z?.flowers

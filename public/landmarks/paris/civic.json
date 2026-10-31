@@ -31564,7 +31564,7 @@
    "word": "HÔPITAL",
    "seed": 7263
   },
-  "height": 24,
+  "height": 4,
   "front": 31,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -34996,23 +34996,6 @@
   "front": -35,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 6."
- },
- {
-  "osm": [
-   "way/272389977"
-  ],
-  "name": "Bibliothèque Václav Havel",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "bibliotheque",
-   "p": 99,
-   "word": "BIBLIOTHÈQUE VÁCLAV HAVEL",
-   "seed": 7401
-  },
-  "height": 28,
-  "front": -68,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: bibliotheque, APUR period 99."
  },
  {
   "osm": [

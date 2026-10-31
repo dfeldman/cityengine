@@ -249,3 +249,16 @@ Open:
 - [ ] `tools/r2-prune.sh` was not run with this upload: the bucket still holds what the last build dropped.
 - [ ] Facade photos: Mapillary coverage, measured. Panorama within ~30 m of a street: SF 68%, Paris 27% (15% since 2021), on the
       29 central Paris tiles cached of the 79 the box needs. `photo.ts` throws away flat frames, and Paris has 70% with those.
+
+## Gardens, the river, and the owner's flying-round list (2026-10-30, bake 20261031T0134-951b)
+
+Done: OSM's hedges, beds and tree rows and 124 traced plans (tools/gardens/); no scatter in a planned garden or where the register has counted trees; square walks in raked sand and lawn edges; the Seine at its true level (it ran 12 m low: `riverLevel`); tunnel mouths facing their tracks at track level; trees past 350 m as 36-triangle crowns, shrubs thinned by distance; canvas fitted from the first frame (iOS squish). docs/PARIS_MINOR_BUGS.md items 1–40 all have a fix or a model.
+
+Still open:
+- iOS Safari squish: the likely cause is fixed (a turn or toolbar change during the long load) and tested in emulation only. No Xcode here, so not seen on a real iPhone. Owner to confirm.
+- Pont du Carrousel, Rive Droite head (48.860091, 2.333402): cream parapet pieces cross the junction. Minor list #1 made the decks agree; the parapets at the head are still wrong.
+- Quai bas de la Cité: the shelf is baked at +28.2 m and pale stone is planned, but OSM's paved polygons draw over it and no wall stands between it and the street above. Reads as a wide low quay.
+- Road tunnel mouths (191 added): the road still ends at the mouth; it is not ridden through.
+- Not looked at in the city (built from aerial or photo only): minor items 11, 14, 15, 20, 29, 31, 32, 39. Nanterre-Université (16) seen before its last changes.
+- Minor #6, #28, #40: written, not cleanly seen. #5's coordinates are the Fontaine du Théâtre Français, not Pol Bury's spheres; both are on the Tripo list.
+- `src/render/landmarks.ts:100`'s comment on numeric `front` disagrees with what the wave's agent measured for outline entries (local −z). Worth settling before more fronts are set by hand.

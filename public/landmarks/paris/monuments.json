@@ -850,10 +850,10 @@
       22,
       22
     ],
-    "height": 12.5,
+    "height": 14.5,
     "front": 352,
     "sign": false,
-    "note": "Visconti's fountain of the four bishops on the Place Saint-Sulpice: three octagonal basins, four lions, four vases, the square shrine 12 m high with Bossuet to the north (Wikipedia fr). Centred on OSM way 40068036's octagonal kerb (amenity=fountain, 22 m across its flats); front −z north, along the flat at bearing 352. Tiers and proportions from two Commons photographs."
+    "note": "Visconti's fountain of the four bishops on the Place Saint-Sulpice: three octagonal basins, four lions, four vases, the square shrine with Bossuet to the north (Wikipedia fr, which gives 12 m; the Commons photograph scaled on the first basin is nearer 14). Centred on OSM way 40068036's octagonal kerb (amenity=fountain, 22 m across its flats); front −z north, along the flat at bearing 352. Tiers and proportions from two Commons photographs."
   },
   {
     "name": "Fontaine des Quatre-Saisons",

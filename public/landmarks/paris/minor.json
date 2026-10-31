@@ -1,0 +1,295 @@
+[
+  {
+    "name": "Gare de Nanterre-Université",
+    "procedural": "nanterreUniversite",
+    "kind": "station",
+    "lat": 48.901156,
+    "lon": 2.21345,
+    "front": 343,
+    "size": [
+      62.5,
+      60.7
+    ],
+    "height": 14,
+    "shadow": false,
+    "stone": false,
+    "note": "#16. OSM's way/386283983 is layer=3 level=3 and outside the bake's box: only a fringe block at 7 m. On its outline by osmium, −z to the university's parvis. Claims the fringe blocks that stood under it and along the platforms. minor/stations.ts.",
+    "osm": [
+      "way/386283983",
+      "way/386283986",
+      "way/427056911",
+      "way/427056938",
+      "way/283655408",
+      "way/283655409"
+    ]
+  },
+  {
+    "name": "Gare de Pont Cardinet",
+    "procedural": "pontCardinet",
+    "kind": "station",
+    "lat": 48.887723,
+    "lon": 2.31411,
+    "front": 131,
+    "size": [
+      57.9,
+      42
+    ],
+    "height": 14,
+    "shadow": false,
+    "stone": false,
+    "note": "#10. Not in the package: OSM's way/421800231 is layer=-2, the platform roofs layer=1 level=-1. −z to the Rue Cardinet; the footprint is the station's, its platform roofs run on past it along the city's own platforms. minor/stations.ts."
+  },
+  {
+    "name": "Halle Pajol and the Bibliothèque Václav Havel",
+    "procedural": "hallePajol",
+    "osm": [
+      "way/272389977",
+      "way/272389978"
+    ],
+    "lat": 48.888423,
+    "lon": 2.362911,
+    "front": 21.7,
+    "size": [
+      41.1,
+      140.6
+    ],
+    "height": 14.6,
+    "shadow": false,
+    "stone": false,
+    "note": "#25. Claims the library end and the cedar block (way/195265640, the roof, is layer=2 and not in the package). −z north, on OSM's axes. minor/halle-pajol.ts."
+  },
+  {
+    "name": "Hippodrome d'Auteuil: the Espace Paparemborde's grounds and the course",
+    "procedural": "auteuilGrounds",
+    "kind": "garden",
+    "lat": 48.8504,
+    "lon": 2.2559,
+    "front": 180,
+    "size": [
+      300,
+      290
+    ],
+    "height": 13,
+    "drape": true,
+    "shadow": false,
+    "sign": false,
+    "note": "#21, #22. Lines off ORTHOPHOTOS2018 and OSM's pitches; draped paint. The scatter stops at the next bake (tools/gardens/paris-public.ts `auteuil`). minor/auteuil.ts."
+  },
+  {
+    "name": "Pavilion on the Petite Ceinture",
+    "procedural": "ceinturePavilion",
+    "kind": "structure",
+    "osm": [
+      "way/864712745"
+    ],
+    "front": 145,
+    "height": 12,
+    "shadow": false,
+    "stone": false,
+    "sign": false,
+    "note": "#11. Not a station: OSM's building=bridge wall=no, on the evidence of one Mapillary frame and the aerial. minor/quarter.ts."
+  },
+  {
+    "name": "Bâtiment L'Extension",
+    "restyle": "bauhaus",
+    "osm": [
+      "relation/568722"
+    ],
+    "roof": "flat",
+    "wall": "#e6dcc3",
+    "trim": "#d8cdb2",
+    "accent": "#a63f2c",
+    "roofColour": "#b8ae9a",
+    "noShops": true,
+    "note": "#14. Cream, the owner's word; Mapillary has pale cladding. Its drums are the next entry."
+  },
+  {
+    "name": "Bâtiment L'Extension: the red drums",
+    "procedural": "extensionDrums",
+    "kind": "structure",
+    "lat": 48.89555,
+    "lon": 2.2142,
+    "front": 180,
+    "size": [
+      100,
+      110
+    ],
+    "height": 28,
+    "shadow": false,
+    "stone": false,
+    "sign": false,
+    "note": "#14. Standing in the restyled block where IGN's aerial has its rotundas. minor/quarter.ts."
+  },
+  {
+    "name": "Préfecture des Hauts-de-Seine",
+    "restyle": "bauhaus",
+    "osm": [
+      "relation/4187796",
+      "way/228539388"
+    ],
+    "roof": "flat",
+    "wall": "#e3e3de",
+    "trim": "#efefea",
+    "roofColour": "#c9c8c2",
+    "noShops": true,
+    "note": "#15 (\"a modern tower on a classical pediment - the two actually match and are white\"). Wogenscky's tower and podium in one dress: white bands, dark ribbons. Mapillary at the Avenue Frédéric-et-Irène-Joliot-Curie side."
+  },
+  {
+    "name": "Les Bergères: the neo-classical quarter",
+    "restyle": "haussmann",
+    "osm": [
+      "way/1155621126",
+      "way/1337287605",
+      "way/1361408422",
+      "way/68851780",
+      "way/896123075",
+      "way/896125810",
+      "way/1003271994",
+      "way/1003271995",
+      "way/1003271996",
+      "way/1007232342",
+      "way/1007232343",
+      "way/1110209921",
+      "way/1153244543",
+      "way/68852500",
+      "way/748857384",
+      "way/847733326",
+      "way/847733327",
+      "way/847733331",
+      "way/847733332",
+      "way/375233627",
+      "way/521058760",
+      "way/521058761"
+    ],
+    "roof": "mansard",
+    "roofHeight": 6,
+    "wall": "#e4dac4",
+    "trim": "#f0e9d8",
+    "roofColour": "#4b5359",
+    "note": "#17, #18 (\"this entire area is tall fake classical buidlings\"). Every building round the Rue des Bergères with OSM's hipped, gambrel or gabled roof tags, cream under slate as IGN's aerial has them. No close photograph was found; the dress is the style's, and the massing OSM's."
+  },
+  {
+    "name": "Les Bergères: the cupolas",
+    "procedural": "bergeresCupolas",
+    "kind": "structure",
+    "lat": 48.885995,
+    "lon": 2.22845,
+    "front": 180,
+    "size": [
+      30,
+      12
+    ],
+    "height": 75,
+    "shadow": false,
+    "stone": false,
+    "sign": false,
+    "note": "#17. minor/quarter.ts."
+  },
+  {
+    "name": "Cimetière Nouveau de Puteaux",
+    "procedural": "puteauxCemetery",
+    "kind": "garden",
+    "lat": 48.89278,
+    "lon": 2.228812,
+    "front": 180,
+    "size": [
+      226,
+      317
+    ],
+    "height": 9,
+    "drape": true,
+    "shadow": false,
+    "sign": false,
+    "note": "#20. minor/quarter.ts."
+  },
+  {
+    "name": "Tour Boucry",
+    "procedural": "tourBoucry",
+    "osm": [
+      "way/245497335"
+    ],
+    "height": 99,
+    "stone": false,
+    "note": "#31. minor/quarter.ts."
+  },
+  {
+    "name": "Tour Boucry: the podium",
+    "restyle": "skyscraper",
+    "osm": [
+      "way/195265659"
+    ],
+    "roof": "flat",
+    "wall": "#202226",
+    "trim": "#2a2c30",
+    "roofColour": "#26282b",
+    "note": "#31: \"on a black base\"."
+  },
+  {
+    "name": "Rue Boucry: the cream and green block",
+    "restyle": "brutalist",
+    "osm": [
+      "way/195265693"
+    ],
+    "roof": "flat",
+    "wall": "#e0d9c0",
+    "trim": "#5f7f5a",
+    "accent": "#5f7f5a",
+    "roofColour": "#a9a491",
+    "noShops": true,
+    "note": "#32 (\"actually cream and green brutalist\"), the owner's words; no photograph."
+  },
+  {
+    "name": "Rue d'Aubervilliers: the warehouse",
+    "procedural": "aubervilliersWarehouse",
+    "osm": [
+      "way/242860533"
+    ],
+    "front": 105,
+    "height": 10,
+    "stone": false,
+    "note": "#29. The aerial only. minor/quarter.ts."
+  },
+  {
+    "name": "Rue d'Aubervilliers: the long shed",
+    "procedural": "aubervilliersShed",
+    "osm": [
+      "way/765711909"
+    ],
+    "front": 105,
+    "height": 11,
+    "stone": false,
+    "sign": false,
+    "note": "#29. minor/quarter.ts."
+  },
+  {
+    "name": "Musée du Service de Santé des Armées — the cloister",
+    "procedural": "valDeGraceCloitre",
+    "osm": [
+      "relation/931378"
+    ],
+    "lat": 48.839865,
+    "lon": 2.341712,
+    "front": 204,
+    "size": [
+      84,
+      73.4
+    ],
+    "height": 21,
+    "note": "#33. minor/quarter.ts."
+  },
+  {
+    "name": "Jardin du Luxembourg: the low range",
+    "restyle": "classical",
+    "osm": [
+      "way/62875022",
+      "way/62874914",
+      "way/62875003"
+    ],
+    "roof": "flat",
+    "levels": 1,
+    "height": 5,
+    "wall": "#ded4bd",
+    "trim": "#ece5d2",
+    "note": "#39 (\"a low imitation classical building\"), a storey of stone under a flat head; no photograph looked at."
+  }
+]

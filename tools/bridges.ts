@@ -28,6 +28,8 @@ export interface BridgeEdge {
   /** OSM `highway`, so a freeway chain can be told from an ordinary bridge (BUGS.md #157) */
   kind?: string
   name?: string
+  /** lifted to meet a deck: said outright, for the renderer (city/package.ts isRaised) */
+  ramp?: boolean
 }
 
 export interface BridgeWorld {
@@ -553,9 +555,51 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   const ALONGSIDE = 25
   // (each point with its way's direction there: a footway only joins a roadway it runs ALONG — Mariposa Street's 43 m
   //  sidewalk passes under I-280, every point of it within 25 m of the freeway, and was lifted 15 m onto its deck)
+  /*
+   * …and a bridge's cycle tracks are the same deck, and all of it meets at its ends (owner, 2026-10-30, the Pont du Carrousel, 48.860091,
+   * 2.333402: "bridge appears to have a gap with the quay"). OSM's five ways over it came out as five decks: the roadway from −2.8 m (its
+   * south end on the lower quay in the lidar, while the four other decks at that node stood at +0.5 to +2.5) to −0.1, a footway and a cycle
+   * track at a flat 3.1, another pair at 1.1, a white sheet of parapets across the end of the Rue du Louvre. Where the ground is lidar,
+   * a roadway's end sunk under the others at a node comes up to them, eased along its length, and the cycle tracks follow the roadway
+   * as the footways do.
+   */
+  const onDeck = (e: BridgeEdge): boolean => !!e.foot || (!!world.liftAbutments && e.kind === 'cycleway')
+  if (world.liftAbutments) {
+    const atNode = new Map<number, number>()
+    for (const e of deckEdges) {
+      if (onDeck(e) || !raised.has(e.id) || !e.heights) continue
+      atNode.set(e.a, Math.max(atNode.get(e.a) ?? -Infinity, e.heights[0]))
+      atNode.set(e.b, Math.max(atNode.get(e.b) ?? -Infinity, e.heights[e.heights.length - 1]))
+    }
+    let met = 0
+    for (const chain of allChains) {
+      if (chain.some(({ e }) => onDeck(e) || !e.heights)) continue
+      const line = chain.map(({ e, reversed }) => ({ e, reversed, c: cumulative(pts(e.points)) }))
+      const L = line.reduce((a, q) => a + q.c[q.c.length - 1], 0)
+      if (L < 40) continue
+      const [na, nb] = ends(chain)
+      const first = line[0], last = line[line.length - 1]
+      const y0 = first.reversed ? first.e.heights![first.e.heights!.length - 1] : first.e.heights![0]
+      const y1 = last.reversed ? last.e.heights![0] : last.e.heights![last.e.heights!.length - 1]
+      const up0 = (atNode.get(na) ?? y0) - y0 > 1.5 ? atNode.get(na)! - y0 : 0
+      const up1 = (atNode.get(nb) ?? y1) - y1 > 1.5 ? atNode.get(nb)! - y1 : 0
+      if (!up0 && !up1) continue
+      let run = 0
+      for (const { e, reversed, c } of line) {
+        const len = c[c.length - 1]
+        e.heights = e.heights!.map((h, i) => {
+          const d = run + (reversed ? len - c[i] : c[i])
+          return Math.round((h + up0 * (1 - d / L) + up1 * (d / L)) * 100) / 100
+        })
+        run += len
+      }
+      met++
+    }
+    if (met) console.log(`  bridges: ${met} roadways' sunk ends met the decks at their nodes`)
+  }
   const carriage: { x: number; z: number; y: number; ux: number; uz: number }[] = []
   for (const e of deckEdges) {
-    if (e.foot || !raised.has(e.id) || !e.heights) continue
+    if (onDeck(e) || !raised.has(e.id) || !e.heights) continue
     const p = pts(e.points)
     for (let i = 0; i < p.length; i++) {
       const a = p[Math.max(0, i - 1)], b = p[Math.min(p.length - 1, i + 1)]
@@ -566,7 +610,7 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   let adopted = 0
   if (carriage.length > 0) {
     for (const e of deckEdges) {
-      if (!e.foot || !raised.has(e.id) || !e.heights) continue
+      if (!onDeck(e) || !raised.has(e.id) || !e.heights) continue
       const p = pts(e.points)
       const next: number[] = []
       let hits = 0
@@ -699,7 +743,7 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
    * the deck's height there, eased back into its own over up to 15 m — a flight of steps steeply, as steps are
    * (`meetDecks`, below; run again by the bake after a modelled bridge's deck is conformed to its model).
    */
-  for (const id of meetDecks(edges)) raised.add(id)
+  for (const id of meetDecks(edges, false, world.liftAbutments)) raised.add(id)
   return { bridges, ramps, raised }
 }
 
@@ -858,7 +902,7 @@ export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: 
  * 2.9 m under Pont Mirabeau's deck). Mutates `edges`; returns the ids it changed. Run after `bridgeHeights` and again after
  * a modelled bridge's deck is conformed to its model (tools/deck-conform.ts), which moves the deck after the first pass.
  */
-export function meetDecks(edges: BridgeEdge[], upOnly = false): number[] {
+export function meetDecks(edges: BridgeEdge[], upOnly = false, rampOn = false): number[] {
   const changedIds: number[] = []
   const deckEnd = new Map<number, number>()
   for (const e of edges) {
@@ -867,6 +911,7 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false): number[] {
     deckEnd.set(e.a, Math.max(deckEnd.get(e.a) ?? -Infinity, h[0]))
     deckEnd.set(e.b, Math.max(deckEnd.get(e.b) ?? -Infinity, h[h.length - 1]))
   }
+  const onward = new Map<number, { deck: number; own: number }>()
   for (const e of edges) {
     if (e.bridge || e.tunnel || !e.heights) continue
     const p = pts(e.points)
@@ -884,6 +929,11 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false): number[] {
       if (Math.abs(deck - own) < 0.3 || Math.abs(deck - own) > 6) continue
       // (once the ground is final: a way under its deck climbs to it, but none is taken down into the ground)
       if (upOnly && deck < own) continue
+      // (a road too short to take the step at a grade you could ride: see `rampOnward`, below)
+      if (rampOn && !e.foot && Math.abs(deck - own) / Math.max(EASE, 0.5) > STEEPEST) {
+        if (Math.abs(deck - own) > Math.abs(deck - (onward.get(node)?.own ?? deck))) onward.set(node, { deck, own })
+        continue
+      }
       hs = hs.map((h, i) => {
         const d = fromA ? cum[i] : L - cum[i]
         return d >= EASE ? h : Math.round((deck + (h - deck) * (d / EASE)) * 100) / 100
@@ -892,5 +942,51 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false): number[] {
     }
     if (changed) { e.heights = hs; changedIds.push(e.id) }
   }
+  if (onward.size) {
+    const byNode = new Map<number, BridgeEdge[]>()
+    for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
+    for (const [node, o] of onward) changedIds.push(...rampOnward(byNode, node, o.deck, o.own))
+  }
   return changedIds
+}
+
+/** the steepest a road off a deck may take its step (…`rampOnward` lays it at `RAMP_GRADE`) */
+const STEEPEST = 0.12
+const RAMP_GRADE = 0.07
+
+/**
+ * A ROAD TOO SHORT FOR THE STEP (owner, 2026-10-30, the Rue du Département, 48.886241, 2.363147: "bizarrely steep tiny hill here which
+ * can't exist in real life - the bridge must extend further to even it out"). The deck stood at 20.6 and the 3 m of way OSM has before
+ * the next node took the whole of the step down to the street at 17.3: 100%. So the ramp goes on past the node, along every road, at a
+ * grade you could ride, each way's own profile lifted by what is left of the step there. Not past a tunnel mouth, as the ramps above.
+ */
+function rampOnward(byNode: Map<number, BridgeEdge[]>, start: number, deck: number, own: number): number[] {
+  const step = deck - own
+  const reach = Math.min(RAMP, Math.abs(step) / RAMP_GRADE)
+  const under = (n: number): boolean => (byNode.get(n) ?? []).some((o) => o.tunnel || (o.layer ?? 0) < 0)
+  const done = new Set<BridgeEdge>()
+  const changed: number[] = []
+  const queue: { node: number; dist: number }[] = [{ node: start, dist: 0 }]
+  while (queue.length) {
+    queue.sort((a, b) => a.dist - b.dist)
+    const { node, dist } = queue.shift()!
+    for (const e of byNode.get(node) ?? []) {
+      if (e.bridge || e.foot || e.tunnel || !e.heights || done.has(e)) continue
+      done.add(e)
+      const c = cumulative(pts(e.points))
+      const L = c[c.length - 1]
+      const fromA = e.a === node
+      // (the way that meets the deck, whose own end may stand a little off the others': it comes to the deck exactly)
+      const base = dist === 0 ? deck - (fromA ? e.heights[0] : e.heights[e.heights.length - 1]) : step
+      e.heights = e.heights.map((h, i) => {
+        const d = dist + (fromA ? c[i] : L - c[i])
+        return d >= reach ? h : Math.round((h + base * (1 - d / reach)) * 100) / 100
+      })
+      e.ramp = true
+      changed.push(e.id)
+      const other = fromA ? e.b : e.a
+      if (dist + L < reach && !under(other)) queue.push({ node: other, dist: dist + L })
+    }
+  }
+  return changed
 }

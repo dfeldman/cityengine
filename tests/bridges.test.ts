@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bridgeHeights, footBridgeLinks, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
+import { bridgeHeights, footBridgeLinks, meetDecks, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
 
 const flat: BridgeWorld['ground'] = () => 0
 const river = (x0: number, x1: number): BridgeWorld['water'][number] =>
@@ -207,5 +207,66 @@ describe('a footway joins only the roadway it runs along (Mariposa Street under 
     bridgeHeights([freeway, walk], { water: [], ground: flat })
     expect(Math.max(...freeway.heights!)).toBeGreaterThan(5)
     expect(Math.max(...walk.heights!)).toBeLessThan(5)
+  })
+})
+
+describe('a road too short for the step off a deck (the Rue du Département, 2026-10-30)', () => {
+  const deck = (): BridgeEdge => ({ id: 1, a: 1, b: 2, points: [0, 0, 50, 0], heights: [3.5, 3.5], bridge: true, layer: 1 })
+  const stub = (): BridgeEdge => ({ id: 2, a: 3, b: 1, points: [-3, 0, 0, 0], heights: [0, 0] })
+  const street = (): BridgeEdge => ({ id: 3, a: 4, b: 3, points: [-100, 0, -50, 0, -3, 0], heights: [0, 0, 0] })
+
+  it('leaves the old 100% step where the region has not asked (San Francisco)', () => {
+    const s = stub(), r = street()
+    meetDecks([deck(), s, r])
+    expect(s.heights![1]).toBe(3.5)
+    expect(r.heights).toEqual([0, 0, 0])
+  })
+  it('carries the ramp on past the node at a grade you could ride', () => {
+    const s = stub(), r = street()
+    const ids = meetDecks([deck(), s, r], false, true)
+    expect(ids).toEqual(expect.arrayContaining([2, 3]))
+    expect(s.heights![1]).toBe(3.5)
+    const off = r.heights![2]
+    expect(off).toBeGreaterThan(3)                                // no step at the node…
+    expect(off).toBeCloseTo(s.heights![0], 1)                     // …the two ways meet there…
+    expect((3.5 - off) / 3).toBeLessThan(0.12)                    // …it is a slope…
+    expect(r.heights![0]).toBe(0)                                 // …and the street further off is where it was
+    expect(r.ramp).toBe(true)
+  })
+  it('stops at a tunnel mouth', () => {
+    const s = stub(), r = street()
+    const tunnel: BridgeEdge = { id: 4, a: 3, b: 5, points: [-3, 0, -3, 200], heights: [0, 0], tunnel: true, layer: -1 }
+    meetDecks([deck(), s, r, tunnel], false, true)
+    expect(r.heights).toEqual([0, 0, 0])
+  })
+  it('does not touch a footway', () => {
+    const path: BridgeEdge = { id: 2, a: 3, b: 1, points: [-3, 0, 0, 0], heights: [0, 0], foot: true }
+    const r = street()
+    meetDecks([deck(), path, r], false, true)
+    expect(r.heights).toEqual([0, 0, 0])
+  })
+})
+
+describe('one bridge, one deck (the Pont du Carrousel, 2026-10-30)', () => {
+  // two roadway pieces meeting a third at node 2: the long one's end is down on the lower quay in the lidar
+  const world = (over: Partial<BridgeWorld> = {}): BridgeWorld => ({ water: [river(-200, 200)], ground: flat, liftAbutments: true, ...over })
+  const road = (): BridgeEdge => ({ id: 1, a: 1, b: 2, kind: 'service', points: [-100, 0, -50, 0, 0, 0, 50, 0, 100, 0], heights: [-3, -3, -3, -3, 0], bridge: true, layer: 1 })
+  const stub = (id: number, n: number, x: number): BridgeEdge => ({ id, a: n, b: 1, kind: 'service', points: [x, 30, -100, 0], heights: [3, 3], bridge: true, layer: 1 })
+  const cycle = (): BridgeEdge => ({ id: 5, a: 7, b: 8, kind: 'cycleway', points: [-100, 8, -50, 8, 0, 8, 50, 8, 100, 8], heights: [3, 3, 3, 3, 3], bridge: true, layer: 1 })
+
+  it('a cycle track along a roadway rides its deck where the ground is lidar', () => {
+    const r = road(), c = cycle()
+    bridgeHeights([r, c], world())
+    expect(c.heights![2]).toBeCloseTo(r.heights![2], 1)
+  })
+  it('…and only there (San Francisco keeps its own)', () => {
+    const r = road(), c = cycle()
+    bridgeHeights([r, c], world({ liftAbutments: false }))
+    expect(Math.abs(c.heights![2] - r.heights![2])).toBeGreaterThan(0.5)
+  })
+  it("brings a roadway's sunk end up to the decks at its node", () => {
+    const r = road(), s1 = stub(2, 3, -130), s2 = stub(3, 4, -70)
+    bridgeHeights([r, s1, s2], world())
+    expect(r.heights![0]).toBeGreaterThan(-1)
   })
 })

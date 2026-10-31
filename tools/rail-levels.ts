@@ -200,3 +200,183 @@ export function bridgesOverStreets(railWays: PackedRail[], streets: StreetLine[]
   }
   return { rails: out, spans, flat, over }
 }
+
+/** how far along a street, either way from a railway under it, its own level may be found again */
+const OVER_REACH = 45
+/** how far a street must drop to the railway, on both sides, to be taken for the hole in the ground under a deck */
+const OVER_DIP = 2
+/** …no more than this (a street that falls further over a railway has a reason), and at this grade at least: a valley is gentler */
+const OVER_MOST = 8
+const OVER_GRADE = 0.07
+/** a tunnel counts this far in from its mouth: a street over the middle of the RER is on its own hill */
+const OVER_MOUTH = 90
+
+export type OverLine = StreetLine & { a?: number; b?: number; name?: string; ramp?: boolean }
+
+/**
+ * THE DIP WHERE A DECK WAS (owner, 2026-10-30, the Boulevard des Batignolles, 48.882230, 2.320778: "the overpass has a steep dip to train
+ * track level - it should be an overpass"). The trains go under the boulevard in a tunnel from one mouth to the other, 30 m apart, and
+ * nobody tagged a bridge. Bare earth has no deck in it, so the street followed the lidar 5 m down to the tracks' level and up again. A
+ * street crossing a railway it does not stand under (`under`: tracks in a tunnel, near its mouth; `over`: tracks on the surface, unless
+ * they are on a bank there, which is `bridgesOverStreets`'s) that falls to it steeply from both sides runs straight between the two tops:
+ * the way over the railway is a bridge, the rest of what is lifted a ramp. Returns how many crossings it spanned.
+ */
+export function spanOverRailways(streets: OverLine[], under: { points: number[] }[], over: { points: number[]; bridge?: boolean; heights?: number[] }[],
+  ground: (x: number, z: number) => number): number {
+  const byNode = new Map<number, OverLine[]>()
+  for (const e of streets) for (const n of [e.a, e.b]) if (n !== undefined) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
+  const usable = (e: OverLine): boolean => !e.tunnel && !e.bridge && !!e.heights && (e.layer ?? 0) >= 0
+  // the way a street goes on past a node: the same name, or the only other way of its sort there
+  const onward = (e: OverLine, n: number): OverLine | null => {
+    const others = (byNode.get(n) ?? []).filter((o) => o !== e && usable(o) && !!o.foot === !!e.foot)
+    if (e.name) return others.find((o) => o.name === e.name) ?? null
+    return others.length === 1 && !others[0].name ? others[0] : null
+  }
+  const CELL = 100
+  const lines = new Map<string, { a: Pt; b: Pt; surface: boolean }[]>()
+  const file = (a: Pt, b: Pt, surface: boolean): void => {
+    const n = Math.ceil(Math.hypot(b.x - a.x, b.z - a.z) / CELL) || 1
+    const keys = new Set<string>()
+    for (let k = 0; k <= n; k++) keys.add(`${Math.floor((a.x + ((b.x - a.x) * k) / n) / CELL)},${Math.floor((a.z + ((b.z - a.z) * k) / n) / CELL)}`)
+    for (const k of keys) (lines.get(k) ?? lines.set(k, []).get(k)!).push({ a, b, surface })
+  }
+  for (const r of under) {
+    const q = unpackPoints(r.points)
+    const cum = [0]
+    for (let i = 1; i < q.length; i++) cum.push(cum[i - 1] + Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z))
+    const L = cum[cum.length - 1]
+    for (let i = 1; i < q.length; i++) {
+      // (in pieces: OSM's straight run through a long tunnel is one segment)
+      const n = Math.ceil((cum[i] - cum[i - 1]) / 30) || 1
+      const piece = (k: number): Pt => ({ x: q[i - 1].x + ((q[i].x - q[i - 1].x) * k) / n, z: q[i - 1].z + ((q[i].z - q[i - 1].z) * k) / n })
+      for (let k = 0; k < n; k++) {
+        const s0 = cum[i - 1] + ((cum[i] - cum[i - 1]) * k) / n, s1 = cum[i - 1] + ((cum[i] - cum[i - 1]) * (k + 1)) / n
+        if (s0 < OVER_MOUTH || L - s1 < OVER_MOUTH) file(piece(k), piece(k + 1), false)
+      }
+    }
+  }
+  for (const r of over) {
+    if (r.bridge || r.heights) continue
+    const q = unpackPoints(r.points)
+    for (let i = 1; i < q.length; i++) file(q[i - 1], q[i], true)
+  }
+  type Run = { e: OverLine; i: number; d: number; h: number }
+  let spanned = 0
+  for (const e of streets) {
+    if (!usable(e)) continue
+    const p = unpackPoints(e.points)
+    // (the lowest of its crossings: a main line is eight tracks, and the first of them is up the side of the dip)
+    let hit: { i: number; t: number; surface: boolean; at: Pt; y: number } | null = null
+    for (let i = 1; i < p.length; i++) {
+      const keys = new Set([p[i - 1], p[i]].map((q) => `${Math.floor(q.x / CELL)},${Math.floor(q.z / CELL)}`))
+      for (const k of keys) for (const s of lines.get(k) ?? []) {
+        const x = cross(p[i - 1], p[i], s.a, s.b)
+        if (!x) continue
+        const y = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * x.t
+        if (!hit || y < hit.y) hit = { i, t: x.t, surface: s.surface, y, at: { x: p[i - 1].x + (p[i].x - p[i - 1].x) * x.t, z: p[i - 1].z + (p[i].z - p[i - 1].z) * x.t } }
+      }
+    }
+    if (!hit) continue
+    const { i: at, surface, at: cx, y: here } = hit
+    // the street as one line away from the crossing, each point with its way and how far along
+    const walk = (first: 1 | -1): Run[] => {
+      const out: Run[] = []
+      let cur = e, pts = p, step: number = first, idx = first > 0 ? at : at - 1
+      let d = Math.hypot(pts[idx].x - cx.x, pts[idx].z - cx.z)
+      const seen = new Set<OverLine>([e])
+      while (d <= OVER_REACH) {
+        out.push({ e: cur, i: idx, d, h: cur.heights![idx] })
+        const next = idx + step
+        if (next >= 0 && next < pts.length) {
+          d += Math.hypot(pts[next].x - pts[idx].x, pts[next].z - pts[idx].z)
+          idx = next
+          continue
+        }
+        const node = step > 0 ? cur.b : cur.a
+        const o = node === undefined ? null : onward(cur, node)
+        if (!o || seen.has(o)) break
+        seen.add(o)
+        cur = o
+        pts = unpackPoints(o.points)
+        step = o.b === node ? -1 : 1
+        idx = step > 0 ? 0 : pts.length - 1
+      }
+      return out
+    }
+    const fore = walk(1), aft = walk(-1)
+    if (!fore.length || !aft.length) continue
+    const top = (r: Run[]): Run => r.reduce((b, q) => (q.h > b.h ? q : b))
+    const t0 = top(aft), t1 = top(fore)
+    const rise = Math.min(t0.h, t1.h) - here
+    if (rise < OVER_DIP || rise > OVER_MOST) continue
+    if ((t0.h - here) / Math.max(t0.d, 1) < OVER_GRADE || (t1.h - here) / Math.max(t1.d, 1) < OVER_GRADE) continue
+    // (a surface track standing clear of the street is over it, not under it)
+    if (surface && ground(cx.x, cx.z) - here > 1) continue
+    const span = t0.d + t1.d
+    const lift = (r: Run[], sign: number, end: Run): void => {
+      for (const q of r) {
+        if (q.d > end.d) break
+        const v = Math.round((t0.h + ((t1.h - t0.h) * (sign * q.d + t0.d)) / (span || 1)) * 100) / 100
+        if (v > q.h) q.e.heights![q.i] = v
+        if (q.e !== e && v > q.h) q.e.ramp = true
+      }
+    }
+    lift(fore, 1, t1)
+    lift(aft, -1, t0)
+    e.bridge = true
+    e.layer ??= 1
+    spanned++
+  }
+  return spanned
+}
+
+/** how near a track's centre a foot way counts as on it: the ties and the ballast */
+const ON_TRACK = 3
+/** …for this share of its length, and at least this far */
+const ON_TRACK_SHARE = 0.4
+const ON_TRACK_LEAST = 6
+
+/**
+ * PEOPLE ON THE TRACKS (owner, 2026-10-30, the Place de l'Europe, 48.878789, 2.323370: "there are NPCs walking on the tracks"). OSM's foot
+ * ways round the Gare Saint-Lazare, its platforms and its service paths among them, are drawn at the ground the tracks lie on, with no
+ * platform under them, and the crowd walked them. A foot way on the surface that runs along a track for much of its length is
+ * not somewhere to walk. Returns their ids; a foot bridge over the tracks, or a tunnel under them, is not in it.
+ */
+export function footWaysOnTracks(edges: { id: number; points: number[]; foot?: boolean; bridge?: boolean; tunnel?: boolean; layer?: number }[], rails: PackedRail[]): Set<number> {
+  const CELL = 20
+  const grid = new Map<string, { a: Pt; b: Pt }[]>()
+  for (const r of rails) {
+    if (r.kind !== 'rail') continue
+    const q = unpackPoints(r.points)
+    for (let i = 1; i < q.length; i++) {
+      const L = Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z), n = Math.ceil(L / CELL) || 1
+      const seg = { a: q[i - 1], b: q[i] }
+      const keys = new Set<string>()
+      for (let k = 0; k <= n; k++) {
+        const x = q[i - 1].x + ((q[i].x - q[i - 1].x) * k) / n, z = q[i - 1].z + ((q[i].z - q[i - 1].z) * k) / n
+        for (const dx of [-ON_TRACK, ON_TRACK]) for (const dz of [-ON_TRACK, ON_TRACK]) keys.add(`${Math.floor((x + dx) / CELL)},${Math.floor((z + dz) / CELL)}`)
+      }
+      for (const k of keys) (grid.get(k) ?? grid.set(k, []).get(k)!).push(seg)
+    }
+  }
+  const onTrack = (x: number, z: number): boolean => (grid.get(`${Math.floor(x / CELL)},${Math.floor(z / CELL)}`) ?? []).some(({ a, b }) => {
+    const dx = b.x - a.x, dz = b.z - a.z, t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+    return Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < ON_TRACK
+  })
+  const out = new Set<number>()
+  for (const e of edges) {
+    if (!e.foot || e.bridge || e.tunnel || (e.layer ?? 0) !== 0) continue
+    const p = unpackPoints(e.points)
+    let on = 0, all = 0
+    for (let i = 1; i < p.length; i++) {
+      const L = Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z), n = Math.max(1, Math.ceil(L))
+      for (let k = 0; k < n; k++) {
+        const t = (k + 0.5) / n
+        all += L / n
+        if (onTrack(p[i - 1].x + (p[i].x - p[i - 1].x) * t, p[i - 1].z + (p[i].z - p[i - 1].z) * t)) on += L / n
+      }
+    }
+    if (on >= ON_TRACK_LEAST && on >= ON_TRACK_SHARE * all) out.add(e.id)
+  }
+  return out
+}

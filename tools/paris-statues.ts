@@ -38,6 +38,10 @@ const HAND: Partial<Work>[] = [
   { name: 'Fontaine du Palmier', kind: 'fountain', lat: 48.8576, lon: 2.347, note: 'The gilded Victory on the palm column, Place du Châtelet.' },
   { name: 'Fontaine des Mers', kind: 'fountain', lat: 48.8657, lon: 2.3211 },
   { name: 'Fontaine des Fleuves', kind: 'fountain', lat: 48.8652, lon: 2.3208 },
+  // (owner, 2026-10-30, 48.863762, 2.335686: "this is a fountain but looks more like a hole. we can add it to the list to model in tripo")
+  // (OSM has Pol Bury's two as ways 440281436 and 440281437 with no name, which the list above skips)
+  { name: 'Fontaines de Pol Bury', kind: 'fountain', lat: 48.863975, lon: 2.336981, artist: 'Pol Bury', date: '1985', wikidata: '', note: 'The steel spheres in the Palais-Royal, two fountains (OSM ways 440281436 and 440281437; the other at 48.863864, 2.33747).' },
+  { name: 'Fontaine du Théâtre Français - Nymphe fluviale', kind: 'fountain', lat: 48.863745, lon: 2.335562, wikidata: 'Q28861345', note: "The owner's find, on the Place André-Malraux: the city has only OSM's round of water for it. Its twin, the Nymphe marine, is 40 m west across the place." },
 ]
 
 function readOsm(): Work[] {

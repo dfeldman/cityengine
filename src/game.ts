@@ -390,6 +390,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const engine = new Engine(canvas, true, { antialias: true, limitDeviceRatio: tier.maxDpr === Infinity ? undefined : tier.maxDpr,
     doNotHandleContextLost: !tier.recoverContext }, true)
   capTextures(engine, tier.textureCaps, tier.textureMax)
+  /*
+   * The canvas keeps the shape it was given until it is told otherwise, and it used to be told only from the end of loading on. Paris takes
+   * a minute on a phone: a turn of the phone or Safari's toolbars settling in that minute left a landscape picture in a portrait window
+   * (owner, 2026-10-30: "On iOS Safari only Paris is squished horizontally about 50%. Sf is fine"). From the first moment, and checked
+   * again every frame (`fitCanvas` below), since iOS does not always say.
+   */
+  const fitCanvas = (): void => {
+    const w = canvas.clientWidth, h = canvas.clientHeight
+    if (w > 0 && h > 0 && canvas.height > 0 && Math.abs(canvas.width / canvas.height - w / h) > 0.01) engine.resize()
+  }
+  addEventListener('resize', () => engine.resize())
+  addEventListener('orientationchange', () => engine.resize())
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fitCanvas).observe(canvas)
   if (!tier.recoverContext) {
     // nothing kept to rebuild from, so a lost context (iOS can take it from a backgrounded tab) starts again
     canvas.addEventListener('webglcontextlost', () => location.reload())
@@ -1401,6 +1414,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const floraOf = regionKit(pkg.region).flora
   const trees: Vegetation = new Vegetation(scene, city.terrain, new URL('trees/', document.baseURI).href,
     floraOf?.((x, z) => new Projection(pkg.origin).toLatLon({ x, z })), opts.veg ?? CANOPY, opts.vegMerge !== false)
+  trees.farCrowns = pkg.region === 'paris'
   if (!off.has('trees')) city.addLayer(trees.layer())
   treesReady = true
   for (const r of clearingsEarly) trees.clear(r)
@@ -1420,7 +1434,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   for (const r of clearingsEarly) plants.clearings.push(r)
   // (a formal garden has only its planned plants: render/garden.ts draws them)
   for (const r of index.garden?.formal ?? []) plants.clearings.push(unpackPoints(r))
-  plants.garden = city.gardenTiles()
   plantsClear = (ring) => plants.clear(ring)
   if (!off.has('trees') && !off.has('plants')) {
     city.addLayer(plants.layer())
@@ -3543,7 +3556,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         plantsPlaced = landmarks.plants.length
       }
       trees.update(camera.position)
-      plants.update()
+      plants.update(camera.position)
 
       // Chase camera. Both the position and the look-at come from the SAME smoothed heading, so the rider
       // stays put in the frame and the camera swings round behind them through a turn. Deriving the two from
@@ -3730,6 +3743,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   const failed = new Set<string>()
   engine.runRenderLoop(() => {
+    fitCanvas()
     try {
       frame()
     } catch (e) {
@@ -3740,7 +3754,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
   })
 
-  addEventListener('resize', () => engine.resize())
   // a handle for the Playwright probe in tools/; harmless in production and worth its weight when
   // something is drawing geometry nobody can account for
   ;(window as unknown as { gameReady?: boolean; __scene?: unknown }).__scene = scene

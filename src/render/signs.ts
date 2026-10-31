@@ -524,9 +524,29 @@ export class Signs implements TileLayer {
     const signed = new Set<number>()
     const hung: Hung[] = []
     const french = reg.roadPaint === 'paris'
+    /*
+     * Two places on one wall (owner, 2026-10-30, Rue Vivienne, 48.866360, 2.338850: "gallery colbert/depot legal signs overlap"; OSM
+     * has their nodes a metre apart). The later one moves along the wall until it clears the first, and goes without where the wall
+     * has no room.
+     */
+    const boards: Spot[] = []
+    const clearOf = (s: Spot): Spot | null => {
+      const hit = boards.find((o) => o.nx * s.nx + o.nz * s.nz > 0.9 && Math.abs((o.x - s.x) * s.nx + (o.z - s.z) * s.nz) < 1
+        && Math.abs((o.x - s.x) * -s.nz + (o.z - s.z) * s.nx) < (o.width + s.width) / 2 + SIGN_GAP)
+      if (!hit) return s
+      const along = (hit.x - s.x) * -s.nz + (hit.z - s.z) * s.nx
+      const need = (hit.width + s.width) / 2 + SIGN_GAP
+      for (const to of along >= 0 ? [along - need, along + need] : [along + need, along - need]) {
+        const moved = { ...s, x: s.x - s.nz * to, z: s.z + s.nx * to }
+        if (to >= -(s.back ?? 0) && to <= (s.ahead ?? 0) && !boards.some((o) => o !== hit && o.nx * s.nx + o.nz * s.nz > 0.9 && Math.hypot(o.x - moved.x, o.z - moved.z) < (o.width + s.width) / 2 + SIGN_GAP)) return moved
+      }
+      return null
+    }
     chosen.forEach((poi) => {
-      const spot = faceFor(poi, index)
+      const found = faceFor(poi, index)
+      const spot = found && clearOf(found)
       if (!spot) return
+      boards.push(spot)
       const look = french ? frenchSign(poi.name, poi.kind) : { key: poi.name, tint: BOARD[poi.kind], ink: 0 }
       const cell = this.shops.acquire(look.key, k)
       if (!cell) return
@@ -1335,7 +1355,10 @@ function pick(pois: PackedPoi[], capacity: number): PackedPoi[] {
   return out
 }
 
-interface Spot { x: number; z: number; nx: number; nz: number; width: number; building: number }
+/** `back` and `ahead`: how far the board can slide along its wall from here, either way, and stay on it (direction (−nz, nx) is ahead) */
+interface Spot { x: number; z: number; nx: number; nz: number; width: number; building: number; back?: number; ahead?: number }
+/** the least bare wall between two signs on one wall */
+const SIGN_GAP = 0.3
 
 /**
  * A building's shopfront: its longest wall that faces a street across a pavement — close to a
@@ -1408,7 +1431,9 @@ export function faceFor(poi: PackedPoi, index: Map<string, PackedBuilding[]>): S
           if (d >= bestD) continue
           bestD = d
           // the ring is anticlockwise, so the outward normal of a→c is (ez, −ex)
-          best = { x: px, z: pz, nx: ez / len, nz: -ex / len, width: Math.min(3.2, len * 0.8), building: b.id }
+          const width = Math.min(3.2, len * 0.8)
+          // (−nz, nx) is (ex, ez) / len: on along the wall, a → c
+          best = { x: px, z: pz, nx: ez / len, nz: -ex / len, width, building: b.id, back: Math.max(0, t * len - width / 2), ahead: Math.max(0, (1 - t) * len - width / 2) }
         }
       }
     }

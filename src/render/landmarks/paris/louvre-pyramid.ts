@@ -1,5 +1,5 @@
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, type Rgb } from '../../models.ts'
+import { type Rgb } from '../../models.ts'
 import { beam } from '../kit.ts'
 
 const FIXED = 0
@@ -7,32 +7,18 @@ const FIXED = 0
 /**
  * The Louvre Pyramid (I. M. Pei, 1989) in the Cour Napoléon: 35.4 m square, 21.6 m high, glass on a steel
  * lattice — the diamonds of its panes are what makes it read at a glance — with the three small pyramids
- * round it and the triangular basins of its fountains. Faces on ±x and ±z, square to the palace.
+ * round it. Faces on ±x and ±z, square to the palace, which is 6° off the historic axis (OSM's outline: bearing 109.4).
+ *
+ * The small ones (owner, 2026-10-30, 48.860979, 2.336218: "the three small pyramids are in the wrong position. their true positions are
+ * represented by two small generic buildings") stand 46 m off on the three sides that are not the Passage Richelieu's way in: OSM's ways
+ * 53815259–61, 8.2 m square and 5 m high (paris.json replaces them). Local +z is the east, the Cour Carrée's side; ±x the south and north.
+ * The basins round it are OSM's water, at the level of the court; they are the city's now and not this model's.
  */
 export function louvrePyramid(out: MeshBuilder): void {
   const glass: Rgb = [0.55, 0.62, 0.66]
   const steel: Rgb = [0.3, 0.32, 0.34]
-  const water: Rgb = [0.22, 0.33, 0.4]
-  const stone: Rgb = [0.78, 0.75, 0.68]
   pyramid(out, 0, 0, 17.7, 21.6, glass, steel, 0.12)
-  // the three small ones, on the north, south and east sides
-  for (const [x, z] of [[0, -26], [0, 26], [26, 0]]) pyramid(out, x, z, 2.8, 3.8, glass, steel, 0.05)
-  // the basins: a triangle in each quarter of the court round the pyramid, stone-rimmed, with the water in it
-  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    const n = 7
-    for (let i = 0; i < n; i++) {
-      // a triangle as strips, widest at the pyramid's corner side
-      const t0 = i / n
-      const t1 = (i + 1) / n
-      const a = 21 + 16 * t0
-      const b = 21 + 16 * t1
-      const w0 = 16 * (1 - t0)
-      const w1 = 16 * (1 - t1)
-      const cx = sx * (a + b) / 2
-      box(out, cx, 0.35, sz * (w0 + w1) / 4, (b - a) / 2, 0.35, (w0 + w1) / 4 + 0.3, stone, FIXED)
-      box(out, cx, 0.72, sz * (w0 + w1) / 4, (b - a) / 2 - 0.1, 0.02, (w0 + w1) / 4, water, FIXED)
-    }
-  }
+  for (const [x, z] of [[46, 0], [0, 46], [-46, 0]]) pyramid(out, x, z, 4.1, 5, glass, steel, 0.05)
 }
 
 /** A square pyramid of glass, its four faces with the lattice of diamonds drawn in steel over them. */

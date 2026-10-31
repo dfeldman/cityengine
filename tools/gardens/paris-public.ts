@@ -393,4 +393,15 @@ const cluny = (): GardenPlan => {
   }
 }
 
-export const PUBLIC_GARDENS: GardenPlan[] = [...champDeMars(), trocadero(), ...bagatelle(), ...grandsExplorateurs(), ...champsElysees(), albertKahn(), serresAuteuil(), courDHonneur(), catherineLaboure(), jeanXXIII(), cluny()]
+/**
+ * The AUTEUIL course (owner, 2026-10-30: "there's a wide grass track for the hippodrome, and then two rugby fields in the middle. we show grass and
+ * trees only"): OSM's outline of the course, way/13792244, simplified. It only stops the scatter: the copses in the middle are mapped
+ * trees and stay, and what lies on the grass is render/landmarks/paris/minor/auteuil.ts.
+ */
+const auteuil = (): GardenPlan => ({
+  ringOnly: true,
+  name: "Hippodrome d'Auteuil",
+  ring: [[48.855023, 2.257061], [48.854468, 2.256989], [48.85427, 2.256766], [48.854221, 2.256526], [48.854267, 2.256058], [48.854444, 2.255744], [48.854573, 2.255633], [48.854617, 2.255518], [48.854605, 2.255432], [48.854553, 2.255331], [48.854236, 2.254851], [48.854196, 2.254808], [48.85403, 2.254552], [48.853935, 2.254362], [48.85394, 2.254159], [48.85391, 2.253943], [48.853889, 2.253748], [48.853771, 2.253659], [48.853077, 2.253902], [48.852773, 2.254142], [48.852689, 2.25428], [48.852407, 2.254401], [48.852301, 2.254335], [48.852125, 2.254246], [48.851194, 2.253421], [48.850333, 2.252985], [48.850153, 2.253036], [48.849541, 2.253298], [48.849328, 2.253511], [48.848811, 2.254275], [48.84846, 2.255432], [48.848383, 2.255925], [48.848455, 2.256491], [48.84853, 2.256897], [48.848752, 2.25734], [48.84905, 2.257597], [48.851257, 2.258865], [48.856351, 2.262127], [48.857027, 2.262053], [48.857352, 2.261933], [48.857413, 2.261866], [48.857637, 2.261551], [48.857883, 2.261185], [48.857963, 2.261118], [48.857991, 2.261025], [48.857997, 2.260783], [48.858067, 2.260349], [48.85808, 2.260153], [48.858052, 2.259842], [48.857907, 2.259457], [48.85766, 2.259031], [48.857385, 2.258714], [48.856824, 2.258304], [48.855419, 2.257374]],
+})
+
+export const PUBLIC_GARDENS: GardenPlan[] = [auteuil(), ...champDeMars(), trocadero(), ...bagatelle(), ...grandsExplorateurs(), ...champsElysees(), albertKahn(), serresAuteuil(), courDHonneur(), catherineLaboure(), jeanXXIII(), cluny()]

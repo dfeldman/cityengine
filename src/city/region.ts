@@ -106,6 +106,8 @@ export interface Region {
   /** how far below its lowest bank a river's surface lies, metres: the elevation data smooths a walled river's
    *  drop away (Paris: the Seine runs ~2.5 m below the lower quays, ~7 m below the streets) */
   riverDrop?: number
+  /** a big river's surface, metres above sea level, over what its lowest bank would say (Paris: the Seine's 26.9 m, between its locks) */
+  riverLevel?: number
   /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
    *  des Arts, BUGS.md #32): OSM puts them at street level, where they ran hidden inside the viaduct */
   elevatedWalks?: { name: string; height: number }[]
@@ -145,6 +147,8 @@ export interface Region {
   rideFootBridges?: boolean
   /** where a road on a bridge is a traffic viaduct, no pavements on it and a real width (La Défense's Boulevard Circulaire) */
   bareViaducts?: { lat: number; lon: number; radius: number }[]
+  /** a pit in the lidar that is no pit (`ring` [lat, lon]: the Cour Napoléon, seen through the Pyramid's glass into the hall under it): level, at the height of its edge (tools/bake.ts) */
+  levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number }[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -247,6 +251,7 @@ export function region(id: string | undefined): Region {
     streetSigns: own?.streetSigns ?? base.streetSigns,
     awnings: own?.awnings ?? base.awnings,
     riverDrop: own?.riverDrop ?? base.riverDrop,
+    riverLevel: own?.riverLevel ?? base.riverLevel,
     elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
     footBridgeLayers: own?.footBridgeLayers ?? base.footBridgeLayers,
     ferryIslands: own?.ferryIslands ?? base.ferryIslands,
@@ -261,6 +266,7 @@ export function region(id: string | undefined): Region {
     straightDecks: own?.straightDecks ?? base.straightDecks,
     rideFootBridges: own?.rideFootBridges ?? base.rideFootBridges,
     bareViaducts: own?.bareViaducts ?? base.bareViaducts,
+    levelGrounds: own?.levelGrounds ?? base.levelGrounds,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,

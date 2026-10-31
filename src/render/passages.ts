@@ -32,8 +32,17 @@ function inside(r: P[], x: number, z: number): boolean {
   return o
 }
 
+const GRAND_GATES = new Map([['Place du Carrousel', { half: 3.6, top: 9.2 }]])
+
 /** A passage's half-width and arch height, shared by the vault here and the hole the building cuts. */
-export function archSize(e: { width: number; foot: boolean }, buildingTop: number): { half: number; top: number } {
+export function archSize(e: { width: number; foot: boolean; name?: string }, buildingTop: number): { half: number; top: number } {
+  /*
+   * …and the great gates of a palace are neither (owner, 2026-10-30, 48.860559, 2.333594: "these tunnels seem far too low"). The Guichets du
+   * Carrousel are three arches a good 7 m wide and over 9 m to the crown (Commons, "Guichets du Louvre Paris": on a van's width), under a
+   * facade of 28 m; OSM has them as one-lane service ways, so they came out as a porte cochère. By name: no rule tells a palace's gate from a block's.
+   */
+  const grand = e.name ? GRAND_GATES.get(e.name) : undefined
+  if (grand && !e.foot && buildingTop > grand.top + 5) return grand
   /*
    * A porte cochère is a carriage's width, 2.4 m either side at most. But a whole STREET under a building — Minna Street
    * through the brick block at 37.7819 −122.4065 (owner, 2026-10-15: "truck trying to go through pedestrian tunnel")

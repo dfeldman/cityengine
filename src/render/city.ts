@@ -3940,8 +3940,39 @@ export class City {
         }
         return true
       }
+      /*
+       * …but not on a DIVIDED street (owner, 2026-10-30, the Boulevard de Port-Royal, 48.838123, 2.343070: "FIVE rows of bollards on
+       * colored paveement. reality is there are no bollards, it's a complicated divided street with a sidewalk and bike path"). OSM
+       * maps it as a carriageway with a service road and a living street down its sides, all under the one name, each of which took a
+       * kerb and a row on either hand. A way with a way of the same name and another class running along it, within a contre-allée's
+       * reach, has none; and no post stands in the strip between two carriageways, whatever they are called.
+       */
+      const MEDIAN_REACH = 8
+      const CONTRE_ALLEE = 18
+      const strip = new Carriageways(kerbEdges)
+      const contreAllee = (e: (typeof groundEdges)[number]): boolean => {
+        if (!e.name) return false
+        const p = unpackPoints(e.points)
+        const i = p.length >> 1
+        const a = p[i - 1], b = p[i]
+        const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+        const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2
+        return aroundEdges.some((o) => {
+          if (o.id === e.id || o.foot || o.name !== e.name || o.kind === e.kind || o.tunnel) return false
+          const q = unpackPoints(o.points)
+          for (let j = 1; j < q.length; j++) {
+            const dx = q[j].x - q[j - 1].x, dz = q[j].z - q[j - 1].z, l2 = dx * dx + dz * dz
+            if (l2 < 1e-4) continue
+            const t = ((mx - q[j - 1].x) * dx + (mz - q[j - 1].z) * dz) / l2
+            if (t < 0 || t > 1) continue
+            if (Math.hypot(mx - q[j - 1].x - dx * t, mz - q[j - 1].z - dz * t) < CONTRE_ALLEE
+              && Math.abs(((b.x - a.x) * dx + (b.z - a.z) * dz) / (L * Math.sqrt(l2))) > 0.9) return true
+          }
+          return false
+        })
+      }
       for (const e of groundEdges) {
-        if (e.foot || e.walk < 0.5 || e.walk > BROAD_PAVEMENT) continue
+        if (e.foot || e.walk < 0.5 || e.walk > BROAD_PAVEMENT || contreAllee(e)) continue
         const narrow = e.walk <= bol.maxPavement
         const pts = unpackPoints(e.points)
         const total = lengthOf(pts)
@@ -3966,7 +3997,7 @@ export class City {
               if (!wanted(travelled + acc, side)) continue
               const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
               const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
-              if (!clear(px, pz)) continue
+              if (!clear(px, pz) || strip.whyNoFurniture(px, pz, MEDIAN_REACH) !== null) continue
               placeModel(furniture, post, px, 0.15, pz, 0)
             }
             acc += bol.spacing
@@ -4824,7 +4855,7 @@ export class City {
         // (a label's roof: a gable, a hip or a mansard is most of a small building's outline against the sky)
         // (a pitched roof the map calls flat has no height of its own: `||`, not `??` — the bake's 0 drew a mansard as nothing)
         look?.roof ? { shape: look.roof, height: (look.roof !== 'flat' && b.roofHeight) || Math.min(4, 1.2 + plan.height * 0.18), direction: b.roofDirection, colour: b.roofColour }
-          : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
+          : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour, walled: this.region.roadPaint === 'paris' },
         // (a label's dormers, or none where it saw none)
         look?.dormers !== undefined && this.region.roofscape ? { ...this.region.roofscape, dormers: look.dormers }
           : look?.dormers ? { chimneys: false, dormers: true } : this.region.roofscape, streetOf, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), special?.part === 'canopy' ? () => [] : this.archesFor(b, ring, plan.height))
