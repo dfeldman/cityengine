@@ -41,7 +41,9 @@
   },
   {
     "osm": [
-      "way/52072807"
+      "way/52072807",
+      "way/860140474",
+      "way/860407555"
     ],
     "name": "Fondation des États-Unis",
     "procedural": "fondationEtatsUnis",
