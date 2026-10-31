@@ -37,3 +37,7 @@ Buildings: Théâtre du Châtelet; Théâtre de la Ville; Comédie-Française; O
 ## Batch 7
 Gardens: whichever of the 330 gardens over 0.3 ha still reads as lawn and scattered trees, largest first; the ordinary squares' common planting.
 Buildings: remaining hospitals and universities by size (Paris-Dauphine's annexes, Paris-Saclay's Paris sites, Saint-Antoine, Bichat, Beaujon, Sainte-Anne, Quinze-Vingts, Saint-Joseph, Pompidou's Ircam, Institut Pasteur, Institut Curie); La Défense's unusual towers; Front de Seine; Quartier des Halles's Forum; Gare de l'Est; Gare d'Austerlitz; Gare Saint-Lazare's front.
+
+## After the batches: places of worship
+
+The owner, 2026-10-31: "we should make a list of all places of worship, and audit those once done with current batches. since they are almost always unique buildings, and paris has many of them." The list is PARIS-WORSHIP.md (tools/paris-worship.py). Audit them most famous first, in groups of 25: each is usually a unique building, so give each its true silhouette (tower or dome, nave and roof, apse, material), the Gothic kit (monuments/gothic.ts) for those it suits, and its own colour of stone. Synagogues, mosques, Orthodox and Protestant churches, and temples are all on it.
