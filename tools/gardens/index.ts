@@ -74,7 +74,7 @@ export function bakeGardens(ways: Way[], toLocal: (g: { lat: number; lon: number
     for (const r of g.rows ?? []) rows.push({ points: r.line.map(L), spacing: r.spacing ?? 7, h: r.h, form: r.form })
     for (const t of g.topiary ?? []) {
       const p = L(t.at)
-      garden.topiary.push(p.x, p.z, t.h, t.shape === 'cone' ? 0 : t.shape === 'ball' ? 1 : 2)
+      garden.topiary.push(p.x, p.z, t.h, t.shape === 'cone' ? 0 : t.shape === 'ball' ? 1 : t.shape === 'shrub' ? 3 : 2)
     }
     counts.plans++
   }

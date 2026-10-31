@@ -36,6 +36,11 @@ const city = (id: string) => all.find((c) => c.city === id)!
  */
 const KNOWN: Record<string, string[]> = {
   'paris-centre': [
+    // Batch 1 (2026-10-31): what stands on or among buildings by design. Lariboisière's gallery runs between OSM's pavilions round their court; the Pompidou's glass vaults sit on its massing;
+    // the Ernests' pool is inside the court of its building's outline
+    "intersects | Hôpital européen Georges-Pompidou: the glass roofs and rotunda",
+    "intersects | Lariboisière: the court's gallery",
+    "intersects | École normale supérieure: the Cour aux Ernests",
     // #108 — a nonbuilding standing in its neighbours' footprints. Several of these are a monument on a place
     // whose OSM square overlaps the buildings round it, and are probably fine; they need the contact sheet.
     'intersects | Musée Carnavalet — the court',

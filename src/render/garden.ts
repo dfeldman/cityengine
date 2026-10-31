@@ -44,6 +44,9 @@ const plantingOf = (seed: number): number => Math.floor(noise(seed, 7) * PLANTIN
 
 const CLIPPED = surfaceTag('clipped')
 const BLOSSOM = surfaceTag('blossom')
+const FOLIAGE = surfaceTag('foliage')
+/** an English park's shrubs: laurel, spiraea's lighter leaf, box, a purple-leaved berberis */
+const SHRUB: Rgb[] = [[0.09, 0.2, 0.06], [0.13, 0.25, 0.07], [0.07, 0.17, 0.07], [0.11, 0.21, 0.09], [0.17, 0.12, 0.09]]
 
 const noise = (a: number, b: number): number => {
   const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453
@@ -127,6 +130,7 @@ function trunk(out: MeshBuilder, p: Point, y1: number): void {
 
 /** a clipped yew: a cone, a ball on a short foot, or a cube */
 function topiary(out: MeshBuilder, x: number, z: number, h: number, shape: number, seed: number): void {
+  if (shape === 3) return shrub(out, x, z, h, seed)
   const c = toned(YEW, 0.9 + noise(seed, 1) * 0.3)
   if (shape === 2) {
     const w = h * 0.45
@@ -148,6 +152,29 @@ function topiary(out: MeshBuilder, x: number, z: number, h: number, shape: numbe
       const up = (r0 - r1) / Math.max(0.01, y1 - y0)
       const len = Math.hypot(1, up)
       out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [q.x, y1, q.z], [p.x, y1, p.z]], [mx / len, up / len, mz / len], UV, tone, CLIPPED)
+    }
+  }
+}
+
+/**
+ * A SHRUB, unclipped (Batch 1's parks, 2026-10-31): a laurel, a spiraea, a mound as wide as it is high that belongs to no shape. Seven corners pushed about by where it
+ * stands, three bands, leaf on it, and no two the same green. A ball of clipped yew at the foot of an English park's trees read as a topiary show.
+ */
+function shrub(out: MeshBuilder, x: number, z: number, h: number, seed: number): void {
+  const sides = 7
+  const leaf = SHRUB[Math.floor(noise(seed, 3) * SHRUB.length) % SHRUB.length]
+  const levels: [number, number][] = [[0, 0.62], [h * 0.38, 0.82], [h * 0.75, 0.56], [h, 0.12]]
+  const R = h * (0.62 + noise(seed, 5) * 0.28)
+  const corner = (k: number, l: number): V => {
+    const a = ((k % sides) / sides) * Math.PI * 2 + seed * 0.7
+    const m = levels[l][1] * R * (0.78 + noise(seed + (k % sides), l + 2) * 0.44)
+    return [x + Math.sin(a) * m, levels[l][0], z + Math.cos(a) * m]
+  }
+  for (let l = 0; l + 1 < levels.length; l++) {
+    const tone = toned(leaf, 0.72 + (0.42 * (l + 1)) / levels.length)
+    for (let k = 0; k < sides; k++) {
+      const a = ((k + 0.5) / sides) * Math.PI * 2 + seed * 0.7
+      out.quad([corner(k, l), corner(k + 1, l), corner(k + 1, l + 1), corner(k, l + 1)], [Math.sin(a) * 0.5, 0.86, Math.cos(a) * 0.5], UV, toned(tone, 0.9 + noise(k + seed, l) * 0.22), FOLIAGE)
     }
   }
 }

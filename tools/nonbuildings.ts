@@ -131,6 +131,13 @@ const BY_MODULE: [Record<string, unknown>, NonbuildingKind][] = [
  * derived. Keep it sorted by kind; add a name here the day a nonbuilding builder is written.
  */
 export const EXPLICIT: Record<string, NonbuildingKind> = {
+  // Batch 1's parks (paris/batch1/): gates, follies, rockwork, the moored balloon and the fountain, the wine lanes' rails, the bulls (2026-10-31)
+  monceauGateVelasquez: 'monument', monceauGateRuysdael: 'monument', monceauGateVanDyck: 'monument', monceauGateCourcelles: 'monument',
+  monceauPyramid: 'monument', monceauArcade: 'monument', monceauBridge: 'bridge', buttesGrotto: 'monument', montsourisCascade: 'fountain', mireDuSud: 'monument',
+  citroenBallon: 'monument', citroenJets: 'fountain', bercyRails: 'plaza', brassensBullEast: 'statue', brassensBullWest: 'statue',
+  gloriette: 'monument', ranelaghKiosk: 'monument', ranelaghManege: 'monument', villetteDragon: 'monument',
+  // …and what stands on or between its hospitals' buildings: an arcade, glass over a roof, a pool (paris/batch1/hospitals.ts)
+  lariboisiereGallery: 'monument', hegpGlass: 'monument', ensErnests: 'fountain',
   // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
   medicisFountain: 'fountain', tokyoParvis: 'plaza', observatoireFountain: 'fountain',
   // …the museums family (paris/museums/): the floating pool, on a barge (OSM's way 119943935 is building=boat)

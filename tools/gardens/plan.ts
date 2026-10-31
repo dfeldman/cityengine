@@ -22,7 +22,8 @@ export interface GardenPlan {
   pleached?: { line: LL[]; y0?: number; h?: number; w?: number; spacing?: number }[]
   /** real trees, in a line: chestnuts in a quincunx, the planes of an allée */
   rows?: { line: LL[]; spacing?: number; h?: number; form?: 'plane' }[]
-  topiary?: { at: LL; shape: 'cone' | 'ball' | 'box'; h: number }[]
+  /** clipped yews, and `shrub`, an unclipped mound of leaves */
+  topiary?: { at: LL; shape: 'cone' | 'ball' | 'box' | 'shrub'; h: number }[]
 }
 
 const M_LAT = 111320

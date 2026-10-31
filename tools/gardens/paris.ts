@@ -5,6 +5,7 @@
 import { closed, frame, rect, type GardenPlan, type LL } from './plan.ts'
 import { PALACE_GARDENS } from './paris-palaces.ts'
 import { PUBLIC_GARDENS } from './paris-public.ts'
+import { PARKS_GARDENS } from './paris-parks.ts'
 
 /**
  * The JARDIN DU PALAIS-ROYAL (aerial, 48.8650 2.3375, 0.34 m/px). A gravel court about 216 × 90 m, its axis on bearing 18.7, inside
@@ -53,4 +54,4 @@ const quaiBasCite = (): GardenPlan => {
   }
 }
 
-export const GARDENS: GardenPlan[] = [palaisRoyal(), quaiBasCite(), ...PALACE_GARDENS, ...PUBLIC_GARDENS]
+export const GARDENS: GardenPlan[] = [palaisRoyal(), quaiBasCite(), ...PALACE_GARDENS, ...PUBLIC_GARDENS, ...PARKS_GARDENS]

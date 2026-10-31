@@ -28012,22 +28012,6 @@
  },
  {
   "osm": [
-   "way/83422713"
-  ],
-  "name": "equipement 83422713",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "equipement",
-   "p": 3,
-   "seed": 8541
-  },
-  "height": 12.9,
-  "front": -161,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: equipement, APUR period 3."
- },
- {
-  "osm": [
    "way/83715715"
   ],
   "name": "Église Notre-Dame-de-l'Assomption de Passy",

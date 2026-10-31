@@ -876,10 +876,12 @@
       "relation/967665"
     ],
     "restyle": "classical",
-    "roof": "flat",
+    "roof": "mansard",
     "height": 17,
     "levels": 3,
-    "note": "Le Vau's hemicycle on the Quai de Conti: OSM's 30 m massing brought down to its real 17 m in the classical stone dress; the chapel front and dome are `institutDome`."
+    "note": "Le Vau's hemicycle on the Quai de Conti: OSM's 30 m massing brought down to its real 17 m in the classical stone dress; the chapel front and dome are `institutDome`. Slate on it (Batch 1, 2026-10-31: tan flat roofs from the Pont des Arts, where the aerial has slate).",
+    "roofHeight": 4,
+    "roofColour": "#4b5359"
   },
   {
     "name": "Institut de France — dome",
@@ -1228,9 +1230,11 @@
       "relation/967664"
     ],
     "restyle": "classical",
-    "roof": "flat",
+    "roof": "mansard",
     "levels": 3,
-    "note": "The Mint on the Quai de Conti, beside the Institut: a long plain classical front with its projecting centre."
+    "note": "The Mint on the Quai de Conti, beside the Institut: a long plain classical front with its projecting centre. Slate on it (Batch 1, 2026-10-31).",
+    "roofHeight": 3.5,
+    "roofColour": "#4b5359"
   },
   {
     "name": "Place des Victoires — facades",
@@ -1324,6 +1328,9 @@
   },
   {
     "include": "paris/minor.json"
+  },
+  {
+    "include": "paris/batch1.json"
   },
   {
     "include": "paris/civic.json"
