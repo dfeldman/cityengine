@@ -7615,23 +7615,6 @@
  },
  {
   "osm": [
-   "way/63243779"
-  ],
-  "name": "Archives de Paris",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "ministere",
-   "p": 10,
-   "word": "ARCHIVES DE PARIS",
-   "seed": 4986
-  },
-  "height": 28.6,
-  "front": 45,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: ministere, APUR period 10."
- },
- {
-  "osm": [
    "way/63243833"
   ],
   "name": "Bibliothèque Jacqueline Dreyfus-Weill",
