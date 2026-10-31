@@ -262,3 +262,11 @@ Still open:
 - Not looked at in the city (built from aerial or photo only): minor items 11, 14, 15, 20, 29, 31, 32, 39. Nanterre-Université (16) seen before its last changes.
 - Minor #6, #28, #40: written, not cleanly seen. #5's coordinates are the Fontaine du Théâtre Français, not Pol Bury's spheres; both are on the Tripo list.
 - `src/render/landmarks.ts:100`'s comment on numeric `front` disagrees with what the wave's agent measured for outline entries (local −z). Worth settling before more fronts are set by hand.
+
+## After the rail audit (bake 20261031T0811-xhox)
+
+- Place de l'Europe (48.8788, 2.3234): a crater under the roundabout, the street raised and the tracks' bed cut. Needs the real deck: a steel bridge over the tracks. First of the bugs.
+- tools/rail-audit.ts check: at-grade 130, foot-at-grade 807 (mostly the Petite Ceinture and yards, newly drawn), low-rail-bridge 138, surface-undrawn 144, through-building 103, stub-end 42. Not all real: the checker is conservative.
+- Not walked: M13 at Châtillon, M14, T1, T4. Main-line platforms aren't drawn at all, only the viaduct stations'.
+- Bridges: Pont de Saint-Cloud from the saddle, Pont Aval (an 11.5 m step in the dry run), Simone-de-Beauvoir's high arm dead-ends, Pont Rouelle generic, Sainte-Geneviève's statue on the Tournelle.
+- Top 25, still poor: Vendôme's fronts, Opéra Bastille, the Palais de Justice west of the Bonbec, the Concorde's paving.
