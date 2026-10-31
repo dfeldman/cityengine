@@ -84,24 +84,16 @@
     "osm": [
       "way/68568682"
     ],
-    "restyle": "classical",
-    "roof": "mansard",
-    "levels": 3,
-    "eaves": 13,
-    "roofHeight": 6,
-    "roofColour": "#4e555d",
-    "note": "The Hôtel Biron (1732), Rodin's house and museum, between its court on the Rue de Varenne and the sculpture garden: the pale dressed stone of the hôtels particuliers and a slate roof. It needs its own entry — the hôtels' regular expression wants 'Hôtel de/du/des', and OSM names it 'Hôtel Biron'."
-  },
-  {
-    "name": "Musée de Cluny — the Hôtel de Cluny",
-    "osm": [
-      "way/41874779"
+    "note": "batch4/hotels.ts (2026-10-31): the hôtel's two long fronts on OSM's outline, in place of the classical restyle.",
+    "procedural": "hotelBiron",
+    "lat": 48.855304,
+    "lon": 2.315864,
+    "front": 189.4,
+    "size": [
+      44,
+      30
     ],
-    "restyle": "marais",
-    "roof": "gabled",
-    "roofHeight": 8,
-    "roofColour": "#4e555d",
-    "note": "The abbots' Flamboyant Gothic hôtel (c. 1500) and the museum's halls: rough limestone under steep slate, the Marais dress — closer to the late-Gothic house than the hôtels' classical one. OSM maps it as an outline (way 41874779) and eleven building:parts; this claims the parts (the 'Hôtels particuliers' regular expression can only reach the outline's id, which the bake drops when the parts supersede it). The brief's way 56640163 is the museum's site (tourism=museum, no building). If the bake kept the outline instead, the 'Hôtels particuliers' entry (earlier in paris.json, first wins) dresses it classical and this one does nothing."
+    "height": 18
   },
   {
     "name": "Thermes de Cluny",
@@ -137,16 +129,22 @@
   },
   {
     "name": "Saint-Martin-des-Champs — Musée des Arts et Métiers",
-    "procedural": "saintMartinDesChamps",
+    "procedural": "saintMartinChevet",
     "osm": [
       "way/56301534",
       "way/1484904717",
       "way/1484904718",
       "way/1484904719"
     ],
-    "front": 270,
-    "height": 24,
-    "note": "The priory church, the museum's hall of machines: the church kit's long nave, west gable to the Rue Saint-Martin, the Romanesque choir's apse at the east end, fitted to OSM's outline (75 × 44 m, its ambulatory chapels drawn as the apse). OSM tags it a one-level chapel; 24 m is the nave's ridge. The three building:parts inside its outline (1484904717/718/719) are named too, so they go whether or not the bake superseded the outline."
+    "front": 292,
+    "height": 38,
+    "note": "batch4/saint-martin.ts (2026-10-31): the chevet, its ring of chapels, the bell tower and the nave off OSM's outlines and the aerial, in place of the church kit's barn. The priory church, the museum's hall of machines",
+    "lat": 48.866069,
+    "lon": 2.354711,
+    "size": [
+      36,
+      76
+    ]
   },
   {
     "name": "Conservatoire national des arts et métiers",

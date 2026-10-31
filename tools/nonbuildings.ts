@@ -143,8 +143,12 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   acclimVoliere: 'monument', acclimKiosk: 'monument', acclimCarrousel: 'monument', acclimSeoul: 'monument', acclimRocher: 'monument',
   couleeViaduct1: 'monument', couleeViaduct2: 'monument', couleeViaduct3: 'monument', couleeViaduct4: 'monument', couleeViaduct5: 'monument', couleeViaduct6: 'monument', couleeViaduct7: 'monument', couleeViaduct8: 'monument',
   tenonGate: 'monument', trousseauGate: 'monument', rothschildGate: 'monument', debreGate: 'monument', fochGate: 'monument',
+  // Batch 4 (paris/batch4/bois.ts, 2026-10-31): Alphand's rock and falls, the Bois's kiosk, the temple on its grotto, the zoo's 65 m concrete rock, Dubuffet's tower, the Baron's rocks
+  grandeCascade: 'fountain', petiteCascade: 'fountain', kiosqueEmpereur: 'monument', daumesnilTemple: 'monument', grandRocher: 'structure', tourAuxFigures: 'art', rothschildRocks: 'monument',
   // Batch 3 (paris/batch3/, 2026-10-31): the parks' rocks, kiosk, obelisks, a fountain's crescent, painted courts; a footbridge; the Olympiades's tented roofs on their dalle; a chimney
   rochersDansLeCiel: 'monument', templeKiosk: 'monument', templeRocher: 'fountain', legallObelisk: 'monument', chapeauEve: 'fountain', eoleCourts: 'plaza', lambertJet: 'fountain', beaugrenellePont: 'bridge', olympiadesPagodes: 'monument', fdsChimney: 'monument',
+  // Batch 5 (paris/batch5/parks.ts, 2026-10-31): the squares' stones, a pergola, fountains, a kiosk, memorials; boats in the Bassin; the quay's stepped bays and paving; the open-air museum
+  cainLapidaire: 'monument', anneFrankPergola: 'monument', vivianiFontaine: 'fountain', robinierCrutch: 'monument', vivianiStones: 'monument', fontaineVierge: 'fountain', boucicautMonument: 'monument', boucicautKiosk: 'monument', ajaccioBust: 'statue', ajaccioGroup: 'statue', ajaccioStele: 'monument', arsenalBoatsNorth: 'monument', arsenalBoatsSouth: 'monument', tinoBay: 'plaza', tinoStar: 'plaza', tinoSculptures: 'monument',
   // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
   medicisFountain: 'fountain', tokyoParvis: 'plaza', observatoireFountain: 'fountain',
   // …the museums family (paris/museums/): the floating pool, on a barge (OSM's way 119943935 is building=boat)

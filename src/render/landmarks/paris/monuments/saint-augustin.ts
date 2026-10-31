@@ -1,10 +1,10 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import { box, prism } from '../../../models.ts'
-import { block, classicalColumn, roof } from '../../kit.ts'
+import { block, roof, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
-import { archOn, pedimentOn, rectOn } from '../palaces/common.ts'
-import { apseWall, band, domeOf, drumArches, FIXED, graded, type P2, ring, walls } from './common.ts'
-import { pal, pinnacle, roseOn } from './churches.ts'
+import { band, domeOf, drumArches, FIXED, graded, type P2, ring, walls } from './common.ts'
+import { church } from './churches.ts'
+import { blindArcade, boxOn, chevet, edgeFrame, engaged, entablature, faceFrame, flank, frameAt, gothicPortal, niche, pedimentFront, pinnacle as stackedPinnacle, roseWindow, traceryWindow, statue } from './gothic.ts'
 
 /*
  * SAINT-AUGUSTIN (Victor Baltard, 1860–71), at the meeting of the Boulevard Malesherbes and the Boulevard Haussmann:
@@ -37,22 +37,24 @@ export function saintAugustin(out: MeshBuilder, fit: Fit): void {
 }
 
 function augustin(out: MeshBuilder): void {
-  const p = pal('#d9cdb2', '#53606a')
-  const lead: [number, number, number] = [0.44, 0.49, 0.54]
-  const red: [number, number, number] = [0.78, 0.42, 0.3]
+  // (Batch 5, 2026-10-31: stone and paint that don't blow out, the windows and front on the Gothic kit, in Baltard's Romano-Byzantine round heads)
+  const p = church('#a59c88', '#3d484f')
+  const lead: [number, number, number] = [0.27, 0.31, 0.35]
+  const red: [number, number, number] = [0.42, 0.18, 0.12]
+  const door: [number, number, number] = [0.12, 0.08, 0.055]
   // the chapels and aisles all round to 21 m under a low lead roof; the cornice
   walls(out, PLAN, 0, 21, p.stone, p.lead)
   band(out, PLAN, 20.2, 0.9, 0.35, p.trim)
   // the nave's clerestory, ±7.3, eaves at 33 and its roof ridge at 40; the windows down both sides
   block(out, -7.3, 7.3, -38, 8, 21, 33, p.stone)
   roof(out, -7.7, 7.7, -38, 8, 33, 6.5, 7.7, 0.01, p.slate)
-  for (let z = -33; z < 6; z += 4.6) {
-    for (const s of [-1, 1]) archOn(out, s < 0 ? '-x' : '+x', s * 7.3, z, 23.5, 2.0, 6.5, p.glass)
-  }
-  // the chapels' round windows along the widening sides
-  for (let z = -26; z < 2; z += 5.2) {
-    const w = 9.1 + ((z + 29.7) / 27.2) * 7.0
-    for (const s of [-1, 1]) archOn(out, s < 0 ? '-x' : '+x', s * w, z, 7, 2.2, 8, p.glass)
+  for (const s of [-1, 1]) flank(faceFrame(out, s < 0 ? '-x' : '+x', s * 7.3), -35.3, 7, 9, { stone: p.stone, glass: p.glass, y0: 23.5, h: 6.8, head: 'round', lights: 2, share: 0.54, cornice: 33 })
+  // the chapels' round windows along the widening sides: on the wedge's own walls
+  for (const s of [-1, 1]) {
+    const a = { x: s * 9.1, z: -29.7 }
+    const b = { x: s * 16.1, z: -2.5 }
+    const e = edgeFrame(out, a, b, { x: 0, z: -15 })
+    flank(e, 0.6, e.L - 0.6, 5, { stone: p.stone, glass: p.glass, y0: 6.6, h: 9.4, head: 'round', lights: 3, share: 0.56, far: false, plinth: 1.2, string: true, buttress: { y1: 19, d: 0.5, w: 0.8, stages: 2 } })
   }
 
   // the crossing under the dome: a square block to 33, the four turrets at its corners with their little domes
@@ -62,7 +64,12 @@ function augustin(out: MeshBuilder): void {
   for (const [x, z] of [[-14.1, 8.3], [14.1, 8.3], [-14.1, 36.6], [14.1, 36.6]]) {
     block(out, x - 3.2, x + 3.2, z - 3.2, z + 3.2, 21, 30, p.stone)
     prism(out, x, z, 30, 37.5, 2.9, 8, p.stone, FIXED)
-    drumArches(out, x, z, 2.9, 31.2, 8, 0.8, 4.2, p.dark)
+    for (let i = 0; i < 8; i++) {
+      const a0 = (i / 8) * Math.PI * 2
+      const a1 = ((i + 1) / 8) * Math.PI * 2
+      const e = edgeFrame(out, { x: x + Math.sin(a0) * 2.9, z: z + Math.cos(a0) * 2.9 }, { x: x + Math.sin(a1) * 2.9, z: z + Math.cos(a1) * 2.9 }, { x, z })
+      traceryWindow(e, e.L / 2, 31.2, e.L * 0.56, 4.8, { stone: p.trim, glass: p.dark, head: 'round', lights: 1, far: true })
+    }
     prism(out, x, z, 37.5, 38.3, 3.2, 8, p.trim, FIXED)
     domeOf(out, x, z, 38.3, 2.9, 4.2, lead, (t) => Math.cos(Math.asin(Math.min(1, t))) ** 0.8, { sides: 12, steps: 5 })
     prism(out, x, z, 42.4, 44.6, 0.35, 6, lead, FIXED, 0.08)
@@ -70,12 +77,21 @@ function augustin(out: MeshBuilder): void {
   // the drum: a plinth, the ring of tall arched windows between pilasters, the cornice
   prism(out, 0, dz, 33, 37, 14.2, 28, p.stone, FIXED)
   prism(out, 0, dz, 37, 50.5, 12.8, 28, p.stone, FIXED)
-  drumArches(out, 0, dz, 12.8, 39.5, 16, 2.0, 8.5, p.glass, p.trim)
+  for (let i = 0; i < 28; i++) {
+    const a0 = (i / 28) * Math.PI * 2
+    const a1 = ((i + 1) / 28) * Math.PI * 2
+    if (i % 2) {
+      box(out, Math.sin((a0 + a1) / 2) * 12.9, 44.6, dz + Math.cos((a0 + a1) / 2) * 12.9, 0.4, 5.9, 0.4, p.trim, FIXED)
+      continue
+    }
+    const e = edgeFrame(out, { x: Math.sin(a0) * 12.82, z: dz + Math.cos(a0) * 12.82 }, { x: Math.sin(a1) * 12.82, z: dz + Math.cos(a1) * 12.82 }, { x: 0, z: dz })
+    traceryWindow(e, e.L / 2, 39.5, 2.1, 8.8, { stone: p.trim, glass: p.glass, head: 'round', lights: 2, far: true })
+  }
   prism(out, 0, dz, 50.5, 52.2, 13.6, 28, p.trim, FIXED)
   prism(out, 0, dz, 52.2, 53.6, 12.9, 28, p.stone, FIXED)
   // the ribbed cap, a little flattened, the oculi round its foot
   domeOf(out, 0, dz, 53.6, 12.9, 17.2, lead, (t) => Math.cos(Math.asin(Math.min(1, t * 0.98))) ** 0.9,
-    { sides: 28, steps: 10, ribs: 16, rib: [0.6, 0.6, 0.58] })
+    { sides: 28, steps: 10, ribs: 16, rib: [0.36, 0.38, 0.38] })
   // the red iron lantern: its ring of posts, the cornice, the spire and the cross
   const ly = 70.4
   prism(out, 0, dz, ly, ly + 0.8, 3.2, 12, red, FIXED)
@@ -90,23 +106,27 @@ function augustin(out: MeshBuilder): void {
   box(out, 0, ly + 14.4, dz, 0.45, 0.07, 0.07, p.gold, FIXED)
 
   // the chevet: the apse beyond the crossing, half-round, and its roof
-  apseWall(out, 0, 38.2, 9.8, 0, 26, 30, p.stone, p.lead, p.glass, 8)
+  chevet(out, 0, 38.2, 9.8, 0, 26, 30, p.stone, p.lead, p.glass, { n: 7, win: { y0: 9, h: 11, head: 'round', lights: 2 }, butt: 1 })
 
   // the front on the place: the porch block with its three arches, the frieze of the apostles, the great arch with
   // the rose, the gable and its cross; the corner piers with their niches and pinnacles
   const zf = -47.6
   block(out, -10.8, 10.8, zf, -36.8, 0, 27.5, p.stone)
-  for (const x of [-5.6, 0, 5.6]) archOn(out, '-z', zf, x, 0.8, 4.2, 9.0, p.dark)
-  for (const x of [-8.3, -2.8, 2.8, 8.3]) classicalColumn(out, x, zf - 0.45, 0.6, 7.2, 0.38, p.stone, { order: 'corinthian', tier: 'mid', heading: Math.PI })
+  const fr = faceFrame(out, '-z', zf)
   for (let k = 0; k < 4; k++) block(out, -10.4 + k * 0.4, 10.4 - k * 0.4, zf - 2.2 + k * 0.5, zf, 0, 0.6 - k * 0.15, p.trim)
-  block(out, -10.9, 10.9, zf - 0.6, zf, 9.8, 10.6, p.trim)
-  for (let x = -7.4; x <= 7.5; x += 1.35) box(out, x, 12.3, zf - 0.25, 0.42, 1.25, 0.25, p.deep, FIXED)
-  block(out, -10.9, 10.9, zf - 0.6, zf, 13.8, 14.6, p.trim)
-  archOn(out, '-z', zf, 0, 14.8, 13.4, 11.6, p.deep, 0.05)
-  roseOn(out, '-z', zf, 0, 20.4, 3.9, p.glass, p.trim)
-  block(out, -11.2, 11.2, zf - 0.7, zf + 0.2, 27.0, 28.0, p.trim)
-  pedimentOn(out, '-z', zf + 0.2, -11.2, 11.2, 28.0, 7.2, 0.7, p.trim)
-  rectOn(out, '-z', zf, -1.0, 1.0, 30.0, 32.2, p.deep, 0.75)
+  // the porch's three round arches between Corinthian shafts
+  for (const x of [-5.6, 0, 5.6]) gothicPortal(fr, x, 0.8, 4.4, 8.6, { stone: p.trim, dark: p.dark, door, depth: 0.85, orders: 3 })
+  for (const x of [-8.3, -2.8, 2.8, 8.3]) engaged(fr, x, 0.6, 9.6, 0.4, p.trim, 'corinthian')
+  entablature(fr, -10.9, 10.9, 9.6, 1, 0.6, p.trim)
+  // the frieze of Christ and the Apostles, each under a little arch, and the gallery's rail over
+  blindArcade(fr, -8.4, 8.4, 10.9, 2.8, 13, p.trim, p.dark, { d: 0.2 })
+  for (let i = 0; i < 13; i++) statue(out, -8.4 + (16.8 * (i + 0.5)) / 13, 10.95, zf - 0.07, 2.1, shade(p.stone, 1.12))
+  boxOn(fr, -10.9, 10.9, 13.8, 14.5, 0, 0.5, p.trim, true)
+  // the great arch with the rose
+  gothicPortal(fr, 0, 14.8, 15.4, 11.8, { stone: p.stone, dark: p.stone, door: p.stone, depth: 0.5, orders: 2 })
+  roseWindow(frameAt(fr, 0.14), 0, 20.4, 4, { stone: p.trim, glass: p.glass, spokes: 16, d: 0.3 })
+  boxOn(fr, -11.2, 11.2, 26.9, 28, 0, 0.7, p.trim, true)
+  pedimentFront(fr, -11.2, 11.2, 28, 7.2, 0.7, p.trim, { relief: 3 })
   box(out, 0, 36.6, zf + 0.4, 0.55, 1.4, 0.45, p.stone, FIXED)
   box(out, 0, 39.2, zf + 0.4, 0.14, 1.3, 0.14, p.stone, FIXED)
   box(out, 0, 39.6, zf + 0.4, 0.7, 0.14, 0.14, p.stone, FIXED)
@@ -115,13 +135,14 @@ function augustin(out: MeshBuilder): void {
   for (const s of [-1, 1]) {
     const x = s * 11.0
     block(out, x - 1.2, x + 1.2, zf - 0.3, zf + 2.2, 0, 29.5, p.stone)
-    archOn(out, '-z', zf - 0.3, x, 10.8, 1.3, 3.0, p.deep)
-    archOn(out, '-z', zf - 0.3, x, 3.0, 1.3, 3.0, p.deep)
-    pinnacle(out, x, zf + 1.0, 29.5, 3.2, 1.6, p.trim)
+    const pier = faceFrame(out, '-z', zf - 0.3)
+    niche(pier, x, 10.8, 1.2, 3.4, 0.04, p.stone, p.dark)
+    niche(pier, x, 3, 1.2, 3.4, 0.04, p.stone, p.dark)
+    stackedPinnacle(out, x, zf + 1.0, 29.5, 3.6, 0.8, p.trim, 2)
     // the two small domed turrets behind the front, where the nave meets it
     const tz = -38.0
     prism(out, s * 8.6, tz, 27.5, 34.0, 1.75, 8, p.stone, FIXED)
-    drumArches(out, s * 8.6, tz, 1.75, 29.0, 6, 0.6, 2.8, p.dark)
+    drumArches(out, s * 8.6, tz, 1.75, 29.0, 6, 0.6, 2.8, p.dark, p.trim)
     domeOf(out, s * 8.6, tz, 34.0, 1.9, 2.4, lead, (t) => Math.cos(Math.asin(Math.min(1, t))), { sides: 10, steps: 4 })
     prism(out, s * 8.6, tz, 36.4, 37.6, 0.2, 6, p.gold, FIXED, 0.05)
   }

@@ -16,7 +16,6 @@ import { institutMondeArabe } from './institut-monde-arabe.ts'
 import { jeuDePaume, orangerie } from './orangerie.ts'
 import { philharmonie } from './philharmonie.ts'
 import { quaiBranly } from './quai-branly.ts'
-import { saintMartinDesChamps } from './saint-martin-des-champs.ts'
 import { chapelleSorbonne } from './chapelle-sorbonne.ts'
 import { beauxArts } from './beaux-arts.ts'
 import { hopitalSaintLouis } from './hopital-saint-louis.ts'
@@ -49,7 +48,7 @@ import { sainteGenevieve } from './sainte-genevieve.ts'
 import { sorbonne } from './sorbonne.ts'
 
 export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  orangerie, jeuDePaume, fondationLouisVuitton, quaiBranly, institutMondeArabe, clunyThermes, saintMartinDesChamps, guimetRotunda, bourseCommerce,
+  orangerie, jeuDePaume, fondationLouisVuitton, quaiBranly, institutMondeArabe, clunyThermes, guimetRotunda, bourseCommerce,
   geode, citeDesSciences, philharmonie, bnfTower,
   sorbonne, chapelleSorbonne, hotelDieu, sainteGenevieve, beauxArts, hopitalSaintLouis, salpetriere, citeDeLaMode, rotondeVillette, pavillonArsenal, collegeDeFrance,
   tourZamansky, pagode, mairie5e, mairie1er, piscineJosephineBaker, zenith, jacquemartAndre,

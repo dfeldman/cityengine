@@ -34,7 +34,7 @@ export function tokyoParvis(out: MeshBuilder, fit: Fit): void {
 }
 
 function draw(out: MeshBuilder, lv: number[]): void {
-  const p = palette('#e7e1d2')
+  const p = palette('#bdb6a3')
   const pier = shade(p.stone, 1.03)
   const u = lv[0]
   const h = 13.2 + u

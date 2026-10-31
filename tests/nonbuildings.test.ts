@@ -55,6 +55,9 @@ const KNOWN: Record<string, string[]> = {
     // the parks family, wave 2 (2026-10-30): Tschumi's folies stand hard against the halls the park was built round (the
     // Théâtre Paris-Villette, the Pavillon Janvier, the Cité de la Musique, the Argonaute, the Philharmonie), and the
     // Acclimatation's booths against a small lodge behind them — adjacency, as built, judged on the city shots
+    // Batch 5 (paris/batch5/, 2026-10-31). One carousel builder at two places, Ranelagh's and the Square Boucicaut's; one dance bay at four places along the Quai Saint-Bernard, as built.
+    'duplicate | ranelaghManege',
+    'duplicate | tinoBay',
     // Batch 3 (paris/batch3/, 2026-10-31). Moreux's obelisks: one builder at two places, a pair. The Pagodes stand in the dalle's gap, hard against the bars Rome and Grenoble whose ground floors OSM runs under them; the Temple's kiosk has the square's public toilets by its side.
     'duplicate | legallObelisk',
     'intersects | Les Olympiades: les Pagodes',

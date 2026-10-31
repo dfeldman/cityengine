@@ -1,0 +1,354 @@
+[
+  {
+    "name": "Église Saint-Julien-le-Pauvre",
+    "procedural": "saintJulienPauvre",
+    "osm": [
+      "way/19741083"
+    ],
+    "front": 299,
+    "height": 19,
+    "note": "batch5/churches.ts: the apses over the Square Viviani, the 1651 wall on the Rue Saint-Julien-le-Pauvre. From memory and the aerial."
+  },
+  {
+    "osm": [
+      "way/495635817"
+    ],
+    "name": "Chapelle Saint-Symphorien",
+    "procedural": "parisCivic",
+    "kit": {
+      "kind": "eglise",
+      "p": 1,
+      "word": "chapelle",
+      "seed": 7636
+    },
+    "height": 16,
+    "front": -167,
+    "sign": false,
+    "note": "The chapel against Saint-Germain-des-Prés's tower, off civic.json at OSM's own height of 16 m: it was 45.3 there, a grey wall with lancets standing over the tower's lower storeys (Batch 5's shot, 2026-10-31)."
+  },
+  {
+    "name": "Cathédrale américaine de Paris",
+    "procedural": "americanCathedral",
+    "osm": [
+      "way/69485169"
+    ],
+    "front": 87,
+    "height": 85,
+    "note": "batch5/churches.ts: Street's tower and spire on the Avenue George-V. From memory, the aerial and OSM's outline."
+  },
+  {
+    "name": "Square Georges-Cain: the lapidary garden",
+    "procedural": "cainLapidaire",
+    "lat": 48.85806,
+    "lon": 2.36275,
+    "size": [
+      8,
+      8
+    ],
+    "front": 180,
+    "height": 7,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: stones from the Tuileries and the old Hôtel de Ville, a bronze in the crescent bed. Placed on the 2024 aerial; the pieces' forms from memory: street view to confirm."
+  },
+  {
+    "name": "Jardin Anne-Frank: the pergola",
+    "procedural": "anneFrankPergola",
+    "lat": 48.8617006,
+    "lon": 2.3547017,
+    "size": [
+      8,
+      8
+    ],
+    "front": 180,
+    "height": 4,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: the curved green band of the aerial, and Polzin's Celan at OSM's node. What the band is made of is from memory: street view to confirm."
+  },
+  {
+    "name": "Square René-Viviani: la fontaine Saint-Julien",
+    "procedural": "vivianiFontaine",
+    "lat": 48.852266,
+    "lon": 2.347718,
+    "size": [
+      10,
+      10
+    ],
+    "front": 180,
+    "height": 4,
+    "kind": "fountain",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: Jeanclos, 1995, OSM's node, in the box ring of the plan."
+  },
+  {
+    "name": "Square René-Viviani: the Robinia's crutch",
+    "procedural": "robinierCrutch",
+    "lat": 48.852191,
+    "lon": 2.3472869,
+    "size": [
+      5,
+      5
+    ],
+    "front": 180,
+    "height": 3,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: OSM's node; the tree is the register's."
+  },
+  {
+    "name": "Square René-Viviani: Notre-Dame's old stones",
+    "procedural": "vivianiStones",
+    "lat": 48.852129,
+    "lon": 2.347402,
+    "size": [
+      6,
+      4
+    ],
+    "front": 180,
+    "height": 3,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: the place from the aerial's gravel; street view to confirm.",
+    "beside": "Square René-Viviani: the Robinia's crutch"
+  },
+  {
+    "name": "Square Jean-XXIII: la fontaine de la Vierge",
+    "procedural": "fontaineVierge",
+    "lat": 48.85256,
+    "lon": 2.351374,
+    "size": [
+      11,
+      11
+    ],
+    "front": 180,
+    "height": 13,
+    "kind": "fountain",
+    "shadow": false,
+    "note": "batch5/parks.ts: Vigoureux, 1845, on OSM way 948654101, which isn't a building."
+  },
+  {
+    "name": "Square Boucicaut: the monument",
+    "procedural": "boucicautMonument",
+    "lat": 48.851524,
+    "lon": 2.326366,
+    "size": [
+      9,
+      3
+    ],
+    "front": 270,
+    "height": 5,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: Moreau-Vauthier, 1914; OSM's node, which faces the walk (from memory)."
+  },
+  {
+    "name": "Square Boucicaut: the kiosk",
+    "procedural": "boucicautKiosk",
+    "lat": 48.851373,
+    "lon": 2.325591,
+    "size": [
+      5,
+      5
+    ],
+    "front": 180,
+    "height": 5,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: the gazebo at (415, 455) on the aerial."
+  },
+  {
+    "name": "Square Boucicaut: the carousel",
+    "procedural": "ranelaghManege",
+    "lat": 48.851211,
+    "lon": 2.325829,
+    "size": [
+      8,
+      8
+    ],
+    "front": 180,
+    "height": 5,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "The striped canopy at (512, 555) on the aerial; Ranelagh's builder does for it."
+  },
+  {
+    "name": "Square d'Ajaccio: Gouraud",
+    "procedural": "ajaccioBust",
+    "lat": 48.857801,
+    "lon": 2.314778,
+    "size": [
+      1.2,
+      1.2
+    ],
+    "front": 270,
+    "height": 3,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM's node."
+  },
+  {
+    "name": "Square d'Ajaccio: La Défense du foyer",
+    "procedural": "ajaccioGroup",
+    "lat": 48.857295,
+    "lon": 2.314595,
+    "size": [
+      2.2,
+      1.6
+    ],
+    "front": 90,
+    "height": 5,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "Émile Boisseau; OSM's node."
+  },
+  {
+    "name": "Square d'Ajaccio: Taine",
+    "procedural": "ajaccioStele",
+    "lat": 48.857452,
+    "lon": 2.314593,
+    "size": [
+      2,
+      1
+    ],
+    "front": 90,
+    "height": 3,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM's way 103328584, not a building."
+  },
+  {
+    "name": "Port de l'Arsenal: the boats, south",
+    "procedural": "arsenalBoatsSouth",
+    "lat": 48.8486,
+    "lon": 2.36719,
+    "size": [
+      6,
+      6
+    ],
+    "front": 180,
+    "height": 3,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: each traced off ORTHOPHOTOS2018."
+  },
+  {
+    "name": "Port de l'Arsenal: the boats, north",
+    "procedural": "arsenalBoatsNorth",
+    "lat": 48.8508,
+    "lon": 2.3676,
+    "size": [
+      6,
+      6
+    ],
+    "front": 180,
+    "height": 3,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: each traced off ORTHOPHOTOS2018."
+  },
+  {
+    "name": "Jardin Tino-Rossi: the great star",
+    "procedural": "tinoStar",
+    "lat": 48.84842,
+    "lon": 2.35931,
+    "size": [
+      26,
+      26
+    ],
+    "front": 180,
+    "height": 0.05,
+    "kind": "plaza",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "name": "Jardin Tino-Rossi: the dance bay 1",
+    "procedural": "tinoBay",
+    "lat": 48.84816,
+    "lon": 2.360228,
+    "size": [
+      24,
+      24
+    ],
+    "front": 43,
+    "height": 1,
+    "kind": "plaza",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "name": "Jardin Tino-Rossi: the dance bay 2",
+    "procedural": "tinoBay",
+    "lat": 48.847937,
+    "lon": 2.360576,
+    "size": [
+      24,
+      24
+    ],
+    "front": 43,
+    "height": 1,
+    "kind": "plaza",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "name": "Jardin Tino-Rossi: the dance bay 3",
+    "procedural": "tinoBay",
+    "lat": 48.847718,
+    "lon": 2.36092,
+    "size": [
+      24,
+      24
+    ],
+    "front": 43,
+    "height": 1,
+    "kind": "plaza",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "name": "Jardin Tino-Rossi: the dance bay 4",
+    "procedural": "tinoBay",
+    "lat": 48.847495,
+    "lon": 2.361268,
+    "size": [
+      24,
+      24
+    ],
+    "front": 43,
+    "height": 1,
+    "kind": "plaza",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "name": "Jardin Tino-Rossi: the open-air museum",
+    "procedural": "tinoSculptures",
+    "lat": 48.8478,
+    "lon": 2.3604,
+    "size": [
+      6,
+      6
+    ],
+    "front": 180,
+    "height": 7,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "batch5/parks.ts: seventeen stand-ins at OSM's nodes. See PARIS-TRIPO-NOTES.md."
+  }
+]

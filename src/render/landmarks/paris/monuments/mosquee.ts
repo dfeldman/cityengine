@@ -2,9 +2,10 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { block, hex, roof, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
-import { archOn } from '../palaces/common.ts'
 import { boxAlong, edgeAt } from '../../parts.ts'
 import { archesOn, band, ccw, domeOf, FIXED, graded, type P2, quarter, ring, walls } from './common.ts'
+
+import { bar, boxOn, faceFrame, rect, type Frame } from './gothic.ts'
 
 /*
  * THE GRANDE MOSQUÉE DE PARIS (Maurice Tranchant de Lunel, Charles Heubès, Robert Fournez, 1922–26), on the Place du
@@ -22,10 +23,41 @@ import { archesOn, band, ccw, domeOf, FIXED, graded, type P2, quarter, ring, wal
 const HX = 63.95
 const HZ = 52.25
 
-const WHITE: Rgb = hex('#efece4')
-const TILE: Rgb = hex('#2f7a5c')
-const GOLD: Rgb = [0.86, 0.68, 0.27]
-const DARK: Rgb = [0.16, 0.16, 0.16]
+// (Batch 5, 2026-10-31: linear: white plaster that stays below the sun's blowout, tile that stays green)
+const WHITE: Rgb = hex('#bdb9ad')
+const TILE: Rgb = hex('#1b5a43')
+const GOLD: Rgb = [0.7, 0.52, 0.18]
+const DARK: Rgb = [0.05, 0.05, 0.055]
+const CARVED: Rgb = hex('#8f8a7b')
+
+/**
+ * A HORSESHOE ARCH on a face, the Moorish opening that Fez and this courtyard are all about, set in its ALFIZ: a dark opening, narrowing below its springing, in a carved stone frame in a raised rectangle, with a band of green tile over. About 50 triangles.
+ */
+function horseshoe(fr: Frame, u: number, y0: number, w: number, h: number, o: { alfiz?: boolean; dark?: Rgb } = {}): void {
+  const dark = o.dark ?? DARK
+  const r = (w / 2) * 1.12
+  const cy = y0 + h - r
+  const k = 10
+  // the opening: from the near springing round over the top to the far one, a third of a turn past the half
+  const a0 = -0.42
+  const a1 = Math.PI + 0.42
+  const pts: [number, number][] = []
+  for (let i = 0; i <= k; i++) {
+    const a = a0 + ((a1 - a0) * i) / k
+    pts.push([u + Math.cos(a) * r, cy + Math.sin(a) * r])
+  }
+  rect(fr, u - w / 2, u + w / 2, y0, cy - Math.sin(0.42) * r, 0.05, dark)
+  for (let i = 0; i < k; i++) fr.out.quad([fr.P(u, cy, 0.05), fr.P(pts[i][0], pts[i][1], 0.05), fr.P(pts[i + 1][0], pts[i + 1][1], 0.05), fr.P(u, cy, 0.05)], fr.n, UV, dark, FIXED)
+  for (let i = 0; i < k; i++) bar(fr, [u + (pts[i][0] - u) * 1.13, cy + (pts[i][1] - cy) * 1.13], [u + (pts[i + 1][0] - u) * 1.13, cy + (pts[i + 1][1] - cy) * 1.13], r * 0.2, 0.12, CARVED)
+  for (const s of [-1, 1]) bar(fr, [u + s * (w / 2 + r * 0.1), y0], [u + s * (w / 2 + r * 0.1), cy - Math.sin(0.42) * r], r * 0.2, 0.12, CARVED)
+  if (o.alfiz !== false) {
+    const top = y0 + h + r * 0.3
+    const hw = r * 1.32
+    bar(fr, [u - hw, top], [u + hw, top], 0.14, 0.14, CARVED)
+    for (const s of [-1, 1]) bar(fr, [u + s * hw, cy - r * 0.2], [u + s * hw, top], 0.14, 0.14, CARVED)
+    boxOn(fr, u - hw - 0.2, u + hw + 0.2, top + 0.1, top + 0.36, 0, 0.2, TILE)
+  }
+}
 
 /** The complex's outer wall, simplified from the relation's (1.2 m). */
 const ENCLOSURE: P2[] = ring([
@@ -48,9 +80,11 @@ export function grandeMosquee(out: MeshBuilder, fit: Fit): void {
   graded(out, fit, HX, HZ, (q) => mosquee(q))
 }
 
+const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+
 /** A white range from 0 to `h` on its plan, under a hipped skirt of green tile and a flat roof inside it. */
 function range(out: MeshBuilder, plan: P2[], h: number, skirt = 1.6): void {
-  walls(out, plan, 0, h, WHITE, shade(WHITE, 0.92))
+  walls(out, plan, 0, h, WHITE, shade(WHITE, 0.66))
   band(out, plan, h - 0.5, 0.5, 0.25, shade(TILE, 0.9))
   // the tiled skirt: one sloping strip per edge, out over the wall and up toward the middle
   const r = ccw(plan)
@@ -83,7 +117,7 @@ function mosquee(out: MeshBuilder): void {
   archesOn(out, ENTRANCE, 4.0, 1.0, 2.0, 4.5, DARK, 5)
   range(out, GATE, 9.0, 2.6)
   roof(out, 33.4, 47.0, -51.7, -42.9, 9.0, 3.0, 4.0, 4.0, TILE)
-  archOn(out, '-z', -52.15, 40.2, 0.2, 2.6, 4.6, DARK)
+  horseshoe(faceFrame(out, '-z', -52.15), 40.2, 0.2, 3.4, 6)
 
   // the prayer hall: its white walls, the tiled skirt, and the PAVILION over it — a square drum, a band of arcading,
   // the green pyramid and the jamur
@@ -95,7 +129,7 @@ function mosquee(out: MeshBuilder): void {
   for (const f of ['-z', '+z', '-x', '+x'] as const) {
     const plane = f === '-z' ? pz - 4.65 : f === '+z' ? pz + 4.65 : f === '-x' ? px - 4.65 : px + 4.65
     const t = f === '-z' || f === '+z' ? px : pz
-    for (const d of [-2.4, -0.8, 0.8, 2.4]) archOn(out, f, plane, t + d, 12.2, 0.7, 1.7, DARK)
+    for (const d of [-2.4, -0.8, 0.8, 2.4]) horseshoe(faceFrame(out, f, plane), t + d, 12, 0.72, 2, { alfiz: false })
   }
   block(out, px - 5.1, px + 5.1, pz - 5.1, pz + 5.1, 15.2, 15.7, shade(TILE, 0.85))
   roof(out, px - 5.2, px + 5.2, pz - 5.2, pz + 5.2, 15.7, 5.6, 5.2, 5.2, TILE)
@@ -115,8 +149,8 @@ function mosquee(out: MeshBuilder): void {
     boxAlong(out, (ax + bx) / 2, 7.2, (az + bz) / 2, L / 2 + 0.6, 0.2, 1.9, hd, TILE)
   }
   for (let x = c0x + 2; x < c1x - 1; x += 2.4) {
-    archOn(out, '-z', c0z - 1.2, x, 0, 1.6, 4.5, DARK)
-    archOn(out, '+z', c1z + 1.2, x, 0, 1.6, 4.5, DARK)
+    horseshoe(faceFrame(out, '-z', c0z - 1.2), x, 0, 1.5, 4.5, { alfiz: false })
+    horseshoe(faceFrame(out, '+z', c1z + 1.2), x, 0, 1.5, 4.5, { alfiz: false })
   }
   for (const [x, z] of [[c0x + 1.3, c0z + 1.3], [c1x - 1.3, c0z + 1.3], [c0x + 1.3, c1z - 1.3], [c1x - 1.3, c1z - 1.3]]) {
     block(out, x - 1.9, x + 1.9, z - 1.9, z + 1.9, 0, 10.5, WHITE)
@@ -141,11 +175,11 @@ function mosquee(out: MeshBuilder): void {
     const P = (u: number, y: number, d: number): [number, number, number] =>
       f === '-z' ? [t + u, y, plane - d] : f === '+z' ? [t - u, y, plane + d] : f === '-x' ? [plane - d, y, t - u] : [plane + d, y, t + u]
     const n: [number, number, number] = f === '-z' ? [0, 0, -1] : f === '+z' ? [0, 0, 1] : f === '-x' ? [-1, 0, 0] : [1, 0, 0]
-    out.quad([P(-2.5, 15.0, 0.06), P(2.5, 15.0, 0.06), P(2.5, 23.5, 0.06), P(-2.5, 23.5, 0.06)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], hex('#c9c3b3'), FIXED)
+    out.quad([P(-2.5, 15.0, 0.06), P(2.5, 15.0, 0.06), P(2.5, 23.5, 0.06), P(-2.5, 23.5, 0.06)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], hex('#a29d8e'), FIXED)
     for (let k = -2; k <= 2; k++) out.quad([P(k - 0.06, 15.0, 0.09), P(k + 0.06, 15.0, 0.09), P(k + 0.06, 23.5, 0.09), P(k - 0.06, 23.5, 0.09)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], WHITE, FIXED)
     for (const y of [14.4, 24.0]) out.quad([P(-3.0, y, 0.07), P(3.0, y, 0.07), P(3.0, y + 0.45, 0.07), P(-3.0, y + 0.45, 0.07)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], TILE, FIXED)
-    archOn(out, f, plane, t, 9.0, 0.9, 2.2, DARK)
-    archOn(out, f, plane, t, 0.2, 1.6, 3.2, DARK)
+    horseshoe(faceFrame(out, f, plane), t, 9, 1.1, 2.6, { alfiz: false })
+    if (f === '-z' || f === '-x') horseshoe(faceFrame(out, f, plane), t, 0.2, 1.7, 3.6)
   }
   // the gallery: a projecting cornice, crenellations all round
   block(out, mx - w - 0.35, mx + w + 0.35, mz - w - 0.35, mz + w + 0.35, 25.6, 26.4, WHITE)
@@ -160,7 +194,7 @@ function mosquee(out: MeshBuilder): void {
   block(out, mx - 1.9, mx + 1.9, mz - 1.9, mz + 1.9, 26.4, 31.0, WHITE)
   for (const f of ['-z', '+z', '-x', '+x'] as const) {
     const plane = f === '-z' ? mz - 1.9 : f === '+z' ? mz + 1.9 : f === '-x' ? mx - 1.9 : mx + 1.9
-    archOn(out, f, plane, f === '-z' || f === '+z' ? mx : mz, 27.6, 1.0, 2.2, DARK)
+    horseshoe(faceFrame(out, f, plane), f === '-z' || f === '+z' ? mx : mz, 27.4, 1.2, 2.8, { alfiz: false })
   }
   block(out, mx - 2.2, mx + 2.2, mz - 2.2, mz + 2.2, 31.0, 31.4, TILE)
   roof(out, mx - 2.2, mx + 2.2, mz - 2.2, mz + 2.2, 31.4, 2.2, 2.2, 2.2, TILE)

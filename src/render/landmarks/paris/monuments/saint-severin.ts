@@ -1,10 +1,10 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import { box, prism } from '../../../models.ts'
-import { beam, block, roof } from '../../kit.ts'
+import { beam, block, roof, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
-import { balustrade } from '../palaces/common.ts'
 import { FIXED, graded, type P2, ring, walls } from './common.ts'
-import { pal, pinnacle, pointedOn, roseOn } from './churches.ts'
+import { church } from './churches.ts'
+import { boxFaces, boxOn, buttress, chevet, faceFrame, flank, flyers, gable, gothicBalustrade, gothicPortal, louvred, niche, pinnacle as stackedPinnacle, roseWindow, spire, traceryWindow } from './gothic.ts'
 
 /*
  * SAINT-SÉVERIN (13th–16th c.), in the lanes of the Latin Quarter between the Rue Saint-Jacques and the Rue de la
@@ -17,6 +17,8 @@ import { pal, pinnacle, pointedOn, roseOn } from './churches.ts'
  * In the city OSM's parts gave a fair massing but flat aisles and a blunt tower top (2026-10-29); the model replaces
  * the outline (way 19740659) and its parts. Frame: −z the west front on the Rue des Prêtres-Saint-Séverin (bearing
  * 290.3), +x south; design metres off OSM's footprint.
+ *
+ * Batch 5 (2026-10-31): the plan and heights are the first attempt's; every opening, gable and flyer is the Gothic kit's.
  */
 const HX = 19.45
 const HZ = 26.45
@@ -31,65 +33,64 @@ export function saintSeverin(out: MeshBuilder, fit: Fit): void {
 }
 
 function severin(out: MeshBuilder): void {
-  const p = pal('#d4c8ae', '#4d585e')
+  const p = church('#a2998a', '#3a4449')
   const cx = 2.5
   // the double aisles and chapels to 10.5, their lead flat, and a row of little transverse gables along each side
   walls(out, PLAN, 0, 10.5, p.stone, p.lead)
+  const south = faceFrame(out, '+x', 19.25)
+  const north = faceFrame(out, '-x', -16.9)
   for (let z = -18.5; z < 12; z += 3.95) {
     roof(out, 8.3, 19.3, z - 1.9, z + 1.9, 10.5, 2.4, 0.01, 1.9, p.slate)
     roof(out, -16.6, -3.3, z - 1.9, z + 1.9, 10.5, 2.0, 0.01, 1.9, p.slate)
-    pointedOn(out, '+x', 19.2, z, 2.5, 2.0, 6.0, p.glass)
-    pointedOn(out, '-x', -16.7, z, 2.5, 2.0, 6.0, p.glass)
-    // between the gables, the buttress pinnacles and a gargoyle
-    for (const xb of [19.4, -16.9]) {
-      pinnacle(out, xb, z + 1.97, 10.5, 4.2, 0.9, p.trim)
-      beam(out, [xb, 10.0, z + 1.97], [xb + Math.sign(xb) * 1.3, 10.3, z + 1.97], 0.18, p.deep)
+    // each its Flamboyant window and its gable, buttress and pinnacle and a gargoyle between
+    traceryWindow(south, z, 2.5, 2.5, 6.6, { stone: p.trim, glass: p.glass, head: 'pointed', lights: 3 })
+    traceryWindow(north, z, 2.5, 2.5, 6.6, { stone: p.trim, glass: p.glass, head: 'pointed', lights: 3, far: true })
+    gable(south, z, 10.5, 3.7, 2.4, p.stone, { d: 0.04, finial: 0.8 })
+    gable(north, z, 10.5, 3.7, 2.0, p.stone, { d: 0.04, finial: 0.8 })
+    for (const [xb, fr] of [[19.4, south], [-16.9, north]] as const) {
+      buttress(fr, z + 1.97, 0, 10.2, 0.8, 0.9, p.stone, 3)
+      stackedPinnacle(out, xb + Math.sign(xb) * 0.2, z + 1.97, 10.2, 3.8, 0.45, p.trim)
+      beam(out, [xb + Math.sign(xb) * 0.2, 9.7, z + 1.97], [xb + Math.sign(xb) * 1.3, 10.1, z + 1.97], 0.14, p.deep)
     }
   }
+  boxOn(south, -20.4, 13.5, 0, 1.0, 0, 0.26, shade(p.stone, 0.9))
+  boxOn(north, -20.4, 13.5, 0, 1.0, 0, 0.26, shade(p.stone, 0.9))
   // the nave and choir to 20.2, under one steep roof to 28.5; the clerestory
   block(out, cx - 5.6, cx + 5.6, -25.4, 15, 10.5, 20.2, p.stone)
   roof(out, cx - 6.0, cx + 6.0, -25.4, 15, 20.2, 8.3, 6.0, 0.01, p.slate)
-  balustrade(out, cx - 5.6, cx + 5.6, -25.4, 15, 20.2, p, { sides: ['-x', '+x'], h: 0.7 })
-  for (let z = -21; z < 14; z += 3.95) {
-    for (const s of [-1, 1]) {
-      pointedOn(out, s < 0 ? '-x' : '+x', cx + s * 5.6, z, 12.0, 2.2, 6.5, p.glass)
-      beam(out, [cx + s * 10.5, 13.0, z + 1.97], [cx + s * 5.8, 18.0, z + 1.97], 0.28, p.stone)
-      pinnacle(out, cx + s * 10.5, z + 1.97, 10.5, 6.0, 1.0, p.trim)
-    }
+  block(out, cx - 0.06, cx + 0.06, -25.4, 15, 28.45, 28.8, p.lead)
+  const zs: number[] = []
+  for (let z = -19.1; z < 14; z += 3.95) zs.push(z)
+  for (const s of [-1, 1]) {
+    const f = s < 0 ? '-x' : '+x'
+    const fr = faceFrame(out, f, cx + s * 5.6)
+    flank(fr, -23, 14.4, 9, { stone: p.stone, glass: p.glass, y0: 12.2, h: 6.8, lights: 3, share: 0.72, cornice: 20.2 })
+    gothicBalustrade(fr, -25.4, 15, 20.2, 0.8, { stone: p.trim, d: 0.3, pitch: 1.2 })
+    flyers(out, zs, cx + s * 10.5, 10.5, 15.2, cx + s * 5.6, 18.6, p.stone, { w: 0.9, pin: 2.6 })
   }
   // the chevet: the choir's polygonal end and the ring of the double ambulatory under its low roofs
-  {
-    const n = 7
-    for (let i = 0; i < n; i++) {
-      const a0 = -Math.PI / 2 + (i / n) * Math.PI
-      const a1 = -Math.PI / 2 + ((i + 1) / n) * Math.PI
-      const P = (a: number, r: number, y: number): [number, number, number] => [cx + Math.sin(a) * r, y, 15 + Math.cos(a) * r]
-      const am = (a0 + a1) / 2
-      out.quad([P(a0, 5.6, 10.5), P(a1, 5.6, 10.5), P(a1, 5.6, 20.2), P(a0, 5.6, 20.2)], [Math.sin(am), 0, Math.cos(am)], [[0, 0], [1, 0], [1, 1], [0, 1]], p.stone, FIXED)
-      out.quad([P(a0, 6.0, 20.2), P(a1, 6.0, 20.2), P(a1, 0, 28.5), P(a0, 0, 28.5)], [Math.sin(am), 0.8, Math.cos(am)], [[0, 0], [1, 0], [1, 1], [0, 1]], p.slate, FIXED)
-      // the clerestory window of the bay, flat on its face
-      const ex = Math.cos(am) * 0.7
-      const ez = -Math.sin(am) * 0.7
-      const m = P(am, 5.62, 0)
-      out.quad([[m[0] - ex, 12.0, m[2] - ez], [m[0] + ex, 12.0, m[2] + ez], [m[0] + ex, 18.0, m[2] + ez], [m[0] - ex, 18.0, m[2] - ez]],
-        [Math.sin(am), 0, Math.cos(am)], [[0, 0], [1, 0], [1, 1], [0, 1]], p.glass, FIXED)
-    }
-  }
+  chevet(out, cx, 15, 5.6, 10.5, 20.2, 28.5, p.stone, p.slate, p.glass, { n: 7, win: { y0: 12, h: 6.8, lights: 2 }, rad: { out: 5, y0: 10.5, y1: 15, to: 18.4 } })
   // THE WEST FRONT: the nave's gable with its great flamboyant window and rose, the portal, the balustrade
   const zf = -26.5
   block(out, cx - 5.6, cx + 5.6, zf, -25.3, 0, 20.2, p.stone)
-  pointedOn(out, '-z', zf, cx, 10.6, 6.2, 8.8, p.glass)
-  for (let k = -2; k <= 2; k++) box(out, cx + k * 1.05, 13.2, zf - 0.12, 0.07, 2.6, 0.05, p.trim, FIXED)
-  pointedOn(out, '-z', zf, cx, 0.4, 3.0, 6.4, p.dark)
-  out.quad([[cx - 4.0, 0.4 + 6.4, zf - 0.1], [cx + 4.0, 6.8, zf - 0.1], [cx, 9.8, zf - 0.1], [cx, 9.8, zf - 0.1]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], p.trim, FIXED)
-  balustrade(out, cx - 5.8, cx + 5.8, zf, zf + 1.2, 20.2, p, { sides: ['-z'], h: 0.9 })
-  out.quad([[cx - 5.6, 20.2, zf + 0.6], [cx + 5.6, 20.2, zf + 0.6], [cx, 28.5, zf + 0.6], [cx, 28.5, zf + 0.6]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], p.stone, FIXED)
-  roseOn(out, '-z', zf + 0.6, cx, 23.6, 1.3, p.glass, p.trim)
-  prism(out, cx, zf + 0.8, 28.5, 30.5, 0.25, 6, p.trim, FIXED, 0.1)
-  for (const s of [-1, 1]) pinnacle(out, cx + s * 5.9, zf + 0.6, 17.0, 8.0, 1.1, p.trim)
+  const w = faceFrame(out, '-z', zf)
+  traceryWindow(w, cx, 10.2, 7.4, 9, { stone: p.trim, glass: p.glass, head: 'pointed', lights: 5, screen: { u0: cx - 5.6, u1: cx + 5.6, base: 9.4, top: 19.8, d: 0.3 } })
+  // the 13th-century portal off Saint-Pierre-aux-Bœufs, with its deep orders and a gable over
+  gothicPortal(w, cx, 0.15, 5.2, 8, { stone: p.trim, dark: p.dark, door: [0.12, 0.08, 0.055], depth: 0.95, orders: 3, head: 'pointed' })
+  gable(w, cx, 7.2, 6.6, 2.9, p.stone, { d: 0.5, finial: 0.7, crockets: 2 })
+  for (const s of [-1, 1]) niche(w, cx + s * 3.9, 2.5, 0.95, 3.4, 0.04, p.stone, p.dark)
+  boxOn(w, cx - 5.8, cx + 5.8, 19.9, 20.3, 0, 0.42, p.trim, true)
+  gothicBalustrade(w, cx - 5.8, cx + 5.8, 20.3, 0.9, { stone: p.trim, d: 0.34, pitch: 0.8 })
+  gable(faceFrame(out, '-z', zf + 0.6), cx, 20.2, 11.2, 8.3, p.stone, { d: 0.02, finial: 1.8, crockets: 3 })
+  roseWindow(faceFrame(out, '-z', zf + 0.6), cx, 23.6, 1.3, { stone: p.trim, glass: p.glass, spokes: 8, d: 0.2, far: true })
+  for (const s of [-1, 1]) {
+    block(out, cx + s * 5.9 - 0.55, cx + s * 5.9 + 0.55, zf - 0.6, zf + 0.6, 0, 19.5, p.stone)
+    stackedPinnacle(out, cx + s * 5.9, zf, 19.5, 5.4, 0.55, p.trim, 2)
+  }
   // the south aisle's west end: a lower gable with its window
-  out.quad([[8.3, 10.5, zf - 0.02], [16.8, 10.5, zf - 0.02], [12.55, 14.5, zf - 0.02], [12.55, 14.5, zf - 0.02]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], p.stone, FIXED)
-  pointedOn(out, '-z', zf, 12.55, 2.5, 3.2, 7.0, p.glass)
+  const wa = faceFrame(out, '-z', zf)
+  gable(wa, 12.55, 10.5, 8.5, 4, p.stone, { d: 0.02, finial: 1 })
+  traceryWindow(wa, 12.55, 2.5, 4.4, 7.2, { stone: p.trim, glass: p.glass, head: 'pointed', lights: 3, far: true })
 
   // THE TOWER at the north-west corner: 6.5 m square to 29.2, its belfry's tall openings, the balustrade and corner
   // pinnacles, the slate spire to 45.2 with the little open lantern partway up
@@ -97,21 +98,20 @@ function severin(out: MeshBuilder): void {
   const tz = -22.3
   block(out, tx - 3.25, tx + 3.25, tz - 3.25, tz + 3.1, 0, 29.2, p.stone)
   for (const [bx, bz] of [[-1, -1], [1, -1], [-1, 1]]) block(out, tx + bx * 3.25 - 0.5, tx + bx * 3.25 + 0.5, tz + bz * 3.2 - 0.5, tz + bz * 3.2 + 0.5, 0, 27.5, p.stone)
-  pointedOn(out, '-z', tz - 3.25, tx, 0.4, 2.0, 4.6, p.dark)
-  for (const f of ['-z', '-x', '+z', '+x'] as const) {
-    const plane = f === '-z' ? tz - 3.25 : f === '+z' ? tz + 3.1 : f === '-x' ? tx - 3.25 : tx + 3.25
-    const t = f === '-z' || f === '+z' ? tx : tz
-    pointedOn(out, f, plane, t, 21.0, 2.4, 6.6, p.dark)
-    if (f === '-z' || f === '-x') pointedOn(out, f, plane, t, 12.0, 1.2, 4.0, p.glass)
+  for (const { fr, f, m, u0, u1 } of boxFaces(out, tx - 3.25, tx + 3.25, tz - 3.25, tz + 3.1)) {
+    louvred(fr, m, 20.6, 3, 7.2, p.trim, p.dark, { lights: 2, slats: 6 })
+    if (f === '-z' || f === '-x') traceryWindow(fr, m, 11.4, 1.5, 5, { stone: p.trim, glass: p.glass, head: 'pointed', lights: 1, far: true })
+    if (f === '-z') gothicPortal(fr, m, 0.15, 3, 5.2, { stone: p.trim, dark: p.dark, door: [0.12, 0.08, 0.055], depth: 0.6, orders: 2, head: 'pointed' })
+    for (const y of [10.4, 19.4]) boxOn(fr, u0 - 0.05, u1 + 0.05, y, y + 0.34, 0, 0.3, p.trim, true)
+    gothicBalustrade(fr, u0, u1, 29.2, 0.8, { stone: p.trim, d: 0.3, pitch: 1.1 })
   }
-  balustrade(out, tx - 3.4, tx + 3.4, tz - 3.4, tz + 3.25, 29.2, p, { h: 0.8 })
-  for (const [bx, bz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) pinnacle(out, tx + bx * 3.1, tz + bz * 3.0, 29.2, 3.6, 0.8, p.trim)
-  prism(out, tx, tz, 29.2, 39.0, 3.1, 8, p.slate, FIXED, 1.0)
-  prism(out, tx, tz, 39.0, 41.0, 0.95, 8, p.lead, FIXED)
+  for (const [bx, bz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) stackedPinnacle(out, tx + bx * 3.1, tz + bz * 3.0, 29.2, 3.8, 0.5, p.trim, 2)
+  spire(out, tx, tz, 29.2, 16, 3.1, p.slate, { rib: p.lead, lucarnes: 4, lucarneAt: 0.13, lucarneW: 0.7, cross: p.gold, dark: p.dark })
+  // the little lantern up the spire
+  prism(out, tx, tz, 39.0, 39.25, 1.15, 8, p.lead, FIXED, 1.15, false)
   for (let i = 0; i < 8; i++) {
     const a = ((i + 0.5) / 8) * Math.PI * 2
-    box(out, tx + Math.sin(a) * 0.97, 40.0, tz + Math.cos(a) * 0.97, 0.18, 0.6, 0.18, p.dark, FIXED)
+    box(out, tx + Math.sin(a) * 0.98, 39.9, tz + Math.cos(a) * 0.98, 0.16, 0.55, 0.16, p.dark, FIXED)
   }
-  prism(out, tx, tz, 41.0, 45.2, 1.0, 8, p.slate, FIXED, 0.05)
-  box(out, tx, 45.9, tz, 0.05, 0.7, 0.05, p.dark, FIXED)
+  prism(out, tx, tz, 40.55, 40.8, 1.12, 8, p.lead, FIXED, 1.12, false)
 }

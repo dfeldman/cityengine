@@ -1,4 +1,4 @@
-import type { MeshBuilder } from '../../../buildings.ts'
+import { MeshBuilder } from '../../../buildings.ts'
 import { prism, type Rgb } from '../../../models.ts'
 import { shade } from '../../kit.ts'
 import type { F } from '../palaces/common.ts'
@@ -570,5 +570,438 @@ export function gothicPortal(fr: Frame, u: number, y0: number, w: number, h: num
     const a0 = (i / 4) * Math.PI
     const a1 = ((i + 1) / 4) * Math.PI
     bar(fr, [m[0] + Math.cos(a0) * 0.55, m[1] + Math.sin(a0) * 0.55], [m[0] + Math.cos(a1) * 0.55, m[1] + Math.sin(a1) * 0.55], 0.12, back + 0.02, o.stone)
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * The rest of a church (Batch 5, 2026-10-31): what Saint-Eustache drew by hand and every other church wants, so that a
+ * church is its dimensions and its own few oddities. The classical pieces are here too, because Paris's churches of the
+ * 1600s and 1800s wear theirs on a Gothic or basilican body: Saint-Gervais, Saint-Paul, Saint-Roch, La Trinité.
+ */
+
+/** The four faces of a box as frames, for the things put round a tower: u0, u1 along it, m its middle. */
+export function boxFaces(out: MeshBuilder, x0: number, x1: number, z0: number, z1: number, only: F[] = ['-z', '+z', '-x', '+x']): { f: F; fr: Frame; u0: number; u1: number; m: number }[] {
+  return only.map((f) => {
+    const along = f === '-z' || f === '+z'
+    const plane = f === '-z' ? z0 : f === '+z' ? z1 : f === '-x' ? x0 : x1
+    const [u0, u1] = along ? [x0, x1] : [z0, z1]
+    return { f, fr: faceFrame(out, f, plane), u0, u1, m: (u0 + u1) / 2 }
+  })
+}
+
+/** The same frame `d` further out: for what stands on a pier's or a frontispiece's face. */
+export function frameAt(fr: Frame, d: number): Frame {
+  return { out: fr.out, n: fr.n, t: fr.t, P: (u, y, dd) => fr.P(u, y, d + dd) }
+}
+
+/** Draws in a frame long along z, front at −z, and stands the result long along x with its front at −x: the older models' convention. */
+export function turned(out: MeshBuilder, draw: (q: MeshBuilder) => void): void {
+  const q = new MeshBuilder()
+  draw(q)
+  const base = out.positions.length / 3
+  // (x, z) → (z, −x): a quarter turn, which keeps a face's winding
+  for (let i = 0; i < q.positions.length; i += 3) {
+    out.positions.push(q.positions[i + 2], q.positions[i + 1], -q.positions[i])
+    out.normals.push(q.normals[i + 2], q.normals[i + 1], -q.normals[i])
+  }
+  for (const u of q.uvs) out.uvs.push(u)
+  for (const c of q.colors) out.colors.push(c)
+  for (const i of q.indices) out.indices.push(base + i)
+}
+
+/**
+ * A GABLE on a wall, its foot y0, `w` across and `h` high at `u`: the wall's triangle, the coping up each rake with its top, a finial at the apex, and if asked `crockets` knobs up each rake. 14 triangles and 4 a crocket.
+ */
+export function gable(fr: Frame, u: number, y0: number, w: number, h: number, stone: Rgb, o: { d?: number; trim?: Rgb; finial?: number; crockets?: number; back?: number } = {}): void {
+  const d = o.d ?? 0.08
+  const trim = o.trim ?? shade(stone, 1.05)
+  const back = o.back ?? -0.5
+  const hw = w / 2
+  const top: P = [u, y0 + h]
+  fr.out.quad([fr.P(u - hw, y0, d), fr.P(u + hw, y0, d), fr.P(u, y0 + h, d), fr.P(u, y0 + h, d)], fr.n, UV, stone, FIXED)
+  const L = Math.hypot(hw, h)
+  for (const s of [-1, 1]) {
+    const foot: P = [u + s * (hw + 0.28), y0 - 0.12]
+    bar(fr, foot, top, 0.5, d + 0.22, trim)
+    // the coping's top, running back along the roof
+    const up = 0.27
+    fr.out.quad([fr.P(foot[0], foot[1] + up, d + 0.22), fr.P(top[0], top[1] + up, d + 0.22), fr.P(top[0], top[1] + up, back), fr.P(foot[0], foot[1] + up, back)], [fr.t[0] * s * (h / L), hw / L, fr.t[2] * s * (h / L)], UV, shade(trim, 1.05), FIXED)
+    for (let i = 1; i <= (o.crockets ?? 0); i++) {
+      const t = i / ((o.crockets ?? 0) + 1)
+      const cu = foot[0] + (top[0] - foot[0]) * t + s * 0.2
+      const cy = foot[1] + (top[1] - foot[1]) * t + 0.34
+      boxOn(fr, cu - 0.14, cu + 0.14, cy, cy + 0.3, d, d + 0.28, trim)
+    }
+  }
+  if (o.finial !== 0) {
+    const [fx, , fz] = fr.P(u, 0, d * 0.5)
+    pinnacle(fr.out, fx, fz, y0 + h + 0.15, o.finial ?? h * 0.22, Math.max(0.22, h * 0.035), trim)
+  }
+}
+
+/** A stepped BUTTRESS up a wall at u: three stages each set back, weathered with a slope at each set-off. 10 triangles a stage. */
+export function buttress(fr: Frame, u: number, y0: number, y1: number, w: number, d: number, stone: Rgb, stages = 3): void {
+  const hw = w / 2
+  const h = (y1 - y0) / stages
+  for (let i = 0; i < stages; i++) {
+    const a = y0 + h * i
+    const b = a + h
+    const dd = d * (1 - i / stages)
+    const next = d * (1 - (i + 1) / stages)
+    const wash = Math.min(0.9, h * 0.25)
+    rect(fr, u - hw, u + hw, a, b - wash, dd, stone)
+    for (const s of [-1, 1]) {
+      const nn: V3 = [fr.t[0] * s, 0, fr.t[2] * s]
+      const p0 = fr.P(u + s * hw, a, 0)
+      const p1 = fr.P(u + s * hw, a, dd)
+      const p2 = fr.P(u + s * hw, b - wash, dd)
+      const p3 = fr.P(u + s * hw, b, next)
+      const p4 = fr.P(u + s * hw, b, 0)
+      fr.out.quad(s > 0 ? [p0, p1, p2, p4] : [p4, p2, p1, p0], nn, UV, shade(stone, 0.84), FIXED)
+      fr.out.quad(s > 0 ? [p2, p3, p4, p2] : [p2, p4, p3, p2], nn, UV, shade(stone, 0.84), FIXED)
+    }
+    // the set-off's wash, catching the sky
+    const L = Math.hypot(wash, dd - next) || 1
+    fr.out.quad([fr.P(u - hw, b - wash, dd), fr.P(u + hw, b - wash, dd), fr.P(u + hw, b, next), fr.P(u - hw, b, next)], [fr.n[0] * (wash / L), (dd - next) / L, fr.n[2] * (wash / L)], UV, shade(stone, 1.08), FIXED)
+  }
+}
+
+export interface FlankOpts {
+  stone: Rgb
+  glass: Rgb
+  /** the window's sill and height, its width as a share of the bay (default 0.62) */
+  y0: number
+  h: number
+  head?: Head
+  lights?: number
+  share?: number
+  far?: boolean
+  /** a buttress at every division: its head and depth (none if absent), with a pinnacle of this height on it */
+  buttress?: { y1: number; d: number; w?: number; pinnacle?: number; stages?: number }
+  /** the plinth's height, a string course under the windows, a cornice at this y */
+  plinth?: number
+  string?: boolean
+  cornice?: number
+}
+
+/**
+ * A FLANK: `n` bays from u0 to u1 on a wall, a window in each, buttresses at the divisions, the plinth, the sill course and the cornice. Windows `far` are about 40 triangles, near about 100; a buttress about 30.
+ */
+export function flank(fr: Frame, u0: number, u1: number, n: number, o: FlankOpts): void {
+  const bay = (u1 - u0) / n
+  const trim = shade(o.stone, 1.05)
+  const w = bay * (o.share ?? 0.62)
+  for (let i = 0; i < n; i++) {
+    traceryWindow(fr, u0 + bay * (i + 0.5), o.y0, w, o.h, { stone: o.stone, glass: o.glass, head: o.head ?? 'pointed', lights: o.lights ?? 2, far: o.far ?? true })
+  }
+  if (o.plinth) boxOn(fr, u0, u1, 0, o.plinth, 0, 0.28, shade(o.stone, 0.92))
+  if (o.string) boxOn(fr, u0, u1, o.y0 - 0.35, o.y0 - 0.12, 0, 0.14, trim)
+  if (o.cornice) boxOn(fr, u0 - 0.05, u1 + 0.05, o.cornice - 0.45, o.cornice + 0.05, 0, 0.42, trim, true)
+  if (o.buttress) {
+    const b = o.buttress
+    for (let i = 0; i <= n; i++) {
+      const u = u0 + bay * i
+      buttress(fr, u, 0, b.y1, b.w ?? Math.min(1.1, bay * 0.2), b.d, o.stone, b.stages ?? 3)
+      if (b.pinnacle) {
+        const [x, , z] = fr.P(u, 0, b.d * 0.34)
+        pinnacle(fr.out, x, z, b.y1 - 0.1, b.pinnacle, (b.w ?? 1) * 0.4, trim)
+      }
+    }
+  }
+}
+
+/**
+ * A POLYGONAL CHEVET round (cx, cz), its round end to +z: `n` facets of a half-ring radius r, walls y0 to the eaves, a window in each, a buttress at each corner, and the half-cone of slate up to `ridge`. Chapels and an ambulatory are a call each. If `rad` the corners carry a flyer back to the wall from a pier that far out.
+ */
+export function chevet(out: MeshBuilder, cx: number, cz: number, r: number, y0: number, eaves: number, ridge: number, stone: Rgb, slate: Rgb, glass: Rgb, o: { n?: number; win?: { y0: number; h: number; lights?: number; head?: Head; far?: boolean }; butt?: number; rad?: { out: number; y0: number; y1: number; to: number }; lean?: boolean; cornice?: boolean } = {}): void {
+  const n = o.n ?? 7
+  const P = (i: number, rr: number): P2 => {
+    const a = -Math.PI / 2 + (i / n) * Math.PI
+    return { x: cx + Math.sin(a) * rr, z: cz + Math.cos(a) * rr }
+  }
+  const inner = { x: cx, z: cz }
+  const eave = 0.35
+  for (let i = 0; i < n; i++) {
+    const a = P(i, r)
+    const b = P(i + 1, r)
+    const fr = edgeFrame(out, a, b, inner)
+    rect(fr, 0, fr.L, y0, eaves, 0, stone)
+    if (o.win) traceryWindow(fr, fr.L / 2, o.win.y0, fr.L * 0.62, o.win.h, { stone, glass, head: o.win.head ?? 'pointed', lights: o.win.lights ?? 2, far: o.win.far ?? true })
+    if (o.cornice !== false) boxOn(fr, 0, fr.L, eaves - 0.45, eaves + 0.05, 0, 0.34, shade(stone, 1.05), true)
+    const a2 = P(i, r + eave)
+    const b2 = P(i + 1, r + eave)
+    const mx = (a.x + b.x) / 2 - cx
+    const mz = (a.z + b.z) / 2 - cz
+    const l = Math.hypot(mx, mz) || 1
+    if (o.lean) {
+      // a lean-to, up to `ridge` at a ring of r × 0.55: the chapels' ring against the wall behind
+      const a3 = P(i, r * 0.55)
+      const b3 = P(i + 1, r * 0.55)
+      out.quad([[a2.x, eaves, a2.z], [b2.x, eaves, b2.z], [b3.x, ridge, b3.z], [a3.x, ridge, a3.z]], [mx / l * 0.5, 0.86, mz / l * 0.5], UV, slate, FIXED)
+    } else {
+      out.quad([[a2.x, eaves, a2.z], [b2.x, eaves, b2.z], [cx, ridge, cz], [cx, ridge, cz]], [mx / l * 0.7, 0.72, mz / l * 0.7], UV, slate, FIXED)
+    }
+  }
+  for (let i = 0; i <= n; i++) {
+    const a = P(i, r)
+    const ux = (a.x - cx) / r
+    const uz = (a.z - cz) / r
+    if (o.butt) {
+      // a corner's buttress: a pier stood on the corner, turned to the radius
+      const p = { x: a.x + ux * o.butt * 0.5, z: a.z + uz * o.butt * 0.5 }
+      prism(out, p.x, p.z, y0, eaves - 1.4, o.butt * 0.72, 4, stone, FIXED, o.butt * 0.5, false)
+    }
+    if (o.rad && i > 0 && i < n) {
+      const px = a.x + ux * o.rad.out
+      const pz = a.z + uz * o.rad.out
+      prism(out, px, pz, o.rad.y0, o.rad.y1, 0.7, 4, stone, FIXED, 0.7, false)
+      pinnacle(out, px, pz, o.rad.y1, 4, 0.6, shade(stone, 1.05))
+      flyingButtress(out, [px - ux * 0.5, o.rad.y1 - 0.6, pz - uz * 0.5], [a.x + ux * 0.05, o.rad.to, a.z + uz * 0.05], 0.55, shade(stone, 0.97), { drop: 2.8, k: 3 })
+    }
+  }
+}
+
+/**
+ * THE FLYERS of a straight bay row: at each z, a pier of width w at (pierX) from y0 to y1 with its pinnacle, and an arch up to (wallX, wallY). The nave's axis is z. 40 triangles apiece.
+ */
+export function flyers(out: MeshBuilder, zs: number[], pierX: number, y0: number, y1: number, wallX: number, wallY: number, stone: Rgb, o: { w?: number; pin?: number; tiers?: number; drop?: number } = {}): void {
+  const w = o.w ?? 0.9
+  const s = Math.sign(pierX - wallX)
+  for (const z of zs) {
+    prism(out, pierX, z, y0, y1, w * 0.72, 4, stone, FIXED, w * 0.72, false)
+    prism(out, pierX, z, y1 - 0.4, y1, w * 0.86, 4, shade(stone, 1.05), FIXED, w * 0.86, false)
+    pinnacle(out, pierX, z, y1, o.pin ?? 4.5, w * 0.6, shade(stone, 1.05), o.tiers ?? 1)
+    flyingButtress(out, [pierX - s * w * 0.5, y1 - 0.3, z], [wallX + s * 0.05, wallY, z], w * 0.6, shade(stone, 0.97), { drop: o.drop ?? (y1 - y0) * 0.5, k: 3 })
+  }
+}
+
+/**
+ * A SPIRE: an `sides`-sided needle from (x, y0, z), radius r at the foot, `h` high; a rib up each arris, and `lucarnes` little gabled dormers low on alternate faces; a ball and cross. For the slate ones of Saint-Germain and the stone ones of Sainte-Clotilde: 2 triangles a face, 2 a rib, 8 a lucarne.
+ */
+export function spire(out: MeshBuilder, x: number, z: number, y0: number, h: number, r: number, c: Rgb, o: { sides?: number; rib?: Rgb; lucarnes?: number; lucarneAt?: number; lucarneW?: number; cross?: Rgb; crockets?: number; dark?: Rgb } = {}): void {
+  const n = o.sides ?? 8
+  const top = y0 + h
+  const off = Math.PI / n
+  const at = (i: number, rr: number, y: number): V3 => {
+    const a = (i / n) * Math.PI * 2 + off
+    return [x + Math.sin(a) * rr, y, z + Math.cos(a) * rr]
+  }
+  const rt = Math.max(0.03, r * 0.02)
+  for (let i = 0; i < n; i++) {
+    const am = ((i + 0.5) / n) * Math.PI * 2 + off
+    out.quad([at(i, r, y0), at(i + 1, r, y0), at(i + 1, rt, top), at(i, rt, top)], [Math.sin(am) * 0.97, r / h, Math.cos(am) * 0.97], UV, c, FIXED)
+    if (o.rib) {
+      const a = (i / n) * Math.PI * 2 + off
+      const ca = Math.cos(a) * 0.09
+      const sa = Math.sin(a) * 0.09
+      const p = at(i, r + 0.05, y0)
+      const q = at(i, rt + 0.03, top)
+      out.quad([[p[0] + ca, p[1], p[2] - sa], [p[0] - ca, p[1], p[2] + sa], [q[0] - ca * 0.3, q[1], q[2] + sa * 0.3], [q[0] + ca * 0.3, q[1], q[2] - sa * 0.3]], [Math.sin(a), r / h, Math.cos(a)], UV, o.rib, FIXED)
+      for (let k = 1; k <= (o.crockets ?? 0); k++) {
+        const t = k / ((o.crockets ?? 0) + 1)
+        const cr = r + (rt - r) * t + 0.14
+        const cy = y0 + h * t
+        const pa = at(i, cr, cy)
+        prism(out, pa[0], pa[2], cy - 0.2, cy + 0.2, 0.17, 4, o.rib, FIXED, 0.02, false)
+      }
+    }
+  }
+  for (let k = 0; k < (o.lucarnes ?? 0); k++) {
+    const i = (k * n) / (o.lucarnes ?? 1)
+    const am = ((i + 0.5) / n) * Math.PI * 2 + off
+    const y = y0 + h * (o.lucarneAt ?? 0.14)
+    const rr = (r + (rt - r) * (o.lucarneAt ?? 0.14)) * Math.cos(Math.PI / n)
+    const nx = Math.sin(am)
+    const nz = Math.cos(am)
+    const lw = r * 0.26 * (o.lucarneW ?? 1)
+    const lh = lw * 2.6
+    const P = (u: number, v: number, d: number): V3 => [x + nx * (rr + d) + nz * u, y + v, z + nz * (rr + d) - nx * u]
+    const col = o.rib ?? shade(c, 1.2)
+    out.quad([P(-lw, 0, 0.45), P(lw, 0, 0.45), P(lw, lh * 0.6, 0.45), P(-lw, lh * 0.6, 0.45)], [nx, 0, nz], UV, o.dark ?? [0.05, 0.05, 0.06], FIXED)
+    out.quad([P(-lw * 1.25, lh * 0.55, 0.5), P(lw * 1.25, lh * 0.55, 0.5), P(0, lh * 1.2, 0.5), P(0, lh * 1.2, 0.5)], [nx, 0, nz], UV, col, FIXED)
+    out.quad([P(-lw, lh * 0.6, 0.45), P(0, lh * 1.2, 0.45), P(0, lh * 1.2, -0.3), P(-lw, lh * 0.2, -0.3)], [-nz * 0.7, 0.7, nx * 0.7], UV, c, FIXED)
+    out.quad([P(0, lh * 1.2, 0.45), P(lw, lh * 0.6, 0.45), P(lw, lh * 0.2, -0.3), P(0, lh * 1.2, -0.3)], [nz * 0.7, 0.7, -nx * 0.7], UV, c, FIXED)
+  }
+  if (o.cross) {
+    prism(out, x, z, top - 0.1, top + 0.16, 0.14, 6, o.cross, FIXED, 0.1, false)
+    prism(out, x, z, top + 0.1, top + 1.5, 0.05, 4, o.cross, FIXED, 0.05, false)
+    out.quad([[x - 0.42, top + 1, z], [x + 0.42, top + 1, z], [x + 0.42, top + 1.1, z], [x - 0.42, top + 1.1, z]], [0, 0, -1], UV, o.cross, FIXED)
+    out.quad([[x + 0.42, top + 1, z], [x - 0.42, top + 1, z], [x - 0.42, top + 1.1, z], [x + 0.42, top + 1.1, z]], [0, 0, 1], UV, o.cross, FIXED)
+  }
+}
+
+/** A BELFRY OPENING: an arched opening, dark behind, with its slate louvres across it and a stone net; head and lights as a window's. 60-odd triangles. */
+export function louvred(fr: Frame, u: number, y0: number, w: number, h: number, stone: Rgb, dark: Rgb, o: { head?: Head; lights?: number; slats?: number; slate?: Rgb; d?: number; screen?: Tracery['screen'] } = {}): void {
+  traceryWindow(fr, u, y0, w, h, { stone, glass: dark, head: o.head ?? 'pointed', lights: o.lights ?? 2, far: true, screen: o.screen })
+  const spring = springOf(y0, w, h, o.head ?? 'pointed')
+  const n = o.slats ?? Math.max(3, Math.round((spring - y0) / 0.75))
+  const c = o.slate ?? [0.1, 0.11, 0.12]
+  for (let i = 0; i < n; i++) rect(fr, u - w / 2 + 0.03, u + w / 2 - 0.03, y0 + ((spring - y0) * (i + 0.42)) / n, y0 + ((spring - y0) * (i + 0.72)) / n, 0.05, c)
+}
+
+/** A BLIND ARCADE: `n` round arches on colonnettes between u0 and u1, dark or a shade back behind them, y0 to the crowns at y0 + h; the Romanesque tower's dress. About 22 triangles an arch. */
+export function blindArcade(fr: Frame, u0: number, u1: number, y0: number, h: number, n: number, stone: Rgb, back: Rgb, o: { d?: number; head?: Head } = {}): void {
+  const bay = (u1 - u0) / n
+  const w = bay * 0.72
+  const d = o.d ?? 0.14
+  const head = o.head ?? 'round'
+  const spring = springOf(y0, w, h, head)
+  for (let i = 0; i < n; i++) {
+    const u = u0 + bay * (i + 0.5)
+    const edge = archEdge(u, spring, w, y0 + h - spring, head, 6)
+    fillOpening(fr, u, y0, spring, edge, w, 0.02, back)
+    for (let j = 0; j + 1 < edge.length; j++) bar(fr, edge[j], edge[j + 1], 0.13, d, stone)
+  }
+  for (let i = 0; i <= n; i++) {
+    const u = u0 + bay * i
+    bar(fr, [u, y0], [u, spring], 0.2, d, stone)
+    boxOn(fr, u - 0.17, u + 0.17, spring - 0.14, spring + 0.02, 0, d + 0.04, shade(stone, 1.05))
+  }
+  boxOn(fr, u0 - 0.05, u1 + 0.05, y0 - 0.22, y0, 0, d + 0.06, shade(stone, 1.03))
+}
+
+export type Order = 'doric' | 'ionic' | 'corinthian'
+
+/**
+ * AN ENGAGED COLUMN on the wall at u, y0 to y1, radius r: the half-drum in 5 faces, its base, and the capital of its order (a doric's plain cushion; an ionic's scrolls; a corinthian's flaring bell). About 30 triangles; `far` is half.
+ */
+export function engaged(fr: Frame, u: number, y0: number, y1: number, r: number, stone: Rgb, order: Order = 'corinthian', o: { far?: boolean } = {}): void {
+  const sides = o.far ? 3 : 5
+  const pt = (i: number, rr: number, y: number): V3 => {
+    const a = (i / sides) * Math.PI
+    return fr.P(u - Math.cos(a) * rr, y, Math.sin(a) * rr)
+  }
+  const capH = order === 'doric' ? r * 0.9 : order === 'ionic' ? r * 1.1 : r * 2.1
+  const baseH = r * 0.9
+  for (let i = 0; i < sides; i++) {
+    const am = ((i + 0.5) / sides) * Math.PI
+    const nu = -Math.cos(am)
+    const nd = Math.sin(am)
+    const nn: V3 = [fr.t[0] * nu + fr.n[0] * nd, 0, fr.t[2] * nu + fr.n[2] * nd]
+    const col = shade(stone, 0.86 + nd * 0.18)
+    fr.out.quad([pt(i, r, y0 + baseH), pt(i + 1, r, y0 + baseH), pt(i + 1, r * 0.92, y1 - capH), pt(i, r * 0.92, y1 - capH)], nn, UV, col, FIXED)
+    if (!o.far && order !== 'ionic') {
+      // the bell
+      fr.out.quad([pt(i, r * 0.92, y1 - capH), pt(i + 1, r * 0.92, y1 - capH), pt(i + 1, r * 1.28, y1 - r * 0.28), pt(i, r * 1.28, y1 - r * 0.28)], nn, UV, shade(col, 1.06), FIXED)
+    }
+  }
+  const hw = r * 1.32
+  boxOn(fr, u - hw, u + hw, y0, y0 + baseH, 0, hw, shade(stone, 1.02))
+  boxOn(fr, u - hw * 1.02, u + hw * 1.02, y1 - r * 0.28, y1, 0, hw * 1.02, shade(stone, 1.05))
+  if (order === 'ionic') for (const s of [-1, 1]) boxOn(fr, u + s * r * 0.9 - r * 0.38, u + s * r * 0.9 + r * 0.38, y1 - capH, y1 - r * 0.28, 0, r + 0.1, shade(stone, 1.08))
+  if (order === 'doric' && !o.far) boxOn(fr, u - hw * 0.84, u + hw * 0.84, y1 - capH, y1 - r * 0.28, 0, hw * 0.84, shade(stone, 1.02))
+}
+
+/**
+ * AN ENTABLATURE across a front at y: architrave, frieze and cornice in three steps with the cornice's soffit, `h` in all. 16 triangles.
+ */
+export function entablature(fr: Frame, u0: number, u1: number, y: number, h: number, d: number, stone: Rgb, o: { frieze?: Rgb } = {}): void {
+  const a = h * 0.36
+  const f = h * 0.3
+  boxOn(fr, u0, u1, y, y + a, 0, d, shade(stone, 1.02), true)
+  rect(fr, u0, u1, y + a, y + a + f, d - 0.05, o.frieze ?? shade(stone, 0.96))
+  boxOn(fr, u0 - 0.15, u1 + 0.15, y + a + f, y + h, 0, d + 0.36, shade(stone, 1.06), true)
+}
+
+/**
+ * A PEDIMENT on a front, its base at y from u0 to u1: triangular, or `curved` (a segment), with its raking cornice standing out, its soffit, and `relief` figures in the tympanum, tall in the middle and lying down to the corners. 20-odd triangles and 10 a figure.
+ */
+export function pedimentFront(fr: Frame, u0: number, u1: number, y: number, h: number, d: number, stone: Rgb, o: { curved?: boolean; relief?: number; reliefC?: Rgb; back?: number } = {}): void {
+  const m = (u0 + u1) / 2
+  const hw = (u1 - u0) / 2
+  const k = o.curved ? 8 : 2
+  const R = (hw * hw + h * h) / (2 * h)
+  const top = (u: number): number => (o.curved ? y + Math.sqrt(Math.max(0, R * R - (u - m) ** 2)) - (R - h) : y + h * (1 - Math.abs(u - m) / hw))
+  const back = o.back ?? 0
+  const lip = 0.3
+  for (let i = 0; i < k; i++) {
+    const a = u0 + ((u1 - u0) * i) / k
+    const b = u0 + ((u1 - u0) * (i + 1)) / k
+    const ta = top(a)
+    const tb = top(b)
+    // the tympanum
+    fr.out.quad([fr.P(a, y, d - 0.3), fr.P(b, y, d - 0.3), fr.P(b, tb, d - 0.3), fr.P(a, ta, d - 0.3)], fr.n, UV, shade(stone, 0.95), FIXED)
+    // the raking cornice's face, its top back to the wall and its soffit
+    fr.out.quad([fr.P(a, ta, d + 0.05), fr.P(b, tb, d + 0.05), fr.P(b, tb + lip, d + 0.05), fr.P(a, ta + lip, d + 0.05)], fr.n, UV, shade(stone, 1.06), FIXED)
+    const su = tb - ta
+    const sl = Math.hypot(su, b - a) || 1
+    const up: V3 = [fr.t[0] * (-su / sl), (b - a) / sl, fr.t[2] * (-su / sl)]
+    fr.out.quad([fr.P(a, ta + lip, d + 0.05), fr.P(b, tb + lip, d + 0.05), fr.P(b, tb + lip, back), fr.P(a, ta + lip, back)], up, UV, shade(stone, 1.1), FIXED)
+    fr.out.quad([fr.P(b, tb, d + 0.05), fr.P(a, ta, d + 0.05), fr.P(a, ta, d - 0.3), fr.P(b, tb, d - 0.3)], [-up[0], -up[1], -up[2]], UV, shade(stone, 0.62), FIXED)
+  }
+  // the group in the tympanum
+  const n = o.relief ?? 0
+  const c = o.reliefC ?? shade(stone, 1.1)
+  for (let i = 0; i < n; i++) {
+    const t = ((i + 0.5) / n) * 2 - 1
+    const u = m + t * hw * 0.86
+    const room = top(u) - y
+    // (heights jittered, and a low mass of drapery under them: an even row of figures up a rake reads as a saw's teeth)
+    const jit = 0.5 + 0.28 * (Math.sin(i * 12.9898) * 43758.5453 - Math.floor(Math.sin(i * 12.9898) * 43758.5453))
+    const fh = Math.max(0.3, room * jit)
+    const fw = Math.min(fh * 0.24, ((u1 - u0) / n) * 0.36)
+    rect(fr, u - ((u1 - u0) / n) * 0.52, u + ((u1 - u0) / n) * 0.52, y + 0.02, y + Math.min(room * 0.3, 0.9), d - 0.16, shade(c, 0.94))
+    // a draped figure, narrow at the shoulder, and its head; low at the corners, where it lies down
+    const lying = room < 1.1 ? 1.8 : 1
+    fr.out.quad([fr.P(u - fw * 1.25 * lying, y + 0.04, d - 0.1), fr.P(u + fw * 1.25 * lying, y + 0.04, d - 0.1), fr.P(u + fw * 0.8 * lying, y + fh * 0.76, d - 0.1), fr.P(u - fw * 0.8 * lying, y + fh * 0.76, d - 0.1)], fr.n, UV, c, FIXED)
+    boxOn(fr, u - fw * 0.42, u + fw * 0.42, y + fh * 0.76, y + fh, d - 0.3, d - 0.1, c)
+  }
+}
+
+/**
+ * A SCROLL joining an upper storey to a lower: the Baroque volute of Saint-Paul and Saint-Roch. It leans from (uFoot, yFoot) to (uHead, yHead): a band whose back is a quarter curve, a coil at its foot and a coil at its head. On the wall, standing `d` out. About 40 triangles.
+ */
+export function volute(fr: Frame, uFoot: number, yFoot: number, uHead: number, yHead: number, d: number, stone: Rgb): void {
+  const k = 6
+  const pts: P[] = []
+  for (let i = 0; i <= k; i++) {
+    const t = i / k
+    // a concave sweep, flattest at the foot and steepest at the head
+    pts.push([uFoot + (uHead - uFoot) * Math.sin((t * Math.PI) / 2), yFoot + (yHead - yFoot) * (1 - Math.cos((t * Math.PI) / 2))])
+  }
+  const c = shade(stone, 1.03)
+  for (let i = 0; i < k; i++) {
+    // filled from the curve down to the storey's foot: the scroll's web, against the upper wall
+    fr.out.quad([fr.P(pts[i][0], yFoot, d * 0.7), fr.P(pts[i + 1][0], yFoot, d * 0.7), fr.P(pts[i + 1][0], pts[i + 1][1], d * 0.7), fr.P(pts[i][0], pts[i][1], d * 0.7)], fr.n, UV, stone, FIXED)
+    rib(fr, pts[i], pts[i + 1], Math.abs(yHead - yFoot) * 0.08 + 0.16, 0, d, c)
+  }
+  for (const [u, y, r] of [[uFoot, yFoot + 0.38, 0.42], [uHead, yHead, 0.34]] as const) {
+    const q: P[] = []
+    for (let i = 0; i <= 8; i++) q.push([u + Math.cos((i / 8) * Math.PI * 2) * r, y + Math.sin((i / 8) * Math.PI * 2) * r])
+    for (let i = 0; i < 8; i += 2) fr.out.quad([fr.P(u, y, d + 0.08), fr.P(q[i][0], q[i][1], d + 0.08), fr.P(q[i + 1][0], q[i + 1][1], d + 0.08), fr.P(q[i + 2][0], q[i + 2][1], d + 0.08)], fr.n, UV, shade(c, 1.05), FIXED)
+    for (let i = 0; i < 8; i += 2) {
+      bar(fr, q[i], q[i + 2], 0.07, d + 0.1, shade(stone, 0.7))
+    }
+  }
+}
+
+/** A STATUE on a wall's parapet or a niche's floor, `h` tall at (x, y, z): a draped mass that narrows to the shoulders, and a head: no arms held out, which at this size read as a cross. 22 triangles. */
+export function statue(out: MeshBuilder, x: number, y: number, z: number, h: number, c: Rgb): void {
+  prism(out, x, z, y, y + h * 0.5, h * 0.14, 6, c, FIXED, h * 0.115, false)
+  prism(out, x, z, y + h * 0.5, y + h * 0.82, h * 0.115, 6, shade(c, 1.03), FIXED, h * 0.075, false)
+  prism(out, x, z, y + h * 0.82, y + h, h * 0.065, 6, shade(c, 1.05), FIXED, h * 0.045, false)
+}
+
+/** A round-headed or flat classical DOOR with its panelled leaves, its architrave round it and a cornice over: for the fronts' side doors. About 30 triangles. */
+export function classicalDoor(fr: Frame, u: number, y0: number, w: number, h: number, stone: Rgb, door: Rgb, o: { head?: 'round' | 'flat'; pediment?: boolean } = {}): void {
+  const hw = w / 2
+  const t = Math.max(0.22, w * 0.11)
+  const round = o.head === 'round'
+  const spring = round ? y0 + h - hw : y0 + h
+  rect(fr, u - hw, u + hw, y0, spring, 0.06, door)
+  rect(fr, u - 0.03, u + 0.03, y0, spring, 0.08, shade(door, 0.5))
+  for (const s of [-1, 1]) {
+    boxOn(fr, u + s * (hw + t / 2) - t / 2, u + s * (hw + t / 2) + t / 2, y0, spring, 0, 0.16, shade(stone, 1.03))
+    rect(fr, u + s * hw * 0.5 - hw * 0.28, u + s * hw * 0.5 + hw * 0.28, y0 + (spring - y0) * 0.56, y0 + (spring - y0) * 0.92, 0.08, shade(door, 1.25))
+    rect(fr, u + s * hw * 0.5 - hw * 0.28, u + s * hw * 0.5 + hw * 0.28, y0 + (spring - y0) * 0.08, y0 + (spring - y0) * 0.46, 0.08, shade(door, 1.25))
+  }
+  if (round) {
+    const e = archEdge(u, spring, w, hw, 'round', 6)
+    fillOpening(fr, u, spring, spring, e, w, 0.05, shade(door, 0.5))
+    for (let i = 0; i + 1 < e.length; i++) bar(fr, [u + (e[i][0] - u) * 1.12, spring + (e[i][1] - spring) * 1.12], [u + (e[i + 1][0] - u) * 1.12, spring + (e[i + 1][1] - spring) * 1.12], t, 0.16, shade(stone, 1.03))
+  } else {
+    boxOn(fr, u - hw - t, u + hw + t, spring, spring + t, 0, 0.18, shade(stone, 1.03))
+    boxOn(fr, u - hw - t * 1.4, u + hw + t * 1.4, spring + t, spring + t * 1.5, 0, 0.32, shade(stone, 1.06), true)
+    if (o.pediment) pedimentFront(fr, u - hw - t * 1.4, u + hw + t * 1.4, spring + t * 1.5, w * 0.24, 0.32, stone)
   }
 }

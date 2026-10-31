@@ -1121,7 +1121,7 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!kind || !w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     if (area(ring) < 40) continue
-    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' && /^(surface)?$/.test(w.tags.parking ?? '') ? { parking: true as const } : {}) })
+    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' && /^(surface)?$/.test(w.tags.parking ?? '') ? { parking: true as const } : {}), ...(kind === 'water' && isRiver(w.tags) ? { river: true as const } : {}) })
   }
   /*
    * ---- THE SPORTS-PITCH KIT (BUGS.md #214, src/city/sports.ts, src/render/sports.ts)
@@ -1333,7 +1333,7 @@ async function bake(spec: CitySpec): Promise<void> {
         // 2026-10 brought in nature_reserve relations running 228 km down the coast, which hung the planting
         // (45 million candidate points on a 6 663-point ring) and would have greened the whole city.
         if (kind !== 'water' && tooBigForAnArea(pts)) { hugeAreas++; continue }
-        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' && /^(surface)?$/.test(rel.tags.parking ?? '') ? { parking: true as const } : {}) })
+        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(kind === 'water' && isRiver(rel.tags) ? { river: true as const } : {}), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' && /^(surface)?$/.test(rel.tags.parking ?? '') ? { parking: true as const } : {}) })
       }
       fromRelations++
     }
@@ -2561,9 +2561,10 @@ async function bake(spec: CitySpec): Promise<void> {
   // drop (city/package.ts waterLevels). Taken at bank level, every bridge over the Seine — and the Pont
   // Morland over the Arsenal's mouth — was lifted the full clearance above its own quays (BUGS.md #31, #37)
   const wetAreas = areas.filter((a) => a.kind === 'water')
-  // (a river of real size, where the region knows its level: the channels and the basins that touch it take it from there)
+  // (a river of real size, where the region knows its level: the channels and the basins that touch it take it from there. A RIVER: until Batch 4, 2026-10-31, every water over 8000 m² took the Seine's
+  //  surface, so the Bois's lakes, Daumesnil, the Buttes-Chaumont and Montsouris all lay at −6 m in pits of pale bank, Lac Inférieur's a cream strip 40 m wide. They keep their own lowest bank)
   if (streetRegion.riverLevel !== undefined) {
-    for (const a of wetAreas) if (Math.abs(area(unpackPoints(a.ring))) >= 8000) a.level = Math.round((streetRegion.riverLevel - datumRaw) * 100) / 100
+    for (const a of wetAreas) if (a.river && Math.abs(area(unpackPoints(a.ring))) >= 8000) a.level = Math.round((streetRegion.riverLevel - datumRaw) * 100) / 100
   }
   const wetLevels = waterLevels(wetAreas, groundAt, streetRegion.riverDrop ?? 0, seaLevel)
   const waterBodies = wetAreas.map((a, k) => ({ ring: unpackPoints(a.ring), level: wetLevels[k] }))
@@ -4176,6 +4177,9 @@ function ccw(ring: { x: number; z: number }[]): { x: number; z: number }[] {
   }
   return a < 0 ? [...ring].reverse() : ring
 }
+
+/** OSM's river, as opposed to a lake, a pond or a canal's basin: what a region's `riverLevel` is the surface of */
+const isRiver = (t: Record<string, string>): boolean => t.water === 'river' || t.waterway === 'riverbank'
 
 function areaKind(w: OsmWay): PackedArea['kind'] | null {
   const t = w.tags

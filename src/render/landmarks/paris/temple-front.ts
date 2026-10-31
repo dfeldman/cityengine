@@ -2,6 +2,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import { prism, type Rgb } from '../../models.ts'
 import { block, classicalColumn, hex, shade } from '../kit.ts'
 import type { Fit } from '../fit.ts'
+import { boxOn, classicalDoor, faceFrame, niche, pedimentFront, statue } from './monuments/gothic.ts'
 
 const FIXED = 0
 
@@ -26,8 +27,9 @@ interface TempleSpec {
 }
 
 function temple(out: MeshBuilder, fit: Fit, t: TempleSpec): void {
-  const stone = hex('#e3d9c4')
-  const deep = shade(stone, 0.84)
+  // (Batch 5, 2026-10-31: '#e3d9c4' in linear is white in the sun; the Madeleine's soot-grey Corinthian is not)
+  const stone = hex('#a39a87')
+  const deep = shade(stone, 0.8)
   const shadow: Rgb = [0.34, 0.33, 0.31]
   const hx = t.peripteral ? Math.min(Math.max(fit.hx, 18), 24) : Math.min(fit.hx, (t.width ?? 60) / 2)
   const hz = t.peripteral ? Math.min(Math.max(fit.hz, 45), 56) : Math.min(fit.hz, 30)
@@ -45,6 +47,20 @@ function temple(out: MeshBuilder, fit: Fit, t: TempleSpec): void {
   if (t.peripteral) {
     // the cella: the solid wall inside the colonnade, in shadow
     block(out, -hx + 4, hx - 4, front + 5, hz - 4, y0, y0 + ent - 1, deep)
+    // the cella's dress (Batch 5): the bronze doors of Triqueti behind the front's columns, and down each flank the saints in their niches, 34 of them, with a cornice over
+    const fr = faceFrame(out, '-z', front + 5)
+    classicalDoor(fr, 0, y0, 5.6, 10.8, stone, hex('#2f3a33'), { head: 'flat', pediment: true })
+    for (const s of [-1, 1]) {
+      const side = faceFrame(out, s < 0 ? '-x' : '+x', s * (hx - 4))
+      const n = 17
+      for (let i = 0; i < n; i++) {
+        const z = front + 8 + ((2 * hz - 16) * i) / (n - 1)
+        niche(side, z, y0 + 5, 1.5, 7, 0.02, deep, hex('#3d3a34'))
+        statue(out, s * (hx - 3.92), y0 + 5.1, z, 4.2, shade(stone, 1.08))
+      }
+      boxOn(side, front + 5, hz - 4, y0 + 13.6, y0 + 14.1, 0, 0.3, stone)
+    }
+    for (const s of [-1, 1]) for (const f of [-1, 1]) niche(fr, s * (hx - 8) * 0.72 + f * 2, y0 + 3, 1.2, 5, 0.02, deep, hex('#3d3a34'))
   }
   /*
    * The columns. This file used to carry the best column in the project as a private helper; it is now the
@@ -96,9 +112,8 @@ function temple(out: MeshBuilder, fit: Fit, t: TempleSpec): void {
       out.quad([[sx * (hx + 0.5), b - 0.2, z - 1.6], [sx * (hx + 0.5), b - 0.75, z - 1.6], [0, b + rise - 0.05, z - 1.6], [0, b + rise + 0.5, z - 1.6]],
         [0, 0, -1], UVQ, shade(stone, 0.95), FIXED)
     }
-    // the relief: a darker band of figures low across the tympanum
-    block(out, -hx * 0.62, hx * 0.62, z + face * 1.25 - 0.05, z + face * 1.25 + 0.05, b + 0.4, b + rise * 0.45, shade(stone, 0.8))
-    for (let i = -5; i <= 5; i++) prism(out, i * hx * 0.1, z + face * 1.3, b + 0.4, b + rise * (0.62 - Math.abs(i) * 0.05), 0.45, 6, shade(stone, 0.88), FIXED, 0.3)
+    // the relief: the Last Judgement's crowd, Christ tall in the middle (Lemaire), lying down to the corners (Batch 5: the kit's figures)
+    pedimentFront(faceFrame(out, face < 0 ? '-z' : '+z', z + face * 1.2), -hx * 0.96, hx * 0.96, b + 0.02, rise * 0.94, 0.34, shade(stone, 0.96), { relief: 19, reliefC: shade(stone, 1.08) })
   }
   ped(front + 0.8, -1)
   if (t.peripteral) {
@@ -106,8 +121,10 @@ function temple(out: MeshBuilder, fit: Fit, t: TempleSpec): void {
     // the roof between the pediments, low-pitched
     for (const sx of [-1, 1]) {
       out.quad([[sx * hx, y0 + ent, front + 2], [sx * hx, y0 + ent, hz - 2], [0, y0 + ent + rise, hz - 2], [0, y0 + ent + rise, front + 2]],
-        [sx * 0.5, 0.87, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], hex('#7a8084'), FIXED)
+        [sx * 0.5, 0.87, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], hex('#4a5155'), FIXED)
     }
+    // the three shallow lead domes that light the nave, and the ridge's crest
+    for (const z of [front + 18, 0, hz - 18]) prism(out, 0, z, y0 + ent + rise - 0.2, y0 + ent + rise + 1.1, 4.4, 12, hex('#3f464a'), FIXED, 1.4)
   }
 }
 

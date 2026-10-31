@@ -23,4 +23,9 @@ describe('the drop is a river\'s, not a fountain\'s (the Place André-Malraux, 2
     expect(lv[0]).toBeCloseTo(-6)
     expect(lv[1]).toBeCloseTo(-6)
   })
+  it('where a river\'s level is known, a lake lies just under its bank, however big', () => {
+    const lv = waterLevels([{ ...square(0, 100), level: -6 }, square(5000, 200)], () => 10, 2.5)
+    expect(lv[0]).toBeCloseTo(-6)
+    expect(lv[1]).toBeGreaterThan(9)
+  })
 })

@@ -1,5 +1,5 @@
 import type { MeshBuilder } from '../../../buildings.ts'
-import { block, classicalColumn, shade } from '../../kit.ts'
+import { block, classicalColumn, prism, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import { archOn, balustrade, extrude, fitted, palette, pedimentOn, pts, rectOn, slabOn, statue } from '../palaces/common.ts'
 
@@ -16,14 +16,13 @@ const OUTER = pts([-27.2, 12.4, -27.4, -30.3, 27.4, -30.4, 27.4, 30.4, 18.6, 26,
  * filled with Italian pictures, set back from the boulevard on its raised bank. What a rider sees, going by at the level
  * of the road (local −z):
  *
- * - the long pale front at the top of the bank, two tall storeys of Corinthian pilasters, its five-bay middle
- *   a step forward with a pediment and columns and statues on the skyline, a balustrade with its urns along the rest;
+ * - the long pale front at the top of the bank, two tall storeys of Corinthian pilasters, its rounded middle
+ *   standing out between two end pavilions, statues on the skyline, a balustrade with its urns along the rest;
  * - a low roof behind, hardly seen.
  *
- * Which side is the front is an inference and the weakest thing here: OSM's outline shows a straight side to Haussmann and a
- * court cut out of its north, so that straight side is what is drawn to the boulevard. I could not confirm where the cour
- * d'honneur and its curved ramps stand against that, and Mapillary gave no photograph. The dressing is from memory, and the
- * boulevard's banking wall and garden are not modelled.
+ * fr.wikipedia (Batch 4, 2026-10-31) settles which side is which: the portico and its lions are on the cour d'honneur, the
+ * hemicycle in OSM's north notch; to the boulevard, a high terrace on a rusticated base with two carriage gates, and the rounded
+ * front drawn here. The dressing is from memory, and the terrace, its gates and the garden are still not modelled.
  */
 export function jacquemartAndre(out: MeshBuilder, fit: Fit): void {
   fitted(out, fit, HX, HZ, (q) => draw(q))
@@ -63,18 +62,32 @@ function draw(out: MeshBuilder): void {
   slabOn(out, '-z', f, a - 0.5, b + 0.5, E - 0.5, E + 0.3, 0.55, p.trim)
   balustrade(out, a, b, f, f + 1.4, E + 0.3, p, { sides: ['-z'], h: 1.1 })
   for (let i = 0; i <= n; i += 2) statue(out, a + i * bay, f + 0.1, E + 1.4, 1.1, p.trim)
-  // ---- the middle, proud, its four columns over the arched ground storey
-  const m = 0
-  const hw = bay * 2.5
-  const pf = f - 1.8
-  block(out, m - hw, m + hw, pf, f, 0, 6.8, p.stone)
-  slabOn(out, '-z', pf, m - hw - 0.1, m + hw + 0.1, 6.5, 7, 0.22, p.trim)
-  for (let i = 0; i < 5; i++) {
-    const t = m - hw + (i + 0.5) * bay
-    archOn(out, '-z', pf, t, 0.8, 2.6, 5.1, i === 2 ? p.dark : p.glass, 0.08)
+  // ---- the middle (Batch 4, 2026-10-31; fr.wikipedia: to the boulevard "un avant-corps central arrondi", after the Petit Trianon, between two pavilions; the portico with its four columns and lions is the court's, behind):
+  // a drum standing out of the front, its columns round it over the arched ground storey, the balustrade carried round. It was a pedimented front, which is the court side's
+  const R = 8.6
+  const cz = f + 3.6
+  prism(out, 0, cz, 0, E - 1.2, R, 22, p.stone)
+  prism(out, 0, cz, 6.5, 7, R + 0.2, 22, p.trim)
+  prism(out, 0, cz, E - 1.2, E + 0.3, R + 0.45, 22, p.trim)
+  const round = (th: number, r: number): [number, number] => [Math.sin(th) * r, cz - Math.cos(th) * r]
+  for (let i = -3; i <= 3; i++) {
+    const [x, z] = round(i * 0.31, R)
+    block(out, x - 0.75, x + 0.75, z - 0.14, z + 0.14, 1, 5.6, p.glass)
+    block(out, x - 0.7, x + 0.7, z - 0.14, z + 0.14, 7.6, E - 2.4, p.glass)
   }
-  for (const x of [-hw + 0.2, -hw * 0.4, hw * 0.4, hw - 0.2]) classicalColumn(out, m + x, pf + 0.6, 7, E - 1.4, 0.42, p.stone, { order: 'corinthian', tier: 'mid', tag: FIXED, trim: p.trim })
-  block(out, m - hw - 0.2, m + hw + 0.2, pf, f, E - 1.4, E + 0.3, p.trim)
-  pedimentOn(out, '-z', pf, m - hw - 0.4, m + hw + 0.4, E + 0.3, 2.3, 1, p.stone)
-  statue(out, m, pf + 0.5, E + 2.6, 1.8, p.trim)
+  for (let i = -4; i <= 4; i++) {
+    const [x, z] = round((i - 0.5 * Math.sign(i || 1)) * 0.31 + (i === 0 ? 0.155 : 0), R + 0.5)
+    classicalColumn(out, x, z, 7, E - 1.4, 0.38, p.stone, { order: 'corinthian', tier: 'mid', tag: FIXED, trim: p.trim })
+  }
+  for (let i = -3; i <= 3; i += 2) { const [x, z] = round(i * 0.31, R); statue(out, x, z, E + 0.3, 1.3, p.trim) }
+  // the pavilions at either end, a step forward, pediments of their own
+  for (const s of [-1, 1]) {
+    const x0 = s * (b - bay), x1 = s * b, lo = Math.min(x0, x1), hi = Math.max(x0, x1)
+    block(out, lo, hi, f - 0.9, f, 0, E + 0.3, p.stone)
+    slabOn(out, '-z', f - 0.9, lo - 0.1, hi + 0.1, 6.5, 7, 0.22, p.trim)
+    rectOn(out, '-z', f - 0.9, (x0 + x1) / 2 - 1.1, (x0 + x1) / 2 + 1.1, 7.8, 11.8, p.trim, 0.04)
+    rectOn(out, '-z', f - 0.9, (x0 + x1) / 2 - 0.85, (x0 + x1) / 2 + 0.85, 8, 11.6, p.glass, 0.08)
+    archOn(out, '-z', f - 0.9, (x0 + x1) / 2, 1.2, 1.9, 4.4, p.glass, 0.08)
+    pedimentOn(out, '-z', f - 0.9, lo - 0.2, hi + 0.2, E + 0.3, 1.1, 0.5, p.trim)
+  }
 }

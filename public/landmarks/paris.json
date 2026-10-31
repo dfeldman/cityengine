@@ -1327,6 +1327,12 @@
     "include": "paris/batch3.json"
   },
   {
+    "include": "paris/batch4.json"
+  },
+  {
+    "include": "paris/batch5.json"
+  },
+  {
     "include": "paris/bugs.json"
   },
   {

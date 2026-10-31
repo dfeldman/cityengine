@@ -13182,22 +13182,6 @@
  },
  {
   "osm": [
-   "way/69485169"
-  ],
-  "name": "Cathédrale américaine de Paris",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "seed": 3278
-  },
-  "height": 15.5,
-  "front": -93,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/69485327"
   ],
   "name": "Hôtel de Rouvre",
@@ -36517,23 +36501,6 @@
   "front": -2,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 12."
- },
- {
-  "osm": [
-   "way/495635817"
-  ],
-  "name": "Chapelle Saint-Symphorien",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 1,
-   "word": "chapelle",
-   "seed": 7636
-  },
-  "height": 45.3,
-  "front": -167,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 1."
  },
  {
   "osm": [

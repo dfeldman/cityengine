@@ -199,6 +199,8 @@ export interface PackedArea {
    * level per connected body meant the whole Seine took the lowest bank anywhere along it, and ran 12 m under central Paris (2026-10-30).
    */
   level?: number
+  /** OSM calls this water a river (`water=river`, `waterway=riverbank`): only that takes a region's `riverLevel`, not a lake over the same size */
+  river?: true
   /** a paved square laid in the region's street brick: it opens off a brick street (tools/street-paint.ts) */
   brick?: true
   /**
@@ -553,7 +555,9 @@ export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number
    */
   const size = new Map<number, number>()
   water.forEach((a, k) => { const r = find(k); size.set(r, (size.get(r) ?? 0) + ringArea(a.ring)) })
-  low.forEach((lv, r) => low.set(r, lv - ((size.get(r) ?? 0) < POND ? Math.min(drop, POND_DROP) : drop)))
+  // (where a region knows its river's level, the drop was for the river: a lake in the Bois lies just under its banks, whatever its size)
+  const riverKnown = water.some((a) => a.level !== undefined)
+  low.forEach((lv, r) => low.set(r, lv - (riverKnown || (size.get(r) ?? 0) < POND ? Math.min(drop, POND_DROP) : drop)))
   // a river whose surface is known outright takes it (PackedArea `level`), however low one of its banks lies downstream
   water.forEach((a, k) => { if (a.level !== undefined) low.set(find(k), a.level) })
   // a component that reaches the sea IS the sea: it takes the sea's level rather than its lowest member

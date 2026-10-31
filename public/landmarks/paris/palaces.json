@@ -206,16 +206,6 @@
     "note": "Standalone in the court between the two wings (OSM ways 79219351 and 79219308, which stay, dressed below): the peristyle of square columns standing free before both inner faces and across the head of the court, roofed back to the walls (the 26 column parts, ways 1214526961–986, and the portico roof, way 79219265, are claimed: the model draws every one of them), the portico on the Avenue du Président-Wilson slant, the terraces down toward the Seine (+z, bearing 162) with the pool. The builder draws in plain metres; `size` is only the world-square box inscribed in the court round this point (±10 m E–W, ±26 m N–S: the nonbuildings audit measures a standalone entry by its unrotated box, and the court runs 18° off the meridian). Its terraces read the ground (Fit.groundAt): the court falls toward the river."
   },
   {
-    "name": "Palais de Tokyo and the Musée d'Art Moderne",
-    "osm": [
-      "way/79219351",
-      "way/79219308"
-    ],
-    "restyle": "classical",
-    "roof": "flat",
-    "note": "The two 1937 wings in their limestone, flat-roofed; OSM's 14 m kept. (The MUSEUMS family leaves the Palais de Tokyo to this file.)"
-  },
-  {
     "name": "Hôtel de Matignon",
     "osm": [
       "relation/1076880"
