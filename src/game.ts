@@ -806,7 +806,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     pkg.region === 'paris' ? PARIS_BRIDGES : {}, (id) => city.coversOutline(id), pkg.region === 'paris' ? undefined : STEEL_OVER_WATER))
   mark('quays')
   // the arches and covered ways that take streets through buildings (render/passages.ts)
-  city.addLayer(passagesLayer(scene, city.terrain))
+  city.addLayer(passagesLayer(scene, city.terrain, pkg.region === 'paris'))
   // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
   city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
   /*

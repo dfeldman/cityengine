@@ -117,25 +117,29 @@ export function passageArches(ring: P[], height: number, passages: { points: num
  * Passages as a per-tile layer (render/city.ts `TileLayer`): the passages and buildings of the tile and its
  * neighbours, each half metre of vault and each portal drawn by the tile it starts in.
  */
-export function passagesLayer(scene: Scene, terrain: Terrain): TileLayer {
+export function passagesLayer(scene: Scene, terrain: Terrain, ownArches = false): TileLayer {
   return {
     name: 'passages',
     build(near, rect) {
-      const m = buildPassages(scene, near.around, terrain, rect, `passages:${near.key}`)
+      const m = buildPassages(scene, near.around, terrain, rect, `passages:${near.key}`, ownArches)
       return m ? [m] : []
     },
   }
 }
 
 function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings'> & { claimedBuildings?: CityPackage['buildings'] }, terrain: Terrain,
-  rect: { x0: number; z0: number; x1: number; z1: number }, name: string): Mesh | null {
+  rect: { x0: number; z0: number; x1: number; z1: number }, name: string, ownArches = false): Mesh | null {
   const passages = pkg.edges.filter((e) => e.passage)
   if (passages.length === 0) return null
   const mine = (q: P): boolean => q.x >= rect.x0 && q.x < rect.x1 && q.z >= rect.z0 && q.z < rect.z1
   const CELL = 50
   const grid = new Map<string, { ring: P[]; holes: P[][]; x0: number; x1: number; z0: number; z1: number; top: number; wall: Rgb }[]>()
-  // (with the buildings a landmark's model took: the Louvre's guichets are passages through a modelled wing)
-  for (const b of [...pkg.buildings, ...(pkg.claimedBuildings ?? [])]) {
+  /*
+   * (with the buildings a landmark's model took, where its model doesn't cut its own arches. In Paris it does: the generic vault and its stone
+   * surround stood inside the Louvre's own guichets, smaller and off to one side. Owner, 2026-10-31, 48.860171, 2.333390: "the gate metal doesn't
+   * line up with the hole".)
+   */
+  for (const b of [...pkg.buildings, ...(ownArches ? [] : pkg.claimedBuildings ?? [])]) {
     // on the ground, or a part bridging the passage low enough to be its ceiling
     if ((b.minHeight ?? 0) > 7) continue
     // (a fuel canopy stands on columns over open ground: a footway under it is not a passage through a building)

@@ -199,18 +199,36 @@ const seine: Face = (q, L, g, D) => {
   const n = Math.max(1, Math.round(L / bay))
   const b = L / n
   ground(q, L, 20.5, g, D, [])
-  for (let y = 2; y < 8.4; y += 1) rectOn(q, '-z', 0, 0, L, y, y + 0.09, BAND, 0.025)
+  // (the courses and the string stop at a gate's arch: run straight along the wall they drew lines across the Guichets du Carrousel's openings,
+  //  and the pilasters over them started in mid air inside the arch. Owner, 2026-10-31, 48.860171, 2.333390: "have lines across")
+  const halfAt = (h: Gate, y: number): number => {
+    const r = h.w / 2, spring = h.crown - r
+    return y > h.crown ? 0 : y <= spring ? r : Math.sqrt(Math.max(0, r * r - (y - spring) * (y - spring)))
+  }
+  const runs = (y: number, y1: number): [number, number][] => {
+    const cuts = g.map((h) => [h.x - Math.max(halfAt(h, y), halfAt(h, y1)) - 0.12, h.x + Math.max(halfAt(h, y), halfAt(h, y1)) + 0.12] as [number, number]).filter((c) => c[1] - c[0] > 0.3).sort((a, b) => a[0] - b[0])
+    const out: [number, number][] = []
+    let at = 0
+    for (const [a, b] of cuts) { if (a > at) out.push([at, a]); at = Math.max(at, b) }
+    if (at < L) out.push([at, L])
+    return out
+  }
+  for (let y = 2; y < 8.4; y += 1) for (const [a, b] of runs(y, y + 0.09)) rectOn(q, '-z', 0, a, b, y, y + 0.09, BAND, 0.025)
   for (let i = 0; i < n; i++) {
     const x = (i + 0.5) * b
     const hit = g.some((h) => Math.abs(h.x - x) < h.w / 2 + 2)
     if (!hit) archOn(q, '-z', 0, x, 1.5, 2.6, 4.4, GLASS)
     if (!hit) rectOn(q, '-z', 0, x - 0.9, x + 0.9, 6.2, 8, GLASS, 0.06)
-    if (!g.some((h) => Math.abs(h.x - x) < h.w / 2 && h.crown > 11)) win(q, x, 10.2, 2.4, 6)
+    if (!g.some((h) => Math.abs(h.x - x) < h.w / 2 + 1.2 && h.crown > 10)) win(q, x, 10.2, 2.4, 6)
     if (i % 2) pedimentOn(q, '-z', 0, x - b * 0.45, x + b * 0.45, 19.9, 1.7, 0.5, TRIM)
     else segmentOn(q, '-z', 0, x, 19.9, b * 0.9, 1.5, TRIM, 0.5)
-    for (const s of [-0.42, -0.26, 0.26, 0.42]) fin(q, x + s * b - 0.3, x + s * b + 0.3, 8.8, 18.8, 0.3, TRIM)
+    for (const s of [-0.42, -0.26, 0.26, 0.42]) {
+      const px = x + s * b
+      const foot = g.filter((h) => Math.abs(h.x - px) < h.w / 2 + 0.3).reduce((v, h) => Math.max(v, h.crown + 0.4), 8.8)
+      fin(q, px - 0.3, px + 0.3, foot, 18.8, 0.3, TRIM)
+    }
   }
-  cornice(q, 0, L, 8.6, 9.2, 0.5, TRIM)
+  for (const [a, b] of runs(8.6, 9.2)) cornice(q, a, b, 8.6, 9.2, 0.5, TRIM)
   cornice(q, 0, L, 18.7, 19.9, 0.8, TRIM)
 }
 /** The Cour Carrée: three tiers of pilasters, windows with pediments, a frontispiece in the middle. */

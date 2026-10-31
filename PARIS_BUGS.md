@@ -280,3 +280,10 @@ Still open:
 ## The funicular's cabin
 
 The Montmartre funicular runs and is boarded like a cable car (the rail audit made it visible). The cabin is a plain white box: it wants its real glass cars. Not yet ridden in a test.
+
+## Next round of bugs, first things first
+
+1. The Université Paris Cité's Campus Saint-Germain-des-Prés, 45 rue des Saints-Pères (relation/1939525, 48.855387, 2.331493; owner, 2026-10-31: "a massive modern block. reality is it's not that tall, and not a modern look, more imitation hausmann. this needs a custom model"). One 11,000 m² slab in the game. The aerial (tools/ortho.ts 48.8553 2.3316 90) shows a grid of deep courts, brown tile terraces and a stone range on the street, its upper storeys set back. APUR measures 40 m at its highest: the street front should read far lower than that.
+2. Everything still over 37 m after the storeys fix: check each, tallest first.
+3. The funicular's cabin.
+4. Road tunnel mouths where the road ends (188).
