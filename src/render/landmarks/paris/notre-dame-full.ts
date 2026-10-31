@@ -37,7 +37,7 @@ function disc(out: MeshBuilder, cx: number, cy: number, cz: number, r: number, c
  * Local frame: the west front faces −z; x across. Fitted to OSM's footprint (~128 × 48 m).
  */
 export function notreDameFull(out: MeshBuilder, fit: Fit): void {
-  const stone = hex('#e3dac6')
+  const stone = hex('#d0c7b3')
   const shadowStone = shade(stone, 0.84)
   const deepStone = shade(stone, 0.7)
   const lead = hex('#7a838a')
@@ -49,7 +49,7 @@ export function notreDameFull(out: MeshBuilder, fit: Fit): void {
   const L = Math.min(Math.max(fit.hz, 56), 66)
   const W = Math.min(Math.max(fit.hx, 20), 25)
   const zf = -L
-  // a stone plinth down into the ground: the manifest lifts the cathedral 2.5 m so the parvis meets its doors,
+  // a stone plinth down into the ground: the manifest lifts the cathedral 1.5 m so the parvis meets its doors (2.5 until the top-25 audit: the sills stood a metre clear),
   // and the island falls away towards the chevet
   block(out, -W - 2, W + 2, zf - 0.5, L + 14, -4, 0.02, shade(stone, 0.8))
   const fw = Math.min(W, 20.5)          // half the west front

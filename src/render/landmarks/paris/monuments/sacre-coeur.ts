@@ -48,11 +48,11 @@ export function sacreCoeurFull(out: MeshBuilder, fit: Fit): void {
   fitted(out, fit, HX, HZ, (q) => draw(q))
 }
 
-const WHITE: Rgb = [0.95, 0.935, 0.9]
+const WHITE: Rgb = [0.83, 0.82, 0.785]  // (the travertine is white, but at 0.95 the sun clipped every face to one flat white: top-25 audit, 2026-10-30)
 /** the domes a touch brighter than the walls: they are what catches the sun over Paris */
-const DOME: Rgb = [0.99, 0.98, 0.955]
+const DOME: Rgb = [0.85, 0.84, 0.81]
 const SHADOW: Rgb = shade(WHITE, 0.9)
-const TRIM: Rgb = [0.985, 0.975, 0.95]
+const TRIM: Rgb = [0.87, 0.86, 0.83]
 const DARK: Rgb = [0.2, 0.2, 0.22]
 const GLASS: Rgb = [0.24, 0.26, 0.3]
 const BRONZE: Rgb = [0.32, 0.43, 0.37]

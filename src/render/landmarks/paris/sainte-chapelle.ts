@@ -19,9 +19,9 @@ const FIXED = 0
  * Local frame: along z, the west front at −z; about 36 × 17 m.
  */
 export function sainteChapelle(out: MeshBuilder, fit: Fit): void {
-  const stone = hex('#ddd3bd')
+  const stone = hex('#cdc3ad')
   const deep = shade(stone, 0.82)
-  const glass: Rgb = [0.22, 0.2, 0.38]
+  const glass: Rgb = [0.17, 0.17, 0.3]
   const lead = hex('#6f7b83')
   const gold: Rgb = [0.84, 0.66, 0.26]
   const L = Math.min(Math.max(fit.hz, 16), 20)
@@ -43,6 +43,9 @@ export function sainteChapelle(out: MeshBuilder, fit: Fit): void {
       const t = sx * ((zf + 3) + (b + 0.5) * bayLen)
       pointedPane(side, -0.05, t, 10.5, bayLen - 1.2, eaves - 12, deep)
       pointedPane(side, -0.08, t, 11, bayLen - 1.8, eaves - 13, glass)
+      // its stone mullions and the transoms that are the whole of the Sainte-Chapelle from outside
+      for (const u of [-0.25, 0, 0.25]) beam(side, [t + u * (bayLen - 1.8), 11, -0.14], [t + u * (bayLen - 1.8), eaves - 3.5, -0.14], 0.07, stone)
+      for (const y of [15.5, 20, 24]) beam(side, [t - (bayLen - 1.8) / 2, y, -0.14], [t + (bayLen - 1.8) / 2, y, -0.14], 0.05, stone)
     }
     block(out, sx > 0 ? W - 0.6 : -W, sx > 0 ? W : -W + 0.6, zf + 3, zApse, 10, eaves, stone)
     // turned: the pane's t runs along −z's x; a turn of ±π/2 lays it along z on the ±x side
@@ -71,7 +74,10 @@ export function sainteChapelle(out: MeshBuilder, fit: Fit): void {
     const nz = Math.cos(am)
     out.quad([[x0, 0, z0], [x1, 0, z1], [x1, eaves, z1], [x0, eaves, z0]], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], stone, FIXED)
     const w = new MeshBuilder()
-    pointedPane(w, -0.1, 0, 10.5, Math.hypot(x1 - x0, z1 - z0) - 1.2, eaves - 12, glass)
+    const fw = Math.hypot(x1 - x0, z1 - z0) - 1.2
+    pointedPane(w, -0.1, 0, 10.5, fw, eaves - 12, glass)
+    for (const u of [-0.17, 0.17]) beam(w, [u * fw, 10.5, -0.16], [u * fw, eaves - 3.5, -0.16], 0.06, stone)
+    for (const y of [15.5, 20, 24]) beam(w, [-fw / 2, y, -0.16], [fw / 2, y, -0.16], 0.05, stone)
     const r = W * Math.cos(Math.PI / (2 * facets))
     placed(out, w, am + Math.PI, nx * r, zApse + nz * r)
     const bx = Math.sin(a1) * (W + 0.8)
@@ -110,8 +116,11 @@ export function sainteChapelle(out: MeshBuilder, fit: Fit): void {
   block(f, -W + 0.8, W - 0.8, -3, 0, 0, 16, stone)
   block(f, -W + 0.6, W - 0.6, -3.3, 0, 16, 17, deep)
   for (const x of [-4, 0, 4]) {
-    pointedPane(f, -3.05, x, 0.4, 3, 7.5, deep)
-    pointedPane(f, -3.05, x, 9, 3, 6.5, deep)
+    pointedPane(f, -3.05, x, 0.4, 3, 7.5, shade(stone, 0.55))
+    pointedPane(f, -3.05, x, 9, 3, 6.5, shade(stone, 0.55))
+    // the gables over the porch's arches
+    f.quad([[x - 2, 7.6, -3.1], [x + 2, 7.6, -3.1], [x, 10.6, -3.1], [x, 10.6, -3.1]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], shade(stone, 1.04), FIXED)
+    prism(f, x + 2, -3.1, 7, 9.2, 0.2, 4, shade(stone, 1.04), FIXED, 0.02)
   }
   // the rose, in its square, with its flamboyant ring
   block(f, -W, W, -0.2, 0, 17, eaves + 0.9, stone)
@@ -131,7 +140,7 @@ export function sainteChapelle(out: MeshBuilder, fit: Fit): void {
     const a0 = (i / 24) * Math.PI * 2
     const a1 = ((i + 1) / 24) * Math.PI * 2
     const cy = 23.5
-    f.quad([[Math.cos(a0) * rose, cy + Math.sin(a0) * rose, -0.4], [0, cy, -0.4], [0, cy, -0.4], [Math.cos(a1) * rose, cy + Math.sin(a1) * rose, -0.4]],
+    f.quad([[Math.cos(a1) * rose, cy + Math.sin(a1) * rose, -0.4], [Math.cos(a0) * rose, cy + Math.sin(a0) * rose, -0.4], [0, cy, -0.4], [0, cy, -0.4]],
       [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], glass, FIXED)
     // the tracery: a spoke on every other facet, and a ring at half the radius
     if (i % 2 === 0) beam(f, [Math.cos(a0) * 0.9, cy + Math.sin(a0) * 0.9, -0.45], [Math.cos(a0) * rose, cy + Math.sin(a0) * rose, -0.45], 0.07, stone)
@@ -139,11 +148,20 @@ export function sainteChapelle(out: MeshBuilder, fit: Fit): void {
     beam(f, [Math.cos(a0) * 0.9, cy + Math.sin(a0) * 0.9, -0.45], [Math.cos(a1) * 0.9, cy + Math.sin(a1) * 0.9, -0.45], 0.08, stone)
   }
   // the gable over it, with a little rose, and the balustrade at its foot
-  for (let y = 0; y < 12; y++) {
-    const w = W * (1 - y / 12)
-    block(f, -w, w, -0.2, 0, eaves + 0.9 + y, eaves + 1.9 + y, stone)
+  // (top-25 audit, 2026-10-30: it was twelve steps, a stepped gable no Gothic mason ever cut) a true gable, its raking copings and crockets
+  const yG = eaves + 0.9
+  const hG = 12.6
+  f.quad([[-W, yG, -0.2], [W, yG, -0.2], [0, yG + hG, -0.2], [0, yG + hG, -0.2]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], stone, FIXED)
+  for (const s of [-1, 1]) {
+    beam(f, [s * (W + 0.1), yG - 0.1, -0.35], [0, yG + hG + 0.2, -0.35], 0.26, shade(stone, 1.05))
+    for (let i = 1; i < 7; i++) {
+      const t = i / 7
+      const x = s * (W + 0.1) * (1 - t), y = yG - 0.1 + (hG + 0.3) * t
+      prism(f, x + s * 0.2, -0.35, y + 0.15, y + 0.85, 0.14, 4, shade(stone, 1.05), FIXED, 0.02)
+    }
   }
-  prism(f, 0, -0.3, eaves + 3.5, eaves + 6.5, 1.5, 12, glass, FIXED)
+  prism(f, 0, -0.35, yG + hG + 0.2, yG + hG + 2, 0.18, 4, shade(stone, 1.05), FIXED, 0.02)
+  pointedPane(f, -0.26, 0, eaves + 2.8, 2.4, 4, glass)
   // the two turrets at the front corners, with their crocketed spirelets
   for (const sx of [-1, 1]) {
     prism(f, sx * (W - 0.4), -0.6, 0, eaves + 3, 1.3, 8, stone, FIXED)

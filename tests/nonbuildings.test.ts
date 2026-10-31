@@ -97,7 +97,6 @@ const KNOWN: Record<string, string[]> = {
     'height | Square Louis-XIII',
     // #110 — z-fighting candidates
     'coplanar | Square Louis-XIII',
-    'coplanar | Tour Eiffel',
   ],
   'san-francisco': [
     // Embarcadero Center's podium level (2026-10-03): placed at its own datum (baseY 0, the deck 8 m over the street)

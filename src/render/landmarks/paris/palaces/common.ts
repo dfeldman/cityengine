@@ -58,6 +58,9 @@ export function fitted(out: MeshBuilder, fit: Fit, hx: number, hz: number, draw:
   for (const u of q.uvs) out.uvs.push(u)
   for (const c of q.colors) out.colors.push(c)
   for (const i of q.indices) out.indices.push(base + i)
+  // (a sign and a clock's hands are not geometry, and were left behind here until the top-25 audit, 2026-10-30)
+  for (const n of q.signs) out.signs.push({ ...n, x: n.x * sx, z: n.z * sz })
+  for (const c of q.clocks) out.clocks.push({ ...c, x: c.x * sx, z: c.z * sz })
 }
 
 /** The point at `t` along a face, `y` up, `d` out from its plane; and the face's outward normal. */
@@ -409,4 +412,53 @@ export function slab(out: MeshBuilder, ring: P2[], y0: number, y1: number, c: Rg
     const e = edgeAt(r, i)
     out.quad([[e.a.x, y0, e.a.z], [e.b.x, y0, e.b.z], [e.b.x, y1, e.b.z], [e.a.x, y1, e.a.z]], [e.nx, 0, e.nz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
   }
+}
+
+/**
+ * A WALL WITH REAL OPENINGS (2026-10-30, the top-25 audit): the plane z = `z` facing −z, x0..x1 × y0..top, with round-headed openings at
+ * `centres`, each `w` wide and `h` from y0 to its crown, cut back `depth` to a dark panel: the jambs and the soffit are there, so an
+ * arcade has shadow in it from any side, where a dark shape painted on a wall is a dark shape. `back` null leaves it open, for a passage
+ * that goes through.
+ */
+export function arcade(out: MeshBuilder, z: number, x0: number, x1: number, y0: number, top: number, centres: number[], w: number, h: number,
+  depth: number, c: Rgb, soffit: Rgb, back: Rgb | null, n = 8): void {
+  const N: [number, number, number] = [0, 0, -1]
+  const quad = (a: [number, number, number], b: [number, number, number], cc: [number, number, number], d: [number, number, number], nn: [number, number, number], col: Rgb): void => {
+    out.quad([a, b, cc, d], nn, UV, col, FIXED)
+  }
+  const r = w / 2
+  const spring = y0 + h - r
+  let px = x0
+  for (const cx of [...centres].sort((a, b) => a - b)) {
+    if (cx - r > px) quad([px, y0, z], [cx - r, y0, z], [cx - r, top, z], [px, top, z], N, c)
+    // the jambs
+    quad([cx - r, y0, z], [cx - r, y0, z + depth], [cx - r, spring, z + depth], [cx - r, spring, z], [1, 0, 0], soffit)
+    quad([cx + r, y0, z + depth], [cx + r, y0, z], [cx + r, spring, z], [cx + r, spring, z + depth], [-1, 0, 0], soffit)
+    if (back) quad([cx - r, y0, z + depth], [cx + r, y0, z + depth], [cx + r, spring, z + depth], [cx - r, spring, z + depth], N, back)
+    for (let i = 0; i < n; i++) {
+      const a0 = Math.PI - (i / n) * Math.PI, a1 = Math.PI - ((i + 1) / n) * Math.PI
+      const x_0 = cx + Math.cos(a0) * r, x_1 = cx + Math.cos(a1) * r
+      const y_0 = spring + Math.sin(a0) * r, y_1 = spring + Math.sin(a1) * r
+      // what stands over the arch, up to the top of the wall
+      quad([x_0, y_0, z], [x_1, y_1, z], [x_1, top, z], [x_0, top, z], N, c)
+      // the soffit, and the panel behind
+      const am = (a0 + a1) / 2
+      quad([x_1, y_1, z], [x_0, y_0, z], [x_0, y_0, z + depth], [x_1, y_1, z + depth], [-Math.cos(am), -Math.sin(am), 0], soffit)
+      if (back) quad([x_0, y_0, z + depth], [x_1, y_1, z + depth], [cx, spring, z + depth], [cx, spring, z + depth], N, back)
+    }
+    px = cx + r
+  }
+  if (x1 > px) quad([px, y0, z], [x1, y0, z], [x1, top, z], [px, top, z], N, c)
+}
+
+/** The moulded band round an arch on a −z face: between radii r0 and r1 about (cx, yc), `d` proud, a keystone at its head. */
+export function archRing(out: MeshBuilder, z: number, cx: number, yc: number, r0: number, r1: number, d: number, c: Rgb, key: Rgb = c, n = 10): void {
+  for (let i = 0; i < n; i++) {
+    const a0 = (i / n) * Math.PI, a1 = ((i + 1) / n) * Math.PI
+    const P = (a: number, r: number, zz: number): [number, number, number] => [cx + Math.cos(a) * r, yc + Math.sin(a) * r, zz]
+    out.quad([P(a0, r0, z - d), P(a1, r0, z - d), P(a1, r1, z - d), P(a0, r1, z - d)], [0, 0, -1], UV, c, FIXED)
+    const am = (a0 + a1) / 2
+    out.quad([P(a0, r1, z - d), P(a1, r1, z - d), P(a1, r1, z), P(a0, r1, z)], [Math.cos(am), Math.sin(am), 0], UV, shade(c, 1.02), FIXED)
+  }
+  if (key) block(out, cx - (r1 - r0) * 0.45, cx + (r1 - r0) * 0.45, z - d - 0.12, z, yc + r0 - 0.1, yc + r1 + 0.2, key)
 }

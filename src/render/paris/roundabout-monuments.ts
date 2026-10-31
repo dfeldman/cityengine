@@ -69,11 +69,17 @@ function monument(out: MeshBuilder, x: number, y: number, z: number, r: number, 
   }
 }
 
+/*
+ * Roundabouts that are open ground and must stay so, in the city's metres: the ring of paths in the middle of the Champ de Mars, whose gilded
+ * column (kind 0, from the hash) stood dead on the axis of every view of the Eiffel Tower from the École Militaire (top-25 audit, 2026-10-30).
+ */
+const OPEN: [number, number][] = [[-2496, -492]]
+
 export function roundaboutMonuments(scene: Scene, rings: { x: number; z: number; r: number }[], groundAt: (x: number, z: number) => number,
   taken: (x: number, z: number, r: number) => boolean): Mesh | null {
   const out = new MeshBuilder()
   for (const ring of rings) {
-    if (ring.r < 18 || taken(ring.x, ring.z, ring.r)) continue
+    if (ring.r < 18 || taken(ring.x, ring.z, ring.r) || OPEN.some(([x, z]) => Math.hypot(ring.x - x, ring.z - z) < 25)) continue
     const h = (Math.imul(Math.round(ring.x * 10) ^ Math.imul(Math.round(ring.z * 10), 0x27d4eb2d), 0x9e3779b1) >>> 0)
     // (columns and statues the commonest, then the fountains, the odd obelisk)
     const pick = h % 20

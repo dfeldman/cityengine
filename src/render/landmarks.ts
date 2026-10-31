@@ -97,9 +97,10 @@ export interface LandmarkEntry {
   kind?: string
   /**
    * The bearing, in degrees, that the model's main facade faces (0 north, 90 east), or "street" to take it
-   * from the building's baked frontage. The builder is written with its front facing local +z — that is what
-   * `edgeFacing(ring, 0)` returns and what every district builder assumes. (Said −z until 2026-09-22; checked
-   * empirically, the comment was wrong, not the code.)
+   * from the building's baked frontage. A number turns the model's local −z to that bearing, for point and outline
+   * entries alike (`fitFront`, `fitAt`: rotation is the bearing + 180; tests/landmarks.test.ts says so). "street" is the
+   * other convention: `edgeFacing(ring, 0)` returns the street front at +z, which is what the district builders assume.
+   * (This comment said +z for both until the top-25 audit, 2026-10-30.)
    */
   front?: number | 'street'
   /**

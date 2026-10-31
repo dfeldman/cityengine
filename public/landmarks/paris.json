@@ -505,16 +505,46 @@
   },
   {
     "name": "Palais du Louvre",
+    "procedural": "louvrePalace",
     "osm": [
-      "relation/3262297"
+      "relation/3262297",
+      "way/1195559065",
+      "way/1195559068",
+      "way/1209881915",
+      "way/1209881916",
+      "way/338651869",
+      "way/457462581",
+      "way/979394057",
+      "way/979394058",
+      "way/1195559066",
+      "way/1195559067",
+      "way/1195559069",
+      "way/1195559070",
+      "way/1209823909",
+      "way/1209881911",
+      "way/1209881912",
+      "way/1209881913",
+      "way/1209881914",
+      "way/1209881917",
+      "way/1209881918",
+      "way/1209881919",
+      "way/1359877259",
+      "way/1359877260",
+      "way/1359877261",
+      "way/1359877262",
+      "way/1359877263"
     ],
-    "restyle": "classical",
-    "roof": "hipped",
-    "roofHeight": 9,
-    "roofColour": "#4a5058",
-    "height": 25,
-    "levels": 5,
-    "note": "OSM maps the palace 12 m high: its walls to 25 m, the classical stone dress, steep slate roofs (the pavilions' own taller roofs are wanted next)."
+    "lat": 48.86103,
+    "lon": 2.336399,
+    "rotateDeg": 0,
+    "size": [
+      712,
+      468
+    ],
+    "height": 38,
+    "baseY": 0.4,
+    "stone": false,
+    "note": "Drawn wing by wing on OSM's outline and IGN's aerial (2026-10-30), in plan metres about this point: not fitted, and on its own datum, because the ground runs from -3 m in the Colonnade's moat to +2.4 in the Cour Carrée and an entry's base is otherwise the lowest of it. OSM's outline stays in the bake for the passages' vaults (TileData.claimedBuildings)."
   },
   {
     "name": "Tours Société Générale",
@@ -554,7 +584,7 @@
     "procedural": "notreDameFull",
     "offset": [
       0,
-      2.5,
+      1.5,
       0
     ],
     "osm": [
@@ -586,13 +616,22 @@
     "name": "Dôme des Invalides",
     "procedural": "invalidesDome",
     "osm": [
+      "way/112452790",
       "way/227662013",
       "way/1462443411",
       "way/1462443412",
       "way/227662012",
       "way/227662005"
     ],
-    "note": "The drum, the gilded dome, lantern and spire, fitted to OSM's dome part (way 227662013); OSM's church below 34 m stays as mapped."
+    "lat": 48.854991,
+    "lon": 2.312527,
+    "size": [
+      56,
+      60
+    ],
+    "front": 184,
+    "height": 85.6,
+    "note": "The church and its dome: the middle of the dome off IGN's aerial, front to the Place Vauban. OSM's church (way 112452790 and its parts) goes, and with it its block of windows."
   },
   {
     "name": "Musée d'Orsay",
@@ -600,8 +639,15 @@
     "osm": [
       "way/63178753"
     ],
-    "front": 20,
-    "note": "The Gare d'Orsay: river front with its great arched windows, the clock pavilions at each end, the glass vault; fitted to OSM's outline, front to the Seine."
+    "lat": 48.859938,
+    "lon": 2.326495,
+    "size": [
+      188.3,
+      77.7
+    ],
+    "height": 38,
+    "front": 25.5,
+    "note": "The Gare d'Orsay, on OSM's outline turned to its true bearing (25.5°, off the outline's long side): front to the Seine."
   },
   {
     "name": "Palais Garnier",
@@ -618,8 +664,15 @@
       "way/822290989",
       "way/822291000"
     ],
+    "lat": 48.8719245,
+    "lon": 2.3317536,
+    "size": [
+      60,
+      133
+    ],
+    "height": 56,
     "front": 165,
-    "note": "Fitted to OSM's main footprint (way 822291002); front to the Place de l'Opéra (south-south-east); OSM's dome, stage and wing parts replaced."
+    "note": "On the middle of OSM's main footprint (way 822291002) at its true size: fitted to the outline the loader gave it 10 m across, which the old clamps hid and a drawing in real metres cannot. Front to the Place de l'Opéra (south-south-east); OSM's dome, stage and wing parts replaced."
   },
   {
     "name": "Place de la Concorde",
@@ -650,14 +703,26 @@
   },
   {
     "name": "Palais de Chaillot",
+    "procedural": "palaisChaillot",
     "osm": [
-      "relation/6826569"
+      "relation/6826569",
+      "way/1214794355",
+      "way/1214794354",
+      "way/1214794356",
+      "way/1214794357",
+      "way/1214794363"
     ],
-    "restyle": "classical",
-    "roof": "flat",
-    "height": 24,
-    "levels": 4,
-    "note": "The two curved wings of 1937 (backlog, user 2026-09-22): OSM's 30 m massing in the pale classical stone dress, flat-roofed; the parvis and its gilded statues are `trocaderoParvis`."
+    "lat": 48.862366,
+    "lon": 2.288098,
+    "size": [
+      426,
+      125
+    ],
+    "front": 134.3,
+    "height": 22,
+    "baseY": 28,
+    "stone": false,
+    "note": "The two head pavilions and the two curved galleries of 1937, on OSM's outline: on its own datum, the parvis, because the north-east wing's ground falls 20 m from it; the parvis and its gilded statues are `trocaderoParvis`."
   },
   {
     "name": "Parvis du Trocadéro",
@@ -1099,15 +1164,51 @@
   },
   {
     "name": "Hôtel de la Marine and Hôtel de Crillon",
+    "procedural": "gabrielPalaces",
     "osm": [
       "relation/1060822",
-      "relation/1060804"
+      "relation/1060804",
+      "relation/1060806",
+      "way/67109756"
     ],
-    "restyle": "classical",
-    "roof": "flat",
-    "height": 22,
-    "levels": 3,
-    "note": "Gabriel's twin palaces on the north side of the Concorde: the colonnade over an arcaded ground floor, balustraded, flat."
+    "lat": 48.8655,
+    "lon": 2.3211,
+    "rotateDeg": 0,
+    "size": [
+      230,
+      190
+    ],
+    "height": 23,
+    "baseY": -0.1,
+    "stone": false,
+    "note": "Gabriel's twin palaces on the north side of the Concorde, drawn in plan metres about the obelisk: the Marine, and the Crillon with the Plessis-Bellière and Coislin behind one front."
+  },
+  {
+    "name": "La Conciergerie",
+    "procedural": "conciergerie",
+    "osm": [
+      "way/248434964",
+      "way/248434970",
+      "way/248434983",
+      "way/248434967",
+      "way/248434969",
+      "way/249046988",
+      "way/249046987",
+      "way/248434968",
+      "way/248434993",
+      "way/248434965",
+      "way/248434966"
+    ],
+    "lat": 48.856389,
+    "lon": 2.345542,
+    "size": [
+      115,
+      18
+    ],
+    "front": 22.8,
+    "height": 43,
+    "stone": false,
+    "note": "The front on the Quai de l'Horloge: the Horloge, César and Argent, the Bonbec, the ranges between; the Palais de Justice's OSM parts along the quay give way to it."
   },
   {
     "name": "Palais de Justice and the Conciergerie",
@@ -1117,7 +1218,9 @@
     "restyle": "classical",
     "roof": "mansard",
     "levels": 4,
-    "note": "The Palais de Justice on the Île de la Cité; the Conciergerie's pepper-pot towers are OSM's own cone-roofed parts on the quai."
+    "wall": "#cfc6af",
+    "trim": "#ded6c2",
+    "note": "The Palais de Justice on the Île de la Cité, OSM's parts in pale stone; the Conciergerie's quay front is its own model, above, and takes the parts it stands on first."
   },
   {
     "name": "Hôtel de la Monnaie",
@@ -1230,5 +1333,17 @@
   },
   {
     "include": "paris/portals.json"
+  },
+  {
+    "name": "Beside the Sacré-Cœur: a lodge",
+    "osm": [
+      "way/67699858"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "height": 7,
+    "levels": 2,
+    "sign": false,
+    "note": "A 14 by 4 m lodge east of the basilica, no height in OSM, that took 50 m from the lidar's reading of the basilica over it: from the terraces it stood as a tower with the Sacré-Cœur's own height (top-25 audit, 2026-10-30)."
   }
 ]

@@ -34,7 +34,7 @@ export function luxembourgPalace(out: MeshBuilder, fit: Fit): void {
 }
 
 function draw(out: MeshBuilder): void {
-  const p = palette('#e2d1ad', '#4c5357')
+  const p = palette('#cdbd9b', '#4c5357') // (top-25 audit, 2026-10-30: at #e2d1ad the south front clipped to cream and its rustication went)
   const tall: RangeOpts = {
     eaves: 23.6, bay: 3.6, win: 1.6, rustic: 0.9, quoins: true, pediments: true,
     storeys: [{ y: 0, h: 4.2, arched: true, sill: 1.2 }, { y: 8.3, h: 4.6 }, { y: 15.9, h: 4.2 }],

@@ -133,7 +133,7 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
   if (passages.length === 0) return null
   const mine = (q: P): boolean => q.x >= rect.x0 && q.x < rect.x1 && q.z >= rect.z0 && q.z < rect.z1
   const CELL = 50
-  const grid = new Map<string, { ring: P[]; x0: number; x1: number; z0: number; z1: number; top: number; wall: Rgb }[]>()
+  const grid = new Map<string, { ring: P[]; holes: P[][]; x0: number; x1: number; z0: number; z1: number; top: number; wall: Rgb }[]>()
   // (with the buildings a landmark's model took: the Louvre's guichets are passages through a modelled wing)
   for (const b of [...pkg.buildings, ...(pkg.claimedBuildings ?? [])]) {
     // on the ground, or a part bridging the passage low enough to be its ceiling
@@ -145,7 +145,7 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
     for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
     const hex = styleOf(b.style).palettes[0].wall
     const wall: Rgb = [parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255]
-    const item = { ring, x0, x1, z0, z1, top: b.height ?? 10, wall }
+    const item = { ring, holes: (b.holes ?? []).map(unpackPoints), x0, x1, z0, z1, top: b.height ?? 10, wall }
     for (let gx = Math.floor(x0 / CELL); gx <= Math.floor(x1 / CELL); gx++) {
       for (let gz = Math.floor(z0 / CELL); gz <= Math.floor(z1 / CELL); gz++) {
         const k = `${gx},${gz}`
@@ -156,7 +156,8 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
   const hitAt = (x: number, z: number): { top: number; wall: Rgb } | null => {
     let best: { top: number; wall: Rgb } | null = null
     for (const q of grid.get(`${Math.floor(x / CELL)},${Math.floor(z / CELL)}`) ?? []) {
-      if (x >= q.x0 && x <= q.x1 && z >= q.z0 && z <= q.z1 && inside(q.ring, x, z) && (!best || q.top > best.top)) best = q
+      // (not in a court: a way across the Cour Carrée got a barrel 150 m long over the open sky, top-25 audit, 2026-10-30)
+      if (x >= q.x0 && x <= q.x1 && z >= q.z0 && z <= q.z1 && inside(q.ring, x, z) && !q.holes.some((h) => inside(h, x, z)) && (!best || q.top > best.top)) best = q
     }
     return best
   }
