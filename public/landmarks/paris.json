@@ -1333,6 +1333,12 @@
     "include": "paris/batch5.json"
   },
   {
+    "include": "paris/batch6.json"
+  },
+  {
+    "include": "paris/batch7.json"
+  },
+  {
     "include": "paris/bugs.json"
   },
   {

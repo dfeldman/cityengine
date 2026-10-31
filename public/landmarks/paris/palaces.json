@@ -220,10 +220,10 @@
     "osm": [
       "way/448794899"
     ],
-    "restyle": "classical",
-    "roof": "mansard",
-    "levels": 3,
-    "note": "Lacornée's Second Empire palace of the ministry on the Quai d'Orsay, under its tall mansard."
+    "procedural": "quaiOrsay",
+    "front": 7,
+    "height": 29,
+    "note": "Lacornée's Second Empire palace of the ministry on the Quai d'Orsay: batch6/fronts.ts, the restyle's three storeys under a mansard made an apartment block of it (Batch 6, 2026-10-31)."
   },
   {
     "name": "Hôtel de Toulouse (Banque de France)",

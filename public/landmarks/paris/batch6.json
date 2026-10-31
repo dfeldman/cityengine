@@ -1,0 +1,405 @@
+[
+  {
+    "name": "Arènes de Lutèce: the west wall",
+    "procedural": "arenesWestWall",
+    "osm": [
+      "relation/236905",
+      "way/40447203",
+      "way/40447204",
+      "way/40447205",
+      "way/40447206",
+      "way/40447207",
+      "way/40447208"
+    ],
+    "lat": 48.845047,
+    "lon": 2.352361,
+    "size": [
+      31,
+      123
+    ],
+    "front": 180,
+    "height": 24,
+    "sign": false,
+    "note": "batch6/arenes-wall.ts: owner, 2026-10-31: \"that side is a genuine old stone wall, there are no windows pointing in to the arena\". The Rue Monge's rear row on OSM's outline, rubble to 10 m and blind above on every face turned to the arena.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Georges-Brassens: the market halls",
+    "procedural": "brassensHalls",
+    "osm": [
+      "way/80146216"
+    ],
+    "lat": 48.831109,
+    "lon": 2.302053,
+    "size": [
+      126.1,
+      26.4
+    ],
+    "front": 112,
+    "height": 10,
+    "sign": false,
+    "note": "batch6/parks.ts: Moreau's horse-market hall, the Marché du Livre ancien. Box of OSM's way turned to its axis, bearing 22; −z to the Rue Brancion side.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Georges-Brassens: the vignerons' hut",
+    "procedural": "closHut",
+    "lat": 48.831025,
+    "lon": 2.29923,
+    "size": [
+      6,
+      7
+    ],
+    "front": 180,
+    "height": 5,
+    "sign": false,
+    "kind": "monument",
+    "note": "batch6/parks.ts: the red roof off the 12 cm aerial.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Georges-Brassens: the little amphitheatre",
+    "procedural": "brassensAmphi",
+    "lat": 48.831266,
+    "lon": 2.301532,
+    "size": [
+      24,
+      24
+    ],
+    "front": 180,
+    "height": 2,
+    "sign": false,
+    "kind": "monument",
+    "note": "batch6/parks.ts: off the aerial.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc de Bagatelle: the Rocher and the Kiosque de l'Impératrice",
+    "procedural": "bagatelleRocher",
+    "osm": [
+      "way/577580949"
+    ],
+    "lat": 48.87068,
+    "lon": 2.24907,
+    "size": [
+      16,
+      14
+    ],
+    "front": 170,
+    "height": 13,
+    "sign": false,
+    "kind": "monument",
+    "note": "batch6/parks.ts: OSM's grotto; −z to the pond.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc de Bagatelle: le Trianon",
+    "osm": [
+      "way/83064928"
+    ],
+    "restyle": "classical",
+    "levels": 2,
+    "eaves": 9,
+    "roof": "hipped",
+    "roofHeight": 4,
+    "wall": "#dcd1b9",
+    "trim": "#e9e1cc",
+    "roofColour": "#4b5257",
+    "noShops": true,
+    "note": "The little palace (1860s) on the cour d'honneur, pale stone under slates.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc de Bagatelle: l'Orangerie",
+    "osm": [
+      "way/83064912"
+    ],
+    "restyle": "classical",
+    "levels": 1,
+    "eaves": 7,
+    "roof": "hipped",
+    "roofHeight": 3,
+    "wall": "#dcd1b9",
+    "trim": "#e9e1cc",
+    "roofColour": "#4b5257",
+    "noShops": true,
+    "note": "The orangery at the head of its round parterre (paris-public.ts), tall windows and a slate hip.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Jardin Albert-Kahn: the Japanese village",
+    "procedural": "kahnVillage",
+    "lat": 48.84165,
+    "lon": 2.22842,
+    "size": [
+      66,
+      70
+    ],
+    "front": 180,
+    "height": 7,
+    "sign": false,
+    "kind": "monument",
+    "note": "batch6/parks.ts: centred on OSM's pond way/113610865, x east, z north. Under the trees the aerial sees none of it: the houses' places are the museum's plan in memory.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Jardin Albert-Kahn: la Serre",
+    "procedural": "kahnSerre",
+    "osm": [
+      "way/72677028"
+    ],
+    "front": 195,
+    "height": 11,
+    "note": "batch6/parks.ts: the palm house at the head of the French garden (paris-public.ts), its lantern on the garden side.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Musée Albert-Kahn (Kengo Kuma)",
+    "osm": [
+      "way/1055674984"
+    ],
+    "restyle": "bauhaus",
+    "levels": 2,
+    "eaves": 6,
+    "roof": "hipped",
+    "roofHeight": 3,
+    "wall": "#6a7476",
+    "trim": "#b8b6ae",
+    "roofColour": "#c7c6c0",
+    "noShops": true,
+    "note": "Kuma's 2022 hall (106 × 18 m), its long pale folded roof over a glass and timber engawa. A restyle: OSM's mass, the aerial's white.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc de Billancourt: the parasols",
+    "procedural": "billancourtParasols",
+    "lat": 48.825631,
+    "lon": 2.23727,
+    "size": [
+      15,
+      13
+    ],
+    "front": 180,
+    "height": 5,
+    "sign": false,
+    "kind": "monument",
+    "note": "batch6/parks.ts: off the aerial.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Grande Cascade de Saint-Cloud",
+    "procedural": "cloudCascade",
+    "lat": 48.836782,
+    "lon": 2.218306,
+    "size": [
+      39,
+      51
+    ],
+    "front": 100,
+    "height": 15,
+    "sign": false,
+    "kind": "fountain",
+    "note": "batch6/parks.ts: off the aerial; the OSM nodes 10107011631/2 are its head. On the box's very edge (x −8338): it reads across from the Allée du Bord de l'Eau.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Saint-Cloud: the Cascade's basins",
+    "procedural": "cloudBasins",
+    "lat": 48.83658,
+    "lon": 2.219573,
+    "size": [
+      126,
+      62
+    ],
+    "front": 180,
+    "height": 3,
+    "sign": false,
+    "kind": "fountain",
+    "note": "batch6/parks.ts: off the aerial; OSM has only nodes.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Saint-Cloud: le Grand Jet",
+    "procedural": "cloudGrandJet",
+    "lat": 48.83595,
+    "lon": 2.2181,
+    "size": [
+      40,
+      40
+    ],
+    "front": 180,
+    "height": 30,
+    "sign": false,
+    "kind": "fountain",
+    "note": "batch6/parks.ts: OSM's node 9277494894.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Cité de la Musique",
+    "procedural": "citeMusique",
+    "osm": [
+      "way/63971254",
+      "way/227927284"
+    ],
+    "front": 180,
+    "height": 27,
+    "note": "batch6/cite.ts: wins over civic.json's kit on the same way. Portzamparc's east wing.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Conseil constitutionnel: the door",
+    "procedural": "conseilDoor",
+    "lat": 48.864099,
+    "lon": 2.336487,
+    "size": [
+      7,
+      1.2
+    ],
+    "front": 289,
+    "height": 8.5,
+    "sign": false,
+    "note": "batch6/fronts.ts: on the Palais-Royal model's flank on the Rue de Montpensier (its edge read off relation/3300400).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Salle Pleyel",
+    "procedural": "sallePleyel",
+    "osm": [
+      "way/70287879"
+    ],
+    "front": 227,
+    "height": 36,
+    "note": "batch6/fronts.ts: the block round OSM's node 1321749751, its short side on the Faubourg.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Casino de Paris",
+    "procedural": "casinoParis",
+    "osm": [
+      "way/69257631"
+    ],
+    "front": 248,
+    "height": 18,
+    "note": "batch6/fronts.ts: was civic.json's kit.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Théâtre Mogador",
+    "procedural": "mogador",
+    "osm": [
+      "way/69226516"
+    ],
+    "front": 80,
+    "height": 24,
+    "note": "batch6/fronts.ts: was civic.json's kit.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Trianon, boulevard de Rochechouart",
+    "procedural": "trianonRochechouart",
+    "osm": [
+      "way/77807488"
+    ],
+    "front": 164,
+    "height": 20,
+    "note": "batch6/fronts.ts: was civic.json's kit.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Gymnase Marie-Bell",
+    "procedural": "gymnase",
+    "osm": [
+      "way/63195400"
+    ],
+    "front": 186,
+    "height": 19,
+    "note": "batch6/fronts.ts: was civic.json's kit.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Théâtre des Variétés",
+    "procedural": "varietes",
+    "lat": 48.871476,
+    "lon": 2.34214,
+    "size": [
+      17,
+      3
+    ],
+    "front": 351,
+    "height": 18,
+    "note": "batch6/fronts.ts: a front on the Boulevard Montmartre at OSM's node, its back in the block's way/48920103.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Théâtre Marigny",
+    "procedural": "marigny",
+    "osm": [
+      "way/67028573"
+    ],
+    "front": 206,
+    "height": 19,
+    "note": "batch6/fronts.ts: was the civic kit's box.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Ministère des Finances: Vauban and the Hôtel des Ministres' block",
+    "osm": [
+      "relation/1689290"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#bdb9ac",
+    "trim": "#878d91",
+    "roofColour": "#8d8a80",
+    "noShops": true,
+    "note": "Chemetov and Huidobro's Bercy, 1989, the wings behind Colbert (palaces.json's model): pale stone and tight grey windows, in the same voice. A restyle; the wing is OSM's mass.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Ministère des Finances: Necker, along the Gare de Lyon's tracks",
+    "osm": [
+      "way/78158761"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "height": 28,
+    "wall": "#bdb9ac",
+    "trim": "#878d91",
+    "roofColour": "#8d8a80",
+    "noShops": true,
+    "note": "The 445 m wing along the Rue de Bercy's railway side, ending in its bow on the Rue de Rambouillet. A restyle.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Place de l'Odéon: the hemicycle",
+    "restyle": "haussmann",
+    "within": [
+      [
+        48.84985,
+        2.3383
+      ],
+      [
+        48.84985,
+        2.33915
+      ],
+      [
+        48.8504,
+        2.33925
+      ],
+      [
+        48.8505,
+        2.3382
+      ]
+    ],
+    "take": "inside",
+    "levels": 4,
+    "eaves": 17,
+    "roof": "mansard",
+    "roofHeight": 4.5,
+    "wall": "#dcd1b9",
+    "trim": "#e9e1cc",
+    "roofColour": "#4b5257",
+    "note": "Peyre and de Wailly's square of 1782, the houses to one design with the theatre, curving round its forecourt. Uniform cream, as the owner has the 6th.",
+    "madeBy": "claude-opus-5-5"
+  }
+]

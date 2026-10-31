@@ -2925,7 +2925,8 @@ export class City {
         })()
         // (the paved walks of a Paris square are its raked stabilisé, not a street's flagstones)
         const walkInGarden = a.kind === 'paved' && !a.surface && !a.brick && this.pkg.region === 'paris'
-          && areasHere.some((p) => p.kind === 'park' && inGardenRing(unpackPoints(p.ring), unpackPoints(a.ring)[0].x, unpackPoints(a.ring)[0].z))
+          // (by most of its corners, not its first: a walk mapped as an area often starts at the gate, just outside, and stayed grey. Batch 7, 2026-10-31)
+          && (() => { const r = unpackPoints(a.ring), ps = areasHere.filter((p) => p.kind === 'park').map((p) => unpackPoints(p.ring)); return r.filter((q) => ps.some((p) => inGardenRing(p, q.x, q.z))).length * 2 >= r.length })()
         // (a Paris square is grey-gold limestone and setts, not the sandy tan of a Californian plaza: the Concorde, the Vendôme and the parvis read as sand in patches, their outlines stepped by the pavements round them. Near a pavement's colour, the steps go; owner, "the Concorde's paving")
         const tint = walkInGarden ? GARDEN_TINT.gravel : a.kind === 'paved' && !a.surface && !a.brick && this.pkg.region === 'paris' ? PARIS_SQUARE : a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
@@ -4163,10 +4164,34 @@ export class City {
       const g = this.gardenTiles()
       const parks = areasHere.filter((a) => a.kind === 'park').map((a) => unpackPoints(a.ring))
       if (g && parks.length) {
-        for (const a of areasHere) {
+        // (…and not in a great park's inside, where it fenced every meadow of the Bois de Boulogne in hoops and box: Batch 7, 2026-10-31)
+        const greatPark = parks.some((r) => { let m = 0; for (let i = 0, j = r.length - 1; i < r.length; j = i++) m += r[j].x * r[i].z - r[i].x * r[j].z; return Math.abs(m) / 2 > TILE * TILE * 0.75 })
+        for (const a of greatPark ? [] : areasHere) {
           if (a.kind !== 'grass') continue
           const lawn = unpackPoints(a.ring)
           if (parks.some((r) => inGardenRing(r, lawn[0].x, lawn[0].z))) g.lawnEdge(furniture, lawn, ktx, ktz)
+        }
+        // (the square's walks and edges: render/garden.ts. Paris's gardeners, Paris's only)
+        if (this.pkg.region === 'paris') {
+          g.squarePlanting(furniture, {
+            parks: areasHere.filter((a) => a.kind === 'park').map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })),
+            closed: [
+              ...areasHere.filter((a) => a.kind !== 'park' && a.kind !== 'grass').map((a) => ({ ring: unpackPoints(a.ring) })),
+              ...(this.buildingsIn.get(k) ?? []).map((b) => ({ ring: unpackPoints(b.ring) })),
+              ...this.pavedGrounds.map((p) => ({ ring: p.ring })),
+            ],
+            paved: areasHere.filter((a) => a.kind === 'paved').map((a) => unpackPoints(a.ring)),
+            ways: [...(this.tracksIn.get(k) ?? []).map((r) => ({ pts: [{ x: r.ax, z: r.az }, { x: r.bx, z: r.bz }], half: 3, walk: false })), ...kerbEdges.filter((e) => onSurface(e)).map((e) => {
+              const narrow = e.foot && e.kind !== 'pedestrian' && e.kind !== 'steps'
+              return {
+                pts: unpackPoints(e.points),
+                half: narrow ? Math.min(e.width, 2.2) / 2 + 0.2 : e.foot ? e.width / 2 + 0.3 : e.width / 2 + e.walk + 0.5,
+                walk: e.foot && !e.crossing && (e.kind === 'footway' || e.kind === 'path' || e.kind === 'pedestrian'),
+              }
+            })],
+            lawns: areasHere.some((a) => { if (a.kind !== 'grass') return false; const r = unpackPoints(a.ring); return parks.some((q) => inGardenRing(q, r[0].x, r[0].z)) }),
+            statues: (this.pointsIn.get(k) ?? []).filter((f) => f.kind === 'statue' || f.kind === 'bust' || f.kind === 'sculpture'),
+          }, ktx, ktz)
         }
       }
     }

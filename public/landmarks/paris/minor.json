@@ -21,7 +21,8 @@
       "way/427056938",
       "way/283655408",
       "way/283655409"
-    ]
+    ],
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Gare de Pont Cardinet",
@@ -37,7 +38,8 @@
     "height": 14,
     "shadow": false,
     "stone": false,
-    "note": "#10. Not in the package: OSM's way/421800231 is layer=-2, the platform roofs layer=1 level=-1. −z to the Rue Cardinet; the footprint is the station's, its platform roofs run on past it along the city's own platforms. minor/stations.ts."
+    "note": "#10. Not in the package: OSM's way/421800231 is layer=-2, the platform roofs layer=1 level=-1. −z to the Rue Cardinet; the footprint is the station's, its platform roofs run on past it along the city's own platforms. minor/stations.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Halle Pajol and the Bibliothèque Václav Havel",
@@ -56,7 +58,8 @@
     "height": 14.6,
     "shadow": false,
     "stone": false,
-    "note": "#25. Claims the library end and the cedar block (way/195265640, the roof, is layer=2 and not in the package). −z north, on OSM's axes. minor/halle-pajol.ts."
+    "note": "#25. Claims the library end and the cedar block (way/195265640, the roof, is layer=2 and not in the package). −z north, on OSM's axes. minor/halle-pajol.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hippodrome d'Auteuil: the Espace Paparemborde's grounds and the course",
@@ -73,7 +76,8 @@
     "drape": true,
     "shadow": false,
     "sign": false,
-    "note": "#21, #22. Lines off ORTHOPHOTOS2018 and OSM's pitches; draped paint. The scatter stops at the next bake (tools/gardens/paris-public.ts `auteuil`). minor/auteuil.ts."
+    "note": "#21, #22. Lines off ORTHOPHOTOS2018 and OSM's pitches; draped paint. The scatter stops at the next bake (tools/gardens/paris-public.ts `auteuil`). minor/auteuil.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Pavilion on the Petite Ceinture",
@@ -87,7 +91,8 @@
     "shadow": false,
     "stone": false,
     "sign": false,
-    "note": "#11. Not a station: OSM's building=bridge wall=no, on the evidence of one Mapillary frame and the aerial. minor/quarter.ts."
+    "note": "#11. Not a station: OSM's building=bridge wall=no, on the evidence of one Mapillary frame and the aerial. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Bâtiment L'Extension",
@@ -101,7 +106,8 @@
     "accent": "#a63f2c",
     "roofColour": "#b8ae9a",
     "noShops": true,
-    "note": "#14. Cream, the owner's word; Mapillary has pale cladding. Its drums are the next entry."
+    "note": "#14. Cream, the owner's word; Mapillary has pale cladding. Its drums are the next entry.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Bâtiment L'Extension: the red drums",
@@ -118,7 +124,8 @@
     "shadow": false,
     "stone": false,
     "sign": false,
-    "note": "#14. Standing in the restyled block where IGN's aerial has its rotundas. minor/quarter.ts."
+    "note": "#14. Standing in the restyled block where IGN's aerial has its rotundas. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Préfecture des Hauts-de-Seine",
@@ -132,7 +139,8 @@
     "trim": "#efefea",
     "roofColour": "#c9c8c2",
     "noShops": true,
-    "note": "#15 (\"a modern tower on a classical pediment - the two actually match and are white\"). Wogenscky's tower and podium in one dress: white bands, dark ribbons. Mapillary at the Avenue Frédéric-et-Irène-Joliot-Curie side."
+    "note": "#15 (\"a modern tower on a classical pediment - the two actually match and are white\"). Wogenscky's tower and podium in one dress: white bands, dark ribbons. Mapillary at the Avenue Frédéric-et-Irène-Joliot-Curie side.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Les Bergères: the neo-classical quarter",
@@ -166,7 +174,8 @@
     "wall": "#e4dac4",
     "trim": "#f0e9d8",
     "roofColour": "#4b5359",
-    "note": "#17, #18 (\"this entire area is tall fake classical buidlings\"). Every building round the Rue des Bergères with OSM's hipped, gambrel or gabled roof tags, cream under slate as IGN's aerial has them. No close photograph was found; the dress is the style's, and the massing OSM's."
+    "note": "#17, #18 (\"this entire area is tall fake classical buidlings\"). Every building round the Rue des Bergères with OSM's hipped, gambrel or gabled roof tags, cream under slate as IGN's aerial has them. No close photograph was found; the dress is the style's, and the massing OSM's.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Les Bergères: the cupolas",
@@ -183,7 +192,8 @@
     "shadow": false,
     "stone": false,
     "sign": false,
-    "note": "#17. minor/quarter.ts."
+    "note": "#17. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Cimetière Nouveau de Puteaux",
@@ -200,7 +210,8 @@
     "drape": true,
     "shadow": false,
     "sign": false,
-    "note": "#20. minor/quarter.ts."
+    "note": "#20. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Tour Boucry",
@@ -210,7 +221,8 @@
     ],
     "height": 99,
     "stone": false,
-    "note": "#31. minor/quarter.ts."
+    "note": "#31. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Tour Boucry: the podium",
@@ -222,7 +234,8 @@
     "wall": "#202226",
     "trim": "#2a2c30",
     "roofColour": "#26282b",
-    "note": "#31: \"on a black base\"."
+    "note": "#31: \"on a black base\".",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Rue Boucry: the cream and green block",
@@ -236,7 +249,8 @@
     "accent": "#5f7f5a",
     "roofColour": "#a9a491",
     "noShops": true,
-    "note": "#32 (\"actually cream and green brutalist\"), the owner's words; no photograph."
+    "note": "#32 (\"actually cream and green brutalist\"), the owner's words; no photograph.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Rue d'Aubervilliers: the warehouse",
@@ -247,7 +261,8 @@
     "front": 105,
     "height": 10,
     "stone": false,
-    "note": "#29. The aerial only. minor/quarter.ts."
+    "note": "#29. The aerial only. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Rue d'Aubervilliers: the long shed",
@@ -259,7 +274,8 @@
     "height": 11,
     "stone": false,
     "sign": false,
-    "note": "#29. minor/quarter.ts."
+    "note": "#29. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée du Service de Santé des Armées — the cloister",
@@ -275,7 +291,8 @@
       73.4
     ],
     "height": 21,
-    "note": "#33. minor/quarter.ts."
+    "note": "#33. minor/quarter.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin du Luxembourg: the low range",
@@ -290,6 +307,7 @@
     "height": 5,
     "wall": "#ded4bd",
     "trim": "#ece5d2",
-    "note": "#39 (\"a low imitation classical building\"), a storey of stone under a flat head; no photograph looked at."
+    "note": "#39 (\"a low imitation classical building\"), a storey of stone under a flat head; no photograph looked at.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

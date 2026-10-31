@@ -11,7 +11,8 @@
     "height": 4,
     "front": 30,
     "kind": "fountain",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc de Belleville: the belvedere and its wall",
@@ -25,7 +26,8 @@
     "height": 8,
     "front": 180,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc de Belleville: the vines",
@@ -39,7 +41,8 @@
     "height": 1.6,
     "front": 220,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square des Batignolles: the pond’s rock and Vautours",
@@ -53,7 +56,8 @@
     "height": 7,
     "front": 180,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square des Batignolles: the bandstand",
@@ -69,7 +73,8 @@
     ],
     "height": 7,
     "front": 0,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin des serres d’Auteuil: the glasshouses",
@@ -93,7 +98,8 @@
     "front": 180,
     "kind": "plaza",
     "stone": false,
-    "note": "Replaces OSM’s seven greenhouses, which the bake drew as slate-roofed blocks with dormers."
+    "note": "Replaces OSM’s seven greenhouses, which the bake drew as slate-roofed blocks with dormers.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin des serres d’Auteuil: Les Fleuristes and L’Orangerie",
@@ -109,7 +115,8 @@
     "wall": "#b08a6c",
     "trim": "#ded3bc",
     "roofColour": "#6f5448",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin des serres d’Auteuil: the gate pavilions",
@@ -125,7 +132,8 @@
     "wall": "#ded3bc",
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin d’Acclimatation: la Grande Volière",
@@ -142,7 +150,8 @@
     ],
     "height": 9,
     "front": 193,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin d’Acclimatation: le Kiosque à musique",
@@ -158,7 +167,8 @@
     ],
     "height": 6.7,
     "front": 0,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin d’Acclimatation: le Grand Carrousel",
@@ -174,7 +184,8 @@
     ],
     "height": 5.1,
     "front": 0,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin d’Acclimatation: the Jardin de Séoul’s pavilion",
@@ -190,7 +201,8 @@
     ],
     "height": 7,
     "front": 340,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin d’Acclimatation: le Rocher alpin",
@@ -204,7 +216,8 @@
     "height": 11,
     "front": 112,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Cité universitaire: la Maison Internationale",
@@ -218,7 +231,8 @@
     "wall": "#dcd2bc",
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Cité universitaire: la Fondation suisse",
@@ -234,7 +248,8 @@
     ],
     "height": 22,
     "front": 212,
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Cité universitaire: la Maison du Brésil",
@@ -250,7 +265,8 @@
     ],
     "height": 28,
     "front": 117,
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin d’Acclimatation: L’Orangerie",
@@ -266,7 +282,8 @@
     "wall": "#ded3bc",
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc de Belleville: Les Halles civiques and the amphitheatre",
@@ -279,7 +296,8 @@
     "wall": "#a9a598",
     "trim": "#6f7b82",
     "roofColour": "#6e6a5e",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 1",
@@ -296,7 +314,8 @@
     "height": 13,
     "front": 216.3,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 2",
@@ -313,7 +332,8 @@
     "height": 13,
     "front": 216.7,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 3",
@@ -330,7 +350,8 @@
     "height": 13,
     "front": 216.5,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 4",
@@ -347,7 +368,8 @@
     "height": 13,
     "front": 215.6,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 5",
@@ -366,7 +388,8 @@
     "height": 13,
     "front": 216.4,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 6",
@@ -383,7 +406,8 @@
     "height": 13,
     "front": 216,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 7",
@@ -397,7 +421,8 @@
     "height": 13,
     "front": 216.1,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Coulée verte on the Viaduc des Arts: length 8",
@@ -411,7 +436,8 @@
     "height": 13,
     "front": 216,
     "kind": "plaza",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Tenon: the pavilions",
@@ -440,7 +466,8 @@
     "trim": "#ddd3bd",
     "roof": "hipped",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Tenon: Urgences and Gabriel",
@@ -453,7 +480,8 @@
     "wall": "#dcd8cc",
     "trim": "#7f8d95",
     "roofColour": "#b1afa7",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Tenon: the gate",
@@ -466,7 +494,8 @@
     ],
     "height": 11,
     "front": 245,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Rothschild: Santerre",
@@ -480,7 +509,8 @@
     "wall": "#d9cfbb",
     "trim": "#ece5d2",
     "roofColour": "#7c4c43",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Rothschild: Jardin",
@@ -492,7 +522,8 @@
     "wall": "#e4e1d8",
     "trim": "#7f8d95",
     "roofColour": "#b1afa7",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Rothschild: the pavilions",
@@ -507,7 +538,8 @@
     "trim": "#ddd3bd",
     "roof": "hipped",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Rothschild: the gate",
@@ -520,7 +552,8 @@
     ],
     "height": 9,
     "front": 175,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Robert-Debré",
@@ -541,7 +574,8 @@
     "wall": "#ebe8e0",
     "trim": "#8fa0a8",
     "roofColour": "#a3ad8d",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Robert-Debré: the gate",
@@ -554,7 +588,8 @@
     ],
     "height": 7,
     "front": 180,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Trousseau: Chigot and Salât-Baroux",
@@ -567,7 +602,8 @@
     "wall": "#dcd8cc",
     "trim": "#7f8d95",
     "roofColour": "#b1afa7",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Trousseau: the pavilions",
@@ -590,7 +626,8 @@
     "trim": "#ddd3bd",
     "roof": "hipped",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Trousseau: the gate",
@@ -603,7 +640,8 @@
     ],
     "height": 11,
     "front": 265,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Foch",
@@ -618,7 +656,8 @@
     "wall": "#d8cfbc",
     "trim": "#8b8c86",
     "roofColour": "#b5b0a2",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Foch: Pavillon Consuelo Balsan",
@@ -631,7 +670,8 @@
     "trim": "#ece5d2",
     "roof": "hipped",
     "roofColour": "#7c4c43",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Foch: the gate",
@@ -644,7 +684,8 @@
     ],
     "height": 7,
     "front": 290,
-    "kind": "monument"
+    "kind": "monument",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Centre universitaire Malesherbes",
@@ -701,7 +742,8 @@
     "wall": "#cbc6b8",
     "trim": "#7f8d95",
     "roofColour": "#a3a096",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Fondation Adolphe de Rothschild",
@@ -760,7 +802,8 @@
     "wall": "#ddd3bd",
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôtel Salomon de Rothschild",
@@ -774,7 +817,8 @@
     "wall": "#e0d6c0",
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Université Paris-Dauphine",
@@ -786,7 +830,8 @@
     "roof": "flat",
     "wall": "#cfd0cb",
     "trim": "#e8e8e2",
-    "roofColour": "#a7a7a1"
+    "roofColour": "#a7a7a1",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Université Paris-Dauphine: Aile F",
@@ -798,7 +843,8 @@
     "wall": "#dfe1de",
     "trim": "#6f7b82",
     "roofColour": "#b1afa7",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Sciences Po: Saint-Guillaume",
@@ -814,7 +860,8 @@
     "wall": "#ddd2bb",
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Institut Catholique de Paris",
@@ -828,7 +875,8 @@
     "wall": "#d6ccb4",
     "trim": "#e7dfca",
     "roofColour": "#4b5359",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Institut Catholique: Saint-Joseph-des-Carmes",
@@ -843,7 +891,8 @@
       51
     ],
     "height": 46,
-    "front": 172
+    "front": 172,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "ESPCI",
@@ -856,7 +905,8 @@
     "wall": "#c9cdcd",
     "trim": "#6f7b82",
     "roofColour": "#9ea5a6",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "UNESCO: the Y and the Conference hall",
@@ -874,7 +924,8 @@
     "height": 30,
     "front": 180,
     "kind": "plaza",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "UNESCO: the cube and the wing",
@@ -887,6 +938,7 @@
     "wall": "#cfcabd",
     "trim": "#7f9aa6",
     "roofColour": "#a3a096",
-    "noShops": true
+    "noShops": true,
+    "madeBy": "claude-opus-5-5"
   }
 ]

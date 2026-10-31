@@ -148,6 +148,8 @@ export interface Region {
   /** where a road on a bridge is a traffic viaduct, no pavements on it and a real width (La Défense's Boulevard Circulaire) */
   bareViaducts?: { lat: number; lon: number; radius: number }[]
   /** a pit in the lidar that is no pit (`ring` [lat, lon]: the Cour Napoléon, seen through the Pyramid's glass into the hall under it): level, at the height of its edge (tools/bake.ts) */
+  /** a street level with the bridge it joins (the Pont Neuf over the Cité): tools/bake.ts. `clearWalks`, a platform a model draws: OSM's walks and steps on it go */
+  flatStreets?: { name: string; deck: string; ring: [number, number][]; clearWalks?: [number, number][]; fade?: number }[]
   levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number }[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
@@ -266,6 +268,7 @@ export function region(id: string | undefined): Region {
     straightDecks: own?.straightDecks ?? base.straightDecks,
     rideFootBridges: own?.rideFootBridges ?? base.rideFootBridges,
     bareViaducts: own?.bareViaducts ?? base.bareViaducts,
+    flatStreets: own?.flatStreets ?? base.flatStreets,
     levelGrounds: own?.levelGrounds ?? base.levelGrounds,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,

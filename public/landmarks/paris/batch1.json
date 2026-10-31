@@ -12,7 +12,8 @@
     "front": 67,
     "kind": "monument",
     "note": "batch1/parks.ts: Davioud's black and gilded iron, standing open. At the end of OSM's Allée de la Comtesse de Ségur; −z to the avenue.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Monceau: the gate on the Avenue Ruysdaël",
@@ -27,7 +28,8 @@
     "front": 162,
     "kind": "monument",
     "note": "batch1/parks.ts: at the head of the avenue, where the Avenue Ferdousi leaves the park.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Monceau: the gate on the Avenue Van Dyck",
@@ -42,7 +44,8 @@
     "front": 237,
     "kind": "monument",
     "note": "batch1/parks.ts: the Allée de la Comtesse de Ségur's west end.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Monceau: the gate by the Rotonde",
@@ -57,7 +60,8 @@
     "front": 347,
     "kind": "monument",
     "note": "batch1/parks.ts: on the Boulevard de Courcelles, beside the Rotonde de Chartres.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Monceau: the pyramid",
@@ -74,7 +78,8 @@
     "height": 7,
     "front": 315,
     "kind": "monument",
-    "note": "batch1/parks.ts: OSM's way/757659087, historic=tomb, drawn as a box till now."
+    "note": "batch1/parks.ts: OSM's way/757659087, historic=tomb, drawn as a box till now.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Monceau: the Renaissance arcade",
@@ -88,7 +93,8 @@
     "height": 10,
     "front": 8,
     "kind": "monument",
-    "note": "batch1/parks.ts: one bay of the old Hôtel de Ville. Placed from memory beside OSM's pool way/68335803: street view to confirm."
+    "note": "batch1/parks.ts: one bay of the old Hôtel de Ville. Placed from memory beside OSM's pool way/68335803: street view to confirm.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Monceau: the bridge",
@@ -103,7 +109,8 @@
     "front": 150,
     "kind": "monument",
     "note": "batch1/parks.ts: on the Petite Rivière where OSM's path meets it. Its place and look from memory: street view to confirm.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Buttes-Chaumont: the Grotte",
@@ -118,7 +125,8 @@
     "front": 195,
     "kind": "monument",
     "note": "batch1/parks.ts: the rock face and mouth of the artificial cave (OSM way/125420680) and the fall inside it; the terrain has the cliff round it.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Montsouris: the cascade",
@@ -133,7 +141,8 @@
     "front": 265,
     "kind": "monument",
     "note": "batch1/parks.ts: at OSM node/9176469533, rock and a thin fall.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Montsouris: the Mire du Sud",
@@ -147,7 +156,8 @@
     "height": 5.3,
     "front": 0,
     "kind": "monument",
-    "note": "batch1/parks.ts: OSM's node/3588040118, Mire de l'Observatoire."
+    "note": "batch1/parks.ts: OSM's node/3588040118, Mire de l'Observatoire.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc André-Citroën: the Ballon de Paris",
@@ -161,7 +171,8 @@
     "height": 27,
     "front": 0,
     "kind": "monument",
-    "note": "batch1/parks.ts: on its pad in IGN's photograph, moored; it spends its days aloft."
+    "note": "batch1/parks.ts: on its pad in IGN's photograph, moored; it spends its days aloft.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc André-Citroën: the fountain",
@@ -176,7 +187,8 @@
     "front": 30.6,
     "kind": "fountain",
     "note": "batch1/parks.ts: the grid of jets across the tilted square between the greenhouses.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc de Bercy: the wine lanes' rails",
@@ -191,7 +203,8 @@
     "front": 180,
     "kind": "plaza",
     "note": "batch1/parks.ts: rails let into OSM's cobbled lanes, x east, z north about this point. Its `size` is small on purpose: the overhead line's poles keep clear of a standalone's radius.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Georges-Brassens: the belfry",
@@ -208,7 +221,8 @@
     ],
     "height": 24,
     "front": 32,
-    "note": "batch1/parks.ts: OSM's tower way/1035080632 and hall way/53724046, the horse market's auction hall."
+    "note": "batch1/parks.ts: OSM's tower way/1035080632 and hall way/53724046, the horse market's auction hall.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Georges-Brassens: the bull on the east",
@@ -225,7 +239,8 @@
     "height": 3.6,
     "front": 300,
     "kind": "statue",
-    "note": "batch1/parks.ts: Cain's bronze, a stand-in for Tripo. OSM way/80146212."
+    "note": "batch1/parks.ts: Cain's bronze, a stand-in for Tripo. OSM way/80146212.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Georges-Brassens: the bull on the west",
@@ -242,7 +257,8 @@
     "height": 3.6,
     "front": 300,
     "kind": "statue",
-    "note": "batch1/parks.ts: Cain's bronze, a stand-in for Tripo. OSM way/80146226."
+    "note": "batch1/parks.ts: Cain's bronze, a stand-in for Tripo. OSM way/80146226.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin des Plantes: the Gloriette de Buffon",
@@ -259,7 +275,8 @@
     "height": 7.5,
     "front": 0,
     "kind": "monument",
-    "note": "batch1/parks.ts: Verniquet, 1788, at the top of the Labyrinthe. OSM way/1039573855."
+    "note": "batch1/parks.ts: Verniquet, 1788, at the top of the Labyrinthe. OSM way/1039573855.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc de la Villette: the Dragon",
@@ -274,7 +291,8 @@
     "front": 50,
     "kind": "monument",
     "note": "batch1/parks.ts: Hanss's steel slide in OSM's Jardin du Dragon way/81704884, from memory: street view to confirm which way it faces.",
-    "shadow": false
+    "shadow": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin du Ranelagh: the bandstand",
@@ -291,7 +309,8 @@
     "height": 6.7,
     "front": 0,
     "kind": "monument",
-    "note": "batch1/parks.ts: OSM way/158177310."
+    "note": "batch1/parks.ts: OSM way/158177310.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardin du Ranelagh: the carousel",
@@ -305,7 +324,8 @@
     "height": 5.1,
     "front": 0,
     "kind": "monument",
-    "note": "batch1/parks.ts: the hand-cranked carousel, its place inside OSM's playground from memory: street view to confirm."
+    "note": "batch1/parks.ts: the hand-cranked carousel, its place inside OSM's playground from memory: street view to confirm.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Lariboisière: the pavilions",
@@ -336,7 +356,8 @@
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "Gauthier's hospital (1846–54): six stone pavilions a side on the cour d'honneur, slate roofs (aerial 48.8825 2.3535). OSM's flat tan massing, in the classical dress. The gallery is `lariboisiereGallery`."
+    "note": "Gauthier's hospital (1846–54): six stone pavilions a side on the cour d'honneur, slate roofs (aerial 48.8825 2.3535). OSM's flat tan massing, in the classical dress. The gallery is `lariboisiereGallery`.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Lariboisière: the court's gallery",
@@ -351,7 +372,8 @@
     "front": 188.7,
     "kind": "monument",
     "shadow": false,
-    "note": "batch1/hospitals.ts: the arcade round the cour d'honneur (aerial, 48.8825 2.3535), which links the pavilions. A wall of arches on three sides, a terrace on it; standing on the ground between OSM's pavilions, so not claiming them."
+    "note": "batch1/hospitals.ts: the arcade round the cour d'honneur (aerial, 48.8825 2.3535), which links the pavilions. A wall of arches on three sides, a terrace on it; standing on the ground between OSM's pavilions, so not claiming them.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Necker: the Carré Necker",
@@ -364,7 +386,8 @@
     "trim": "#7f8d95",
     "roofColour": "#b1afa7",
     "noShops": true,
-    "note": "Necker's 2010s block on the Rue de Sèvres side: pale cladding and long glass, not OSM's flat tan."
+    "note": "Necker's 2010s block on the Rue de Sèvres side: pale cladding and long glass, not OSM's flat tan.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Necker: the Pôle Mère-Enfants Laennec",
@@ -378,7 +401,8 @@
     "trim": "#7f8d95",
     "roofColour": "#b1afa7",
     "noShops": true,
-    "note": "Béatrice Ghibaudo's Laennec building (2013): pale cladding and glass, its colour by floor; the accent is from memory."
+    "note": "Béatrice Ghibaudo's Laennec building (2013): pale cladding and glass, its colour by floor; the accent is from memory.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Necker: Imagine",
@@ -390,7 +414,8 @@
     "wall": "#8ea7b3",
     "trim": "#c3cdd2",
     "roofColour": "#a9abaa",
-    "note": "Jean Nouvel's Institut Imagine (2014): a glass block, tinted, on the Boulevard du Montparnasse."
+    "note": "Jean Nouvel's Institut Imagine (2014): a glass block, tinted, on the Boulevard du Montparnasse.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital européen Georges-Pompidou",
@@ -403,7 +428,8 @@
     "trim": "#8b9aa3",
     "roofColour": "#cfccc1",
     "noShops": true,
-    "note": "Zublena's hospital (2000): white stone and glass bars round courts, its glass roofs are `hegpGlass`. Read off the aerial 48.8390 2.2735; the massing is OSM's relation/1824605."
+    "note": "Zublena's hospital (2000): white stone and glass bars round courts, its glass roofs are `hegpGlass`. Read off the aerial 48.8390 2.2735; the massing is OSM's relation/1824605.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital européen Georges-Pompidou: the glass roofs and rotunda",
@@ -418,7 +444,8 @@
     "front": 180,
     "kind": "monument",
     "shadow": false,
-    "note": "batch1/hospitals.ts: the teal vaults over its halls and the round entrance drum on the Rue Leblanc corner, x east, z north about this point, read off IGN's aerial. Stands on OSM's massing, claims nothing. Its `size` is small on purpose: the T3's poles keep clear of a standalone's radius."
+    "note": "batch1/hospitals.ts: the teal vaults over its halls and the round entrance drum on the Rue Leblanc corner, x east, z north about this point, read off IGN's aerial. Stands on OSM's massing, claims nothing. Its `size` is small on purpose: the T3's poles keep clear of a standalone's radius.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Cochin: the Abbaye de Port-Royal",
@@ -433,7 +460,8 @@
     "roofColour": "#4b5359",
     "wall": "#d7ccb4",
     "trim": "#e7dfca",
-    "note": "The abbey (1625), now the Port-Royal maternity's old wing: a low stone cloister under a steep slate roof."
+    "note": "The abbey (1625), now the Port-Royal maternity's old wing: a low stone cloister under a steep slate roof.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Cochin: Cornil-Brissaud",
@@ -447,7 +475,8 @@
     "roof": "hipped",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "Cochin's brick and stone pavilions."
+    "note": "Cochin's brick and stone pavilions.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Cochin: Maison de Solenn",
@@ -460,7 +489,8 @@
     "trim": "#efe7d3",
     "roofColour": "#c4bda9",
     "noShops": true,
-    "note": "Le Corre and Pei's Maison de Solenn (2004): a wooden lattice over its white walls; from memory."
+    "note": "Le Corre and Pei's Maison de Solenn (2004): a wooden lattice over its white walls; from memory.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "École normale supérieure: the Rue d'Ulm",
@@ -475,7 +505,8 @@
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "Guillaume's building (1847) round the Cour aux Ernests: stone and slate. The court's pool is `ensErnests`, its gravel in tools/gardens/paris-parks.ts."
+    "note": "Guillaume's building (1847) round the Cour aux Ernests: stone and slate. The court's pool is `ensErnests`, its gravel in tools/gardens/paris-parks.ts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "École normale supérieure: the Cour aux Ernests",
@@ -490,7 +521,8 @@
     "front": 18,
     "kind": "fountain",
     "shadow": false,
-    "note": "batch1/hospitals.ts: the round pool whose goldfish are all named Ernest; the aerial's pale ring at 24,−10 of the 48.8420 2.3445 grid."
+    "note": "batch1/hospitals.ts: the round pool whose goldfish are all named Ernest; the aerial's pale ring at 24,−10 of the 48.8420 2.3445 grid.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jussieu: the Gril",
@@ -519,7 +551,8 @@
     "wall": "#6f7478",
     "trim": "#a3a6a6",
     "roofColour": "#8e8f8a",
-    "note": "Albert's Grid (1958–72): dark steel and glass bars round square courts. OSM's massing in a curtain wall (the real one stands on pilotis, which a restyle can't say). The Tour Zamansky is `tourZamansky`."
+    "note": "Albert's Grid (1958–72): dark steel and glass bars round square courts. OSM's massing in a curtain wall (the real one stands on pilotis, which a restyle can't say). The Tour Zamansky is `tourZamansky`.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée Marmottan Monet",
@@ -534,7 +567,8 @@
     "roofColour": "#4b5359",
     "wall": "#e0d6c0",
     "trim": "#ece5d2",
-    "note": "The Duc de Valmy's hunting lodge (1880s) off the Ranelagh, now the Monets: a stone hôtel particulier in slate, OSM's main way."
+    "note": "The Duc de Valmy's hunting lodge (1880s) off the Ranelagh, now the Monets: a stone hôtel particulier in slate, OSM's main way.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Fernand-Widal",
@@ -549,7 +583,8 @@
     "trim": "#ece5d2",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "The old Maison municipale de santé (Théodore Labrouste's Maison Dubois, 1858): stone wings round a court. From the candidates list when Batch 1's good ones fell away; OSM's massing, the date from memory: street view to confirm."
+    "note": "The old Maison municipale de santé (Théodore Labrouste's Maison Dubois, 1858): stone wings round a court. From the candidates list when Batch 1's good ones fell away; OSM's massing, the date from memory: street view to confirm.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital Bretonneau",
@@ -564,7 +599,8 @@
     "roof": "hipped",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "Belouet's children's hospital of 1901 (restored 2001), brick and stone with ceramic bands: the candidates list, massing OSM's. Street view to confirm which wings are the old ones."
+    "note": "Belouet's children's hospital of 1901 (restored 2001), brick and stone with ceramic bands: the candidates list, massing OSM's. Street view to confirm which wings are the old ones.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Institut Mutualiste Montsouris",
@@ -577,7 +613,8 @@
     "trim": "#7f8d95",
     "roofColour": "#b1afa7",
     "noShops": true,
-    "note": "A modern hospital of pale panels and long glass on the Boulevard Jourdan: the candidates list, OSM's massing."
+    "note": "A modern hospital of pale panels and long glass on the Boulevard Jourdan: the candidates list, OSM's massing.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Fondation Cartier",
@@ -595,6 +632,7 @@
     "height": 33,
     "front": 252.5,
     "stone": false,
-    "note": "batch1/cartier.ts: Nouvel's glass building (1994) off the Boulevard Raspail, with its free-standing screen along the boulevard. All read off IGN's aerial: OSM's way 79616736, 26 × 42 m and 32.6 m tall; the screen at 37,16 to 46,−22 of the 48.8375 2.3310 grid."
+    "note": "batch1/cartier.ts: Nouvel's glass building (1994) off the Boulevard Raspail, with its free-standing screen along the boulevard. All read off IGN's aerial: OSM's way 79616736, 26 × 42 m and 32.6 m tall; the screen at 37,16 to 46,−22 of the 48.8375 2.3310 grid.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

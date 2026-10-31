@@ -11,7 +11,8 @@
     "height": 22,
     "shadow": false,
     "sign": false,
-    "note": "Hardouin-Mansart's façades, one design round the octagon, standing over the restyled walls: render/landmarks/paris/bugs/vendome.ts. The restyle above (paris.json) holds the houses at one eaves."
+    "note": "Hardouin-Mansart's façades, one design round the octagon, standing over the restyled walls: render/landmarks/paris/bugs/vendome.ts. The restyle above (paris.json) holds the houses at one eaves.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Presbytère de Saint-Germain-des-Prés",
@@ -22,6 +23,57 @@
     "roof": "hipped",
     "noShops": true,
     "wall": "#d2c7b1",
-    "note": "The low stone annex on the Place Saint-Germain-des-Prés, in front of the tower (aerial; a Haussmann block with shopfronts until now)."
+    "note": "The low stone annex on the Place Saint-Germain-des-Prés, in front of the tower (aerial; a Haussmann block with shopfronts until now).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/95869425"
+    ],
+    "name": "Notre-Dame-du-Liban",
+    "procedural": "parisCivic",
+    "kit": {
+      "kind": "eglise",
+      "p": 3,
+      "seed": 8948,
+      "noTower": true
+    },
+    "height": 20,
+    "front": 200,
+    "sign": false,
+    "note": "The Jesuits' chapel of 1894, hemmed in between the Foyer franco-libanais and the Institut Curie: a Gothic nave with its apse to the north-east and no tower. The kit's tower stood through the neighbours' roofs (owner, 2026-10-31).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La couverture des voies d'Austerlitz",
+    "procedural": "austerlitzCap",
+    "lat": 48.834226,
+    "lon": 2.372504,
+    "size": [
+      66,
+      310
+    ],
+    "front": 332,
+    "height": 9,
+    "shadow": false,
+    "sign": false,
+    "note": "The slabs across the track bed at Paris Rive Gauche, and the open cuts between them (owner, 2026-10-31): traced from the aerial, u and v in the builder. Base at the cut's floor.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le terre-plein du Pont Neuf",
+    "procedural": "terrePlein",
+    "lat": 48.857141,
+    "lon": 2.340972,
+    "size": [
+      37,
+      28
+    ],
+    "front": 120,
+    "height": 4,
+    "shadow": false,
+    "sign": false,
+    "note": "The platform Henri IV stands on, level with the bridge, its stone walls down to the Vert-Galant and its stairs (owner, 2026-10-31; aerial). The bake levels the ground and clears OSM's steps: regions.json levelGrounds and flatStreets.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

@@ -30,3 +30,7 @@ The owner makes about 100 Tripo AI models a month by hand. It suits statues, scu
 ## Report
 
 A table of the 25 (grade before, what you did, grade after, triangles, seen in the city or needs a bake), what you didn't reach, what's still poor, entries needing tools/paris-claims.ts, Tripo lines added, files to commit, and shot paths. If you run out of steam, stop in priority order and say what's left.
+
+## Say which LLM made it
+
+Every model's manifest entry carries `"madeBy"`, the exact model id of whoever wrote the builder (for example `"claude-sonnet-5-5"`), and a builder file with several models says so in its header if they differ (owner, 2026-10-31). Entries written by tools/paris-civic.ts or tools/paris-portals.ts are generated and carry none.

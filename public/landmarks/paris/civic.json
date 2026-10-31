@@ -3413,23 +3413,6 @@
  },
  {
   "osm": [
-   "way/56023667"
-  ],
-  "name": "Institut Océanographique de Paris",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "fac",
-   "p": 3,
-   "word": "INSTITUT OCÉANOGRAPHIQUE DE PARIS",
-   "seed": 5326
-  },
-  "height": 19.7,
-  "front": 20,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: fac, APUR period 3."
- },
- {
-  "osm": [
    "way/56040397"
   ],
   "name": "ecole 56040397",
@@ -5238,23 +5221,6 @@
   "front": 132,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 6."
- },
- {
-  "osm": [
-   "way/63195400"
-  ],
-  "name": "Théâtre du Gymnase Marie Bell",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 2,
-   "word": "THÉÂTRE DU GYMNASE MARIE BELL",
-   "seed": 6472
-  },
-  "height": 19.9,
-  "front": -174,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 2."
  },
  {
   "osm": [
@@ -9032,23 +8998,6 @@
  },
  {
   "osm": [
-   "way/63826747"
-  ],
-  "name": "Institut d'Art et d'Archéologie",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "fac",
-   "p": 5,
-   "word": "INSTITUT D'ART ET D'ARCHÉOLOGIE",
-   "seed": 9520
-  },
-  "height": 24.8,
-  "front": 93,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: fac, APUR period 5."
- },
- {
-  "osm": [
    "way/63826797"
   ],
   "name": "fac 63826797",
@@ -9213,22 +9162,6 @@
   "front": -55,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 10."
- },
- {
-  "osm": [
-   "way/63971254"
-  ],
-  "name": "Cité de la Musique - Philharmonie de Paris",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 10,
-   "seed": 4432
-  },
-  "height": 21.7,
-  "front": 158,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 10."
  },
  {
   "osm": [
@@ -12761,23 +12694,6 @@
  },
  {
   "osm": [
-   "way/69226516"
-  ],
-  "name": "Théâtre Mogador",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 99,
-   "word": "THÉÂTRE MOGADOR",
-   "seed": 3923
-  },
-  "height": 10.5,
-  "front": 80,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
- },
- {
-  "osm": [
    "way/69226577"
   ],
   "name": "Église Saint-Louis-d'Antin",
@@ -12859,23 +12775,6 @@
   "front": -165,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 2."
- },
- {
-  "osm": [
-   "way/69257631"
-  ],
-  "name": "Casino de Paris",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 3,
-   "word": "CASINO DE PARIS",
-   "seed": 5119
-  },
-  "height": 11.2,
-  "front": -112,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 3."
  },
  {
   "osm": [
@@ -18630,23 +18529,6 @@
   "front": -16,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 2."
- },
- {
-  "osm": [
-   "way/77807488"
-  ],
-  "name": "Le Trianon",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 1,
-   "word": "LE TRIANON",
-   "seed": 8115
-  },
-  "height": 15.1,
-  "front": 164,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 1."
  },
  {
   "osm": [
@@ -30022,22 +29904,6 @@
   "front": -44,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
- },
- {
-  "osm": [
-   "way/95869425"
-  ],
-  "name": "Notre-Dame-du-Liban",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "seed": 8949
-  },
-  "height": 23.6,
-  "front": 108,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [

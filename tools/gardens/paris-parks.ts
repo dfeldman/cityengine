@@ -233,21 +233,12 @@ const bercy = (): GardenPlan[] => {
  */
 const brassens = (): GardenPlan => {
   const g = grid(48.8335, 2.3)
-  const f = frame(48.8335, 2.3, 32)
-  const uv = (e: number, n: number): [number, number] => {
-    const b = (32 * Math.PI) / 180
-    return [n * Math.cos(b) + e * Math.sin(b), e * Math.cos(b) - n * Math.sin(b)]
-  }
-  const vines = (e: number, n: number, ru: number, rv: number) => {
-    const [u, v] = uv(e, n), rows = Math.round((2 * rv) / 1.7)
-    return Array.from({ length: rows }, (_, k) => ({ line: [f(u - ru, v - rv + k * 1.7), f(u + ru, v - rv + k * 1.7)], h: 1, w: 0.45 }))
-  }
   return merge(
     'Parc Georges-Brassens',
     g([[-30, -90], [30, -86], [70, -115], [85, -160], [120, -160], [180, -210], [150, -300], [40, -300], [-110, -300], [-175, -260], [-160, -180], [-110, -130], [-50, -100]]),
     {
       gravel: [g([[12, -130], [35, -122], [52, -132], [72, -160], [78, -188], [70, -205], [55, -205], [62, -180], [50, -158], [28, -148], [8, -155], [-5, -170], [-15, -158], [0, -143]])],
-      hedges: [...vines(-100, -270, 11, 9), ...vines(-65, -282, 19, 11)],
+      // (the vines: paris-batch6.ts's `clos`, off a 12 cm aerial, 2026-10-31: these ran across the slope the wrong way)
       beds: [{ ring: g(blob(112, -188, 12, 5)) }, { ring: g(blob(135, -222, 12, 6)) }, { ring: g(blob(100, -218, 9, 4)) }, { ring: g(blob(45, -240, 8, 3)) }],
     },
     ...[

@@ -149,6 +149,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   rochersDansLeCiel: 'monument', templeKiosk: 'monument', templeRocher: 'fountain', legallObelisk: 'monument', chapeauEve: 'fountain', eoleCourts: 'plaza', lambertJet: 'fountain', beaugrenellePont: 'bridge', olympiadesPagodes: 'monument', fdsChimney: 'monument',
   // Batch 5 (paris/batch5/parks.ts, 2026-10-31): the squares' stones, a pergola, fountains, a kiosk, memorials; boats in the Bassin; the quay's stepped bays and paving; the open-air museum
   cainLapidaire: 'monument', anneFrankPergola: 'monument', vivianiFontaine: 'fountain', robinierCrutch: 'monument', vivianiStones: 'monument', fontaineVierge: 'fountain', boucicautMonument: 'monument', boucicautKiosk: 'monument', ajaccioBust: 'statue', ajaccioGroup: 'statue', ajaccioStele: 'monument', arsenalBoatsNorth: 'monument', arsenalBoatsSouth: 'monument', tinoBay: 'plaza', tinoStar: 'plaza', tinoSculptures: 'monument',
+  // Batch 6 (paris/batch6/parks.ts, 2026-10-31): the market's iron roof open on all sides, a hut, stone steps, the Rocher, Kahn's bridges and houses, parasols, the Cascade, its basins and the jet
+  brassensHalls: 'structure', closHut: 'monument', brassensAmphi: 'monument', bagatelleRocher: 'monument', kahnVillage: 'monument', billancourtParasols: 'monument', cloudCascade: 'fountain', cloudBasins: 'fountain', cloudGrandJet: 'fountain',
   // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
   medicisFountain: 'fountain', tokyoParvis: 'plaza', observatoireFountain: 'fountain',
   // …the museums family (paris/museums/): the floating pool, on a barge (OSM's way 119943935 is building=boat)
@@ -211,6 +213,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
  * "everything is classified" test meaningful. Only needed for names that look like nonbuildings and are not.
  */
 export const BUILDINGS_OK: string[] = [
+  // Batch 7's towers, whatever their names sound like (paris/batch7/): Ircam's is a stair and labs, and an office tower's name is a tower's
+  'ircamTower', 'tourTriangle', 'tourD2', 'tourAlto',
   // La Défense's buildings, whatever a dome or a vault sounds like (paris/monuments/la-defense.ts)
   'cnitVault', 'tourFirst', 'quatreTemps', 'domeImax',
   // a museum and archive on the Rue Geoffroy-l'Asnier, its "memorial" in its name (paris/monuments/memorial-shoah.ts)

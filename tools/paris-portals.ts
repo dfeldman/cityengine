@@ -11,7 +11,7 @@ import { execFileSync } from 'node:child_process'
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
-import { railFate, railMouths } from './rail-levels.ts'
+import { railFate, railMouths, type RailMouth } from './rail-levels.ts'
 import { decksBetweenMouths, mouthsAtDecks } from '../src/render/rail-overbridge.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
@@ -69,7 +69,16 @@ for (const d of between) { atDecks.add(d.a); atDecks.add(d.b) }
 // (and the narrower mouths at the same deck: at the Batignolles and at Austerlitz a stone box stood on in front of the new girder)
 for (const m of mouthsAtDecks(all, between, pkg.edges as unknown as Parameters<typeof mouthsAtDecks>[2], pkg.rails as Parameters<typeof mouthsAtDecks>[3])) atDecks.add(m)
 writeFileSync(resolve(ROOT, 'src/city/paris/rail-decks-data.ts'), `// Written by tools/paris-portals.ts.\nexport const DECKS: { id: number; ring: number[] }[] = ${JSON.stringify(between.map((d, i) => ({ id: 900_000_000 + i, ring: d.ring })))}\n`)
-const made = all.filter((m) => !atDecks.has(m))
+/**
+ * The cut out of Austerlitz is cut across by square slabs, which render/landmarks/paris/bugs/austerlitz-cap.ts draws (owner, 2026-10-31: "they're
+ * pointing all different ways. the reality is theres just a cap across the tracks"). u runs down the cut from the finished slab, v across it.
+ */
+const inAusterlitzCut = (m: RailMouth): boolean => {
+  const e = m.x - X(2.372264), n = m.z - Z(48.834406)
+  const u = e * 0.475 - n * 0.88, v = e * 0.88 + n * 0.475
+  return u > -195 && u < 195 && v > -40 && v < 50
+}
+const made = all.filter((m) => !atDecks.has(m) && !inAusterlitzCut(m))
 const out = made.map((m, i) => {
   // (a point entry's `front` turns local −z to that bearing, and this model's opening is on +z: it looks out along the track, so the other way)
   const front = Math.round(((Math.atan2(m.ox, m.oz) * 180) / Math.PI + 540) % 360)

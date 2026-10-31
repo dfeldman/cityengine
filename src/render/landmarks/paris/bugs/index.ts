@@ -3,6 +3,8 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
+import { austerlitzCap } from './austerlitz-cap.ts'
+import { terrePlein } from './terre-plein.ts'
 import { vendomeFronts } from './vendome.ts'
 
-export const PARIS_BUGS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { vendomeFronts }
+export const PARIS_BUGS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { austerlitzCap, terrePlein, vendomeFronts }

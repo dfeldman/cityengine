@@ -55,6 +55,14 @@ const KNOWN: Record<string, string[]> = {
     // the parks family, wave 2 (2026-10-30): Tschumi's folies stand hard against the halls the park was built round (the
     // Théâtre Paris-Villette, the Pavillon Janvier, the Cité de la Musique, the Argonaute, the Philharmonie), and the
     // Acclimatation's booths against a small lodge behind them — adjacency, as built, judged on the city shots
+    // Batch 6 (paris/batch6/, 2026-10-31): the halls, the hut and the parasols stand in OSM's squares and hard against their neighbours, as built; their boxes only touch
+    'intersects | Parc Georges-Brassens: the market halls',
+    "intersects | Parc Georges-Brassens: the vignerons' hut",
+    'intersects | Parc de Billancourt: the parasols',
+    // the Cascade's stepped walks and kerbs meet on planes by design; the Rocher's kiosk stands over its entry's height; the village's box takes in neighbours' garden edges
+    'coplanar | La Grande Cascade de Saint-Cloud',
+    "height | Parc de Bagatelle: the Rocher and the Kiosque de l'Impératrice",
+    'intersects | Jardin Albert-Kahn: the Japanese village',
     // Batch 5 (paris/batch5/, 2026-10-31). One carousel builder at two places, Ranelagh's and the Square Boucicaut's; one dance bay at four places along the Quai Saint-Bernard, as built.
     'duplicate | ranelaghManege',
     'duplicate | tinoBay',

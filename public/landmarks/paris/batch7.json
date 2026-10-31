@@ -1,0 +1,433 @@
+[
+  {
+    "osm": [
+      "way/1112248133"
+    ],
+    "name": "La Défense: Hekla",
+    "procedural": "hekla",
+    "height": 221,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/1125041436"
+    ],
+    "name": "La Défense: The Link",
+    "procedural": "theLink",
+    "height": 241,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/158760559"
+    ],
+    "name": "La Défense: Tour Majunga",
+    "procedural": "majunga",
+    "height": 186,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82486190"
+    ],
+    "name": "La Défense: Tour Orano (Areva, Fiat)",
+    "procedural": "areva",
+    "height": 184,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/19451629"
+    ],
+    "name": "La Défense: Tour Granite",
+    "procedural": "granite",
+    "height": 184,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82486329"
+    ],
+    "name": "La Défense: Tour Engie T1",
+    "procedural": "engieT1",
+    "height": 169,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/1069791336"
+    ],
+    "name": "La Défense: Tour Saint-Gobain",
+    "procedural": "saintGobain",
+    "height": 168,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/758211633"
+    ],
+    "name": "La Défense: Tour Trinity",
+    "procedural": "trinity",
+    "height": 151,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82467015"
+    ],
+    "name": "La Défense: Tour D2",
+    "procedural": "tourD2",
+    "height": 175,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/851434516"
+    ],
+    "name": "La Défense: Tour Carpe Diem",
+    "procedural": "carpeDiem",
+    "height": 166,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/758211634"
+    ],
+    "name": "La Défense: Tour Alto",
+    "procedural": "tourAlto",
+    "height": 160,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/1334598502"
+    ],
+    "name": "Tour Triangle",
+    "procedural": "tourTriangle",
+    "height": 180,
+    "note": "batch7/defense.ts: OSM has the foot of it, and the bake raised that to 180 m. Porte de Versailles.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82467041"
+    ],
+    "name": "La Défense: Tour CB21",
+    "procedural": "defenseGreen",
+    "height": 179,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/19546127"
+    ],
+    "name": "La Défense: Tour Légende",
+    "procedural": "defenseSteel",
+    "height": 165,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/229148698"
+    ],
+    "name": "La Défense: Tour PB6 (EDF)",
+    "procedural": "defenseBlue",
+    "height": 161,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82486022"
+    ],
+    "name": "La Défense: Tour Hopen",
+    "procedural": "defenseBlue",
+    "height": 155,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/19450182"
+    ],
+    "name": "La Défense: Tour Ariane",
+    "procedural": "defenseSteel",
+    "height": 152,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82323076"
+    ],
+    "name": "La Défense: Tour Les Poissons, Ciel",
+    "procedural": "defenseStone",
+    "height": 150,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82467028"
+    ],
+    "name": "La Défense: Tour CBX (Dexia)",
+    "procedural": "defenseBlue",
+    "height": 142,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82468263"
+    ],
+    "name": "La Défense: Europlaza",
+    "procedural": "defenseBronze",
+    "height": 135,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/82486351"
+    ],
+    "name": "La Défense: Tour Égée",
+    "procedural": "defenseSteel",
+    "height": 155,
+    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Défense: Tour Coupole",
+    "osm": [
+      "relation/3071549"
+    ],
+    "restyle": "skyscraper",
+    "noShops": true,
+    "note": "Total's (Roche, Dinkeloo, 1985): dark smoked glass. A relation of stepped parts, so a restyle, keeping them. From memory.",
+    "roof": "flat",
+    "wall": "#30363b",
+    "trim": "#454c52",
+    "roofColour": "#40454a",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Défense: Tour Eqho",
+    "osm": [
+      "relation/3071645"
+    ],
+    "restyle": "skyscraper",
+    "noShops": true,
+    "note": "Ex-Descartes (2013's reclad): pale frame and clear glass. A relation of parts, so a restyle.",
+    "roof": "flat",
+    "wall": "#5f7c8b",
+    "trim": "#a7b4ba",
+    "roofColour": "#8a9499",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hyatt Regency Paris Étoile",
+    "osm": [
+      "relation/3074643"
+    ],
+    "restyle": "bauhaus",
+    "noShops": true,
+    "note": "The Concorde La Fayette (Henri Beauclair, 1974), 137 m at the Porte Maillot: pale ribbed concrete on a podium. A relation of parts, so a restyle, keeping them.",
+    "roof": "flat",
+    "wall": "#a59c88",
+    "trim": "#bbb3a2",
+    "roofColour": "#918a7b",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôpital Bichat-Claude-Bernard",
+    "osm": [
+      "relation/8787125"
+    ],
+    "restyle": "bauhaus",
+    "noShops": true,
+    "note": "The 1980 tower on its podium: pale precast panels and dark ribbons of window (a street photograph, 48.8995 2.3328). A relation of parts, so a restyle.",
+    "roof": "flat",
+    "wall": "#a8a296",
+    "trim": "#3a3f44",
+    "roofColour": "#807c72",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôpital Sainte-Anne: the pavilions",
+    "osm": [
+      "relation/1211377",
+      "relation/1211227"
+    ],
+    "restyle": "classical",
+    "noShops": true,
+    "note": "Questel's asylum (1867): the two long low ranges, stone under slate on a garden plan; the bake's 5–11 m is short of their three floors. The taller blocks about them are 20th-century and stay generic. Tones from memory; street-view check listed.",
+    "roof": "mansard",
+    "roofHeight": 4,
+    "wall": "#c9b796",
+    "trim": "#e4dbc6",
+    "roofColour": "#4b5359",
+    "height": 12,
+    "levels": 3,
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôpital Saint-Antoine: the wards",
+    "osm": [
+      "relation/1684486",
+      "relation/1684485",
+      "way/78145486"
+    ],
+    "restyle": "bauhaus",
+    "noShops": true,
+    "note": "The 12th's hospital, rebuilt from the 1960s on: pale blocks. From memory; street-view check listed. Caroli, Robert André, the Horloge and Foulques de Neuilly stay parisCivic.",
+    "roof": "flat",
+    "wall": "#cfc8b8",
+    "trim": "#7f8d95",
+    "roofColour": "#a8a59b",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôpital Saint-Joseph",
+    "osm": [
+      "relation/1211713",
+      "relation/6145747",
+      "way/79717952"
+    ],
+    "restyle": "bauhaus",
+    "noShops": true,
+    "note": "Rebuilt in the 2000s behind the Rue Raymond-Losserand: pale cladding and glass. From memory; street-view check listed.",
+    "roof": "flat",
+    "wall": "#d6d2c6",
+    "trim": "#7f8d95",
+    "roofColour": "#b1afa7",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Institut Curie: the hospital",
+    "osm": [
+      "relation/906829",
+      "way/58732804",
+      "way/56780578"
+    ],
+    "restyle": "bauhaus",
+    "noShops": true,
+    "note": "Rue d'Ulm's hospital blocks, 1960s to Bâtiment Constant Burg's 2010s. The Pavillon du Radium is a small stone house across the garden, left to the kit.",
+    "roof": "flat",
+    "wall": "#d9d4c6",
+    "trim": "#83909a",
+    "roofColour": "#b4b1a7",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Ancien hôpital Beaujon",
+    "osm": [
+      "relation/6410908",
+      "way/430869611",
+      "way/877552573"
+    ],
+    "restyle": "classical",
+    "noShops": true,
+    "note": "The Faubourg-Saint-Honoré's (Girardin, 1784), in the 8th: a cream front whatever its age (owner's rule, 2026-10-31). The Beaujon of today is at Clichy, past the box.",
+    "levels": 4,
+    "roof": "mansard",
+    "roofHeight": 4,
+    "wall": "#d9cfb9",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Institut Pasteur: the original institute",
+    "osm": [
+      "way/80265767"
+    ],
+    "restyle": "classical",
+    "noShops": true,
+    "note": "Brébant's institute (1888), inaugurated by Sadi Carnot: pale stone panelled in red brick, slate mansards (a street photograph, 48.8408 2.3112; aerial 48.8405 2.3112). The brick is the trim here.",
+    "levels": 3,
+    "roof": "mansard",
+    "roofHeight": 5,
+    "wall": "#c9bda3",
+    "trim": "#7a4636",
+    "roofColour": "#4b5359",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Institut Pasteur: Centre François Jacob",
+    "osm": [
+      "way/672568656"
+    ],
+    "restyle": "bauhaus",
+    "noShops": true,
+    "note": "The modern labs on the Rue du Docteur-Roux's other side. From memory.",
+    "roof": "flat",
+    "wall": "#d3cfc3",
+    "trim": "#7f8d95",
+    "roofColour": "#b1afa7",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Université Paris Cité: the Faculté de médecine",
+    "osm": [
+      "relation/969762"
+    ],
+    "restyle": "classical",
+    "noShops": true,
+    "note": "45 Rue des Saints-Pères (Madeline, 1937–53), filling a block of the 6th: a great cream stone cliff with long ranks of tall windows and a flat top (owner's rule: the 6th is cream).",
+    "roof": "flat",
+    "wall": "#d4c9b0",
+    "trim": "#e7dfca",
+    "roofColour": "#a39d8c",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/63826747"
+    ],
+    "name": "Institut d'Art et d'Archéologie",
+    "procedural": "institutArt",
+    "height": 20,
+    "sign": false,
+    "note": "batch7/institutes.ts: Bigot, 1928. Red brick and its frieze: was parisCivic.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/56023667"
+    ],
+    "name": "Institut Océanographique de Paris",
+    "procedural": "institutOceano",
+    "height": 16,
+    "sign": false,
+    "note": "batch7/institutes.ts: Nénot, 1911. Was parisCivic.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "L'Ircam: the tower",
+    "procedural": "ircamTower",
+    "lat": 48.85985,
+    "lon": 2.3514,
+    "front": 110,
+    "size": [
+      11,
+      11
+    ],
+    "height": 25,
+    "sign": false,
+    "note": "Standalone at the Bains-Douches's north-east corner, read off the aerial 48.8597 2.3510; the exact corner is worth a street-view check.",
+    "madeBy": "claude-opus-5-5"
+  }
+]

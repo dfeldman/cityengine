@@ -13,7 +13,8 @@
     ],
     "front": 180,
     "height": 44,
-    "note": "batch3/grands.ts: Sédille's store, its rotundas and cupolas in world metres. Takes over from the two cornerDome entries."
+    "note": "batch3/grands.ts: Sédille's store, its rotundas and cupolas in world metres. Takes over from the two cornerDome entries.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -29,7 +30,8 @@
     ],
     "front": 180,
     "height": 36,
-    "note": "batch3/grands.ts"
+    "note": "batch3/grands.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -38,7 +40,8 @@
     "name": "Le Printemps: the Rue de Provence store",
     "procedural": "printempsNorth",
     "height": 28,
-    "note": "batch3/grands.ts"
+    "note": "batch3/grands.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -55,7 +58,8 @@
     ],
     "front": 180,
     "height": 44,
-    "note": "batch3/grands.ts: the glass Coupole where the aerial has it, not the corner dome the manifest guessed."
+    "note": "batch3/grands.ts: the glass Coupole where the aerial has it, not the corner dome the manifest guessed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -65,7 +69,8 @@
     "name": "Les Galeries Lafayette: the second store",
     "procedural": "galeriesHomme",
     "height": 30,
-    "note": "batch3/grands.ts"
+    "note": "batch3/grands.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -74,7 +79,8 @@
     "name": "Les Galeries Lafayette: Maison and Gourmet",
     "procedural": "galeriesMaison",
     "height": 27,
-    "note": "batch3/grands.ts"
+    "note": "batch3/grands.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -93,7 +99,8 @@
     ],
     "front": 180,
     "height": 38,
-    "note": "batch3/grands.ts: Sauvage's stepped stone on the quai, Jourdain's blue iron and enamel behind. No dome: Jourdain's came down around 1930."
+    "note": "batch3/grands.ts: Sauvage's stepped stone on the quai, Jourdain's blue iron and enamel behind. No dome: Jourdain's came down around 1930.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -111,7 +118,8 @@
     ],
     "front": 180,
     "height": 27,
-    "note": "batch3/grands.ts"
+    "note": "batch3/grands.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Samaritaine: Magasin 3",
@@ -126,7 +134,8 @@
     "wall": "#b39d8c",
     "trim": "#c8baa9",
     "roofColour": "#4b5359",
-    "note": "Sauvage's 1930 block on the Rue du Pont-Neuf, pinkish stone (fr.wikipedia): a restyle's enough; its mosaic under the marquise wants a closer look."
+    "note": "Sauvage's 1930 block on the Rue du Pont-Neuf, pinkish stone (fr.wikipedia): a restyle's enough; its mosaic under the marquise wants a closer look.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -142,7 +151,8 @@
     ],
     "front": 180,
     "height": 26,
-    "note": "batch3/malls.ts: Renzo Piano's steel shell."
+    "note": "batch3/malls.ts: Renzo Piano's steel shell.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -158,7 +168,8 @@
     ],
     "front": 180,
     "height": 56,
-    "note": "batch3/malls.ts: Kenzo Tange's glass slope and mast, the front of Italie Deux."
+    "note": "batch3/malls.ts: Kenzo Tange's glass slope and mast, the front of Italie Deux.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Italie Deux: the mall",
@@ -171,7 +182,8 @@
     "wall": "#b3b2a7",
     "trim": "#6d7a80",
     "roofColour": "#878a84",
-    "note": "Italie Deux's long body under the slabs: plain panel, glass at the shops. The Grand Écran is the model."
+    "note": "Italie Deux's long body under the slabs: plain panel, glass at the shops. The Grand Écran is the model.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -181,7 +193,8 @@
     "name": "Beaugrenelle: Linois",
     "procedural": "beaugrenelleLinois",
     "height": 20,
-    "note": "batch3/malls.ts"
+    "note": "batch3/malls.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -190,7 +203,8 @@
     "name": "Beaugrenelle: Magnetic",
     "procedural": "beaugrenelleMagnetic",
     "height": 20,
-    "note": "batch3/malls.ts"
+    "note": "batch3/malls.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Beaugrenelle: the bridge over the Rue Linois",
@@ -207,7 +221,8 @@
     "sign": false,
     "shadow": false,
     "coversRaised": true,
-    "note": "batch3/malls.ts, off the aerial."
+    "note": "batch3/malls.ts, off the aerial.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -220,7 +235,8 @@
     "height": 123,
     "plan": "union",
     "note": "batch3/towers.ts",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -231,7 +247,8 @@
     "height": 108,
     "plan": "union",
     "note": "batch3/towers.ts",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -242,7 +259,8 @@
     "height": 101,
     "plan": "union",
     "note": "batch3/towers.ts",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -253,7 +271,8 @@
     "height": 90,
     "plan": "union",
     "note": "batch3/towers.ts. OSM's 81; the towers' list says 90.",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -264,7 +283,8 @@
     "height": 48,
     "plan": "union",
     "note": "batch3/towers.ts",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -275,7 +295,8 @@
     "height": 48,
     "plan": "union",
     "note": "batch3/towers.ts",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -286,7 +307,8 @@
     "height": 33,
     "plan": "union",
     "note": "batch3/towers.ts",
-    "stone": false
+    "stone": false,
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -295,7 +317,8 @@
     "name": "La Tour Totem",
     "procedural": "tourTotem",
     "height": 100,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -334,7 +357,8 @@
     "name": "La Tour Super-Italie",
     "procedural": "superItalie",
     "height": 112,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -343,7 +367,8 @@
     "name": "Le Tripode",
     "procedural": "tripode",
     "height": 60,
-    "note": "batch3/towers.ts: off its shadow."
+    "note": "batch3/towers.ts: off its shadow.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -352,7 +377,8 @@
     "name": "Front de Seine: Perspective 1",
     "procedural": "fdsRibbed",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -362,7 +388,8 @@
     "name": "Front de Seine: Perspective 2",
     "procedural": "fdsBanded",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -371,7 +398,8 @@
     "name": "Front de Seine: Tour Cristal",
     "procedural": "fdsCristal",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -380,7 +408,8 @@
     "name": "Front de Seine: Tour Reflets",
     "procedural": "fdsBalcon",
     "height": 96,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -389,7 +418,8 @@
     "name": "Front de Seine: Hôtel Novotel Paris Tour Eiffel",
     "procedural": "fdsBanded",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -398,7 +428,8 @@
     "name": "Front de Seine: Tour Panorama",
     "procedural": "fdsRibbed",
     "height": 100,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -407,7 +438,8 @@
     "name": "Front de Seine: Tour Rive Gauche",
     "procedural": "fdsBronze",
     "height": 93,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -416,7 +448,8 @@
     "name": "Front de Seine: Adagio Paris Tour Eiffel",
     "procedural": "fdsBanded",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -425,7 +458,8 @@
     "name": "Front de Seine: Tour Avant-Seine",
     "procedural": "fdsBalcon",
     "height": 96,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -434,7 +468,8 @@
     "name": "Front de Seine: Tour Seine",
     "procedural": "fdsRibbed",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -444,7 +479,8 @@
     "name": "Front de Seine: Tour de Mars",
     "procedural": "fdsBronze",
     "height": 98,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -453,7 +489,8 @@
     "name": "Front de Seine: Tour Évasion 2000",
     "procedural": "fdsBanded",
     "height": 93,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -462,7 +499,8 @@
     "name": "Front de Seine: Tour Keller",
     "procedural": "fdsBalcon",
     "height": 93,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -473,7 +511,8 @@
     "name": "Front de Seine: Tour Espace 2000",
     "procedural": "fdsBronze",
     "height": 93,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -482,7 +521,8 @@
     "name": "Front de Seine: Tour Orphée",
     "procedural": "fdsBanded",
     "height": 72,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -491,7 +531,8 @@
     "name": "Front de Seine: Le Village",
     "procedural": "fdsBanded",
     "height": 55,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -501,7 +542,8 @@
     "name": "Front de Seine: Tour Mirabeau",
     "procedural": "fdsMirabeau",
     "height": 58,
-    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed."
+    "note": "batch3/towers.ts: which tower has which skin is from the aerial and memory. Street-view check listed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Front de Seine: Tour Beaugrenelle",
@@ -523,7 +565,8 @@
     ],
     "front": 180,
     "height": 98,
-    "note": "batch3/towers.ts: OSM's outline and its parts."
+    "note": "batch3/towers.ts: OSM's outline and its parts.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Front de Seine: the chimney",
@@ -532,7 +575,8 @@
     ],
     "procedural": "fdsChimney",
     "height": 130,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -541,7 +585,8 @@
     "name": "Les Olympiades: Athènes",
     "procedural": "olympiadesPale",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -550,7 +595,8 @@
     "name": "Les Olympiades: Mexico",
     "procedural": "olympiadesTower",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -559,7 +605,8 @@
     "name": "Les Olympiades: Sapporo",
     "procedural": "olympiadesPale",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -568,7 +615,8 @@
     "name": "Les Olympiades: Helsinki",
     "procedural": "olympiadesTower",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -577,7 +625,8 @@
     "name": "Les Olympiades: Cortina d'Ampezzo",
     "procedural": "olympiadesRust",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -586,7 +635,8 @@
     "name": "Les Olympiades: Anvers",
     "procedural": "olympiadesPale",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -595,7 +645,8 @@
     "name": "Les Olympiades: Londres",
     "procedural": "olympiadesTower",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -604,7 +655,8 @@
     "name": "Les Olympiades: Tokyo",
     "procedural": "olympiadesRust",
     "height": 104,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -613,7 +665,8 @@
     "name": "Les Olympiades: Rome",
     "procedural": "olympiadesBar",
     "height": 48,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -622,7 +675,8 @@
     "name": "Les Olympiades: Grenoble",
     "procedural": "olympiadesBar",
     "height": 57,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -631,7 +685,8 @@
     "name": "Les Olympiades: Squaw Valley",
     "procedural": "olympiadesBar",
     "height": 48,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
@@ -640,7 +695,8 @@
     "name": "Les Olympiades: Olympie",
     "procedural": "olympiadesBar",
     "height": 45,
-    "note": "batch3/towers.ts"
+    "note": "batch3/towers.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Les Olympiades: les Pagodes",
@@ -661,7 +717,8 @@
     ],
     "front": 180,
     "height": 12,
-    "note": "batch3/towers.ts: the Galerie du Mercure's tented roofs, off the aerial."
+    "note": "batch3/towers.ts: the Galerie du Mercure's tented roofs, off the aerial.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Maine-Montparnasse: the base",
@@ -670,7 +727,8 @@
     ],
     "procedural": "maineMontparnasse",
     "height": 24,
-    "note": "batch3/towers.ts: the Tour is montparnasseFull and the Gare gareMontparnasse, both already good."
+    "note": "batch3/towers.ts: the Tour is montparnasseFull and the Gare gareMontparnasse, both already good.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Hôpital des Quinze-Vingts",
@@ -722,7 +780,8 @@
     "trim": "#c3b8a2",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "The Mousquetaires noirs' barracks (Robert de Cotte, 1699), brick and stone round their court, since 1780 the Quinze-Vingts: the next candidate (paris-candidates.json), standing in for the Bon Marché and BHV, which are already good."
+    "note": "The Mousquetaires noirs' barracks (Robert de Cotte, 1699), brick and stone round their court, since 1780 the Quinze-Vingts: the next candidate (paris-candidates.json), standing in for the Bon Marché and BHV, which are already good.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Palais Galliera",
@@ -738,7 +797,8 @@
     "trim": "#c6bda7",
     "roofColour": "#4b5359",
     "noShops": true,
-    "note": "Ginain's Renaissance palace for the Duchess (1878–94), a museum of fashion: the next candidate. Massing OSM's; its arches and the garden's groups want Batch 4's model."
+    "note": "Ginain's Renaissance palace for the Duchess (1878–94), a museum of fashion: the next candidate. Massing OSM's; its arches and the garden's groups want Batch 4's model.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Kellermann: Les Rochers dans le ciel",
@@ -754,7 +814,8 @@
     "kind": "monument",
     "shadow": false,
     "sign": false,
-    "note": "batch3/parks.ts: at OSM's five artwork nodes."
+    "note": "batch3/parks.ts: at OSM's five artwork nodes.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square du Temple: le kiosque",
@@ -771,7 +832,8 @@
     "front": 180,
     "height": 9,
     "kind": "monument",
-    "note": "batch3/parks.ts"
+    "note": "batch3/parks.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square du Temple: the rock and fall",
@@ -787,7 +849,8 @@
     "kind": "fountain",
     "shadow": false,
     "sign": false,
-    "note": "batch3/parks.ts: on the pond's north-east bank."
+    "note": "batch3/parks.ts: on the pond's north-east bank.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square René-Le Gall: the west obelisk",
@@ -802,7 +865,8 @@
     "height": 7,
     "kind": "monument",
     "sign": false,
-    "note": "batch3/parks.ts"
+    "note": "batch3/parks.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square René-Le Gall: the east obelisk",
@@ -817,7 +881,8 @@
     "height": 7,
     "kind": "monument",
     "sign": false,
-    "note": "batch3/parks.ts"
+    "note": "batch3/parks.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Butte du Chapeau Rouge: la fontaine d'Ève",
@@ -832,7 +897,8 @@
     "height": 7,
     "kind": "fountain",
     "shadow": false,
-    "note": "batch3/parks.ts: Azéma's crescent, the basin OSM has."
+    "note": "batch3/parks.ts: Azéma's crescent, the basin OSM has.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Square Saint-Lambert: the basin",
@@ -848,7 +914,8 @@
     "kind": "fountain",
     "shadow": false,
     "sign": false,
-    "note": "batch3/parks.ts"
+    "note": "batch3/parks.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Jardins d'Éole: the painted courts",
@@ -864,6 +931,7 @@
     "kind": "plaza",
     "shadow": false,
     "sign": false,
-    "note": "batch3/parks.ts: `size` small so poles keep clear; off the aerial."
+    "note": "batch3/parks.ts: `size` small so poles keep clear; off the aerial.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

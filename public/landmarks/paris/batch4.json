@@ -11,7 +11,8 @@
     ],
     "height": 11,
     "sign": false,
-    "note": "batch4/bois.ts: Alphand's 1856 rock and fall, its foot at the east shore of OSM's pool (48.86352 2.24086), facing it. Nonbuilding."
+    "note": "batch4/bois.ts: Alphand's 1856 rock and fall, its foot at the east shore of OSM's pool (48.86352 2.24086), facing it. Nonbuilding.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Petite Cascade",
@@ -25,7 +26,8 @@
     ],
     "height": 5,
     "sign": false,
-    "note": "batch4/bois.ts: the Lac Supérieur's overflow into the Lac Inférieur's south tip, read off the aerial."
+    "note": "batch4/bois.ts: the Lac Supérieur's overflow into the Lac Inférieur's south tip, read off the aerial.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Chalet des Îles",
@@ -35,7 +37,8 @@
     ],
     "front": 130,
     "height": 12,
-    "note": "batch4/bois.ts: the Swiss chalet of 1867 on the northern island. Long ridge at bearing 40 on the aerial."
+    "note": "batch4/bois.ts: the Swiss chalet of 1867 on the northern island. Long ridge at bearing 40 on the aerial.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Kiosque de l'Empereur",
@@ -49,7 +52,8 @@
     ],
     "height": 6,
     "sign": false,
-    "note": "batch4/bois.ts: Davioud's small pavilion on the southern island. OSM has no node for it: the clearing on the aerial."
+    "note": "batch4/bois.ts: Davioud's small pavilion on the southern island. OSM has no node for it: the clearing on the aerial.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Lac Daumesnil: le Temple et la Grotte",
@@ -66,7 +70,8 @@
     ],
     "height": 15,
     "sign": false,
-    "note": "batch4/bois.ts: OSM's Temple Grec (way/439501438), above its Grotte de la Gloriette (node/11928201569), on the fringe past the box: seen across the lake."
+    "note": "batch4/bois.ts: OSM's Temple Grec (way/439501438), above its Grotte de la Gloriette (node/11928201569), on the fringe past the box: seen across the lake.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Grand Rocher de Vincennes",
@@ -83,7 +88,8 @@
       89
     ],
     "height": 65,
-    "note": "batch4/bois.ts: 65 m of the zoo's concrete rock, on OSM's Grand Rocher (way/262416016, 77 × 89 m, 60 m, and what the bake made of its base). On the fringe; a skyline thing, for the Porte Dorée and the lake. In for the Parc Floral, off the map."
+    "note": "batch4/bois.ts: 65 m of the zoo's concrete rock, on OSM's Grand Rocher (way/262416016, 77 × 89 m, 60 m, and what the bake made of its base). On the fringe; a skyline thing, for the Porte Dorée and the lake. In for the Parc Floral, off the map.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Tour aux Figures",
@@ -93,7 +99,8 @@
     ],
     "front": 180,
     "height": 24,
-    "note": "batch4/bois.ts: Dubuffet, 24 m, the Parc de l'Île Saint-Germain. A stand-in; on the Tripo list."
+    "note": "batch4/bois.ts: Dubuffet, 24 m, the Parc de l'Île Saint-Germain. A stand-in; on the Tripo list.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Château Rothschild",
@@ -103,7 +110,8 @@
     ],
     "front": 282,
     "height": 17,
-    "note": "batch4/bois.ts: Armand's château, its four pavilions off OSM's outline, under the long pale protective roof the aerial has. OSM's 28 m is wrong."
+    "note": "batch4/bois.ts: Armand's château, its four pavilions off OSM's outline, under the long pale protective roof the aerial has. OSM's 28 m is wrong.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Parc Edmond-de-Rothschild: the lake's rocks",
@@ -117,7 +125,8 @@
     ],
     "height": 5,
     "sign": false,
-    "note": "batch4/bois.ts: the Baron's rockwork at the lake's head."
+    "note": "batch4/bois.ts: the Baron's rockwork at the lake's head.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Pré Catelan: the pavilion in the wood",
@@ -133,7 +142,8 @@
     "trim": "#c7bfac",
     "roofColour": "#5e686c",
     "noShops": true,
-    "note": "21 × 24 m in the park at (570, 325) on g-catelan, a low glazed roof on the aerial: OSM's 7 levels and 28 m are wrong."
+    "note": "21 × 24 m in the park at (570, 325) on g-catelan, a low glazed roof on the aerial: OSM's 7 levels and 28 m are wrong.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "L'Hôtel de Cluny",
@@ -152,7 +162,8 @@
       44
     ],
     "height": 20,
-    "note": "batch4/cluny.ts: the abbots' Flamboyant hôtel, its court, its street wall: on OSM's way/1132441556 (48 × 43 m, the corps de logis and wings) and the west wing's parts. Local +x along the corps de logis."
+    "note": "batch4/cluny.ts: the abbots' Flamboyant hôtel, its court, its street wall: on OSM's way/1132441556 (48 × 43 m, the corps de logis and wings) and the west wing's parts. Local +x along the corps de logis.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée de Cluny: the halls",
@@ -169,7 +180,8 @@
     "roofHeight": 6,
     "roofColour": "#4e555d",
     "noShops": true,
-    "note": "The museum's halls between the hôtel and the Thermes. OSM has them 28 m and 7 levels (2026-10-31, from the Boulevard Saint-Michel: a Haussmann block): the aerial's slate and glass low roofs. (The way/41874779 entry in museums.json took the outline's parts; it now names only the part it means to.)"
+    "note": "The museum's halls between the hôtel and the Thermes. OSM has them 28 m and 7 levels (2026-10-31, from the Boulevard Saint-Michel: a Haussmann block): the aerial's slate and glass low roofs. (The way/41874779 entry in museums.json took the outline's parts; it now names only the part it means to.)",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée de Cluny: the red-tiled hall",
@@ -183,7 +195,8 @@
     "roofHeight": 6,
     "roofColour": "#84492f",
     "noShops": true,
-    "note": "The red roof on the aerial, over the Frigidarium's neighbour: it had 32 m and 7 levels from OSM."
+    "note": "The red roof on the aerial, over the Frigidarium's neighbour: it had 32 m and 7 levels from OSM.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Palais de Tokyo: the west wing",
@@ -199,7 +212,8 @@
       110
     ],
     "height": 28,
-    "note": "batch4/tokyo-wings.ts: the whole of OSM's outline as one wing, in place of its 22 parts at 12 to 32 m."
+    "note": "batch4/tokyo-wings.ts: the whole of OSM's outline as one wing, in place of its 22 parts at 12 to 32 m.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée d'Art Moderne de Paris: the east wing",
@@ -227,7 +241,8 @@
       80
     ],
     "height": 28,
-    "note": "batch4/tokyo-wings.ts: the whole of OSM's outline as one wing, and the dozen ways at 28 and 32 m that stood through it. Red brick from the road until now."
+    "note": "batch4/tokyo-wings.ts: the whole of OSM's outline as one wing, and the dozen ways at 28 and 32 m that stood through it. Red brick from the road until now.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée Cernuschi",
@@ -243,7 +258,8 @@
       46
     ],
     "height": 19,
-    "note": "batch4/hotels.ts: the banker's hôtel on the Avenue Vélasquez at the Parc Monceau's gate."
+    "note": "batch4/hotels.ts: the banker's hôtel on the Avenue Vélasquez at the Parc Monceau's gate.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Musée Nissim-de-Camondo",
@@ -259,7 +275,8 @@
       64
     ],
     "height": 18,
-    "note": "batch4/hotels.ts: Sergent's Trianon, the gate on the Rue de Monceau and the salon's bay to the park."
+    "note": "batch4/hotels.ts: Sergent's Trianon, the gate on the Rue de Monceau and the salon's bay to the park.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "La Maison de Balzac",
@@ -275,7 +292,8 @@
       24
     ],
     "height": 9,
-    "note": "batch4/hotels.ts"
+    "note": "batch4/hotels.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Musée de la Vie romantique",
@@ -291,7 +309,8 @@
       34
     ],
     "height": 9,
-    "note": "batch4/hotels.ts: Scheffer's ochre house at the end of its lane."
+    "note": "batch4/hotels.ts: Scheffer's ochre house at the end of its lane.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Musée Gustave-Moreau",
@@ -307,7 +326,8 @@
       15
     ],
     "height": 19,
-    "note": "batch4/hotels.ts: two floors of studio windows over a town house."
+    "note": "batch4/hotels.ts: two floors of studio windows over a town house.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Musée Bourdelle",
@@ -323,7 +343,8 @@
       55
     ],
     "height": 10,
-    "note": "batch4/hotels.ts"
+    "note": "batch4/hotels.ts",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Le Musée Zadkine",
@@ -339,7 +360,8 @@
       10
     ],
     "height": 8,
-    "note": "batch4/hotels.ts: hidden down its lane behind the Rue d'Assas."
+    "note": "batch4/hotels.ts: hidden down its lane behind the Rue d'Assas.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Maisons La Roche et Jeanneret",
@@ -357,6 +379,7 @@
     ],
     "height": 12,
     "stone": false,
-    "note": "batch4/hotels.ts: Le Corbusier, 1925, white paint and ribbon windows. Replaces the bake's way/85224488 and way/85224477."
+    "note": "batch4/hotels.ts: Le Corbusier, 1925, white paint and ribbon windows. Replaces the bake's way/85224488 and way/85224477.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

@@ -3162,6 +3162,54 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   console.log(`  bridges: ${decks.bridges} deck edges, ${decks.ramps} ramps; ${railDecks} elevated rail ways`)
   /*
+   * THE PONT NEUF CROSSES THE CITÉ AT ONE LEVEL (owner, 2026-10-31: "the bridge is really messed up where it goes over the island. there are a bunch of
+   * stray staircases imported from osm around the statue"). Over the island it is mapped as streets at grade, with foot bridges and tunnels between the
+   * steps round Henri IV, and the ramps up to those stood the road 5 m over both of its own arms. Every way in the ring takes the bridge's level, easing back to
+   * its own over `fade` outside; and the terre-plein's steps and walks go, for the model that draws the platform (landmarks/paris/bugs/terre-plein.ts).
+   */
+  for (const f of streetRegion.flatStreets ?? []) {
+    const flat = (ring: [number, number][]): number[] => ring.flatMap(([lat, lon]) => { const q = proj.toLocal({ lat, lon }); return [q.x, q.z] })
+    const ring = flat(f.ring)
+    const heads: number[] = []
+    for (const e of kept) {
+      if (!e.bridge || e.name !== f.deck || !e.heights) continue
+      unpackPoints(e.points).forEach((q, i) => { if (inRing(ring, q.x, q.z)) heads.push(e.heights![i]) })
+    }
+    if (!heads.length) { console.warn(`  ${f.name}: no deck in the ring`); continue }
+    heads.sort((a, b) => a - b)
+    const y = heads[heads.length >> 1]
+    const FADE = f.fade ?? 18
+    const off = (x: number, z: number): number => {
+      let d = Infinity
+      for (let i = 0; i < ring.length; i += 2) {
+        const j = (i + 2) % ring.length, dx = ring[j] - ring[i], dz = ring[j + 1] - ring[i + 1]
+        const t = Math.max(0, Math.min(1, ((x - ring[i]) * dx + (z - ring[i + 1]) * dz) / (dx * dx + dz * dz || 1)))
+        d = Math.min(d, Math.hypot(ring[i] + dx * t - x, ring[i + 1] + dz * t - z))
+      }
+      return d
+    }
+    const platform = f.clearWalks ? flat(f.clearWalks) : null
+    let flattened = 0, cleared = 0, w = 0
+    for (const e of kept) {
+      const ps = unpackPoints(e.points)
+      const within = ps.filter((q) => inRing(ring, q.x, q.z)).length
+      const onPlatform = platform ? ps.filter((q) => inRing(platform, q.x, q.z)).length : 0
+      const walk = e.foot || e.kind === 'steps'
+      if (walk && (onPlatform * 2 >= ps.length || (e.kind === 'steps' && within > 0))) { cleared++; continue }
+      kept[w++] = e
+      if (!e.heights || (within === 0 && !ps.some((q) => off(q.x, q.z) < FADE))) continue
+      e.heights = e.heights.map((h, i) => {
+        const q = ps[i]
+        const k = inRing(ring, q.x, q.z) ? 1 : Math.max(0, 1 - off(q.x, q.z) / FADE)
+        return Math.round((h + (y - h) * k) * 100) / 100
+      })
+      if (within === ps.length) delete e.ramp
+      flattened++
+    }
+    kept.length = w
+    console.log(`  ${f.name}: ${flattened} ways at ${y.toFixed(2)} m, ${cleared} walks and steps gone`)
+  }
+  /*
    * Walks on a viaduct's roof (BUGS.md #32): the Coulée Verte runs along the top of the Viaduc des Arts, which
    * OSM gives no height; its ways came out at street level, inside the viaduct, with only its street crossings
    * standing up as lone footbridges. Each runs at the region's height over the ground, smoothed along it, and
