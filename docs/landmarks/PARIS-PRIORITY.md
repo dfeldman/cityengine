@@ -706,3 +706,16 @@ Score = (0.6 × height + height over the median within 150 m + 40 if OSM links W
 | 698 | 73 | (unnamed) | 19 | 18 | 253 | 1.0 | y | y | 48.85493, 2.33518 | 62288152 |  |
 | 699 | 73 | Hôtel de Maisons | 14 | 17 | 1987 | 1.6 | y | y | 48.85829, 2.32515 | 2004397 |  |
 | 700 | 73 | (unnamed) | 22 | 22 | 183 | 1.9 | y | y | 48.87433, 2.33672 | 69363861 |  |
+
+## The split of rows 25–124 (2026-10-31, from names and positions; to be confirmed by photo)
+
+- **Signature, one at a time with a real builder:** Mouchotte (28), Château d'eau de Montmartre (32), Usine élévatrice (33), Archives de Paris (39), Fondation des États-Unis (54), Maison du Cambodge (53), Heron Building (58), Immeuble des frères Perret (118), Wood'Up (124), and Bois-le-Prêtre (19), held back from Batch 10. Next: Maison de la Corée (67), Réservoirs de Passy (86), Mosquée de Bagnolet (96), France Télévisions (55), Palais de l'Alma (66), Hôtel d'Évreux (59), Église Sainte-Anne (119).
+- **Plain towers, a cheap skin:** the unnamed rows over 50 m, and Essor, Pitard, Palatino, Le Mistral, Tours A and F, Les Terrasses Rodin.
+- **Check the height first, probably false:** 44 (74 m beside the Panthéon), 79 (70 m beside Saint-Sulpice), 93 (70 m near Saint-Lazare).
+- **Not worth a model yet:** the listed houses of Place Dauphine (rows 42, 56, 74, 81, 88, 89, 91, 94, 103, 104, 110): one group, one restyle. Anything at exactly 28 m has a default height, so its height means nothing. Past 5.5 km (Pantin, Ivry, Bagnolet's low buildings), as the fade allows.
+
+## Also to rank (owner, 2026-10-31)
+
+- An unnamed building may only lack a name in OSM: every one over 50 m is identified (address, tags, web, Street View) before it is classed; if none is found it is "unidentified", not "plain".
+- Hôtels particuliers: real models for those with a Wikipedia page; a shared kit (gate, court, main block, mansard) for the rest. Count them from OSM's names first.
+- Commercial hotels: big chains and famous local names only (Hyatt, Ritz, Four Seasons, Radisson, Hilton, Marriott, Sofitel, Pullman, Mandarin Oriental, Shangri-La, Peninsula, InterContinental, Westin, Méridien; Crillon, Meurice, Bristol, Plaza Athénée, Lutetia, Royal Monceau, Raphael, Cheval Blanc). A Novotel only if the building stands out.
