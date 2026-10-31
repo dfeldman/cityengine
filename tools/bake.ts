@@ -54,6 +54,7 @@ import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from 
 import { waterLookup } from '../src/render/watermask.ts'
 import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, handTrees, type Planting, type PlantReport } from '../src/city/plantings.ts'
 import { inside } from '../src/city/park-planting.ts'
+import { classifyParis } from '../src/city/paris/btype.ts'
 import { formCode } from '../src/city/tree-forms.ts'
 import { PlantZones } from '../src/city/zone-planting.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
@@ -1428,9 +1429,10 @@ async function bake(spec: CitySpec): Promise<void> {
       }
       const id = 2e12 + i * 2
       const levels = Math.max(1, Math.round((h - 1) / 3.1))
-      const style: StyleId = facility && period >= 6 ? 'bauhaus' : period <= 2 ? 'marais'
-        : period === 3 ? ((Math.imul(id % 2147483647, 2654435761) >>> 0) % 14 === 0 ? 'brick' : 'haussmann')
-        : period <= 5 ? 'brick' : levels >= 12 ? 'towerblock' : period <= 12 ? 'bauhaus' : 'haussmann'
+      // (as the classifier has it: city/paris/btype.ts, by age and arrondissement)
+      const at = proj.toLatLon(centroid(pts))
+      const style: StyleId = classifyParis({ tags: {}, ring: pts, height: h, levels, lat: at.lat, lon: at.lon, id: id % 2147483647, area: Math.abs(area(pts)),
+        record: { construction: String(period), units: 0, parcels: 1, ...(facility ? { use: 'facility' } : {}) } })?.style ?? 'haussmann'
       const ring = ccw(pts)
       buildings.push({ id, ring: packPoints(ring), style, levels, height: h, ...roofFor({}, {}, style, ring, id) })
       file(ring)
