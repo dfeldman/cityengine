@@ -1348,6 +1348,9 @@
     "include": "paris/batch10.json"
   },
   {
+    "include": "paris/batch11.json"
+  },
+  {
     "include": "paris/bugs.json"
   },
   {

@@ -1,0 +1,102 @@
+[
+  {
+    "osm": [
+      "way/79688186"
+    ],
+    "name": "Mouchotte",
+    "procedural": "mouchotte",
+    "height": 49,
+    "note": "batch11/buildings.ts: slab of white-framed glazed grid; photo Commons",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/137884643"
+    ],
+    "name": "Château d'eau de Montmartre",
+    "procedural": "chateauEauMontmartre",
+    "height": 49,
+    "note": "batch11/buildings.ts: round pink shaft, tank drum, conical cap; photo Commons",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/73111790"
+    ],
+    "name": "Usine élévatrice des eaux",
+    "procedural": "usineElevatrice",
+    "height": 13,
+    "note": "batch11/buildings.ts: red brick hall, white window band; built to ~13 m from the photo, OSM says 28",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/63243779"
+    ],
+    "name": "Archives de Paris",
+    "procedural": "archivesParis",
+    "height": 29,
+    "note": "batch11/buildings.ts: no photo; massing only",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/52072807"
+    ],
+    "name": "Fondation des États-Unis",
+    "procedural": "fondationEtatsUnis",
+    "height": 19,
+    "note": "batch11/buildings.ts: brick, white bays, hipped roof; photo Commons",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/13853585"
+    ],
+    "name": "Maison du Cambodge",
+    "procedural": "maisonCambodge",
+    "height": 20,
+    "note": "batch11/buildings.ts: pale banded block, entrance bay, small spire; photo Commons; OSM 26 m",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/79687026"
+    ],
+    "name": "Heron Building",
+    "procedural": "heronBuilding",
+    "height": 68,
+    "note": "batch11/buildings.ts: no photo; massing only",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/82683207"
+    ],
+    "name": "Immeuble des frères Perret",
+    "procedural": "perretFranklin",
+    "height": 33,
+    "note": "batch11/buildings.ts: pale tile frame, glazed central bay, set-backs; photo Commons",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/1328753573"
+    ],
+    "name": "Wood'Up",
+    "procedural": "woodUp",
+    "height": 50,
+    "note": "batch11/buildings.ts: no photo; massing only",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/75750343"
+    ],
+    "name": "Tour Bois-le-Prêtre",
+    "procedural": "boisLePretre",
+    "height": 51,
+    "note": "batch11/buildings.ts: glazed winter-garden shell on a plain core; photo Commons",
+    "madeBy": "claude-sonnet-5-5"
+  }
+]
