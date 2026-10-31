@@ -300,6 +300,8 @@ export class Life {
       // …except where it comes up on a viaduct (the Paris métro's Lines 2, 5 and 6), which is the one place a
       // rider sees a métro train
       if ((r.kind === 'subway' && !r.heights) || this.railIds.has(r.id)) continue
+      // (the Petite Ceinture: its rails are down, and nothing has run on them since 1993)
+      if (r.disused) continue
       // (a cable-car or light-rail track takes its own stock where the region has one, else the tram's)
       // (and a GONDOLA — Salesforce Park's, docs/SALESFORCE-PARK.md — on its own inclined track, kind 5)
       // (and a FUNICULAR, Montmartre's, as one: two stations, a cabin shuttling between them on the ground's own heights)

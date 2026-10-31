@@ -360,6 +360,8 @@ export interface PackedRail {
   gondola?: true
   /** a funicular (OSM railway=funicular: Montmartre's), its heights the ground's: drawn and boarded as a gondola */
   funicular?: true
+  /** track with no train: a line out of service with its rails still down (OSM railway=disused: Paris's Petite Ceinture), a métro yard. Drawn as track */
+  disused?: true
 }
 
 export interface CityPackage {

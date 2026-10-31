@@ -20,6 +20,9 @@ const STEEL: Rgb = [0.62, 0.63, 0.64]
 const SLOT: Rgb = [0.1, 0.1, 0.1]
 const BALLAST: Rgb = [0.44, 0.42, 0.39]
 const SLEEPER: Rgb = [0.3, 0.26, 0.22]
+/** a line nothing runs on (PackedRail.disused: the Petite Ceinture): grown over, its rails gone brown */
+const OVERGROWN: Rgb = [0.36, 0.42, 0.28]
+const RUST: Rgb = [0.4, 0.3, 0.24]
 
 /** A flat strip along a polyline between offsets o0 and o1 (metres to the right), `lift` above the ground. */
 function strip(out: MeshBuilder, pts: { x: number; z: number }[], o0: number, o1: number, lift: number, c: Rgb, terrain: Terrain,
@@ -74,6 +77,26 @@ function sleepers(out: MeshBuilder, pts: { x: number; z: number }[], terrain: Te
   }
 }
 
+/**
+ * The Montmartre funicular's own two tracks (owner, 2026-10-29: "we should definitely include the funicular"; 2026-10-31: nothing showed on the butte but the hillside). On its straight incline, its
+ * heights its own, on a bed in the slope: the cabin (render/life.ts, kind 5) runs along them.
+ */
+function funicularTrack(out: MeshBuilder, pts: { x: number; z: number }[], heights: number[], inRect: (x: number, z: number) => boolean): void {
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.05) continue
+    const n = Math.max(1, Math.ceil(L / 4)), nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L
+    for (let k = 0; k < n; k++) {
+      const t0 = k / n, t1 = (k + 1) / n
+      if (!inRect(a.x + (b.x - a.x) * (t0 + t1) / 2, a.z + (b.z - a.z) * (t0 + t1) / 2)) continue
+      const P = (t: number, o: number, up: number): [number, number, number] => [a.x + (b.x - a.x) * t + nx * o, heights[i - 1] + (heights[i] - heights[i - 1]) * t + up, a.z + (b.z - a.z) * t + nz * o]
+      const band = (o0: number, o1: number, up: number, c: Rgb): void => { out.quad([P(t0, o0, up), P(t1, o0, up), P(t1, o1, up), P(t0, o1, up)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0) }
+      band(-1.4, 1.4, 0.1, BALLAST)
+      for (const s of [-1, 1]) band(s * 0.5 - 0.04, s * 0.5 + 0.04, 0.3, STEEL)
+    }
+  }
+}
+
 export function streetRailsLayer(scene: Scene, terrain: Terrain): TileLayer {
   return {
     name: 'streetRails',
@@ -82,9 +105,11 @@ export function streetRailsLayer(scene: Scene, terrain: Terrain): TileLayer {
       // tram track AND heavy rail: a Caltrain yard with trains standing on bare asphalt was the giveaway that
       // only trams were drawn here (user, 2026-09-22: "dozens of trains … but no train tracks")
       const rails = (near.tile.rails ?? []).filter((r) => (r.kind === 'tram' || r.kind === 'rail') && !r.heights)
-      if (rails.length === 0) return []
+      const funiculars = (near.tile.rails ?? []).filter((r) => r.funicular && r.heights)
+      if (rails.length === 0 && funiculars.length === 0) return []
       const out = new MeshBuilder()
       const inRect = (x: number, z: number): boolean => x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1
+      for (const r of funiculars) funicularTrack(out, unpackPoints(r.points), r.heights!, inRect)
       for (const r of rails) {
         const pts = unpackPoints(r.points)
         const g = r.cable ? 1.067 : 1.435
@@ -92,10 +117,10 @@ export function streetRailsLayer(scene: Scene, terrain: Terrain): TileLayer {
         const lift = r.kind === 'rail' ? 0.34 : 0.14
         // heavy rail rides on its own ballast shoulder, with sleepers across it; tram track is set flush in the street
         if (r.kind === 'rail') {
-          strip(out, pts, -2.0, 2.0, 0.08, BALLAST, terrain, inRect)
+          strip(out, pts, -2.0, 2.0, 0.08, r.disused ? OVERGROWN : BALLAST, terrain, inRect)
           sleepers(out, pts, terrain, inRect)
         }
-        for (const s of [-1, 1]) strip(out, pts, s * g / 2 - 0.04, s * g / 2 + 0.04, lift, STEEL, terrain, inRect)
+        for (const s of [-1, 1]) strip(out, pts, s * g / 2 - 0.04, s * g / 2 + 0.04, lift, r.disused ? RUST : STEEL, terrain, inRect)
         if (r.cable) strip(out, pts, -0.03, 0.03, lift, SLOT, terrain, inRect)
       }
       if (out.triangles === 0) return []

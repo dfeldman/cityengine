@@ -194,6 +194,9 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (r.bridge) flags |= RF.bridge
     if (r.cable) flags |= RF.cable
     if (r.light) flags |= RF.light
+    // (2026-10-31: a funicular left this format as a bare rail with heights: no cabin, no track, nothing to board)
+    if (r.funicular) flags |= RF.funicular
+    if (r.disused) flags |= RF.disused
     const w: Way = { ref: `t${r.id}`, role: 'rail', nodes: ns, id: r.id, kind: dict.id('kinds', r.kind), flags }
     if (r.layer !== undefined) w.layer = r.layer
     addWay(w)

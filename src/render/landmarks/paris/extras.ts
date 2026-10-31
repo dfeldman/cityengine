@@ -73,7 +73,8 @@ function portal(out: MeshBuilder, fit: Fit, stone: Rgb, road: boolean): void {
   const g = (x: number, z: number): number => fit.groundAt ? fit.groundAt(x, z) : 0
   const track = g(0, hz + 2)
   const street = Math.max(g(0, -hz - 5), g(-hx * 0.6, -hz - 5), g(hx * 0.6, -hz - 5)) - track
-  const span = Math.max(4.5, hx - 3)
+  // (a mouth let in between two tracks is narrower than a pier and a half each side: tools/rail-levels.ts `railMouths`; a road's keeps its width)
+  const span = road ? Math.max(4.5, hx - 3) : Math.max(Math.min(4.5, hx - 0.8), hx - 3)
   const room = street > 7 ? street - 0.4 : Math.max(7, fit.height)
   const rise = road ? 0.5 : Math.max(1.2, Math.min(span * 0.75, 5.5, room - 5))
   const springing = road ? Math.min(5, room - rise - 0.5) : Math.min(4, room - rise - 0.5)

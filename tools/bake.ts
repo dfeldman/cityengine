@@ -68,7 +68,7 @@ import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
 import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks, mergeBridgeLanes } from './bridges.ts'
-import { bridgesOverStreets, footWaysOnTracks, spanOverRailways, straightDeck } from './rail-levels.ts'
+import { bedPosts, footWaysOnTracks, levelParisRails, parisRailRecord, railFineTiles, stationShells, straightDeck } from './rail-levels.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -449,7 +449,12 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   const RUNNING = /^(rail|light_rail|tram|subway|narrow_gauge|funicular|monorail)$/
   // (and not industrial yard track: Sausalito's boatyard slipways are `railway=rail, service=yard, usage=industrial`)
-  const railways = ways.filter((w) => RUNNING.test(w.tags.railway ?? '') && !/^(abandoned|disused|razed|construction|proposed)$/.test(w.tags.usage ?? '')
+  /*
+   * …and in Paris the PETITE CEINTURE (2026-10-31, the audit of every line, tools/rail-audit.ts: it is the first line the owner names). Closed to passengers in 1934 and to
+   * freight in 1993 and tagged railway=disused, 25 km of it are still rails in the open round the whole city, on their own bridges over the boulevards: drawn, with no train.
+   */
+  const disusedRun = spec.region === 'paris'
+  const railways = ways.filter((w) => (RUNNING.test(w.tags.railway ?? '') || (disusedRun && w.tags.railway === 'disused')) && !/^(abandoned|disused|razed|construction|proposed)$/.test(w.tags.usage ?? '')
     && !(w.tags.service === 'yard' && w.tags.usage === 'industrial'))
   /*
    * THE ROUNDABOUTS OSM MAPS (owner, 2026-10-29: "we also have to handle all the traffic circles, which is already done for
@@ -1510,6 +1515,13 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!w.geometry || w.geometry.length < 2) continue
     // A tunnel is a railway you cannot see, and a train on one drives straight through the buildings above
     // it. OSM tags Paris full of these; `layer` below zero catches the rest.
+    // (Paris: which of those are really under something is `railFate`'s and the ground's: tools/rail-levels.ts)
+    if (spec.region === 'paris') {
+      const got = parisRailRecord(w.tags, w.id, packPoints(w.geometry.map((g) => proj.toLocal(g))))
+      if (got.rail) (got.fate === 'sunk' ? sunkRails : rails).push(got.rail)
+      else if (got.buried) buriedRails.push({ points: packPoints(w.geometry.map((g) => proj.toLocal(g))) })
+      continue
+    }
     if ((w.tags.tunnel && w.tags.tunnel !== 'no') || w.tags.covered === 'yes' || parseInt(w.tags.layer ?? '0', 10) < 0) {
       if (w.tags.railway === 'rail') buriedRails.push({ points: packPoints(w.geometry.map((g) => proj.toLocal(g))) })
       continue
@@ -2257,6 +2269,19 @@ async function bake(spec: CitySpec): Promise<void> {
       if (fineZones.some((zn) => zoneTouchesRect(zn, ...r))) fineTiles.add(`${tx},${tz}`)
     }
   }
+  /*
+   * A RAILWAY'S TILES SHIP THE 4 M GROUND (Paris; 2026-10-31, the audit of every line; owner: "all train tracks from OSM are in bad shape vertically"). The lidar along a
+   * track is the smoothest thing in the survey (the Saint-Germain line out of Saint-Lazare: 4.5, 4.3, 3.9, 4.3, 4.7 m over 1.3 km), and its trench is there too, from a 40 m floor to a
+   * wall of 10-15 m in 8 m. Read at 20 m posts the wall's foot and top came through as noise: the track rode 1-2 m up and down its own floor (drawn − lidar: 18% of all track over 1 m,
+   * 7% over 2 m), the yard's ground chords stood over the sleepers in patches, and the trench was a slope. It was already the rule for a street's cut ("so the cutting keeps its sides").
+   * The tiles: 575 of 5,074.
+   */
+  if (spec.region === 'paris') {
+    const blocks = new Set(blockTiles.map(([tx, tz]) => `${tx},${tz}`))
+    let n = 0
+    for (const k of railFineTiles([...rails, ...sunkRails], TILE)) if (blocks.has(k) && !fineTiles.has(k)) { fineTiles.add(k); n++ }
+    console.log(`  ${n} tiles ship fine ground for the railway through them`)
+  }
   let shipped = new GroundModel({
     coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
     fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
@@ -2269,7 +2294,8 @@ async function bake(spec: CitySpec): Promise<void> {
     + `(${FINE_STEP} m), the rest coarse (${STEP} m)`)
   const groundFine = (x: number, z: number): number => shipped.heightAt(x, z)
   // a funicular climbs the ground it is laid on: its heights from the same grid the streets take theirs from
-  for (const r of rails) if (r.funicular) r.heights = unpackPoints(r.points).map((q) => Math.round(groundFine(q.x, q.z) * 100) / 100)
+  // (a straight incline, from station to station: 108 m of the same grade, where the butte's own ground has a stair of retaining walls in it, 7 m up and down: rail-audit.ts, 2026-10-31)
+  for (const r of rails) if (r.funicular) { if (spec.region === 'paris') straightDeck(r, groundFine); else r.heights = unpackPoints(r.points).map((q) => Math.round(groundFine(q.x, q.z) * 100) / 100) }
 
   /*
    * Street heights come from the SAME grid, not from the tiles directly. Two samplings of one noisy
@@ -2997,103 +3023,121 @@ async function bake(spec: CitySpec): Promise<void> {
    * track, so the deck does not dip into the river bed where it crosses the river, then smoothed.
    */
   /*
-   * A track OSM calls sunk lies in its cutting where the ground has one: IGN's lidar does, 5.5 m under the street bridges
-   * over a main line (the median; 14 m at the Batignolles), and the track drapes down into it. Where the ground shows
-   * none (the RER C under the Quai André-Citroën, roofed over: the lidar reads the roof) it stays undrawn.
+   * Paris: tools/rail-levels.ts `levelParisRails`, the whole stage: which sunk ways the ground has, which is on top at a crossing, decks straight from bank to bank or lifted as a viaduct,
+   * and a viaduct's true ends down to the ground, all on the 4 m ground its tiles ship. tools/rail-audit.ts dry-runs the same code.
    */
-  {
-    let lying = 0
-    for (const r of sunkRails) {
-      const ps = unpackPoints(r.points)
-      const depths: number[] = []
-      for (let i = 1; i < ps.length; i++) {
-        const dx = ps[i].x - ps[i - 1].x, dz = ps[i].z - ps[i - 1].z, len = Math.hypot(dx, dz)
-        for (let d = 15; d < len; d += 30) {
-          const x = ps[i - 1].x + (dx / len) * d, z = ps[i - 1].z + (dz / len) * d
-          const side = (s: number): number => Math.max(...[25, 40, 60, 80].map((o) => groundFine(x + (s * dz / len) * o, z - (s * dx / len) * o)))
-          depths.push(Math.min(side(1), side(-1)) - groundFine(x, z))
-        }
-      }
-      depths.sort((a, b) => a - b)
-      if (depths.length && depths[depths.length >> 1] >= 3) { rails.push(r); lying++ }
-    }
-    if (sunkRails.length) console.log(`  ${lying} of ${sunkRails.length} sunk railways lie in a cutting the ground has`)
-  }
-  // (Paris: which is on top at a crossing, from the lidar's ground: tools/rail-levels.ts. Its decks and the short tagged ones are
-  //  straight from bank to bank; a long tagged viaduct is still lifted below)
-  const levelled = new Set<PackedRail>()
+  let railDecks = 0
   if (spec.region === 'paris') {
     let nextRail = 900_000_000_000
-    const got = bridgesOverStreets(rails, kept, groundAt, levelled, () => nextRail++)
+    const got = levelParisRails(rails, sunkRails, buriedRails, kept, groundFine, (beds) => {
+      const posts = bedPosts(beds, fx0, fz0, FINE_STEP)
+      let moved = 0
+      for (const [k, y] of posts) {
+        const [c, r] = k.split(',').map(Number)
+        if (c < 0 || r < 0 || c >= fcols || r >= frows) continue
+        fineGround[r * fcols + c] = y
+        moved++
+      }
+      shipped = new GroundModel({
+        coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+        fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+        fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE,
+      })
+      for (const [k2, b] of shipped.blocks) {
+        if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+      }
+      return moved
+    }, () => nextRail++)
     rails.length = 0
     rails.push(...got.rails)
-    let straight = 0
-    for (const r of rails) {
-      if (r.kind !== 'rail' || !r.bridge || r.heights) continue
-      const q = unpackPoints(r.points)
-      let L = 0
-      for (let i = 1; i < q.length; i++) L += Math.hypot(q[i].x - q[i - 1].x, q[i].z - q[i - 1].z)
-      if (L >= 120) continue
-      straightDeck(r, groundAt)
-      levelled.add(r)
-      straight++
+    for (const r of got.roofed) buriedRails.push({ points: r.points })
+    railDecks = got.viaducts
+    const shells = stationShells(buildings, rails, (streetRegion.viaductStations ?? []).map((q) => proj.toLocal(q)))
+    if (shells.size) {
+      const stay = buildings.filter((b) => !shells.has(b.id) && !(b.partOf !== undefined && shells.has(b.partOf)))
+      console.log(`  ${buildings.length - stay.length} station shells over the viaducts left to the viaducts' own canopies`)
+      buildings.length = 0
+      for (const b of stay) buildings.push(b)
     }
-    console.log(`  rail crossings: ${got.spans} untagged bridges over streets, ${got.over} streets made bridges over cuttings, ${straight} short tagged decks straight from bank to bank, ${got.flat} crossings with no bank to stand on`)
-    const dips = spanOverRailways(kept.filter((e) => !e.authored), buriedRails, rails.filter((r) => r.kind === 'rail'), groundAt)
-    console.log(`  streets dipping over a railway run straight: ${dips}`)
-  }
-  let railDecks = 0
-  for (const r of rails) {
-    if (!r.bridge || levelled.has(r)) continue
-    const ps = unpackPoints(r.points)
-    const cum = [0]
-    for (let i = 1; i < ps.length; i++) cum.push(cum[i - 1] + Math.hypot(ps[i].x - ps[i - 1].x, ps[i].z - ps[i - 1].z))
-    const g = ps.map((q) => groundAt(q.x, q.z))
-    // a metre and a half per layer at most: Paris's métro viaducts are layer 2, and 5.5 m a layer put Line 6
-    // twelve metres over the Boulevard de Grenelle, out of every view of it (BUGS.md #34)
-    const lift = 6.5 + 1.5 * Math.min(2, Math.max(0, (r.layer ?? 1) - 1))
-    const high = ps.map((_, i) => {
-      let m = g[i]
-      for (let k = 0; k < ps.length; k++) if (Math.abs(cum[k] - cum[i]) <= 40) m = Math.max(m, g[k])
-      return m + lift
-    })
-    r.heights = high.map((_, i) => {
-      let sum = 0
-      let n = 0
-      for (let k = 0; k < ps.length; k++) if (Math.abs(cum[k] - cum[i]) <= 20) { sum += high[k]; n++ }
-      return Math.round((sum / n) * 100) / 100
-    })
-    railDecks++
-  }
-  /*
-   * …and a deck's TRUE END comes down to the ground (owner, 2026-10-30: "the train only bridge at 48.852558, 2.285579 looks
-   * great, but has a dropoff at the end"; Bir-Hakeim "is discontinuous on one end"). The lift above runs the whole length of
-   * the way, so where the next track is not a bridge — a line going into a hill or a cutting — the deck stopped in the air.
-   * An end with no other bridge rail's end within 5 m eases to the ground over up to 80 m.
-   */
-  {
-    const decks2 = rails.filter((r) => r.bridge && r.heights)
-    const ends = decks2.filter((r) => !levelled.has(r)).map((r) => { const p = unpackPoints(r.points); return { r, a: p[0], b: p[p.length - 1] } })
-    const joined = (me: PackedRail, q: { x: number; z: number }): boolean => ends.some((o) => o.r !== me
-      && (Math.hypot(o.a.x - q.x, o.a.z - q.z) < 5 || Math.hypot(o.b.x - q.x, o.b.z - q.z) < 5))
-    let eased = 0
-    for (const { r, a, b } of ends) {
+    console.log(`  rail crossings: ${got.lying} of ${sunkRails.length} sunk railways in a cutting or beside tracks in the open, ${got.holes} decks over holes in the ground, ${got.posts} ground posts laid to a track's level, ${got.spans} untagged bridges over streets, ${got.over} streets made bridges over cuttings, ${got.straight} decks on their track's level, ${got.flat} crossings with no bank to stand on`)
+    console.log(`  streets dipping over a railway run straight: ${got.dips}; ${got.eased} viaducts eased down at their true ends`)
+  } else {
+    /*
+     * A track OSM calls sunk lies in its cutting where the ground has one: IGN's lidar does, 5.5 m under the street bridges
+     * over a main line (the median; 14 m at the Batignolles), and the track drapes down into it. Where the ground shows
+     * none (the RER C under the Quai André-Citroën, roofed over: the lidar reads the roof) it stays undrawn.
+     */
+    {
+      let lying = 0
+      for (const r of sunkRails) {
+        const ps = unpackPoints(r.points)
+        const depths: number[] = []
+        for (let i = 1; i < ps.length; i++) {
+          const dx = ps[i].x - ps[i - 1].x, dz = ps[i].z - ps[i - 1].z, len = Math.hypot(dx, dz)
+          for (let d = 15; d < len; d += 30) {
+            const x = ps[i - 1].x + (dx / len) * d, z = ps[i - 1].z + (dz / len) * d
+            const side = (s: number): number => Math.max(...[25, 40, 60, 80].map((o) => groundFine(x + (s * dz / len) * o, z - (s * dx / len) * o)))
+            depths.push(Math.min(side(1), side(-1)) - groundFine(x, z))
+          }
+        }
+        depths.sort((a, b) => a - b)
+        if (depths.length && depths[depths.length >> 1] >= 3) { rails.push(r); lying++ }
+      }
+      if (sunkRails.length) console.log(`  ${lying} of ${sunkRails.length} sunk railways lie in a cutting the ground has`)
+    }
+    const levelled = new Set<PackedRail>()
+    for (const r of rails) {
+      if (!r.bridge || levelled.has(r)) continue
       const ps = unpackPoints(r.points)
       const cum = [0]
       for (let i = 1; i < ps.length; i++) cum.push(cum[i - 1] + Math.hypot(ps[i].x - ps[i - 1].x, ps[i].z - ps[i - 1].z))
-      const L = cum[cum.length - 1]
-      const EASE = Math.min(80, L * 0.45)
-      const atA = !joined(r, a), atB = !joined(r, b)
-      if (!atA && !atB) continue
-      r.heights = r.heights!.map((h, i) => {
-        const d = Math.min(atA ? cum[i] : Infinity, atB ? L - cum[i] : Infinity)
-        if (d >= EASE) return h
-        const g = groundAt(ps[i].x, ps[i].z)
-        return Math.round((g + (h - g) * (d / EASE)) * 100) / 100
+      const g = ps.map((q) => groundAt(q.x, q.z))
+      // a metre and a half per layer at most: Paris's métro viaducts are layer 2, and 5.5 m a layer put Line 6
+      // twelve metres over the Boulevard de Grenelle, out of every view of it (BUGS.md #34)
+      const lift = 6.5 + 1.5 * Math.min(2, Math.max(0, (r.layer ?? 1) - 1))
+      const high = ps.map((_, i) => {
+        let m = g[i]
+        for (let k = 0; k < ps.length; k++) if (Math.abs(cum[k] - cum[i]) <= 40) m = Math.max(m, g[k])
+        return m + lift
       })
-      eased++
+      r.heights = high.map((_, i) => {
+        let sum = 0
+        let n = 0
+        for (let k = 0; k < ps.length; k++) if (Math.abs(cum[k] - cum[i]) <= 20) { sum += high[k]; n++ }
+        return Math.round((sum / n) * 100) / 100
+      })
+      railDecks++
     }
-    if (eased) console.log(`  ${eased} rail decks eased down to the ground at their true ends`)
+    /*
+     * …and a deck's TRUE END comes down to the ground (owner, 2026-10-30: "the train only bridge at 48.852558, 2.285579 looks
+     * great, but has a dropoff at the end"; Bir-Hakeim "is discontinuous on one end"). The lift above runs the whole length of
+     * the way, so where the next track is not a bridge — a line going into a hill or a cutting — the deck stopped in the air.
+     * An end with no other bridge rail's end within 5 m eases to the ground over up to 80 m.
+     */
+    {
+      const decks2 = rails.filter((r) => r.bridge && r.heights)
+      const ends = decks2.filter((r) => !levelled.has(r)).map((r) => { const p = unpackPoints(r.points); return { r, a: p[0], b: p[p.length - 1] } })
+      const joined = (me: PackedRail, q: { x: number; z: number }): boolean => ends.some((o) => o.r !== me
+        && (Math.hypot(o.a.x - q.x, o.a.z - q.z) < 5 || Math.hypot(o.b.x - q.x, o.b.z - q.z) < 5))
+      let eased = 0
+      for (const { r, a, b } of ends) {
+        const ps = unpackPoints(r.points)
+        const cum = [0]
+        for (let i = 1; i < ps.length; i++) cum.push(cum[i - 1] + Math.hypot(ps[i].x - ps[i - 1].x, ps[i].z - ps[i - 1].z))
+        const L = cum[cum.length - 1]
+        const EASE = Math.min(80, L * 0.45)
+        const atA = !joined(r, a), atB = !joined(r, b)
+        if (!atA && !atB) continue
+        r.heights = r.heights!.map((h, i) => {
+          const d = Math.min(atA ? cum[i] : Infinity, atB ? L - cum[i] : Infinity)
+          if (d >= EASE) return h
+          const g = groundAt(ps[i].x, ps[i].z)
+          return Math.round((g + (h - g) * (d / EASE)) * 100) / 100
+        })
+        eased++
+      }
+      if (eased) console.log(`  ${eased} rail decks eased down to the ground at their true ends`)
+    }
   }
   console.log(`  bridges: ${decks.bridges} deck edges, ${decks.ramps} ramps; ${railDecks} elevated rail ways`)
   /*

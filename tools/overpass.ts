@@ -129,7 +129,7 @@ export function cityQuery(b: Bbox): string {
   return `[out:json][timeout:240];
 (
   way["highway"~"^(motorway|motorway_link|trunk|trunk_link|residential|living_street|unclassified|tertiary|secondary|primary|primary_link|secondary_link|tertiary_link|pedestrian|footway|path|steps|track|bridleway|cycleway|service|busway)$"]["area"!~"yes"](${box});
-  way["railway"~"^(rail|light_rail|tram|subway|funicular|narrow_gauge)$"](${box});
+  way["railway"~"^(rail|light_rail|tram|subway|funicular|narrow_gauge|disused)$"](${box});
   way["building"](${box});
   way["building:part"](${box});
   way["leisure"~"^(park|garden|pitch|nature_reserve|sports_centre|stadium|track|swimming_pool|playground|dog_park|marina|bandstand)$"](${box});

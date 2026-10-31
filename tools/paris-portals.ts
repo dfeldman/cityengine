@@ -1,65 +1,67 @@
 /**
- * Writes public/landmarks/paris/portals.json: a mouth wherever a surface railway goes into a tunnel (owner, 2026-10-30: "then it
- * goes into a tunnel irl, while in our version it just ends"). Tunnel ways are not baked, so the track stopped dead there. Reads
- * the Île-de-France extract for the tunnels and the bake's package for the tracks that are drawn; tracks side by side share a
- * mouth. Rerun after a bake.
- *   node --experimental-strip-types tools/paris-portals.ts
+ * Writes public/landmarks/paris/portals.json: a mouth wherever a surface railway goes under something (owner, 2026-10-30: "then it
+ * goes into a tunnel irl, while in our version it just ends"). What is under something is not baked, so the track stopped dead there. Reads
+ * the Île-de-France extract for those ways and the bake's tiles for the tracks that are drawn, one tile at a time (the 200 MB package cost
+ * 4 GB of a machine that has none to spare). Tracks side by side share a mouth (tools/rail-levels.ts `railMouths`). Rerun after a bake.
+ *   node --experimental-strip-types tools/paris-portals.ts [--rails=<dry-rails.json>]
+ * (--rails: a dry run's tracks, tools/rail-audit.ts check <dir> --dry, in place of the last bake's: so the mouths go in with the bake that draws them)
  */
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
+import { railFate, railMouths } from './rail-levels.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const dir = mkdtempSync(resolve(tmpdir(), 'portals-'))
-const box = resolve(dir, 'box.pbf'), rails = resolve(dir, 'rails.pbf')
+const box = resolve(dir, 'box.pbf'), railsPbf = resolve(dir, 'rails.pbf')
 execFileSync('osmium', ['extract', '-b', '2.20,48.80,2.43,48.92', '--overwrite', '-o', box, resolve(ROOT, 'tools/cache/osm/ile-de-france-latest.osm.pbf')], { stdio: 'ignore' })
-execFileSync('osmium', ['tags-filter', box, 'w/railway=rail', '--overwrite', '-o', rails], { stdio: 'ignore' })
-const text = execFileSync('osmium', ['export', rails, '-f', 'geojsonseq'], { maxBuffer: 1 << 30 }).toString()
+execFileSync('osmium', ['tags-filter', box, 'w/railway=rail,light_rail,tram,subway,disused', '--overwrite', '-o', railsPbf], { stdio: 'ignore' })
+const text = execFileSync('osmium', ['export', railsPbf, '-f', 'geojsonseq'], { maxBuffer: 1 << 30 }).toString()
 rmSync(dir, { recursive: true, force: true })
 const X = (lon: number): number => (lon - 2.332) * 73270
 const Z = (lat: number): number => (lat - 48.8605) * 111320
-const tunnels: { x: number; z: number; ox: number; oz: number }[] = []
+
+interface Way { id: number; a: number; b: number; kind?: string; name?: string; width: number; foot?: boolean; tunnel?: boolean; bore?: boolean; points: number[] }
+const tileDir = resolve(ROOT, 'tools/cache/bake/paris-centre/tiles')
+const railsById = new Map<number, { kind: string; points: number[]; heights?: number[] }>()
+const edgesById = new Map<number, Way>()
+for (const f of readdirSync(tileDir)) {
+  if (!f.endsWith('.json')) continue
+  const t = JSON.parse(readFileSync(resolve(tileDir, f), 'utf8')) as { rails?: { id: number; kind: string; points: number[]; heights?: number[] }[]; edges: Way[] }
+  for (const r of t.rails ?? []) railsById.set(r.id, { kind: r.kind, points: r.points, heights: r.heights })
+  for (const e of t.edges) if (!edgesById.has(e.id)) edgesById.set(e.id, { id: e.id, a: e.a, b: e.b, kind: e.kind, name: e.name, width: e.width, foot: e.foot, tunnel: e.tunnel, bore: e.bore, points: e.points })
+}
+const railsArg = process.argv.find((a) => a.startsWith('--rails='))?.slice(8)
+const pkg = { rails: railsArg ? (JSON.parse(readFileSync(railsArg, 'utf8')) as { rails: { kind: string; points: number[]; heights?: number[] }[] }).rails : [...railsById.values()], edges: [...edgesById.values()] }
+// (a métro's own yard or trench, or a way the bake kept, is not under anything: only what is left undrawn)
+const drawnNear = (x: number, z: number): boolean => pkg.rails.some((r) => {
+  const p = r.points
+  for (let i = 2; i < p.length; i += 2) {
+    const dx = p[i] - p[i - 2], dz = p[i + 1] - p[i - 1], t = Math.max(0, Math.min(1, ((x - p[i - 2]) * dx + (z - p[i - 1]) * dz) / (dx * dx + dz * dz || 1)))
+    if (Math.hypot(p[i - 2] + dx * t - x, p[i - 1] + dz * t - z) < 2) return true
+  }
+  return false
+})
+const under: { points: number[] }[] = []
 for (const l of text.split('\n')) {
   const s = l.replace(/^\x1e/, '').trim()
   if (!s) continue
   const f = JSON.parse(s) as { properties: Record<string, string>; geometry: { type: string; coordinates: number[][] } }
-  if (f.geometry.type !== 'LineString' || !f.properties.tunnel || f.properties.tunnel === 'no') continue
+  if (f.geometry.type !== 'LineString') continue
+  const fate = railFate(f.properties)
+  if (fate === 'open') continue
   const c = f.geometry.coordinates
-  // each end, with the direction out of the tunnel there
-  const end = (a: number[], b: number[]): void => {
-    const x = X(a[0]), z = Z(a[1]), dx = x - X(b[0]), dz = z - Z(b[1]), L = Math.hypot(dx, dz) || 1
-    tunnels.push({ x, z, ox: dx / L, oz: dz / L })
-  }
-  end(c[0], c[1])
-  end(c[c.length - 1], c[c.length - 2])
+  const m = c[c.length >> 1]
+  if (fate === 'sunk' && drawnNear(X(m[0]), Z(m[1]))) continue
+  under.push({ points: c.flatMap((q) => [X(q[0]), Z(q[1])]) })
 }
-interface Way { id: number; a: number; b: number; kind?: string; name?: string; width: number; foot?: boolean; tunnel?: boolean; bore?: boolean; points: number[] }
-const pkg = JSON.parse(readFileSync(resolve(ROOT, 'tools/cache/bake/paris-centre/package.json'), 'utf8')) as { rails: { kind: string; points: number[] }[]; edges: Way[] }
-const ends: { x: number; z: number }[] = []
-for (const r of pkg.rails) {
-  if (r.kind !== 'rail') continue
-  ends.push({ x: r.points[0], z: r.points[1] }, { x: r.points[r.points.length - 2], z: r.points[r.points.length - 1] })
-}
-const mouths = tunnels.filter((t) => ends.some((e) => Math.hypot(e.x - t.x, e.z - t.z) < 3))
-// tracks side by side, one mouth: within 12 m and facing the same way. (Not 22: the two EOLE mouths in the Gare de l'Est's yard, 48.888912,
-// 2.365957, are 22 m apart with the running lines between them, and the one wall across all of it had trains passing through it: owner, "i
-// assume this is a train tunnel entrance but it doesn't go anywhere and looks like a wall")
-const groups: (typeof mouths)[] = []
-for (const m of mouths) {
-  const g = groups.find((q) => q.some((o) => Math.hypot(o.x - m.x, o.z - m.z) < 12 && o.ox * m.ox + o.oz * m.oz > 0.7))
-  if (g) g.push(m)
-  else groups.push([m])
-}
-const out = groups.map((g, i) => {
-  const x = g.reduce((a, m) => a + m.x, 0) / g.length, z = g.reduce((a, m) => a + m.z, 0) / g.length
-  const ox = g[0].ox, oz = g[0].oz
-  let wide = 0
-  for (const m of g) wide = Math.max(wide, Math.abs((m.x - x) * oz - (m.z - z) * ox))
+const made = railMouths(under, pkg.rails)
+const out = made.map((m, i) => {
   // (a point entry's `front` turns local −z to that bearing, and this model's opening is on +z: it looks out along the track, so the other way)
-  const front = Math.round(((Math.atan2(ox, oz) * 180) / Math.PI + 540) % 360)
-  return { name: `railway tunnel mouth ${i + 1}`, procedural: 'railPortal', lat: +(48.8605 + (z - oz * 3) / 111320).toFixed(6), lon: +(2.332 + (x - ox * 3) / 73270).toFixed(6),
-    size: [Math.round(2 * wide + 12), 6], front, height: 8, shadow: false, sign: false, note: 'Written by tools/paris-portals.ts: where OSM takes this track into a tunnel.' }
+  const front = Math.round(((Math.atan2(m.ox, m.oz) * 180) / Math.PI + 540) % 360)
+  return { name: `railway tunnel mouth ${i + 1}`, procedural: 'railPortal', lat: +(48.8605 + (m.z - m.oz * 3) / 111320).toFixed(6), lon: +(2.332 + (m.x - m.ox * 3) / 73270).toFixed(6),
+    size: [Math.round(2 * m.half), 6], front, height: 8, shadow: false, sign: false, note: 'Written by tools/paris-portals.ts: where OSM takes this track under something.' }
 })
 /*
  * …and the roads' (owner, 2026-10-30, the Périphérique under the Parc des Princes' end of the Bois, 48.847060, 2.254609: "this is actually a
@@ -100,4 +102,4 @@ const roads = roadGroups.map((g, i) => {
     size: [Math.round(2 * half + 7), 6], front, height: 7, shadow: false, sign: false, note: 'Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides.' }
 })
 writeFileSync(resolve(ROOT, 'public/landmarks/paris/portals.json'), `${JSON.stringify([...out, ...roads], null, 1)}\n`)
-console.log(`${tunnels.length / 2} rail tunnels; ${mouths.length} ends meet a drawn track; ${out.length} mouths; ${roadMouths.length} road tunnel ends, ${roads.length} mouths → public/landmarks/paris/portals.json`)
+console.log(`${under.length} railways under something; ${out.length} mouths, ${made.filter((m) => m.tight).length} tight between tracks; ${roadMouths.length} road tunnel ends, ${roads.length} mouths → public/landmarks/paris/portals.json`)

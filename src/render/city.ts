@@ -53,7 +53,7 @@ import { beachTint, buildShore, revetmentBand, shoreDistance, type ShoreIndex } 
 import { plog } from '../profile.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedCourt, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
-import { FREEWAY_KINDS } from './bridge-structures.ts'
+import { FLARED_OUTLINES, RAIL_ARCHES, freewayKind } from './bridge-structures.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
 import { layoutLot, type Stall } from '../city/parking.ts'
 
@@ -1636,9 +1636,11 @@ export class City {
   lanternStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; colour: [number, number, number] }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
+  /** the spans a viaduct leaps with no supports under it (render/bridge-structures.ts `RAIL_ARCHES`) */
+  private readonly railLeaps = new Map<number, { x: number; z: number }[]>()
   private structured(e: PackedEdge): boolean {
     // (never a freeway: see bridge-structures.ts `FREEWAY`)
-    if (FREEWAY_KINDS.has(e.kind)) return false
+    if (freewayKind(e)) return false
     const n = e.points.length / 2
     const k = Math.floor(n / 2)
     const x = n % 2 ? e.points[2 * k] : (e.points[2 * k - 2] + e.points[2 * k]) / 2
@@ -1852,8 +1854,9 @@ export class City {
     for (const b of t.bridges ?? []) {
       if (this.outlines.has(b.id)) continue
       const ring = unpackPoints(b.ring)
+      if (b.name && RAIL_ARCHES.has(b.name) && !this.railLeaps.has(b.id)) this.railLeaps.set(b.id, ring)
       // (a bent outline gets no structure, so its ways keep their own decks: bridge-axis.ts `straightOutline`)
-      if (!straightOutline(ring)) continue
+      if (!straightOutline(ring) && !FLARED_OUTLINES.has(b.name ?? '')) continue
       let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
       for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
       this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
@@ -2837,7 +2840,8 @@ export class City {
           && areasHere.some((p) => p.kind === 'park' && inGardenRing(unpackPoints(p.ring), unpackPoints(a.ring)[0].x, unpackPoints(a.ring)[0].z))
         const tint = walkInGarden ? GARDEN_TINT.gravel : a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+          // (a Paris square's plain paving: the concrete page at 2.4 m read as tan planks across the Concorde and the parvis of Notre-Dame)
+          0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : a.kind === 'paved' && this.pkg.region === 'paris' ? 24 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         /*
          * DRY GROUND (ZoneProps `dry`; owner, 2026-10-06: the Marin Headlands are "very dry and covered in low shrubs", and
          * a green lawn over them read as a golf course): grass, park and wood inside such a zone take the colours of
@@ -4488,7 +4492,7 @@ export class City {
       const railColour = hexRgb(this.region.elevatedRailColour)
       const [rtx, rtz] = k.split(',').map(Number)
       const railRect = { x0: rtx * TILE, z0: rtz * TILE, x1: (rtx + 1) * TILE, z1: (rtz + 1) * TILE }
-      const parisViaduct = this.region.viaduct === 'paris' ? { stations: this.viaductStations } : undefined
+      const parisViaduct = this.region.viaduct === 'paris' ? { stations: this.viaductStations, leaps: [...this.railLeaps.values()] } : undefined
       for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour, railRect, parisViaduct)
       if (decks.triangles > 0) {
         const m = new Mesh(`decks:${k}`, this.scene)

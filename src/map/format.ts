@@ -209,7 +209,7 @@ export interface Way {
 // `bore`: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts, render/tunnels.ts)
 export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512, authored: 1024, busRight: 2048, busLeft: 4096, paintTransit: 8192, paintBike: 16384 } as const
 /** Rail flag bits. */
-export const RF = { bridge: 1, cable: 2, light: 4 } as const
+export const RF = { bridge: 1, cable: 2, light: 4, funicular: 8, disused: 16 } as const
 
 export interface Roof {
   shape: RoofShape

@@ -103,6 +103,8 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
       if (zs.some((z) => z !== 0)) r.heights = zs.map(H)
       if (f & RF.cable) r.cable = true
       if (f & RF.light) r.light = true
+      if (f & RF.funicular) r.funicular = true
+      if (f & RF.disused) r.disused = true
       t.rails.push(r)
     } else if (w.role === 'bridge') {
       const b: PackedBridge = { id: w.id!, ring: flat(wi) }

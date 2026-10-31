@@ -321,7 +321,8 @@ export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colo
   const pts = unpackPoints(r.points)
   if (pts.length < 2 || !r.heights) return
   const f = frames(pts, r.heights)
-  if (paris) { parisViaduct(out, f, terrain, colour, rect, paris.stations, paris.leaps); return }
+  // (a station's platforms and canopy are the métro's: a main line's deck passing within 40 m of one is not at it)
+  if (paris) { parisViaduct(out, f, terrain, colour, rect, r.kind === 'subway' ? paris.stations : [], paris.leaps); return }
   const half = 2.2
   const mine = (x: number, z: number): boolean => !rect || (x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1)
   // the runs of consecutive segments in the rect
@@ -619,6 +620,8 @@ function parisViaduct(out: MeshBuilder, f: Frame[], terrain: Terrain, iron: Rgb,
     }
     const P = (fr: Frame, o: number, dy: number): [number, number, number] => [fr.x + fr.nx * o, fr.y + dy, fr.z + fr.nz * o]
     out.quad([P(a, -half, 0), P(a, half, 0), P(b, half, 0), P(b, -half, 0)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], light, FIXED)
+    // the rails on it (2026-10-31: a deck was a bare iron trough, and the track stopped and started at every bridge on a main line). Standard gauge, one pair down the middle
+    for (const g of [-0.72, 0.72]) out.quad([P(a, g - 0.05, 0.16), P(a, g + 0.05, 0.16), P(b, g + 0.05, 0.16), P(b, g - 0.05, 0.16)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.62, 0.63, 0.64], FIXED)
     for (const side of [-1, 1]) {
       const o = side * half
       const q = [P(a, o, -depth(s)), P(b, o, -depth(s1)), P(b, o, 0.35), P(a, o, 0.35)]
@@ -637,6 +640,8 @@ function parisViaduct(out: MeshBuilder, f: Frame[], terrain: Terrain, iron: Rgb,
     const heading = Math.atan2(fr.nx, fr.nz)
     if (k % 4 === 0) {
       const g = terrain.heightAt(fr.x, fr.z)
+      // (a deck over a shallow hole in a main line's bank has no room for a pier)
+      if (fr.y - g < 2) continue
       pier(out, fr.x, fr.z, g - 0.3, fr.y - 1.6, 0.9, half + 0.5, heading)
       box(out, fr.x, fr.y - 1.55, fr.z, 1.0, 0.12, 1.0, stone, FIXED)
       continue
