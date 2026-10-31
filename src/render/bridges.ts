@@ -20,6 +20,7 @@ import { MeshBuilder } from './buildings.ts'
 import { box, prism } from './models.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { isRaised, unpackPoints, type PackedEdge, type PackedRail } from '../city/package.ts'
+import { inOutline } from './bridge-structures.ts'
 
 type Rgb = [number, number, number]
 const FIXED = 0
@@ -316,11 +317,11 @@ function pier(out: MeshBuilder, x: number, z: number, y0: number, y1: number, hx
  */
 export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colour: Rgb,
                          rect?: { x0: number; z0: number; x1: number; z1: number },
-                         paris?: { stations: { x: number; z: number }[] }): void {
+                         paris?: { stations: { x: number; z: number }[]; leaps?: { x: number; z: number }[][] }): void {
   const pts = unpackPoints(r.points)
   if (pts.length < 2 || !r.heights) return
   const f = frames(pts, r.heights)
-  if (paris) { parisViaduct(out, f, terrain, colour, rect, paris.stations); return }
+  if (paris) { parisViaduct(out, f, terrain, colour, rect, paris.stations, paris.leaps); return }
   const half = 2.2
   const mine = (x: number, z: number): boolean => !rect || (x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1)
   // the runs of consecutive segments in the rect
@@ -598,7 +599,7 @@ function ribSeg(out: MeshBuilder, a: [number, number, number], b: [number, numbe
  * side under a long glass canopy. Only the spans whose middle is in `rect` (a tile's share).
  */
 function parisViaduct(out: MeshBuilder, f: Frame[], terrain: Terrain, iron: Rgb,
-                      rect: { x0: number; z0: number; x1: number; z1: number } | undefined, stations: { x: number; z: number }[]): void {
+                      rect: { x0: number; z0: number; x1: number; z1: number } | undefined, stations: { x: number; z: number }[], leaps: { x: number; z: number }[][] = []): void {
   const half = 2.3
   const mine = (x: number, z: number): boolean => !rect || (x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1)
   const total = f[f.length - 1].s
@@ -631,6 +632,8 @@ function parisViaduct(out: MeshBuilder, f: Frame[], terrain: Terrain, iron: Rgb,
   for (let s = SPAN; s < total - 2; s += SPAN, k++) {
     const fr = at(s)
     if (!mine(fr.x, fr.z)) continue
+    // (no supports under a span a bow carries: the Viaduc d'Austerlitz, render/bridge-structures.ts `RAIL_ARCHES`)
+    if (leaps.some((r) => inOutline(r, fr.x, fr.z, 2))) continue
     const heading = Math.atan2(fr.nx, fr.nz)
     if (k % 4 === 0) {
       const g = terrain.heightAt(fr.x, fr.z)

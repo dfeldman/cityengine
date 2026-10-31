@@ -215,7 +215,11 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
          * span over Market is itself tagged layer 5: that is the region's `layerCaps`, below — no rule tells
          * it from the park, whose four layers are real.)
          */
-        const per = o.foot && e.foot ? 1 : Math.max(1, layer - (o.layer ?? 0))
+        /*
+         * …and a freeway over a street in a city of lidar is one storey too, whatever layer it is mapped at (the Seine audit, 2026-10-30): the Boulevard Périphérique's
+         * Pont Amont, mapped at layer 2, stood its outer carriageway at 20.7 m and its inner at 12.7, one deck 8 m apart.
+         */
+        const per = (o.foot && e.foot) || (world.liftAbutments && FREEWAY.has(e.kind ?? '')) ? 1 : Math.max(1, layer - (o.layer ?? 0))
         need = Math.max(need, under + PER_LAYER * per - top)
       }
     }
@@ -299,19 +303,35 @@ export function mergeBridgeLanes<E extends { id: number; a: number; b: number; p
   const widen = new Map<E, number>()
   for (const e of edges) {
     if (!e.bridge || e.kind !== 'cycleway' || !e.name) continue
+    /*
+     * …the NEAREST roadway of its name (the Seine audit, 2026-10-30). The first found took it: where a bridge is two carriageways the lane on
+     * the far side of the other one, 14 m off, widened the first to 20 m: the Pont de Saint-Cloud's one road 20 m wide and its other 4.8, the
+     * Sèvres, Puteaux, Billancourt and Issy the same, one laid over the other. And no wider than its fellow carriageway leaves room for.
+     */
+    let best: { r: E; far: number; score: number } | null = null
     for (const r of roads) {
       if (r.name !== e.name) continue
-      let beside = 0, far = 0
+      let beside = 0, far = 0, sum = 0
       const n = e.points.length / 2
       for (let i = 0; i < e.points.length; i += 2) {
         const d = distance(e.points[i], e.points[i + 1], r.points)
-        if (d < REACH) { beside++; far = Math.max(far, d) }
+        if (d < REACH) { beside++; far = Math.max(far, d); sum += d }
       }
       if (beside < n * 0.6) continue
-      gone.add(e.id)
-      widen.set(r, Math.max(widen.get(r) ?? 0, Math.min(CAP, 2 * far + 2.8)))
-      break
+      const score = sum / beside
+      if (!best || score < best.score) best = { r, far, score }
     }
+    if (!best) continue
+    gone.add(e.id)
+    let w = Math.min(CAP, 2 * best.far + 2.8)
+    const mx = best.r.points[Math.floor(best.r.points.length / 4) * 2], mz = best.r.points[Math.floor(best.r.points.length / 4) * 2 + 1]
+    for (const o of roads) {
+      if (o === best.r || o.name !== best.r.name) continue
+      const d = distance(mx, mz, o.points)
+      // (its fellow carriageway beside it: the road takes the lane's width on, and stays on its own side)
+      if (d < 30) w = Math.min(w, Math.max(best.r.width + 2.8, 2 * (d - o.width / 2)))
+    }
+    widen.set(best.r, Math.max(widen.get(best.r) ?? 0, w))
   }
   if (!gone.size) return { edges, lanes: 0, stubs: 0 }
   for (const [r, w] of widen) r.width = Math.max(r.width, w)
@@ -351,8 +371,13 @@ export function mergeBridgeLanes<E extends { id: number; a: number; b: number; p
  * so: half a bridge is a dead end over the river, and the graph would prune it. Stairs do not count. Returns the ways to open.
  */
 export function footBridgeLinks(edges: (Pick<BridgeEdge, 'id' | 'a' | 'b' | 'points' | 'bridge' | 'kind'> & { name?: string; trail?: boolean })[], reach = 300): Set<number> {
-  const FOOT = /^(footway|path)$/
+  const FOOT = /^(footway|path|pedestrian)$/
   const notBike = /^(footway|path|steps|track|bridleway)$/
+  /*
+   * A few steps on the way off a foot bridge do not stop a bike that is carried up them (the Seine audit, 2026-10-30: the Passerelle Debilly, named by the
+   * owner, lands five metres of steps short of the Port Debilly's walk; the Passerelle Sud twelve). A flight this short is joined; a stair down a quay is not.
+   */
+  const SHORT_FLIGHT = 15
   const at = new Map<number, typeof edges>()
   for (const e of edges) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
   const rideable = (e: typeof edges[number]): boolean => !!e.trail || !notBike.test(e.kind ?? 'residential')
@@ -366,12 +391,21 @@ export function footBridgeLinks(edges: (Pick<BridgeEdge, 'id' | 'a' | 'b' | 'poi
   for (const e of edges) {
     if (e.bridge && e.name && FOOT.test(e.kind ?? '') && /^(Pont|Passerelle)\b/.test(e.name)) (groups.get(e.name) ?? groups.set(e.name, []).get(e.name)!).push(e)
   }
+  /*
+   * …and a pavement is not a foot bridge (the Seine audit, 2026-10-30). OSM names a road bridge's sidewalks for the bridge too: the Pont National,
+   * Sèvres, Suresnes, Daydé, Renault, Neuilly, Invalides and Courbevoie each came out in the ride graph as a road and a footway side by side, a
+   * loop joined at both ends and the rider asked which. Where a road of the same name is on a bridge the group's ways stay footways.
+   */
+  const roadNames = new Set(edges.filter((e) => e.bridge && e.name && !notBike.test(e.kind ?? 'residential') && e.kind !== 'cycleway' && e.kind !== 'pedestrian').map((e) => e.name))
   const open = new Set<number>()
-  for (const group of groups.values()) {
+  for (const [name, group] of groups) {
+    if (roadNames.has(name)) continue
     const own = new Set(group.map((e) => e.id))
     const count = new Map<number, number>()
     for (const e of group) for (const n of [e.a, e.b]) count.set(n, (count.get(n) ?? 0) + 1)
-    const ends = [...count].filter(([, c]) => c === 1).map(([n]) => n)
+    let ends = [...count].filter(([, c]) => c === 1).map(([n]) => n)
+    // (the Passerelle Senghor's two walks are a closed lens, no node of it an end: it ends where anything else meets it)
+    if (ends.length < 2) ends = [...count.keys()].filter((n) => (at.get(n) ?? []).some((o) => !own.has(o.id) && o.kind !== 'steps' && !o.bridge) || (at.get(n) ?? []).some((o) => !own.has(o.id) && !o.bridge))
     if (ends.length < 2) continue
     // (a big bridge is many ways with many ends, its stairs' landings among them: two that reach the network from opposite
     //  sides are a way across, and a piece that goes nowhere is pruned with the other stubs)
@@ -383,14 +417,15 @@ export function footBridgeLinks(edges: (Pick<BridgeEdge, 'id' | 'a' | 'b' | 'poi
         todo.sort((p, q) => best.get(p)!.d - best.get(q)!.d)
         const n = todo.shift()!
         const here = at.get(n) ?? []
-        if (here.some(rideable)) {
+        // (not on its own way: the Passerelle Nord is a pedestrian way, rideable, and its far end stopped there, a dead end on the Île Seguin)
+        if (here.some((e) => !own.has(e.id) && rideable(e))) {
           const via: number[] = []
           for (let k: number | null = n; k !== null && best.get(k)!.via !== null; k = best.get(k)!.from) via.push(best.get(k)!.via!)
           links.set(end, via)
           break
         }
         for (const e of here) {
-          if (own.has(e.id) || !FOOT.test(e.kind ?? '')) continue
+          if (own.has(e.id) || !(FOOT.test(e.kind ?? '') || (e.kind === 'steps' && lengthOf(e) <= SHORT_FLIGHT))) continue
           const m = e.a === n ? e.b : e.a
           const d = best.get(n)!.d + lengthOf(e)
           if (d > reach || d >= (best.get(m)?.d ?? Infinity)) continue
@@ -569,7 +604,8 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     // (right, for a Seine bridge a few hundred metres long) would put a several-hundred-metre-tall hill under
     // a kilometres-long freeway run instead of the flat elevated run it actually is
     const viaduct = isFreeway && L > VIADUCT_LENGTH
-    const ease = Math.min(VIADUCT_EASE, L / 3)
+    // (…and at a grade a road has: the Périphérique came off the Pont Aval at 30%, 15 m down in the 80 m allowed here, to the ground at the Quai d'Issy)
+    const ease = world.liftAbutments ? Math.min(L / 2.2, Math.max(VIADUCT_EASE, (top - Math.min(h0, h1)) / 0.05)) : Math.min(VIADUCT_EASE, L / 3)
     segs.forEach((sg, k) => {
       const cum = cumulative(sg.p)
       const hs = cum.map((c) => {
@@ -747,6 +783,12 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   }
   if (lifted > 0) console.log(`  ${lifted} short bridge fragments lifted onto their neighbours' deck (BUGS #217)`)
 
+  const riverDecks = world.liftAbutments ? oneDeck(edges, world) : null
+  if (riverDecks) {
+    for (const n of riverDecks.nodes) deckAt.delete(n)
+    for (const id of riverDecks.ids) raised.add(id)
+    console.log(`  bridges: ${riverDecks.decks} river bridges drawn as one deck each, ${riverDecks.ids.size} ways on them`)
+  }
   // ---- the ramps: outward from every raised bridge end, along ways that are not bridges, over RAMP metres
   const byNode = new Map<number, BridgeEdge[]>()
   for (const e of edges) {
@@ -814,6 +856,294 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   return { bridges, ramps, raised }
 }
 
+/** the crowns the river bridges have to them, where it is not `ONE_DECK_CROWN`: the Pont Marie's hump and the Alexandre III's famously flat deck */
+const CROWNS: Record<string, number> = { 'Pont Marie': 2.6, 'Pont Royal': 2.2, 'Pont Louis-Philippe': 2.2, 'Pont de la Tournelle': 2, 'Pont Neuf': 1.6, 'Pont Alexandre III': 0.7, "Pont d'Iéna": 0.6, 'Pont de la Concorde': 1 }
+const ONE_DECK_CROWN = 1.2
+/** the deck's middle over the river, at least: a Seine bridge carries its roadway about 6 m over the normal level, and every boat under it */
+const ONE_DECK_CLEARANCE = 6
+const ONE_DECK_GRADE = 0.045
+/** the river and not a lake or a canal: the Seine's pieces are all of this size or much more */
+const RIVER_AREA = 300_000
+/** two levels on purpose, drawn from their own ways: the lens of the Passerelle Simone-de-Beauvoir (`ownLevelDeck`) */
+const OWN_LEVELS = /^Passerelle Simone/
+
+/**
+ * ONE BRIDGE, ONE DECK (the owner, 2026-10-30: "We should audit every seine bridge too"; tools/, the audit of the 54 crossings). A Seine bridge is
+ * mapped as up to six ways side by side, and split at every node a stair touches, and `bridgeHeights` above made each of those a chain of its own
+ * on the bare earth under its own ends: the Pont au Change's roadway dipped to −5.6 m in mid-bridge at the head of a stair, between +2 either side;
+ * the Pont Neuf's to −4.2 at the Cité, the Pont d'Iéna's two carriageways 2.4 m apart, the Pont de Saint-Cloud's 13 m. So every way of a river
+ * bridge, once it is known what they all are, takes one profile: the line from bank to bank over its whole length, the street at each end as the
+ * ground has it a little way off the abutment, and a gentle crown. Its ends are the streets', so there is nothing left to ramp.
+ *
+ * The ways of a bridge: each bridge way with ten metres or more over the river; the ways joined to those, of the same name or a scrap of pavement,
+ * and any cycle or foot way running alongside; not a freeway, nor anything off to the side of the bridge's line (a slip road). Returns what it did.
+ */
+export function oneDeck(edges: BridgeEdge[], world: BridgeWorld): { decks: number; ids: Set<number>; nodes: Set<number> } {
+  const out = { decks: 0, ids: new Set<number>(), nodes: new Set<number>() }
+  const ringArea = (r: Pt[]): number => { let a = 0; for (let i = 0, j = r.length - 1; i < r.length; j = i++) a += r[j].x * r[i].z - r[i].x * r[j].z; return Math.abs(a) / 2 }
+  const rivers = world.water.filter((w) => ringArea(w.ring) >= RIVER_AREA).map((w) => {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of w.ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    return { ring: w.ring, level: w.level, x0, x1, z0, z1 }
+  })
+  if (!rivers.length) return out
+  ownLevelDecks(edges, out)
+  const wetAt = (x: number, z: number): number | null => { for (const w of rivers) if (x >= w.x0 && x <= w.x1 && z >= w.z0 && z <= w.z1 && inside(w.ring, x, z)) return w.level; return null }
+  const lengthOf = (e: BridgeEdge): number => { const c = cumulative(pts(e.points)); return c[c.length - 1] }
+  const deck = edges.filter((e) => e.bridge && !e.tunnel && e.heights && e.kind !== 'steps' && e.kind !== 'elevator' && !OWN_LEVELS.test(e.name ?? ''))
+  const freeway = (e: BridgeEdge): boolean => FREEWAY.has(e.kind ?? '') && !/^(Pont|Viaduc)\b/.test(e.name ?? '')
+  const light = (e: BridgeEdge): boolean => !!e.foot || e.kind === 'cycleway' || e.kind === 'path' || e.kind === 'footway' || e.kind === 'pedestrian' || e.kind === 'service'
+  // the seeds, with the points they have over the river
+  const wetOf = new Map<number, { x: number; z: number }[]>()
+  for (const e of deck) {
+    if (freeway(e)) continue
+    const p = pts(e.points)
+    const wet: Pt[] = []
+    let L = 0
+    for (let i = 1; i < p.length; i++) {
+      const mx = (p[i].x + p[i - 1].x) / 2, mz = (p[i].z + p[i - 1].z) / 2
+      if (wetAt(mx, mz) === null) continue
+      L += Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z)
+      wet.push({ x: mx, z: mz })
+    }
+    if (L >= 10) wetOf.set(e.id, wet)
+  }
+  const atNode = new Map<number, BridgeEdge[]>()
+  for (const e of deck) for (const n of [e.a, e.b]) (atNode.get(n) ?? atNode.set(n, []).get(n)!).push(e)
+  const byId = new Map(deck.map((e) => [e.id, e]))
+  // a bridge at a time: the seeds that touch or run with one another
+  const used = new Set<number>()
+  const midOf = (e: BridgeEdge): Pt => { const p = pts(e.points); return p[Math.floor(p.length / 2)] }
+  const near = (a: Pt, e: BridgeEdge): number => {
+    const q = pts(e.points)
+    let best = Infinity
+    for (let i = 1; i < q.length; i++) {
+      const dx = q[i].x - q[i - 1].x, dz = q[i].z - q[i - 1].z
+      const t = Math.max(0, Math.min(1, ((a.x - q[i - 1].x) * dx + (a.z - q[i - 1].z) * dz) / (dx * dx + dz * dz || 1)))
+      best = Math.min(best, Math.hypot(q[i - 1].x + dx * t - a.x, q[i - 1].z + dz * t - a.z))
+    }
+    return best
+  }
+  // (against all the ways so far, together: a pavement the length of the bridge runs beside a roadway split in two at the island)
+  const along = (e: BridgeEdge, ms: BridgeEdge[]): boolean => {
+    const p = pts(e.points)
+    let hit = 0
+    for (const q of p) if (ms.some((m) => near(q, m) < 30)) hit++
+    if (hit < p.length * 0.6) return false
+    const m0 = midOf(e)
+    let best: BridgeEdge | null = null, d = Infinity
+    for (const m of ms) { const v = near(m0, m); if (v < d) { d = v; best = m } }
+    if (!best) return false
+    const q = pts(best.points), u0 = p[0], u1 = p[p.length - 1], v0 = q[0], v1 = q[q.length - 1]
+    const ax = u1.x - u0.x, az = u1.z - u0.z, bx = v1.x - v0.x, bz = v1.z - v0.z
+    return Math.abs(ax * bx + az * bz) >= 0.8 * Math.hypot(ax, az) * Math.hypot(bx, bz)
+  }
+  // (its roadway first, and the pavements come to it: taken the other way round a pavement is a bridge of its own)
+  const rank = (id: number): number => { const e = byId.get(id)!; return !light(e) ? 0 : e.name ? 1 : 2 }
+  for (const seed of [...wetOf.keys()].sort((p, q) => rank(p) - rank(q))) {
+    if (used.has(seed)) continue
+    const members = new Map<number, BridgeEdge>([[seed, byId.get(seed)!]])
+    used.add(seed)
+    for (let changed = true; changed;) {
+      changed = false
+      const ms = [...members.values()]
+      const names = new Set(ms.map((m) => m.name).filter(Boolean))
+      for (const e of deck) {
+        if (members.has(e.id) || used.has(e.id) || freeway(e)) continue
+        const touches = (atNode.get(e.a) ?? []).concat(atNode.get(e.b) ?? []).some((o) => members.has(o.id))
+        const sameName = !!e.name && names.has(e.name)
+        const short = lengthOf(e) < 25
+        const m0 = midOf(e)
+        const closeBy = ms.some((m) => near(m0, m) < 40)
+        const ok = (touches && (sameName || (!e.name && light(e)) || (short && light(e))))
+          || (closeBy && (sameName || light(e)) && along(e, ms))
+        if (!ok) continue
+        members.set(e.id, e)
+        used.add(e.id)
+        changed = true
+      }
+    }
+    // the bridge's line, from its points over the water
+    const wet = [...members.keys()].flatMap((id) => wetOf.get(id) ?? [])
+    if (wet.length < 2) continue
+    const cx = wet.reduce((a, q) => a + q.x, 0) / wet.length, cz = wet.reduce((a, q) => a + q.z, 0) / wet.length
+    let xx = 0, xz = 0, zz = 0
+    for (const q of wet) { xx += (q.x - cx) ** 2; xz += (q.x - cx) * (q.z - cz); zz += (q.z - cz) ** 2 }
+    const th = 0.5 * Math.atan2(2 * xz, xx - zz)
+    const ux = Math.cos(th), uz = Math.sin(th)
+    const station = (q: Pt): number => (q.x - cx) * ux + (q.z - cz) * uz
+    const off = (q: Pt): number => Math.abs(-(q.x - cx) * uz + (q.z - cz) * ux)
+    // (not a slip road that left the line: those keep their own heights and meet the deck at the node they share)
+    const footOnly = [...members.values()].every(light)
+    // (…nor, on a foot bridge, a long way on inland: the Passerelle de l'Avre's climbs the hill at Saint-Cloud, 19 m up, and the whole span climbed with it)
+    let w0 = Infinity, w1 = -Infinity
+    for (const q of wet) { const v = station(q); w0 = Math.min(w0, v); w1 = Math.max(w1, v) }
+    const ways = [...members.values()].filter((e) => {
+      const m = midOf(e)
+      return wetOf.has(e.id) || (off(m) <= 35 && !(footOnly && (station(m) < w0 - 40 || station(m) > w1 + 40)))
+    })
+    if (!ways.length) continue
+    let s0 = Infinity, s1 = -Infinity
+    for (const e of ways) for (const q of pts(e.points)) { const s = station(q); s0 = Math.min(s0, s); s1 = Math.max(s1, s) }
+    const L = s1 - s0
+    if (L < 15) continue
+    const own = new Set(ways.map((e) => e.id))
+    // the streets at its two ends
+    const degree = new Map<number, number>()
+    for (const e of ways) for (const n of [e.a, e.b]) degree.set(n, (degree.get(n) ?? 0) + 1)
+    const nodeAt = new Map<number, Pt>()
+    for (const e of ways) { const p = pts(e.points); nodeAt.set(e.a, p[0]); nodeAt.set(e.b, p[p.length - 1]) }
+    const others = new Map<number, BridgeEdge[]>()
+    for (const n of nodeAt.keys()) others.set(n, [])
+    for (const e of edges) for (const n of [e.a, e.b]) if (others.has(n) && !own.has(e.id) && !e.tunnel) others.get(n)!.push(e)
+    const bank = (lo: boolean): number => {
+      const mid = (s0 + s1) / 2
+      const line: number[] = [], road: number[] = [], foot: number[] = [], raised: number[] = [], here: number[] = []
+      for (const [n, q] of nodeAt) {
+        const s = station(q)
+        if (lo ? s > mid : s < mid) continue
+        // the ways of the deck's end that reach out to its end only
+        if (Math.abs(s - (lo ? s0 : s1)) > Math.max(30, L * 0.2)) continue
+        for (const o of others.get(n) ?? []) {
+          if (o.kind === 'steps' || o.kind === 'elevator') continue
+          const p = pts(o.points)
+          const c = cumulative(p)
+          const run = c[c.length - 1]
+          const from = o.a === n
+          const d = Math.min(run, 25)
+          let i = 0
+          while (i < p.length - 1 && (from ? c[i] : run - c[p.length - 1 - i]) < d) i++
+          const k = from ? i : p.length - 1 - i
+          const atNode = (from ? o.heights?.[0] : o.heights?.[o.heights.length - 1]) ?? world.ground(q.x, q.z)
+          // a raised way going on in the bridge's line is the bridge going on: the N118 off the Pont de Sèvres, 10 m up, is where that end is
+          const raisedWay = !!o.bridge || FREEWAY.has(o.kind ?? '')
+          // (in line over its first 20 m, whatever it does later: the N118 bends away uphill)
+          let n20 = 0
+          while (n20 < p.length - 1 && (from ? c[n20] : run - c[p.length - 1 - n20]) < 20) n20++
+          const far = p[from ? n20 : p.length - 1 - n20]
+          const dx = far.x - q.x, dz = far.z - q.z
+          const inLine = raisedWay && !o.foot && !light(o) && !/_link$/.test(o.kind ?? '') && Math.abs(dx * ux + dz * uz) >= 0.96 * Math.hypot(dx, dz) && off(far) <= 25
+          if (inLine) line.push(atNode)
+          else if (FREEWAY.has(o.kind ?? '')) continue
+          // (a slip road on a bridge of its own has a height at the node, and it may be anything: only if nothing at grade says)
+          else if (o.bridge) raised.push(atNode)
+          // (at grade, the way's own level a little way off the abutment's hole, which is what is drawn: the ground grid is blurred with the river there)
+          else (o.foot || light(o) ? foot : road).push(o.heights?.[k] ?? world.ground(p[k].x, p[k].z))
+        }
+        here.push(world.ground(q.x, q.z))
+      }
+      const v = line.length ? line : road.length ? road : foot.length ? foot : raised.length ? raised : here
+      // the street's level is the highest of them: a way lower down is on the quay under the bridge, or in its hole
+      return v.length ? Math.max(...v) : 0
+    }
+    const level = rivers.reduce((m, w) => Math.min(m, w.level), Infinity)
+    const low = level + 2.5
+    const rawA = bank(true), rawB = bank(false)
+    // (a way along the lower quay, over an inlet or under a bridge's arch, is at the water's level and stays there)
+    if ((rawA + rawB) / 2 < low) continue
+    // (an end on a stair down to the port is not where the deck is: it stands clear at the bank, and the stair comes up to it)
+    const a = Math.max(rawA, level + 4.5), b = Math.max(rawB, level + 4.5)
+    const name = ways.find((e) => e.name && !light(e))?.name ?? ways.find((e) => e.name)?.name ?? ''
+    const crownWant = Math.max(CROWNS[name] ?? ONE_DECK_CROWN, level + ONE_DECK_CLEARANCE - (a + b) / 2)
+    // (what grade the line from bank to bank leaves it: the Pont Marie climbs 4 m to the Île Saint-Louis in 92)
+    const crown = Math.min(crownWant, Math.max(0.3, ((ONE_DECK_GRADE - Math.abs(b - a) / L) * L) / Math.PI))
+    const at = (q: Pt): number => {
+      const t = Math.max(0, Math.min(1, (station(q) - s0) / L))
+      return a + (b - a) * t + crown * Math.sin(Math.PI * t) ** 2
+    }
+    for (const e of ways) {
+      e.heights = pts(e.points).map((q) => Math.round(at(q) * 100) / 100)
+      out.ids.add(e.id)
+      out.nodes.add(e.a)
+      out.nodes.add(e.b)
+    }
+    /*
+     * …and the slip roads that left the bridge's line, on decks of their own, come to it at the node they share. Each had been lifted on its own
+     * reckoning: the N118's start at the Pont de Sèvres stood 10 m over the bridge it leaves. Eased from the deck's height back to their own, at a grade
+     * a road can have; a way of the deck's own stays as it is. (A motorway's main line stays, and a step down off a stair core is not a slip.)
+     */
+    for (const n of nodeAt.keys()) {
+      const y = deckY(n, ways)
+      for (const o of others.get(n) ?? []) {
+        // (a flight of steps on the deck's structure too, whatever height it stood: the stair at the Pont de Bir-Hakeim's middle, down to the Allée des Cygnes)
+        if (!o.bridge || o.kind === 'elevator' || !o.heights || o.kind === 'motorway') continue
+        const from = o.a === n
+        const end = from ? o.heights[0] : o.heights[o.heights.length - 1]
+        const step = y - end
+        if (Math.abs(step) < 0.3) continue
+        const c = cumulative(pts(o.points))
+        const run = c[c.length - 1]
+        const reach = Math.min(run, Math.max(30, Math.abs(step) / 0.06))
+        o.heights = o.heights.map((h, i) => {
+          const d = from ? c[i] : run - c[i]
+          return d >= reach ? h : Math.round((h + step * (1 - d / reach)) * 100) / 100
+        })
+        out.ids.add(o.id)
+      }
+    }
+    out.decks++
+  }
+  return out
+}
+
+/**
+ * The Passerelle Simone-de-Beauvoir (owner's list, 2026-10-30; its Wikipedia page: "meets the high banks directly … double supports on the low quays"): four
+ * arms that meet in pairs on one central span, the BnF's esplanade high on the left bank, the Parc de Bercy's terrace on the right, a quay low on each. OSM's
+ * layers stood two arms up to 8 m in the air with nothing at their ends, and the central span at −2.5 m, 3.5 m over the water. Each arm now runs straight from
+ * the central span to whatever way meets its far end; the span stands level half way between the two high banks, clear of the barges.
+ */
+function ownLevelDecks(edges: BridgeEdge[], out: { ids: Set<number>; nodes: Set<number>; decks: number }): void {
+  const groups = new Map<string, BridgeEdge[]>()
+  for (const e of edges) if (e.bridge && e.name && e.heights && OWN_LEVELS.test(e.name)) (groups.get(e.name) ?? groups.set(e.name, []).get(e.name)!).push(e)
+  for (const ways of groups.values()) {
+    const lengths = new Map(ways.map((e) => { const c = cumulative(pts(e.points)); return [e, c[c.length - 1]] as const }))
+    const own = new Set(ways.map((e) => e.id))
+    const at = new Map<number, BridgeEdge[]>()
+    for (const e of edges) for (const n of [e.a, e.b]) if (!own.has(e.id) && !e.tunnel && e.heights?.length) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
+    // the central span joins two nodes each with two more of the group's ways: that is, both its ends are shared
+    const degree = new Map<number, number>()
+    for (const e of ways) for (const n of [e.a, e.b]) degree.set(n, (degree.get(n) ?? 0) + 1)
+    const span = ways.filter((e) => (degree.get(e.a) ?? 0) >= 3 && (degree.get(e.b) ?? 0) >= 3).sort((p, q) => lengths.get(q)! - lengths.get(p)!)[0]
+    if (!span) continue
+    const farLevel = (e: BridgeEdge, hub: number): number => {
+      const far = e.a === hub ? e.b : e.a
+      const v = (at.get(far) ?? []).filter((o) => o.kind !== 'steps').map((o) => {
+        // (the far end of the short way that meets it: its own end at the node may have been lifted to the old arm)
+        const h = o.heights!
+        return o.a === far ? h[h.length - 1] : h[0]
+      })
+      const end = e.a === hub ? e.heights![e.heights!.length - 1] : e.heights![0]
+      return v.length ? Math.max(...v) : end
+    }
+    const arms = ways.filter((e) => e !== span && (e.a === span.a || e.b === span.a || e.a === span.b || e.b === span.b))
+    const levels = arms.map((e) => farLevel(e, e.a === span.a || e.b === span.a ? span.a : span.b))
+    if (!levels.length) continue
+    const sideA = arms.map((e, i) => (e.a === span.a || e.b === span.a ? levels[i] : -Infinity))
+    const sideB = arms.map((e, i) => (e.a === span.b || e.b === span.b ? levels[i] : -Infinity))
+    const hub = (Math.max(...sideA) + Math.max(...sideB)) / 2
+    span.heights = span.heights!.map(() => Math.round(hub * 100) / 100)
+    out.ids.add(span.id)
+    arms.forEach((e, i) => {
+      const fromA = e.a === span.a || e.a === span.b
+      const c = cumulative(pts(e.points))
+      const L = c[c.length - 1]
+      e.heights = c.map((d) => { const t = (fromA ? d : L - d) / Math.max(L, 1); return Math.round((hub + (levels[i] - hub) * t) * 100) / 100 })
+      out.ids.add(e.id)
+      out.nodes.add(e.a)
+      out.nodes.add(e.b)
+    })
+    out.decks++
+  }
+}
+
+function deckY(n: number, ways: BridgeEdge[]): number {
+  for (const e of ways) {
+    if (e.a === n) return e.heights![0]
+    if (e.b === n) return e.heights![e.heights!.length - 1]
+  }
+  return 0
+}
+
 /**
  * A FOOT BRIDGE'S ENDS, graded down to the paths they join (owner, 2026-10-03: "footbridge at 37.753044, -122.455970
  * does not connect to the ground on either end"). `bridgeHeights` gives a bridge one level; the footbridge over
@@ -823,7 +1153,7 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
  * down to it along the bridge's own line over `drop / 0.1` metres (at most 45 % of its length), smoothly, so the middle
  * — over the road — keeps its clearance. Returns the ids changed.
  */
-export function rampFootBridgeEnds(edges: { id: number; a: number; b: number; kind?: string; foot?: boolean; bridge?: boolean; ramp?: boolean; points: number[]; heights?: number[] }[]): Set<number> {
+export function rampFootBridgeEnds(edges: { id: number; a: number; b: number; kind?: string; foot?: boolean; bridge?: boolean; ramp?: boolean; points: number[]; heights?: number[] }[], humped = false): Set<number> {
   const at = new Map<number, number[]>()   // node → heights of the non-bridge ways ending there
   for (const e of edges) {
     if (e.bridge || !e.heights?.length) continue
@@ -842,7 +1172,9 @@ export function rampFootBridgeEnds(edges: { id: number; a: number; b: number; ki
     if (!e.bridge || !e.heights || e.heights.length < 3 || !/^(footway|path|cycleway|pedestrian)$/.test(e.kind ?? '')) continue
     const m = Math.floor(e.points.length / 4) * 2
     if (roadMids.some((r) => Math.hypot(r.x - e.points[m], r.z - e.points[m + 1]) < 18)) {
-      // (and one a previous pass graded is put back level, at its top)
+      // (and one a previous pass graded is put back level, at its top: not a deck that humps, as every Seine bridge does, whose sidewalks follow
+      //  its roadway — filled to the crown they stood flat up to 4 m over it at the ends, the Pont Marie's and the Alma's, a wall each side of the road)
+      if (humped) continue
       const top = Math.max(...e.heights)
       if (e.heights.some((h) => top - h > 0.05)) { e.heights.fill(top); changed.add(e.id) }
       continue
@@ -979,6 +1311,7 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false, rampOn = false): 
     deckEnd.set(e.b, Math.max(deckEnd.get(e.b) ?? -Infinity, h[h.length - 1]))
   }
   const onward = new Map<number, { deck: number; own: number }>()
+  const onwardFoot = new Map<number, { deck: number; own: number }>()
   for (const e of edges) {
     if (e.bridge || e.tunnel || !e.heights) continue
     const p = pts(e.points)
@@ -993,26 +1326,34 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false, rampOn = false): 
       if (deck === undefined) continue
       const own = fromA ? hs[0] : hs[hs.length - 1]
       // (a step a flight of stairs takes — not a skyway's 16 m, whose ends are in buildings: see the footbridge rule above)
-      if (Math.abs(deck - own) < 0.3 || Math.abs(deck - own) > 6) continue
+      // (…and on a river bridge a way walked up from a low island or quay: the Allée des Cygnes's foot to the Pont de Bir-Hakeim, 6.6 m, over the distance a path takes it)
+      if (Math.abs(deck - own) < 0.3 || Math.abs(deck - own) > (rampOn ? 8 : 6)) continue
       // (once the ground is final: a way under its deck climbs to it, but none is taken down into the ground)
       if (upOnly && deck < own) continue
-      // (a road too short to take the step at a grade you could ride: see `rampOnward`, below)
+      // (a road too short to take the step at a grade you could ride: see `rampOnward`, below; and in Paris a path the bridge opens to bikes: the
+      //  Allée des Cygnes's 2 m to the Pont de Grenelle's deck climbed 3 m, rose more than it ran, and the ride graph dropped it, the island's path cut off)
       if (rampOn && !e.foot && Math.abs(deck - own) / Math.max(EASE, 0.5) > STEEPEST) {
         if (Math.abs(deck - own) > Math.abs(deck - (onward.get(node)?.own ?? deck))) onward.set(node, { deck, own })
         continue
       }
+      if (rampOn && e.foot && e.kind !== 'steps' && Math.abs(deck - own) > Math.max(1.5, L)) {
+        if (Math.abs(deck - own) > Math.abs(deck - (onwardFoot.get(node)?.own ?? deck))) onwardFoot.set(node, { deck, own })
+        continue
+      }
+      const ease = rampOn && e.foot && e.kind !== 'steps' ? Math.min(Math.max(EASE, Math.abs(deck - own) / 0.1), L * 0.6) : EASE
       hs = hs.map((h, i) => {
         const d = fromA ? cum[i] : L - cum[i]
-        return d >= EASE ? h : Math.round((deck + (h - deck) * (d / EASE)) * 100) / 100
+        return d >= ease ? h : Math.round((deck + (h - deck) * (d / ease)) * 100) / 100
       })
       changed = true
     }
     if (changed) { e.heights = hs; changedIds.push(e.id) }
   }
-  if (onward.size) {
+  if (onward.size || onwardFoot.size) {
     const byNode = new Map<number, BridgeEdge[]>()
     for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
     for (const [node, o] of onward) changedIds.push(...rampOnward(byNode, node, o.deck, o.own))
+    for (const [node, o] of onwardFoot) changedIds.push(...rampOnward(byNode, node, o.deck, o.own, true))
   }
   return changedIds
 }
@@ -1027,7 +1368,7 @@ const RAMP_GRADE = 0.07
  * the next node took the whole of the step down to the street at 17.3: 100%. So the ramp goes on past the node, along every road, at a
  * grade you could ride, each way's own profile lifted by what is left of the step there. Not past a tunnel mouth, as the ramps above.
  */
-function rampOnward(byNode: Map<number, BridgeEdge[]>, start: number, deck: number, own: number): number[] {
+function rampOnward(byNode: Map<number, BridgeEdge[]>, start: number, deck: number, own: number, foot = false): number[] {
   const step = deck - own
   const reach = Math.min(RAMP, Math.abs(step) / RAMP_GRADE)
   const under = (n: number): boolean => (byNode.get(n) ?? []).some((o) => o.tunnel || (o.layer ?? 0) < 0)
@@ -1038,7 +1379,7 @@ function rampOnward(byNode: Map<number, BridgeEdge[]>, start: number, deck: numb
     queue.sort((a, b) => a.dist - b.dist)
     const { node, dist } = queue.shift()!
     for (const e of byNode.get(node) ?? []) {
-      if (e.bridge || e.foot || e.tunnel || !e.heights || done.has(e)) continue
+      if (e.bridge || (foot ? !e.foot || e.kind === 'steps' : e.foot) || e.tunnel || !e.heights || done.has(e)) continue
       done.add(e)
       const c = cumulative(pts(e.points))
       const L = c[c.length - 1]

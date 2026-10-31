@@ -59,7 +59,7 @@ export function quaysLayer(scene: Scene, pkg: Pick<CityPackage, 'areas' | 'water
   return {
     name: 'quays',
     build(near, rect) {
-      const m = buildQuays(scene, near.tile.edges, water, terrain, drop, rect, `quays:${near.key}`)
+      const m = buildQuays(scene, near.tile.edges, water, terrain, drop, rect, `quays:${near.key}`, near.around.edges)
       return m ? [m] : []
     },
   }
@@ -80,8 +80,28 @@ function prepareWater(pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrai
 }
 
 function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], terrain: Terrain, drop: number,
-  rect: { x0: number; z0: number; x1: number; z1: number }, name: string): Mesh | null {
+  rect: { x0: number; z0: number; x1: number; z1: number }, name: string, around: CityPackage['edges'] = edges): Mesh | null {
   if (water.length === 0) return null
+  /*
+   * A bridge's mouth is open (the Seine audit, 2026-10-30). The parapet is laid along the quay's river side and knows nothing of what leaves it: at every bridge head on a
+   * quay it ran on across the roadway, a metre of stone and on the booksellers' quays a row of green boxes across the Pont Royal's mouth and the Pont Saint-Michel's.
+   */
+  const mouths: { p: Point[]; r: number }[] = []
+  for (const e of around) {
+    if (!e.bridge && !e.ramp) continue
+    if (e.bridge && e.tunnel) continue
+    mouths.push({ p: unpackPoints(e.points), r: e.width / 2 + (e.foot ? 0.5 : e.walk + 0.5) })
+  }
+  const inMouth = (x: number, z: number): boolean => {
+    for (const m of mouths) {
+      for (let i = 1; i < m.p.length; i++) {
+        const a = m.p[i - 1], b = m.p[i], dx = b.x - a.x, dz = b.z - a.z
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+        if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < m.r) return true
+      }
+    }
+    return false
+  }
   const mine = (x: number, z: number): boolean => x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1
   // an island is a hole in the river: land
   const wet = (x: number, z: number): boolean => water.some((w) => x >= w.x0 && x <= w.x1 && z >= w.z0 && z <= w.z1
@@ -124,6 +144,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
         const off = Math.max(d, edge - 1)
         const cx = mx - uz * side * off
         const cz = mz + ux * side * off
+        if (inMouth(cx, cz)) continue
         const y = terrain.heightAt(cx, cz) + 0.15
         // the parapet: a stone wall 0.45 m thick and 1 m high, with a paler coping
         boxAt(out, { x: cx, z: cz }, y - 0.3, ux, uz, l / 2 + 0.02, 0.22, 1.2, STONE)

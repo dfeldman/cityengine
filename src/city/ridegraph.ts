@@ -121,7 +121,8 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
        */
       if (FREEWAY.has(k)) return !!e.ridden
       // a trail in a zone that opens its trails to bikes (`trails: 'bike'`): the Lands End trail down to Sutro Baths
-      if (e.trail && (k === 'footway' || k === 'path' || k === 'track' || k === 'bridleway')) return true
+      // (and a short flight a foot bridge's way off goes up: tools/bridges.ts footBridgeLinks)
+      if (e.trail && (k === 'footway' || k === 'path' || k === 'track' || k === 'bridleway' || k === 'steps')) return true
       return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
     .map((e) => ({
@@ -812,7 +813,7 @@ export function project(points: Point[], p: Point): { d: number; s: number; t: n
 }
 
 /** The two edges are one street drawn twice: same name, side by side, pointing the same way (either sense). */
-export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z: number) => number): boolean {
+export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z: number) => number, oneDeck = false): boolean {
   if (!e.name || e.name !== f.name || e.id === f.id) return false
   if (e.length <= 20 || f.length <= 20) return false
   if (e.a === f.a && e.b === f.b) { /* same ends: still a pair if they run side by side */ }
@@ -840,7 +841,9 @@ export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z:
        * …nor two carriageways at one level with something LOWER between them (2026-10-15, Broadway's frontage roads
        * either side of its trench): the midline down the middle rode 1.5 m over the trench, nothing under the wheel.
        */
-      if (ground) {
+      // (…but a river is lower than any bridge's two carriageways: every dual carriageway over the Seine stayed two ways round, the Alma's and the Iéna's,
+      //  a loop with the rider asked at each end. Where the bridges are one deck, `oneDeck`, the region says so: tools/bridges.ts `oneDeck`.)
+      if (ground && !(oneDeck && e.bridge && f.bridge)) {
         const q = project(f.points, p)
         const fp = pointAt(f.points, q.s)
         const h = (near(e, p) + near(f, p)) / 2
@@ -869,7 +872,7 @@ export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z:
  * become self-loops and go. The renderer still paints both carriageways from the map graph, so nothing
  * visible changes — the rider simply rides the middle of the boulevard.
  */
-export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: number, z: number) => number): RideEdge[] {
+export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: number, z: number) => number, oneDeck = false): RideEdge[] {
   let cur = edges
   /*
    * The pairs already found NOT to merge, by the edges themselves. Each pass merges one pair and searches again from the
@@ -916,7 +919,7 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
         for (let j = i + 1; j < g.length; j++) {
           if (failed.get(g[i])?.has(g[j])) continue
           if (!free(g[j])) { whole = false; continue }
-          if (isParallelPair(g[i], g[j], ground) && midline(g[i], g[j], ids, true)) {
+          if (isParallelPair(g[i], g[j], ground, oneDeck) && midline(g[i], g[j], ids, true, oneDeck)) {
             batch.push([g[i], g[j]])
             for (const e of [g[i], g[j]]) { takenEdge.add(e); takenNode.add(e.a); takenNode.add(e.b) }
             whole = false
@@ -932,7 +935,7 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
     const made: RideEdge[] = []
     const gone = new Set<RideEdge>()
     for (const [e, f] of batch) {
-      const m = midline(e, f, ids, false)
+      const m = midline(e, f, ids, false, oneDeck)
       if (!m) { fail(e, f); continue }
       for (const [k, v] of m.moved) moved.set(k, v)
       made.push(m.edge)
@@ -946,7 +949,7 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
 }
 
 /** The midline of a parallel pair and where the four old end nodes go, or null if the ends do not line up. */
-function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean)
+function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean, oneDeck = false)
   : { edge: RideEdge; moved: Map<number, { id: number; at: Point }> } | null {
   // point both the same way
   const de = { x: e.points[e.points.length - 1].x - e.points[0].x, z: e.points[e.points.length - 1].z - e.points[0].z }
@@ -975,7 +978,8 @@ function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean)
    */
   {
     const sp = re.pts.map((p, i) => distance(p, rf.pts[i])).sort((a, b) => a - b)
-    if (sp[Math.floor(sp.length * 0.1)] > 14) return null
+    // (a bridge's two carriageways, with one deck under them: the Alma's and the Iéna's are 15–17 m apart with pavement between)
+    if (sp[Math.floor(sp.length * 0.1)] > (oneDeck && e.bridge && f0.bridge ? 20 : 14)) return null
   }
   if (dryRun) return { edge: e, moved: new Map() }
   const na = { id: ids.nextNode(), at: A }
@@ -1080,7 +1084,7 @@ function apart(e: RideEdge, r: RideEdge): boolean {
   return false
 }
 
-export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: Point, b: Point) => boolean): RideEdge[] {
+export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: Point, b: Point) => boolean, oneDeck = false): RideEdge[] {
   /*
    * A side path is a way that runs ALONGSIDE a street rather than being one: a pedestrian way or a cycle track
    * named for the street it borders, and an unnamed cycle track or service lane beside any street. Paris maps
@@ -1171,7 +1175,9 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
   const dropped = new Map<RideEdge, RideEdge>()
   for (const e of edges) {
     // (and a bridge's cycleway is never itself a side path: it is the way over)
-    if (!candidate(e) || bikeway(e)) continue
+    // (…where it runs beside a freeway. Where a region's bridges are one deck its track is on the same deck as the road, and only a third way over: the
+    //  Promenade at Bir-Hakeim, the Pont National's and the Nelson Mandela's. The rider rides the road, as on every other street: tools/bridges.ts `oneDeck`)
+    if (!candidate(e) || (bikeway(e) && !oneDeck)) continue
     const r = beside(e)
     if (r) dropped.set(e, r)
   }
@@ -1301,6 +1307,8 @@ export interface RideOverrides {
   keep?: { x: number; z: number; r: number }[]
   /** the ground, for the links across a split boulevard: none is laid through the air (a trench between) */
   ground?: (x: number, z: number) => number
+  /** the region's river bridges are one deck each (tools/bridges.ts `oneDeck`): two carriageways of a bridge are one way over it, whatever is under */
+  oneDeck?: boolean
   /** false: leave the junctions' approaches as the passes made them (tools/junctions.ts measures both ways) */
   straighten?: boolean
   /** streets ridden as one straight path through a stretch (`straightCorridor`) */
@@ -1712,9 +1720,9 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   const classified = closePathGaps(mode === 'bike' ? joinDeadEnds(gapped, edges, blocked) : gapped, blocked)
   // (the freeways pruned again once the side paths are gone: the carriageway a bridge's sidewalk replaces was the
   // only way onto the freeway beyond it)
-  let es = pruneStubs(largest(mode === 'bike' ? pruneFreewayTraps(dropSidePaths(classified, ids, blocked)) : classified))
+  let es = pruneStubs(largest(mode === 'bike' ? pruneFreewayTraps(dropSidePaths(classified, ids, blocked, overrides?.oneDeck)) : classified))
   es = despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
-  es = mergeParallel(es, ids, overrides?.ground)
+  es = mergeParallel(es, ids, overrides?.ground, overrides?.oneDeck)
   es = largest(despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids)))
   for (const o of overrides?.roundabouts ?? []) es = applyRoundabout(es, o, ids, overrides!.heightAt)
   // and the stubs a dropped path leaves behind, pruned as the chain prunes them the first time

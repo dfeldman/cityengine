@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bridgeHeights, footBridgeLinks, meetDecks, mergeBridgeLanes, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
+import { bridgeHeights, footBridgeLinks, meetDecks, mergeBridgeLanes, oneDeck, rampFootBridgeEnds, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
 
 const flat: BridgeWorld['ground'] = () => 0
 const river = (x0: number, x1: number): BridgeWorld['water'][number] =>
@@ -129,7 +129,7 @@ describe('named foot bridges open to bikes', () => {
   it('leaves a bridge alone when an end reaches the network only by stairs, or too far off', () => {
     const stairs = footBridgeLinks([
       way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Passerelle' }),
-      way(2, 2, 3, 'steps', 100, 110), way(3, 3, 4, 'residential', 110, 200),
+      way(2, 2, 3, 'steps', 100, 130), way(3, 3, 4, 'residential', 130, 200),
       way(4, 1, 5, 'residential', -30, 0),
     ])
     expect(stairs.size).toBe(0)
@@ -139,6 +139,150 @@ describe('named foot bridges open to bikes', () => {
       way(4, 1, 5, 'residential', -30, 0),
     ])
     expect(far.size).toBe(0)
+  })
+})
+
+describe('named foot bridges open to bikes: the Seine audit', () => {
+  const way = (id: number, a: number, b: number, kind: string, x0: number, x1: number, more = {}) =>
+    ({ id, a, b, kind, points: [x0, 0, x1, 0], ...more })
+  it('joins a short flight on the way off (the Passerelle Debilly)', () => {
+    const open = footBridgeLinks([
+      way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Passerelle Debilly' }),
+      way(2, 2, 3, 'steps', 100, 105), way(3, 3, 4, 'residential', 105, 200),
+      way(4, 1, 5, 'residential', -30, 0),
+    ])
+    expect([...open].sort()).toEqual([1, 2])
+  })
+  it('leaves the pavements of a road bridge of the same name as footways (the Pont National)', () => {
+    const open = footBridgeLinks([
+      way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Pont National' }),
+      way(2, 3, 4, 'primary', 0, 100, { bridge: true, name: 'Pont National' }),
+      way(3, 1, 3, 'residential', -30, 0), way(4, 2, 4, 'residential', 100, 130),
+    ])
+    expect(open.size).toBe(0)
+  })
+  it('crosses a closed lens of two walks (the Passerelle Senghor)', () => {
+    const open = footBridgeLinks([
+      way(1, 1, 2, 'footway', 0, 100, { bridge: true, name: 'Passerelle Senghor' }),
+      way(2, 2, 1, 'footway', 100, 0, { bridge: true, name: 'Passerelle Senghor' }),
+      way(3, 1, 3, 'residential', -30, 0), way(4, 2, 4, 'residential', 100, 130),
+    ])
+    expect([...open].sort()).toEqual([1, 2])
+  })
+  it('goes on from its own far end when the bridge is a pedestrian way (the Passerelle Nord)', () => {
+    const open = footBridgeLinks([
+      way(1, 1, 2, 'pedestrian', 0, 100, { bridge: true, name: 'Passerelle Nord' }),
+      way(2, 2, 3, 'footway', 100, 120), way(3, 3, 4, 'residential', 120, 200),
+      way(4, 1, 5, 'residential', -30, 0),
+    ])
+    expect([...open].sort()).toEqual([1, 2])
+  })
+})
+
+describe('a freeway through a city of lidar (the Seine audit)', () => {
+  it('comes off a viaduct at a grade a road has, and is one storey over a street whatever its layer', () => {
+    const fw: BridgeEdge = { id: 1, a: 1, b: 2, points: [0, 0, 600, 0], heights: [0, 0], bridge: true, layer: 3, kind: 'trunk' }
+    const under: BridgeEdge = { id: 2, a: 3, b: 4, points: [300, -30, 300, 30], heights: [2, 2], kind: 'residential' }
+    bridgeHeights([fw, under], { water: [], ground: flat, liftAbutments: true })
+    expect(Math.max(...fw.heights!)).toBeCloseTo(7.5, 0)
+    for (let i = 1; i < fw.heights!.length; i++) expect(Math.abs(fw.heights![i] - fw.heights![i - 1]) / Math.hypot(fw.points[2 * i] - fw.points[2 * i - 2], 0)).toBeLessThan(0.09)
+  })
+})
+
+describe('a path too short for its step off a deck (the Allée des Cygnes)', () => {
+  it('ramps on past the next node at a grade, so the ride graph does not drop it as a wall', () => {
+    const deck: BridgeEdge = { id: 1, a: 1, b: 2, bridge: true, points: [0, 0, 100, 0], heights: [1.4, 1.4] }
+    const scrap: BridgeEdge = { id: 2, a: 2, b: 3, foot: true, kind: 'pedestrian', points: [100, 0, 102, 0], heights: [-1.5, -1.5] }
+    const path: BridgeEdge = { id: 3, a: 3, b: 4, foot: true, kind: 'pedestrian', points: [102, 0, 130, 0, 160, 0], heights: [-1.5, -1.5, -1.5] }
+    meetDecks([deck, scrap, path], false, true)
+    expect(scrap.heights![0]).toBeCloseTo(1.4, 1)
+    expect(Math.abs(scrap.heights![1] - scrap.heights![0])).toBeLessThan(1)
+    expect(path.heights![path.heights!.length - 1]).toBeCloseTo(-1.5, 1)
+  })
+})
+
+describe('one bridge, one deck (the Seine audit)', () => {
+  const world: BridgeWorld = { water: [{ ...river(-150, 150), level: -6 }], ground: flat, liftAbutments: true }
+  const line = (from: number, to: number, y: (x: number) => number): { points: number[]; heights: number[] } => {
+    const points: number[] = [], heights: number[] = []
+    for (let x = from; x <= to + 1e-6; x += 10) { points.push(x, 0); heights.push(y(x)) }
+    return { points, heights }
+  }
+  const street = (id: number, a: number, b: number, from: number, to: number, y: number, name?: string): BridgeEdge => ({ id, a, b, name, kind: 'residential', ...line(from, to, () => y) })
+  it('puts every way of a bridge on one profile, the street at each end and a crown, whatever each stood on', () => {
+    const road1: BridgeEdge = { id: 1, a: 1, b: 2, bridge: true, kind: 'primary', name: 'Pont au Change', layer: 1, ...line(-160, 0, (x) => x > -10 ? -5.6 : 2) }
+    const road2: BridgeEdge = { id: 2, a: 2, b: 3, bridge: true, kind: 'primary', name: 'Pont au Change', layer: 1, ...line(0, 160, (x) => x < 10 ? -5.6 : 2.3) }
+    const foot: BridgeEdge = { id: 3, a: 4, b: 5, bridge: true, foot: true, kind: 'footway', layer: 1, ...line(-160, 160, () => 4) }
+    foot.points = foot.points.map((v, i) => (i % 2 ? 8 : v))
+    const n = street(4, 1, 6, -220, -160, 1), s_ = street(5, 3, 7, 160, 220, 1)
+    n.points = [...n.points]
+    const es = [road1, road2, foot, n, s_]
+    const r = oneDeck(es, world)
+    expect(r.decks).toBe(1)
+    expect(r.ids.size).toBe(3)
+    // no dip at the stair's node, and the ends are the street's
+    const y = (e: BridgeEdge): number[] => e.heights!
+    expect(Math.min(...y(road1), ...y(road2))).toBeGreaterThan(0.9)
+    expect(y(road1)[0]).toBeCloseTo(1, 1)
+    expect(y(road2)[y(road2).length - 1]).toBeCloseTo(1, 1)
+    // the pavement is the roadway's height at the same station
+    expect(y(foot)[16]).toBeCloseTo(y(road2)[0], 1)
+    // a crown, at the clearance's level or the default, and gentle
+    expect(y(road2)[0]).toBeGreaterThan(2)
+    for (const e of [road1, road2]) for (let i = 1; i < y(e).length; i++) expect(Math.abs(y(e)[i] - y(e)[i - 1]) / 10).toBeLessThan(0.05)
+  })
+  it('leaves a way along the lower quay at the water, and stands a deck clear of a stair at its end', () => {
+    const berge: BridgeEdge = { id: 1, a: 1, b: 2, bridge: true, kind: 'path', ...line(-160, 160, () => -4.5) }
+    const n = street(2, 1, 6, -220, -160, -4.5), s_ = street(3, 2, 7, 160, 220, -4.5)
+    n.kind = 'path'; s_.kind = 'path'
+    expect(oneDeck([berge, n, s_], world).decks).toBe(0)
+    const debilly: BridgeEdge = { id: 1, a: 1, b: 2, bridge: true, foot: true, kind: 'footway', name: 'Passerelle', ...line(-160, 160, () => -3) }
+    const down: BridgeEdge = { id: 2, a: 1, b: 6, foot: true, kind: 'footway', ...line(-220, -160, () => -4) }
+    const up: BridgeEdge = { id: 3, a: 2, b: 7, foot: true, kind: 'footway', ...line(160, 220, () => 0.4) }
+    oneDeck([debilly, down, up], world)
+    expect(debilly.heights![0]).toBeCloseTo(-1.5, 1)
+    expect(debilly.heights![debilly.heights!.length - 1]).toBeCloseTo(0.4, 1)
+  })
+  it('leaves a bridge that is not over the river, and a freeway over it', () => {
+    const over: BridgeEdge = { id: 1, a: 1, b: 2, bridge: true, kind: 'primary', name: 'Pont', ...line(200, 400, () => 5) }
+    const free: BridgeEdge = { id: 2, a: 3, b: 4, bridge: true, kind: 'motorway', name: 'Autoroute', ...line(-160, 160, () => 15) }
+    const before = [[...over.heights!], [...free.heights!]]
+    expect(oneDeck([over, free], world).decks).toBe(0)
+    expect(over.heights).toEqual(before[0])
+    expect(free.heights).toEqual(before[1])
+  })
+  it('brings a slip road on a deck of its own to the node it shares', () => {
+    const road: BridgeEdge = { id: 1, a: 1, b: 2, bridge: true, kind: 'primary', name: 'Pont', ...line(-160, 160, () => 1) }
+    const slip: BridgeEdge = { id: 2, a: 2, b: 9, bridge: true, kind: 'trunk_link', points: [160, 0, 170, 100, 180, 200], heights: [12, 12, 12] }
+    const end: BridgeEdge = street(3, 1, 8, -220, -160, 1)
+    oneDeck([road, slip, end], world)
+    expect(slip.heights![0]).toBeCloseTo(road.heights![road.heights!.length - 1], 1)
+    expect(slip.heights![2]).toBeCloseTo(12, 1)
+  })
+  it('stands the Passerelle Simone-de-Beauvoir between its high banks, each arm running to what meets it', () => {
+    const name = 'Passerelle Simone de Beauvoir'
+    const f = (id: number, a: number, b: number, from: number, to: number, y: number): BridgeEdge => ({ id, a, b, name, kind: 'footway', foot: true, bridge: true, layer: 1, ...line(from, to, () => y) })
+    const span = f(1, 1, 2, -50, 50, -2.5)
+    const hiW = f(2, 3, 1, -150, -50, 7.8), loW = f(3, 4, 1, -100, -50, 0), hiE = f(4, 2, 5, 50, 150, 8.3), loE = f(5, 2, 6, 50, 100, 4.5)
+    const ground = (id: number, a: number, from: number, to: number, y: number): BridgeEdge => ({ id, a, b: 100 + id, kind: 'footway', foot: true, ...line(from, to, () => y) })
+    const es = [span, hiW, loW, hiE, loE, ground(6, 3, -160, -150, 2), ground(7, 4, -110, -100, -0.5), ground(8, 5, 150, 160, 8), ground(9, 6, 100, 110, 1)]
+    oneDeck(es, world)
+    expect(new Set(span.heights).size).toBe(1)
+    expect(span.heights![0]).toBeCloseTo((2 + 8) / 2, 1)
+    expect(hiW.heights![0]).toBeCloseTo(2, 1)
+    expect(hiW.heights![hiW.heights!.length - 1]).toBeCloseTo(5, 1)
+    expect(loE.heights![loE.heights!.length - 1]).toBeCloseTo(1, 1)
+  })
+  it('a sidewalk of a humped deck keeps the hump (`rampFootBridgeEnds` humped)', () => {
+    const road = { id: 1, a: 1, b: 2, kind: 'primary', bridge: true, points: [0, 0, 50, 0, 100, 0], heights: [0, 2, 0] }
+    const walk = (): { id: number; a: number; b: number; kind: string; foot: boolean; bridge: boolean; points: number[]; heights: number[] } =>
+      ({ id: 2, a: 3, b: 4, kind: 'footway', foot: true, bridge: true, points: [0, 5, 50, 5, 100, 5], heights: [0, 2, 0] })
+    const flat_ = walk()
+    rampFootBridgeEnds([road, flat_])
+    expect(flat_.heights).toEqual([2, 2, 2])
+    const humped = walk()
+    rampFootBridgeEnds([road, humped], true)
+    expect(humped.heights).toEqual([0, 2, 0])
   })
 })
 
@@ -281,6 +425,17 @@ describe('a bridge\'s cycle lanes (the Pont du Carrousel, 2026-10-30)', () => {
     const out = mergeBridgeLanes([r, lane(2, 6, 1, 2), lane(3, -6, 2, 1)])
     expect(out.edges.map((e) => e.id)).toEqual([1])
     expect(r.width).toBeCloseTo(14.8)
+  })
+  it('widens the nearer of two carriageways, and only into the room there is', () => {
+    const w: E = { id: 1, a: 1, b: 2, points: [0, 0, 0, 100], bridge: true, kind: 'primary', name: 'Pont', width: 5 }
+    const e: E = { id: 2, a: 3, b: 4, points: [12, 0, 12, 100], bridge: true, kind: 'primary', name: 'Pont', width: 5 }
+    // (on the far side of the east carriageway, 16 m from the west one, 4 from its own)
+    const out = mergeBridgeLanes([w, e, lane(3, 4 + 12, 3, 4)].map((q) => ({ ...q })))
+    const by = new Map(out.edges.map((q) => [q.id, q]))
+    expect(by.get(3)).toBeUndefined()
+    expect(by.get(1)!.width).toBe(5)
+    expect(by.get(2)!.width).toBeGreaterThan(5)
+    expect(by.get(2)!.width).toBeLessThan(11)
   })
   it('takes a stub of lane on land with it, and leaves one that goes somewhere', () => {
     const stub: E = { id: 4, a: 3, b: 1, points: [6, -20, 6, 0], kind: 'cycleway', name: 'Pont', width: 2.8 }

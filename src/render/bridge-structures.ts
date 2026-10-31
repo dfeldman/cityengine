@@ -26,7 +26,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
-import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge } from '../city/package.ts'
+import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge, type PackedRail } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { axisAlong, axisOf, straightOutline } from '../city/bridge-axis.ts'
 
@@ -73,21 +73,64 @@ export interface StructureStyle {
   timber?: boolean
   /** Bir-Hakeim: the métro's viaduct carried on a colonnade of iron posts down the middle of the road deck */
   metroDeck?: { height: number; width: number }
+  /** the arches' lengths in proportion, where they differ (the Pont Mirabeau's 32, 93, 32) */
+  spans?: number[]
+  /** a girder's river piers, as shares of its length; by `span` when absent, none when neither (the Alma's one, off centre) */
+  pierAt?: number[]
+  /** how deep a girder's fascia is below the deck (m) */
+  depth?: number
+  /** bronze figures on the piers (the Pont Mirabeau's four, the Alma's Zouave) */
+  figures?: boolean
+  /** the Pont d'Iéna's four horsemen at its corners */
+  horsemen?: boolean
+  /** the Pont Alexandre III's gilded nymphs at the crown of the arch, on each face */
+  nymphs?: boolean
 }
 
 const LIMESTONE: Rgb = [0.82, 0.78, 0.69]
 const IRON_GREEN: Rgb = [0.2, 0.26, 0.23]
 const GOLD: Rgb = [0.86, 0.68, 0.28]
+const BRONZE: Rgb = [0.27, 0.3, 0.26]
+const CONCRETE: Rgb = [0.62, 0.61, 0.58]
+const STEEL: Rgb = [0.38, 0.41, 0.42]
 
 /** Central Paris's bridges, by the name on the outline (OSM spells some differently from their ways). */
 export const PARIS_BRIDGES: Record<string, StructureStyle> = {
   'Pont Neuf': { kind: 'stone', span: 16, rise: 0.8, shape: 'round', cutwater: 'pointed', parapet: 'stone', lamps: 'candelabra', bastions: true, mascarons: true },
   'Pont Royal': { kind: 'stone', arches: 5, rise: 0.75, shape: 'round', cutwater: 'pointed', parapet: 'stone', lamps: 'lantern' },
   'Pont de la Concorde': { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'balustrade', lamps: 'candelabra' },
-  'Pont Alexandre III': { kind: 'iron', arches: 1, rise: 0.2, shape: 'segment', parapet: 'balustrade', lamps: 'candelabra', ribs: 9, iron: [0.42, 0.47, 0.44], gilt: true, pylons: { height: 17, width: 4.2 } },
+  'Pont Alexandre III': { kind: 'iron', arches: 1, rise: 0.2, shape: 'segment', parapet: 'balustrade', lamps: 'candelabra', ribs: 9, iron: [0.42, 0.47, 0.44], gilt: true, pylons: { height: 17, width: 4.2 }, nymphs: true },
   'Pont des Invalides': { kind: 'stone', arches: 4, rise: 0.55, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
-  "Pont de l'Alma": { kind: 'girder', parapet: 'iron', lamps: 'modern', iron: [0.33, 0.35, 0.36] },
-  "Pont d'Iéna": { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
+  "Pont de l'Alma": { kind: 'girder', pierAt: [0.72], depth: 2.2, parapet: 'iron', lamps: 'modern', iron: [0.33, 0.35, 0.36], figures: true },
+  "Pont d'Iéna": { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern', horsemen: true },
+  // (the bridges left to the default of stone arches, 2026-10-30, the Seine audit: owner, "We should audit every seine bridge too"; each from its own page on
+  //  fr.wikipedia and the IGN aerial. A concrete or steel beam bridge of the 1960s drew as a Second Empire arcade; the Mirabeau as five stone arches, not its 32, 93, 32 of steel)
+  'Pont Mirabeau': { kind: 'iron', spans: [32.4, 93, 32.4], rise: 0.17, shape: 'segment', cutwater: 'pointed', pier: 0.05, parapet: 'iron', lamps: 'lantern', ribs: 5, iron: [0.2, 0.27, 0.27], figures: true },
+  'Pont de Grenelle': { kind: 'iron', arches: 2, rise: 0.12, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', ribs: 6, iron: STEEL },
+  'Pont du Garigliano': { kind: 'girder', pierAt: [0.28, 0.72], depth: 2.6, parapet: 'iron', lamps: 'modern', iron: STEEL },
+  'Pont Charles de Gaulle': { kind: 'girder', pierAt: [0.26, 0.74], depth: 2.2, parapet: 'iron', lamps: 'modern', iron: [0.8, 0.82, 0.82] },
+  'Pont de Bercy': { kind: 'stone', arches: 5, rise: 0.5, shape: 'round', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
+  'Pont de Tolbiac': { kind: 'stone', arches: 5, rise: 0.55, shape: 'round', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
+  'Pont National': { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
+  'Passerelle Simone de Beauvoir': { kind: 'iron', arches: 1, rise: 0.09, shape: 'segment', parapet: 'iron', lamps: 'none', ribs: 2, iron: [0.5, 0.5, 0.48], timber: true },
+  'Pont de Sèvres': { kind: 'girder', pierAt: [0.24, 0.76], depth: 3, parapet: 'iron', lamps: 'modern', iron: CONCRETE },
+  'Pont de Saint-Cloud': { kind: 'girder', pierAt: [0.27, 0.73], depth: 2.2, parapet: 'iron', lamps: 'modern', iron: STEEL },
+  'Pont de Suresnes': { kind: 'stone', arches: 3, rise: 0.3, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', stone: CONCRETE },
+  'Pont de Puteaux': { kind: 'girder', span: 60, depth: 3, parapet: 'iron', lamps: 'modern', iron: CONCRETE },
+  'Pont de Neuilly': { kind: 'iron', arches: 2, rise: 0.14, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', ribs: 7, iron: STEEL },
+  "Pont d'Issy": { kind: 'girder', span: 62, depth: 2.6, parapet: 'iron', lamps: 'modern', iron: CONCRETE },
+  'Pont de Billancourt': { kind: 'girder', span: 55, depth: 2.2, parapet: 'iron', lamps: 'modern', iron: STEEL },
+  'Ponts de Billancourt': { kind: 'girder', span: 55, depth: 2.2, parapet: 'iron', lamps: 'modern', iron: STEEL },
+  'Pont de Courbevoie': { kind: 'stone', span: 42, rise: 0.25, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', stone: CONCRETE },
+  'Pont de Levallois': { kind: 'stone', arches: 4, rise: 0.3, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', stone: CONCRETE },
+  'Pont Nelson Mandela': { kind: 'girder', span: 60, depth: 2.6, parapet: 'iron', lamps: 'modern', iron: CONCRETE },
+  "Pont d'Ivry": { kind: 'girder', span: 55, depth: 2.4, parapet: 'iron', lamps: 'modern', iron: CONCRETE },
+  'Pont Daydé': { kind: 'girder', span: 40, depth: 2.6, parapet: 'iron', lamps: 'none', iron: [0.3, 0.33, 0.32] },
+  'Pont Renault': { kind: 'girder', span: 40, depth: 2.2, parapet: 'iron', lamps: 'none', iron: CONCRETE },
+  'Pont Seibert': { kind: 'girder', span: 40, depth: 2.2, parapet: 'iron', lamps: 'modern', iron: CONCRETE },
+  'Passerelle Sud': { kind: 'girder', span: 45, depth: 1.4, parapet: 'iron', lamps: 'none', iron: [0.62, 0.64, 0.64] },
+  'Passerelle Nord': { kind: 'girder', span: 45, depth: 1.4, parapet: 'iron', lamps: 'none', iron: [0.62, 0.64, 0.64] },
+  "Passerelle de l'Avre": { kind: 'iron', span: 45, rise: 0.16, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'none', ribs: 2, iron: [0.3, 0.33, 0.31] },
   'Pont de Bir-Hakeim': { kind: 'iron', span: 50, rise: 0.25, shape: 'segment', parapet: 'iron', lamps: 'lantern', ribs: 6, cutwater: 'round', metroDeck: { height: 7.5, width: 7.5 } },
   'Pont du Carrousel': { kind: 'stone', arches: 3, rise: 0.45, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern' },
   'Passerelle Léopold-Sédar-Senghor': { kind: 'iron', arches: 1, rise: 0.18, shape: 'segment', parapet: 'iron', lamps: 'none', ribs: 2, iron: [0.45, 0.43, 0.4], timber: true },
@@ -103,7 +146,7 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
   'Pont Marie': { kind: 'stone', arches: 5, rise: 0.85, shape: 'round', cutwater: 'pointed', parapet: 'stone', lamps: 'lantern', niches: true },
   'Pont Saint-Louis': { kind: 'iron', arches: 1, rise: 0.3, shape: 'segment', parapet: 'iron', lamps: 'lantern', ribs: 3 },
   "Pont de l'Archevêché": { kind: 'stone', arches: 3, rise: 0.7, shape: 'segment', cutwater: 'pointed', parapet: 'stone', lamps: 'lantern' },
-  'Pont de la Tournelle': { kind: 'stone', arches: 1, rise: 0.45, shape: 'segment', parapet: 'stone', lamps: 'lantern' },
+  'Pont de la Tournelle': { kind: 'stone', spans: [1, 3.4, 1], rise: 0.28, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
   'Pont de Sully': { kind: 'iron', span: 45, rise: 0.25, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'lantern', ribs: 6 },
   "Pont d'Austerlitz": { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'candelabra' },
   'Pont Morland': { kind: 'stone', arches: 1, rise: 0.6, shape: 'segment', parapet: 'stone', lamps: 'lantern' },
@@ -120,6 +163,67 @@ const DEFAULT_OVER_LAND: StructureStyle = { kind: 'girder', parapet: 'stone', la
 export const STEEL_OVER_WATER: StructureStyle = { kind: 'girder', parapet: 'iron', lamps: 'none', iron: [0.55, 0.57, 0.58] }
 
 export { axisOf }
+
+/**
+ * The bridges that carry a railway and no way, drawn from their outline (the Seine audit, 2026-10-30). The Viaduc d'Austerlitz (Line 5) crosses the Seine in one
+ * leap of 140 m, a deck hung from two steel bows: fr.wikipedia, "without intermediate support". It drew as the Line 6 viaduct's supports every 20 m across
+ * the river. The viaduct's own deck stays (render/bridges.ts), without its supports over the span.
+ */
+export const RAIL_ARCHES = new Set(["Viaduc d'Austerlitz"])
+
+function railArch(out: MeshBuilder, ring: P[], rails: PackedRail[], wetAt: (x: number, z: number) => number | null): void {
+  const ax = axisOf(ring)
+  if (!ax) return
+  const { ux, uz } = ax
+  const vx = -uz, vz = ux
+  const W = (s: number, o: number): P => ({ x: ax.o.x + ux * s + vx * o, z: ax.o.z + uz * s + vz * o })
+  // the deck's height, from the rail on it
+  const hs: number[] = []
+  let oMid = 0, nMid = 0
+  for (const r of rails) {
+    if (!r.heights) continue
+    for (let i = 0; i < r.heights.length; i++) {
+      const x = r.points[2 * i] - ax.o.x, z = r.points[2 * i + 1] - ax.o.z
+      const s = x * ux + z * uz, o = x * vx + z * vz
+      if (s >= 0 && s <= ax.L && Math.abs(o) <= ax.half + 2) { hs.push(r.heights[i]); oMid += o; nMid++ }
+    }
+  }
+  if (!hs.length) return
+  hs.sort((a, b) => a - b)
+  const y = hs[Math.floor(hs.length / 2)]
+  const off = oMid / nMid
+  let a = Infinity, b = -Infinity
+  for (let s = 0; s <= ax.L; s += 2) { const p = W(s, off); if (wetAt(p.x, p.z) !== null) { a = Math.min(a, s); b = Math.max(b, s) } }
+  if (!(b - a > 30)) return
+  a -= 4; b += 4
+  const span = b - a, half = 4.3, rise = span * 0.17
+  const iron: Rgb = [0.3, 0.36, 0.34]
+  for (const side of [-1, 1]) {
+    const o = off + side * half
+    const pt = (s: number, yy: number): V3 => { const p = W(s, o); return [p.x, yy, p.z] }
+    const crown = (s: number): number => y + rise * (1 - ((s - (a + b) / 2) / (span / 2)) ** 2)
+    const N = 24
+    for (let i = 0; i < N; i++) {
+      const s0 = a + (span * i) / N, s1 = a + (span * (i + 1)) / N
+      member(out, pt(s0, crown(s0) - 1), pt(s1, crown(s1) - 1), 0.55, iron)
+      member(out, pt(s0, crown(s0) + 0.6), pt(s1, crown(s1) + 0.6), 0.32, iron)
+      if (i % 2 === 0) member(out, pt(s0, crown(s0) - 1), pt(s1, crown(s1) + 0.6), 0.1, iron)
+    }
+    for (let i = 1; i < N; i++) {
+      const s = a + (span * i) / N
+      if (crown(s) - y > 1.5) member(out, pt(s, y - 0.1), pt(s, crown(s) - 1), 0.08, iron)
+    }
+    // the abutments' stone at its two feet
+    for (const s of [a, b]) blockAt(out, W(s, o), y - 8, y + 0.6, 3.2, 1.6, ux, uz, [0.7, 0.66, 0.58])
+  }
+  // the bows' portal bracing, across the top
+  for (const f of [0.2, 0.32, 0.44, 0.56, 0.68, 0.8]) {
+    const s = a + span * f
+    const yy = y + rise * (1 - ((s - (a + b) / 2) / (span / 2)) ** 2) - 0.4
+    const p0 = W(s, off - half), p1 = W(s, off + half)
+    member(out, [p0.x, yy, p0.z], [p1.x, yy, p1.z], 0.2, iron)
+  }
+}
 
 interface Water { ring: P[]; holes: P[][]; x0: number; x1: number; z0: number; z1: number; level: number }
 
@@ -158,6 +262,13 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
         // a bridge a landmark hand-models is drawn once, by the landmark (City.coverRaised, BUGS.md #136)
         if (covered?.(b.id)) continue
         const ring = unpackPoints(b.ring)
+        if (b.name && RAIL_ARCHES.has(b.name)) {
+          let ax = 0, az = 0
+          for (const q of ring) { ax += q.x; az += q.z }
+          ax /= ring.length; az /= ring.length
+          if (ax >= rect.x0 && ax < rect.x1 && az >= rect.z0 && az < rect.z1) railArch(out, ring, near.around.rails, wetAt)
+          continue
+        }
         let cx = 0, cz = 0
         for (const q of ring) { cx += q.x; cz += q.z }
         cx /= ring.length
@@ -205,20 +316,28 @@ export function styleFor(b: PackedBridge, styles: Record<string, StructureStyle>
  * An outline with a freeway way on it is left to the ways: each draws its own slab and piers (render/bridges.ts).
  */
 export const FREEWAY_KINDS = new Set(['motorway', 'motorway_link', 'trunk', 'trunk_link', 'busway'])
+/**
+ * …but a road named for the bridge is the bridge (the Seine audit, 2026-10-30): OSM's `trunk` over the Pont de Neuilly is that bridge's own roadway, and it had no
+ * structure at all, only a slab and a row of piers per carriageway.
+ */
+export const freewayKind = (e: Pick<PackedEdge, 'kind' | 'name'>): boolean => FREEWAY_KINDS.has(e.kind) && !/^Pont\b/.test(e.name ?? '')
+/** bridges whose outline flares at its heads under the 45 % `straightOutline` asks, and are straight for all that (the Pont de l'Archevêché's, a T each end) */
+export const FLARED_OUTLINES = new Set(["Pont de l'Archevêché"])
 
 function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: PackedEdge[], terrain: Terrain,
   wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>, waterDefault: StructureStyle = DEFAULT_OVER_WATER): void {
   const long = axisOf(ring)
-  if (!long || long.L < 8 || !straightOutline(ring)) return
-  for (const e of edges) {
-    if (!FREEWAY_KINDS.has(e.kind) || !isRaised(e)) continue
+  if (!long || long.L < 8 || !(straightOutline(ring) || FLARED_OUTLINES.has(b.name ?? ''))) return
+  // (a slip road off the A13 at the Pont de Saint-Cloud's head is inside its outline: a bridge with a design of its own is still that bridge, and draws)
+  if (!styleFor(b, styles)) for (const e of edges) {
+    if (!freewayKind(e) || !isRaised(e)) continue
     const k = Math.floor(e.points.length / 4) * 2
     if (inOutline(ring, e.points[k], e.points[k + 1], 1.5)) return
   }
   // along the bridge's own ways, which is not always its long side (bridge-axis.ts `axisAlong`)
   const own: [P, P][] = []
   for (const e of edges) {
-    if (!e.bridge || FREEWAY_KINDS.has(e.kind)) continue
+    if (!e.bridge || freewayKind(e)) continue
     const pts = unpackPoints(e.points)
     for (let i = 1; i < pts.length; i++) {
       if (inOutline(ring, (pts[i - 1].x + pts[i].x) / 2, (pts[i - 1].z + pts[i].z) / 2, 0.5)) own.push([pts[i - 1], pts[i]])
@@ -260,7 +379,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
      * its heights 16 m above the bridge's own went into the bins where it crosses, the median of two picked the higher,
      * and the structure rose to the freeway — a wall 16 m high across 22nd Street. A freeway draws its own deck.
      */
-    if (FREEWAY_KINDS.has(e.kind)) continue
+    if (freewayKind(e)) continue
     const own = e.bridge === true
     const pts = unpackPoints(e.points)
     for (let i = 1; i < pts.length; i++) {
@@ -353,7 +472,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   const piers: { s: number; w: number; spring: number }[] = []
   if (style.kind !== 'girder') {
     const total = spans.reduce((t, q) => t + (q.b - q.a), 0)
-    const want = style.arches ?? Math.max(1, Math.round(total / (style.span ?? 28)))
+    const want = style.spans?.length ?? style.arches ?? Math.max(1, Math.round(total / (style.span ?? 28)))
     let given = 0
     spans.forEach((q, k) => {
       const len = q.b - q.a
@@ -365,14 +484,19 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
       let low = Infinity
       for (let s = q.a; s <= q.b; s += 1) low = Math.min(low, under(s))
       const spring = low + 0.4
+      // (each arch its share of the clear length, where they are not all alike)
+      const shares = style.spans?.length === m ? style.spans : null
+      const sum = shares ? shares.reduce((t, v) => t + v, 0) : m
+      let a = q.a
       for (let i = 0; i < m; i++) {
-        const a = q.a + i * (span + pierW)
-        const bb = a + span
+        const w = ((shares ? shares[i] : 1) / sum) * (len - (m - 1) * pierW)
+        const bb = a + w
         let deckMin = Infinity
         for (let t = 0; t <= 12; t++) deckMin = Math.min(deckMin, top(a + ((bb - a) * t) / 12))
-        const rise = Math.max(0.8, Math.min((span / 2) * (style.rise ?? 0.5), deckMin - (style.kind === 'iron' ? 1.0 : 1.2) - spring))
+        const rise = Math.max(0.8, Math.min((w / 2) * (style.rise ?? 0.5), deckMin - (style.kind === 'iron' ? 1.0 : 1.2) - spring))
         arches.push({ a, b: bb, spring, rise })
         if (i > 0) piers.push({ s: a - pierW / 2, w: pierW, spring })
+        a = bb + pierW
       }
     })
   }
@@ -409,7 +533,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
       const y0a = style.kind === 'stone' ? bottom(s) : q ? top(s) - 0.95 : bottom(s)
       const y0b = style.kind === 'stone' ? bottom(s1) : q ? top(s1) - 0.95 : bottom(s1)
       const c = style.kind === 'stone' ? stone : q ? iron : style.kind === 'girder' ? iron : stone
-      const yb = (ss: number): number => style.kind === 'girder' ? Math.max(under(ss) - 0.5, top(ss) - 2.4) : 0
+      const yb = (ss: number): number => style.kind === 'girder' ? Math.max(under(ss) - 0.5, top(ss) - (style.depth ?? 2.4)) : 0
       if (style.kind === 'girder') {
         quad([at(s, o, yb(s)), at(s1, o, yb(s1)), at(s1, o, top(s1)), at(s, o, top(s))], n0(side), c)
       } else {
@@ -431,7 +555,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   if (style.kind !== 'stone') {
     for (let s = 0; s < L - 1e-6; s += step * 2) {
       const s1 = Math.min(L, s + step * 2)
-      const d = style.kind === 'girder' ? (ss: number): number => Math.max(under(ss) - 0.5, top(ss) - 2.4) : (ss: number): number => top(ss) - 0.95
+      const d = style.kind === 'girder' ? (ss: number): number => Math.max(under(ss) - 0.5, top(ss) - (style.depth ?? 2.4)) : (ss: number): number => top(ss) - 0.95
       quad([at(s, -hw, d(s)), at(s1, -hw, d(s1)), at(s1, hw, d(s1)), at(s, hw, d(s))], [0, -1, 0], lighter(iron, 0.7))
     }
   }
@@ -558,6 +682,88 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
             quad([[c0.x, yt + 1.05, c0.z], [c1.x, yt + 1.05, c1.z], [k1.x, yt + 1.05, k1.z], [k0.x, yt + 1.05, k0.z]], [0, 1, 0], lighter(stone, 1.05))
           }
         }
+      }
+    }
+  }
+
+  // ---- a girder's river piers: a blade of concrete on a rounded foot, under the fascia. It carried nothing before, 150 m of deck on air (the Alma, the Garigliano)
+  if (style.kind === 'girder' && (style.pierAt || style.span)) {
+    const total = spans.reduce((t, q) => t + (q.b - q.a), 0)
+    const at: number[] = []
+    if (style.pierAt) {
+      for (const f of style.pierAt) at.push(f * L)
+    } else {
+      for (const q of spans) {
+        const m = Math.round(((q.b - q.a) / Math.max(total, 1)) * (total / style.span!))
+        for (let i = 1; i < m; i++) at.push(q.a + ((q.b - q.a) * i) / m)
+      }
+    }
+    for (const s of at) {
+      const y1 = top(s) - (style.depth ?? 2.4) + 0.05
+      const g = under(s) - 0.5
+      if (y1 - g < 1) continue
+      const pc: Rgb = style.iron === CONCRETE ? lighter(CONCRETE, 0.92) : lighter(LIMESTONE, 0.85)
+      const c = W(s, 0)
+      blockAt(out, c, g, y1, 0.9, Math.max(1, hw * 0.72), ux, uz, pc)
+      for (const side of [-1, 1]) {
+        const seg = 8
+        for (let i = 0; i < seg; i++) {
+          const t0 = (Math.PI * i) / seg, t1 = (Math.PI * (i + 1)) / seg
+          const o = side * Math.max(1, hw * 0.72)
+          const p0 = W(s - Math.cos(t0) * 0.9, o + side * Math.sin(t0) * 0.9)
+          const p1 = W(s - Math.cos(t1) * 0.9, o + side * Math.sin(t1) * 0.9)
+          const tm = (t0 + t1) / 2
+          quad([[p0.x, g, p0.z], [p1.x, g, p1.z], [p1.x, y1, p1.z], [p0.x, y1, p0.z]], [-Math.cos(tm) * ux + Math.sin(tm) * side * vx, 0, -Math.cos(tm) * uz + Math.sin(tm) * side * vz], pc)
+        }
+      }
+      // the Zouave stands on the Alma's pier, its foot at the level of the water, the Seine's height-gauge these two centuries
+      if (style.figures) figure(out, W(s, -Math.max(1, hw * 0.72) - 0.6), g + 2.6, 3.2, BRONZE, ux, uz)
+    }
+  }
+  // ---- the Pont Mirabeau's four bronzes, one on each side of each pier, on the cutwater's cap
+  if (style.figures && style.kind !== 'girder') {
+    for (const p of piers) {
+      for (const side of [-1, 1]) {
+        const y0 = p.spring + 1.2 + p.w * 0.4
+        blockAt(out, W(p.s, side * (hw + p.w * 0.25)), y0 - 0.5, y0, p.w * 0.28, p.w * 0.28, ux, uz, stone)
+        figure(out, W(p.s, side * (hw + p.w * 0.25)), y0, 3.4, BRONZE, ux, uz)
+      }
+    }
+  }
+  // ---- the Pont d'Iéna's horsemen: a Gallic, a Greek, a Roman and an Arab warrior on tall plinths, at the four corners
+  if (style.horsemen) {
+    for (const s of [1.5, L - 1.5]) {
+      for (const side of [-1, 1]) {
+        const c = W(s, side * (hw - 1.4))
+        const g = top(s)
+        blockAt(out, c, g, g + 2.4, 2.1, 1.1, ux, uz, stone)
+        blockAt(out, c, g + 2.4, g + 2.65, 2.25, 1.25, ux, uz, lighter(stone, 1.06))
+        const inward = s < L / 2 ? 1 : -1
+        const P = (a: number, o: number, y: number): V3 => [c.x + ux * a * inward + vx * o, g + 2.65 + y, c.z + uz * a * inward + vz * o]
+        member(out, P(-1, 0, 1.15), P(0.85, 0, 1.3), 0.38, BRONZE)              // the horse's barrel
+        member(out, P(0.85, 0, 1.3), P(1.35, 0, 2.05), 0.2, BRONZE)             // neck
+        member(out, P(1.35, 0, 2.05), P(1.75, 0, 1.85), 0.13, BRONZE)           // head
+        for (const o of [-0.22, 0.22]) {
+          member(out, P(-0.85, o, 1.05), P(-0.95, o, 0), 0.09, BRONZE)
+          member(out, P(0.75, o, 1.05), P(0.85, o, 0), 0.09, BRONZE)
+        }
+        member(out, P(-0.05, 0, 1.55), P(0.05, 0, 2.4), 0.2, BRONZE)            // the rider
+        member(out, P(0.05, 0, 2.4), P(0.05, 0, 2.7), 0.13, BRONZE)
+      }
+    }
+  }
+  // ---- the Pont Alexandre III: at the crown of the arch, on each face, gilded nymphs round the arms of the Seine and of the Neva
+  if (style.nymphs) {
+    for (const side of [-1, 1]) {
+      const mid = L / 2
+      const o = side * (hw + 0.12)
+      disc(out, W(mid, o), top(mid) - 1.6, 1.3, side, vx, vz, GOLD)
+      disc(out, W(mid, o + side * 0.04), top(mid) - 1.6, 0.85, side, vx, vz, lighter(iron, 1.2))
+      for (const dir of [-1, 1]) {
+        // the two reclining figures and their garland, swept back along the fascia
+        member(out, at(mid + dir * 1.6, o, top(mid) - 1.7), at(mid + dir * 4.2, o, top(mid) - 1.1), 0.22, GOLD)
+        member(out, at(mid + dir * 4.2, o, top(mid) - 1.1), at(mid + dir * 5, o, top(mid) - 0.8), 0.14, GOLD)
+        member(out, at(mid + dir * 1.8, o, top(mid) - 2.3), at(mid + dir * 7.5, o, top(mid) - 1.6), 0.09, GOLD)
       }
     }
   }
@@ -774,6 +980,17 @@ function member(out: MeshBuilder, a: V3, b: V3, r: number, c: Rgb): void {
     [-1, -1, -1, 1, [-sx, 0, -sz]], [1, 1, 1, -1, [sx, 0, sz]],
   ]
   for (const [s0, u0, s1, u1, n] of faces) out.quad([v(a, s0, u0), v(b, s0, u0), v(b, s1, u1), v(a, s1, u1)], n, UV, c, FIXED)
+}
+
+/** A standing figure on a plinth's top, from a handful of members: enough to read as a bronze at a boat's distance. */
+function figure(out: MeshBuilder, p: P, y: number, h: number, col: Rgb, ux: number, uz: number): void {
+  const at_ = (a: number, c: number, yy: number): V3 => [p.x + ux * a - uz * c, y + yy, p.z + uz * a + ux * c]
+  member(out, at_(0, -0.14 * h / 3, 0), at_(0, -0.1 * h / 3, h * 0.46), 0.1 * h / 3, col)
+  member(out, at_(0, 0.14 * h / 3, 0), at_(0, 0.1 * h / 3, h * 0.46), 0.1 * h / 3, col)
+  member(out, at_(0, 0, h * 0.44), at_(0, 0, h * 0.8), 0.19 * h / 3, col)
+  member(out, at_(0, 0, h * 0.8), at_(0, 0, h * 0.97), 0.12 * h / 3, col)
+  member(out, at_(0, -0.2 * h / 3, h * 0.78), at_(0.12, -0.34 * h / 3, h * 0.46), 0.07 * h / 3, col)
+  member(out, at_(0, 0.2 * h / 3, h * 0.78), at_(0.12, 0.34 * h / 3, h * 0.46), 0.07 * h / 3, col)
 }
 
 /** A flat disc on a face (a medallion), facing out along ±(vx, vz). */

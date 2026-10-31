@@ -275,3 +275,24 @@ describe('straightCorridor', () => {
     expect(out.filter((e) => e.a === 1 || e.b === 1)).toHaveLength(1)
   })
 })
+
+describe('a river bridge is one way over (tools/bridges.ts oneDeck; the Seine audit, 2026-10-30)', () => {
+  const ground = (): number => -14   // the river's bed, whatever is over it
+  const deck = (a: number, b: number, x: number, more: Partial<Edge> = {}): Edge =>
+    edge(a, b, [[x, 0], [x, 50], [x, 100]], { name: 'Pont', bridge: true, kind: 'primary', layer: 1, heights: [2, 3, 2], ...more })
+  it('merges two carriageways over the river where the region says, and only there', () => {
+    const pair = (): Edge[] => [deck(1, 2, 0), deck(3, 4, 16),
+      edge(5, 1, [[0, -40], [0, 0]], { name: 'Rue A', heights: [2, 2] }), edge(5, 3, [[0, -40], [16, 0]], { name: 'Rue A', heights: [2, 2] }),
+      edge(6, 2, [[0, 140], [0, 100]], { name: 'Rue B', heights: [2, 2] }), edge(6, 4, [[0, 140], [16, 100]], { name: 'Rue B', heights: [2, 2] })]
+    const ways = (one: boolean): number => [...rideGraph(pair(), 'bike', { ground, oneDeck: one } as never).edges.values()].filter((e) => e.bridge).length
+    expect(ways(false)).toBe(2)
+    expect(ways(true)).toBe(1)
+  })
+  it('rides the road and not the cycle track beside it on the same deck, where the region says', () => {
+    const es = (): Edge[] => [deck(1, 2, 0), edge(1, 2, [[8, 0], [8, 50], [8, 100]], { name: 'Promenade', bridge: true, layer: 1, kind: 'cycleway', heights: [2, 3, 2] }),
+      edge(5, 1, [[0, -60], [0, 0]], { name: 'Rue A', heights: [2, 2] }), edge(6, 2, [[0, 160], [0, 100]], { name: 'Rue B', heights: [2, 2] })]
+    const over = (one: boolean): number => [...rideGraph(es(), 'bike', { ground, oneDeck: one } as never).edges.values()].filter((e) => e.bridge).length
+    expect(over(false)).toBe(2)
+    expect(over(true)).toBe(1)
+  })
+})

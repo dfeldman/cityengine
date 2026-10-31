@@ -2649,7 +2649,7 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   // a foot bridge's ends down to the paths they meet (tools/bridges.ts `rampFootBridgeEnds`)
   {
-    const r = rampFootBridgeEnds(kept)
+    const r = rampFootBridgeEnds(kept, spec.region === 'paris')
     if (r.size) console.log(`  ${r.size} foot-bridge ends graded down to the paths they join`)
   }
   // street tunnels under a hill: their own mouth-to-mouth profile, and `bore` — ridden and drawn (tools/tunnels.ts)
@@ -3305,8 +3305,11 @@ async function bake(spec: CitySpec): Promise<void> {
       const figures = new Set(['statue', 'bust', 'sculpture'])
       // (and a roundabout's island has its monument: render/paris/roundabout-monuments.ts)
       const isles = roundabouts.map((q) => ({ ...proj.toLocal({ lat: q.lat, lon: q.lon }), r: q.r }))
+      // (…and none out in the river: a bridge's own reliefs are nodes on its face, the Alexandre III's nymphs and the Alma's Zouave, and each stood on a white plinth
+      //  on the water, mid-stream. The structure has them: render/bridge-structures.ts. The Seine audit, 2026-10-30)
+      const inRiver = (x: number, z: number): boolean => waterBodies.some((w) => Math.abs(area(w.ring)) >= 300_000 && pointInRing(w.ring, x, z))
       const clear = furniture.filter((x) => !figures.has(x.kind) || !(spots.some((s) => Math.hypot(s.x - x.x, s.z - x.z) < s.r + 2)
-        || isles.some((s) => Math.hypot(s.x - x.x, s.z - x.z) < s.r) || rings.some((r) => pointInRing(r, x.x, x.z))))
+        || isles.some((s) => Math.hypot(s.x - x.x, s.z - x.z) < s.r) || rings.some((r) => pointInRing(r, x.x, x.z)) || inRiver(x.x, x.z)))
       console.log(`  ${furniture.length - clear.length} statues on modelled ground left to the models`)
       furniture.length = 0
       for (const x of clear) furniture.push(x)
@@ -3778,6 +3781,29 @@ async function bake(spec: CitySpec): Promise<void> {
     for (const r of got?.relations ?? []) for (const g of outerRings(r)) ring(g, r.id, r.tags?.name)
     pkg.bridges = out
     console.log(`  ${out.length} bridge outlines (${out.filter((b) => b.name).length} named)`)
+    /*
+     * What stands ON a Seine bridge is part of it (the Seine audit, 2026-10-30). OSM maps the Pont Alexandre III's four pylons as `building=yes` with a height of
+     * 17 m, and they came out as four little Haussmann blocks with windows, each beside the pylon the structure draws (render/bridge-structures.ts). A small building
+     * whose middle is inside a river bridge's own outline goes. Paris only; and not a boat or a houseboat, which an outline has never taken in.
+     */
+    if (spec.region === 'paris') {
+      const rings = out.filter((b) => /^(Pont|Passerelle)\b/.test(b.name ?? '')).map((b) => unpackPoints(b.ring))
+      const pylons = out.filter((b) => b.name === 'Pont Alexandre III').map((b) => unpackPoints(b.ring))
+      const before = pkg.buildings.length
+      pkg.buildings = pkg.buildings.filter((q) => {
+        const r = unpackPoints(q.ring)
+        if (r.length < 3 || Math.abs(area(r)) > 250) return true
+        const cx = r.reduce((v, u) => v + u.x, 0) / r.length, cz = r.reduce((v, u) => v + u.z, 0) / r.length
+        if (rings.some((g) => pointInRing(g, cx, cz))) return false
+        // (the Alexandre III's four stand just off the ends of its outline, on their own plinths at the bank)
+        return !pylons.some((g) => g.some((u, i) => {
+          const v = g[(i + 1) % g.length], dx = v.x - u.x, dz = v.z - u.z
+          const t = Math.max(0, Math.min(1, ((cx - u.x) * dx + (cz - u.z) * dz) / (dx * dx + dz * dz || 1)))
+          return Math.hypot(u.x + dx * t - cx, u.z + dz * t - cz) < 16
+        }))
+      })
+      if (pkg.buildings.length < before) console.log(`  ${before - pkg.buildings.length} buildings on the bridges' outlines gone (the Alexandre III's pylons)`)
+    }
   }
   // every tree, decided here so a streamed tile always grows the same ones (city/plantings.ts)
   // a ceiling by AREA, not per city: 1,900 over the Marais's box is ~680 a square kilometre, and a city-wide
@@ -4448,7 +4474,7 @@ async function main(): Promise<void> {
       const touched = existsSync(undoFile) ? undoDecks(pkg.edges, JSON.parse(readFileSync(undoFile, 'utf8')) as DeckUndo) : new Set<number>()
       const terrain = new Terrain(pkg.terrain)
       // (and the foot bridges' ends, which a package baked before rampFootBridgeEnds still has standing in the air)
-      for (const id of rampFootBridgeEnds(pkg.edges)) touched.add(id)
+      for (const id of rampFootBridgeEnds(pkg.edges, spec.region === 'paris')) touched.add(id)
       const work = conformWithUndo(spec.region ?? spec.id, pkg.origin, pkg.edges, (x, z) => terrain.rawHeightAt(x, z))
       if (!work) { console.log(`${spec.id}: no bridge decks declared for region ${spec.region}`); continue }
       console.log(`${spec.id}: ${describe(work.report)}`)
