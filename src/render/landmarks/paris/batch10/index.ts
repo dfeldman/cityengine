@@ -3,8 +3,8 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { tourVandrezanne2, tourQuaiSeine, tourBlanqui, tourBred, tourBoisLePretre, tourFetes, marriottRiveGauche } from './towers.ts'
+import { tourVandrezanne2, tourQuaiSeine, tourBlanqui, tourBred, tourFetes, marriottRiveGauche } from './towers.ts'
 
 export const PARIS_BATCH10: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  tourVandrezanne2, tourQuaiSeine, tourBlanqui, tourBred, tourBoisLePretre, tourFetes, marriottRiveGauche,
+  tourVandrezanne2, tourQuaiSeine, tourBlanqui, tourBred, tourFetes, marriottRiveGauche,
 }
