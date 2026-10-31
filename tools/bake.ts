@@ -67,7 +67,7 @@ import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
-import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks } from './bridges.ts'
+import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks, mergeBridgeLanes } from './bridges.ts'
 import { bridgesOverStreets, footWaysOnTracks, spanOverRailways, straightDeck } from './rail-levels.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
@@ -2603,6 +2603,14 @@ async function bake(spec: CitySpec): Promise<void> {
       if (!e.bridge || e.foot || !/^(primary|secondary|trunk|tertiary)(_link)?$/.test(e.kind ?? '') || Math.hypot(e.points[0] - c.x, e.points[1] - c.z) > v.radius) continue
       e.walk = 0.6
       e.width = Math.max(e.width, 7)
+    }
+  }
+  if (spec.region === 'paris') {
+    const merged = mergeBridgeLanes(kept)
+    if (merged.lanes) {
+      kept.length = 0
+      for (const e of merged.edges) kept.push(e)
+      console.log(`  bridges: ${merged.lanes} cycle lanes merged into their roadways, ${merged.stubs} stubs of lane gone`)
     }
   }
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))

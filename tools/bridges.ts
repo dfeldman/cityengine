@@ -278,6 +278,73 @@ function closeFreewayGaps(edges: BridgeEdge[]): void {
  * returns the ids it raised (bridges and ramps), for the report and for the renderer's own test.
  */
 /**
+ * A bridge's cycle lanes, drawn as the lanes they are (owner, 2026-10-30, the Pont du Carrousel, the first bridge after loading: "two paths
+ * connected in a loop that is hard to escape"). OSM maps a painted lane either side of a roadway as a one-way way of its own, joined to the
+ * road at each end: in the ride graph a loop, and on the deck strips of paving between three narrow roads. A same-named cycleway beside a
+ * bridge's roadway goes, and the roadway widens over it; so do the stubs of lane on land that led to nothing else.
+ */
+export function mergeBridgeLanes<E extends { id: number; a: number; b: number; points: number[]; bridge?: boolean; foot?: boolean; kind?: string; name?: string; width: number }>(edges: E[]): { edges: E[]; lanes: number; stubs: number } {
+  const REACH = 14, CAP = 20
+  const distance = (x: number, z: number, p: number[]): number => {
+    let best = Infinity
+    for (let i = 2; i < p.length; i += 2) {
+      const ax = p[i - 2], az = p[i - 1], dx = p[i] - ax, dz = p[i + 1] - az
+      const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)))
+      best = Math.min(best, Math.hypot(ax + dx * t - x, az + dz * t - z))
+    }
+    return best
+  }
+  const roads = edges.filter((e) => e.bridge && !e.foot && e.kind !== 'cycleway' && e.name)
+  const gone = new Set<number>()
+  const widen = new Map<E, number>()
+  for (const e of edges) {
+    if (!e.bridge || e.kind !== 'cycleway' || !e.name) continue
+    for (const r of roads) {
+      if (r.name !== e.name) continue
+      let beside = 0, far = 0
+      const n = e.points.length / 2
+      for (let i = 0; i < e.points.length; i += 2) {
+        const d = distance(e.points[i], e.points[i + 1], r.points)
+        if (d < REACH) { beside++; far = Math.max(far, d) }
+      }
+      if (beside < n * 0.6) continue
+      gone.add(e.id)
+      widen.set(r, Math.max(widen.get(r) ?? 0, Math.min(CAP, 2 * far + 2.8)))
+      break
+    }
+  }
+  if (!gone.size) return { edges, lanes: 0, stubs: 0 }
+  for (const [r, w] of widen) r.width = Math.max(r.width, w)
+  const lanes = gone.size
+  // the lane's stubs: from where a lane went, cycleways that now lead nowhere, up to 100 m of them
+  const degree = new Map<number, number>()
+  for (const e of edges) if (!gone.has(e.id)) for (const k of [e.a, e.b]) degree.set(k, (degree.get(k) ?? 0) + 1)
+  const opened = new Set<number>()
+  for (const e of edges) if (gone.has(e.id)) { opened.add(e.a); opened.add(e.b) }
+  const lengthOf = (p: number[]): number => { let L = 0; for (let i = 2; i < p.length; i += 2) L += Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]); return L }
+  let stubs = 0, run = 0
+  for (let changed = true; changed;) {
+    changed = false
+    for (const e of edges) {
+      if (gone.has(e.id) || e.kind !== 'cycleway' || e.bridge) continue
+      const end = opened.has(e.a) && (degree.get(e.a) ?? 0) <= 1 ? e.a : opened.has(e.b) && (degree.get(e.b) ?? 0) <= 1 ? e.b : null
+      if (end === null) continue
+      const L = lengthOf(e.points)
+      if (run + L > 100 * lanes) continue
+      run += L
+      gone.add(e.id)
+      stubs++
+      const other = end === e.a ? e.b : e.a
+      degree.set(e.a, (degree.get(e.a) ?? 1) - 1)
+      degree.set(e.b, (degree.get(e.b) ?? 1) - 1)
+      opened.add(other)
+      changed = true
+    }
+  }
+  return { edges: edges.filter((e) => !gone.has(e.id)), lanes, stubs }
+}
+
+/**
  * THE NAMED FOOT BRIDGES, OPEN TO BIKES (owner, 2026-10-30: "the seine is a natural focal point for cyclists"; 41 of them,
  * the Pont des Arts and the Passerelles Debilly and Senghor among them, were footways and so not in the bike graph). A bridge
  * goes with the footways that join each of its ends to a way a bike rides, within `reach` metres, and only if it can be crossed

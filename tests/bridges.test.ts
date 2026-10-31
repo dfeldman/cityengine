@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bridgeHeights, footBridgeLinks, meetDecks, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
+import { bridgeHeights, footBridgeLinks, meetDecks, mergeBridgeLanes, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
 
 const flat: BridgeWorld['ground'] = () => 0
 const river = (x0: number, x1: number): BridgeWorld['water'][number] =>
@@ -268,5 +268,29 @@ describe('one bridge, one deck (the Pont du Carrousel, 2026-10-30)', () => {
     const r = road(), s1 = stub(2, 3, -130), s2 = stub(3, 4, -70)
     bridgeHeights([r, s1, s2], world())
     expect(r.heights![0]).toBeGreaterThan(-1)
+  })
+})
+
+describe('a bridge\'s cycle lanes (the Pont du Carrousel, 2026-10-30)', () => {
+  type E = { id: number; a: number; b: number; points: number[]; bridge?: boolean; foot?: boolean; kind?: string; name?: string; width: number }
+  const road: E = { id: 1, a: 1, b: 2, points: [0, 0, 0, 100], bridge: true, kind: 'service', name: 'Pont', width: 3 }
+  const lane = (id: number, x: number, a: number, b: number): E => ({ id, a, b, points: [x, 0, x, 100], bridge: true, kind: 'cycleway', name: 'Pont', width: 2.8 })
+
+  it('takes the lanes off the graph and widens the road over them', () => {
+    const r = { ...road }
+    const out = mergeBridgeLanes([r, lane(2, 6, 1, 2), lane(3, -6, 2, 1)])
+    expect(out.edges.map((e) => e.id)).toEqual([1])
+    expect(r.width).toBeCloseTo(14.8)
+  })
+  it('takes a stub of lane on land with it, and leaves one that goes somewhere', () => {
+    const stub: E = { id: 4, a: 3, b: 1, points: [6, -20, 6, 0], kind: 'cycleway', name: 'Pont', width: 2.8 }
+    const onward: E = { id: 5, a: 2, b: 9, points: [0, 100, 0, 200], kind: 'cycleway', width: 2.8 }
+    const far: E = { id: 6, a: 9, b: 10, points: [0, 200, 0, 300], kind: 'residential', width: 6 }
+    const out = mergeBridgeLanes([{ ...road }, lane(2, 6, 3, 2), stub, onward, far])
+    expect(out.edges.map((e) => e.id).sort()).toEqual([1, 5, 6])
+  })
+  it('leaves a cycleway across a river on a bridge of its own', () => {
+    const own: E = { id: 2, a: 5, b: 6, points: [200, 0, 200, 100], bridge: true, kind: 'cycleway', name: 'Pont', width: 2.8 }
+    expect(mergeBridgeLanes([{ ...road }, own]).edges.length).toBe(2)
   })
 })
