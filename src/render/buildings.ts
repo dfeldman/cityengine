@@ -482,7 +482,9 @@ function awnings(out: MeshBuilder, cells: Cell[], plan: FacadePlan, seed: number
   const fascia = Math.max(2.8, ground.y1 - 0.85)
   // no higher than 3.1 m at the wall, however tall the shop: the chase camera rides at 3.5 m and passed
   // under the cloth of a tall ground floor's blind (BUGS.md #16)
-  const top = Math.min(fascia - 0.47, 3.1)
+  // (…but a Paris shop's ground floor is tall, and at 3.1 m the blind crossed the middle of its window: over the window, under the board. Owner,
+  //  2026-10-31: "the awning shoudl be over the window")
+  const top = plan.dress?.paris ? fascia - 0.47 : Math.min(fascia - 0.47, 3.1)
   const valance = 0.25
   const off = (p: [number, number, number], d: number, dy: number): [number, number, number] =>
     [p[0] + nx * d, p[1] + dy, p[2] + nz * d]

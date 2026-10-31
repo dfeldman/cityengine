@@ -762,8 +762,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // from here on there is a frame to protect, so the tile work takes its slice of each one rather than all of it
   streaming = true
   mark('city')
-  // (`?edit=1`: the inspector, ui/inspector.ts, which needs the buildings' ids on their meshes)
-  const editing = new URLSearchParams(location.search).get('edit') === '1'
+  // (`?edit=1` or `?dev=1`: the inspector, ui/inspector.ts, which needs the buildings' ids on their meshes)
+  const editing = new URLSearchParams(location.search).get('edit') === '1' || new URLSearchParams(location.search).get('dev') === '1'
   city.pickable = editing || new URLSearchParams(location.search).get('pick') === '1'
   // and the city beyond the box, as plain massing, so it does not stop at a field (render/fringe.ts)
   // (the bake leaves out of the fringe every building the city itself has)
@@ -2292,7 +2292,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   let held: { from: Vector3; to: Vector3 } | null = null
   let lastWant = 0
-  // the inspector, for editing (`?edit=1`, I): what a building or a model is, and where its data came from
+  // the inspector, for editing (`?edit=1` or `?dev=1`, I): what a building or a model is, and where its data came from
   if (editing) {
     const pr = new Projection(pkg.origin)
     new Inspector({

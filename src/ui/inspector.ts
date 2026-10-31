@@ -1,12 +1,14 @@
 /**
  * THE INSPECTOR — for editing the city, not for playing it (owner, 2026-10-03: "a custom info box just for editing —
  * so I can press i, select a building and see the address, lat/long, source of the building data, as much internal
- * info as possible. this is just for me"). With `?edit=1`: I arms it (a crosshair), a click on a building or a model
- * fills the box, I or Esc puts it away. A building: where the click landed, its baked fields, every manifest entry that
+ * info as possible. this is just for me"). With `?edit=1` or `?dev=1`: I says what's in the middle of the view (owner, 2026-10-31:
+ * "a key i could press in dev mode that would show what the building i was looking at was") and arms it (a crosshair); a click on a
+ * building or a model fills the box, I or Esc puts it away. A building: where the click landed, its baked fields, every manifest entry that
  * names it (and the file to edit), and its OSM tags — address and all — fetched from openstreetmap.org. A model: its
  * manifest entry whole, and where it was placed.
  */
 import type { Scene } from '@babylonjs/core/scene'
+import { arrondissementOf, frontZone } from '../city/paris/arrondissements.ts'
 
 export interface InspectorSources {
   scene: Scene
@@ -52,8 +54,11 @@ export class Inspector {
   private arm(on: boolean): void {
     this.armed = on
     document.body.classList.toggle('sr-inspect-on', on)
-    if (on) this.show('Inspector', 'click a building or a model · I or Esc to stop')
-    else this.box.hidden = true
+    if (on) {
+      // what you're looking at, straight away; a click picks anything else
+      const e = this.src.scene.getEngine()
+      this.pick(e.getRenderWidth() / 2, e.getRenderHeight() / 2, true)
+    } else this.box.hidden = true
   }
 
   private show(title: string, body: string): void {
@@ -61,13 +66,17 @@ export class Inspector {
     this.box.innerHTML = `<h3>${esc(title)}</h3>${body}`
   }
 
-  private pick(x: number, y: number): void {
+  private pick(x: number, y: number, buildingFirst = false): void {
     const s = this.src.scene
-    const hit = s.pick(x, y, (m) => m.isEnabled() && m.isVisible && !/^(sky|ground:sea)/.test(m.name))
+    // (the middle of the view: the building or model it's on, though a pavement or a tree is in front of it)
+    const front = buildingFirst ? s.pick(x, y, (m) => m.isEnabled() && m.isVisible && /^(b:|fringe|landmark:(?!shadow))/.test(m.name)) : null
+    const hit = front?.hit ? front : s.pick(x, y, (m) => m.isEnabled() && m.isVisible && !/^(sky|ground:sea)/.test(m.name))
     if (!hit?.hit || !hit.pickedMesh || !hit.pickedPoint) { this.show('Nothing there', ''); return }
     const p = hit.pickedPoint
     const ll = this.src.latLon(p.x, p.z)
+    const arr = arrondissementOf(ll.lat, ll.lon)
     const where = `<span class="k">at</span> ${ll.lat.toFixed(6)}, ${ll.lon.toFixed(6)}  <span class="k">world</span> ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}\n`
+      + (arr !== null ? `<span class="k">arrondissement</span> ${arr}  <span class="k">fronts</span> ${frontZone(ll.lat, ll.lon)}\n` : '')
       + `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${ll.lat},${ll.lon}" target="_blank">Street View</a> · `
       + `<a href="https://www.openstreetmap.org/#map=19/${ll.lat}/${ll.lon}" target="_blank">OSM map</a>\n`
     const m = hit.pickedMesh
@@ -89,9 +98,11 @@ export class Inspector {
     const partOf = b.partOf as number | undefined
     const refs = osmRefs(id)
     const entries = this.src.entriesFor(id, partOf)
+    const named = entries.find((e) => typeof e.name === 'string')?.name as string | undefined
+    const facts = [b.style, b.height !== undefined ? `${b.height} m` : '', b.levels !== undefined ? `${b.levels} storeys` : ''].filter(Boolean).join(' · ')
     const fields = Object.entries(b).filter(([k]) => k !== 'ring' && k !== 'holes').map(([k, v]) => `  ${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join('\n')
     const ent = entries.length ? entries.map((e) => `  ${esc(String(e._file ?? '?'))}: ${esc(JSON.stringify(e))}`).join('\n') : '  (none — the city draws it from OSM alone)'
-    this.show(`Building ${id}`, `${where}<span class="k">mesh</span> ${esc(name)}  <span class="k">tile</span> ${got?.tile ?? '?'}\n`
+    this.show(named ?? `An ordinary building: ${facts}`, `${named ? `${esc(facts)}\n` : ''}${where}<span class="k">mesh</span> ${esc(name)}  <span class="k">tile</span> ${got?.tile ?? '?'}\n`
       + `<span class="k">OSM</span> ${refs.map((r) => `<a href="https://www.openstreetmap.org/${r}" target="_blank">${r}</a>`).join(' or ')}`
       + `${partOf !== undefined ? `  <span class="k">part of</span> ${osmRefs(partOf).join(' / ')}` : ''}\n`
       + `\n<span class="k">baked</span>\n${esc(fields)}\n\n<span class="k">manifest entries naming it</span>\n${ent}\n\n<span class="k">OSM tags</span>\n<span class="osm">fetching…</span>`)

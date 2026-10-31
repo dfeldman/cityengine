@@ -287,3 +287,6 @@ The Montmartre funicular runs and is boarded like a cable car (the rail audit ma
 2. Everything still over 37 m after the storeys fix: check each, tallest first.
 3. The funicular's cabin.
 4. Road tunnel mouths where the road ends (188).
+5. The Pont Neuf over the Île de la Cité (48.857155, 2.340831; owner, 2026-10-31: "the bridge is really messed up where it goes over the island. there are a bunch of stray staircases imported from osm around the statue"). The real terre-plein is a platform at the bridge's level, Henri IV on it, a stone wall to the Vert-Galant below, stairs down inside. Draw it as one: deck to deck across the island, and OSM's steps replaced by the model's.
+6. Generic and custom buildings intersecting on the island (48.856261, 2.343340; owner: "seem to be intersecting generic and cusotm with weird effects"): the Palais de Justice, the new Conciergerie and what's left of OSM's parts. Claim or cut them. Then look for the same elsewhere: every model's outline against the buildings left standing inside it.
+7. A named shop's sign plate isn't centred on its shop (the Pâtisserie de la Bastille stands half over the door beside it): snap a plate to the nearest shop bay.
