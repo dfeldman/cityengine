@@ -719,3 +719,13 @@ Score = (0.6 × height + height over the median within 150 m + 40 if OSM links W
 - An unnamed building may only lack a name in OSM: every one over 50 m is identified (address, tags, web, Street View) before it is classed; if none is found it is "unidentified", not "plain".
 - Hôtels particuliers: real models for those with a Wikipedia page; a shared kit (gate, court, main block, mansard) for the rest. Count them from OSM's names first.
 - Commercial hotels: big chains and famous local names only (Hyatt, Ritz, Four Seasons, Radisson, Hilton, Marriott, Sofitel, Pullman, Mandarin Oriental, Shangri-La, Peninsula, InterContinental, Westin, Méridien; Crillon, Meurice, Bristol, Plaza Athénée, Lutetia, Royal Monceau, Raphael, Cheval Blanc). A Novotel only if the building stands out.
+
+## Triage (owner, 2026-10-31: "If it's a complex building particularly on the vertical plane then sonnet or a simple building language just won't work")
+
+Judged from a photograph that shows the whole building, by the lead, before any agent:
+
+- **Opus:** anything whose identity is in the vertical plane (setbacks, cantilevers, brackets, tapers, walls curving in or out), one-offs (arenas, monuments), and anything a road or path runs through, under or over (PARIS-OVER-ROADS.md).
+- **Sonnet:** a plain extrusion of a correct OSM footprint with a varied front: panel patterns, balconies, fins.
+- **Recipe:** a plain extrusion with a regular front, seen from far off.
+- No whole-building photograph means no triage: it waits.
+- Two rounds at most on any building, then ship it or list it for a second look.

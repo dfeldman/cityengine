@@ -1,0 +1,10 @@
+[
+  { "osm": ["way/82683207"], "name": "Immeuble des frères Perret", "procedural": "perretFranklin", "height": 33, "front": 115,
+    "note": "batch12/buildings.ts: the U toward rue Franklin (front from the street's geometry), angled bays, tiled frame, terraced top; photo Commons", "madeBy": "claude-opus-5-5" },
+  { "osm": ["way/13853585"], "name": "Maison du Cambodge", "procedural": "maisonCambodge", "height": 20, "lat": 48.81742, "lon": 2.33635, "size": [64, 44],
+    "note": "batch12/buildings.ts: wings round an open court, stepped terraces, small spire; photo Commons; open side read from the ring at build time, unverified; OSM 26 m", "madeBy": "claude-opus-5-5" },
+  { "osm": ["way/79084050"], "name": "Palatino", "procedural": "palatino", "height": 67,
+    "note": "batch12/buildings.ts: curved banded podium, corbels, wider tower; Mapillary frame and owner's description; priority row 37", "madeBy": "claude-opus-5-5" },
+  { "osm": ["way/83794703", "way/1169909307", "way/1169909308", "way/1169909309"], "name": "Barre de la rue Savier", "procedural": "malakoffSlab", "height": 75,
+    "note": "batch12/buildings.ts: one curved slab stepping 51-75 m; priority rows 30, 35, 78; lower two steps from the photo", "madeBy": "claude-opus-5-5" }
+]

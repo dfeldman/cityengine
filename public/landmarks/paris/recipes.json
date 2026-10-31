@@ -1,0 +1,70 @@
+[
+  {
+    "osm": [
+      "way/80252100"
+    ],
+    "name": "Tour Pitard",
+    "procedural": "parisRecipe",
+    "kit": {
+      "wall": "#c9b48e",
+      "glass": "#4d555b",
+      "windows": "grid",
+      "crown": "plant"
+    },
+    "height": 81,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Recipe read from Mapillary frame, priority row 29."
+  },
+  {
+    "osm": [
+      "way/53401102"
+    ],
+    "name": "Tour 53401102",
+    "procedural": "parisRecipe",
+    "kit": {
+      "wall": "#7f98a8",
+      "glass": "#3c4a54",
+      "windows": "curtain",
+      "crown": "plant"
+    },
+    "height": 71,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Recipe read from Mapillary frame, priority row 45."
+  },
+  {
+    "osm": [
+      "way/70147975"
+    ],
+    "name": "Tour 70147975",
+    "procedural": "parisRecipe",
+    "kit": {
+      "wall": "#a8503a",
+      "glass": "#3f484f",
+      "windows": "grid",
+      "crown": "plant"
+    },
+    "height": 70,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Recipe read from Mapillary frame, priority row 50."
+  },
+  {
+    "osm": [
+      "way/299643140"
+    ],
+    "name": "Tour 299643140",
+    "procedural": "parisRecipe",
+    "kit": {
+      "wall": "#f2f0ea",
+      "glass": "#4a5660",
+      "windows": "balconies",
+      "crown": "stepped",
+      "setback": {
+        "at": 0.8,
+        "by": 2
+      }
+    },
+    "height": 72,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Recipe read from Mapillary frame, priority row 72."
+  }
+]

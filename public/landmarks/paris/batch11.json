@@ -53,32 +53,12 @@
   },
   {
     "osm": [
-      "way/13853585"
-    ],
-    "name": "Maison du Cambodge",
-    "procedural": "maisonCambodge",
-    "height": 20,
-    "note": "batch11/buildings.ts: pale banded block, entrance bay, small spire; photo Commons; OSM 26 m",
-    "madeBy": "claude-sonnet-5-5"
-  },
-  {
-    "osm": [
       "way/79687026"
     ],
     "name": "Heron Building",
     "procedural": "heronBuilding",
     "height": 68,
     "note": "batch11/buildings.ts: no photo; massing only",
-    "madeBy": "claude-sonnet-5-5"
-  },
-  {
-    "osm": [
-      "way/82683207"
-    ],
-    "name": "Immeuble des frères Perret",
-    "procedural": "perretFranklin",
-    "height": 33,
-    "note": "batch11/buildings.ts: pale tile frame, glazed central bay, set-backs; photo Commons",
     "madeBy": "claude-sonnet-5-5"
   },
   {

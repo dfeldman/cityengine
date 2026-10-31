@@ -3,8 +3,8 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { mouchotte, chateauEauMontmartre, usineElevatrice, archivesParis, fondationEtatsUnis, maisonCambodge, heronBuilding, perretFranklin, woodUp, boisLePretre } from './buildings.ts'
+import { mouchotte, chateauEauMontmartre, usineElevatrice, archivesParis, fondationEtatsUnis, heronBuilding, woodUp, boisLePretre } from './buildings.ts'
 
 export const PARIS_BATCH11: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  mouchotte, chateauEauMontmartre, usineElevatrice, archivesParis, fondationEtatsUnis, maisonCambodge, heronBuilding, perretFranklin, woodUp, boisLePretre,
+  mouchotte, chateauEauMontmartre, usineElevatrice, archivesParis, fondationEtatsUnis, heronBuilding, woodUp, boisLePretre,
 }

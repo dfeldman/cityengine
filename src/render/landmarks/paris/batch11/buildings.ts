@@ -5,9 +5,7 @@
  *   usineElevatrice (photo, Commons 2021): a red-brick Art Deco pumping hall, a white window band under a flat roof, a flight of steps in front. OSM's 28 m is not what the photo shows (two storeys); built to ~13 m.
  *   archivesParis: NO photo found. Massing only: a blank stack tower with slit windows over a glazed reading-room base.
  *   fondationEtatsUnis (photo, Commons, a close view): Georgian-revival brick with white stucco bays and iron balconies, a hipped slate roof.
- *   maisonCambodge (photo, Commons 2010): a long pale block with window bands, a projecting entrance bay up steps, a small spire above the middle.
  *   heronBuilding: NO photo found. Massing only: a dark glazed slab, stepped at the top.
- *   perretFranklin (photo, Commons, 25 bis rue Franklin): pale tile-faced concrete frame, a glazed bay up the middle, set-backs at the top under a roof garden.
  *   woodUp: NO photo found. Massing only: a slender timber-slatted tower with a stepped terrace crown.
  *   boisLePretre (photo, Commons, a close view): the 1960s tower wrapped in glazed winter gardens, a glass shell stood off a plain core.
  */
@@ -90,19 +88,6 @@ export const fondationEtatsUnis = (out: MeshBuilder, fit: Fit): void => {
   for (const dx of [-1.6, 1.6]) box(out, dx, 1.9, -hz - 1.6, 0.2, 1.8, 0.2, wh)                    // its piers
 }
 
-/** Maison du Cambodge (Cité universitaire, 1950s): a long pale block with window bands, a projecting entrance bay up steps, a small spire above the middle. */
-export const maisonCambodge = (out: MeshBuilder, fit: Fit): void => {
-  tower(out, fit, { height: 20, roof: hex('#7b7a75'), base: plinth(3, '#cbc7bb'),
-    tiers: [{ to: 1, face: face('bands', '#e2dfd2', '#6d7b82', 4, 0.5, 3.2, 0.25, 'stucco') }],
-    crown: { kind: 'parapet', height: 1.1, colour: hex('#d6d2c4') } })
-  const hz = fit.hz
-  box(out, 0, 8, -hz - 1.2, fit.hx * 0.14, 8, 1.4, hex('#ddd9cb'))                                   // the entrance bay, full height
-  box(out, 0, 6, -hz - 1.95, fit.hx * 0.11, 3, 0.1, hex('#58666d'))                                 // its glazing
-  for (let i = 0; i < 5; i++) box(out, 0, 0.15 + i * 0.3, -hz - 3.2 + i * 0.5, fit.hx * 0.18, 0.15, 0.5, hex('#bdb9ac'))   // the steps
-  prism(out, 0, 0, 20.9, 23.2, 1.5, 4, hex('#d6d2c4'), 0, 1.0)                                        // the small pinnacle over the middle of the roof
-  prism(out, 0, 0, 23.2, 26, 1.0, 4, hex('#9a8f6a'), 0, 0.05)
-}
-
 /** Heron Building (1970s office, avenue du Maine): no photograph. A dark glazed slab, stepped at the top; look unverified. */
 export const heronBuilding = make({
   height: 68, roof: hex('#6e6f70'), base: plinth(6, '#3b3d3f'),
@@ -112,22 +97,6 @@ export const heronBuilding = make({
   ],
   crown: { kind: 'parapet', height: 1.2, colour: hex('#2c2e30') }, penthouse: 2,
 })
-
-/** Immeuble des frères Perret, 25 bis rue Franklin's neighbour (OSM 33 m): pale tile-faced frame, a glazed bay up the middle, set-backs under a roof garden. */
-export const perretFranklin = (out: MeshBuilder, fit: Fit): void => {
-  tower(out, fit, { height: 33, roof: hex('#8a8a85'), base: plinth(4.5, '#9e9a8e'),
-    tiers: [
-      { to: 24, face: face('punched', '#d8d4c4', '#6e8392', 2.4, 0.5, 3.0, 0.3, 'terracotta') },
-      { to: 28.5, face: face('punched', '#d8d4c4', '#6e8392', 2.4, 0.5, 3.0, 0.3, 'terracotta'), inset: 1.4 },
-      { to: 1, face: face('punched', '#d8d4c4', '#6e8392', 2.4, 0.5, 3.0, 0.3, 'terracotta'), inset: 1.4 },
-    ],
-    cornices: [{ at: 4.5, depth: 0.3, height: 0.4, colour: hex('#c4bfae') }],
-    crown: { kind: 'parapet', height: 1, colour: hex('#b8b3a4') } })
-  const hz = fit.hz, hx = fit.hx
-  box(out, 0, 15, -hz - 0.45, hx * 0.3, 10.5, 0.5, hex('#cfd7da'))                                // the glazed bay, projecting up the middle
-  box(out, 0, 15, -hz - 0.75, hx * 0.24, 10, 0.1, hex('#5d7684'))
-  for (const dx of [-0.6, 0.6]) box(out, dx * hx, 34.2, 0, 0.7, 0.9, 0.7, hex('#4d6b3e'))        // roof-garden shrubs
-}
 
 /** Wood'Up (Paris 13e, 2022): no photograph. A timber-slatted slender tower with recessed balcony bands, a stepped terrace crown. */
 export const woodUp = make({

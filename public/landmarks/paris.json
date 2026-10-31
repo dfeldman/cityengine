@@ -1351,10 +1351,16 @@
     "include": "paris/batch11.json"
   },
   {
+    "include": "paris/batch12.json"
+  },
+  {
     "include": "paris/bugs.json"
   },
   {
     "include": "paris/civic.json"
+  },
+  {
+    "include": "paris/recipes.json"
   },
   {
     "include": "paris/extras.json"
