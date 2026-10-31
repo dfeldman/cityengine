@@ -406,7 +406,9 @@
   },
   {
     "osm": [
-      "way/56023667"
+      "way/56023667",
+      "way/1200656998",
+      "way/1200656999"
     ],
     "name": "Institut Océanographique de Paris",
     "procedural": "institutOceano",

@@ -77,7 +77,7 @@
    "word": "PISCINE ASPIRANT DUNAND",
    "seed": 6773
   },
-  "height": 4,
+  "height": 4.1,
   "front": -158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -275,7 +275,7 @@
    "word": "BARRE CASSAN A, B ET C",
    "seed": 2453
   },
-  "height": 32,
+  "height": 33.2,
   "front": -135,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -324,7 +324,7 @@
    "word": "TRIBUNAL JUDICIAIRE DE NANTERRE",
    "seed": 4505
   },
-  "height": 24,
+  "height": 19.6,
   "front": -154,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: tribunal, APUR period 99."
@@ -493,7 +493,7 @@
    "word": "CLINIQUE DE LA DÉFENSE",
    "seed": 2576
   },
-  "height": 8,
+  "height": 7.2,
   "front": -130,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -882,7 +882,7 @@
    "word": "ÉCOLE",
    "seed": 7882
   },
-  "height": 16,
+  "height": 13.4,
   "front": 53,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -4362,7 +4362,7 @@
    "p": 99,
    "seed": 2968
   },
-  "height": 8,
+  "height": 7.2,
   "front": 116,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -4379,7 +4379,7 @@
    "word": "ÉCOLE",
    "seed": 2970
   },
-  "height": 8,
+  "height": 7.2,
   "front": 26,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -4396,7 +4396,7 @@
    "word": "ÉCOLE",
    "seed": 6481
   },
-  "height": 12,
+  "height": 10.3,
   "front": -51,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -4750,7 +4750,7 @@
    "word": "ÉCOLE",
    "seed": 1443
   },
-  "height": 12,
+  "height": 10.3,
   "front": 26,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -4767,7 +4767,7 @@
    "word": "ÉCOLE",
    "seed": 7652
   },
-  "height": 12,
+  "height": 10.3,
   "front": -83,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -4784,7 +4784,7 @@
    "word": "ÉCOLE",
    "seed": 2817
   },
-  "height": 12,
+  "height": 10.3,
   "front": -84,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -4801,7 +4801,7 @@
    "word": "ÉCOLE",
    "seed": 2818
   },
-  "height": 16,
+  "height": 13.4,
   "front": -84,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -5183,7 +5183,7 @@
    "word": "temple",
    "seed": 2931
   },
-  "height": 8,
+  "height": 7.2,
   "front": -16,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -6195,7 +6195,7 @@
    "word": "HÔPITAL",
    "seed": 4831
   },
-  "height": 12,
+  "height": 10.3,
   "front": -139,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -7439,7 +7439,7 @@
    "word": "HÔPITAL",
    "seed": 1257
   },
-  "height": 8,
+  "height": 7.2,
   "front": 45,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -7473,7 +7473,7 @@
    "word": "ÉCOLE",
    "seed": 2192
   },
-  "height": 24,
+  "height": 19.6,
   "front": 104,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -7778,7 +7778,7 @@
    "word": "POLICE NATIONALE",
    "seed": 4659
   },
-  "height": 20,
+  "height": 16.5,
   "front": -17,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: police, APUR period 99."
@@ -7878,7 +7878,7 @@
    "word": "POSTE",
    "seed": 8891
   },
-  "height": 16,
+  "height": 13.4,
   "front": -102,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: poste, APUR period 99."
@@ -9344,7 +9344,7 @@
    "word": "CARRÉ BELLE-FEUILLE",
    "seed": 7309
   },
-  "height": 20,
+  "height": 16.5,
   "front": 78,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -9579,7 +9579,7 @@
    "word": "ÉCOLE",
    "seed": 2813
   },
-  "height": 16,
+  "height": 16.8,
   "front": -127,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
@@ -9713,7 +9713,7 @@
    "word": "CLINIQUE MARCEL SEMBAT",
    "seed": 7359
   },
-  "height": 28,
+  "height": 22.7,
   "front": -69,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -9976,7 +9976,7 @@
    "p": 99,
    "seed": 8102
   },
-  "height": 8,
+  "height": 7.2,
   "front": -122,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -10044,7 +10044,7 @@
    "word": "CLUB DE LA PLANCHETTE",
    "seed": 8206
   },
-  "height": 12,
+  "height": 7.2,
   "front": -35,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -10129,7 +10129,7 @@
    "word": "ÉCOLE",
    "seed": 8554
   },
-  "height": 32,
+  "height": 25.8,
   "front": -121,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -10146,7 +10146,7 @@
    "word": "LYCÉE LÉONARD DE VINCI",
    "seed": 8747
   },
-  "height": 20,
+  "height": 16.5,
   "front": -30,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -10264,7 +10264,7 @@
    "word": "ÉCOLE",
    "seed": 5673
   },
-  "height": 20,
+  "height": 16.5,
   "front": -119,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -10281,7 +10281,7 @@
    "word": "ÉCOLE",
    "seed": 5710
   },
-  "height": 16,
+  "height": 13.4,
   "front": 154,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -10298,7 +10298,7 @@
    "word": "ÉCOLE",
    "seed": 5797
   },
-  "height": 24,
+  "height": 19.6,
   "front": -119,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -10315,7 +10315,7 @@
    "word": "ISC",
    "seed": 5831
   },
-  "height": 12,
+  "height": 10.3,
   "front": -129,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -10366,7 +10366,7 @@
    "word": "ÉCOLE",
    "seed": 5826
   },
-  "height": 16,
+  "height": 10.3,
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -10398,7 +10398,7 @@
    "p": 99,
    "seed": 9907
   },
-  "height": 28,
+  "height": 22.7,
   "front": -121,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -10631,7 +10631,7 @@
    "word": "HÔTEL DES IMPÔTS DE BOULOGNE NORD",
    "seed": 2731
   },
-  "height": 20,
+  "height": 16.5,
   "front": -110,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
@@ -10748,7 +10748,7 @@
    "word": "HÔPITAL",
    "seed": 5039
   },
-  "height": 12,
+  "height": 7.2,
   "front": 94,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -10815,7 +10815,7 @@
    "word": "LES FRIPOUNETS",
    "seed": 5527
   },
-  "height": 4,
+  "height": 4.1,
   "front": 67,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -10832,7 +10832,7 @@
    "word": "URGENCES ADULTE",
    "seed": 5651
   },
-  "height": 24,
+  "height": 19.6,
   "front": -175,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -10866,7 +10866,7 @@
    "word": "ÉCOLE",
    "seed": 6004
   },
-  "height": 16,
+  "height": 13.4,
   "front": 27,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -10899,7 +10899,7 @@
    "word": "EPITA / EPITECH",
    "seed": 6314
   },
-  "height": 24,
+  "height": 19.6,
   "front": 166,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -10916,7 +10916,7 @@
    "word": "MATERNITÉ",
    "seed": 6373
   },
-  "height": 16,
+  "height": 13.4,
   "front": 5,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -10950,7 +10950,7 @@
    "word": "PAUL LANGEVIN",
    "seed": 6464
   },
-  "height": 12,
+  "height": 7.2,
   "front": 6,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -11001,7 +11001,7 @@
    "word": "HÔPITAL",
    "seed": 6705
   },
-  "height": 24,
+  "height": 19.6,
   "front": 5,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -11018,7 +11018,7 @@
    "word": "FACULTÉ DE MÉDECINE PARIS-SUD",
    "seed": 6815
   },
-  "height": 16,
+  "height": 13.4,
   "front": 95,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -11035,7 +11035,7 @@
    "word": "HÔPITAL",
    "seed": 7059
   },
-  "height": 12,
+  "height": 7.2,
   "front": 97,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -11136,7 +11136,7 @@
    "word": "CLINIQUE MONTEVIDEO",
    "seed": 5725
   },
-  "height": 16,
+  "height": 13.4,
   "front": -46,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -11338,7 +11338,7 @@
    "word": "CRÈCHE DU PARC",
    "seed": 9137
   },
-  "height": 4,
+  "height": 4.1,
   "front": 26,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11454,7 +11454,7 @@
    "word": "ÉCOLE",
    "seed": 4879
   },
-  "height": 8,
+  "height": 7.2,
   "front": 89,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11687,7 +11687,7 @@
    "word": "temple",
    "seed": 9397
   },
-  "height": 8,
+  "height": 7.2,
   "front": -100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -11771,7 +11771,7 @@
    "word": "chapelle",
    "seed": 7592
   },
-  "height": 8,
+  "height": 7.2,
   "front": -134,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -11788,7 +11788,7 @@
    "word": "ÉCOLE",
    "seed": 5810
   },
-  "height": 12,
+  "height": 10.3,
   "front": -32,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11822,7 +11822,7 @@
    "word": "PALAIS DE LA DANSE",
    "seed": 6059
   },
-  "height": 8,
+  "height": 7.2,
   "front": 35,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11839,7 +11839,7 @@
    "word": "ÉCOLE",
    "seed": 6410
   },
-  "height": 12,
+  "height": 7.2,
   "front": -119,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11873,7 +11873,7 @@
    "word": "ÉCOLE",
    "seed": 6788
   },
-  "height": 16,
+  "height": 13.4,
   "front": -52,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11890,7 +11890,7 @@
    "word": "ÉCOLE",
    "seed": 6988
   },
-  "height": 16,
+  "height": 10.3,
   "front": -52,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -11973,7 +11973,7 @@
    "word": "PALAIS DES ARTS",
    "seed": 7812
   },
-  "height": 8,
+  "height": 7.2,
   "front": -51,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -12040,7 +12040,7 @@
    "p": 99,
    "seed": 8762
   },
-  "height": 12,
+  "height": 7.2,
   "front": -138,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -12089,7 +12089,7 @@
    "p": 99,
    "seed": 9466
   },
-  "height": 8,
+  "height": 7.2,
   "front": -158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -12205,7 +12205,7 @@
    "word": "BOULOGNE-BILLANCOURT JAURÈS",
    "seed": 940
   },
-  "height": 12,
+  "height": 10.3,
   "front": -107,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: poste, APUR period 99."
@@ -13632,7 +13632,7 @@
    "p": 5,
    "seed": 68
   },
-  "height": 4,
+  "height": 4.1,
   "front": -108,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 5."
@@ -14677,7 +14677,7 @@
    "word": "MINISTÈRE DE L'INTÉRIEUR",
    "seed": 7284
   },
-  "height": 28,
+  "height": 21.6,
   "front": 83,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -15346,7 +15346,7 @@
    "p": 99,
    "seed": 807
   },
-  "height": 20,
+  "height": 16.5,
   "front": 134,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -15380,7 +15380,7 @@
    "word": "ÉCOLE",
    "seed": 909
   },
-  "height": 12,
+  "height": 7.2,
   "front": 17,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15447,7 +15447,7 @@
    "word": "CENTRE ADMINISTRATIF",
    "seed": 3999
   },
-  "height": 20,
+  "height": 16.5,
   "front": 28,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -15532,7 +15532,7 @@
    "word": "CRÈCHE DE L'HÔPITAL FOCH",
    "seed": 4922
   },
-  "height": 8,
+  "height": 7.2,
   "front": -157,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15566,7 +15566,7 @@
    "word": "CENTRE DES FINANCES PUBLIQUES",
    "seed": 5823
   },
-  "height": 16,
+  "height": 13.4,
   "front": -62,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -15599,7 +15599,7 @@
    "word": "HÔPITAL",
    "seed": 6005
   },
-  "height": 24,
+  "height": 16.5,
   "front": -61,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -15649,7 +15649,7 @@
    "word": "ÉCOLE",
    "seed": 6244
   },
-  "height": 8,
+  "height": 7.2,
   "front": 176,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15700,7 +15700,7 @@
    "word": "ÉCOLE",
    "seed": 6467
   },
-  "height": 8,
+  "height": 7.2,
   "front": 111,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15717,7 +15717,7 @@
    "word": "ÉCOLE",
    "seed": 6525
   },
-  "height": 16,
+  "height": 13.4,
   "front": -68,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15834,7 +15834,7 @@
    "word": "ÉCOLE",
    "seed": 8194
   },
-  "height": 8,
+  "height": 4.1,
   "front": 26,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15918,7 +15918,7 @@
    "word": "ÉCOLE",
    "seed": 8721
   },
-  "height": 16,
+  "height": 13.4,
   "front": -68,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -15968,7 +15968,7 @@
    "word": "chapelle",
    "seed": 9497
   },
-  "height": 12,
+  "height": 7.2,
   "front": 77,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -15985,7 +15985,7 @@
    "word": "PALAIS DE JUSTICE",
    "seed": 762
   },
-  "height": 16,
+  "height": 13.4,
   "front": -90,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: tribunal, APUR period 99."
@@ -16002,7 +16002,7 @@
    "word": "HÔPITAL",
    "seed": 763
   },
-  "height": 8,
+  "height": 7.2,
   "front": 100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -16019,7 +16019,7 @@
    "word": "synagogue",
    "seed": 780
   },
-  "height": 16,
+  "height": 13.4,
   "front": 6,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -16121,7 +16121,7 @@
    "word": "HÔPITAL",
    "seed": 6390
   },
-  "height": 12,
+  "height": 10.3,
   "front": 107,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -16138,7 +16138,7 @@
    "word": "ESPACE BERNARD PALISSY",
    "seed": 7525
   },
-  "height": 12,
+  "height": 10.3,
   "front": 0,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -16155,7 +16155,7 @@
    "word": "CLINIQUE DU PONT DE SÈVRES",
    "seed": 6637
   },
-  "height": 36,
+  "height": 28.9,
   "front": 87,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -16172,7 +16172,7 @@
    "word": "ESSCA",
    "seed": 6653
   },
-  "height": 36,
+  "height": 28.9,
   "front": -71,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -16205,7 +16205,7 @@
    "word": "ÉCOLE",
    "seed": 6936
   },
-  "height": 8,
+  "height": 7.2,
   "front": 85,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16222,7 +16222,7 @@
    "word": "ÉCOLE",
    "seed": 7188
   },
-  "height": 4,
+  "height": 4.1,
   "front": -145,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16323,7 +16323,7 @@
    "word": "synagogue",
    "seed": 997
   },
-  "height": 8,
+  "height": 7.2,
   "front": 4,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -16340,7 +16340,7 @@
    "word": "ÉCOLE MATERNELLE LA MARINE",
    "seed": 1834
   },
-  "height": 8,
+  "height": 7.2,
   "front": -15,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16357,7 +16357,7 @@
    "word": "ÉCOLE",
    "seed": 1993
   },
-  "height": 20,
+  "height": 16.5,
   "front": -16,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16391,7 +16391,7 @@
    "word": "ÉCOLE",
    "seed": 2195
   },
-  "height": 16,
+  "height": 13.4,
   "front": 7,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16408,7 +16408,7 @@
    "word": "LA SEIGNEURIE",
    "seed": 2643
   },
-  "height": 8,
+  "height": 7.2,
   "front": 4,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -16425,7 +16425,7 @@
    "word": "ÉCOLE",
    "seed": 3457
   },
-  "height": 8,
+  "height": 7.2,
   "front": -13,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16458,7 +16458,7 @@
    "word": "ÉCOLE",
    "seed": 5156
   },
-  "height": 8,
+  "height": 7.2,
   "front": 52,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16543,7 +16543,7 @@
    "word": "ÉCOLE",
    "seed": 8310
   },
-  "height": 8,
+  "height": 7.2,
   "front": -16,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16559,7 +16559,7 @@
    "p": 99,
    "seed": 8538
   },
-  "height": 16,
+  "height": 13.4,
   "front": -15,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -16627,7 +16627,7 @@
    "word": "ÉCOLE",
    "seed": 4037
   },
-  "height": 20,
+  "height": 16.5,
   "front": -17,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16847,7 +16847,7 @@
    "word": "ÉCOLE",
    "seed": 6758
   },
-  "height": 12,
+  "height": 10.3,
   "front": -168,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -16948,7 +16948,7 @@
    "word": "ARMÉE DU SALUT",
    "seed": 684
   },
-  "height": 28,
+  "height": 22.7,
   "front": -118,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -16998,7 +16998,7 @@
    "word": "chapelle",
    "seed": 5881
   },
-  "height": 4,
+  "height": 4.1,
   "front": -49,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -17015,7 +17015,7 @@
    "word": "FONDATION MICHELLE DARTY",
    "seed": 6122
   },
-  "height": 20,
+  "height": 16.5,
   "front": -87,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -17049,7 +17049,7 @@
    "word": "ÉCOLE",
    "seed": 4145
   },
-  "height": 8,
+  "height": 7.2,
   "front": -33,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -17099,7 +17099,7 @@
    "word": "ÉCOLE",
    "seed": 5149
   },
-  "height": 12,
+  "height": 10.3,
   "front": -66,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -17116,7 +17116,7 @@
    "word": "RÉSIDENCE SAINT-BENOÎT",
    "seed": 5361
   },
-  "height": 24,
+  "height": 19.6,
   "front": -23,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -17132,7 +17132,7 @@
    "p": 99,
    "seed": 5380
   },
-  "height": 16,
+  "height": 13.4,
   "front": 109,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -17166,7 +17166,7 @@
    "word": "LES STUDIOS DE BOULOGNE MUSIQUE",
    "seed": 5494
   },
-  "height": 16,
+  "height": 13.4,
   "front": -154,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -17200,7 +17200,7 @@
    "word": "ÉCOLE",
    "seed": 3054
   },
-  "height": 4,
+  "height": 4.1,
   "front": -174,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -17217,7 +17217,7 @@
    "word": "ÉCOLE",
    "seed": 3071
   },
-  "height": 16,
+  "height": 13.4,
   "front": 96,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -17234,7 +17234,7 @@
    "word": "ÉCOLE",
    "seed": 3075
   },
-  "height": 4,
+  "height": 4.1,
   "front": 7,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -17250,7 +17250,7 @@
    "p": 99,
    "seed": 3123
   },
-  "height": 12,
+  "height": 7.2,
   "front": 30,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -17266,7 +17266,7 @@
    "p": 99,
    "seed": 3200
   },
-  "height": 8,
+  "height": 7.2,
   "front": -123,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -17316,7 +17316,7 @@
    "p": 99,
    "seed": 5441
   },
-  "height": 8,
+  "height": 7.2,
   "front": 88,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -18023,7 +18023,7 @@
    "word": "ÉCOLE",
    "seed": 9452
   },
-  "height": 4,
+  "height": 4.1,
   "front": -73,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -18056,7 +18056,7 @@
    "word": "ÉCOLE",
    "seed": 333
   },
-  "height": 8,
+  "height": 7.2,
   "front": 97,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -18090,7 +18090,7 @@
    "word": "ÉCOLE",
    "seed": 881
   },
-  "height": 8,
+  "height": 4.1,
   "front": -173,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -18542,7 +18542,7 @@
    "word": "HÔPITAL",
    "seed": 1321
   },
-  "height": 20,
+  "height": 16.5,
   "front": -167,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -18982,7 +18982,7 @@
    "word": "ÉCOLE",
    "seed": 552
   },
-  "height": 16,
+  "height": 14.7,
   "front": -169,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -19564,7 +19564,7 @@
    "word": "HÔPITAL",
    "seed": 7086
   },
-  "height": 12,
+  "height": 9.3,
   "front": 100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 6."
@@ -20587,7 +20587,7 @@
    "word": "ÉCOLE",
    "seed": 5859
   },
-  "height": 16,
+  "height": 17.7,
   "front": 108,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 6."
@@ -21632,7 +21632,7 @@
    "word": "ÉCOLE",
    "seed": 7888
   },
-  "height": 4,
+  "height": 4.1,
   "front": 159,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 6."
@@ -22628,7 +22628,7 @@
    "word": "CENTRE ADMINISTRATIF ET TECHNIQUE",
    "seed": 6947
   },
-  "height": 20,
+  "height": 16.5,
   "front": -43,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -22780,7 +22780,7 @@
    "word": "ÉCOLE JEAN XXIII",
    "seed": 9337
   },
-  "height": 12,
+  "height": 10.3,
   "front": -134,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -23756,7 +23756,7 @@
    "word": "LA GÉNÉRALE",
    "seed": 9306
   },
-  "height": 4,
+  "height": 4.1,
   "front": -158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 7."
@@ -24424,7 +24424,7 @@
    "word": "HÔPITAL",
    "seed": 5253
   },
-  "height": 32,
+  "height": 25.8,
   "front": 125,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -25263,7 +25263,7 @@
    "p": 99,
    "seed": 9023
   },
-  "height": 24,
+  "height": 16.5,
   "front": -125,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -25379,7 +25379,7 @@
    "word": "MAIRIE DE GENTILLY",
    "seed": 8231
   },
-  "height": 8,
+  "height": 7.2,
   "front": -133,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: mairie, APUR period 99."
@@ -25529,7 +25529,7 @@
    "word": "ÉCOLE",
    "seed": 623
   },
-  "height": 12,
+  "height": 10.3,
   "front": 1,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -25546,7 +25546,7 @@
    "word": "COLLÈGE ROSA PARKS",
    "seed": 1126
   },
-  "height": 16,
+  "height": 13.4,
   "front": 2,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -25681,7 +25681,7 @@
    "word": "BÂTIMENT ARGENSON",
    "seed": 8648
   },
-  "height": 16,
+  "height": 13.4,
   "front": -135,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -25698,7 +25698,7 @@
    "word": "HÔPITAL",
    "seed": 8654
   },
-  "height": 28,
+  "height": 22.7,
   "front": -123,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -25817,7 +25817,7 @@
    "word": "ÉCOLE",
    "seed": 2607
   },
-  "height": 12,
+  "height": 10.3,
   "front": -31,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -25834,7 +25834,7 @@
    "word": "BÂTIMENT SAINTE-FOY",
    "seed": 6484
   },
-  "height": 20,
+  "height": 13.4,
   "front": -136,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -25868,7 +25868,7 @@
    "word": "ÉCOLE",
    "seed": 3745
   },
-  "height": 16,
+  "height": 10.3,
   "front": 158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -25984,7 +25984,7 @@
    "word": "LYCÉE",
    "seed": 8123
   },
-  "height": 16,
+  "height": 10.3,
   "front": -29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -26287,7 +26287,7 @@
    "word": "ÉCOLE",
    "seed": 6116
   },
-  "height": 16,
+  "height": 13.4,
   "front": -111,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -26371,7 +26371,7 @@
    "p": 99,
    "seed": 9351
   },
-  "height": 24,
+  "height": 19.6,
   "front": 145,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -26388,7 +26388,7 @@
    "word": "ÉCOLE",
    "seed": 9417
   },
-  "height": 8,
+  "height": 7.2,
   "front": 149,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -26421,7 +26421,7 @@
    "p": 99,
    "seed": 9538
   },
-  "height": 44,
+  "height": 35.1,
   "front": -22,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -26470,7 +26470,7 @@
    "p": 99,
    "seed": 9574
   },
-  "height": 4,
+  "height": 4.1,
   "front": -118,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -26487,7 +26487,7 @@
    "word": "ÉCOLE",
    "seed": 9642
   },
-  "height": 8,
+  "height": 7.2,
   "front": -31,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -26571,7 +26571,7 @@
    "word": "ÉCOLE",
    "seed": 9766
   },
-  "height": 12,
+  "height": 7.2,
   "front": 166,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -26588,7 +26588,7 @@
    "word": "MAISON DES ASSOCIATIONS - GAULTIER",
    "seed": 9789
   },
-  "height": 12,
+  "height": 10.3,
   "front": 156,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -26656,7 +26656,7 @@
    "word": "ÉCOLE",
    "seed": 329
   },
-  "height": 12,
+  "height": 7.2,
   "front": -32,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -26758,7 +26758,7 @@
    "word": "temple",
    "seed": 8847
   },
-  "height": 4,
+  "height": 4.1,
   "front": 121,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -26792,7 +26792,7 @@
    "word": "MARCHÉ DE LA MARNE",
    "seed": 9045
   },
-  "height": 4,
+  "height": 4.1,
   "front": 133,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -26808,7 +26808,7 @@
    "p": 99,
    "seed": 9113
   },
-  "height": 8,
+  "height": 7.2,
   "front": -76,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -26841,7 +26841,7 @@
    "word": "MAISON DES ASSOCIATIONS",
    "seed": 9271
   },
-  "height": 8,
+  "height": 7.2,
   "front": -77,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -26892,7 +26892,7 @@
    "word": "ÉCOLE",
    "seed": 9506
   },
-  "height": 4,
+  "height": 4.1,
   "front": -158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -26943,7 +26943,7 @@
    "word": "RÉSIDENCE LA VANNE",
    "seed": 9881
   },
-  "height": 28,
+  "height": 22.7,
   "front": 100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -26977,7 +26977,7 @@
    "word": "synagogue",
    "seed": 676
   },
-  "height": 40,
+  "height": 32,
   "front": -163,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -26994,7 +26994,7 @@
    "word": "LES HESPÉRIDES VICTOR HUGO",
    "seed": 726
   },
-  "height": 24,
+  "height": 19.6,
   "front": -156,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -27011,7 +27011,7 @@
    "word": "ÉCOLE",
    "seed": 867
   },
-  "height": 4,
+  "height": 4.1,
   "front": 21,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27028,7 +27028,7 @@
    "word": "JARDIN D'ENFANTS RENAUDEL",
    "seed": 918
   },
-  "height": 4,
+  "height": 4.1,
   "front": -152,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27045,7 +27045,7 @@
    "word": "RÉSIDENCE SOCIALE PÉRIER",
    "seed": 1075
   },
-  "height": 24,
+  "height": 19.6,
   "front": -158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -27062,7 +27062,7 @@
    "word": "BASE DE LOISIRS A. BRIAND PRIMAIRE",
    "seed": 1153
   },
-  "height": 4,
+  "height": 4.1,
   "front": 100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -27079,7 +27079,7 @@
    "word": "LA POSTE MONTROUGE-VACHE NOIRE",
    "seed": 1294
   },
-  "height": 8,
+  "height": 7.2,
   "front": -161,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: poste, APUR period 99."
@@ -27096,7 +27096,7 @@
    "word": "ÉCOLE",
    "seed": 1385
   },
-  "height": 8,
+  "height": 7.2,
   "front": -157,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27113,7 +27113,7 @@
    "word": "CENTRE DES FINANCES PUBLIQUES",
    "seed": 1490
   },
-  "height": 20,
+  "height": 16.5,
   "front": 112,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -27181,7 +27181,7 @@
    "word": "RÉSIDENCE THÉOPHILE GAUTIER",
    "seed": 1742
   },
-  "height": 24,
+  "height": 19.6,
   "front": -156,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -27215,7 +27215,7 @@
    "word": "ÉCOLE",
    "seed": 1827
   },
-  "height": 20,
+  "height": 16.5,
   "front": 22,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27281,7 +27281,7 @@
    "word": "ÉCOLE",
    "seed": 2342
   },
-  "height": 8,
+  "height": 7.2,
   "front": 117,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27298,7 +27298,7 @@
    "word": "POLICE NATIONALE",
    "seed": 2476
   },
-  "height": 8,
+  "height": 7.2,
   "front": 115,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: police, APUR period 99."
@@ -27315,7 +27315,7 @@
    "word": "ÉCOLE",
    "seed": 2626
   },
-  "height": 8,
+  "height": 7.2,
   "front": -73,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27383,7 +27383,7 @@
    "word": "MAIRIE DE MONTROUGE",
    "seed": 2956
   },
-  "height": 12,
+  "height": 7.2,
   "front": 113,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: mairie, APUR period 99."
@@ -27400,7 +27400,7 @@
    "word": "BEFFROI",
    "seed": 2963
   },
-  "height": 16,
+  "height": 13.4,
   "front": -66,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -27450,7 +27450,7 @@
    "p": 99,
    "seed": 3202
   },
-  "height": 16,
+  "height": 10.3,
   "front": -66,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -27533,7 +27533,7 @@
    "word": "MAISON DES ARTS",
    "seed": 7296
   },
-  "height": 8,
+  "height": 7.2,
   "front": 132,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -27567,7 +27567,7 @@
    "word": "ÉCOLE",
    "seed": 7773
   },
-  "height": 16,
+  "height": 10.3,
   "front": -45,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27635,7 +27635,7 @@
    "word": "ÉCOLE",
    "seed": 8670
   },
-  "height": 8,
+  "height": 7.2,
   "front": -48,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27718,7 +27718,7 @@
    "word": "ÉCOLE",
    "seed": 9498
   },
-  "height": 12,
+  "height": 10.3,
   "front": 51,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27752,7 +27752,7 @@
    "word": "MAIRIE DE MALAKOFF",
    "seed": 141
   },
-  "height": 12,
+  "height": 10.3,
   "front": 149,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: mairie, APUR period 99."
@@ -27819,7 +27819,7 @@
    "p": 99,
    "seed": 620
   },
-  "height": 8,
+  "height": 7.2,
   "front": 160,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -27835,7 +27835,7 @@
    "p": 99,
    "seed": 944
   },
-  "height": 4,
+  "height": 4.1,
   "front": -128,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -27886,7 +27886,7 @@
    "word": "ÉCOLE",
    "seed": 1711
   },
-  "height": 16,
+  "height": 10.3,
   "front": 180,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -27986,7 +27986,7 @@
    "word": "ÉCOLE",
    "seed": 2598
   },
-  "height": 8,
+  "height": 7.2,
   "front": -69,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -28406,7 +28406,7 @@
    "word": "HÔPITAL",
    "seed": 9153
   },
-  "height": 12,
+  "height": 10.3,
   "front": -129,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -29377,7 +29377,7 @@
    "word": "HÔTEL DE VILLE DE VANVES",
    "seed": 3346
   },
-  "height": 12,
+  "height": 7.2,
   "front": 53,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: mairie, APUR period 99."
@@ -29563,7 +29563,7 @@
    "word": "ÉCOLE",
    "seed": 4497
   },
-  "height": 44,
+  "height": 35.1,
   "front": -20,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -29613,7 +29613,7 @@
    "word": "ÉCOLE",
    "seed": 7781
   },
-  "height": 12,
+  "height": 10.3,
   "front": 145,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -29630,7 +29630,7 @@
    "word": "ÉCOLE",
    "seed": 7942
   },
-  "height": 4,
+  "height": 4.1,
   "front": 144,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -29647,7 +29647,7 @@
    "word": "PANOPÉE",
    "seed": 5369
   },
-  "height": 8,
+  "height": 7.2,
   "front": 140,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -29663,7 +29663,7 @@
    "p": 99,
    "seed": 5604
   },
-  "height": 12,
+  "height": 10.3,
   "front": -35,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -29680,7 +29680,7 @@
    "word": "ÉCOLE",
    "seed": 6758
   },
-  "height": 16,
+  "height": 13.4,
   "front": -49,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -29713,7 +29713,7 @@
    "word": "ÉCOLE",
    "seed": 7462
   },
-  "height": 4,
+  "height": 4.1,
   "front": 134,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -29764,7 +29764,7 @@
    "word": "THÉÂTRE DE LA CLARTÉ",
    "seed": 2328
   },
-  "height": 8,
+  "height": 7.2,
   "front": 155,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -29832,7 +29832,7 @@
    "word": "ÉCOLE",
    "seed": 4686
   },
-  "height": 16,
+  "height": 13.4,
   "front": -176,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -29849,7 +29849,7 @@
    "word": "chapelle",
    "seed": 8451
   },
-  "height": 16,
+  "height": 13.4,
   "front": 124,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -30067,7 +30067,7 @@
    "word": "ÉCOLE",
    "seed": 118
   },
-  "height": 8,
+  "height": 7.2,
   "front": -147,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -30134,7 +30134,7 @@
    "word": "GYMNASE DE L'AGORA",
    "seed": 645
   },
-  "height": 4,
+  "height": 4.1,
   "front": 52,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -30253,7 +30253,7 @@
    "word": "HÔPITAL",
    "seed": 7634
   },
-  "height": 20,
+  "height": 16.5,
   "front": -20,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -30437,7 +30437,7 @@
    "word": "mosque",
    "seed": 73
   },
-  "height": 16,
+  "height": 13.4,
   "front": -29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -30775,7 +30775,7 @@
    "word": "ÉCOLE",
    "seed": 1049
   },
-  "height": 4,
+  "height": 4.1,
   "front": 129,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -30943,7 +30943,7 @@
    "word": "MAISON DE QUARTIER HAUTS D'ISSY",
    "seed": 4675
   },
-  "height": 8,
+  "height": 7.2,
   "front": 158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
@@ -30977,7 +30977,7 @@
    "word": "HÔPITAL",
    "seed": 7263
   },
-  "height": 4,
+  "height": 4.1,
   "front": 31,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -30994,7 +30994,7 @@
    "word": "HÔPITAL",
    "seed": 7268
   },
-  "height": 16,
+  "height": 10.3,
   "front": 30,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -31161,7 +31161,7 @@
    "word": "ENSEIGNEMENT SUPÉRIEUR",
    "seed": 1495
   },
-  "height": 24,
+  "height": 16.7,
   "front": -120,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -31195,7 +31195,7 @@
    "word": "ÉCOLE",
    "seed": 1506
   },
-  "height": 12,
+  "height": 10.3,
   "front": 150,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -31480,7 +31480,7 @@
    "word": "ÉCOLE",
    "seed": 2363
   },
-  "height": 8,
+  "height": 7.2,
   "front": -80,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -31497,7 +31497,7 @@
    "word": "chapelle",
    "seed": 2574
   },
-  "height": 8,
+  "height": 7.2,
   "front": 179,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
@@ -31648,7 +31648,7 @@
    "word": "BÂTIMENT DELORY (ANNEXE DELORY)",
    "seed": 6208
   },
-  "height": 20,
+  "height": 16.5,
   "front": 56,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -31731,7 +31731,7 @@
    "word": "ÉCOLE",
    "seed": 4612
   },
-  "height": 12,
+  "height": 7.2,
   "front": -41,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -31765,7 +31765,7 @@
    "word": "ÉCOLE",
    "seed": 5165
   },
-  "height": 12,
+  "height": 7.2,
   "front": -134,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -31782,7 +31782,7 @@
    "word": "ÉCOLE",
    "seed": 5201
   },
-  "height": 12,
+  "height": 7.2,
   "front": -44,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -31850,7 +31850,7 @@
    "word": "ÉCOLE",
    "seed": 8253
   },
-  "height": 12,
+  "height": 7.2,
   "front": -17,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -31932,7 +31932,7 @@
    "word": "BÂTIMENT ALIX LECLERC",
    "seed": 1668
   },
-  "height": 12,
+  "height": 10.3,
   "front": -160,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32166,7 +32166,7 @@
    "word": "ÉCOLE",
    "seed": 3480
   },
-  "height": 20,
+  "height": 13.4,
   "front": -133,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32183,7 +32183,7 @@
    "word": "ÉCOLE",
    "seed": 3481
   },
-  "height": 4,
+  "height": 4.1,
   "front": -102,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32200,7 +32200,7 @@
    "word": "RÉSIDENCE AREPA CHAMPFLEURY",
    "seed": 6396
   },
-  "height": 12,
+  "height": 10.3,
   "front": 47,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -32217,7 +32217,7 @@
    "word": "ÉCOLE",
    "seed": 7900
   },
-  "height": 8,
+  "height": 7.2,
   "front": 25,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32251,7 +32251,7 @@
    "word": "LYCÉE",
    "seed": 9526
   },
-  "height": 20,
+  "height": 16.5,
   "front": -106,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -32285,7 +32285,7 @@
    "word": "COLLÈGE ARMÉNIEN SAMUEL MOORAT",
    "seed": 1986
   },
-  "height": 16,
+  "height": 13.4,
   "front": -134,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -32319,7 +32319,7 @@
    "word": "STRATE ÉCOLE DE DESIGN",
    "seed": 4031
   },
-  "height": 16,
+  "height": 13.4,
   "front": 144,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32402,7 +32402,7 @@
    "word": "HÔTEL DE LA QUESTURE",
    "seed": 4694
   },
-  "height": 16,
+  "height": 13.4,
   "front": -174,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
@@ -32537,7 +32537,7 @@
    "word": "ÉCOLE NOTRE DAME DES MISSIONS",
    "seed": 4284
   },
-  "height": 12,
+  "height": 10.3,
   "front": -38,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32571,7 +32571,7 @@
    "word": "ÉCOLE",
    "seed": 4832
   },
-  "height": 8,
+  "height": 7.2,
   "front": 46,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32587,7 +32587,7 @@
    "p": 99,
    "seed": 4901
   },
-  "height": 12,
+  "height": 7.2,
   "front": -132,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -32604,7 +32604,7 @@
    "word": "ÉCOLE",
    "seed": 5224
   },
-  "height": 12,
+  "height": 10.3,
   "front": -59,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32638,7 +32638,7 @@
    "word": "ÉCOLE",
    "seed": 5465
   },
-  "height": 12,
+  "height": 7.2,
   "front": 40,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32723,7 +32723,7 @@
    "word": "ÉCOLE",
    "seed": 7980
   },
-  "height": 12,
+  "height": 10.3,
   "front": -138,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -32740,7 +32740,7 @@
    "word": "BIBLIOTHÈQUE",
    "seed": 9463
   },
-  "height": 24,
+  "height": 19.6,
   "front": -139,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: bibliotheque, APUR period 99."
@@ -32858,7 +32858,7 @@
    "word": "ÉCOLE",
    "seed": 1830
   },
-  "height": 24,
+  "height": 19.6,
   "front": -171,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -33028,7 +33028,7 @@
    "word": "ÉCOLE",
    "seed": 9505
   },
-  "height": 20,
+  "height": 16.5,
   "front": -125,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -33061,7 +33061,7 @@
    "word": "PIERRE LASJAUNIAS",
    "seed": 4954
   },
-  "height": 16,
+  "height": 10.3,
   "front": 6,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -33144,7 +33144,7 @@
    "word": "ÉCOLE",
    "seed": 4537
   },
-  "height": 12,
+  "height": 10.3,
   "front": -107,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -33194,7 +33194,7 @@
    "word": "HÔPITAL",
    "seed": 2499
   },
-  "height": 12,
+  "height": 7.2,
   "front": -85,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -33379,7 +33379,7 @@
    "word": "JEAN-BAPTISTE PUSSIN",
    "seed": 7411
   },
-  "height": 4,
+  "height": 4.1,
   "front": -175,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -33396,7 +33396,7 @@
    "word": "PIERRE TESTAS",
    "seed": 7413
   },
-  "height": 12,
+  "height": 10.3,
   "front": -83,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -33497,7 +33497,7 @@
    "word": "ÉCOLE",
    "seed": 8433
   },
-  "height": 16,
+  "height": 13.4,
   "front": 117,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -33614,7 +33614,7 @@
    "p": 99,
    "seed": 8794
   },
-  "height": 12,
+  "height": 10.3,
   "front": -72,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -33647,7 +33647,7 @@
    "word": "BÂTIMENT DES 3ÈMES",
    "seed": 6365
   },
-  "height": 12,
+  "height": 10.3,
   "front": -72,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -33681,7 +33681,7 @@
    "word": "PISCINE MAURICE THOREZ",
    "seed": 4936
   },
-  "height": 12,
+  "height": 10.3,
   "front": 139,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -33969,7 +33969,7 @@
    "word": "ÉCOLE",
    "seed": 7900
   },
-  "height": 24,
+  "height": 16.5,
   "front": -150,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -33986,7 +33986,7 @@
    "word": "ÉCOLE",
    "seed": 7901
   },
-  "height": 24,
+  "height": 16.5,
   "front": -150,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -34003,7 +34003,7 @@
    "word": "ÉCOLE",
    "seed": 7902
   },
-  "height": 24,
+  "height": 16.5,
   "front": -55,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -34020,7 +34020,7 @@
    "word": "ÉCOLE",
    "seed": 7904
   },
-  "height": 24,
+  "height": 19.6,
   "front": -55,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -34373,7 +34373,7 @@
    "word": "MAISON DE RETRAITE LASSERRE",
    "seed": 2074
   },
-  "height": 20,
+  "height": 13.4,
   "front": -43,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -34931,7 +34931,7 @@
    "word": "ÉCOLE",
    "seed": 5292
   },
-  "height": 16,
+  "height": 13.4,
   "front": -106,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -34965,7 +34965,7 @@
    "word": "ÉCOLE",
    "seed": 5064
   },
-  "height": 16,
+  "height": 10.3,
   "front": 118,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -35202,7 +35202,7 @@
    "word": "ÉCOLE",
    "seed": 5839
   },
-  "height": 12,
+  "height": 10.3,
   "front": 49,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -35219,7 +35219,7 @@
    "word": "ÉCOLE",
    "seed": 5846
   },
-  "height": 4,
+  "height": 4.1,
   "front": -132,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -35302,7 +35302,7 @@
    "p": 99,
    "seed": 6088
   },
-  "height": 12,
+  "height": 10.3,
   "front": -15,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -35437,7 +35437,7 @@
    "word": "SALLE DE QUARTIER SOUFFLOT",
    "seed": 605
   },
-  "height": 8,
+  "height": 7.2,
   "front": 180,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -35503,7 +35503,7 @@
    "p": 99,
    "seed": 7441
   },
-  "height": 8,
+  "height": 7.2,
   "front": -25,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -35553,7 +35553,7 @@
    "word": "ÉCOLE",
    "seed": 5802
   },
-  "height": 8,
+  "height": 7.2,
   "front": 118,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -35602,7 +35602,7 @@
    "p": 99,
    "seed": 272
   },
-  "height": 24,
+  "height": 19.6,
   "front": -122,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -36044,7 +36044,7 @@
    "word": "ÉCOLE",
    "seed": 159
   },
-  "height": 12,
+  "height": 10.3,
   "front": 2,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36162,7 +36162,7 @@
    "p": 99,
    "seed": 340
   },
-  "height": 12,
+  "height": 10.3,
   "front": 18,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -36178,7 +36178,7 @@
    "p": 99,
    "seed": 348
   },
-  "height": 12,
+  "height": 10.3,
   "front": 161,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -36278,7 +36278,7 @@
    "word": "ÉCOLE",
    "seed": 1519
   },
-  "height": 12,
+  "height": 7.2,
   "front": -32,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36464,7 +36464,7 @@
    "p": 99,
    "seed": 4665
   },
-  "height": 28,
+  "height": 22.7,
   "front": -109,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -36530,7 +36530,7 @@
    "p": 99,
    "seed": 9398
   },
-  "height": 20,
+  "height": 16.5,
   "front": 177,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -36629,7 +36629,7 @@
    "word": "ÉCOLE",
    "seed": 1291
   },
-  "height": 24,
+  "height": 19.6,
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36646,7 +36646,7 @@
    "word": "ÉCOLE",
    "seed": 1293
   },
-  "height": 24,
+  "height": 19.6,
   "front": 62,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36663,7 +36663,7 @@
    "word": "ÉCOLE",
    "seed": 1294
   },
-  "height": 24,
+  "height": 19.6,
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36680,7 +36680,7 @@
    "word": "ÉCOLE",
    "seed": 1296
   },
-  "height": 24,
+  "height": 19.6,
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36697,7 +36697,7 @@
    "word": "ÉCOLE",
    "seed": 1297
   },
-  "height": 24,
+  "height": 19.6,
   "front": 43,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36714,7 +36714,7 @@
    "word": "ÉCOLE",
    "seed": 1298
   },
-  "height": 24,
+  "height": 19.6,
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -36748,7 +36748,7 @@
    "word": "LYCÉE PROFESSIONNEL VAL DE BIÈVRE",
    "seed": 3324
   },
-  "height": 12,
+  "height": 10.3,
   "front": -40,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -36765,7 +36765,7 @@
    "word": "LYCÉE PROFESSIONNEL VAL DE BIÈVRE",
    "seed": 7120
   },
-  "height": 12,
+  "height": 10.3,
   "front": 168,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
@@ -36798,7 +36798,7 @@
    "p": 99,
    "seed": 8604
   },
-  "height": 4,
+  "height": 4.1,
   "front": -8,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -36985,7 +36985,7 @@
    "word": "HÔPITAL",
    "seed": 4798
   },
-  "height": 20,
+  "height": 16.5,
   "front": -69,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -37002,7 +37002,7 @@
    "word": "HÔPITAL",
    "seed": 4800
   },
-  "height": 8,
+  "height": 7.2,
   "front": -69,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -37036,7 +37036,7 @@
    "word": "HÔPITAL",
    "seed": 6177
   },
-  "height": 28,
+  "height": 22.7,
   "front": -35,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -37070,7 +37070,7 @@
    "word": "IIM - DIGITAL SCHOOL PARIS",
    "seed": 6962
   },
-  "height": 32,
+  "height": 25.8,
   "front": 90,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -37086,7 +37086,7 @@
    "p": 99,
    "seed": 1236
   },
-  "height": 8,
+  "height": 7.2,
   "front": -76,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -37120,7 +37120,7 @@
    "word": "ÉCOLE",
    "seed": 4761
   },
-  "height": 16,
+  "height": 10.3,
   "front": 141,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -37154,7 +37154,7 @@
    "word": "ÉCOLE",
    "seed": 5786
   },
-  "height": 12,
+  "height": 10.3,
   "front": -157,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -37559,7 +37559,7 @@
    "word": "PLOT A",
    "seed": 2909
   },
-  "height": 28,
+  "height": 22.7,
   "front": 131,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -37593,7 +37593,7 @@
    "word": "PAVILLON JEANSELME",
    "seed": 6008
   },
-  "height": 8,
+  "height": 4.1,
   "front": 131,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -37610,7 +37610,7 @@
    "word": "HÔPITAL",
    "seed": 6009
   },
-  "height": 8,
+  "height": 4.1,
   "front": 132,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
@@ -37678,7 +37678,7 @@
    "word": "ÉCOLE",
    "seed": 2774
   },
-  "height": 12,
+  "height": 10.3,
   "front": -23,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -37779,7 +37779,7 @@
    "word": "BÂTIMENT B",
    "seed": 2989
   },
-  "height": 24,
+  "height": 19.6,
   "front": 85,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -37862,7 +37862,7 @@
    "word": "ÉCOLE",
    "seed": 9021
   },
-  "height": 8,
+  "height": 7.2,
   "front": 24,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -37879,7 +37879,7 @@
    "word": "ÉCOLE DES BERGÈRES",
    "seed": 4764
   },
-  "height": 24,
+  "height": 16.5,
   "front": -32,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -38148,7 +38148,7 @@
    "word": "PETIT HÔTEL",
    "seed": 1720
   },
-  "height": 16,
+  "height": 13.4,
   "front": 99,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -38165,7 +38165,7 @@
    "word": "ÉCOLE",
    "seed": 6673
   },
-  "height": 8,
+  "height": 7.2,
   "front": -15,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -38182,7 +38182,7 @@
    "word": "ÉCOLE",
    "seed": 6674
   },
-  "height": 24,
+  "height": 19.6,
   "front": 74,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -38300,7 +38300,7 @@
    "word": "MINISTÈRE DE L'INTÉRIEUR",
    "seed": 4659
   },
-  "height": 20,
+  "height": 16.5,
   "front": 76,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -38401,7 +38401,7 @@
    "word": "ÉCOLE",
    "seed": 8285
   },
-  "height": 12,
+  "height": 10.3,
   "front": -67,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -38716,7 +38716,7 @@
    "word": "CRÈCHE FAMILIALE - MULTI-ACCUEIL",
    "seed": 3300
   },
-  "height": 20,
+  "height": 16.5,
   "front": 124,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 12."
@@ -38934,7 +38934,7 @@
    "p": 99,
    "seed": 5446
   },
-  "height": 20,
+  "height": 16.5,
   "front": -172,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
@@ -39001,7 +39001,7 @@
    "word": "COLLÉGE PILATRE DE ROSIER",
    "seed": 8252
   },
-  "height": 12,
+  "height": 10.3,
   "front": 84,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -39069,7 +39069,7 @@
    "word": "ÉCOLE",
    "seed": 2390
   },
-  "height": 16,
+  "height": 13.4,
   "front": 19,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -39204,7 +39204,7 @@
    "word": "ÉCOLE",
    "seed": 6621
   },
-  "height": 4,
+  "height": 4.1,
   "front": 165,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -39423,7 +39423,7 @@
    "word": "DNRED / SEJF",
    "seed": 4502
   },
-  "height": 28,
+  "height": 22.7,
   "front": 153,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
@@ -39525,7 +39525,7 @@
    "word": "NA BUILDING",
    "seed": 7957
   },
-  "height": 8,
+  "height": 7.2,
   "front": -150,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -39677,7 +39677,7 @@
    "word": "ÉCOLE",
    "seed": 7559
   },
-  "height": 8,
+  "height": 7.2,
   "front": 38,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 10."
@@ -39728,7 +39728,7 @@
    "word": "ESIEA - BÂTIMENT IVRY",
    "seed": 1605
   },
-  "height": 32,
+  "height": 25.8,
   "front": -127,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
@@ -39897,7 +39897,7 @@
    "word": "ÉCOLE",
    "seed": 6362
   },
-  "height": 16,
+  "height": 13.4,
   "front": -138,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
@@ -39997,7 +39997,7 @@
    "word": "chapelle",
    "seed": 5307
   },
-  "height": 4,
+  "height": 4.1,
   "front": -130,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
