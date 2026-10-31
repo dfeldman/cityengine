@@ -4,7 +4,10 @@
     "procedural": "vendomeFronts",
     "lat": 48.867498,
     "lon": 2.3294,
-    "size": [190, 190],
+    "size": [
+      190,
+      190
+    ],
     "height": 22,
     "shadow": false,
     "sign": false,
@@ -12,7 +15,9 @@
   },
   {
     "name": "Presbytère de Saint-Germain-des-Prés",
-    "osm": ["way/495635813"],
+    "osm": [
+      "way/495635813"
+    ],
     "restyle": "classical",
     "roof": "hipped",
     "noShops": true,

@@ -72,7 +72,6 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Hôpital Foch: the gate',
     'intersects | Hôpital Rothschild: the gate',
     'intersects | Hôpital Trousseau: the gate',
-    'intersects | Jardin d’Acclimatation: le Kiosque à musique',
     'intersects | La Coulée verte on the Viaduc des Arts: length 1',
     'intersects | La Coulée verte on the Viaduc des Arts: length 2',
     'intersects | La Coulée verte on the Viaduc des Arts: length 3',

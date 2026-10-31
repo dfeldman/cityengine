@@ -3631,22 +3631,6 @@
  },
  {
   "osm": [
-   "way/56133399"
-  ],
-  "name": "fac 56133399",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "fac",
-   "p": 5,
-   "seed": 5355
-  },
-  "height": 13.1,
-  "front": -73,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: fac, APUR period 5."
- },
- {
-  "osm": [
    "way/56133406"
   ],
   "name": "fac 56133406",
@@ -6555,23 +6539,6 @@
  },
  {
   "osm": [
-   "way/63213742"
-  ],
-  "name": "hopital 63213742",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "HÔPITAL",
-   "seed": 4868
-  },
-  "height": 20,
-  "front": 45,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
    "way/63213748"
   ],
   "name": "fac 63213748",
@@ -6775,23 +6742,6 @@
  },
  {
   "osm": [
-   "way/63225026"
-  ],
-  "name": "hopital 63225026",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "HÔPITAL",
-   "seed": 6179
-  },
-  "height": 12,
-  "front": -46,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
    "way/63225031"
   ],
   "name": "ecole 63225031",
@@ -6874,23 +6824,6 @@
   "front": 53,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 7."
- },
- {
-  "osm": [
-   "way/63232778"
-  ],
-  "name": "hopital 63232778",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 9,
-   "word": "HÔPITAL",
-   "seed": 3958
-  },
-  "height": 4.2,
-  "front": -46,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 9."
  },
  {
   "osm": [
@@ -6991,23 +6924,6 @@
   "front": -167,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/63233521"
-  ],
-  "name": "hopital 63233521",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 9,
-   "word": "HÔPITAL",
-   "seed": 4701
-  },
-  "height": 7.8,
-  "front": 45,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 9."
  },
  {
   "osm": [
@@ -7228,23 +7144,6 @@
  },
  {
   "osm": [
-   "way/63235326"
-  ],
-  "name": "hopital 63235326",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 9,
-   "word": "HÔPITAL",
-   "seed": 6506
-  },
-  "height": 20,
-  "front": 104,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 9."
- },
- {
-  "osm": [
    "way/63235531"
   ],
   "name": "fac 63235531",
@@ -7394,23 +7293,6 @@
   "front": 165,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 7."
- },
- {
-  "osm": [
-   "way/63236746"
-  ],
-  "name": "hopital 63236746",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "HÔPITAL",
-   "seed": 7926
-  },
-  "height": 12,
-  "front": -75,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
  },
  {
   "osm": [
@@ -7565,23 +7447,6 @@
  },
  {
   "osm": [
-   "way/63239271"
-  ],
-  "name": "hopital 63239271",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 9,
-   "word": "HÔPITAL",
-   "seed": 478
-  },
-  "height": 4.2,
-  "front": -45,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 9."
- },
- {
-  "osm": [
    "way/63239488"
   ],
   "name": "Église Saint-Georges de la Villette",
@@ -7595,23 +7460,6 @@
   "front": -1,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
-   "way/63239814"
-  ],
-  "name": "hopital 63239814",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 9,
-   "word": "HÔPITAL",
-   "seed": 1021
-  },
-  "height": 7.8,
-  "front": 45,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 9."
  },
  {
   "osm": [
@@ -10388,22 +10236,6 @@
  },
  {
   "osm": [
-   "way/64658247"
-  ],
-  "name": "fac 64658247",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "fac",
-   "p": 3,
-   "seed": 3288
-  },
-  "height": 17.9,
-  "front": -48,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: fac, APUR period 3."
- },
- {
-  "osm": [
    "way/64790401"
   ],
   "name": "École maternelle Saint-Exupéry",
@@ -12496,22 +12328,6 @@
  },
  {
   "osm": [
-   "way/68907062"
-  ],
-  "name": "equipement 68907062",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "equipement",
-   "p": 6,
-   "seed": 3605
-  },
-  "height": 17.8,
-  "front": 134,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: equipement, APUR period 6."
- },
- {
-  "osm": [
    "way/68907112"
   ],
   "name": "Services du Premier Ministre - site Fontenoy",
@@ -13924,23 +13740,6 @@
  },
  {
   "osm": [
-   "way/70000478"
-  ],
-  "name": "Gynécologie Maternité - Le Lorier",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 10,
-   "word": "GYNÉCOLOGIE MATERNITÉ - LE LORIER",
-   "seed": 9964
-  },
-  "height": 23.2,
-  "front": -28,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 10."
- },
- {
-  "osm": [
    "way/70000555"
   ],
   "name": "equipement 70000555",
@@ -14412,23 +14211,6 @@
  },
  {
   "osm": [
-   "way/70002797"
-  ],
-  "name": "Gabriel",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "GABRIEL",
-   "seed": 2310
-  },
-  "height": 22.3,
-  "front": 151,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
    "way/70002809"
   ],
   "name": "Théâtre Ouvert",
@@ -14477,23 +14259,6 @@
   "front": 151,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/70002965"
-  ],
-  "name": "Les Halles Civiques",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "equipement",
-   "p": 99,
-   "word": "LES HALLES CIVIQUES",
-   "seed": 2478
-  },
-  "height": 20,
-  "front": 59,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
  },
  {
   "osm": [
@@ -16056,23 +15821,6 @@
   "front": 111,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
- },
- {
-  "osm": [
-   "way/70964402"
-  ],
-  "name": "Pavillon Consuelo Balsan",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "PAVILLON CONSUELO BALSAN",
-   "seed": 6507
-  },
-  "height": 16,
-  "front": -158,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
  },
  {
   "osm": [
@@ -18918,74 +18666,6 @@
  },
  {
   "osm": [
-   "way/78000066"
-  ],
-  "name": "Charles Perrault",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 7,
-   "word": "CHARLES PERRAULT",
-   "seed": 1233
-  },
-  "height": 9.2,
-  "front": 10,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 7."
- },
- {
-  "osm": [
-   "way/78000082"
-  ],
-  "name": "André Lemariey",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 5,
-   "word": "ANDRÉ LEMARIEY",
-   "seed": 1249
-  },
-  "height": 18.1,
-  "front": -170,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 5."
- },
- {
-  "osm": [
-   "way/78000101"
-  ],
-  "name": "Claude Dérique",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "CLAUDE DÉRIQUE",
-   "seed": 1268
-  },
-  "height": 11.6,
-  "front": -170,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/78000142"
-  ],
-  "name": "Lacaze",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "LACAZE",
-   "seed": 1309
-  },
-  "height": 21.1,
-  "front": 78,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
    "way/78000154"
   ],
   "name": "Hôpital Pierre Rouquès - Les Bluets",
@@ -19000,57 +18680,6 @@
   "front": -167,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/78000172"
-  ],
-  "name": "Parrot Roussel",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "PARROT ROUSSEL",
-   "seed": 1339
-  },
-  "height": 12.5,
-  "front": 9,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/78000173"
-  ],
-  "name": "Camille Guérin",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 7,
-   "word": "CAMILLE GUÉRIN",
-   "seed": 1340
-  },
-  "height": 11.9,
-  "front": 101,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 7."
- },
- {
-  "osm": [
-   "way/78000197"
-  ],
-  "name": "HE Brissaud",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "HE BRISSAUD",
-   "seed": 1364
-  },
-  "height": 11.7,
-  "front": 100,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
  },
  {
   "osm": [
@@ -19088,23 +18717,6 @@
  },
  {
   "osm": [
-   "way/78000249"
-  ],
-  "name": "Horloge",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "HORLOGE",
-   "seed": 1416
-  },
-  "height": 14.2,
-  "front": -80,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
    "way/78000292"
   ],
   "name": "ecole 78000292",
@@ -19136,23 +18748,6 @@
   "front": -89,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 10."
- },
- {
-  "osm": [
-   "way/78000406"
-  ],
-  "name": "Salât-Baroux",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 11,
-   "word": "SALÂT-BAROUX",
-   "seed": 1573
-  },
-  "height": 17.1,
-  "front": 13,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 11."
  },
  {
   "osm": [
@@ -34059,23 +33654,6 @@
  },
  {
   "osm": [
-   "way/212269821"
-  ],
-  "name": "Chapelle Saint-Louis",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "chapelle",
-   "seed": 4489
-  },
-  "height": 16.8,
-  "front": 151,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/216269239"
   ],
   "name": "IUT de Paris Pajol",
@@ -35408,23 +34986,6 @@
  },
  {
   "osm": [
-   "way/301914240"
-  ],
-  "name": "Urgences",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 12,
-   "word": "URGENCES",
-   "seed": 1611
-  },
-  "height": 20,
-  "front": 64,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 12."
- },
- {
-  "osm": [
    "way/303094350"
   ],
   "name": "ecole 303094350",
@@ -35454,23 +35015,6 @@
   },
   "height": 15.6,
   "front": 131,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 12."
- },
- {
-  "osm": [
-   "way/307149736"
-  ],
-  "name": "Recherche",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 12,
-   "word": "RECHERCHE",
-   "seed": 1282
-  },
-  "height": 23.1,
-  "front": -28,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 12."
  },
@@ -36436,40 +35980,6 @@
  },
  {
   "osm": [
-   "way/427998627"
-  ],
-  "name": "Galien",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "GALIEN",
-   "seed": 7332
-  },
-  "height": 28,
-  "front": 151,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/427998628"
-  ],
-  "name": "Proust",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 10,
-   "word": "PROUST",
-   "seed": 7333
-  },
-  "height": 18,
-  "front": 150,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 10."
- },
- {
-  "osm": [
    "way/427998629"
   ],
   "name": "hopital 427998629",
@@ -36487,91 +35997,6 @@
  },
  {
   "osm": [
-   "way/427998630"
-  ],
-  "name": "Cassiodore",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "CASSIODORE",
-   "seed": 7335
-  },
-  "height": 28,
-  "front": 61,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/427998632"
-  ],
-  "name": "Grégoire",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 10,
-   "word": "GRÉGOIRE",
-   "seed": 7337
-  },
-  "height": 18.4,
-  "front": -29,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 10."
- },
- {
-  "osm": [
-   "way/427998633"
-  ],
-  "name": "Béclère",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "BÉCLÈRE",
-   "seed": 7338
-  },
-  "height": 28,
-  "front": 151,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/427998634"
-  ],
-  "name": "Gardie",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "GARDIE",
-   "seed": 7339
-  },
-  "height": 6.8,
-  "front": 62,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/427998635"
-  ],
-  "name": "Communauté",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "COMMUNAUTÉ",
-   "seed": 7340
-  },
-  "height": 16.8,
-  "front": 61,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
    "way/427998636"
   ],
   "name": "hopital 427998636",
@@ -36586,91 +36011,6 @@
   "front": -118,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/427998637"
-  ],
-  "name": "Rabelais",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 10,
-   "word": "RABELAIS",
-   "seed": 7342
-  },
-  "height": 17.9,
-  "front": 62,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 10."
- },
- {
-  "osm": [
-   "way/427998638"
-  ],
-  "name": "Lavoisier",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 10,
-   "word": "LAVOISIER",
-   "seed": 7343
-  },
-  "height": 7.5,
-  "front": -30,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 10."
- },
- {
-  "osm": [
-   "way/427998639"
-  ],
-  "name": "Morin",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "MORIN",
-   "seed": 7344
-  },
-  "height": 4.1,
-  "front": 151,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/427998640"
-  ],
-  "name": "Joliot",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 10,
-   "word": "JOLIOT",
-   "seed": 7345
-  },
-  "height": 13.5,
-  "front": -119,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 10."
- },
- {
-  "osm": [
-   "way/427998641"
-  ],
-  "name": "Babinski",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "BABINSKI",
-   "seed": 7346
-  },
-  "height": 3.9,
-  "front": -28,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
  },
  {
   "osm": [
@@ -36705,74 +36045,6 @@
   "front": 152,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/428008390"
-  ],
-  "name": "Lesné",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "LESNÉ",
-   "seed": 7122
-  },
-  "height": 22.9,
-  "front": -80,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/428008391"
-  ],
-  "name": "Labrouste",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "LABROUSTE",
-   "seed": 7123
-  },
-  "height": 13,
-  "front": 100,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/428008392"
-  ],
-  "name": "Schwartz",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 7,
-   "word": "SCHWARTZ",
-   "seed": 7124
-  },
-  "height": 5.7,
-  "front": 11,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 7."
- },
- {
-  "osm": [
-   "way/428008393"
-  ],
-  "name": "Chigot",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 7,
-   "word": "CHIGOT",
-   "seed": 7125
-  },
-  "height": 14.3,
-  "front": 100,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 7."
  },
  {
   "osm": [
@@ -36839,91 +36111,6 @@
   },
   "height": 27.2,
   "front": 111,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/429038450"
-  ],
-  "name": "Santerre",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 12,
-   "word": "SANTERRE",
-   "seed": 9963
-  },
-  "height": 17.9,
-  "front": 177,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 12."
- },
- {
-  "osm": [
-   "way/429038451"
-  ],
-  "name": "Jardin",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 12,
-   "word": "JARDIN",
-   "seed": 9964
-  },
-  "height": 11.8,
-  "front": 176,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 12."
- },
- {
-  "osm": [
-   "way/429038453"
-  ],
-  "name": "Pavillon 1",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "PAVILLON 1",
-   "seed": 9966
-  },
-  "height": 15.5,
-  "front": -95,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/429038454"
-  ],
-  "name": "Pavillon 2",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "PAVILLON 2",
-   "seed": 9967
-  },
-  "height": 15.5,
-  "front": 176,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/429038455"
-  ],
-  "name": "Pavillon 3",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "PAVILLON 3",
-   "seed": 9968
-  },
-  "height": 17.9,
-  "front": -5,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
  },
@@ -37549,22 +36736,6 @@
  },
  {
   "osm": [
-   "way/560033529"
-  ],
-  "name": "equipement 560033529",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "equipement",
-   "p": 6,
-   "seed": 9687
-  },
-  "height": 4.2,
-  "front": -46,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: equipement, APUR period 6."
- },
- {
-  "osm": [
    "way/563375741"
   ],
   "name": "Mairie de Paris - Services administratifs site Bédier",
@@ -37966,74 +37137,6 @@
   },
   "height": 12,
   "front": 178,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/631660502"
-  ],
-  "name": "Salmon",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 3,
-   "word": "SALMON",
-   "seed": 601
-  },
-  "height": 7.1,
-  "front": -119,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
- },
- {
-  "osm": [
-   "way/631674665"
-  ],
-  "name": "hopital 631674665",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "HÔPITAL",
-   "seed": 4791
-  },
-  "height": 8,
-  "front": 21,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/631674669"
-  ],
-  "name": "hopital 631674669",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "HÔPITAL",
-   "seed": 4795
-  },
-  "height": 28,
-  "front": 21,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/631674670"
-  ],
-  "name": "hopital 631674670",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "hopital",
-   "p": 99,
-   "word": "HÔPITAL",
-   "seed": 4796
-  },
-  "height": 24,
-  "front": -160,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
  },
@@ -39938,22 +39041,6 @@
  },
  {
   "osm": [
-   "way/1026461676"
-  ],
-  "name": "fac 1026461676",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "fac",
-   "p": 12,
-   "seed": 624
-  },
-  "height": 6,
-  "front": -73,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: fac, APUR period 12."
- },
- {
-  "osm": [
    "way/1033355225"
   ],
   "name": "ecole 1033355225",
@@ -40981,23 +40068,6 @@
   "front": -138,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
- },
- {
-  "osm": [
-   "way/1425751532"
-  ],
-  "name": "Amphithéâtre du parc de Belleville",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 99,
-   "word": "AMPHITHÉÂTRE DU PARC DE BELLEVILLE",
-   "seed": 1479
-  },
-  "height": 20,
-  "front": 106,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
  },
  {
   "osm": [

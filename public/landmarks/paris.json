@@ -172,7 +172,10 @@
   },
   {
     "name": "Opéra Bastille — the curved foyers",
-    "osm": ["way/255657724", "way/255657720"],
+    "osm": [
+      "way/255657724",
+      "way/255657720"
+    ],
     "restyle": "operaGlass",
     "roof": "flat",
     "note": "The colossal curved wall of glass round the foyers, facing the Place: the two parts of the curve (aerial), glazed whole, ahead of the restyle below, which dresses the rest in white granite."
@@ -1152,7 +1155,42 @@
   },
   {
     "name": "Palais de Justice — the tall parts",
-    "osm": ["way/245531356", "way/245536194", "way/248434965", "way/248434967", "way/248434968", "way/248434969", "way/248434970", "way/248434983", "way/248434993", "way/248457244", "way/248457258", "way/248457259", "way/248480551", "way/248480552", "way/248480553", "way/248480554", "way/248485960", "way/248809490", "way/248863468", "way/248863474", "way/248983480", "way/249002518", "way/249002519", "way/249007544", "way/249007545", "way/249007551", "way/249007552", "way/249015463", "way/249015464", "way/249015465", "way/249015466", "way/249019427", "way/249043316", "way/249047004"],
+    "osm": [
+      "way/245531356",
+      "way/245536194",
+      "way/248434965",
+      "way/248434967",
+      "way/248434968",
+      "way/248434969",
+      "way/248434970",
+      "way/248434983",
+      "way/248434993",
+      "way/248457244",
+      "way/248457258",
+      "way/248457259",
+      "way/248480551",
+      "way/248480552",
+      "way/248480553",
+      "way/248480554",
+      "way/248485960",
+      "way/248809490",
+      "way/248863468",
+      "way/248863474",
+      "way/248983480",
+      "way/249002518",
+      "way/249002519",
+      "way/249007544",
+      "way/249007545",
+      "way/249007551",
+      "way/249007552",
+      "way/249015463",
+      "way/249015464",
+      "way/249015465",
+      "way/249015466",
+      "way/249019427",
+      "way/249043316",
+      "way/249047004"
+    ],
     "restyle": "classical",
     "roof": "mansard",
     "levels": 4,
@@ -1285,7 +1323,7 @@
   {
     "include": "paris/batch2.json"
   },
-{
+  {
     "include": "paris/batch3.json"
   },
   {
