@@ -52,7 +52,8 @@ import { waterLookup } from './watermask.ts'
 import { beachTint, buildShore, revetmentBand, shoreDistance, type ShoreIndex } from './shore.ts'
 import { plog } from '../profile.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedCourt, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
-import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
+import { BRIDGE_STYLES, deck, isRaised, PARIS_DECK, railDeck } from './bridges.ts'
+import { addRailDecks } from '../city/paris/rail-decks.ts'
 import { FLARED_OUTLINES, RAIL_ARCHES, freewayKind } from './bridge-structures.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
 import { layoutLot, type Stall } from '../city/parking.ts'
@@ -233,6 +234,7 @@ const MOSS: [number, number, number] = [0.27, 0.36, 0.18]
 const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
+const PARIS_SQUARE: [number, number, number] = [0.545, 0.53, 0.495]
 const hashName = (n: string): number => { let h = 7; for (let i = 0; i < n.length; i++) h = (Math.imul(h, 31) + n.charCodeAt(i)) >>> 0; return h ^ (h >>> 13) }
 /** sand's tint on the road shader's sand page (which is already sand-coloured): Ocean Beach's pale grey-tan, not gold */
 const SAND_ON_PAGE: [number, number, number] = [0.64, 0.65, 0.72]
@@ -1649,6 +1651,73 @@ export class City {
       if (x < o.x0 - 2 || x > o.x1 + 2 || z < o.z0 - 2 || z > o.z1 + 2) continue
       if (inOutline(o.ring, x, z, 1.5)) return true
     }
+    for (const o of this.bentOutlines.values()) {
+      if (x < o.x0 - 2 || x > o.x1 + 2 || z < o.z0 - 2 || z > o.z1 + 2) continue
+      if (inOutline(o.ring, x, z, 1.5) && this.bentOverTracks(o)) return true
+    }
+    return false
+  }
+  /** the outlines `straightOutline` refuses: Paris's, some of them a street's bridge over tracks */
+  private readonly bentOutlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number; tracks?: boolean }>()
+  /** Tracks at the edge of it, or under it (a viaduct's own outline has its track up on it, and those are not filed: `tracksIn`). True stays true; false is asked again as the tiles come in. */
+  private bentOverTracks(o: { ring: { x: number; z: number }[]; tracks?: boolean }): boolean {
+    if (o.tracks) return true
+    for (let i = 0, j = o.ring.length - 1; i < o.ring.length; j = i++) {
+      const a = o.ring[j], b = o.ring[i], n = Math.ceil(Math.hypot(b.x - a.x, b.z - a.z) / 6) || 1
+      for (let k = 0; k <= n; k++) if (this.trackNear(a.x + ((b.x - a.x) * k) / n, a.z + ((b.z - a.z) * k) / n, 8)) return (o.tracks = true)
+    }
+    return false
+  }
+  /** the width of the bridge this ramp, of the same name, comes off, or 0 */
+  private bridgeWidthAt(e: PackedEdge): number {
+    if (!e.name) return 0
+    const [tx, tz] = [Math.floor(e.points[0] / TILE), Math.floor(e.points[1] / TILE)]
+    // (through the ramps between them: OSM cuts them at every crossing)
+    let best = 0
+    const seen = new Set<number>([e.id])
+    let nodes = new Set([e.a, e.b])
+    for (let hop = 0; hop < 3; hop++) {
+      const next = new Set<number>()
+      for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) for (const o of this.edgesIn.get(key(tx + a, tz + b)) ?? []) {
+        if (seen.has(o.id) || o.name !== e.name || o.foot || !(nodes.has(o.a) || nodes.has(o.b))) continue
+        seen.add(o.id)
+        if (o.bridge) best = Math.max(best, o.width)
+        else if (o.ramp) { next.add(o.a); next.add(o.b) }
+      }
+      nodes = next
+    }
+    return best
+  }
+  /** the main-line tracks on the ground, by tile, as segments: what a street's bridge stands over (Paris) */
+  private readonly tracksIn = new Map<string, { ax: number; az: number; bx: number; bz: number }[]>()
+  private trackNear(x: number, z: number, r: number): boolean {
+    const tx = Math.floor(x / TILE), tz = Math.floor(z / TILE)
+    for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) for (const s of this.tracksIn.get(key(tx + a, tz + b)) ?? []) {
+      const dx = s.bx - s.ax, dz = s.bz - s.az, t = Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / (dx * dx + dz * dz || 1)))
+      if (Math.hypot(s.ax + dx * t - x, s.az + dz * t - z) < r) return true
+    }
+    return false
+  }
+  /** does this street's bridge stand over a track? Sampled every 3 m along its middle, across its width */
+  private overTracks(e: PackedEdge): boolean {
+    if (e.foot || !e.bridge) return false
+    const p = e.points
+    for (let i = 2; i < p.length; i += 2) {
+      const n = Math.ceil(Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]) / 3) || 1
+      for (let k = 0; k <= n; k++) if (this.trackNear(p[i - 2] + ((p[i] - p[i - 2]) * k) / n, p[i - 1] + ((p[i + 1] - p[i - 1]) * k) / n, e.width / 2 + 1)) return true
+    }
+    return false
+  }
+  /** is this point on a bridge's outline, give or take a metre? */
+  private onOutline(x: number, z: number): boolean {
+    for (const o of this.outlines.values()) {
+      if (x < o.x0 - 2 || x > o.x1 + 2 || z < o.z0 - 2 || z > o.z1 + 2) continue
+      if (inOutline(o.ring, x, z, 1)) return true
+    }
+    for (const o of this.bentOutlines.values()) {
+      if (x < o.x0 - 2 || x > o.x1 + 2 || z < o.z0 - 2 || z > o.z1 + 2) continue
+      if (inOutline(o.ring, x, z, 1) && this.bentOverTracks(o)) return true
+    }
     return false
   }
   /** a road deck's pavement width, where it has been widened to take in its sidewalk footways */
@@ -1839,6 +1908,7 @@ export class City {
     }
     if (this.ingested.has(t.key)) return
     this.ingested.add(t.key)
+    if (this.region.viaduct === 'paris') addRailDecks(t)
     /*
      * The tile's own fine ground FIRST, before anything reads a height (BUGS.md #206c). `build()` is gated
      * on all nine neighbours having been ingested (`ready`), so by the time a tile's meshes are draped its
@@ -1856,10 +1926,13 @@ export class City {
       const ring = unpackPoints(b.ring)
       if (b.name && RAIL_ARCHES.has(b.name) && !this.railLeaps.has(b.id)) this.railLeaps.set(b.id, ring)
       // (a bent outline gets no structure, so its ways keep their own decks: bridge-axis.ts `straightOutline`)
-      if (!straightOutline(ring) && !FLARED_OUTLINES.has(b.name ?? '')) continue
+      const bent = !straightOutline(ring) && !FLARED_OUTLINES.has(b.name ?? '')
+      // (…but a street's bridge over tracks, whatever its shape, has one: render/rail-overbridge.ts. Which those are is asked once the tracks are in: `bentOverTracks`)
+      if (bent && this.region.viaduct !== 'paris') continue
       let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
       for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
-      this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
+      if (bent) this.bentOutlines.set(b.id, { ring, x0, x1, z0, z1 })
+      else this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
     }
     for (const p of t.pois ?? []) if (p.kind === 'shop' || p.kind === 'food') this.bucket(this.shopsIn, p.x, p.z, { x: p.x, z: p.z })
     for (const whole of t.edges) {
@@ -1926,6 +1999,21 @@ export class City {
         const k = { x: f.x + Math.sin(h) * 7, z: f.z + Math.cos(h) * 7, kind: 'kiosk' as const }
         stands.push(k)
         this.bucket(this.pointsIn, k.x, k.z, k)
+      }
+    }
+    if (this.region.viaduct === 'paris') for (const r of t.rails) {
+      if (r.kind !== 'rail' || r.funicular) continue
+      const [tx, tz] = t.key.split(',').map(Number)
+      for (let i = 2; i < r.points.length; i += 2) {
+        const mx = (r.points[i - 2] + r.points[i]) / 2, mz = (r.points[i - 1] + r.points[i + 1]) / 2
+        // (a tile carries a whole way, and the tile it starts in files each piece: filed here if its middle is here, or it would be filed again by every tile it crosses)
+        if (Math.floor(mx / TILE) !== tx || Math.floor(mz / TILE) !== tz) continue
+        // (a track on the ground or its bed: one standing clear of it is a viaduct, and nothing stands over that)
+        if (r.heights && (r.heights[i / 2 - 1] + r.heights[i / 2]) / 2 - this.terrain.rawHeightAt(mx, mz) > 2) continue
+        const k = key(tx, tz)
+        const list = this.tracksIn.get(k) ?? []
+        list.push({ ax: r.points[i - 2], az: r.points[i - 1], bx: r.points[i], bz: r.points[i + 1] })
+        this.tracksIn.set(k, list)
       }
     }
     for (const r of t.rails) {
@@ -2838,7 +2926,8 @@ export class City {
         // (the paved walks of a Paris square are its raked stabilisé, not a street's flagstones)
         const walkInGarden = a.kind === 'paved' && !a.surface && !a.brick && this.pkg.region === 'paris'
           && areasHere.some((p) => p.kind === 'park' && inGardenRing(unpackPoints(p.ring), unpackPoints(a.ring)[0].x, unpackPoints(a.ring)[0].z))
-        const tint = walkInGarden ? GARDEN_TINT.gravel : a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
+        // (a Paris square is grey-gold limestone and setts, not the sandy tan of a Californian plaza: the Concorde, the Vendôme and the parvis read as sand in patches, their outlines stepped by the pavements round them. Near a pavement's colour, the steps go; owner, "the Concorde's paving")
+        const tint = walkInGarden ? GARDEN_TINT.gravel : a.kind === 'paved' && !a.surface && !a.brick && this.pkg.region === 'paris' ? PARIS_SQUARE : a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           // (a Paris square's plain paving: the concrete page at 2.4 m read as tan planks across the Concorde and the parvis of Notre-Dame)
           0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : a.kind === 'paved' && this.pkg.region === 'paris' ? 24 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
@@ -2991,7 +3080,7 @@ export class City {
        */
       else if (e.foot && e.kind !== 'steps') {
         // (a Paris garden's walks are the pale raked stabilisé. The bake calls an untagged way asphalt, and nearly all of them are untagged)
-        const stabilise = this.pkg.region === 'paris' && (e.kind === 'footway' || e.kind === 'path') && (e.surface === 'gravel' || e.surface === 'asphalt' || e.surface === 'concrete')
+        const stabilise = this.pkg.region === 'paris' && (e.kind === 'footway' || e.kind === 'path' || e.kind === 'pedestrian') && (e.surface === 'gravel' || e.surface === 'asphalt' || e.surface === 'concrete')
         const page = stabilise ? 'sand' : TRAIL_PAGE[e.surface] ?? 'asphalt'
         const out = trails.get(page) ?? new MeshBuilder()
         trails.set(page, out)
@@ -4292,6 +4381,8 @@ export class City {
             const gb = this.terrain.rawHeightAt(eb.x + nx * 0.6, eb.z + nz * 0.6)
             const drop = Math.max(ha - ga, hb - gb)
             if (sideDrop[side] < 0.6 || drop < 0.3) continue
+            // (a street on a bridge's outline is on its deck, not on fill, and the bridge draws the edge: the Place de l'Europe's ring stood in stone blocks along a drop render/rail-overbridge.ts has girders on. Paris's; San Francisco's outlines are drawn from their ways)
+            if (this.region.viaduct === 'paris' && this.onOutline((ea.x + eb.x) / 2, (ea.z + eb.z) / 2)) continue
             const n: [number, number, number] = [nx, 0, nz]
             const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
             const q = (p0: { x: number; z: number }, p1: { x: number; z: number }, y00: number, y10: number, y11: number, y01: number, c: [number, number, number], nn = n): void => {
@@ -4472,6 +4563,27 @@ export class City {
         }
         return false
       }
+      const paris = this.region.viaduct === 'paris'
+      const trackAt = (x: number, z: number, r: number): boolean => this.trackNear(x, z, r)
+      // a street on the ground under this point, at about this height: on its carriageway or its pavement, and not just past its end (the street a bridge runs straight on into is not in its way)
+      const groundHere = paris ? [...(this.edgesIn.get(k) ?? []), ...[-1, 0, 1].flatMap((dz) => [-1, 0, 1].flatMap((dx) => (dx || dz) ? (this.edgesIn.get(key(Number(k.split(',')[0]) + dx, Number(k.split(',')[1]) + dz)) ?? []) : []))]
+        .filter((o) => !o.foot && !o.tunnel && o.heights && !this.raisedIds.has(o.id))
+        .map((o) => ({ pts: unpackPoints(o.points), h: o.heights!, half: o.width / 2 + Math.max(0.6, o.walk) })) : []
+      const onGroundStreet = (x: number, z: number, y: number): boolean => {
+        for (const o of groundHere) {
+          for (let i = 1; i < o.pts.length; i++) {
+            const a = o.pts[i - 1]
+            const dx = o.pts[i].x - a.x
+            const dz = o.pts[i].z - a.z
+            const t = ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)
+            if (t < 0 || t > 1 || Math.hypot(a.x + dx * t - x, a.z + dz * t - z) > o.half) continue
+            if (Math.abs(o.h[i - 1] + (o.h[i] - o.h[i - 1]) * t - y) < 1.5) return true
+          }
+        }
+        return false
+      }
+      // (…and a pavement or a crossing mapped as a foot way of its own stops at a raised road's carriageway as well: on the Pont de Bercy's head, 48.8439, 2.3736, one lay across the road as a kerb)
+      const footClear = (self: number) => { const on = carriageOf(self); return (x: number, z: number, y: number): boolean => on(x, z, y) || onGroundStreet(x, z, y) }
       for (const e of this.edgesIn.get(k) ?? []) {
         // (a way the region authored is drawn by the model it belongs to — the Bay Bridge Bikeway's helix)
         if (!this.raisedIds.has(e.id) || e.authored) continue
@@ -4483,10 +4595,13 @@ export class City {
         // (a way rising more than it runs is a lift or a stair core OSM drew as a bridge — 78924 at Embarcadero Center
         // climbs 8 m in 4: drawn, it is a slab standing across the walk beneath; not a deck anyone rides)
         if (steeperThanWall(e)) continue
-        for (const part of this.coveredDecks.has(e.id) ? this.outsideCovers(e) : [e]) {
+        // (a ramp between a wide bridge and the street it comes down to is the bridge's width: the Pont du Carrousel's last 17 m were a lane and a half, and the deck stopped short of the quay)
+        const wide = paris && e.ramp ? this.bridgeWidthAt(e) : 0
+        for (const part0 of this.coveredDecks.has(e.id) ? this.outsideCovers(e) : [e]) {
+          const part = wide > part0.width ? { ...part0, width: wide } : part0
           deck(decks, part, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e),
             e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name), underDeck(e.id), besideOf(e.id),
-            carriageOf(e.id))
+            carriageOf(e.id), paris && this.overTracks(e) ? trackAt : undefined, paris ? PARIS_DECK : undefined, !paris ? undefined : e.foot ? footClear(e.id) : onGroundStreet)
         }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)

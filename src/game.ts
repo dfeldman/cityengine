@@ -1344,7 +1344,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   onTile((a) => tunnels.add(a.ready.edges))
   ;(window as unknown as Record<string, unknown>).__tunnels = tunnels
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
-  city.addLayer(streetRailsLayer(scene, city.terrain))
+  city.addLayer(streetRailsLayer(scene, city.terrain, pkg.region === 'paris'))
   // the public stairways as stairs (render/stairs.ts)
   city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}, (x, z) => city.inCover(x, z),
     (region(pkg.region).rainbowStairs ?? []).map((r) => ({ ...new Projection(pkg.origin).toLocal({ lat: r.lat, lon: r.lon }), radius: r.radius }))))

@@ -69,6 +69,8 @@ import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
 import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks, mergeBridgeLanes } from './bridges.ts'
 import { bedPosts, footWaysOnTracks, levelParisRails, parisRailRecord, railFineTiles, stationShells, straightDeck } from './rail-levels.ts'
+import { levelFootOnDecks } from '../src/render/rail-overbridge.ts'
+import { RAIL_DECKS } from '../src/city/paris/rail-decks.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -3847,6 +3849,9 @@ async function bake(spec: CitySpec): Promise<void> {
         }))
       })
       if (pkg.buildings.length < before) console.log(`  ${before - pkg.buildings.length} buildings on the bridges' outlines gone (the Alexandre III's pylons)`)
+      // the pavements on a street's bridge over tracks, at its level (render/rail-overbridge.ts)
+      const onDecks = levelFootOnDecks([...out, ...RAIL_DECKS], pkg.edges, pkg.rails ?? [], groundFine)
+      if (onDecks) console.log(`  ${onDecks} foot ways on streets' bridges over tracks taken to the deck's level`)
     }
   }
   // every tree, decided here so a streamed tile always grows the same ones (city/plantings.ts)

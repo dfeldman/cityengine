@@ -25,7 +25,7 @@ const OVERGROWN: Rgb = [0.36, 0.42, 0.28]
 const RUST: Rgb = [0.4, 0.3, 0.24]
 
 /** A flat strip along a polyline between offsets o0 and o1 (metres to the right), `lift` above the ground. */
-function strip(out: MeshBuilder, pts: { x: number; z: number }[], o0: number, o1: number, lift: number, c: Rgb, terrain: Terrain,
+function strip(out: MeshBuilder, pts: { x: number; z: number }[], o0: number, o1: number, lift: number, c: Rgb, terrain: Pick<Terrain, 'heightAt'>,
                inRect: (x: number, z: number) => boolean): void {
   for (let i = 1; i < pts.length; i++) {
     const a = pts[i - 1]
@@ -50,7 +50,7 @@ function strip(out: MeshBuilder, pts: { x: number; z: number }[], o0: number, o1
 }
 
 /** Sleepers across a heavy-rail line: a short dark bar every 0.7 m, sitting on the ballast under the rails. */
-function sleepers(out: MeshBuilder, pts: { x: number; z: number }[], terrain: Terrain,
+function sleepers(out: MeshBuilder, pts: { x: number; z: number }[], terrain: Pick<Terrain, 'heightAt'>,
                   inRect: (x: number, z: number) => boolean): void {
   const gap = 0.7
   let carry = 0
@@ -97,7 +97,12 @@ function funicularTrack(out: MeshBuilder, pts: { x: number; z: number }[], heigh
   }
 }
 
-export function streetRailsLayer(scene: Scene, terrain: Terrain): TileLayer {
+export function streetRailsLayer(scene: Scene, terrain: Terrain, underStreets = false): TileLayer {
+  /*
+   * A main line stays on its bed under a street's corridor (2026-10-31, the Place de l'Europe's south face, `underStreets` Paris's): the corridor is well over the ground there, and draped on it the tracks that end
+   * under the Rue de Londres went up a spike of ballast to the street, with the sleepers and the rails on it. A street 1.5 m over the ground is not one a track crosses at grade.
+   */
+  const bed = { heightAt: (x: number, z: number): number => { const h = terrain.heightAt(x, z), raw = terrain.rawHeightAt(x, z); return h - raw > 1.5 ? raw : h } }
   return {
     name: 'streetRails',
     range: 3,
@@ -115,12 +120,13 @@ export function streetRailsLayer(scene: Scene, terrain: Terrain): TileLayer {
         const g = r.cable ? 1.067 : 1.435
         // (just proud of the road surface, which is draped a few centimetres over the ground)
         const lift = r.kind === 'rail' ? 0.34 : 0.14
+        const ground = underStreets && r.kind === 'rail' ? bed : terrain
         // heavy rail rides on its own ballast shoulder, with sleepers across it; tram track is set flush in the street
         if (r.kind === 'rail') {
-          strip(out, pts, -2.0, 2.0, 0.08, r.disused ? OVERGROWN : BALLAST, terrain, inRect)
-          sleepers(out, pts, terrain, inRect)
+          strip(out, pts, -2.0, 2.0, 0.08, r.disused ? OVERGROWN : BALLAST, ground, inRect)
+          sleepers(out, pts, ground, inRect)
         }
-        for (const s of [-1, 1]) strip(out, pts, s * g / 2 - 0.04, s * g / 2 + 0.04, lift, r.disused ? RUST : STEEL, terrain, inRect)
+        for (const s of [-1, 1]) strip(out, pts, s * g / 2 - 0.04, s * g / 2 + 0.04, lift, r.disused ? RUST : STEEL, ground, inRect)
         if (r.cable) strip(out, pts, -0.03, 0.03, lift, SLOT, terrain, inRect)
       }
       if (out.triangles === 0) return []

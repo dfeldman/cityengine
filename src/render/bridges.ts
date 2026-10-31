@@ -25,8 +25,14 @@ import { inOutline } from './bridge-structures.ts'
 type Rgb = [number, number, number]
 const FIXED = 0
 const ASPHALT: Rgb = [0.2, 0.2, 0.21]
-const PAVING: Rgb = [0.6, 0.58, 0.54]
-const STONE: Rgb = [0.72, 0.68, 0.6]
+const PAVING_DEFAULT: Rgb = [0.6, 0.58, 0.54]
+const STONE_DEFAULT: Rgb = [0.72, 0.68, 0.6]
+/**
+ * A region's deck colours. This material brightens what it is given, and in Paris a deck's pavement came out cream beside the grey of the painted pavement it runs on from, its parapets paler still (owner, 2026-10-31,
+ * "stray cream parapets"; see any ramp on the Boulevard des Batignolles, or the Rue La Fayette over the Est's tracks): these come out as the painted pavement does, and a dressed stone.
+ */
+export interface DeckTones { paving: Rgb; stone: Rgb }
+export const PARIS_DECK: DeckTones = { paving: [0.312, 0.312, 0.29], stone: [0.42, 0.4, 0.36] }
 const UNDER: Rgb = [0.36, 0.35, 0.33]
 
 interface Frame { x: number; z: number; y: number; nx: number; nz: number; s: number }
@@ -120,9 +126,29 @@ function standsClear(f: Frame[], ground: (x: number, z: number) => number): bool
 export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false,
                      hedged = false, under?: (x: number, z: number, r: number, y: number) => boolean,
                      beside?: (x: number, z: number, y: number) => boolean,
-                     onOther?: (x: number, z: number, y: number) => boolean): void {
+                     onOther?: (x: number, z: number, y: number) => boolean,
+                     overRail?: (x: number, z: number, r: number) => boolean, tones?: DeckTones,
+                     onGroundStreet?: (x: number, z: number, y: number) => boolean): void {
+  const PAVING = tones?.paving ?? PAVING_DEFAULT
+  const STONE = tones?.stone ?? STONE_DEFAULT
   const pts = unpackPoints(e.points)
   if (pts.length < 2 || !e.heights) return
+  /*
+   * A deck stops at the kerb of the street it comes down to (owner, 2026-10-31, the Pont du Carrousel's right-bank head, 48.860091, 2.333402: "cream parapet pieces cross the junction"). This is drawn after the painted streets,
+   * and over them: a bridge's last way runs on to the middle of the junction, and its asphalt, its kerbs and its two pavements lay across the quay's cobbles as raised strips. Each run of it that is not over another street at its level is a deck of its own.
+   */
+  if (onGroundStreet) {
+    const whole = frames(pts, e.heights)
+    const runs = sampledRuns(whole, (fr) => !onGroundStreet(fr.x, fr.z, fr.y))
+    const total = whole[whole.length - 1].s
+    if (!(runs.length === 1 && runs[0][0].s < 0.01 && runs[0][runs[0].length - 1].s > total - 0.01)) {
+      for (const run of runs) {
+        if (run[run.length - 1].s - run[0].s < 1) continue
+        deck(out, { ...e, points: run.flatMap((q) => [q.x, q.z]), heights: run.map((q) => q.y) }, terrain, walk, drop, structured, hedged, under, beside, onOther, overRail, tones)
+      }
+      return
+    }
+  }
   const f = frames(pts, e.heights)
   const road = e.foot ? 0 : e.width / 2
   // (a freeway has a shoulder, not a pavement — whatever an older bake gave it)
@@ -194,6 +220,38 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
     }
     // down to the water, which lies `drop` below the ground the elevation data gives under the river
     archSpans(out, f, style, outer + 0.3, top, (x, z) => terrain.heightAt(x, z) - drop)
+  } else if (overRail && e.bridge && !e.foot) {
+    /*
+     * A street's bridge over tracks, where no outline draws it (render/rail-overbridge.ts has those): a plate girder and an iron railing, not a stone slab on wall piers (owner, on the Place de l'Europe, "a steel-girder
+     * road bridge"). No post on a track.
+     */
+    const PLATE: Rgb = [0.27, 0.31, 0.3], IRON: Rgb = [0.17, 0.2, 0.19]
+    wall(out, f, -outer - 0.15, -1.25, top, PLATE, -1)
+    wall(out, f, outer + 0.15, -1.25, top, PLATE, 1)
+    strip(out, f, -outer - 0.15, outer + 0.15, -1.25, UNDER, true)
+    for (const side of [-1, 1] as const) {
+      for (const run of openRuns(f, side * (outer + 0.8), beside)) {
+        const o0 = side * outer, o1 = side * (outer + 0.08)
+        wall(out, run, o1, top + 1.05, top + 1.15, IRON, side)
+        wall(out, run, o0, top + 1.05, top + 1.15, IRON, side === -1 ? 1 : -1)
+        strip(out, run, Math.min(o0, o1), Math.max(o0, o1), top + 1.15, IRON)
+        wall(out, run, o1, top + 0.3, top + 0.38, IRON, side)
+        const total = run[run.length - 1].s, first = run[0].s
+        for (let s = first; s <= total; s += 2) {
+          const fr = frameAt(run, s)
+          pier(out, fr.x + fr.nx * side * (outer + 0.04), fr.z + fr.nz * side * (outer + 0.04), fr.y + top, fr.y + top + 1.05, 0.04, 0.04, 0)
+        }
+      }
+    }
+    const total = f[f.length - 1].s
+    for (let s = 9; s < total - 4; s += 18) {
+      const fr = frameAt(f, s)
+      for (const side of [-1, 1]) {
+        const cx = fr.x + fr.nx * side * outer, cz = fr.z + fr.nz * side * outer
+        if (overRail(cx, cz, 1.7) || under?.(cx, cz, 0.5, fr.y - 1.25)) continue
+        if (fr.y - 1.25 - ground(cx, cz) > 1) pier(out, cx, cz, ground(cx, cz) - 0.5, fr.y - 1.25, 0.22, 0.22, Math.atan2(fr.nx, fr.nz))
+      }
+    }
   } else if (e.bridge || standsClear(f, ground)) {
     // the slab's fascia and soffit
     wall(out, f, -outer - 0.3, -0.9, top, STONE, -1)

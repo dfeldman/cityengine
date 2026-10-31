@@ -24,17 +24,17 @@ These are minor bugs found by randomly flying around. They are mostly not that s
    seen from 48.866290, 2.338813, 8 m up (ground zero of the city's own datum), looking 20° pitch -35°
    2026-10-30 19:47 · paris-centre · spot x 501.7 y 2.6 z 652.3
    nearest: Théâtre du Palais Royal (89 m) · Bibliothèque nationale de France — Richelieu (107 m) · Mairie du 2e Arrondissement (137 m)
-7. 48.878902, 2.323843: wall in the middle of the road from the train tunnel mouth
+7. 48.878902, 2.323843: wall in the middle of the road from the train tunnel mouth [fixed 2026-10-31: no mouth at a street's bridge, render/rail-overbridge.ts]
    seen from 48.878884, 2.323861, 15 m up (ground zero of the city's own datum), looking 297° pitch -4°
    2026-10-30 19:49 · paris-centre · spot x -597.4 y 14.5 z 2048.5 · on Rue de Londres
    looking at: railway tunnel mouth 17
    nearest: railway tunnel mouth 17 (19 m) · railway tunnel mouth 14 (35 m) · railway tunnel mouth 15 (50 m)
-8. 48.878789, 2.323370: i think the train tunnel mouths are facint he wrong way. the hole should be facing toward the tracks. also, there are NPCs walking on the tracks. and some o fthe tunnel mouth structures intersect the road
+8. [mouths: fixed 2026-10-31, as #7] 48.878789, 2.323370: i think the train tunnel mouths are facint he wrong way. the hole should be facing toward the tracks. also, there are NPCs walking on the tracks. and some o fthe tunnel mouth structures intersect the road
    seen from 48.878925, 2.323400, 36 m up (ground zero of the city's own datum), looking 141° pitch -42°
    2026-10-30 19:50 · paris-centre · spot x -632.0 y 18.1 z 2035.9
    looking at: railway tunnel mouth 17
    nearest: railway tunnel mouth 17 (18 m) · railway tunnel mouth 13 (26 m) · railway tunnel mouth 15 (51 m)
-9. 48.882230, 2.320778: Similar tunel mouth facing wrong way. als the overpass has a steep dip to train track level - it should be an overpass
+9. [fixed 2026-10-31: the Boulevard des Batignolles, a deck between its two mouths] 48.882230, 2.320778: Similar tunel mouth facing wrong way. als the overpass has a steep dip to train track level - it should be an overpass
    seen from 48.882135, 2.320674, 22 m up (ground zero of the city's own datum), looking 36° pitch -21°
    2026-10-30 19:51 · paris-centre · spot x -821.9 y 16.7 z 2418.9
    nearest: railway tunnel mouth 19 (13 m) · railway tunnel mouth 20 (28 m) · railway tunnel mouth 89 (37 m)

@@ -4,6 +4,7 @@
  * the Île-de-France extract for those ways and the bake's tiles for the tracks that are drawn, one tile at a time (the 200 MB package cost
  * 4 GB of a machine that has none to spare). Tracks side by side share a mouth (tools/rail-levels.ts `railMouths`). Rerun after a bake.
  *   node --experimental-strip-types tools/paris-portals.ts [--rails=<dry-rails.json>]
+ * Also writes src/city/paris/rail-decks-data.ts: the streets' bridges nobody outlined, from the mouths that face each other across them (render/rail-overbridge.ts). About 3 GB resident.
  * (--rails: a dry run's tracks, tools/rail-audit.ts check <dir> --dry, in place of the last bake's: so the mouths go in with the bake that draws them)
  */
 import { execFileSync } from 'node:child_process'
@@ -11,6 +12,7 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'n
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { railFate, railMouths } from './rail-levels.ts'
+import { decksBetweenMouths, mouthsAtDecks } from '../src/render/rail-overbridge.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const dir = mkdtempSync(resolve(tmpdir(), 'portals-'))
@@ -22,15 +24,18 @@ rmSync(dir, { recursive: true, force: true })
 const X = (lon: number): number => (lon - 2.332) * 73270
 const Z = (lat: number): number => (lat - 48.8605) * 111320
 
-interface Way { id: number; a: number; b: number; kind?: string; name?: string; width: number; foot?: boolean; tunnel?: boolean; bore?: boolean; points: number[] }
+interface Way { id: number; a: number; b: number; kind?: string; name?: string; width: number; foot?: boolean; tunnel?: boolean; bore?: boolean; points: number[]; heights?: number[] }
 const tileDir = resolve(ROOT, 'tools/cache/bake/paris-centre/tiles')
 const railsById = new Map<number, { kind: string; points: number[]; heights?: number[] }>()
 const edgesById = new Map<number, Way>()
+const outlinesById = new Map<number, { ring: number[] }>()
 for (const f of readdirSync(tileDir)) {
   if (!f.endsWith('.json')) continue
-  const t = JSON.parse(readFileSync(resolve(tileDir, f), 'utf8')) as { rails?: { id: number; kind: string; points: number[]; heights?: number[] }[]; edges: Way[] }
+  const t = JSON.parse(readFileSync(resolve(tileDir, f), 'utf8')) as { rails?: { id: number; kind: string; points: number[]; heights?: number[] }[]; edges: Way[]; bridges?: { id: number; ring: number[] }[] }
+  for (const b of t.bridges ?? []) outlinesById.set(b.id, { ring: b.ring })
   for (const r of t.rails ?? []) railsById.set(r.id, { kind: r.kind, points: r.points, heights: r.heights })
-  for (const e of t.edges) if (!edgesById.has(e.id)) edgesById.set(e.id, { id: e.id, a: e.a, b: e.b, kind: e.kind, name: e.name, width: e.width, foot: e.foot, tunnel: e.tunnel, bore: e.bore, points: e.points })
+  // (no foot ways: nothing here reads them, and they are most of a tile)
+  for (const e of t.edges) if (!e.foot && !edgesById.has(e.id)) edgesById.set(e.id, { id: e.id, a: e.a, b: e.b, kind: e.kind, name: e.name, width: e.width, foot: e.foot, tunnel: e.tunnel, bore: e.bore, points: e.points, heights: e.heights })
 }
 const railsArg = process.argv.find((a) => a.startsWith('--rails='))?.slice(8)
 const pkg = { rails: railsArg ? (JSON.parse(readFileSync(railsArg, 'utf8')) as { rails: { kind: string; points: number[]; heights?: number[] }[] }).rails : [...railsById.values()], edges: [...edgesById.values()] }
@@ -56,7 +61,15 @@ for (const l of text.split('\n')) {
   if (fate === 'sunk' && drawnNear(X(m[0]), Z(m[1]))) continue
   under.push({ points: c.flatMap((q) => [X(q[0]), Z(q[1])]) })
 }
-const made = railMouths(under, pkg.rails)
+// (the side of a street's bridge is not a tunnel's mouth, whatever OSM calls the way under it: render/rail-overbridge.ts draws the way in on the bridge's own outline)
+const all = railMouths(under, pkg.rails)
+const atDecks = mouthsAtDecks(all, [...outlinesById.values()], pkg.edges as unknown as Parameters<typeof mouthsAtDecks>[2], pkg.rails as Parameters<typeof mouthsAtDecks>[3])
+const between = decksBetweenMouths(all.filter((m) => !atDecks.has(m)), pkg.edges as unknown as Parameters<typeof decksBetweenMouths>[1])
+for (const d of between) { atDecks.add(d.a); atDecks.add(d.b) }
+// (and the narrower mouths at the same deck: at the Batignolles and at Austerlitz a stone box stood on in front of the new girder)
+for (const m of mouthsAtDecks(all, between, pkg.edges as unknown as Parameters<typeof mouthsAtDecks>[2], pkg.rails as Parameters<typeof mouthsAtDecks>[3])) atDecks.add(m)
+writeFileSync(resolve(ROOT, 'src/city/paris/rail-decks-data.ts'), `// Written by tools/paris-portals.ts.\nexport const DECKS: { id: number; ring: number[] }[] = ${JSON.stringify(between.map((d, i) => ({ id: 900_000_000 + i, ring: d.ring })))}\n`)
+const made = all.filter((m) => !atDecks.has(m))
 const out = made.map((m, i) => {
   // (a point entry's `front` turns local −z to that bearing, and this model's opening is on +z: it looks out along the track, so the other way)
   const front = Math.round(((Math.atan2(m.ox, m.oz) * 180) / Math.PI + 540) % 360)
@@ -102,4 +115,4 @@ const roads = roadGroups.map((g, i) => {
     size: [Math.round(2 * half + 7), 6], front, height: 7, shadow: false, sign: false, note: 'Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides.' }
 })
 writeFileSync(resolve(ROOT, 'public/landmarks/paris/portals.json'), `${JSON.stringify([...out, ...roads], null, 1)}\n`)
-console.log(`${under.length} railways under something; ${out.length} mouths, ${made.filter((m) => m.tight).length} tight between tracks; ${roadMouths.length} road tunnel ends, ${roads.length} mouths → public/landmarks/paris/portals.json`)
+console.log(`${under.length} railways under something; ${atDecks.size} at a street's bridge, no mouth (${between.length} bridges nobody outlined → src/city/paris/rail-decks-data.ts); ${out.length} mouths, ${made.filter((m) => m.tight).length} tight between tracks; ${roadMouths.length} road tunnel ends, ${roads.length} mouths → public/landmarks/paris/portals.json`)

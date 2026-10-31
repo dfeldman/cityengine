@@ -29,6 +29,7 @@ import type { TileLayer } from './city.ts'
 import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge, type PackedRail } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { axisAlong, axisOf, straightOutline } from '../city/bridge-axis.ts'
+import { railOverbridge } from './rail-overbridge.ts'
 
 type Rgb = [number, number, number]
 type P = { x: number; z: number }
@@ -274,6 +275,8 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
         cx /= ring.length
         cz /= ring.length
         if (cx < rect.x0 || cx >= rect.x1 || cz < rect.z0 || cz >= rect.z1) continue
+        // (a street over a station's throat, drawn from its outline whatever its shape: render/rail-overbridge.ts. Paris's, and not one of the Seine's with a design of its own)
+        if (Object.keys(styles).length && !styleFor(b, styles) && railOverbridge(out, ring, near.around.edges, near.around.rails, terrain)) continue
         buildStructure(out, b, ring, near.around.edges, terrain, wetAt, styles, overWater)
       }
       if (out.triangles === 0) return []
