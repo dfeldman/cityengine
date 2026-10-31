@@ -7,7 +7,7 @@
  * names it (and the file to edit), and its OSM tags — address and all — fetched from openstreetmap.org. A model: its
  * manifest entry whole, and where it was placed. And Shift with a letter opens the spot in the middle of the view elsewhere (owner, 2026-10-31:
  * "keys in dev mode to jump to street view, mapillary, or google earth for that spot"; "maybe google maps too"): V Street View, M Mapillary,
- * E Google Earth, G Google Maps.
+ * B Google Earth (E is the free camera's way up, with Shift to go fast), G Google Maps.
  */
 import type { Scene } from '@babylonjs/core/scene'
 import { arrondissementOf, frontZone } from '../city/paris/arrondissements.ts'
@@ -43,7 +43,7 @@ export function mapLinks(lat: number, lon: number, heading = 0): { streetView: s
   }
 }
 
-const JUMPS: Record<string, keyof ReturnType<typeof mapLinks>> = { KeyV: 'streetView', KeyM: 'mapillary', KeyE: 'earth', KeyG: 'maps' }
+const JUMPS: Record<string, keyof ReturnType<typeof mapLinks>> = { KeyV: 'streetView', KeyM: 'mapillary', KeyB: 'earth', KeyG: 'maps' }
 
 const CSS = `
 .sr-inspect { position: fixed; z-index: 50; right: 12px; top: 64px; width: min(460px, 94vw); max-height: 78vh; overflow: auto;
