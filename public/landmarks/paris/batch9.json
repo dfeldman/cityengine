@@ -1,0 +1,102 @@
+[
+  {
+    "osm": [
+      "relation/3074645"
+    ],
+    "name": "Hyatt Regency Paris Étoile (ex Concorde Lafayette)",
+    "procedural": "hyattEtoile",
+    "height": 119,
+    "note": "batch9/towers.ts: shaft to APUR 118 m, ring and mast to Wikipedia's 137 m; skin from a Commons photo.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/483067000"
+    ],
+    "name": "Les Mercuriales, Bagnolet",
+    "procedural": "tourBagnolet",
+    "height": 114,
+    "note": "batch9/towers.ts: OSM 114 m, outside APUR; Street View frame: dark bronze-framed grey-blue curtain wall, twin tower beside.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/18592415"
+    ],
+    "name": "Pullman Paris Montparnasse",
+    "procedural": "pullmanMontparnasse",
+    "height": 116,
+    "note": "batch9/towers.ts: OSM 116 m, Wikipedia 117 m (APUR 99.5); skin from a fr.wikipedia photo.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/80252199"
+    ],
+    "name": "Résidence Super Montparnasse",
+    "procedural": "superMontparnasse",
+    "height": 90,
+    "note": "batch9/towers.ts: OSM 90 m, APUR 88.8; no photo, skin a guess.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/84154146"
+    ],
+    "name": "Tour Super-Chapelle",
+    "procedural": "superChapelle",
+    "height": 78,
+    "note": "batch9/towers.ts: OSM 78 m, APUR 77.4; skin from a Commons photo.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/78407255"
+    ],
+    "name": "Tour Albert",
+    "procedural": "tourAlbert",
+    "height": 66,
+    "note": "batch9/towers.ts: OSM 67 m, APUR 63; skin from a fr.wikipedia photo.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/365105751"
+    ],
+    "name": "Tower of 1977, Avenue de Choisy",
+    "procedural": "tourItalie37",
+    "height": 104,
+    "note": "batch9/towers.ts: OSM 104 m, APUR 97.9 (1977); no photo, skin a guess.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/89564737"
+    ],
+    "name": "Tour Sequana",
+    "procedural": "tourSequana",
+    "height": 100,
+    "note": "batch9/towers.ts: 100 m per Wikipedia (no OSM height; the list's 72 was levels-derived); skin from a Commons photo.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/64384650"
+    ],
+    "name": "Tour Jade",
+    "procedural": "tourVandrezanne",
+    "height": 92,
+    "note": "batch9/towers.ts: OSM 92 m, APUR 90.2; skin from one unconfirmed street view.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/64384649"
+    ],
+    "name": "Tour Onyx",
+    "procedural": "tourVandrezanne",
+    "height": 92,
+    "note": "batch9/towers.ts: twin of Jade; OSM 92 m.",
+    "madeBy": "claude-sonnet-5-5"
+  }
+]

@@ -39,6 +39,8 @@ export interface Face {
   solid?: number
   /** how far fins or piers stand proud, metres (default 0.3) */
   depth?: number
+  /** fins: run unbroken from foot to head, with no spandrel between them (the Pullman Montparnasse's white fins, 2026-10-31) */
+  continuous?: boolean
   /** xbrace: floors per brace (default 6) */
   brace?: number
   /** punched: arched window heads (the 1910s–20s) */
@@ -302,7 +304,7 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
           proud(Math.max(0, u - w), Math.min(L, u + w), y0, y1, f.wall, depth)
         }
         // the spandrels between the fins, a floor apart, so it is not a set of stripes
-        for (let fl = 1; fl < floors; fl++) rect(0, L, y0 + fl * fh - 0.35, y0 + fl * fh + 0.35, f.wall, 0.02)
+        if (!f.continuous) for (let fl = 1; fl < floors; fl++) rect(0, L, y0 + fl * fh - 0.35, y0 + fl * fh + 0.35, f.wall, 0.02)
         break
       }
       case 'bays': {
