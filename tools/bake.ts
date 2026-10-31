@@ -858,6 +858,22 @@ async function bake(spec: CitySpec): Promise<void> {
      * and only in the Financial District for now: city-wide it lowered 566 buildings, a shop condominium on the ground
      * floor being recorded as one storey, and raised a few on a stray parcel point.
      */
+    /*
+     * PARIS HAS A HEIGHT LIMIT (owner, 2026-10-31: "We also display some tall buildings that I'm fairly sure don't exist, so check for buildings over
+     * the 37 meter height limit"). A mapper's storeys with no height went to the tag layer at 4 m each, so an ordinary ten-storey block of the
+     * thirteenth stood at 40 m where APUR's survey measures 30: 1,200 of the 2,100 buildings over the limit were that. A Paris storey is about
+     * 3.1 m. APUR's measure where it has one that makes sense of the storeys (it reads a tower on a podium by the podium, and 0.2 m under the BnF's
+     * esplanade, so a tower keeps its storeys), else the storeys at their true height.
+     */
+    if (spec.region === 'paris' && !tags.height && tags['building:levels'] !== undefined) {
+      const stated = Number(tags['building:levels'])
+      if (stated > 0) {
+        const byStoreys = 1 + stated * 3.1
+        const rec = tags['building:part'] === undefined && recordOf ? recordOf(ring.map((q) => proj.toLatLon(q))) as { height?: number } | null : null
+        const measured = rec?.height && rec.height >= 3 && rec.height >= byStoreys * 0.65 && rec.height <= byStoreys * 1.35 ? rec.height : undefined
+        return { tags: { ...tags, height: (measured ?? byStoreys).toFixed(1) }, inferred: false }
+      }
+    }
     const c = centroid(ring)
     const lv = inferLevels(tags, ring, grid.near(c.x, c.z, reg.levelInference.radius), reg.defaultLevels,
       reg.levelInference)

@@ -272,3 +272,11 @@ Still open:
 - Bridges: Pont de Saint-Cloud from the saddle, Pont Aval (an 11.5 m step in the dry run), Simone-de-Beauvoir's high arm dead-ends, Pont Rouelle generic, Sainte-Geneviève's statue on the Tournelle.
 - Top 25, still poor: Vendôme's fronts, Opéra Bastille, the Palais de Justice west of the Bonbec, the Concorde's paving. All four done, seen (2026-10-31): [x] Vendôme: Hardouin-Mansart's design standing over the restyled walls round the octagon, arcades, giant pilasters, the avant-corps on columns and six pediments (bugs/vendome.ts), one eaves height. [x] Opéra Bastille: its two curved parts glazed whole, the rest whiter, the arch in Lanhélin grey and not a black box; still a restyle of OSM's parts, not a model. [x] Palais de Justice: four tall storeys, not a seven-storey hotel on the Quai de l'Horloge (its 34 tall parts named, so the eaves reach them). [x] Paving: a Paris square is a grey limestone near the pavement's colour, not sandy tan with stepped edges (city.ts `PARIS_SQUARE`).
 - [x] The Presbytère on the Place Saint-Germain-des-Prés was a Haussmann block with shopfronts: plain stone now. The church itself has its own model, not the Gothic kit.
+
+## Heights over the limit (owner, 2026-10-31: "check for buildings over the 37 meter height limit"; "any building over the height limit is by definition a unique landmark")
+
+2,129 buildings stood over 37 m in Paris proper: far too many. 1,219 of them at 40–45 m: OSM's "10 levels" at 4 m each, where APUR measures 30 m. Fixed in tools/bake.ts (a Paris storey is 3.1 m; APUR's measure where it agrees with the storeys), and takes the next bake. Then: list what's still over 37 m and check each, tallest first, against a photograph or its shadow on the aerial; a real one is a landmark and goes on the high-rises list in docs/landmarks/PARIS-BATCHES.md, a false one comes down. Height tags are still believed: some look wrong, like 80 m on an 18 m² footprint at 48.84280, 2.37390 and 78 m at 48.86849, 2.38699.
+
+## The funicular's cabin
+
+The Montmartre funicular runs and is boarded like a cable car (the rail audit made it visible). The cabin is a plain white box: it wants its real glass cars. Not yet ridden in a test.
