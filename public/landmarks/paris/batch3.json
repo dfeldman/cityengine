@@ -721,7 +721,7 @@
  {
   "name": "Palais Galliera",
   "osm": [
-   "way/1191057"
+   "relation/1191057"
   ],
   "restyle": "classical",
   "levels": 2,
