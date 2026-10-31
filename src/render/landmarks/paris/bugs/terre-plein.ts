@@ -10,14 +10,14 @@ import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Fit } from '../../fit.ts'
 
 const WALL: Rgb = [0.74, 0.69, 0.58]
-const PAVING: Rgb = [0.66, 0.63, 0.56]
+const PAVING: Rgb = [0.46, 0.44, 0.39]
 const COPING: Rgb = [0.82, 0.78, 0.68]
 
 export function terrePlein(out: MeshBuilder, fit: Fit): void {
   const stone = surfaceTag('ashlar')
   const hx = fit.hx, hz = fit.hz
   const g = (x: number, z: number): number => fit.groundAt ? fit.groundAt(x, z) : 0
-  const top = g(0, 0) + 0.06
+  const top = g(0, 0) + 0.3
   const bottom = Math.min(top - 9, g(-hx - 3, hz + 3) - 1, g(hx + 3, hz + 3) - 1)
   const mid = (top + bottom) / 2, half = (top - bottom) / 2
 

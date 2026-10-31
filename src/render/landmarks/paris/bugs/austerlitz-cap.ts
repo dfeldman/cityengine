@@ -14,8 +14,8 @@ import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Fit } from '../../fit.ts'
 
 const CONCRETE: Rgb = [0.56, 0.54, 0.5]
-const SLAB: Rgb = [0.78, 0.76, 0.71]
-const PAVING: Rgb = [0.62, 0.61, 0.58]
+const SLAB: Rgb = [0.5, 0.49, 0.46]
+const PAVING: Rgb = [0.44, 0.43, 0.41]
 const RAIL: Rgb = [0.3, 0.32, 0.34]
 const RUST: Rgb = [0.42, 0.24, 0.17]
 const DARK: Rgb = [0.09, 0.09, 0.1]
