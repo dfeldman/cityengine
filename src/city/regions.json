@@ -211,7 +211,7 @@
     "riverDrop": 2.5,
     "riverLevel": 26.9,
     "levelGrounds": [{ "name": "Quai bas de la Cité", "y": 28.2, "fade": 3, "ring": [[48.856668, 2.341177], [48.856427, 2.341441], [48.85577, 2.342221], [48.855062, 2.343079], [48.855205, 2.343149], [48.855786, 2.342546], [48.856351, 2.341757], [48.856668, 2.341441]] }, { "name": "Cour Napoléon", "ring": [[48.861685, 2.335343], [48.861327, 2.336888], [48.860344, 2.336362], [48.860702, 2.334817]] }],
-    "elevatedWalks": [{ "name": "Coulée Verte René-Dumont", "height": 8.5 }],
+    "elevatedWalks": [{ "name": "Coulée Verte René-Dumont", "height": 8.5, "eastTo": 2.3858 }],
     "viaduct": "paris",
     "viaductStations": [
       { "name": "Bir-Hakeim", "lat": 48.85393, "lon": 2.28935 },

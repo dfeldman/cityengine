@@ -110,7 +110,7 @@ export interface Region {
   riverLevel?: number
   /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
    *  des Arts, BUGS.md #32): OSM puts them at street level, where they ran hidden inside the viaduct */
-  elevatedWalks?: { name: string; height: number }[]
+  elevatedWalks?: { name: string; height: number; /** east of this it has come down: a walk's name runs on past its viaduct */ eastTo?: number }[]
   /**
    * Foot bridges whose OSM `layer` is not a height: within `radius` metres of the point their layer counts as at
    * most `layer` (tools/bridges.ts). OSM numbers a spiral ramp's turns 3, 4, 5 so that they can cross themselves,

@@ -3148,7 +3148,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * standing up as lone footbridges. Each runs at the region's height over the ground, smoothed along it, and
    * where it is not over a building it is a bridge (render/bridges.ts draws the slab and piers).
    */
-  const walks = new Map((streetRegion.elevatedWalks ?? []).map((w) => [w.name, w.height]))
+  const walks = new Map((streetRegion.elevatedWalks ?? []).map((w) => [w.name, w]))
   let lifted = 0
   if (walks.size) {
     const overBuilding = (x: number, z: number): boolean => buildings.some((b) => {
@@ -3160,9 +3160,12 @@ async function bake(spec: CitySpec): Promise<void> {
       return o
     })
     for (const e of kept) {
-      const h = e.name ? walks.get(e.name) : undefined
-      if (h === undefined) continue
+      const w = e.name ? walks.get(e.name) : undefined
+      if (w === undefined) continue
+      const h = w.height
       const ps = unpackPoints(e.points)
+      // (the Coulée verte's name runs on past the Viaduc des Arts to the Bois de Vincennes, on the ground and in its tunnels)
+      if (w.eastTo !== undefined && ps[Math.floor(ps.length / 2)].x > proj.toLocal({ lat: spec.centre.lat, lon: w.eastTo }).x) continue
       e.heights = ps.map((q) => Math.round((groundAt(q.x, q.z) + h) * 100) / 100)
       const mid = ps[Math.floor(ps.length / 2)]
       e.bridge = !overBuilding(mid.x, mid.z) || undefined

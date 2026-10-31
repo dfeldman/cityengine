@@ -3,13 +3,13 @@ import { block, hex, shade } from '../kit.ts'
 
 /**
  * The Opéra Bastille's great arch: the square frame standing proud of the front over the entrance stairs,
- * the one piece of the building everyone recognises. Dark charcoal, ~20 m square, 2 m deep, with dark glazing
+ * the one piece of the building everyone recognises. Lanhélin granite (2026-10-31, the Opéra's own site: a blue-grey stone, and at the charcoal it was it read as a black box on the Place), ~20 m square, 2 m deep, with dark glazing
  * in a grid inside it and the broad flight of steps below. The rest of the Opéra is its own OSM
  * massing, restyled (landmark manifest "opera").
  */
 export function operaArch(out: MeshBuilder): void {
-  const stone = hex('#3d4044')          // charcoal: the one dark thing on a pale building
-  const glass = hex('#23282d')
+  const stone = hex('#73777a')          // grey granite: the one dark thing on a pale building
+  const glass = hex('#3d4c58')
   const steps = hex('#c9c9c4')
   const w = 10
   const h = 19

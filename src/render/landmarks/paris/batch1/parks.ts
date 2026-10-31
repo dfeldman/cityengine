@@ -140,7 +140,7 @@ function rock(out: MeshBuilder, cx: number, cz: number, y0: number, h: number, r
 }
 
 /** a waterfall: a pale sheet of it from y1 to y0 at z, x0..x1, and its splash */
-function fall(out: MeshBuilder, x0: number, x1: number, z: number, y0: number, y1: number): void {
+export function fall(out: MeshBuilder, x0: number, x1: number, z: number, y0: number, y1: number): void {
   out.water.push({ kind: 'sheet', a: [x0, y1, z], b: [x1, y1, z], out: 0.35, drop: y1 - y0 })
   out.water.push({ kind: 'splash', at: [(x0 + x1) / 2, y0, z - 0.6], r: Math.max(1.4, (x1 - x0) * 0.5) })
 }

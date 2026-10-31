@@ -55,6 +55,37 @@ const KNOWN: Record<string, string[]> = {
     // the parks family, wave 2 (2026-10-30): Tschumi's folies stand hard against the halls the park was built round (the
     // Théâtre Paris-Villette, the Pavillon Janvier, the Cité de la Musique, the Argonaute, the Philharmonie), and the
     // Acclimatation's booths against a small lodge behind them — adjacency, as built, judged on the city shots
+    // Batch 3 (paris/batch3/, 2026-10-31). Moreux's obelisks: one builder at two places, a pair. The Pagodes stand in the dalle's gap, hard against the bars Rome and Grenoble whose ground floors OSM runs under them; the Temple's kiosk has the square's public toilets by its side.
+    'duplicate | legallObelisk',
+    'intersects | Les Olympiades: les Pagodes',
+    'intersects | Square du Temple: le kiosque',
+    // Batch 2 (paris/batch2/, 2026-10-31). The gates stand at OSM's entrances, up against the wards the entrance belongs to; the Coulée's viaduct has buildings hard against its flanks all along; the kiosk has a shed touching it in the Jardin d'Acclimatation.
+    // Coplanar: the rock's flat-topped slabs and the viaduct's stacked decks meet on planes by design, and the belvedere's paving on flat test ground meets its own skirt.
+    'coplanar | Jardin d’Acclimatation: le Rocher alpin',
+    'coplanar | La Coulée verte on the Viaduc des Arts: length 2',
+    'coplanar | La Coulée verte on the Viaduc des Arts: length 3',
+    'coplanar | La Coulée verte on the Viaduc des Arts: length 5',
+    'coplanar | La Coulée verte on the Viaduc des Arts: length 6',
+    'coplanar | La Coulée verte on the Viaduc des Arts: length 7',
+    'coplanar | La Coulée verte on the Viaduc des Arts: length 8',
+    'coplanar | Parc de Belleville: the belvedere and its wall',
+    'intersects | Hôpital Foch: the gate',
+    'intersects | Hôpital Rothschild: the gate',
+    'intersects | Hôpital Trousseau: the gate',
+    'intersects | Jardin d’Acclimatation: le Kiosque à musique',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 1',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 2',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 3',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 4',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 5',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 6',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 7',
+    'intersects | La Coulée verte on the Viaduc des Arts: length 8',
+    // (kind 'plaza' so that their rectangles keep the trees under them; a rectangle that big holds other buildings: the École's at Auteuil, the cube and wing at UNESCO)
+    'intersects | Jardin des serres d’Auteuil: the glasshouses',
+    'intersects | UNESCO: the Y and the Conference hall',
+    // the belvedere's paving and wall run up against the amphitheatre and the Halles civiques on the top of the Parc de Belleville, as they do (paris/batch2/parks.ts, 2026-10-31)
+    'intersects | Parc de Belleville: the belvedere and its wall',
     'intersects | Parc de la Villette: Folie L8',
     'intersects | Parc de la Villette: Folie N8',
     'intersects | Parc de la Villette: Folie N9',

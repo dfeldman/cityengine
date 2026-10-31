@@ -1,0 +1,892 @@
+[
+  {
+    "name": "Parc de Belleville: the cascade",
+    "procedural": "bellevilleCascade",
+    "lat": 48.87112,
+    "lon": 2.385132,
+    "size": [
+      6,
+      60
+    ],
+    "height": 4,
+    "front": 30,
+    "kind": "fountain",
+    "shadow": false
+  },
+  {
+    "name": "Parc de Belleville: the belvedere and its wall",
+    "procedural": "bellevilleBelvedere",
+    "lat": 48.871722,
+    "lon": 2.385037,
+    "size": [
+      140,
+      40
+    ],
+    "height": 8,
+    "front": 180,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "Parc de Belleville: the vines",
+    "procedural": "bellevilleVines",
+    "lat": 48.871165,
+    "lon": 2.38602,
+    "size": [
+      30,
+      18
+    ],
+    "height": 1.6,
+    "front": 220,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "Square des Batignolles: the pond’s rock and Vautours",
+    "procedural": "batignollesRocks",
+    "lat": 48.887877,
+    "lon": 2.315863,
+    "size": [
+      44,
+      36
+    ],
+    "height": 7,
+    "front": 180,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "Square des Batignolles: the bandstand",
+    "procedural": "batignollesKiosk",
+    "osm": [
+      "way/683934692"
+    ],
+    "lat": 48.887047,
+    "lon": 2.316607,
+    "size": [
+      6.8,
+      6.8
+    ],
+    "height": 7,
+    "front": 0,
+    "kind": "monument"
+  },
+  {
+    "name": "Jardin des serres d’Auteuil: the glasshouses",
+    "procedural": "serresAuteuil",
+    "osm": [
+      "way/86258868",
+      "way/86258887",
+      "way/86258909",
+      "way/86258915",
+      "way/127268537",
+      "way/127268538",
+      "way/127268539"
+    ],
+    "lat": 48.8466,
+    "lon": 2.2522,
+    "size": [
+      104,
+      100
+    ],
+    "height": 17,
+    "front": 180,
+    "kind": "plaza",
+    "stone": false,
+    "note": "Replaces OSM’s seven greenhouses, which the bake drew as slate-roofed blocks with dormers."
+  },
+  {
+    "name": "Jardin des serres d’Auteuil: Les Fleuristes and L’Orangerie",
+    "osm": [
+      "way/792571214",
+      "way/792571215"
+    ],
+    "restyle": "classical",
+    "levels": 2,
+    "eaves": 7,
+    "roof": "hipped",
+    "roofHeight": 4,
+    "wall": "#b08a6c",
+    "trim": "#ded3bc",
+    "roofColour": "#6f5448",
+    "noShops": true
+  },
+  {
+    "name": "Jardin des serres d’Auteuil: the gate pavilions",
+    "osm": [
+      "way/83201128",
+      "way/83201211"
+    ],
+    "restyle": "classical",
+    "levels": 2,
+    "eaves": 8,
+    "roof": "hipped",
+    "roofHeight": 4,
+    "wall": "#ded3bc",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Jardin d’Acclimatation: la Grande Volière",
+    "procedural": "acclimVoliere",
+    "osm": [
+      "way/83059097",
+      "way/83059201"
+    ],
+    "lat": 48.879088,
+    "lon": 2.263997,
+    "size": [
+      63.4,
+      13.6
+    ],
+    "height": 9,
+    "front": 193,
+    "kind": "monument"
+  },
+  {
+    "name": "Jardin d’Acclimatation: le Kiosque à musique",
+    "procedural": "acclimKiosk",
+    "osm": [
+      "way/83059208"
+    ],
+    "lat": 48.877309,
+    "lon": 2.264253,
+    "size": [
+      8.5,
+      8.5
+    ],
+    "height": 6.7,
+    "front": 0,
+    "kind": "monument"
+  },
+  {
+    "name": "Jardin d’Acclimatation: le Grand Carrousel",
+    "procedural": "acclimCarrousel",
+    "osm": [
+      "way/712261882"
+    ],
+    "lat": 48.87834,
+    "lon": 2.267264,
+    "size": [
+      9,
+      9
+    ],
+    "height": 5.1,
+    "front": 0,
+    "kind": "monument"
+  },
+  {
+    "name": "Jardin d’Acclimatation: the Jardin de Séoul’s pavilion",
+    "procedural": "acclimSeoul",
+    "osm": [
+      "way/83059169"
+    ],
+    "lat": 48.878366,
+    "lon": 2.262895,
+    "size": [
+      9,
+      9
+    ],
+    "height": 7,
+    "front": 340,
+    "kind": "monument"
+  },
+  {
+    "name": "Jardin d’Acclimatation: le Rocher alpin",
+    "procedural": "acclimRocher",
+    "lat": 48.877472,
+    "lon": 2.262525,
+    "size": [
+      64,
+      34
+    ],
+    "height": 11,
+    "front": 112,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "Cité universitaire: la Maison Internationale",
+    "osm": [
+      "way/28754150"
+    ],
+    "restyle": "classical",
+    "levels": 4,
+    "roof": "mansard",
+    "roofHeight": 5,
+    "wall": "#dcd2bc",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Cité universitaire: la Fondation suisse",
+    "procedural": "fondationSuisse",
+    "osm": [
+      "way/32530611"
+    ],
+    "lat": 48.818152,
+    "lon": 2.342214,
+    "size": [
+      42.3,
+      24.7
+    ],
+    "height": 22,
+    "front": 212,
+    "stone": false
+  },
+  {
+    "name": "Cité universitaire: la Maison du Brésil",
+    "procedural": "maisonBresil",
+    "osm": [
+      "way/32530537"
+    ],
+    "lat": 48.817807,
+    "lon": 2.343628,
+    "size": [
+      58,
+      18
+    ],
+    "height": 28,
+    "front": 117,
+    "stone": false
+  },
+  {
+    "name": "Jardin d’Acclimatation: L’Orangerie",
+    "osm": [
+      "way/765732173"
+    ],
+    "restyle": "classical",
+    "levels": 1,
+    "eaves": 6,
+    "height": 9,
+    "roof": "hipped",
+    "roofHeight": 3,
+    "wall": "#ded3bc",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Parc de Belleville: Les Halles civiques and the amphitheatre",
+    "osm": [
+      "way/70002965",
+      "way/1425751532"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#a9a598",
+    "trim": "#6f7b82",
+    "roofColour": "#6e6a5e",
+    "noShops": true
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 1",
+    "procedural": "couleeViaduct1",
+    "osm": [
+      "way/78148923"
+    ],
+    "lat": 48.84896,
+    "lon": 2.372398,
+    "size": [
+      42,
+      14
+    ],
+    "height": 13,
+    "front": 216.3,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 2",
+    "procedural": "couleeViaduct2",
+    "osm": [
+      "way/78146442"
+    ],
+    "lat": 48.848457,
+    "lon": 2.373413,
+    "size": [
+      89,
+      14
+    ],
+    "height": 13,
+    "front": 216.7,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 3",
+    "procedural": "couleeViaduct3",
+    "osm": [
+      "way/78146276"
+    ],
+    "lat": 48.847856,
+    "lon": 2.37466,
+    "size": [
+      119,
+      14
+    ],
+    "height": 13,
+    "front": 216.5,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 4",
+    "procedural": "couleeViaduct4",
+    "osm": [
+      "way/78146459"
+    ],
+    "lat": 48.847263,
+    "lon": 2.3759,
+    "size": [
+      74,
+      14
+    ],
+    "height": 13,
+    "front": 215.6,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 5",
+    "procedural": "couleeViaduct5",
+    "osm": [
+      "way/946577851",
+      "way/78146499",
+      "way/228005266"
+    ],
+    "lat": 48.846508,
+    "lon": 2.377475,
+    "size": [
+      113,
+      14
+    ],
+    "height": 13,
+    "front": 216.4,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 6",
+    "procedural": "couleeViaduct6",
+    "osm": [
+      "way/78145308"
+    ],
+    "lat": 48.84592,
+    "lon": 2.378694,
+    "size": [
+      109,
+      14
+    ],
+    "height": 13,
+    "front": 216.0,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 7",
+    "procedural": "couleeViaduct7",
+    "lat": 48.84534,
+    "lon": 2.379901,
+    "size": [
+      110,
+      14
+    ],
+    "height": 13,
+    "front": 216.1,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "La Coulée verte on the Viaduc des Arts: length 8",
+    "procedural": "couleeViaduct8",
+    "lat": 48.844761,
+    "lon": 2.381107,
+    "size": [
+      109,
+      14
+    ],
+    "height": 13,
+    "front": 216.0,
+    "kind": "plaza",
+    "shadow": false
+  },
+  {
+    "name": "Hôpital Tenon: the pavilions",
+    "osm": [
+      "way/427998632",
+      "way/427998635",
+      "way/427998637",
+      "way/427998638",
+      "way/427998640",
+      "way/427998634",
+      "way/427998630",
+      "way/427998639",
+      "way/427998641",
+      "way/427998627",
+      "way/427998628",
+      "way/427998633",
+      "way/631660502",
+      "way/70000478",
+      "way/307149736",
+      "way/212269821",
+      "relation/8787177"
+    ],
+    "restyle": "classical",
+    "levels": 3,
+    "wall": "#a5694a",
+    "trim": "#ddd3bd",
+    "roof": "hipped",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Tenon: Urgences and Gabriel",
+    "osm": [
+      "way/301914240",
+      "way/70002797"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#dcd8cc",
+    "trim": "#7f8d95",
+    "roofColour": "#b1afa7",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Tenon: the gate",
+    "procedural": "tenonGate",
+    "lat": 48.8657032,
+    "lon": 2.4006949,
+    "size": [
+      26,
+      5
+    ],
+    "height": 11,
+    "front": 245,
+    "kind": "monument"
+  },
+  {
+    "name": "Hôpital Rothschild: Santerre",
+    "osm": [
+      "way/429038450"
+    ],
+    "restyle": "classical",
+    "levels": 5,
+    "roof": "hipped",
+    "roofHeight": 4,
+    "wall": "#d9cfbb",
+    "trim": "#ece5d2",
+    "roofColour": "#7c4c43",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Rothschild: Jardin",
+    "osm": [
+      "way/429038451"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#e4e1d8",
+    "trim": "#7f8d95",
+    "roofColour": "#b1afa7",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Rothschild: the pavilions",
+    "osm": [
+      "way/429038455",
+      "way/429038453",
+      "way/429038454"
+    ],
+    "restyle": "classical",
+    "levels": 2,
+    "wall": "#a5694a",
+    "trim": "#ddd3bd",
+    "roof": "hipped",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Rothschild: the gate",
+    "procedural": "rothschildGate",
+    "lat": 48.8428589,
+    "lon": 2.3982577,
+    "size": [
+      26,
+      5
+    ],
+    "height": 9,
+    "front": 175,
+    "kind": "monument"
+  },
+  {
+    "name": "Hôpital Robert-Debré",
+    "osm": [
+      "way/63235326",
+      "way/63232778",
+      "way/63233521",
+      "way/63236746",
+      "way/63239814",
+      "way/63240027",
+      "way/63213742",
+      "way/63225026",
+      "way/63239271"
+    ],
+    "restyle": "bauhaus",
+    "accent": "#d9792f",
+    "roof": "flat",
+    "wall": "#ebe8e0",
+    "trim": "#8fa0a8",
+    "roofColour": "#a3ad8d",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Robert-Debré: the gate",
+    "procedural": "debreGate",
+    "lat": 48.8785122,
+    "lon": 2.4033894,
+    "size": [
+      26,
+      5
+    ],
+    "height": 7,
+    "front": 180,
+    "kind": "monument"
+  },
+  {
+    "name": "Hôpital Trousseau: Chigot and Salât-Baroux",
+    "osm": [
+      "way/428008393",
+      "way/78000406"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#dcd8cc",
+    "trim": "#7f8d95",
+    "roofColour": "#b1afa7",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Trousseau: the pavilions",
+    "osm": [
+      "way/78000142",
+      "way/78000082",
+      "way/78000066",
+      "way/78000249",
+      "way/78000172",
+      "way/78000197",
+      "way/78000173",
+      "way/78000101",
+      "way/428008391",
+      "way/428008392",
+      "way/428008390"
+    ],
+    "restyle": "classical",
+    "levels": 2,
+    "wall": "#a5694a",
+    "trim": "#ddd3bd",
+    "roof": "hipped",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Trousseau: the gate",
+    "procedural": "trousseauGate",
+    "lat": 48.8425961,
+    "lon": 2.4052542,
+    "size": [
+      26,
+      5
+    ],
+    "height": 11,
+    "front": 265,
+    "kind": "monument"
+  },
+  {
+    "name": "Hôpital Foch",
+    "osm": [
+      "way/631674665",
+      "way/631674669",
+      "way/631674670",
+      "relation/8787401"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#d8cfbc",
+    "trim": "#8b8c86",
+    "roofColour": "#b5b0a2",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Foch: Pavillon Consuelo Balsan",
+    "osm": [
+      "way/70964402"
+    ],
+    "restyle": "classical",
+    "levels": 2,
+    "wall": "#ded3bc",
+    "trim": "#ece5d2",
+    "roof": "hipped",
+    "roofColour": "#7c4c43",
+    "noShops": true
+  },
+  {
+    "name": "Hôpital Foch: the gate",
+    "procedural": "fochGate",
+    "lat": 48.8711565,
+    "lon": 2.2212568,
+    "size": [
+      26,
+      5
+    ],
+    "height": 7,
+    "front": 290,
+    "kind": "monument"
+  },
+  {
+    "name": "Centre universitaire Malesherbes",
+    "restyle": "bauhaus",
+    "within": [
+      [
+        48.883593,
+        2.309467
+      ],
+      [
+        48.883172,
+        2.310324
+      ],
+      [
+        48.883449,
+        2.310684
+      ],
+      [
+        48.883587,
+        2.310864
+      ],
+      [
+        48.883748,
+        2.311162
+      ],
+      [
+        48.884016,
+        2.311658
+      ],
+      [
+        48.884363,
+        2.311295
+      ],
+      [
+        48.884397,
+        2.310845
+      ],
+      [
+        48.884068,
+        2.310181
+      ],
+      [
+        48.883838,
+        2.309949
+      ],
+      [
+        48.883628,
+        2.309531
+      ]
+    ],
+    "take": "inside",
+    "margin": 0,
+    "roof": "flat",
+    "wall": "#cbc6b8",
+    "trim": "#7f8d95",
+    "roofColour": "#a3a096",
+    "noShops": true
+  },
+  {
+    "name": "Fondation Adolphe de Rothschild",
+    "restyle": "classical",
+    "within": [
+      [
+        48.878632,
+        2.377057
+      ],
+      [
+        48.877884,
+        2.377104
+      ],
+      [
+        48.877767,
+        2.377119
+      ],
+      [
+        48.877828,
+        2.377425
+      ],
+      [
+        48.877858,
+        2.377805
+      ],
+      [
+        48.877972,
+        2.378107
+      ],
+      [
+        48.878326,
+        2.378106
+      ],
+      [
+        48.878554,
+        2.378162
+      ],
+      [
+        48.878699,
+        2.378211
+      ],
+      [
+        48.878728,
+        2.377914
+      ],
+      [
+        48.878636,
+        2.377097
+      ]
+    ],
+    "take": "inside",
+    "margin": 0,
+    "levels": 4,
+    "roof": "mansard",
+    "roofHeight": 3.5,
+    "wall": "#ddd3bd",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Hôtel Salomon de Rothschild",
+    "osm": [
+      "way/68995099"
+    ],
+    "restyle": "classical",
+    "levels": 3,
+    "roof": "mansard",
+    "roofHeight": 4,
+    "wall": "#e0d6c0",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Université Paris-Dauphine",
+    "osm": [
+      "way/81130675",
+      "way/81130640"
+    ],
+    "restyle": "skyscraper",
+    "roof": "flat",
+    "wall": "#cfd0cb",
+    "trim": "#e8e8e2",
+    "roofColour": "#a7a7a1"
+  },
+  {
+    "name": "Université Paris-Dauphine: Aile F",
+    "osm": [
+      "way/1390068663"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#dfe1de",
+    "trim": "#6f7b82",
+    "roofColour": "#b1afa7",
+    "noShops": true
+  },
+  {
+    "name": "Sciences Po: Saint-Guillaume",
+    "osm": [
+      "way/64658247",
+      "way/64658211",
+      "relation/1492296"
+    ],
+    "restyle": "classical",
+    "levels": 4,
+    "roof": "mansard",
+    "roofHeight": 3.5,
+    "wall": "#ddd2bb",
+    "trim": "#ece5d2",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Institut Catholique de Paris",
+    "osm": [
+      "relation/1000958"
+    ],
+    "restyle": "classical",
+    "levels": 3,
+    "roof": "mansard",
+    "roofHeight": 4,
+    "wall": "#d6ccb4",
+    "trim": "#e7dfca",
+    "roofColour": "#4b5359",
+    "noShops": true
+  },
+  {
+    "name": "Institut Catholique: Saint-Joseph-des-Carmes",
+    "procedural": "carmesChurch",
+    "osm": [
+      "way/63370983"
+    ],
+    "lat": 48.848519,
+    "lon": 2.330285,
+    "size": [
+      28,
+      51
+    ],
+    "height": 46,
+    "front": 172
+  },
+  {
+    "name": "ESPCI",
+    "osm": [
+      "way/56133399",
+      "way/1026461676"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#c9cdcd",
+    "trim": "#6f7b82",
+    "roofColour": "#9ea5a6",
+    "noShops": true
+  },
+  {
+    "name": "UNESCO: the Y and the Conference hall",
+    "procedural": "unescoSiege",
+    "osm": [
+      "way/249680748",
+      "way/249680750"
+    ],
+    "lat": 48.849729,
+    "lon": 2.306379,
+    "size": [
+      170,
+      175
+    ],
+    "height": 30,
+    "front": 180,
+    "kind": "plaza",
+    "stone": false
+  },
+  {
+    "name": "UNESCO: the cube and the wing",
+    "osm": [
+      "way/68907062",
+      "way/560033529"
+    ],
+    "restyle": "bauhaus",
+    "roof": "flat",
+    "wall": "#cfcabd",
+    "trim": "#7f9aa6",
+    "roofColour": "#a3a096",
+    "noShops": true
+  }
+]

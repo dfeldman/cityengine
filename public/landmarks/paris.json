@@ -171,7 +171,16 @@
     "dropParts": true
   },
   {
+    "name": "Opéra Bastille — the curved foyers",
+    "osm": ["way/255657724", "way/255657720"],
+    "restyle": "operaGlass",
+    "roof": "flat",
+    "note": "The colossal curved wall of glass round the foyers, facing the Place: the two parts of the curve (aerial), glazed whole, ahead of the restyle below, which dresses the rest in white granite."
+  },
+  {
     "name": "Opéra Bastille",
+    "wall": "#e2e0d8",
+    "trim": "#eeece6",
     "restyle": "opera",
     "take": "inside",
     "roof": "flat",
@@ -1035,6 +1044,7 @@
     "restyle": "classical",
     "roof": "mansard",
     "levels": 4,
+    "height": 18.2,
     "within": [
       [
         48.86815,
@@ -1093,78 +1103,6 @@
     "note": "The gilded flame on its black granite plinth above the Alma tunnel."
   },
   {
-    "name": "Printemps — east dome",
-    "procedural": "cornerDome",
-    "lat": 48.87364,
-    "lon": 2.32958,
-    "rotateDeg": 0,
-    "size": [
-      13,
-      13
-    ],
-    "offset": [
-      0,
-      25,
-      0
-    ],
-    "stone": true,
-    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
-  },
-  {
-    "name": "Printemps — west dome",
-    "procedural": "cornerDome",
-    "lat": 48.87364,
-    "lon": 2.32853,
-    "rotateDeg": 0,
-    "size": [
-      13,
-      13
-    ],
-    "offset": [
-      0,
-      25,
-      0
-    ],
-    "stone": true,
-    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
-  },
-  {
-    "name": "Galeries Lafayette — corner dome",
-    "procedural": "cornerDome",
-    "lat": 48.8732,
-    "lon": 2.33298,
-    "rotateDeg": 0,
-    "size": [
-      12,
-      12
-    ],
-    "offset": [
-      0,
-      29,
-      0
-    ],
-    "stone": true,
-    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
-  },
-  {
-    "name": "La Samaritaine — dome",
-    "procedural": "cornerDome",
-    "lat": 48.85979,
-    "lon": 2.3432,
-    "rotateDeg": 0,
-    "size": [
-      10,
-      10
-    ],
-    "offset": [
-      0,
-      27,
-      0
-    ],
-    "stone": true,
-    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
-  },
-  {
     "name": "Hôtel de la Marine and Hôtel de Crillon",
     "procedural": "gabrielPalaces",
     "osm": [
@@ -1213,6 +1151,17 @@
     "note": "The front on the Quai de l'Horloge: the Horloge, César and Argent, the Bonbec, the ranges between; the Palais de Justice's OSM parts along the quay give way to it."
   },
   {
+    "name": "Palais de Justice — the tall parts",
+    "osm": ["way/245531356", "way/245536194", "way/248434965", "way/248434967", "way/248434968", "way/248434969", "way/248434970", "way/248434983", "way/248434993", "way/248457244", "way/248457258", "way/248457259", "way/248480551", "way/248480552", "way/248480553", "way/248480554", "way/248485960", "way/248809490", "way/248863468", "way/248863474", "way/248983480", "way/249002518", "way/249002519", "way/249007544", "way/249007545", "way/249007551", "way/249007552", "way/249015463", "way/249015464", "way/249015465", "way/249015466", "way/249019427", "way/249043316", "way/249047004"],
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 4,
+    "eaves": 21,
+    "wall": "#cfc6af",
+    "trim": "#ded6c2",
+    "note": "The Palais stands four tall storeys, not a seven-storey hotel on the Quai de l'Horloge west of the Bonbec: OSM's parts (24-30 m to their ridges, storeys guessed) named one by one, as the massing of a restyle by relation does not reach them (render/landmarks.ts `styleOnly`). PARIS_BUGS: the top 25's Palais de Justice."
+  },
+  {
     "name": "Palais de Justice and the Conciergerie",
     "osm": [
       "relation/536982"
@@ -1220,6 +1169,7 @@
     "restyle": "classical",
     "roof": "mansard",
     "levels": 4,
+    "eaves": 21,
     "wall": "#cfc6af",
     "trim": "#ded6c2",
     "note": "The Palais de Justice on the Île de la Cité, OSM's parts in pale stone; the Conciergerie's quay front is its own model, above, and takes the parts it stands on first."
@@ -1331,6 +1281,15 @@
   },
   {
     "include": "paris/batch1.json"
+  },
+  {
+    "include": "paris/batch2.json"
+  },
+{
+    "include": "paris/batch3.json"
+  },
+  {
+    "include": "paris/bugs.json"
   },
   {
     "include": "paris/civic.json"

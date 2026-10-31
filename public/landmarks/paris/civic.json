@@ -7903,22 +7903,6 @@
  },
  {
   "osm": [
-   "way/63370983"
-  ],
-  "name": "Église Saint-Joseph des Carmes",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 1,
-   "seed": 2541
-  },
-  "height": 18.7,
-  "front": 172,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 1."
- },
- {
-  "osm": [
    "way/63371221"
   ],
   "name": "ecole 63371221",
@@ -34696,38 +34680,6 @@
   "front": 39,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
- },
- {
-  "osm": [
-   "way/249680748"
-  ],
-  "name": "ministere 249680748",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "ministere",
-   "p": 6,
-   "seed": 6693
-  },
-  "height": 29.3,
-  "front": 135,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: ministere, APUR period 6."
- },
- {
-  "osm": [
-   "way/249680750"
-  ],
-  "name": "ministere 249680750",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "ministere",
-   "p": 6,
-   "seed": 6695
-  },
-  "height": 10.9,
-  "front": -46,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: ministere, APUR period 6."
  },
  {
   "osm": [

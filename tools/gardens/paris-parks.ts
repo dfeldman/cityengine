@@ -11,14 +11,14 @@ import { closed, frame, rect, type GardenPlan, type LL } from './plan.ts'
 
 type EN = [number, number]
 /** a park's origin: east and north metres to lat/lon */
-const grid = (lat: number, lon: number) => {
+export const grid = (lat: number, lon: number) => {
   const f = frame(lat, lon, 0)
   return (p: EN[]): LL[] => p.map(([e, n]) => f(n, e))
 }
 const hash = (a: number, b: number): number => { const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return v - Math.floor(v) }
 
 /** points every `step` metres along a line, each with its heading */
-const along = (line: EN[], step: number): { p: EN; ux: number; uz: number }[] => {
+export const along = (line: EN[], step: number): { p: EN; ux: number; uz: number }[] => {
   const out: { p: EN; ux: number; uz: number }[] = []
   let left = step / 2
   for (let i = 1; i < line.length; i++) {
@@ -34,7 +34,7 @@ const along = (line: EN[], step: number): { p: EN; ux: number; uz: number }[] =>
 }
 
 /** a border along a line: a strip `v0`..`v1` metres to its right */
-const strip = (line: EN[], v0: number, v1: number): EN[] => {
+export const strip = (line: EN[], v0: number, v1: number): EN[] => {
   const pts = line.map((p, i) => {
     const a = line[Math.max(0, i - 1)], b = line[Math.min(line.length - 1, i + 1)]
     const L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
@@ -44,7 +44,7 @@ const strip = (line: EN[], v0: number, v1: number): EN[] => {
 }
 
 /** a blob: `n` corners round (e, n), radii rx and rz give or take a third */
-const blob = (e: number, n: number, rx: number, rz: number, c = 8): EN[] => Array.from({ length: c }, (_, k) => {
+export const blob = (e: number, n: number, rx: number, rz: number, c = 8): EN[] => Array.from({ length: c }, (_, k) => {
   const a = (k / c) * Math.PI * 2, m = 0.72 + hash(e + k, n) * 0.56
   return [e + Math.cos(a) * rx * m, n + Math.sin(a) * rz * m] as EN
 })
@@ -55,7 +55,7 @@ type Parts = Pick<GardenPlan, 'hedges' | 'topiary' | 'beds'>
  * A SHRUBBERY: laurels and spiraeas in a clump at the foot of the trees, which is what stands between an English park's walks and its trees. A loose oval of mounds at no
  * regular height, 40-odd triangles each.
  */
-const clump = (g: (p: EN[]) => LL[], e: number, n: number, r: number): Parts => {
+export const clump = (g: (p: EN[]) => LL[], e: number, n: number, r: number): Parts => {
   const a = hash(e, n) * Math.PI
   const count = Math.max(4, Math.round(r * 2))
   return {
@@ -71,7 +71,7 @@ const clump = (g: (p: EN[]) => LL[], e: number, n: number, r: number): Parts => 
  * THE EDGES OF A WALK: every `every` metres or so, on one side or the other, `off` metres back from the line (the walk's own half-width and the grass
  * verge), a shrubbery or, one time in `flowers`, a border of the season's flowers nearer the walk. Irregular on purpose, and the same at every bake.
  */
-const walkside = (g: (p: EN[]) => LL[], line: EN[], o: { every?: number; off?: number; flowers?: number; r?: number } = {}): Parts[] => {
+export const walkside = (g: (p: EN[]) => LL[], line: EN[], o: { every?: number; off?: number; flowers?: number; r?: number } = {}): Parts[] => {
   const every = o.every ?? 34, off = o.off ?? 6, flowers = o.flowers ?? 3
   return along(line, every).map(({ p, ux, uz }, i) => {
     const side = hash(p[0], p[1] + i) < 0.5 ? 1 : -1
@@ -88,7 +88,7 @@ const walkside = (g: (p: EN[]) => LL[], line: EN[], o: { every?: number; off?: n
 }
 
 /** gather parts of a plan together */
-const merge = (name: string, ring: LL[], ...parts: Partial<GardenPlan>[]): GardenPlan => {
+export const merge = (name: string, ring: LL[], ...parts: Partial<GardenPlan>[]): GardenPlan => {
   const out: GardenPlan = { name, ring }
   for (const p of parts) {
     for (const k of ['gravel', 'lawn'] as const) if (p[k]) out[k] = [...(out[k] ?? []), ...p[k]!]

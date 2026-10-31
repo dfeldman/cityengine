@@ -20,6 +20,9 @@ import { PARIS_MUSEUMS } from './paris/museums/index.ts'
 import { PARIS_RIVEGAUCHE } from './paris/rivegauche/index.ts'
 import { PARIS_MINOR } from './paris/minor/index.ts'
 import { PARIS_BATCH1 } from './paris/batch1/index.ts'
+import { PARIS_BUGS } from './paris/bugs/index.ts'
+import { PARIS_BATCH2 } from './paris/batch2/index.ts'
+import { PARIS_BATCH3 } from './paris/batch3/index.ts'
 import { parisCivic, type KitArgs } from './paris/kit/recipes.ts'
 import { barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal, roadPortal } from './paris/extras.ts'
 import { colonneDeJuillet } from './paris/colonne-de-juillet.ts'
@@ -67,7 +70,6 @@ import { sainteChapelle } from './paris/sainte-chapelle.ts'
 import { madeleine, assembleePortico, ecoleMilitairePortico } from './paris/temple-front.ts'
 import { institutDome } from './paris/institut-dome.ts'
 import { fontaineInnocents, fontaineSaintMichel, flammeLiberte } from './paris/fountains.ts'
-import { cornerDome } from './paris/corner-dome.ts'
 import { louisXIV, fochTrocadero } from './paris/equestrian.ts'
 import { petitPalais } from './paris/petit-palais.ts'
 import { burenColumns } from './paris/buren-columns.ts'
@@ -78,9 +80,9 @@ export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitAr
   // San Francisco's (render/landmarks/sf/index.ts)
   ...SF_BUILDERS,
   // Paris's families (PARIS_PARITY.md): each its own folder and its own manifest file
-  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1,
+  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1, ...PARIS_BUGS, ...PARIS_BATCH2, ...PARIS_BATCH3,
   // (the exceptions, said by kind and date: paris/kit/)
   parisCivic,
   barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal, roadPortal,
-  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, louvrePalace, gabrielPalaces, conciergerie, palaisChaillot, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, cornerDome, louisXIV, fochTrocadero,
+  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, louvrePalace, gabrielPalaces, conciergerie, palaisChaillot, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, louisXIV, fochTrocadero,
 }

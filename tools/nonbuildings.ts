@@ -138,6 +138,13 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   gloriette: 'monument', ranelaghKiosk: 'monument', ranelaghManege: 'monument', villetteDragon: 'monument',
   // …and what stands on or between its hospitals' buildings: an arcade, glass over a roof, a pool (paris/batch1/hospitals.ts)
   lariboisiereGallery: 'monument', hegpGlass: 'monument', ensErnests: 'fountain',
+  // Batch 2's parks (paris/batch2/): a cascade, a terrace wall, vines, rock, a bandstand, an aviary, a pavilion; and the hospitals' gates (2026-10-31)
+  bellevilleCascade: 'fountain', bellevilleBelvedere: 'monument', bellevilleVines: 'monument', batignollesRocks: 'monument', batignollesKiosk: 'monument',
+  acclimVoliere: 'monument', acclimKiosk: 'monument', acclimCarrousel: 'monument', acclimSeoul: 'monument', acclimRocher: 'monument',
+  couleeViaduct1: 'monument', couleeViaduct2: 'monument', couleeViaduct3: 'monument', couleeViaduct4: 'monument', couleeViaduct5: 'monument', couleeViaduct6: 'monument', couleeViaduct7: 'monument', couleeViaduct8: 'monument',
+  tenonGate: 'monument', trousseauGate: 'monument', rothschildGate: 'monument', debreGate: 'monument', fochGate: 'monument',
+  // Batch 3 (paris/batch3/, 2026-10-31): the parks' rocks, kiosk, obelisks, a fountain's crescent, painted courts; a footbridge; the Olympiades's tented roofs on their dalle; a chimney
+  rochersDansLeCiel: 'monument', templeKiosk: 'monument', templeRocher: 'fountain', legallObelisk: 'monument', chapeauEve: 'fountain', eoleCourts: 'plaza', lambertJet: 'fountain', beaugrenellePont: 'bridge', olympiadesPagodes: 'monument', fdsChimney: 'monument',
   // Paris's palaces family (src/render/landmarks/paris/palaces/): the Luxembourg's grotto fountain, the Tokyo's terraced court
   medicisFountain: 'fountain', tokyoParvis: 'plaza', observatoireFountain: 'fountain',
   // …the museums family (paris/museums/): the floating pool, on a barge (OSM's way 119943935 is building=boat)

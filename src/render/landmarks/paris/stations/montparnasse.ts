@@ -8,6 +8,7 @@ import { sign } from '../../parts.ts'
 import { frontOr } from './front.ts'
 import { platforms } from './shed.ts'
 import { MONTPARNASSE_PARTS, MONTPARNASSE_SHED } from './data.ts'
+import { jardinAtlantiqueTop } from '../batch2/atlantique.ts'
 
 type P2 = { x: number; z: number }
 const FIXED = 0
@@ -73,8 +74,22 @@ export function gareMontparnasse(out: MeshBuilder): void {
   const top = 18
   faceBand(out, deck, top - 1.6, top + 1.1, { kind: 'blank', wall: concrete, material: 'concrete' })
   capPolygon(out, deck, top - 1.6, dark, CONCRETE)
-  capPolygon(out, deck, top + 1.1, hex('#6f8a4e'), surfaceTag('foliage'))
-  out.decks.push({ ring: deck, y: top + 1.1, keepOff: 5 })
+  capPolygon(out, deck, top + 1.1, hex('#5a6f40'), CONCRETE)
+  // (Batch 2, 2026-10-31: the garden on it as the aerial has it, in east/north metres about 48.8399 2.3190, which is (−23.2, −27.2) of this entry's point. It was a foliage cap and a scatter of trees anywhere: batch2/atlantique.ts.)
+  {
+    const th = ((39 - 180) * Math.PI) / 180, c = Math.cos(th), s = Math.sin(th)
+    const toX = (e: number, n: number): number => (e - 23.2) * c - (n - 27.2) * s, toZ = (e: number, n: number): number => (e - 23.2) * s + (n - 27.2) * c
+    const g = jardinAtlantiqueTop(top + 1.1), m = g.mesh, base = out.positions.length / 3
+    for (let i = 0; i < m.positions.length; i += 3) {
+      out.positions.push(toX(m.positions[i], m.positions[i + 2]), m.positions[i + 1], toZ(m.positions[i], m.positions[i + 2]))
+      const nx = m.normals[i], nz = m.normals[i + 2]
+      out.normals.push(nx * c - nz * s, m.normals[i + 1], nx * s + nz * c)
+    }
+    for (const u of m.uvs) out.uvs.push(u)
+    for (const col of m.colors) out.colors.push(col)
+    for (const i of m.indices) out.indices.push(base + i)
+    for (const w of g.woods) out.decks.push({ ring: w.map(([e, n]) => ({ x: toX(e, n), z: toZ(e, n) })), y: top + 1.1, keepOff: 1, spacing: 8, form: { form: 'pine', h: [8, 15] } })
+  }
   const zs = deck.map((p) => p.z)
   const plats = MONTPARNASSE_SHED.platforms.map(toP)
   for (let z = Math.min(...zs) + 6; z < Math.max(...zs) - 4; z += 14) {

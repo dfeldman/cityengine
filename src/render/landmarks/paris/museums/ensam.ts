@@ -42,7 +42,7 @@ export function ensam(out: MeshBuilder, fit: Fit): void {
 }
 
 function draw(out: MeshBuilder): void {
-  const tile = '#a4482f'
+  const tile = '#7f4a38' // (dulled 2026-10-31: on a flat that size it came out vivid orange; the aerial's is a rusty brown)
   const p = palette('#cfc2a0', tile)
   const band = shade(p.stone, 0.8)
   const E = 15.5
