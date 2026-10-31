@@ -24,7 +24,7 @@ const FIXED = 0
 
 /** The outer half-width of the tower at height y, from its profile. */
 const PROFILE: [number, number][] = [[0, 62.5], [30, 48], [57.6, 36], [85, 27], [115.7, 20], [180, 13], [240, 10], [276, 8.5], [300, 5]]
-function half(y: number): number {
+export function half(y: number): number {
   for (let i = 1; i < PROFILE.length; i++) {
     const [y0, w0] = PROFILE[i - 1]
     const [y1, w1] = PROFILE[i]
@@ -33,7 +33,7 @@ function half(y: number): number {
   return PROFILE[PROFILE.length - 1][1]
 }
 /** a leg's width at y: 25 m at the foot, narrowing; above the second floor the four are one shaft */
-const legW = (y: number): number => (y < 115.7 ? 25 - (y / 115.7) * 13 : 12 * (1 - (y - 115.7) / 200))
+export const legW = (y: number): number => (y < 115.7 ? 25 - (y / 115.7) * 13 : 12 * (1 - (y - 115.7) / 200))
 
 export function eiffelTowerFull(out: MeshBuilder): void {
   const iron: Rgb = [0.34, 0.27, 0.205]
