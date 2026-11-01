@@ -226,14 +226,14 @@
   },
   {
     "name": "Philharmonie de Paris",
-    "procedural": "philharmonie",
+    "file": "models/paris/philharmonie.glb",
     "osm": [
       "way/21502894"
     ],
     "front": 260,
     "height": 52,
     "stone": false,
-    "note": "Nouvel's faceted, tilted shell of pale mottled tiles under a nearly flat polygonal summit (34 m), stepped pale terraces and ramps on its park side, dark ribbons of glass between shell and terraces, and the leaning tile-clad blade, solar panels on its sloped top, past the roof on the east at 52 m (PARIS_BUGS.md 16). Lofted from OSM's outline (163 × 104 m, no height in OSM), −z to the park (W). The Cité de la Musique next door (way 63971254) is not claimed.",
+    "note": "As the owner divides it: a flat podium with two ramps from one start on the south plaza, the upper turning left along the eye's lower lip, the lower to a glazed entrance; the inner building at the park side; the eye and its metal wave sheet facing south under the slab; the X on the street side; the leaning slab along the south edge, cantilevered past the street end at 52 m; the folded canopy over the rest, down to the ground at the park side's south corner. Podium lowered to 9 m from the section's 13. Blender: tools/blender/philharmonie.py. The procedural `philharmonie` builder remains in the code, unused: the loader takes a file OR a builder and has no LOD.",
     "madeBy": "claude-opus-5-5"
   },
   {
