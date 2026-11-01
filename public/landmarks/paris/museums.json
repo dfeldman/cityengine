@@ -233,7 +233,8 @@
     "front": 260,
     "height": 52,
     "stone": false,
-    "note": "Nouvel's shimmering hill of aluminium bird-tiles in six greys over a glazed base, the belvédère's tilted blade at 52 m thrust out over the park, the ramp up the south flank. Fitted to OSM's outline (163 × 104 m, no height in OSM), −z to the park (W). The Cité de la Musique next door (way 63971254) is not claimed."
+    "note": "Nouvel's faceted, tilted shell of pale mottled tiles under a nearly flat polygonal summit (34 m), stepped pale terraces and ramps on its park side, dark ribbons of glass between shell and terraces, and the leaning tile-clad blade, solar panels on its sloped top, past the roof on the east at 52 m (PARIS_BUGS.md 16). Lofted from OSM's outline (163 × 104 m, no height in OSM), −z to the park (W). The Cité de la Musique next door (way 63971254) is not claimed.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Bibliothèque nationale de France — Tour des Lettres",

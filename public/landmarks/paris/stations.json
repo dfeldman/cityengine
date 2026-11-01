@@ -123,9 +123,10 @@
     ],
     "height": 29,
     "shadow": false,
-    "note": "Hall 1's glass front and pylons on the Place Raoul-Dautry and the Jardin Atlantique's deck over the platforms. Replaces only the HEMA store inside Hall 1 (relation 14130166, an indoor room the bake drew as a 20 m block through the hall's glass roof): OSM puts Hall 1 and Hall Pasteur on layer −1 and the deck is a raised roof (400154236), none of which the bake draws; the office slab over Hall 1 (part 229412474) is the city's own. Footprints and platforms (from the tracks, mapped as a tunnel under the deck) are generated into stations/data.ts in this entry's frame, front −z to the place (39°). The deck's top is planted by the city (MeshBuilder.decks).",
+    "note": "Hall 1's glass front and pylons on the Place Raoul-Dautry and the Jardin Atlantique's deck over the platforms. Replaces the HEMA store inside Hall 1 (relation 14130166, an indoor room the bake drew as a 20 m block through the hall's glass roof) and way 80292919 (a cadastre block, 69% inside the hall, 16.5 m through its 15.5 m roof): OSM puts Hall 1 and Hall Pasteur on layer −1 and the deck is a raised roof (400154236), none of which the bake draws; the office slab over Hall 1 (part 229412474) is the city's own. Footprints and platforms (from the tracks, mapped as a tunnel under the deck) are generated into stations/data.ts in this entry's frame, front −z to the place (39°). The deck's top is planted by the city (MeshBuilder.decks).",
     "osm": [
-      "relation/14130166"
+      "relation/14130166",
+      "way/80292919"
     ],
     "stone": false
   },
