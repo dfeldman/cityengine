@@ -291,33 +291,33 @@ def part_front():
     return p
 
 # ---- the waves: a real sheet of long horizontal metal ridges bulging toward the viewer, set back in the hole
-RIDGES = 6
+RIDGES = 3
 def part_waves():
     p = Part("waves"); p.smooth = True
     s0, s1 = HOLE[0][0] + .5, HOLE[4][0] - .5
-    cols, rows = 20, RIDGES * 6
+    cols, rows = 24, RIDGES * 12
     def bulge(i, j):
         """0..1 height of the ridge at this point: troughs 0, tops 1, each ridge with its own swell and taper."""
         u = i / cols; v = j / rows
         phase = v * RIDGES + .25 * math.sin(u * 5)                      # the ridges wander a little along their length
         k = int(phase) % RIDGES
-        crest = math.sin(math.pi * (phase % 1.0)) ** 1.5
-        c0 = .15 + .1 * k; c1 = .95 - .05 * k                           # where this ridge starts and dies out
+        crest = math.sin(math.pi * (phase % 1.0)) ** 1.2
+        c0 = .05 + .05 * k; c1 = 1.0 - .03 * k                           # where this ridge starts and dies out
         t = max(0.0, min(1.0, (u - c0 * .6) / max(.05, c1 - c0 * .6)))
-        return crest * math.sin(math.pi * t) ** .6
+        return crest * math.sin(math.pi * t) ** .35
     def pt(i, j):
         u = i / cols; v = j / rows
         sv = s0 + (s1 - s0) * u
         lo, hi = hole_bounds(sv)
         z = lo + (hi - lo) * v
-        return wall_pt(sv, z, 8.5 - 5.5 * bulge(i, j))
+        return wall_pt(sv, z, 9.0 - 8.0 * bulge(i, j))
     for i in range(cols):
         for j in range(rows):
             idx = [(i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)]
             f = p.bm.faces.new([p.bm.verts.new(pt(*c)) for c in idx])
             for l, (a, b) in zip(f.loops, idx):
                 # u is the tone (silver on the tops, dark in the troughs), v the warmth (warmer toward the top)
-                l[p.uv].uv = (.02 + .96 * bulge(a, b), GLASS[0] + (GLASS[1] - GLASS[0]) * (.1 + .8 * b / rows))
+                l[p.uv].uv = (.02 + .96 * bulge(a, b) ** .45, GLASS[0] + (GLASS[1] - GLASS[0]) * (.1 + .8 * b / rows))
     return p
 
 # ---- C. the slab: leaning out over its foot at the park end, flat underside, cantilevered over the street end

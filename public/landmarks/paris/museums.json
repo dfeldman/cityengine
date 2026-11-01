@@ -233,7 +233,7 @@
     "front": 260,
     "height": 52,
     "stone": false,
-    "note": "As the owner divides it: a flat podium with two ramps from one start on the south plaza, the upper turning left along the eye's lower lip, the lower to a glazed entrance; the inner building at the park side; the eye and its metal wave sheet facing south under the slab; the X on the street side; the leaning slab along the south edge, cantilevered past the street end at 52 m; the folded canopy over the rest, down to the ground at the park side's south corner. Podium lowered to 9 m from the section's 13. Blender: tools/blender/philharmonie.py. The procedural `philharmonie` builder remains in the code, unused: the loader takes a file OR a builder and has no LOD.",
+    "note": "As the owner divides it: a flat podium with two ramps from one start on the south plaza, the upper turning left along the eye's lower lip, the lower to a glazed entrance; the inner building at the park side; the eye and its metal wave sheet facing south under the slab; the X on the street side; the leaning slab along the south edge, cantilevered past the street end at 52 m; the folded canopy over the rest, down to the ground at the park side's south corner. Podium lowered to 9 m from the section's 13. Blender: tools/blender/philharmonie.py.",
     "madeBy": "claude-opus-5-5"
   },
   {

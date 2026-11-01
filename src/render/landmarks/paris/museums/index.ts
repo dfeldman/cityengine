@@ -14,7 +14,6 @@ import { geode } from './geode.ts'
 import { guimetRotunda } from './guimet-rotunda.ts'
 import { institutMondeArabe } from './institut-monde-arabe.ts'
 import { jeuDePaume, orangerie } from './orangerie.ts'
-import { philharmonie } from './philharmonie.ts'
 import { quaiBranly } from './quai-branly.ts'
 import { chapelleSorbonne } from './chapelle-sorbonne.ts'
 import { beauxArts } from './beaux-arts.ts'
@@ -49,7 +48,7 @@ import { sorbonne } from './sorbonne.ts'
 
 export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   orangerie, jeuDePaume, fondationLouisVuitton, quaiBranly, institutMondeArabe, clunyThermes, guimetRotunda, bourseCommerce,
-  geode, citeDesSciences, philharmonie, bnfTower,
+  geode, citeDesSciences, bnfTower,
   sorbonne, chapelleSorbonne, hotelDieu, sainteGenevieve, beauxArts, hopitalSaintLouis, salpetriere, citeDeLaMode, rotondeVillette, pavillonArsenal, collegeDeFrance,
   tourZamansky, pagode, mairie5e, mairie1er, piscineJosephineBaker, zenith, jacquemartAndre,
   mairie13e, tribunal, hexagoneBalard, mobilierNational, reservoirMontsouris, facultePharmacie, faculteMedecine, ensam, prefecturePolice, bnfRichelieu, creditMunicipal, valDeGraceHopital,
