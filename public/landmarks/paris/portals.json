@@ -7052,36 +7052,6 @@
  {
   "name": "road tunnel mouth 130",
   "procedural": "roadPortal",
-  "lat": 48.842438,
-  "lon": 2.320853,
-  "size": [
-   18,
-   6
-  ],
-  "front": 165,
-  "height": 7,
-  "shadow": false,
-  "sign": false,
-  "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
- },
- {
-  "name": "road tunnel mouth 131",
-  "procedural": "roadPortal",
-  "lat": 48.839918,
-  "lon": 2.321894,
-  "size": [
-   18,
-   6
-  ],
-  "front": 345,
-  "height": 7,
-  "shadow": false,
-  "sign": false,
-  "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
- },
- {
-  "name": "road tunnel mouth 132",
-  "procedural": "roadPortal",
   "lat": 48.820934,
   "lon": 2.321416,
   "size": [
@@ -7095,7 +7065,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 133",
+  "name": "road tunnel mouth 131",
   "procedural": "roadPortal",
   "lat": 48.821084,
   "lon": 2.320676,
@@ -7110,7 +7080,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 134",
+  "name": "road tunnel mouth 132",
   "procedural": "roadPortal",
   "lat": 48.864098,
   "lon": 2.320444,
@@ -7125,7 +7095,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 135",
+  "name": "road tunnel mouth 133",
   "procedural": "roadPortal",
   "lat": 48.865157,
   "lon": 2.319028,
@@ -7140,7 +7110,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 136",
+  "name": "road tunnel mouth 134",
   "procedural": "roadPortal",
   "lat": 48.864266,
   "lon": 2.31989,
@@ -7155,7 +7125,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 137",
+  "name": "road tunnel mouth 135",
   "procedural": "roadPortal",
   "lat": 48.864739,
   "lon": 2.309808,
@@ -7170,7 +7140,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 138",
+  "name": "road tunnel mouth 136",
   "procedural": "roadPortal",
   "lat": 48.86483,
   "lon": 2.314067,
@@ -7185,7 +7155,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 139",
+  "name": "road tunnel mouth 137",
   "procedural": "roadPortal",
   "lat": 48.817247,
   "lon": 2.334438,
@@ -7200,7 +7170,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 140",
+  "name": "road tunnel mouth 138",
   "procedural": "roadPortal",
   "lat": 48.81628,
   "lon": 2.361146,
@@ -7215,7 +7185,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 141",
+  "name": "road tunnel mouth 139",
   "procedural": "roadPortal",
   "lat": 48.849281,
   "lon": 2.36165,
@@ -7230,7 +7200,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 142",
+  "name": "road tunnel mouth 140",
   "procedural": "roadPortal",
   "lat": 48.847767,
   "lon": 2.363888,
@@ -7245,7 +7215,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 143",
+  "name": "road tunnel mouth 141",
   "procedural": "roadPortal",
   "lat": 48.843434,
   "lon": 2.370281,
@@ -7260,7 +7230,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 144",
+  "name": "road tunnel mouth 142",
   "procedural": "roadPortal",
   "lat": 48.843001,
   "lon": 2.370865,
@@ -7275,7 +7245,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 145",
+  "name": "road tunnel mouth 143",
   "procedural": "roadPortal",
   "lat": 48.844278,
   "lon": 2.372016,
@@ -7290,7 +7260,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 146",
+  "name": "road tunnel mouth 144",
   "procedural": "roadPortal",
   "lat": 48.845694,
   "lon": 2.373923,
@@ -7305,7 +7275,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 147",
+  "name": "road tunnel mouth 145",
   "procedural": "roadPortal",
   "lat": 48.838871,
   "lon": 2.375743,
@@ -7320,7 +7290,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 148",
+  "name": "road tunnel mouth 146",
   "procedural": "roadPortal",
   "lat": 48.838453,
   "lon": 2.376265,
@@ -7335,7 +7305,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 149",
+  "name": "road tunnel mouth 147",
   "procedural": "roadPortal",
   "lat": 48.839841,
   "lon": 2.382962,
@@ -7350,7 +7320,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 150",
+  "name": "road tunnel mouth 148",
   "procedural": "roadPortal",
   "lat": 48.839663,
   "lon": 2.383954,
@@ -7365,7 +7335,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 151",
+  "name": "road tunnel mouth 149",
   "procedural": "roadPortal",
   "lat": 48.833807,
   "lon": 2.382034,
@@ -7380,7 +7350,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 152",
+  "name": "road tunnel mouth 150",
   "procedural": "roadPortal",
   "lat": 48.833429,
   "lon": 2.382513,
@@ -7395,7 +7365,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 153",
+  "name": "road tunnel mouth 151",
   "procedural": "roadPortal",
   "lat": 48.839418,
   "lon": 2.38533,
@@ -7410,7 +7380,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 154",
+  "name": "road tunnel mouth 152",
   "procedural": "roadPortal",
   "lat": 48.839166,
   "lon": 2.38685,
@@ -7425,7 +7395,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 155",
+  "name": "road tunnel mouth 153",
   "procedural": "roadPortal",
   "lat": 48.825281,
   "lon": 2.384867,
@@ -7440,7 +7410,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 156",
+  "name": "road tunnel mouth 154",
   "procedural": "roadPortal",
   "lat": 48.824731,
   "lon": 2.384702,
@@ -7455,7 +7425,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 157",
+  "name": "road tunnel mouth 155",
   "procedural": "roadPortal",
   "lat": 48.8169,
   "lon": 2.338766,
@@ -7470,7 +7440,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 158",
+  "name": "road tunnel mouth 156",
   "procedural": "roadPortal",
   "lat": 48.816374,
   "lon": 2.336742,
@@ -7485,7 +7455,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 159",
+  "name": "road tunnel mouth 157",
   "procedural": "roadPortal",
   "lat": 48.817139,
   "lon": 2.335487,
@@ -7500,7 +7470,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 160",
+  "name": "road tunnel mouth 158",
   "procedural": "roadPortal",
   "lat": 48.815444,
   "lon": 2.33666,
@@ -7515,7 +7485,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 161",
+  "name": "road tunnel mouth 159",
   "procedural": "roadPortal",
   "lat": 48.836688,
   "lon": 2.388539,
@@ -7530,7 +7500,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 162",
+  "name": "road tunnel mouth 160",
   "procedural": "roadPortal",
   "lat": 48.837018,
   "lon": 2.389869,
@@ -7545,7 +7515,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 163",
+  "name": "road tunnel mouth 161",
   "procedural": "roadPortal",
   "lat": 48.831937,
   "lon": 2.390478,
@@ -7560,7 +7530,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 164",
+  "name": "road tunnel mouth 162",
   "procedural": "roadPortal",
   "lat": 48.827599,
   "lon": 2.389588,
@@ -7575,7 +7545,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 165",
+  "name": "road tunnel mouth 163",
   "procedural": "roadPortal",
   "lat": 48.826383,
   "lon": 2.391374,
@@ -7590,7 +7560,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 166",
+  "name": "road tunnel mouth 164",
   "procedural": "roadPortal",
   "lat": 48.827248,
   "lon": 2.390567,
@@ -7605,7 +7575,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 167",
+  "name": "road tunnel mouth 165",
   "procedural": "roadPortal",
   "lat": 48.827358,
   "lon": 2.392052,
@@ -7620,7 +7590,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 168",
+  "name": "road tunnel mouth 166",
   "procedural": "roadPortal",
   "lat": 48.827825,
   "lon": 2.391909,
@@ -7635,7 +7605,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 169",
+  "name": "road tunnel mouth 167",
   "procedural": "roadPortal",
   "lat": 48.886513,
   "lon": 2.396849,
@@ -7650,7 +7620,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 170",
+  "name": "road tunnel mouth 168",
   "procedural": "roadPortal",
   "lat": 48.888874,
   "lon": 2.396678,
@@ -7665,7 +7635,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 171",
+  "name": "road tunnel mouth 169",
   "procedural": "roadPortal",
   "lat": 48.892356,
   "lon": 2.395197,
@@ -7680,7 +7650,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 172",
+  "name": "road tunnel mouth 170",
   "procedural": "roadPortal",
   "lat": 48.888071,
   "lon": 2.396021,
@@ -7695,7 +7665,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 173",
+  "name": "road tunnel mouth 171",
   "procedural": "roadPortal",
   "lat": 48.890576,
   "lon": 2.396194,
@@ -7710,7 +7680,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 174",
+  "name": "road tunnel mouth 172",
   "procedural": "roadPortal",
   "lat": 48.829904,
   "lon": 2.401587,
@@ -7725,7 +7695,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 175",
+  "name": "road tunnel mouth 173",
   "procedural": "roadPortal",
   "lat": 48.829504,
   "lon": 2.400978,
@@ -7740,7 +7710,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 176",
+  "name": "road tunnel mouth 174",
   "procedural": "roadPortal",
   "lat": 48.831217,
   "lon": 2.403565,
@@ -7755,7 +7725,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 177",
+  "name": "road tunnel mouth 175",
   "procedural": "roadPortal",
   "lat": 48.832385,
   "lon": 2.405652,
@@ -7770,7 +7740,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 178",
+  "name": "road tunnel mouth 176",
   "procedural": "roadPortal",
   "lat": 48.83444,
   "lon": 2.410368,
@@ -7785,7 +7755,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 179",
+  "name": "road tunnel mouth 177",
   "procedural": "roadPortal",
   "lat": 48.833497,
   "lon": 2.407861,
@@ -7800,7 +7770,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 180",
+  "name": "road tunnel mouth 178",
   "procedural": "roadPortal",
   "lat": 48.876241,
   "lon": 2.40963,
@@ -7815,7 +7785,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 181",
+  "name": "road tunnel mouth 179",
   "procedural": "roadPortal",
   "lat": 48.879164,
   "lon": 2.407796,
@@ -7830,7 +7800,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 182",
+  "name": "road tunnel mouth 180",
   "procedural": "roadPortal",
   "lat": 48.874321,
   "lon": 2.411008,
@@ -7845,7 +7815,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 183",
+  "name": "road tunnel mouth 181",
   "procedural": "roadPortal",
   "lat": 48.871808,
   "lon": 2.412887,
@@ -7860,7 +7830,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 184",
+  "name": "road tunnel mouth 182",
   "procedural": "roadPortal",
   "lat": 48.846277,
   "lon": 2.414379,
@@ -7875,7 +7845,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 185",
+  "name": "road tunnel mouth 183",
   "procedural": "roadPortal",
   "lat": 48.847214,
   "lon": 2.414571,
@@ -7890,7 +7860,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 186",
+  "name": "road tunnel mouth 184",
   "procedural": "roadPortal",
   "lat": 48.81554,
   "lon": 2.356306,
@@ -7905,7 +7875,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 187",
+  "name": "road tunnel mouth 185",
   "procedural": "roadPortal",
   "lat": 48.813885,
   "lon": 2.355033,
@@ -7920,7 +7890,7 @@
   "note": "Written by tools/paris-portals.ts: where OSM takes this road into a tunnel no bore rides."
  },
  {
-  "name": "road tunnel mouth 188",
+  "name": "road tunnel mouth 186",
   "procedural": "roadPortal",
   "lat": 48.816051,
   "lon": 2.359137,
