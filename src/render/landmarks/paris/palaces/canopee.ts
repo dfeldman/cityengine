@@ -12,15 +12,15 @@ const HX = 64.9
 const HZ = 73.8
 const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
 
-// (set dark and warm: the flat material lights an upward face about 1.6 times, and the first pale yellow-green came out white)
-const GLASS_A = hex('#a99a55')
-const GLASS_B = hex('#9a8c4a')
-const SOFFIT_A = hex('#9c7f35')
-const SOFFIT_B = hex('#8c702a')
+// (set dark: the flat material lights an upward face about 1.6 times, and the first pale yellow-green came out white; the second, more saturated, loud yellow. Owner's street view: this muted)
+const GLASS_A = hex('#8f8d72')
+const GLASS_B = hex('#848268')
+const SOFFIT_A = hex('#8c7c52')
+const SOFFIT_B = hex('#7e6f48')
 const RIB = hex('#dcdcd2')
 const WING_GLASS = hex('#4c5a55')
 const SHOP_GLASS = hex('#2c3431')
-const WING_FIN = hex('#dcb25a')
+const WING_FIN = hex('#b5a988')
 const FASCIA = hex('#d2cdbb')
 const WHITE = hex('#e6e6e2')
 

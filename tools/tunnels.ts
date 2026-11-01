@@ -44,6 +44,9 @@ const STREET = new Set(['primary', 'primary_link', 'secondary', 'secondary_link'
  */
 export const COVER = 0.5
 export const PEAK = 8
+/** …but for a street under a great building and not a hill: the Avenue du Maine under the Gare Montparnasse (owner, 2026-10-31: "it doesn't go into the terrain"), 5.9 m of cover */
+const UNDER_A_BUILDING = new Set(['Avenue du Maine'])
+const SHALLOW_PEAK = 5
 /** …where "near" is this far in from either mouth */
 const MOUTH = 20
 /** a mouth with a street crossing right over it is at least this far below that street (the tube is 5.4 m high) */
@@ -232,7 +235,7 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
     let covered = true
     let peak = -Infinity
     for (let d = 0; d <= L; d += 10) { const q = nearestPoint(line, cum, d); peak = Math.max(peak, ground(q.x, q.z) - y(d)) }
-    if (peak < PEAK) { report?.(name, `not under a hill: at most ${peak.toFixed(1)} m of ground over it`); continue }
+    if (peak < (UNDER_A_BUILDING.has(name) ? SHALLOW_PEAK : PEAK)) { report?.(name, `not under a hill: at most ${peak.toFixed(1)} m of ground over it`); continue }
     for (let i = 0; i < line.length && covered; i++) {
       if (cum[i] < MOUTH || cum[i] > L - MOUTH) continue
       if (ground(line[i].x, line[i].z) - y(cum[i]) < COVER) { covered = false; report?.(name, `only ${(ground(line[i].x, line[i].z) - y(cum[i])).toFixed(1)} m of ground over it ${Math.round(cum[i])} m in`) }
