@@ -50,7 +50,9 @@ say about 13 m over the quai road (the roof at 44 m over the water, the undersid
   Pont de Bercy, the photographs' station: `city-pont-de-bercy.png`), `HEIGHT=10 PITCH=10 … 3175 -2378 205` (the quai
   span: `city-quai.png`), `HEIGHT=20 PITCH=14 … 3291 -2283 140.5` (the flank over the boulevard's trees:
   `city-boulevard.png`), `HEIGHT=140 PITCH=45 … 3291 -2283 140.5` (the air: `city-air.png`; `city-air-before.png` is
-  the old model from the same camera).
+  the old model from the same camera). The Rue de Bercy end: `HEIGHT=35 PITCH=14 … 3424 -2174 140` and
+  `HEIGHT=90 PITCH=55 … 3424 -2174 140` (`city-bercy-end.png`, `city-bercy-end-air.png`): the far pylon on the pavement past
+  the street, the street clear under the span. Lower cameras there see only the street trees.
 - 5,088 triangles (2,716 before); `tests/landmarks.test.ts` passes.
 
 ## Known gaps
@@ -59,4 +61,6 @@ say about 13 m over the quai road (the roof at 44 m over the water, the undersid
   terrain: the bake's ground is level there, so the arcade stands on the lawn instead of 4 m down in its moat.
 - The garden-side bridges (OSM, min_height 13) and the Vauban comb are the kit's; they were not looked at.
 - The Rue de Bercy end was modelled from the lidar and ortho only: no photograph of it was checked.
+- Beside it on the garden side, OSM's untagged building (u 182…216, z 28…84 in this frame) is drawn nine storeys high by
+  the height guess; the lidar has it a few metres high. It is not this builder's, but it crowds the far pylon in the city.
 - The concrete is one pale tone; the real cladding's joints and the piers' chamfers would need a texture.
