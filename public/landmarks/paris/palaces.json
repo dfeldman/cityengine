@@ -127,8 +127,8 @@
       336,
       31.6
     ],
-    "height": 41,
-    "note": "The Bâtiment Colbert (OSM way 217512456 and its parts; the entrance block 1227184966 and 1227184965 inside its outline). Placed on the slab's box turned to its axis (osmium, 2026-10-29), the footprint stopping at the quai so the river bed under its foot does not set its base: the model's river end reaches 26 m beyond the footprint (−x, south-west) on two legs into the Seine."
+    "height": 44,
+    "note": "The Bâtiment Colbert (OSM way 217512456 and its parts; the wedge pavilion 1227184965 and the helipad's circle 1227184966 inside its outline). Placed on the slab's box turned to its axis (osmium, 2026-10-29), the footprint stopping at the quai so the river bed under its foot does not set its base: the model's river tower reaches 26 m beyond the footprint (−x, south-west) on round piers at the water, and its far pylon 11 m beyond it at the Rue de Bercy (+x). Rebuilt 2026-11-03 from IGN lidar, the orthophoto and photographs: docs/landmarks/MODEL-BERCY.md. Height 44 is the helipad's deck over a 38 m roof."
   },
   {
     "name": "Palais Brongniart",
