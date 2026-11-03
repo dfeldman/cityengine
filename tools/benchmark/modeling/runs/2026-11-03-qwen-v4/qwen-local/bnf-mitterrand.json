@@ -1,0 +1,317 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:59:17.416Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The building is a large raised rectangular esplanade with a sunken garden in the middle and four tall glass towers at the four corners, reaching the full 79 m height. The main signature features are the four glass corner towers, the low perimeter deck around the central depression, and the broad stepped terraces on the front side leading up to the towers. I will model a low court-like plinth, a sunken central grass court, four glass curtain-wall tower boxes at the corners, and a stepped front terrace.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [330, 170],\n      \"wing\": 45,\n      \"open\": \"none\",\n      \"courtColonnade\": false,\n      \"y0\": 0,\n      \"bay\": 7,\n      \"storeys\": [\n        {\n          \"height\": 8,\n          \"kind\": \"blank\",\n          \"windows\": false\n        }\n      ],\n      \"cornice\": 0.4,\n      \"roof\": {\n        \"kind\": \"flat\"\n      },\n      \"colour\": \"#c4bfb4\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [240, 80],\n      \"y0\": 0,\n      \"y1\": 0.3,\n      \"colour\": \"#6b8d57\",\n      \"material\": \"grass\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-142.5, -62.5],\n      \"size\": [45, 45],\n      \"y0\": 8,\n      \"y1\": 79,\n      \"colour\": \"#9ca39a\",\n      \"material\": \"glass\",\n      \"windows\": {\n        \"kind\": \"curtain\",\n        \"floor\": 4.2,\n        \"pitch\": 3.6,\n        \"solid\": 0.28,\n        \"glass\": \"#7f8e8c\"\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [142.5, -62.5],\n      \"size\": [45, 45],\n      \"y0\": 8,\n      \"y1\": 79,\n      \"colour\": \"#9ca39a\",\n      \"material\": \"glass\",\n      \"windows\": {\n        \"kind\": \"curtain\",\n        \"floor\": 4.2,\n        \"pitch\": 3.6,\n        \"solid\": 0.28,\n        \"glass\": \"#7f8e8c\"\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-142.5, 62.5],\n      \"size\": [45, 45],\n      \"y0\": 8,\n      \"y1\": 79,\n      \"colour\": \"#96a098\",\n      \"material\": \"glass\",\n      \"windows\": {\n        \"kind\": \"curtain\",\n        \"floor\": 4.2,\n        \"pitch\": 3.6,\n        \"solid\": 0.28,\n        \"glass\": \"#7f8e8c\"\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [142.5, 62.5],\n      \"size\": [45, 45],\n      \"y0\": 8,\n      \"y1\": 79,\n      \"colour\": \"#96a098\",\n      \"material\": \"glass\",\n      \"windows\": {\n        \"kind\": \"curtain\",\n        \"floor\": 4.2,\n        \"pitch\": 3.6,\n        \"solid\": 0.28,\n        \"glass\": \"#7f8e8c\"\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -77.5],\n      \"size\": [288, 15],\n      \"y0\": 0,\n      \"y1\": 2.5,\n      \"colour\": \"#8f8980\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -62.5],\n      \"size\": [256, 15],\n      \"y0\": 0,\n      \"y1\": 4.8,\n      \"colour\": \"#9a948b\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -47.5],\n      \"size\": [224, 15],\n      \"y0\": 0,\n      \"y1\": 7.2,\n      \"colour\": \"#a8a298\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-142.5, 79, -62.5],\n      \"to\": [-142.5, 79, -40],\n      \"width\": 45,\n      \"colour\": \"#767f78\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [142.5, 79, -62.5],\n      \"to\": [142.5, 79, -40],\n      \"width\": 45,\n      \"colour\": \"#767f78\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-142.5, 79, 62.5],\n      \"to\": [-142.5, 79, 40],\n      \"width\": 45,\n      \"colour\": \"#767f78\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [142.5, 79, 62.5],\n      \"to\": [142.5, 79, 40],\n      \"width\": 45,\n      \"colour\": \"#767f78\",\n      \"material\": \"glass\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 7995,
+   "output": 10576,
+   "cost": 0,
+   "ms": 223052,
+   "errors": [],
+   "warnings": [
+    "parts[9].width: 45 lowered to the maximum 20",
+    "parts[10].width: 45 lowered to the maximum 20",
+    "parts[11].width: 45 lowered to the maximum 20",
+    "parts[12].width: 45 lowered to the maximum 20"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The building is a large raised rectangular esplanade with a sunken garden in the middle and four tall glass towers at the four corners, reaching the full 79 m height. The main signature features are the four glass corner towers, the low perimeter deck around the central depression, and the broad stepped terraces on the front side leading up to the towers. I will model a low court-like plinth, a sunken central grass court, four glass curtain-wall tower boxes at the corners, and a stepped front terrace.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "wing": 45,
+     "open": "none",
+     "courtColonnade": false,
+     "y0": 0,
+     "bay": 7,
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "cornice": 0.4,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#c4bfb4",
+     "material": "concrete"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      240,
+      80
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "colour": "#6b8d57",
+     "material": "grass"
+    },
+    {
+     "type": "box",
+     "center": [
+      -142.5,
+      -62.5
+     ],
+     "size": [
+      45,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "colour": "#9ca39a",
+     "material": "glass",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4.2,
+      "pitch": 3.6,
+      "solid": 0.28,
+      "glass": "#7f8e8c"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      142.5,
+      -62.5
+     ],
+     "size": [
+      45,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "colour": "#9ca39a",
+     "material": "glass",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4.2,
+      "pitch": 3.6,
+      "solid": 0.28,
+      "glass": "#7f8e8c"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -142.5,
+      62.5
+     ],
+     "size": [
+      45,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "colour": "#96a098",
+     "material": "glass",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4.2,
+      "pitch": 3.6,
+      "solid": 0.28,
+      "glass": "#7f8e8c"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      142.5,
+      62.5
+     ],
+     "size": [
+      45,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "colour": "#96a098",
+     "material": "glass",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4.2,
+      "pitch": 3.6,
+      "solid": 0.28,
+      "glass": "#7f8e8c"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -77.5
+     ],
+     "size": [
+      288,
+      15
+     ],
+     "y0": 0,
+     "y1": 2.5,
+     "colour": "#8f8980",
+     "material": "concrete"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -62.5
+     ],
+     "size": [
+      256,
+      15
+     ],
+     "y0": 0,
+     "y1": 4.8,
+     "colour": "#9a948b",
+     "material": "concrete"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -47.5
+     ],
+     "size": [
+      224,
+      15
+     ],
+     "y0": 0,
+     "y1": 7.2,
+     "colour": "#a8a298",
+     "material": "concrete"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -142.5,
+      79,
+      -62.5
+     ],
+     "to": [
+      -142.5,
+      79,
+      -40
+     ],
+     "width": 45,
+     "colour": "#767f78",
+     "material": "glass"
+    },
+    {
+     "type": "beam",
+     "from": [
+      142.5,
+      79,
+      -62.5
+     ],
+     "to": [
+      142.5,
+      79,
+      -40
+     ],
+     "width": 45,
+     "colour": "#767f78",
+     "material": "glass"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -142.5,
+      79,
+      62.5
+     ],
+     "to": [
+      -142.5,
+      79,
+      40
+     ],
+     "width": 45,
+     "colour": "#767f78",
+     "material": "glass"
+    },
+    {
+     "type": "beam",
+     "from": [
+      142.5,
+      79,
+      62.5
+     ],
+     "to": [
+      142.5,
+      79,
+      40
+     ],
+     "width": 45,
+     "colour": "#767f78",
+     "material": "glass"
+    }
+   ]
+  },
+  "notes": "The building is a large raised rectangular esplanade with a sunken garden in the middle and four tall glass towers at the four corners, reaching the full 79 m height. The main signature features are the four glass corner towers, the low perimeter deck around the central depression, and the broad stepped terraces on the front side leading up to the towers. I will model a low court-like plinth, a sunken central grass court, four glass curtain-wall tower boxes at the corners, and a stepped front terrace.",
+  "triangles": 752,
+  "parts": 20
+ },
+ "totals": {
+  "input": 7995,
+  "output": 10576,
+  "cost": 0,
+  "ms": 223052
+ }
+}

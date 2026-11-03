@@ -2,7 +2,7 @@
  * Several runs side by side: a row per building, the first photograph and then each run's front three-quarter
  * render, for comparing prompts or models on one sheet.
  *
- *   node --experimental-strip-types tools/benchmark/modeling/sidebyside.ts <label>[:<model>] <label>[:<model>] … [--view=front34|rear34|top] [--out=<file>]
+ *   node --experimental-strip-types tools/benchmark/modeling/sidebyside.ts <label>[:<model>] <label>[:<model>] … [--view=front34|rear34|top] [--only=<id,…>] [--out=<file>]
  *
  * Each run must have been through shoot.ts (which keeps the single renders). The model defaults to haiku. The
  * sheet goes to runs/sidebyside-<view>.jpg unless --out says otherwise.
@@ -30,7 +30,8 @@ const blank = (): Promise<Buffer> => sharp({ create: { width: W, height: H, chan
 const tiles: { input: Buffer; left: number; top: number }[] = []
 const heads = ['photograph', ...runs.map((r) => `${r.label}${r.model !== 'haiku' ? ` (${r.model})` : ''}`)]
 heads.forEach((h, x) => tiles.push({ input: bar(h, W, HEAD, 15), left: x * (W + 2), top: 0 }))
-const buildings = loadBuildings()
+const only = arg('only').split(',').filter(Boolean)
+const buildings = loadBuildings().filter((b) => only.length === 0 || only.includes(b.id))
 for (const [y, b] of buildings.entries()) {
   const top = HEAD + y * (H + 2)
   const photo = existsSync(photoPath(b, 0)) ? await sharp(photoPath(b, 0)).resize(W, H, { fit: 'cover' }).png().toBuffer() : await blank()

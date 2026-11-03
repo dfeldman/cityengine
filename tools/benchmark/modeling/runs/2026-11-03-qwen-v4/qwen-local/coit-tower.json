@@ -1,0 +1,343 @@
+{
+ "building": "coit-tower",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:29:34.102Z",
+ "userText": "Building: Coit Tower, San Francisco (monument tower).\nThe front (−z) is the parking circle side.\nFootprint: 21.9 m along x by 22.2 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-5.9,8.5],[-8.9,8.5],[-8.9,5.8],[-9.8,5.8],[-11,3],[-10.9,-2.9],[-9.8,-5.7],[-8.9,-5.7],[-8.9,-8.6],[-5.9,-8.6],[-5.6,-10],[-1.7,-11.1],[2.6,-10.9],[5.3,-10],[5.4,-8.6],[8.6,-8.6],[8.6,-5.7],[10,-5.7],[10.9,-1.6],[11,2.6],[10,5.8],[8.6,5.8],[8.6,8.5],[5.4,8.5],[5.4,11.1],[-5.9,11.1]]\nHeight: the highest point is 64 m above the ground.\n\n3 photographs attached, in order:\n  1. whole fluted concrete tower on its hilltop with trees below, clear sky\n  2. tower rising behind the Telegraph Hill apartment building, showing the full shaft and the arcaded crown, flag on top\n  3. high oblique aerial of the tower and the circular drive and park on Telegraph Hill\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   21.9,
+   22.2
+  ],
+  "outline": [
+   [
+    -5.9,
+    8.5
+   ],
+   [
+    -8.9,
+    8.5
+   ],
+   [
+    -8.9,
+    5.8
+   ],
+   [
+    -9.8,
+    5.8
+   ],
+   [
+    -11,
+    3
+   ],
+   [
+    -10.9,
+    -2.9
+   ],
+   [
+    -9.8,
+    -5.7
+   ],
+   [
+    -8.9,
+    -5.7
+   ],
+   [
+    -8.9,
+    -8.6
+   ],
+   [
+    -5.9,
+    -8.6
+   ],
+   [
+    -5.6,
+    -10
+   ],
+   [
+    -1.7,
+    -11.1
+   ],
+   [
+    2.6,
+    -10.9
+   ],
+   [
+    5.3,
+    -10
+   ],
+   [
+    5.4,
+    -8.6
+   ],
+   [
+    8.6,
+    -8.6
+   ],
+   [
+    8.6,
+    -5.7
+   ],
+   [
+    10,
+    -5.7
+   ],
+   [
+    10.9,
+    -1.6
+   ],
+   [
+    11,
+    2.6
+   ],
+   [
+    10,
+    5.8
+   ],
+   [
+    8.6,
+    5.8
+   ],
+   [
+    8.6,
+    8.5
+   ],
+   [
+    5.4,
+    8.5
+   ],
+   [
+    5.4,
+    11.1
+   ],
+   [
+    -5.9,
+    11.1
+   ]
+  ],
+  "height": 64,
+  "turn": 14.5
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The building is a slender concrete monument tower: a fluted cylindrical shaft on a low hill-top base, with an arcaded crown near the top and a small flat cap reaching 64 m. The signature masses are the tall off-white fluted column, the ring of tall arched openings at the upper part, and the broad low base/plinth implied by the footprint.\",\n  \"parts\": [\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [-5.9,8.5],\n        [-8.9,8.5],\n        [-8.9,5.8],\n        [-9.8,5.8],\n        [-11,3],\n        [-10.9,-2.9],\n        [-9.8,-5.7],\n        [-8.9,-5.7],\n        [-8.9,-8.6],\n        [-5.9,-8.6],\n        [-5.6,-10],\n        [-1.7,-11.1],\n        [2.6,-10.9],\n        [5.3,-10],\n        [5.4,-8.6],\n        [8.6,-8.6],\n        [8.6,-5.7],\n        [10,-5.7],\n        [10.9,-1.6],\n        [11,2.6],\n        [10,5.8],\n        [8.6,5.8],\n        [8.6,8.5],\n        [5.4,8.5],\n        [5.4,11.1],\n        [-5.9,11.1]\n      ],\n      \"y0\": 0,\n      \"y1\": 2.2,\n      \"material\": \"concrete\",\n      \"colour\": \"#cfc9bd\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 0],\n      \"radius\": 3.9,\n      \"radiusTop\": 3.3,\n      \"y0\": 2.2,\n      \"y1\": 52,\n      \"material\": \"concrete\",\n      \"colour\": \"#ddd6ca\"\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 18,\n      \"around\": {\n        \"center\": [0, 0]\n      },\n      \"part\": {\n        \"type\": \"beam\",\n        \"from\": [4.0, 4, 0],\n        \"to\": [3.5, 51, 0],\n        \"width\": 0.8,\n        \"material\": \"concrete\",\n        \"colour\": \"#cec6b9\"\n      }\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 0],\n      \"radius\": 3.7,\n      \"radiusTop\": 3.5,\n      \"y0\": 52,\n      \"y1\": 61,\n      \"material\": \"concrete\",\n      \"colour\": \"#e4ded2\",\n      \"windows\": {\n        \"kind\": \"arched\",\n        \"floor\": 8,\n        \"pitch\": 4.3,\n        \"solid\": 0.48\n      }\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 0],\n      \"radius\": 2.6,\n      \"radiusTop\": 2.0,\n      \"y0\": 61,\n      \"y1\": 64,\n      \"material\": \"concrete\",\n      \"colour\": \"#efe9df\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8142,
+   "output": 9890,
+   "cost": 0,
+   "ms": 223509,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The building is a slender concrete monument tower: a fluted cylindrical shaft on a low hill-top base, with an arcaded crown near the top and a small flat cap reaching 64 m. The signature masses are the tall off-white fluted column, the ring of tall arched openings at the upper part, and the broad low base/plinth implied by the footprint.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -5.9,
+       8.5
+      ],
+      [
+       -8.9,
+       8.5
+      ],
+      [
+       -8.9,
+       5.8
+      ],
+      [
+       -9.8,
+       5.8
+      ],
+      [
+       -11,
+       3
+      ],
+      [
+       -10.9,
+       -2.9
+      ],
+      [
+       -9.8,
+       -5.7
+      ],
+      [
+       -8.9,
+       -5.7
+      ],
+      [
+       -8.9,
+       -8.6
+      ],
+      [
+       -5.9,
+       -8.6
+      ],
+      [
+       -5.6,
+       -10
+      ],
+      [
+       -1.7,
+       -11.1
+      ],
+      [
+       2.6,
+       -10.9
+      ],
+      [
+       5.3,
+       -10
+      ],
+      [
+       5.4,
+       -8.6
+      ],
+      [
+       8.6,
+       -8.6
+      ],
+      [
+       8.6,
+       -5.7
+      ],
+      [
+       10,
+       -5.7
+      ],
+      [
+       10.9,
+       -1.6
+      ],
+      [
+       11,
+       2.6
+      ],
+      [
+       10,
+       5.8
+      ],
+      [
+       8.6,
+       5.8
+      ],
+      [
+       8.6,
+       8.5
+      ],
+      [
+       5.4,
+       8.5
+      ],
+      [
+       5.4,
+       11.1
+      ],
+      [
+       -5.9,
+       11.1
+      ]
+     ],
+     "y0": 0,
+     "y1": 2.2,
+     "material": "concrete",
+     "colour": "#cfc9bd"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 3.9,
+     "radiusTop": 3.3,
+     "y0": 2.2,
+     "y1": 52,
+     "material": "concrete",
+     "colour": "#ddd6ca"
+    },
+    {
+     "type": "repeat",
+     "count": 18,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       4,
+       4,
+       0
+      ],
+      "to": [
+       3.5,
+       51,
+       0
+      ],
+      "width": 0.8,
+      "material": "concrete",
+      "colour": "#cec6b9"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 3.7,
+     "radiusTop": 3.5,
+     "y0": 52,
+     "y1": 61,
+     "material": "concrete",
+     "colour": "#e4ded2",
+     "windows": {
+      "kind": "arched",
+      "floor": 8,
+      "pitch": 4.3,
+      "solid": 0.48
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 2.6,
+     "radiusTop": 2,
+     "y0": 61,
+     "y1": 64,
+     "material": "concrete",
+     "colour": "#efe9df"
+    }
+   ]
+  },
+  "notes": "The building is a slender concrete monument tower: a fluted cylindrical shaft on a low hill-top base, with an arcaded crown near the top and a small flat cap reaching 64 m. The signature masses are the tall off-white fluted column, the ring of tall arched openings at the upper part, and the broad low base/plinth implied by the footprint.",
+  "triangles": 592,
+  "parts": 22
+ },
+ "totals": {
+  "input": 8142,
+  "output": 9890,
+  "cost": 0,
+  "ms": 223509
+ }
+}

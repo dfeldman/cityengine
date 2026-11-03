@@ -1,0 +1,476 @@
+{
+ "building": "oracle-park",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:59:59.047Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"Oracle Park reads mainly as a large asymmetric baseball bowl: a horseshoe of raked stands wrapping the infield and opening toward the bay/outfield, with a red-brick street facade and clock tower on the front (-z) side. I will model the signature grandstand bowl, the brick entrance pavilion with a clock tower, the open outfield grass, and tall floodlight standards reaching 45 m.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [-18, 4],\n      \"size\": [168, 248],\n      \"inner\": [96, 158],\n      \"y0\": 0,\n      \"y1\": 32,\n      \"innerHeight\": 12,\n      \"shape\": \"oval\",\n      \"arc\": [175, 365],\n      \"material\": \"concrete\",\n      \"colour\": \"#687178\"\n    },\n    {\n      \"type\": \"bowl\",\n      \"center\": [-18, 4],\n      \"size\": [152, 232],\n      \"inner\": [80, 138],\n      \"y0\": 0,\n      \"y1\": 26,\n      \"innerHeight\": 10,\n      \"shape\": \"oval\",\n      \"arc\": [175, 365],\n      \"material\": \"metal\",\n      \"colour\": \"#4c5d62\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 18],\n      \"size\": [116, 190],\n      \"y0\": 0,\n      \"y1\": 0.35,\n      \"material\": \"grass\",\n      \"colour\": \"#4e7c42\"\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [0, -46],\n        [44, 0],\n        [0, 44],\n        [-44, 0]\n      ],\n      \"y0\": 0,\n      \"y1\": 0.45,\n      \"material\": \"grass\",\n      \"colour\": \"#96613a\"\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [-68, -134],\n        [-22, -135],\n        [28, -112],\n        [10, -90],\n        [-34, -85],\n        [-70, -110]\n      ],\n      \"y0\": 0,\n      \"y1\": 19,\n      \"material\": \"brick\",\n      \"colour\": \"#8c3e2d\",\n      \"windows\": {\n        \"kind\": \"punched\",\n        \"floor\": 5,\n        \"pitch\": 6,\n        \"solid\": 0.58,\n        \"glass\": \"#39495a\"\n      }\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-18, -124],\n      \"size\": [30, 12],\n      \"y0\": 0,\n      \"y1\": 13,\n      \"bay\": 4.5,\n      \"faces\": [\"front\", \"left\", \"right\"],\n      \"colour\": \"#8c3e2d\",\n      \"material\": \"brick\",\n      \"storeys\": [\n        {\n          \"height\": 7,\n          \"kind\": \"arcade\",\n          \"floors\": 1\n        },\n        {\n          \"height\": 6,\n          \"kind\": \"punched\",\n          \"floors\": 1\n        }\n      ],\n      \"cornice\": 1,\n      \"roof\": {\n        \"kind\": \"flat\"\n      }\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [21, -109],\n      \"y0\": 0,\n      \"rotate\": 0,\n      \"colour\": \"#8f4030\",\n      \"stages\": [\n        {\n          \"shape\": \"square\",\n          \"width\": 11,\n          \"height\": 18,\n          \"kind\": \"blank\"\n        },\n        {\n          \"shape\": \"square\",\n          \"width\": 10,\n          \"height\": 6,\n          \"kind\": \"clock\"\n        }\n      ],\n      \"top\": {\n        \"kind\": \"pyramid\",\n        \"height\": 9,\n        \"colour\": \"#47635d\"\n      }\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [21, 27, -109],\n      \"to\": [21, 39, -109],\n      \"width\": 0.8,\n      \"material\": \"metal\",\n      \"colour\": \"#77808a\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [35, -50],\n      \"to\": [60, 65],\n      \"y0\": 0,\n      \"height\": 13,\n      \"count\": 12,\n      \"thickness\": 1.6,\n      \"material\": \"brick\",\n      \"colour\": \"#8c3e2d\"\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [68, -58],\n        [100, 5],\n        [100, 90],\n        [72, 133],\n        [-52, 134],\n        [-101, 133],\n        [-102, 4],\n        [-94, -72],\n        [-38, -55],\n        [24, -48]\n      ],\n      \"y0\": 12,\n      \"y1\": 18,\n      \"material\": \"concrete\",\n      \"colour\": \"#8e9194\"\n    },\n    {\n      \"type\": \"ring\",\n      \"center\": [-18, 4],\n      \"radius\": 92,\n      \"inner\": 88,\n      \"y0\": 30,\n      \"y1\": 33,\n      \"material\": \"metal\",\n      \"colour\": \"#455358\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-78, 26, -116],\n      \"to\": [-72, 45, -110],\n      \"width\": 4.5,\n      \"material\": \"metal\",\n      \"colour\": \"#3d474e\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [14, 24, -94],\n      \"to\": [19, 45, -84],\n      \"width\": 4.5,\n      \"material\": \"metal\",\n      \"colour\": \"#3d474e\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-93, 25, 88],\n      \"to\": [-88, 45, 92],\n      \"width\": 4.5,\n      \"material\": \"metal\",\n      \"colour\": \"#3d474e\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [72, 25, 122],\n      \"to\": [77, 45, 126],\n      \"width\": 4.5,\n      \"material\": \"metal\",\n      \"colour\": \"#3d474e\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [86, 25, 18],\n      \"to\": [91, 45, 36],\n      \"width\": 4.0,\n      \"material\": \"metal\",\n      \"colour\": \"#3d474e\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8134,
+   "output": 10974,
+   "cost": 0,
+   "ms": 221123,
+   "errors": [],
+   "warnings": [
+    "parts[5].y1: \"block\" has no field \"y1\"; ignored"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park reads mainly as a large asymmetric baseball bowl: a horseshoe of raked stands wrapping the infield and opening toward the bay/outfield, with a red-brick street facade and clock tower on the front (-z) side. I will model the signature grandstand bowl, the brick entrance pavilion with a clock tower, the open outfield grass, and tall floodlight standards reaching 45 m.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      -18,
+      4
+     ],
+     "size": [
+      168,
+      248
+     ],
+     "inner": [
+      96,
+      158
+     ],
+     "y0": 0,
+     "y1": 32,
+     "innerHeight": 12,
+     "shape": "oval",
+     "arc": [
+      175,
+      365
+     ],
+     "material": "concrete",
+     "colour": "#687178"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      -18,
+      4
+     ],
+     "size": [
+      152,
+      232
+     ],
+     "inner": [
+      80,
+      138
+     ],
+     "y0": 0,
+     "y1": 26,
+     "innerHeight": 10,
+     "shape": "oval",
+     "arc": [
+      175,
+      365
+     ],
+     "material": "metal",
+     "colour": "#4c5d62"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      18
+     ],
+     "size": [
+      116,
+      190
+     ],
+     "y0": 0,
+     "y1": 0.35,
+     "material": "grass",
+     "colour": "#4e7c42"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       0,
+       -46
+      ],
+      [
+       44,
+       0
+      ],
+      [
+       0,
+       44
+      ],
+      [
+       -44,
+       0
+      ]
+     ],
+     "y0": 0,
+     "y1": 0.45,
+     "material": "grass",
+     "colour": "#96613a"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -68,
+       -134
+      ],
+      [
+       -22,
+       -135
+      ],
+      [
+       28,
+       -112
+      ],
+      [
+       10,
+       -90
+      ],
+      [
+       -34,
+       -85
+      ],
+      [
+       -70,
+       -110
+      ]
+     ],
+     "y0": 0,
+     "y1": 19,
+     "material": "brick",
+     "colour": "#8c3e2d",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 6,
+      "solid": 0.58,
+      "glass": "#39495a"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -18,
+      -124
+     ],
+     "size": [
+      30,
+      12
+     ],
+     "y0": 0,
+     "y1": 13,
+     "bay": 4.5,
+     "faces": [
+      "front",
+      "left",
+      "right"
+     ],
+     "colour": "#8c3e2d",
+     "material": "brick",
+     "storeys": [
+      {
+       "height": 7,
+       "kind": "arcade",
+       "floors": 1
+      },
+      {
+       "height": 6,
+       "kind": "punched",
+       "floors": 1
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      21,
+      -109
+     ],
+     "y0": 0,
+     "rotate": 0,
+     "colour": "#8f4030",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 18,
+       "kind": "blank"
+      },
+      {
+       "shape": "square",
+       "width": 10,
+       "height": 6,
+       "kind": "clock"
+      }
+     ],
+     "top": {
+      "kind": "pyramid",
+      "height": 9,
+      "colour": "#47635d"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      21,
+      27,
+      -109
+     ],
+     "to": [
+      21,
+      39,
+      -109
+     ],
+     "width": 0.8,
+     "material": "metal",
+     "colour": "#77808a"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      35,
+      -50
+     ],
+     "to": [
+      60,
+      65
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 12,
+     "thickness": 1.6,
+     "material": "brick",
+     "colour": "#8c3e2d"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       68,
+       -58
+      ],
+      [
+       100,
+       5
+      ],
+      [
+       100,
+       90
+      ],
+      [
+       72,
+       133
+      ],
+      [
+       -52,
+       134
+      ],
+      [
+       -101,
+       133
+      ],
+      [
+       -102,
+       4
+      ],
+      [
+       -94,
+       -72
+      ],
+      [
+       -38,
+       -55
+      ],
+      [
+       24,
+       -48
+      ]
+     ],
+     "y0": 12,
+     "y1": 18,
+     "material": "concrete",
+     "colour": "#8e9194"
+    },
+    {
+     "type": "ring",
+     "center": [
+      -18,
+      4
+     ],
+     "radius": 92,
+     "inner": 88,
+     "y0": 30,
+     "y1": 33,
+     "material": "metal",
+     "colour": "#455358"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -78,
+      26,
+      -116
+     ],
+     "to": [
+      -72,
+      45,
+      -110
+     ],
+     "width": 4.5,
+     "material": "metal",
+     "colour": "#3d474e"
+    },
+    {
+     "type": "beam",
+     "from": [
+      14,
+      24,
+      -94
+     ],
+     "to": [
+      19,
+      45,
+      -84
+     ],
+     "width": 4.5,
+     "material": "metal",
+     "colour": "#3d474e"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -93,
+      25,
+      88
+     ],
+     "to": [
+      -88,
+      45,
+      92
+     ],
+     "width": 4.5,
+     "material": "metal",
+     "colour": "#3d474e"
+    },
+    {
+     "type": "beam",
+     "from": [
+      72,
+      25,
+      122
+     ],
+     "to": [
+      77,
+      45,
+      126
+     ],
+     "width": 4.5,
+     "material": "metal",
+     "colour": "#3d474e"
+    },
+    {
+     "type": "beam",
+     "from": [
+      86,
+      25,
+      18
+     ],
+     "to": [
+      91,
+      45,
+      36
+     ],
+     "width": 4,
+     "material": "metal",
+     "colour": "#3d474e"
+    }
+   ]
+  },
+  "notes": "Oracle Park reads mainly as a large asymmetric baseball bowl: a horseshoe of raked stands wrapping the infield and opening toward the bay/outfield, with a red-brick street facade and clock tower on the front (-z) side. I will model the signature grandstand bowl, the brick entrance pavilion with a clock tower, the open outfield grass, and tall floodlight standards reaching 45 m.",
+  "triangles": 2702,
+  "parts": 30
+ },
+ "totals": {
+  "input": 8134,
+  "output": 10974,
+  "cost": 0,
+  "ms": 221123
+ }
+}

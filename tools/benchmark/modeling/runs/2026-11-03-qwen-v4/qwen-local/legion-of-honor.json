@@ -1,0 +1,406 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:15:28.898Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The visible masses are a long low classical building on a broad rectangular footprint, with a tall central triumphal-arch pavilion on the front axis, flanking colonnades, and end pavilions with low mansard-type roofs. Behind and around this is a colonnaded court/museum mass filling the depth of the site; the dominant signature is the central arch with its tall attic above the arch, grey stone walls, and free-standing column runs.\",\n  \"parts\": [\n    {\n      \"type\": \"box\",\n      \"center\": [0, 2],\n      \"size\": [44, 54],\n      \"y0\": 0,\n      \"y1\": 15,\n      \"colour\": \"#d6d3cc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-20, 18],\n      \"size\": [12, 48],\n      \"y0\": 0,\n      \"y1\": 15,\n      \"colour\": \"#d6d3cc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [20, 18],\n      \"size\": [12, 48],\n      \"y0\": 0,\n      \"y1\": 15,\n      \"colour\": \"#d6d3cc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 38],\n      \"radius\": 10,\n      \"y0\": 0,\n      \"y1\": 17,\n      \"colour\": \"#d6d3cc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"dome\",\n      \"center\": [0, 38],\n      \"radius\": 10,\n      \"y0\": 17,\n      \"height\": 6,\n      \"colour\": \"#557a74\",\n      \"material\": \"copper\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 2],\n      \"size\": [48, 6],\n      \"y0\": 15,\n      \"y1\": 17,\n      \"colour\": \"#ded9d2\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-28, -25],\n      \"to\": [28, -25],\n      \"y0\": 0,\n      \"height\": 15,\n      \"count\": 14,\n      \"thickness\": 1.8,\n      \"colour\": \"#d2cec7\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-26, -44],\n      \"to\": [-16, -44],\n      \"y0\": 1,\n      \"height\": 16,\n      \"count\": 7,\n      \"colour\": \"#e3e1dc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [16, -44],\n      \"to\": [26, -44],\n      \"y0\": 1,\n      \"height\": 16,\n      \"count\": 7,\n      \"colour\": \"#e3e1dc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-23.5, -37],\n      \"size\": [13, 18],\n      \"y0\": 0,\n      \"y1\": 15,\n      \"colour\": \"#d6d3cc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [23.5, -37],\n      \"size\": [13, 18],\n      \"y0\": 0,\n      \"y1\": 15,\n      \"colour\": \"#d6d3cc\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [-23.5, -37],\n      \"size\": [13, 18],\n      \"y0\": 15,\n      \"rise\": 7,\n      \"colour\": \"#686c6a\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [23.5, -37],\n      \"size\": [13, 18],\n      \"y0\": 15,\n      \"rise\": 7,\n      \"colour\": \"#686c6a\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-12, -40],\n      \"size\": [7, 14],\n      \"y0\": 0,\n      \"y1\": 22,\n      \"colour\": \"#e0ddd6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [12, -40],\n      \"size\": [7, 14],\n      \"y0\": 0,\n      \"y1\": 22,\n      \"colour\": \"#e0ddd6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [0, -40],\n      \"size\": [17, 14],\n      \"y0\": 10,\n      \"rise\": 10,\n      \"axis\": \"z\",\n      \"ends\": \"open\",\n      \"colour\": \"#e6e3dd\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -40],\n      \"size\": [27, 14],\n      \"y0\": 21,\n      \"y1\": 23,\n      \"colour\": \"#dfdbd4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-27, 15, -44],\n      \"to\": [-15, 15, -44],\n      \"width\": 0.9,\n      \"colour\": \"#e4e1db\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [15, 15, -44],\n      \"to\": [27, 15, -44],\n      \"width\": 0.9,\n      \"colour\": \"#e4e1db\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 12,\n      \"part\": {\n        \"type\": \"beam\",\n        \"from\": [0, 15, -12],\n        \"to\": [0, 15, 35],\n        \"width\": 0.8,\n        \"colour\": \"#d8d5cf\",\n        \"material\": \"stone\"\n      },\n      \"offset\": [20, 0, 0]\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-24, 33],\n      \"to\": [24, 33],\n      \"y0\": 0,\n      \"height\": 15,\n      \"count\": 9,\n      \"thickness\": 1.8,\n      \"colour\": \"#d2cec7\",\n      \"material\": \"stone\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8014,
+   "output": 10902,
+   "cost": 0,
+   "ms": 223729,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The visible masses are a long low classical building on a broad rectangular footprint, with a tall central triumphal-arch pavilion on the front axis, flanking colonnades, and end pavilions with low mansard-type roofs. Behind and around this is a colonnaded court/museum mass filling the depth of the site; the dominant signature is the central arch with its tall attic above the arch, grey stone walls, and free-standing column runs.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      2
+     ],
+     "size": [
+      44,
+      54
+     ],
+     "y0": 0,
+     "y1": 15,
+     "colour": "#d6d3cc",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      18
+     ],
+     "size": [
+      12,
+      48
+     ],
+     "y0": 0,
+     "y1": 15,
+     "colour": "#d6d3cc",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      20,
+      18
+     ],
+     "size": [
+      12,
+      48
+     ],
+     "y0": 0,
+     "y1": 15,
+     "colour": "#d6d3cc",
+     "material": "stone"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      38
+     ],
+     "radius": 10,
+     "y0": 0,
+     "y1": 17,
+     "colour": "#d6d3cc",
+     "material": "stone"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      38
+     ],
+     "radius": 10,
+     "y0": 17,
+     "height": 6,
+     "colour": "#557a74",
+     "material": "copper"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      2
+     ],
+     "size": [
+      48,
+      6
+     ],
+     "y0": 15,
+     "y1": 17,
+     "colour": "#ded9d2",
+     "material": "stone"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -28,
+      -25
+     ],
+     "to": [
+      28,
+      -25
+     ],
+     "y0": 0,
+     "height": 15,
+     "count": 14,
+     "thickness": 1.8,
+     "colour": "#d2cec7",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -26,
+      -44
+     ],
+     "to": [
+      -16,
+      -44
+     ],
+     "y0": 1,
+     "height": 16,
+     "count": 7,
+     "colour": "#e3e1dc",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      16,
+      -44
+     ],
+     "to": [
+      26,
+      -44
+     ],
+     "y0": 1,
+     "height": 16,
+     "count": 7,
+     "colour": "#e3e1dc",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      -23.5,
+      -37
+     ],
+     "size": [
+      13,
+      18
+     ],
+     "y0": 0,
+     "y1": 15,
+     "colour": "#d6d3cc",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      23.5,
+      -37
+     ],
+     "size": [
+      13,
+      18
+     ],
+     "y0": 0,
+     "y1": 15,
+     "colour": "#d6d3cc",
+     "material": "stone"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -23.5,
+      -37
+     ],
+     "size": [
+      13,
+      18
+     ],
+     "y0": 15,
+     "rise": 7,
+     "colour": "#686c6a",
+     "material": "stone"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      23.5,
+      -37
+     ],
+     "size": [
+      13,
+      18
+     ],
+     "y0": 15,
+     "rise": 7,
+     "colour": "#686c6a",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -40
+     ],
+     "size": [
+      7,
+      14
+     ],
+     "y0": 0,
+     "y1": 22,
+     "colour": "#e0ddd6",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      12,
+      -40
+     ],
+     "size": [
+      7,
+      14
+     ],
+     "y0": 0,
+     "y1": 22,
+     "colour": "#e0ddd6",
+     "material": "stone"
+    },
+    {
+     "type": "vault",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      17,
+      14
+     ],
+     "y0": 10,
+     "rise": 10,
+     "axis": "z",
+     "ends": "open",
+     "colour": "#e6e3dd",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      27,
+      14
+     ],
+     "y0": 21,
+     "y1": 23,
+     "colour": "#dfdbd4",
+     "material": "stone"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -27,
+      15,
+      -44
+     ],
+     "to": [
+      -15,
+      15,
+      -44
+     ],
+     "width": 0.9,
+     "colour": "#e4e1db",
+     "material": "stone"
+    },
+    {
+     "type": "beam",
+     "from": [
+      15,
+      15,
+      -44
+     ],
+     "to": [
+      27,
+      15,
+      -44
+     ],
+     "width": 0.9,
+     "colour": "#e4e1db",
+     "material": "stone"
+    },
+    {
+     "type": "repeat",
+     "count": 12,
+     "part": {
+      "type": "beam",
+      "from": [
+       0,
+       15,
+       -12
+      ],
+      "to": [
+       0,
+       15,
+       35
+      ],
+      "width": 0.8,
+      "colour": "#d8d5cf",
+      "material": "stone"
+     },
+     "offset": [
+      20,
+      0,
+      0
+     ]
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -24,
+      33
+     ],
+     "to": [
+      24,
+      33
+     ],
+     "y0": 0,
+     "height": 15,
+     "count": 9,
+     "thickness": 1.8,
+     "colour": "#d2cec7",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "The visible masses are a long low classical building on a broad rectangular footprint, with a tall central triumphal-arch pavilion on the front axis, flanking colonnades, and end pavilions with low mansard-type roofs. Behind and around this is a colonnaded court/museum mass filling the depth of the site; the dominant signature is the central arch with its tall attic above the arch, grey stone walls, and free-standing column runs.",
+  "triangles": 3276,
+  "parts": 32
+ },
+ "totals": {
+  "input": 8014,
+  "output": 10902,
+  "cost": 0,
+  "ms": 223729
+ }
+}

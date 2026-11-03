@@ -1,0 +1,321 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T05:58:18.464Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The signature features are the continuous oval bowl of stands and the serrated outer concrete fin facade. The massing is an oval stadium ring around an open pitch, with tall pointed concrete ribs reaching the full height around the perimeter.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [252, 178],\n      \"inner\": [116, 72],\n      \"y0\": 0,\n      \"y1\": 33,\n      \"innerHeight\": 14,\n      \"shape\": \"oval\",\n      \"material\": \"concrete\",\n      \"colour\": \"#c7c2b6\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [112, 70],\n      \"y0\": 0,\n      \"y1\": 0.35,\n      \"material\": \"grass\",\n      \"colour\": \"#3d6d36\"\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 24,\n      \"offset\": [6.3, 0, 2.4],\n      \"part\": {\n        \"type\": \"cylinder\",\n        \"center\": [-70, -74],\n        \"radius\": 2.4,\n        \"radiusTop\": 0.4,\n        \"y0\": 7,\n        \"y1\": 48,\n        \"sides\": 4,\n        \"material\": \"concrete\",\n        \"colour\": \"#cfc9bc\"\n      }\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 22,\n      \"offset\": [-6.2, 0, -3.5],\n      \"part\": {\n        \"type\": \"cylinder\",\n        \"center\": [65, 62],\n        \"radius\": 2.4,\n        \"radiusTop\": 0.4,\n        \"y0\": 7,\n        \"y1\": 48,\n        \"sides\": 4,\n        \"material\": \"concrete\",\n        \"colour\": \"#cfc9bc\"\n      }\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 14,\n      \"offset\": [0.15, 0, -6.2],\n      \"part\": {\n        \"type\": \"cylinder\",\n        \"center\": [-120, 12],\n        \"radius\": 2.4,\n        \"radiusTop\": 0.4,\n        \"y0\": 7,\n        \"y1\": 48,\n        \"sides\": 4,\n        \"material\": \"concrete\",\n        \"colour\": \"#cfc9bc\"\n      }\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 14,\n      \"offset\": [3.0, 0, 5.4],\n      \"part\": {\n        \"type\": \"cylinder\",\n        \"center\": [92, -48],\n        \"radius\": 2.4,\n        \"radiusTop\": 0.4,\n        \"y0\": 7,\n        \"y1\": 48,\n        \"sides\": 4,\n        \"material\": \"concrete\",\n        \"colour\": \"#cfc9bc\"\n      }\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 28,\n      \"around\": {\n        \"center\": [0, 0],\n        \"step\": 12.857\n      },\n      \"part\": {\n        \"type\": \"cylinder\",\n        \"center\": [112, 0],\n        \"radius\": 2.2,\n        \"radiusTop\": 0.3,\n        \"y0\": 12,\n        \"y1\": 47,\n        \"sides\": 4,\n        \"material\": \"concrete\",\n        \"colour\": \"#d2ccc0\"\n      }\n    },\n    {\n      \"type\": \"ring\",\n      \"center\": [0, 0],\n      \"radius\": 126,\n      \"inner\": 118,\n      \"y0\": 31,\n      \"y1\": 36,\n      \"material\": \"concrete\",\n      \"colour\": \"#b8b3a8\"\n    }\n  ]\n}\n```",
+   "stop": "stop",
+   "input": 8212,
+   "output": 19091,
+   "cost": 0,
+   "ms": 390051,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The signature features are the continuous oval bowl of stands and the serrated outer concrete fin facade. The massing is an oval stadium ring around an open pitch, with tall pointed concrete ribs reaching the full height around the perimeter.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      252,
+      178
+     ],
+     "inner": [
+      116,
+      72
+     ],
+     "y0": 0,
+     "y1": 33,
+     "innerHeight": 14,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#c7c2b6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      112,
+      70
+     ],
+     "y0": 0,
+     "y1": 0.35,
+     "material": "grass",
+     "colour": "#3d6d36"
+    },
+    {
+     "type": "repeat",
+     "count": 24,
+     "offset": [
+      6.3,
+      0,
+      2.4
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -70,
+       -74
+      ],
+      "radius": 2.4,
+      "radiusTop": 0.4,
+      "y0": 7,
+      "y1": 48,
+      "sides": 4,
+      "material": "concrete",
+      "colour": "#cfc9bc"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 22,
+     "offset": [
+      -6.2,
+      0,
+      -3.5
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       65,
+       62
+      ],
+      "radius": 2.4,
+      "radiusTop": 0.4,
+      "y0": 7,
+      "y1": 48,
+      "sides": 4,
+      "material": "concrete",
+      "colour": "#cfc9bc"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 14,
+     "offset": [
+      0.15,
+      0,
+      -6.2
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -120,
+       12
+      ],
+      "radius": 2.4,
+      "radiusTop": 0.4,
+      "y0": 7,
+      "y1": 48,
+      "sides": 4,
+      "material": "concrete",
+      "colour": "#cfc9bc"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 14,
+     "offset": [
+      3,
+      0,
+      5.4
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       92,
+       -48
+      ],
+      "radius": 2.4,
+      "radiusTop": 0.4,
+      "y0": 7,
+      "y1": 48,
+      "sides": 4,
+      "material": "concrete",
+      "colour": "#cfc9bc"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 28,
+     "around": {
+      "center": [
+       0,
+       0
+      ],
+      "step": 12.857
+     },
+     "part": {
+      "type": "cylinder",
+      "center": [
+       112,
+       0
+      ],
+      "radius": 2.2,
+      "radiusTop": 0.3,
+      "y0": 12,
+      "y1": 47,
+      "sides": 4,
+      "material": "concrete",
+      "colour": "#d2ccc0"
+     }
+    },
+    {
+     "type": "ring",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 126,
+     "inner": 118,
+     "y0": 31,
+     "y1": 36,
+     "material": "concrete",
+     "colour": "#b8b3a8"
+    }
+   ]
+  },
+  "notes": "The signature features are the continuous oval bowl of stands and the serrated outer concrete fin facade. The massing is an oval stadium ring around an open pitch, with tall pointed concrete ribs reaching the full height around the perimeter.",
+  "triangles": 1876,
+  "parts": 105
+ },
+ "totals": {
+  "input": 8212,
+  "output": 19091,
+  "cost": 0,
+  "ms": 390051
+ }
+}

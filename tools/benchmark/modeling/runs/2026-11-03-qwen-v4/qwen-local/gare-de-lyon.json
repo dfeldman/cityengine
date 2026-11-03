@@ -1,0 +1,339 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:55:58.703Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"Gare de Lyon reads as a long Beaux-Arts station facade with a monumental clock tower at the right front corner and broad train-shed vaults behind it. I model the front as an angled Beaux-Arts block with arched bays, mansard roof and dormers, put the 67 m clock tower at the front corner, and fill the back of the footprint with several parallel glass/metal train-shed vaults.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [28, -84],\n      \"size\": [110, 22],\n      \"rotate\": -14,\n      \"y0\": 0,\n      \"bay\": 5.5,\n      \"colour\": \"#e0d6c3\",\n      \"trim\": \"#e8e0d2\",\n      \"material\": \"stone\",\n      \"storeys\": [\n        {\"height\": 10, \"kind\": \"arcade\"},\n        {\"height\": 10, \"kind\": \"arched\"},\n        {\"height\": 4, \"kind\": \"punched\"}\n      ],\n      \"faces\": [\"front\", \"right\", \"left\"],\n      \"cornice\": 1.2,\n      \"roof\": {\n        \"kind\": \"mansard\",\n        \"rise\": 7,\n        \"dormers\": true,\n        \"colour\": \"#4b5158\"\n      }\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-54, -18],\n      \"size\": [78, 24],\n      \"rotate\": -21,\n      \"y0\": 0,\n      \"bay\": 5.5,\n      \"colour\": \"#dfd5c2\",\n      \"trim\": \"#e7dfcf\",\n      \"material\": \"stone\",\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"arcade\"},\n        {\"height\": 9, \"kind\": \"arched\"},\n        {\"height\": 4, \"kind\": \"punched\"}\n      ],\n      \"faces\": [\"front\", \"left\"],\n      \"cornice\": 1,\n      \"roof\": {\n        \"kind\": \"mansard\",\n        \"rise\": 6,\n        \"dormers\": true,\n        \"colour\": \"#4b5158\"\n      }\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [80, -100],\n      \"y0\": 0,\n      \"colour\": \"#e4dccb\",\n      \"material\": \"stone\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 14, \"height\": 35, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 13, \"height\": 13, \"kind\": \"clock\"},\n        {\"shape\": \"square\", \"width\": 11, \"height\": 9, \"kind\": \"open\"}\n      ],\n      \"top\": {\n        \"kind\": \"dome\",\n        \"height\": 10,\n        \"colour\": \"#5e6870\"\n      }\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [-46, 12],\n      \"size\": [36, 160],\n      \"rotate\": -18,\n      \"y0\": 24,\n      \"rise\": 12,\n      \"axis\": \"z\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#70787c\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [-12, 14],\n      \"size\": [38, 160],\n      \"rotate\": -18,\n      \"y0\": 25,\n      \"rise\": 12,\n      \"axis\": \"z\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#6e767a\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [22, 12],\n      \"size\": [38, 155],\n      \"rotate\": -18,\n      \"y0\": 25,\n      \"rise\": 12,\n      \"axis\": \"z\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#737a7f\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [56, 4],\n      \"size\": [40, 145],\n      \"rotate\": -18,\n      \"y0\": 24,\n      \"rise\": 12,\n      \"axis\": \"z\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#6f777c\"\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [[76, -88], [90, -91], [90, 109], [64, 108]],\n      \"y0\": 0,\n      \"y1\": 26,\n      \"colour\": \"#d9cfbf\",\n      \"material\": \"stone\",\n      \"windows\": {\n        \"kind\": \"bands\",\n        \"floor\": 4.5,\n        \"pitch\": 4,\n        \"solid\": 0.62\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 96],\n      \"size\": [82, 28],\n      \"y0\": 0,\n      \"y1\": 28,\n      \"colour\": \"#ddd3c2\",\n      \"material\": \"stone\",\n      \"windows\": {\n        \"kind\": \"punched\",\n        \"floor\": 4.5,\n        \"pitch\": 4.5,\n        \"solid\": 0.6\n      }\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8071,
+   "output": 10456,
+   "cost": 0,
+   "ms": 198592,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Gare de Lyon reads as a long Beaux-Arts station facade with a monumental clock tower at the right front corner and broad train-shed vaults behind it. I model the front as an angled Beaux-Arts block with arched bays, mansard roof and dormers, put the 67 m clock tower at the front corner, and fill the back of the footprint with several parallel glass/metal train-shed vaults.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      28,
+      -84
+     ],
+     "size": [
+      110,
+      22
+     ],
+     "rotate": -14,
+     "y0": 0,
+     "bay": 5.5,
+     "colour": "#e0d6c3",
+     "trim": "#e8e0d2",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "arcade"
+      },
+      {
+       "height": 10,
+       "kind": "arched"
+      },
+      {
+       "height": 4,
+       "kind": "punched"
+      }
+     ],
+     "faces": [
+      "front",
+      "right",
+      "left"
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 7,
+      "dormers": true,
+      "colour": "#4b5158"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -54,
+      -18
+     ],
+     "size": [
+      78,
+      24
+     ],
+     "rotate": -21,
+     "y0": 0,
+     "bay": 5.5,
+     "colour": "#dfd5c2",
+     "trim": "#e7dfcf",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 9,
+       "kind": "arched"
+      },
+      {
+       "height": 4,
+       "kind": "punched"
+      }
+     ],
+     "faces": [
+      "front",
+      "left"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "mansard",
+      "rise": 6,
+      "dormers": true,
+      "colour": "#4b5158"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      80,
+      -100
+     ],
+     "y0": 0,
+     "colour": "#e4dccb",
+     "material": "stone",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 35,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 13,
+       "height": 13,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 9,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 10,
+      "colour": "#5e6870"
+     }
+    },
+    {
+     "type": "vault",
+     "center": [
+      -46,
+      12
+     ],
+     "size": [
+      36,
+      160
+     ],
+     "rotate": -18,
+     "y0": 24,
+     "rise": 12,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#70787c"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -12,
+      14
+     ],
+     "size": [
+      38,
+      160
+     ],
+     "rotate": -18,
+     "y0": 25,
+     "rise": 12,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#6e767a"
+    },
+    {
+     "type": "vault",
+     "center": [
+      22,
+      12
+     ],
+     "size": [
+      38,
+      155
+     ],
+     "rotate": -18,
+     "y0": 25,
+     "rise": 12,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#737a7f"
+    },
+    {
+     "type": "vault",
+     "center": [
+      56,
+      4
+     ],
+     "size": [
+      40,
+      145
+     ],
+     "rotate": -18,
+     "y0": 24,
+     "rise": 12,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#6f777c"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       76,
+       -88
+      ],
+      [
+       90,
+       -91
+      ],
+      [
+       90,
+       109
+      ],
+      [
+       64,
+       108
+      ]
+     ],
+     "y0": 0,
+     "y1": 26,
+     "colour": "#d9cfbf",
+     "material": "stone",
+     "windows": {
+      "kind": "bands",
+      "floor": 4.5,
+      "pitch": 4,
+      "solid": 0.62
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      96
+     ],
+     "size": [
+      82,
+      28
+     ],
+     "y0": 0,
+     "y1": 28,
+     "colour": "#ddd3c2",
+     "material": "stone",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4.5,
+      "solid": 0.6
+     }
+    }
+   ]
+  },
+  "notes": "Gare de Lyon reads as a long Beaux-Arts station facade with a monumental clock tower at the right front corner and broad train-shed vaults behind it. I model the front as an angled Beaux-Arts block with arched bays, mansard roof and dormers, put the 67 m clock tower at the front corner, and fill the back of the footprint with several parallel glass/metal train-shed vaults.",
+  "triangles": 7068,
+  "parts": 106
+ },
+ "totals": {
+  "input": 8071,
+  "output": 10456,
+  "cost": 0,
+  "ms": 198592
+ }
+}

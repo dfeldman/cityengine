@@ -68,7 +68,7 @@ Keys come from the environment, or from a gitignored `.env` (in this folder or a
 
 - **Haiku and the judge:** `ANTHROPIC_API_KEY`, or an `ant auth login` profile.
 - **OpenRouter:** `OPENROUTER_API_KEY`.
-- **Strata on ml1:** `STRATA_API_KEY`, printed by `~/.local/bin/strata launch --show-key --preset ml1` on ml1. Strata must be running (`sudo systemctl start strata`); it shares the GPU with Modly.
+- **Strata on ml1:** `STRATA_TOKEN`, printed by `~/.local/bin/strata launch --show-key --preset ml1` on ml1. Strata must be running (`sudo systemctl start strata`); it shares the GPU with Modly.
 
 ## Running
 
@@ -175,3 +175,4 @@ Scoring has three layers, cheapest first:
   - No answer from either model reaches likeness 5. The bottleneck is now choosing the right part and settings from the photos, not missing vocabulary.
   - The bar: the game's own models, drawn in the same renderer by [reference.ts](reference.ts), average **4.05**, with 5 on three buildings. Flat colours do not cap likeness; the contestants sit about a point below the bar.
   - Haiku's best stack (v4 prompt, a planning call, then best of 3 picked by a Haiku selector): **3.15** at about $0.009 a building, every answer valid. That is Sonnet v3's level at a third of the cost, still about a point under the bar.
+  - Local Qwen 3.8 Flash Next (Strata on ml1), v4 single-shot: **3.18**, 20 of 20 valid, $0 at about 4 minutes a building. That is Haiku's best stack and Sonnet v3's level without a plan or samples. It misses on recognising the building type (Oracle Park's horseshoe, the Legion's court). It needs `maxTokens` 24,000 and streaming, both now in place.

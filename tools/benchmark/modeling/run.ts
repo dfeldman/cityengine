@@ -120,6 +120,9 @@ async function callOpenAI(cfg: ModelCfg, system: string, turns: Turn[]): Promise
     max_tokens: cfg.maxTokens ?? 16000,
     ...(cfg.temperature !== undefined ? { temperature: cfg.temperature } : {}),
     ...(openrouter ? { usage: { include: true } } : {}),
+    // streamed: Node's fetch drops a request whose headers take over 300 s, which a slow local model's long answer does
+    stream: true,
+    stream_options: { include_usage: true },
     messages: [
       { role: 'system', content: system },
       ...turns.map((t) => t.role === 'assistant' ? { role: 'assistant', content: t.text } : {
@@ -136,16 +139,30 @@ async function callOpenAI(cfg: ModelCfg, system: string, turns: Turn[]): Promise
   const timer = setTimeout(() => ctl.abort(), (cfg.timeoutS ?? 600) * 1000)
   try {
     const r = await fetch(`${cfg.baseUrl}/chat/completions`, { method: 'POST', headers, body: JSON.stringify(body), signal: ctl.signal })
-    const raw = await r.text()
-    if (!r.ok) throw new Error(`${r.status}: ${raw.slice(0, 500)}`)
-    const j = JSON.parse(raw)
-    if (j.error) throw new Error(JSON.stringify(j.error).slice(0, 500))
-    const msg = j.choices?.[0]?.message
-    const text = typeof msg?.content === 'string' ? msg.content : Array.isArray(msg?.content) ? msg.content.map((c: { text?: string }) => c.text ?? '').join('') : ''
-    const u = j.usage ?? {}
+    if (!r.ok) throw new Error(`${r.status}: ${(await r.text()).slice(0, 500)}`)
+    // server-sent events: one JSON chunk per `data:` line, the usage (and OpenRouter's cost) in the last one
+    let text = '', stop = '', buf = ''
+    let u: { prompt_tokens?: number; completion_tokens?: number; cost?: number } = {}
+    const dec = new TextDecoder()
+    for await (const piece of r.body as unknown as AsyncIterable<Uint8Array>) {
+      buf += dec.decode(piece, { stream: true })
+      let nl: number
+      while ((nl = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1)
+        if (!line.startsWith('data:')) continue
+        const data = line.slice(5).trim()
+        if (data === '[DONE]') continue
+        const j = JSON.parse(data)
+        if (j.error) throw new Error(JSON.stringify(j.error).slice(0, 500))
+        const c = j.choices?.[0]
+        if (typeof c?.delta?.content === 'string') text += c.delta.content
+        if (c?.finish_reason) stop = c.finish_reason
+        if (j.usage) u = j.usage
+      }
+    }
     const [pin, pout] = cfg.price ?? [0, 0]
     const input = u.prompt_tokens ?? 0, output = u.completion_tokens ?? 0
-    return { text, stop: j.choices?.[0]?.finish_reason ?? '', input, output, cost: typeof u.cost === 'number' ? u.cost : (pin * input + pout * output) / 1e6, ms: Date.now() - t0 }
+    return { text, stop, input, output, cost: typeof u.cost === 'number' ? u.cost : (pin * input + pout * output) / 1e6, ms: Date.now() - t0 }
   } finally { clearTimeout(timer) }
 }
 

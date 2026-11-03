@@ -1,0 +1,198 @@
+{
+ "building": "madeleine",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:48:40.355Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The building is a rectangular neoclassical temple-like church: a low rectangular core fills the site, completely surrounded by a dense Corinthian peripteral colonnade, with a triangular pedimented front. The dominant signature is the colonnade running all four sides, with the front pediment and a low copper/green pitched roof behind the columns.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [42.8, 126.6], \"y0\": 0, \"y1\": 3, \"material\": \"stone\", \"colour\": \"#e4ddcf\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [38.8, 122], \"y0\": 3, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#e4ddcf\"},\n    {\"type\": \"colonnade\", \"from\": [-20.4, -62.4], \"to\": [20.4, -62.4], \"y0\": 3, \"height\": 22, \"count\": 14, \"material\": \"stone\", \"colour\": \"#e8e2d3\"},\n    {\"type\": \"colonnade\", \"from\": [-20.4, 62.4], \"to\": [20.4, 62.4], \"y0\": 3, \"height\": 22, \"count\": 14, \"material\": \"stone\", \"colour\": \"#e8e2d3\"},\n    {\"type\": \"colonnade\", \"from\": [-20.4, -62.4], \"to\": [-20.4, 62.4], \"y0\": 3, \"height\": 22, \"count\": 30, \"material\": \"stone\", \"colour\": \"#e8e2d3\"},\n    {\"type\": \"colonnade\", \"from\": [20.4, -62.4], \"to\": [20.4, 62.4], \"y0\": 3, \"height\": 22, \"count\": 30, \"material\": \"stone\", \"colour\": \"#e8e2d3\"},\n    {\"type\": \"pediment\", \"from\": [-17.5, -61.8], \"to\": [17.5, -61.8], \"y0\": 25, \"height\": 11, \"depth\": 8, \"material\": \"stone\", \"colour\": \"#e6e0d0\"},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [38.8, 122], \"y0\": 24, \"rise\": 12, \"ridge\": \"z\", \"material\": \"copper\", \"colour\": \"#79aa8c\"}\n  ]\n}",
+   "stop": "stop",
+   "input": 8001,
+   "output": 9695,
+   "cost": 0,
+   "ms": 204694,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The building is a rectangular neoclassical temple-like church: a low rectangular core fills the site, completely surrounded by a dense Corinthian peripteral colonnade, with a triangular pedimented front. The dominant signature is the colonnade running all four sides, with the front pediment and a low copper/green pitched roof behind the columns.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42.8,
+      126.6
+     ],
+     "y0": 0,
+     "y1": 3,
+     "material": "stone",
+     "colour": "#e4ddcf"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      38.8,
+      122
+     ],
+     "y0": 3,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#e4ddcf"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -20.4,
+      -62.4
+     ],
+     "to": [
+      20.4,
+      -62.4
+     ],
+     "y0": 3,
+     "height": 22,
+     "count": 14,
+     "material": "stone",
+     "colour": "#e8e2d3"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -20.4,
+      62.4
+     ],
+     "to": [
+      20.4,
+      62.4
+     ],
+     "y0": 3,
+     "height": 22,
+     "count": 14,
+     "material": "stone",
+     "colour": "#e8e2d3"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -20.4,
+      -62.4
+     ],
+     "to": [
+      -20.4,
+      62.4
+     ],
+     "y0": 3,
+     "height": 22,
+     "count": 30,
+     "material": "stone",
+     "colour": "#e8e2d3"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      20.4,
+      -62.4
+     ],
+     "to": [
+      20.4,
+      62.4
+     ],
+     "y0": 3,
+     "height": 22,
+     "count": 30,
+     "material": "stone",
+     "colour": "#e8e2d3"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -17.5,
+      -61.8
+     ],
+     "to": [
+      17.5,
+      -61.8
+     ],
+     "y0": 25,
+     "height": 11,
+     "depth": 8,
+     "material": "stone",
+     "colour": "#e6e0d0"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      38.8,
+      122
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "z",
+     "material": "copper",
+     "colour": "#79aa8c"
+    }
+   ]
+  },
+  "notes": "The building is a rectangular neoclassical temple-like church: a low rectangular core fills the site, completely surrounded by a dense Corinthian peripteral colonnade, with a triangular pedimented front. The dominant signature is the colonnade running all four sides, with the front pediment and a low copper/green pitched roof behind the columns.",
+  "triangles": 7832,
+  "parts": 8
+ },
+ "totals": {
+  "input": 8001,
+  "output": 9695,
+  "cost": 0,
+  "ms": 204694
+ }
+}

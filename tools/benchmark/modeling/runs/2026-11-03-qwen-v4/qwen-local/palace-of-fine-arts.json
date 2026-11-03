@@ -1,0 +1,202 @@
+{
+ "building": "palace-of-fine-arts",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:26:04.573Z",
+ "userText": "Building: Palace of Fine Arts (rotunda and colonnades), San Francisco (exhibition rotunda).\nThe front (−z) is the lagoon side of the rotunda.\nFootprint: 72.9 m along x by 68.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[30.8,4.7],[36.4,8.8],[19.8,10.8],[14.5,17.2],[16.1,34],[6.5,21.7],[-7.9,28.4],[-17.1,14.7],[-20,19],[-25.2,15.2],[-22.6,-1.8],[-36.4,-8.7],[-25.7,-8.4],[-14.7,-17.2],[-16.1,-33.9],[-6.2,-21.8],[1.7,-22.5],[4.8,-34],[16.7,-14.7],[27.8,-17],[32.4,-11.4],[21.7,-6.1],[22.3,2.2]]\nHeight: the highest point is 49 m above the ground.\nModel the rotunda only: the long curving colonnades that run off on either side are outside this footprint.\n\n3 photographs attached, in order:\n  1. front view across the lagoon of the domed rotunda and flanking curved colonnades, daylight\n  2. three-quarter from the lawn across the lagoon showing the rotunda, colonnade at left and trees, daylight\n  3. view from the Marina side showing the rotunda dome and the long hall behind it, houses in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   72.9,
+   68.1
+  ],
+  "outline": [
+   [
+    30.8,
+    4.7
+   ],
+   [
+    36.4,
+    8.8
+   ],
+   [
+    19.8,
+    10.8
+   ],
+   [
+    14.5,
+    17.2
+   ],
+   [
+    16.1,
+    34
+   ],
+   [
+    6.5,
+    21.7
+   ],
+   [
+    -7.9,
+    28.4
+   ],
+   [
+    -17.1,
+    14.7
+   ],
+   [
+    -20,
+    19
+   ],
+   [
+    -25.2,
+    15.2
+   ],
+   [
+    -22.6,
+    -1.8
+   ],
+   [
+    -36.4,
+    -8.7
+   ],
+   [
+    -25.7,
+    -8.4
+   ],
+   [
+    -14.7,
+    -17.2
+   ],
+   [
+    -16.1,
+    -33.9
+   ],
+   [
+    -6.2,
+    -21.8
+   ],
+   [
+    1.7,
+    -22.5
+   ],
+   [
+    4.8,
+    -34
+   ],
+   [
+    16.7,
+    -14.7
+   ],
+   [
+    27.8,
+    -17
+   ],
+   [
+    32.4,
+    -11.4
+   ],
+   [
+    21.7,
+    -6.1
+   ],
+   [
+    22.3,
+    2.2
+   ]
+  ],
+  "height": 49,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The key masses are a circular arcade rotunda, a tall cream attic/drum above it, and a broad shallow dome rising to 49 m. The signature features are the ring of great arched openings with paired reddish columns and the large pale dome set on that drum.\",\n  \"parts\": [\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 0],\n      \"radius\": 21,\n      \"y0\": 0,\n      \"base\": 1,\n      \"height\": 24,\n      \"count\": 16,\n      \"arches\": 8,\n      \"entablature\": 4,\n      \"drum\": 0,\n      \"dome\": false,\n      \"colour\": \"#ddcbb0\",\n      \"trim\": \"#a77159\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 0],\n      \"radius\": 20.5,\n      \"y0\": 24,\n      \"y1\": 37,\n      \"colour\": \"#dfd0b4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 0],\n      \"radius\": 21.5,\n      \"y0\": 23,\n      \"y1\": 25,\n      \"colour\": \"#e8dfca\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"dome\",\n      \"center\": [0, 0],\n      \"radius\": 21,\n      \"y0\": 37,\n      \"height\": 12,\n      \"colour\": \"#eadfca\",\n      \"material\": \"stucco\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8201,
+   "output": 9458,
+   "cost": 0,
+   "ms": 209453,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The key masses are a circular arcade rotunda, a tall cream attic/drum above it, and a broad shallow dome rising to 49 m. The signature features are the ring of great arched openings with paired reddish columns and the large pale dome set on that drum.",
+   "parts": [
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 21,
+     "y0": 0,
+     "base": 1,
+     "height": 24,
+     "count": 16,
+     "arches": 8,
+     "entablature": 4,
+     "drum": 0,
+     "dome": false,
+     "colour": "#ddcbb0",
+     "trim": "#a77159",
+     "material": "stone"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 20.5,
+     "y0": 24,
+     "y1": 37,
+     "colour": "#dfd0b4",
+     "material": "stone"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 21.5,
+     "y0": 23,
+     "y1": 25,
+     "colour": "#e8dfca",
+     "material": "stone"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 21,
+     "y0": 37,
+     "height": 12,
+     "colour": "#eadfca",
+     "material": "stucco"
+    }
+   ]
+  },
+  "notes": "The key masses are a circular arcade rotunda, a tall cream attic/drum above it, and a broad shallow dome rising to 49 m. The signature features are the ring of great arched openings with paired reddish columns and the large pale dome set on that drum.",
+  "triangles": 2204,
+  "parts": 29
+ },
+ "totals": {
+  "input": 8201,
+  "output": 9458,
+  "cost": 0,
+  "ms": 209453
+ }
+}

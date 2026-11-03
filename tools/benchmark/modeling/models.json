@@ -28,15 +28,15 @@
       "id": "qwen-local",
       "provider": "openai",
       "baseUrl": "http://192.168.10.145:8080/v1",
-      "keyEnv": "STRATA_API_KEY",
+      "keyEnv": "STRATA_TOKEN",
       "model": "auto",
-      "maxTokens": 12000,
+      "maxTokens": 24000,
       "timeoutS": 1800,
       "price": [
         0,
         0
       ],
-      "note": "Qwen3.8-Flash-Next IQ3_XXS through Strata on ml1 (32K context, pictures via the CPU reader at ~10 s each). 'auto' takes the first id /v1/models lists. Key: `~/.local/bin/strata launch --show-key --preset ml1` on ml1."
+      "note": "Qwen3.8-Flash-Next IQ3_XXS through Strata on ml1 (32K context, pictures via the CPU reader at ~10 s each). 'auto' takes the first id /v1/models lists. Key: STRATA_TOKEN in the repo-root .env (from `~/.local/bin/strata launch --show-key --preset ml1` on ml1)."
     },
     {
       "id": "gemini-flash-lite",

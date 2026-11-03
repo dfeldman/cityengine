@@ -1,0 +1,625 @@
+{
+ "building": "palais-garnier",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T05:03:00.580Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"I see a wide, richly articulated front pavilion with an arcade below and a colonnade above, a huge central green copper dome on a drum, and a tall gabled stage-house mass toward the rear. Gilded statue groups sit at the upper corners of the front block, while the long wings of the building are massed as stone blocks with dark mansard/slate roofs filling the irregular footprint.\",\n  \"parts\": [\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [-47.0, -50.0],\n        [-31.0, -62.0],\n        [-27.0, -72.0],\n        [27.0, -72.0],\n        [31.0, -62.0],\n        [47.0, -50.0],\n        [47.0, 50.0],\n        [28.0, 62.0],\n        [19.0, 72.0],\n        [-19.0, 72.0],\n        [-28.0, 62.0],\n        [-32.0, 50.0]\n      ],\n      \"y0\": 0,\n      \"y1\": 27,\n      \"material\": \"stone\",\n      \"colour\": \"#d7cfc0\"\n    },\n\n    {\n      \"type\": \"block\",\n      \"center\": [0, -64],\n      \"size\": [62, 24],\n      \"y0\": 0,\n      \"bay\": 4.6,\n      \"faces\": \"front\",\n      \"colour\": \"#dfd6c4\",\n      \"trim\": \"#eee3cc\",\n      \"cornice\": 1.8,\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"arcade\"},\n        {\"height\": 21, \"kind\": \"columns\"},\n        {\"height\": 5, \"kind\": \"blank\"}\n      ],\n      \"roof\": {\"kind\": \"flat\"}\n    },\n\n    {\n      \"type\": \"pediment\",\n      \"from\": [-27, -73],\n      \"to\": [27, -73],\n      \"y0\": 35,\n      \"height\": 7,\n      \"depth\": 6,\n      \"material\": \"stone\",\n      \"colour\": \"#ded3be\"\n    },\n\n    {\n      \"type\": \"arcade\",\n      \"from\": [-26, -72.5],\n      \"to\": [26, -72.5],\n      \"y0\": 0,\n      \"height\": 9,\n      \"count\": 7,\n      \"thickness\": 1.6,\n      \"material\": \"stone\",\n      \"colour\": \"#d5cbb9\"\n    },\n\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-24, -72],\n      \"to\": [24, -72],\n      \"y0\": 10,\n      \"height\": 22,\n      \"count\": 9,\n      \"radius\": 1.05,\n      \"entablature\": 2.8,\n      \"material\": \"stone\",\n      \"colour\": \"#e7ddc8\"\n    },\n\n    {\n      \"type\": \"repeat\",\n      \"count\": 2,\n      \"offset\": [54, 0, 0],\n      \"part\": {\n        \"type\": \"box\",\n        \"center\": [-27, -72],\n        \"size\": [3.2, 3.2],\n        \"y0\": 35,\n        \"y1\": 41,\n        \"material\": \"metal\",\n        \"colour\": \"#d9b031\"\n      }\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [-50, -28],\n      \"size\": [22, 36],\n      \"y0\": 0,\n      \"y1\": 25,\n      \"rotate\": 34,\n      \"material\": \"stone\",\n      \"colour\": \"#d3c8b5\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [-50, -28],\n      \"size\": [23, 37],\n      \"y0\": 25,\n      \"rise\": 8,\n      \"rotate\": 34,\n      \"material\": \"tile\",\n      \"colour\": \"#40474e\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [50, -28],\n      \"size\": [22, 36],\n      \"y0\": 0,\n      \"y1\": 25,\n      \"rotate\": -34,\n      \"material\": \"stone\",\n      \"colour\": \"#d3c8b5\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [50, -28],\n      \"size\": [23, 37],\n      \"y0\": 25,\n      \"rise\": 8,\n      \"rotate\": -34,\n      \"material\": \"tile\",\n      \"colour\": \"#40474e\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [-44, 22],\n      \"size\": [18, 58],\n      \"y0\": 0,\n      \"y1\": 27,\n      \"material\": \"stone\",\n      \"colour\": \"#d8d1c0\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [-44, 22],\n      \"size\": [20, 60],\n      \"y0\": 27,\n      \"rise\": 7,\n      \"material\": \"tile\",\n      \"colour\": \"#3e454c\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [44, 22],\n      \"size\": [18, 58],\n      \"y0\": 0,\n      \"y1\": 27,\n      \"material\": \"stone\",\n      \"colour\": \"#d8d1c0\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [44, 22],\n      \"size\": [20, 60],\n      \"y0\": 27,\n      \"rise\": 7,\n      \"material\": \"tile\",\n      \"colour\": \"#3e454c\"\n    },\n\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, -6],\n      \"radius\": 25,\n      \"y0\": 27,\n      \"y1\": 36,\n      \"material\": \"stone\",\n      \"colour\": \"#cfc2ae\"\n    },\n\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, -6],\n      \"radius\": 27,\n      \"y0\": 25,\n      \"y1\": 27,\n      \"material\": \"stone\",\n      \"colour\": \"#e0d8c6\"\n    },\n\n    {\n      \"type\": \"dome\",\n      \"center\": [0, -6],\n      \"radius\": 25,\n      \"y0\": 36,\n      \"height\": 20,\n      \"material\": \"copper\",\n      \"colour\": \"#4d896f\"\n    },\n\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, -6],\n      \"radius\": 3.5,\n      \"y0\": 55,\n      \"y1\": 56,\n      \"material\": \"metal\",\n      \"colour\": \"#7f8a75\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [0, 65],\n      \"size\": [44, 21],\n      \"y0\": 0,\n      \"y1\": 40,\n      \"material\": \"stone\",\n      \"colour\": \"#cec3b2\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"gable\",\n      \"center\": [0, 65],\n      \"size\": [44, 21],\n      \"y0\": 40,\n      \"rise\": 14,\n      \"ridge\": \"z\",\n      \"material\": \"stone\",\n      \"colour\": \"#c7bda8\"\n    },\n\n    {\n      \"type\": \"arcade\",\n      \"from\": [-13, 55],\n      \"to\": [13, 55],\n      \"y0\": 29,\n      \"height\": 7,\n      \"count\": 3,\n      \"thickness\": 1.4,\n      \"material\": \"stone\",\n      \"colour\": \"#b9ad98\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [-21, -71],\n      \"size\": [7, 7],\n      \"y0\": 29,\n      \"y1\": 37,\n      \"material\": \"stone\",\n      \"colour\": \"#d6cdb9\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [21, -71],\n      \"size\": [7, 7],\n      \"y0\": 29,\n      \"y1\": 37,\n      \"material\": \"stone\",\n      \"colour\": \"#d6cdb9\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [0, -44],\n      \"size\": [92, 24],\n      \"y0\": 0,\n      \"y1\": 29,\n      \"material\": \"stone\",\n      \"colour\": \"#d6cdba\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [0, -44],\n      \"size\": [94, 26],\n      \"y0\": 29,\n      \"rise\": 7,\n      \"material\": \"tile\",\n      \"colour\": \"#3f464d\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [-24, 24],\n      \"size\": [16, 42],\n      \"y0\": 0,\n      \"y1\": 31,\n      \"material\": \"stone\",\n      \"colour\": \"#d1c7b5\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [-24, 24],\n      \"size\": [18, 44],\n      \"y0\": 31,\n      \"rise\": 8,\n      \"material\": \"tile\",\n      \"colour\": \"#414850\"\n    },\n\n    {\n      \"type\": \"box\",\n      \"center\": [24, 24],\n      \"size\": [16, 42],\n      \"y0\": 0,\n      \"y1\": 31,\n      \"material\": \"stone\",\n      \"colour\": \"#d1c7b5\"\n    },\n\n    {\n      \"type\": \"roof\",\n      \"kind\": \"mansard\",\n      \"center\": [24, 24],\n      \"size\": [18, 44],\n      \"y0\": 31,\n      \"rise\": 8,\n      \"material\": \"tile\",\n      \"colour\": \"#414850\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8105,
+   "output": 11866,
+   "cost": 0,
+   "ms": 245285,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "I see a wide, richly articulated front pavilion with an arcade below and a colonnade above, a huge central green copper dome on a drum, and a tall gabled stage-house mass toward the rear. Gilded statue groups sit at the upper corners of the front block, while the long wings of the building are massed as stone blocks with dark mansard/slate roofs filling the irregular footprint.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -47,
+       -50
+      ],
+      [
+       -31,
+       -62
+      ],
+      [
+       -27,
+       -72
+      ],
+      [
+       27,
+       -72
+      ],
+      [
+       31,
+       -62
+      ],
+      [
+       47,
+       -50
+      ],
+      [
+       47,
+       50
+      ],
+      [
+       28,
+       62
+      ],
+      [
+       19,
+       72
+      ],
+      [
+       -19,
+       72
+      ],
+      [
+       -28,
+       62
+      ],
+      [
+       -32,
+       50
+      ]
+     ],
+     "y0": 0,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d7cfc0"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -64
+     ],
+     "size": [
+      62,
+      24
+     ],
+     "y0": 0,
+     "bay": 4.6,
+     "faces": "front",
+     "colour": "#dfd6c4",
+     "trim": "#eee3cc",
+     "cornice": 1.8,
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 21,
+       "kind": "columns"
+      },
+      {
+       "height": 5,
+       "kind": "blank"
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -27,
+      -73
+     ],
+     "to": [
+      27,
+      -73
+     ],
+     "y0": 35,
+     "height": 7,
+     "depth": 6,
+     "material": "stone",
+     "colour": "#ded3be"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -26,
+      -72.5
+     ],
+     "to": [
+      26,
+      -72.5
+     ],
+     "y0": 0,
+     "height": 9,
+     "count": 7,
+     "thickness": 1.6,
+     "material": "stone",
+     "colour": "#d5cbb9"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -24,
+      -72
+     ],
+     "to": [
+      24,
+      -72
+     ],
+     "y0": 10,
+     "height": 22,
+     "count": 9,
+     "radius": 1.05,
+     "entablature": 2.8,
+     "material": "stone",
+     "colour": "#e7ddc8"
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      54,
+      0,
+      0
+     ],
+     "part": {
+      "type": "box",
+      "center": [
+       -27,
+       -72
+      ],
+      "size": [
+       3.2,
+       3.2
+      ],
+      "y0": 35,
+      "y1": 41,
+      "material": "metal",
+      "colour": "#d9b031"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -50,
+      -28
+     ],
+     "size": [
+      22,
+      36
+     ],
+     "y0": 0,
+     "y1": 25,
+     "rotate": 34,
+     "material": "stone",
+     "colour": "#d3c8b5"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -50,
+      -28
+     ],
+     "size": [
+      23,
+      37
+     ],
+     "y0": 25,
+     "rise": 8,
+     "rotate": 34,
+     "material": "tile",
+     "colour": "#40474e"
+    },
+    {
+     "type": "box",
+     "center": [
+      50,
+      -28
+     ],
+     "size": [
+      22,
+      36
+     ],
+     "y0": 0,
+     "y1": 25,
+     "rotate": -34,
+     "material": "stone",
+     "colour": "#d3c8b5"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      50,
+      -28
+     ],
+     "size": [
+      23,
+      37
+     ],
+     "y0": 25,
+     "rise": 8,
+     "rotate": -34,
+     "material": "tile",
+     "colour": "#40474e"
+    },
+    {
+     "type": "box",
+     "center": [
+      -44,
+      22
+     ],
+     "size": [
+      18,
+      58
+     ],
+     "y0": 0,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d8d1c0"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -44,
+      22
+     ],
+     "size": [
+      20,
+      60
+     ],
+     "y0": 27,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#3e454c"
+    },
+    {
+     "type": "box",
+     "center": [
+      44,
+      22
+     ],
+     "size": [
+      18,
+      58
+     ],
+     "y0": 0,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d8d1c0"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      44,
+      22
+     ],
+     "size": [
+      20,
+      60
+     ],
+     "y0": 27,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#3e454c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -6
+     ],
+     "radius": 25,
+     "y0": 27,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#cfc2ae"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -6
+     ],
+     "radius": 27,
+     "y0": 25,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#e0d8c6"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -6
+     ],
+     "radius": 25,
+     "y0": 36,
+     "height": 20,
+     "material": "copper",
+     "colour": "#4d896f"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -6
+     ],
+     "radius": 3.5,
+     "y0": 55,
+     "y1": 56,
+     "material": "metal",
+     "colour": "#7f8a75"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      65
+     ],
+     "size": [
+      44,
+      21
+     ],
+     "y0": 0,
+     "y1": 40,
+     "material": "stone",
+     "colour": "#cec3b2"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      65
+     ],
+     "size": [
+      44,
+      21
+     ],
+     "y0": 40,
+     "rise": 14,
+     "ridge": "z",
+     "material": "stone",
+     "colour": "#c7bda8"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -13,
+      55
+     ],
+     "to": [
+      13,
+      55
+     ],
+     "y0": 29,
+     "height": 7,
+     "count": 3,
+     "thickness": 1.4,
+     "material": "stone",
+     "colour": "#b9ad98"
+    },
+    {
+     "type": "box",
+     "center": [
+      -21,
+      -71
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 29,
+     "y1": 37,
+     "material": "stone",
+     "colour": "#d6cdb9"
+    },
+    {
+     "type": "box",
+     "center": [
+      21,
+      -71
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 29,
+     "y1": 37,
+     "material": "stone",
+     "colour": "#d6cdb9"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      92,
+      24
+     ],
+     "y0": 0,
+     "y1": 29,
+     "material": "stone",
+     "colour": "#d6cdba"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      94,
+      26
+     ],
+     "y0": 29,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#3f464d"
+    },
+    {
+     "type": "box",
+     "center": [
+      -24,
+      24
+     ],
+     "size": [
+      16,
+      42
+     ],
+     "y0": 0,
+     "y1": 31,
+     "material": "stone",
+     "colour": "#d1c7b5"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -24,
+      24
+     ],
+     "size": [
+      18,
+      44
+     ],
+     "y0": 31,
+     "rise": 8,
+     "material": "tile",
+     "colour": "#414850"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      24
+     ],
+     "size": [
+      16,
+      42
+     ],
+     "y0": 0,
+     "y1": 31,
+     "material": "stone",
+     "colour": "#d1c7b5"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      24,
+      24
+     ],
+     "size": [
+      18,
+      44
+     ],
+     "y0": 31,
+     "rise": 8,
+     "material": "tile",
+     "colour": "#414850"
+    }
+   ]
+  },
+  "notes": "I see a wide, richly articulated front pavilion with an arcade below and a colonnade above, a huge central green copper dome on a drum, and a tall gabled stage-house mass toward the rear. Gilded statue groups sit at the upper corners of the front block, while the long wings of the building are massed as stone blocks with dark mansard/slate roofs filling the irregular footprint.",
+  "triangles": 4960,
+  "parts": 43
+ },
+ "totals": {
+  "input": 8105,
+  "output": 11866,
+  "cost": 0,
+  "ms": 245285
+ }
+}

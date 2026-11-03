@@ -1,0 +1,480 @@
+{
+ "building": "sfmoma",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:07:30.614Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The old Botta building is a stepped brick-and-stone mass on the Third Street front, dominated by a huge striped circular oculus drum with a central glass disc. Behind and to the right is a smooth white stepped museum extension with horizontal band windows, filling the back part of the footprint.\",\n  \"parts\": [\n    {\n      \"type\": \"box\",\n      \"center\": [-22, -18],\n      \"size\": [64, 42],\n      \"y0\": 0,\n      \"y1\": 27,\n      \"colour\": \"#e9e8e6\",\n      \"material\": \"stone\",\n      \"windows\": {\n        \"kind\": \"bands\",\n        \"floor\": 6.0,\n        \"pitch\": 8.0,\n        \"solid\": 0.55\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-22, -30],\n      \"size\": [64, 24],\n      \"y0\": 0,\n      \"y1\": 15,\n      \"colour\": \"#a94e2e\",\n      \"material\": \"brick\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-35, -28],\n      \"size\": [28, 22],\n      \"y0\": 0,\n      \"y1\": 17,\n      \"colour\": \"#b55a33\",\n      \"material\": \"brick\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-5, -28],\n      \"size\": [20, 22],\n      \"y0\": 0,\n      \"y1\": 17,\n      \"colour\": \"#b55a33\",\n      \"material\": \"brick\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-22, -35],\n      \"size\": [50, 14],\n      \"y0\": 0,\n      \"y1\": 9,\n      \"colour\": \"#bd6439\",\n      \"material\": \"brick\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-22, -18],\n      \"size\": [48, 30],\n      \"y0\": 15,\n      \"y1\": 30,\n      \"colour\": \"#efeee9\",\n      \"material\": \"stone\",\n      \"windows\": {\n        \"kind\": \"bands\",\n        \"floor\": 6.5,\n        \"pitch\": 10,\n        \"solid\": 0.6\n      }\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [-22, -30],\n      \"radius\": 11,\n      \"y0\": 6,\n      \"y1\": 31,\n      \"colour\": \"#f6f6f5\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"disc\",\n      \"center\": [-22, 18, -40.6],\n      \"radius\": 11,\n      \"facing\": \"front\",\n      \"colour\": \"#f7f7f6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"disc\",\n      \"center\": [-22, 18, -40.8],\n      \"radius\": 7.6,\n      \"facing\": \"front\",\n      \"colour\": \"#86b3b2\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-22, 11.4, -40.9],\n      \"to\": [-22, 24.6, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-22, 11.4, -40.9],\n      \"to\": [-22, 24.6, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\",\n      \"rotate\": 0\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-22, 11.4, -40.9],\n      \"to\": [-22, 24.6, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-22, 11.4, -40.9],\n      \"to\": [-22, 24.6, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-22, 11.4, -40.9],\n      \"to\": [-22, 24.6, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-22, 11.4, -40.9],\n      \"to\": [-22, 24.6, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-29.5, 18.0, -40.9],\n      \"to\": [-14.5, 18.0, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-29.5, 18.0, -40.9],\n      \"to\": [-14.5, 18.0, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-27.0, 11.5, -40.9],\n      \"to\": [-17.0, 24.5, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-17.0, 11.5, -40.9],\n      \"to\": [-27.0, 24.5, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-24.5, 10.9, -40.9],\n      \"to\": [-19.5, 25.1, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"beam\",\n      \"from\": [-19.5, 10.9, -40.9],\n      \"to\": [-24.5, 25.1, -40.9],\n      \"width\": 0.7,\n      \"colour\": \"#2a2a2a\",\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [18, 21],\n      \"size\": [70, 30],\n      \"y0\": 0,\n      \"y1\": 38,\n      \"colour\": \"#eeeded\",\n      \"material\": \"concrete\",\n      \"storeys\": [\n        {\n          \"height\": 16,\n          \"kind\": \"blank\"\n        },\n        {\n          \"height\": 12,\n          \"kind\": \"bands\",\n          \"floors\": 1\n        },\n        {\n          \"height\": 10,\n          \"kind\": \"curtain\"\n        }\n      ],\n      \"cornice\": 1.0,\n      \"roof\": {\n        \"kind\": \"flat\"\n      }\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-18, 21],\n      \"size\": [44, 30],\n      \"y0\": 0,\n      \"y1\": 24,\n      \"colour\": \"#ecebe9\",\n      \"material\": \"stone\",\n      \"windows\": {\n        \"kind\": \"bands\",\n        \"floor\": 6,\n        \"pitch\": 9,\n        \"solid\": 0.6\n      }\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8042,
+   "output": 11272,
+   "cost": 0,
+   "ms": 265381,
+   "errors": [],
+   "warnings": [
+    "parts[10].rotate: \"beam\" has no field \"rotate\"; ignored",
+    "parts[21].y1: \"block\" has no field \"y1\"; ignored"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The old Botta building is a stepped brick-and-stone mass on the Third Street front, dominated by a huge striped circular oculus drum with a central glass disc. Behind and to the right is a smooth white stepped museum extension with horizontal band windows, filling the back part of the footprint.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -18
+     ],
+     "size": [
+      64,
+      42
+     ],
+     "y0": 0,
+     "y1": 27,
+     "colour": "#e9e8e6",
+     "material": "stone",
+     "windows": {
+      "kind": "bands",
+      "floor": 6,
+      "pitch": 8,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -30
+     ],
+     "size": [
+      64,
+      24
+     ],
+     "y0": 0,
+     "y1": 15,
+     "colour": "#a94e2e",
+     "material": "brick"
+    },
+    {
+     "type": "box",
+     "center": [
+      -35,
+      -28
+     ],
+     "size": [
+      28,
+      22
+     ],
+     "y0": 0,
+     "y1": 17,
+     "colour": "#b55a33",
+     "material": "brick"
+    },
+    {
+     "type": "box",
+     "center": [
+      -5,
+      -28
+     ],
+     "size": [
+      20,
+      22
+     ],
+     "y0": 0,
+     "y1": 17,
+     "colour": "#b55a33",
+     "material": "brick"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -35
+     ],
+     "size": [
+      50,
+      14
+     ],
+     "y0": 0,
+     "y1": 9,
+     "colour": "#bd6439",
+     "material": "brick"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -18
+     ],
+     "size": [
+      48,
+      30
+     ],
+     "y0": 15,
+     "y1": 30,
+     "colour": "#efeee9",
+     "material": "stone",
+     "windows": {
+      "kind": "bands",
+      "floor": 6.5,
+      "pitch": 10,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -22,
+      -30
+     ],
+     "radius": 11,
+     "y0": 6,
+     "y1": 31,
+     "colour": "#f6f6f5",
+     "material": "stone"
+    },
+    {
+     "type": "disc",
+     "center": [
+      -22,
+      18,
+      -40.6
+     ],
+     "radius": 11,
+     "facing": "front",
+     "colour": "#f7f7f6",
+     "material": "stone"
+    },
+    {
+     "type": "disc",
+     "center": [
+      -22,
+      18,
+      -40.8
+     ],
+     "radius": 7.6,
+     "facing": "front",
+     "colour": "#86b3b2",
+     "material": "glass"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -22,
+      11.4,
+      -40.9
+     ],
+     "to": [
+      -22,
+      24.6,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -22,
+      11.4,
+      -40.9
+     ],
+     "to": [
+      -22,
+      24.6,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal",
+     "rotate": 0
+    },
+    {
+     "type": "beam",
+     "from": [
+      -22,
+      11.4,
+      -40.9
+     ],
+     "to": [
+      -22,
+      24.6,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -22,
+      11.4,
+      -40.9
+     ],
+     "to": [
+      -22,
+      24.6,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -22,
+      11.4,
+      -40.9
+     ],
+     "to": [
+      -22,
+      24.6,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -22,
+      11.4,
+      -40.9
+     ],
+     "to": [
+      -22,
+      24.6,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -29.5,
+      18,
+      -40.9
+     ],
+     "to": [
+      -14.5,
+      18,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -29.5,
+      18,
+      -40.9
+     ],
+     "to": [
+      -14.5,
+      18,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -27,
+      11.5,
+      -40.9
+     ],
+     "to": [
+      -17,
+      24.5,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -17,
+      11.5,
+      -40.9
+     ],
+     "to": [
+      -27,
+      24.5,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -24.5,
+      10.9,
+      -40.9
+     ],
+     "to": [
+      -19.5,
+      25.1,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -19.5,
+      10.9,
+      -40.9
+     ],
+     "to": [
+      -24.5,
+      25.1,
+      -40.9
+     ],
+     "width": 0.7,
+     "colour": "#2a2a2a",
+     "material": "metal"
+    },
+    {
+     "type": "block",
+     "center": [
+      18,
+      21
+     ],
+     "size": [
+      70,
+      30
+     ],
+     "y0": 0,
+     "y1": 38,
+     "colour": "#eeeded",
+     "material": "concrete",
+     "storeys": [
+      {
+       "height": 16,
+       "kind": "blank"
+      },
+      {
+       "height": 12,
+       "kind": "bands",
+       "floors": 1
+      },
+      {
+       "height": 10,
+       "kind": "curtain"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -18,
+      21
+     ],
+     "size": [
+      44,
+      30
+     ],
+     "y0": 0,
+     "y1": 24,
+     "colour": "#ecebe9",
+     "material": "stone",
+     "windows": {
+      "kind": "bands",
+      "floor": 6,
+      "pitch": 9,
+      "solid": 0.6
+     }
+    }
+   ]
+  },
+  "notes": "The old Botta building is a stepped brick-and-stone mass on the Third Street front, dominated by a huge striped circular oculus drum with a central glass disc. Behind and to the right is a smooth white stepped museum extension with horizontal band windows, filling the back part of the footprint.",
+  "triangles": 540,
+  "parts": 28
+ },
+ "totals": {
+  "input": 8042,
+  "output": 11272,
+  "cost": 0,
+  "ms": 265381
+ }
+}

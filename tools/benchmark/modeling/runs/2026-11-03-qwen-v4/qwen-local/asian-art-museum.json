@@ -1,0 +1,402 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "qwen-local",
+ "model": "auto",
+ "provider": "openai",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T04:19:12.715Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The building is a large neoclassical stone block: a rusticated granite base, an upper giant-order facade with a colonnade across the west/Larkin front and arched windows along the long sides, capped by a cornice and a low hipped slate roof. I model the irregular footprint as a stepped stone mass with two storeys, put a front colonnade over the main front edge, and add hipped roof masses for the main body and rear wing.\",\n  \"parts\": [\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]\n      ],\n      \"y0\": 0,\n      \"y1\": 8.5,\n      \"material\": \"stone\",\n      \"colour\": \"#d8d5cf\",\n      \"windows\": {\"kind\": \"punched\", \"floor\": 4.2, \"pitch\": 4.8, \"solid\": 0.62}\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]\n      ],\n      \"y0\": 8.5,\n      \"y1\": 21,\n      \"material\": \"stone\",\n      \"colour\": \"#e2ded6\",\n      \"windows\": {\"kind\": \"arched\", \"floor\": 6.5, \"pitch\": 5.2, \"solid\": 0.42}\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [\n        [-27.5,-53.2],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]\n      ],\n      \"y0\": 21,\n      \"y1\": 22.2,\n      \"material\": \"stone\",\n      \"colour\": \"#ded9d0\",\n      \"windows\": false\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-24.5, -50.5],\n      \"to\": [24.5, -50.5],\n      \"y0\": 8.5,\n      \"height\": 13.2,\n      \"count\": 14,\n      \"radius\": 0.85,\n      \"entablature\": 2.1,\n      \"material\": \"stone\",\n      \"colour\": \"#e6e1d6\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-23, -38],\n      \"to\": [-23, 8],\n      \"y0\": 0,\n      \"height\": 7.2,\n      \"count\": 8,\n      \"thickness\": 1.0,\n      \"material\": \"stone\",\n      \"colour\": \"#d5d1c8\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [25.5, -48],\n      \"to\": [25.5, 38],\n      \"y0\": 0,\n      \"height\": 7.2,\n      \"count\": 13,\n      \"thickness\": 1.0,\n      \"material\": \"stone\",\n      \"colour\": \"#d5d1c8\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-8, 50],\n      \"to\": [13, 50],\n      \"y0\": 0,\n      \"height\": 7.2,\n      \"count\": 6,\n      \"thickness\": 1.0,\n      \"material\": \"stone\",\n      \"colour\": \"#d5d1c8\"\n    },\n    {\n      \"type\": \"roof\",\n      \"kind\": \"hip\",\n      \"center\": [0.5, -6.5],\n      \"size\": [55, 93],\n      \"y0\": 21.8,\n      \"rise\": 7.2,\n      \"material\": \"metal\",\n      \"colour\": \"#7f858a\"\n    },\n    {\n      \"type\": \"roof\",\n      \"kind\": \"hip\",\n      \"center\": [1.45, 46.6],\n      \"size\": [26, 13],\n      \"y0\": 21.8,\n      \"rise\": 5.2,\n      \"material\": \"metal\",\n      \"colour\": \"#7f858a\"\n    }\n  ]\n}",
+   "stop": "stop",
+   "input": 8097,
+   "output": 10392,
+   "cost": 0,
+   "ms": 201775,
+   "errors": [],
+   "warnings": [
+    "parts[2].windows: must be an object like {\"kind\": \"punched\"} — part dropped"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The building is a large neoclassical stone block: a rusticated granite base, an upper giant-order facade with a colonnade across the west/Larkin front and arched windows along the long sides, capped by a cornice and a low hipped slate roof. I model the irregular footprint as a stepped stone mass with two storeys, put a front colonnade over the main front edge, and add hipped roof masses for the main body and rear wing.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -27.5,
+       -53.2
+      ],
+      [
+       2.6,
+       -53.1
+      ],
+      [
+       27.5,
+       -52.1
+      ],
+      [
+       27.5,
+       40.1
+      ],
+      [
+       14.5,
+       40.2
+      ],
+      [
+       14.5,
+       53
+      ],
+      [
+       -11.6,
+       53.2
+      ],
+      [
+       -11.7,
+       16.6
+      ],
+      [
+       -15.9,
+       16.6
+      ],
+      [
+       -15.9,
+       9.3
+      ],
+      [
+       -25.7,
+       9.2
+      ],
+      [
+       -25.5,
+       -36.8
+      ],
+      [
+       -27.5,
+       -36.8
+      ]
+     ],
+     "y0": 0,
+     "y1": 8.5,
+     "material": "stone",
+     "colour": "#d8d5cf",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.2,
+      "pitch": 4.8,
+      "solid": 0.62
+     }
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -27.5,
+       -53.2
+      ],
+      [
+       2.6,
+       -53.1
+      ],
+      [
+       27.5,
+       -52.1
+      ],
+      [
+       27.5,
+       40.1
+      ],
+      [
+       14.5,
+       40.2
+      ],
+      [
+       14.5,
+       53
+      ],
+      [
+       -11.6,
+       53.2
+      ],
+      [
+       -11.7,
+       16.6
+      ],
+      [
+       -15.9,
+       16.6
+      ],
+      [
+       -15.9,
+       9.3
+      ],
+      [
+       -25.7,
+       9.2
+      ],
+      [
+       -25.5,
+       -36.8
+      ],
+      [
+       -27.5,
+       -36.8
+      ]
+     ],
+     "y0": 8.5,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#e2ded6",
+     "windows": {
+      "kind": "arched",
+      "floor": 6.5,
+      "pitch": 5.2,
+      "solid": 0.42
+     }
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -27.5,
+       -53.2
+      ],
+      [
+       27.5,
+       -52.1
+      ],
+      [
+       27.5,
+       40.1
+      ],
+      [
+       14.5,
+       40.2
+      ],
+      [
+       14.5,
+       53
+      ],
+      [
+       -11.6,
+       53.2
+      ],
+      [
+       -11.7,
+       16.6
+      ],
+      [
+       -15.9,
+       16.6
+      ],
+      [
+       -15.9,
+       9.3
+      ],
+      [
+       -25.7,
+       9.2
+      ],
+      [
+       -25.5,
+       -36.8
+      ],
+      [
+       -27.5,
+       -36.8
+      ]
+     ],
+     "y0": 21,
+     "y1": 22.2,
+     "material": "stone",
+     "colour": "#ded9d0",
+     "windows": false
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -24.5,
+      -50.5
+     ],
+     "to": [
+      24.5,
+      -50.5
+     ],
+     "y0": 8.5,
+     "height": 13.2,
+     "count": 14,
+     "radius": 0.85,
+     "entablature": 2.1,
+     "material": "stone",
+     "colour": "#e6e1d6"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -23,
+      -38
+     ],
+     "to": [
+      -23,
+      8
+     ],
+     "y0": 0,
+     "height": 7.2,
+     "count": 8,
+     "thickness": 1,
+     "material": "stone",
+     "colour": "#d5d1c8"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      25.5,
+      -48
+     ],
+     "to": [
+      25.5,
+      38
+     ],
+     "y0": 0,
+     "height": 7.2,
+     "count": 13,
+     "thickness": 1,
+     "material": "stone",
+     "colour": "#d5d1c8"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -8,
+      50
+     ],
+     "to": [
+      13,
+      50
+     ],
+     "y0": 0,
+     "height": 7.2,
+     "count": 6,
+     "thickness": 1,
+     "material": "stone",
+     "colour": "#d5d1c8"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0.5,
+      -6.5
+     ],
+     "size": [
+      55,
+      93
+     ],
+     "y0": 21.8,
+     "rise": 7.2,
+     "material": "metal",
+     "colour": "#7f858a"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      1.45,
+      46.6
+     ],
+     "size": [
+      26,
+      13
+     ],
+     "y0": 21.8,
+     "rise": 5.2,
+     "material": "metal",
+     "colour": "#7f858a"
+    }
+   ]
+  },
+  "notes": "The building is a large neoclassical stone block: a rusticated granite base, an upper giant-order facade with a colonnade across the west/Larkin front and arched windows along the long sides, capped by a cornice and a low hipped slate roof. I model the irregular footprint as a stepped stone mass with two storeys, put a front colonnade over the main front edge, and add hipped roof masses for the main body and rear wing.",
+  "triangles": 3487,
+  "parts": 8
+ },
+ "totals": {
+  "input": 8097,
+  "output": 10392,
+  "cost": 0,
+  "ms": 201775
+ }
+}
