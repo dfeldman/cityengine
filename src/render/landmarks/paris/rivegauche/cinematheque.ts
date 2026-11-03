@@ -1,128 +1,242 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { arc, cap, centroid, fitted, hex, hull, loft, panel, pts, ribbons, shade, sign, stripSlope, stripWall, wallOn, wound, type P2, type Rgb, type V3 } from './common.ts'
+import { UV, arc, cap, centroid, edgeAt, fitted, hex, panel, pts, shade, sign, stripWall, surfaceTag, wallOn, wound, type P2, type Rgb, type V3 } from './common.ts'
 
-/** the design footprint: OSM way 78271385's box, x east, z north */
+/** the design footprint: OSM way 78271385's box, x east, z north, metres from the box's centre (48.837002 N, 2.382646 E) */
 const HX = 28.4
 const HZ = 35.9
-/** OSM's outline, thinned: the straight Rue de Bercy side (north-east), the straight park side (south-east), the broken west */
-const PLAN = pts([28.4, -2.8, -3.8, 35.9, -17.5, 24.5, -15.0, 21.5, -20.4, 23.1, -20.3, 21.5, -28.0, 15.7, -26.2, 13.7, -28.3, 11.9, -25.9, 9.0, -28.4, -4.4, -25.8, -16.2, -24.2, -20.0, -11.0, -35.9])
-/** the regular block on the two straight sides: an L inside the plan */
-const OFFICES = pts([28.4, -2.8, -3.8, 35.9, -13.6, 27.7, 10.2, -0.8, -5.8, -14.2, -11, -35.9])
 
-const STONE = hex('#d3c6a6')
-const STONE_DEEP = hex('#bfb190')
-const ZINC = hex('#8f9aa0')
+const STONE = hex('#d8cdb0')
+const STONE_DEEP = hex('#c7ba9b')
+const ZINC = hex('#6b747b')
+/** the punched windows of the stone */
 const GLASS = hex('#26333a')
-const MULLION = hex('#3f6a63')
+/** the lobby's glass, which the glass surface fills with sky */
+const LOBBY = hex('#c3d4db')
+const MULLION = hex('#44565b')
+const PLAIN = 0
+const METAL = surfaceTag('metal')
+const GLAZED = surfaceTag('glass')
 
-/** A limestone block turned and leaning: a rectangle `w`×`d` at the foot, moved and scaled at the head. */
-function tumbled(out: MeshBuilder, x: number, z: number, y0: number, y1: number, w: number, d: number, turn: number, leanX: number, leanZ: number, scale: number, c: Rgb, windows = 0): void {
-  const rect = (cx: number, cz: number, k: number): P2[] => {
-    const cs = Math.cos(turn), sn = Math.sin(turn)
-    return [[-w, -d], [w, -d], [w, d], [-w, d]].map(([a, b]) => ({ x: cx + (a * cs - b * sn) * k, z: cz + (a * sn + b * cs) * k }))
+/*
+ * The massing, from IGN's LiDAR HD surface model (docs/landmarks/MODEL-CINEMATHEQUE.md), metres above the park:
+ *  - MAIN, 28.5 m: the block along the whole Rue de Bercy (north-east) edge, wrapping south to the park corner,
+ *    with a court in its west side whose roof is the 11 m foyer;
+ *  - STRIP, 18 m: 6 m wide along the Rue Jean-Renoir (south-east) edge, the set-back the lane shows;
+ *  - the foyer, 11 m, between the main block and the west edge, under the glass lobby's skirt.
+ */
+/** (both wound anticlockwise, so an edge's wall faces out) */
+const MAIN = pts([-16, 25.5, -14, 22, -12, 20, -10, 17, 1, 17, 1, -2, -15, -2, -17.5, -13, -19.5, -26, -6.5, -25.5, -1.4, -20, 24.5, 1.8, -3.8, 35.9])
+const STRIP = pts([28.4, -2.8, 24.5, 1.8, -1.4, -20, -6.5, -25.5, -19.5, -26, -11, -35.9])
+const FOYER = pts([-19, -19.8, -18.5, -19.5, -17.5, -13, -15, -2, 1, -2, 1, 17, -10, 17, -12, 20, -14, 22, -16, 25.5, -17.5, 24.5, -20.4, 23.1, -23, 14, -20.5, 9.5, -21, 7, -21.5, 2, -22, -3.5, -21.5, -9, -20.5, -15.5])
+/** the lobby's glass, on the ring's west edge; the eave 1.6 m outside it; the inner line where the zinc meets the stone */
+const G = pts([-23.3, -20, -25, -15.5, -26.6, -9, -27.2, -3.5, -26.8, 2, -26, 7, -25.3, 9.5])
+const E = pts([-24.9, -20.6, -26.6, -15.9, -28.2, -9.2, -28.8, -3.5, -28.4, 2.2, -27.6, 7.3, -26.9, 9.9])
+const I = pts([-19, -19.8, -20.5, -15.5, -21.5, -9, -22, -3.5, -21.5, 2, -21, 7, -20.5, 9.5])
+const I_Y = [10, 10.8, 12, 13, 13.5, 14, 14]
+
+/** A straight-walled prism on any plan (concave too: the normals are the edges' own), its lid a shade darker. */
+function prism(out: MeshBuilder, ring: P2[], y0: number, y1: number, c: Rgb, tag: number): void {
+  const r = wound([ring])[0]
+  for (let i = 0; i < r.length; i++) {
+    const e = edgeAt(r, i)
+    out.quad([[e.a.x, y0, e.a.z], [e.b.x, y0, e.b.z], [e.b.x, y1, e.b.z], [e.a.x, y1, e.a.z]], [e.nx, 0, e.nz], UV, c, tag)
   }
-  const a = rect(x, z, 1), b = rect(x + leanX, z + leanZ, scale)
-  loft(out, a, y0, b, y1, c)
-  cap(out, b, y1, shade(c, 0.86))
-  if (!windows) return
-  // a few square windows set anyhow, out on the wall: the leaning planes' only scale
+  cap(out, r, y1, shade(c, 0.9), tag)
+}
+
+/** A convex plan lofted from ring `a` at `ya` to ring `b`, each of whose vertices has its own height: a leaning block with a sloped top. */
+function loftTo(out: MeshBuilder, a: P2[], ya: number, b: P2[], yb: number[], c: Rgb, tag: number): void {
   const m = centroid(a)
-  for (let i = 0; i < 4; i++) {
-    const j = (i + 1) % 4
-    for (let k = 0; k < windows; k++) {
-      const u = (k + 0.5) / windows, v = 0.55
-      const pa: P2 = { x: a[i].x + (b[i].x - a[i].x) * v, z: a[i].z + (b[i].z - a[i].z) * v }
-      const pb: P2 = { x: a[j].x + (b[j].x - a[j].x) * v, z: a[j].z + (b[j].z - a[j].z) * v }
-      const cx = pa.x + (pb.x - pa.x) * u, cz = pa.z + (pb.z - pa.z) * u
-      const dx = (pb.x - pa.x) / (Math.hypot(pb.x - pa.x, pb.z - pa.z) || 1), dz = (pb.z - pa.z) / (Math.hypot(pb.x - pa.x, pb.z - pa.z) || 1)
-      const nx = cx - m.x, nz = cz - m.z, nl = Math.hypot(nx, nz) || 1
-      const yc = y0 + (y1 - y0) * v
-      const o = 0.12
-      const q = (s: number, t: number): V3 => [cx + dx * s + (nx / nl) * o, yc + t, cz + dz * s + (nz / nl) * o]
-      panel(out, [q(-0.8, -1), q(0.8, -1), q(0.8, 1), q(-0.8, 1)], [m.x, yc, m.z], GLASS)
-    }
+  const inner: V3 = [m.x, ya, m.z]
+  for (let i = 0; i < a.length; i++) {
+    const j = (i + 1) % a.length
+    panel(out, [[a[i].x, ya, a[i].z], [a[j].x, ya, a[j].z], [b[j].x, yb[j], b[j].z], [b[i].x, yb[i], b[i].z]], inner, c, tag)
+  }
+  const t = centroid(b)
+  const ty = yb.reduce((s, y) => s + y, 0) / yb.length
+  for (let i = 0; i < b.length; i++) {
+    const j = (i + 1) % b.length
+    panel(out, [[b[i].x, yb[i], b[i].z], [b[j].x, yb[j], b[j].z], [t.x, ty, t.z], [t.x, ty, t.z]], [t.x, ty - 3, t.z], shade(c, 0.9), tag)
   }
 }
 
 /**
- * The Cinémathèque française, Frank Gehry's American Center of 1994, 51 rue de Bercy, on the corner of the Parc de Bercy. From
- * Commons "Gehrys American Center 2011" and "L'extérieur de la Cinémathèque Française", and from memory of the building:
+ * A window set on a lofted wall: `s0..s1` along the ring (fractional vertex index: 1.3 is three tenths of the way along the
+ * second edge), `v0..v1` of the way up. It follows the lean, 0.12 proud of the face.
+ */
+function windowOn(out: MeshBuilder, a: P2[], ya: number, b: P2[], yb: number[], s0: number, s1: number, v0: number, v1: number, c: Rgb): void {
+  const m = centroid(a)
+  const at = (s: number, v: number): V3 => {
+    const i = Math.min(a.length - 1, Math.floor(s)), j = (i + 1) % a.length, t = s - i
+    const ax = a[i].x + (a[j].x - a[i].x) * t, az = a[i].z + (a[j].z - a[i].z) * t
+    const bx = b[i].x + (b[j].x - b[i].x) * t, bz = b[i].z + (b[j].z - b[i].z) * t
+    const by = yb[i] + (yb[j] - yb[i]) * t
+    const x = ax + (bx - ax) * v, z = az + (bz - az) * v
+    const nx = x - m.x, nz = z - m.z, nl = Math.hypot(nx, nz) || 1
+    return [x + (nx / nl) * 0.12, ya + (by - ya) * v, z + (nz / nl) * 0.12]
+  }
+  panel(out, [at(s0, v0), at(s1, v0), at(s1, v1), at(s0, v1)], [m.x, ya, m.z], c)
+}
+
+/** A D-shaped ring: an arc about (cx, cz) from a0 to a1, closed by a flat back at x = `back`. */
+function dee(cx: number, cz: number, r: number, a0: number, a1: number, n: number, back: number): P2[] {
+  const bow = arc(cx, cz, r, a0, a1, n)
+  return [...bow, { x: back, z: bow[n].z }, { x: back, z: bow[0].z }]
+}
+
+const rad = (deg: number): number => (deg * Math.PI) / 180
+
+/**
+ * The Cinémathèque française, Frank Gehry's American Center of 1994, 51 rue de Bercy, on the north corner of the Parc de Bercy.
+ * Measured from IGN's LiDAR HD surface model and orthophoto, and from the photographs (the owner's from the park, Commons
+ * "Gehrys American Center 2011", the lobby by night, the Rue Jean-Renoir lane, the Rue Paul-Belmondo promenade): see
+ * docs/landmarks/MODEL-CINEMATHEQUE.md. What the park sees, from the west:
  *
- * - the plain side: on the Rue de Bercy and along the park a regular limestone block with a strict grid of windows, which is what
- *   Gehry gave the street;
- * - the broken side: at the west, toward the park, limestone volumes leaning and tumbling out of each other, a tall one over a
- *   wedge of glass;
- * - the ZINC SKIRT: a grey metal roof swept up in a curve over the entrance, on a glass wall in green-framed panes, with
- *   CINÉMATHÈQUE over the door in big pale capitals on the concrete fascia.
+ * - at the left a tall CURVED tower of limestone, five rows of square windows on a bowed face, leaning out, its top sloping up
+ *   toward the middle;
+ * - in the middle a planar tower, the highest thing (32–33 m), leaning a little, its top a slope;
+ * - in front of it the limestone PETAL over the entrance: a bowed sail that swells out over the doors and rounds off at the top;
+ * - at the right a lower bowed block with a sloping shoulder, in front of the regular wing;
+ * - under all of it the GLASS LOBBY: a run of tall panes in dark mullions along the west edge, a thin glass canopy at door
+ *   height, LA CINÉMATHÈQUE FRANÇAISE in pale capitals on the glass, and the ZINC SKIRT sweeping up from its eave to the stone.
  *
- * The plan is OSM's, the heights (28 m at the top, as baked) and the placing of each tumbled block are from the photographs and
- * memory, not a survey: this is its character and not its elevation.
+ * The street (north-east) and the lane (south-east) get the plain block and its strict grid of windows.
  */
 export function cinematheque(out: MeshBuilder, fit: Fit): void {
   fitted(out, fit, HX, HZ, (q) => draw(q))
 }
 
 function draw(out: MeshBuilder): void {
-  const plan = wound([PLAN])[0]
-  // the lower storeys over the whole plan
-  hull(out, [plan], 0, 7.5, STONE, STONE_DEEP)
-  ribbons(out, [plan], [[1, 5.8]], GLASS, 0.05, 0.5, 3)
-  ribbons(out, [plan], [[7, 7.5]], shade(STONE, 1.05), 0.14, 0, 1)
-  // ---- the regular block: its windows on a strict grid, stone between them, on the two long straight walls only
-  const block = wound([OFFICES])[0]
-  hull(out, [block], 7.5, 22, STONE, STONE_DEEP)
-  for (let i = 0; i < block.length; i++) {
-    const w = wallOn(out, block[i], block[(i + 1) % block.length])
-    if (w.L < 8) continue
+  // ---- the plain block on the street, and the lane's set-back strip
+  prism(out, MAIN, 0, 28.5, STONE, PLAIN)
+  const strip = wound([STRIP])[0]
+  const sc = centroid(strip)
+  stripWall(out, [pts([24.5, 1.8, 28.4, -2.8, -11, -35.9, -19.5, -26])].flat(), 0, 18, sc, STONE, PLAIN)
+  cap(out, strip, 18, shade(STONE, 0.9), PLAIN)
+  // the street face: seven rows on a 3.3 m grid over a stone base, the north-west end the same but sparser
+  for (const [p, q, rows] of [[MAIN[11], MAIN[12], [5.5, 8.8, 12.1, 15.4, 18.7, 22, 25.3]], [MAIN[12], MAIN[0], [8.8, 12.1, 15.4, 18.7, 22, 25.3]]] as const) {
+    const w = wallOn(out, p, q)
     const n = Math.round(w.L / 3.3)
     for (let j = 0; j < n; j++) {
       const u = (w.L * (j + 0.5)) / n
-      for (const y of [8.6, 12.2, 15.8, 19.4]) w.rect(u - 0.8, u + 0.8, y, y + 2.1, GLASS, 0.07)
+      for (const y of rows) w.rect(u - 0.8, u + 0.8, y, y + 2.1, GLASS, 0.07)
     }
-    w.rect(0, w.L, 21.7, 22, shade(STONE, 1.05), 0.12)
+    w.rect(0, w.L, 28.1, 28.5, shade(STONE, 1.05), 0.1)
   }
-  // ---- the broken side: blocks leaning out of each other, from the corner by the zinc to the north-west end
-  tumbled(out, -18, 12, 7.5, 21, 7, 5.5, 0.35, -1.2, 0.6, 1.12, STONE, 2)
-  tumbled(out, -11, 2, 7.5, 28, 8, 7, -0.2, 1.4, -0.8, 0.92, shade(STONE, 1.03), 2)
-  tumbled(out, -17, -8, 7.5, 18, 6, 7, 0.55, -1.8, -1.2, 1.1, STONE_DEEP, 1)
-  tumbled(out, -8, -19, 7.5, 16, 7, 5, 0.86, 0.4, -1.6, 1.06, STONE, 1)
-  tumbled(out, 0, 18, 22, 28, 8.5, 6, 0.87, 0, 0, 0.84, STONE, 0)
-  tumbled(out, 8, 8, 22, 26, 7, 5.5, 0.87, 0, 0, 0.86, STONE_DEEP, 0)
-  // a wedge of dark glass between the tumbled blocks
-  loft(out, pts([-23, 2, -20, -4, -14, 0, -17, 7]), 7.5, pts([-24.5, 3, -21, -5.5, -14, 0, -17, 8]), 17, hex('#34454e'))
-  // ---- the zinc skirt over the entrance: a curve on the south-west side, rising from a low eave to the wall behind it
-  const C: P2 = { x: 6, z: -4 }
-  const a0 = Math.PI * 0.98, a1 = Math.PI * 1.47
-  const eave = arc(C.x, C.z, 38, a0, a1, 12)
-  const head = arc(C.x, C.z, 28, a0, a1, 12)
-  const crest = arc(C.x, C.z, 22, a0, a1, 12)
-  stripSlope(out, eave, 7, head, 13, [C.x, 2, C.z], ZINC)
-  stripSlope(out, head, 13, crest, 15.2, [C.x, 6, C.z], shade(ZINC, 1.1))
-  // the standing seams of the zinc
-  for (let i = 0; i <= 12; i++) {
-    const p = eave[i], q = head[i]
-    const dx = (q.x - p.x) / 10, dz = (q.z - p.z) / 10
-    panel(out, [[p.x - dz * 0.12, 7.06, p.z + dx * 0.12], [p.x + dz * 0.12, 7.06, p.z - dx * 0.12], [q.x + dz * 0.12, 13.06, q.z - dx * 0.12], [q.x - dz * 0.12, 13.06, q.z + dx * 0.12]], [C.x, 2, C.z], shade(ZINC, 0.78))
+  // the lane: the strip's few square windows and the set-back block's two rows over it
+  {
+    const w = wallOn(out, STRIP[5], STRIP[0])
+    for (let u = 4; u < w.L - 3; u += 6) for (const y of [8, 13]) w.rect(u - 0.7, u + 0.7, y, y + 1.6, GLASS, 0.07)
+    const b = wallOn(out, MAIN[10], MAIN[11])
+    const n = Math.round(b.L / 3.3)
+    for (let j = 0; j < n; j++) {
+      const u = (b.L * (j + 0.5)) / n
+      for (const y of [20.2, 23.8]) b.rect(u - 0.8, u + 0.8, y, y + 2.1, GLASS, 0.07)
+    }
   }
-  // the eave's fascia and the glass wall under it, its panes in green frames
-  stripWall(out, eave, 6.4, 7, C, shade(STONE, 1.02))
-  const wall = arc(C.x, C.z, 35, a0, a1, 12)
-  stripWall(out, wall, 0, 6.4, C, GLASS)
-  for (let i = 0; i <= 12; i++) {
-    const p = wall[i]
-    panel(out, [[p.x - 0.1, 0, p.z], [p.x + 0.1, 0, p.z], [p.x + 0.1, 6.4, p.z], [p.x - 0.1, 6.4, p.z]], [C.x, 3, C.z], MULLION)
-    panel(out, [[p.x, 0, p.z - 0.1], [p.x, 0, p.z + 0.1], [p.x, 6.4, p.z + 0.1], [p.x, 6.4, p.z - 0.1]], [C.x, 3, C.z], MULLION)
+  // the promenade (south-west) faces: tall glazed slots in the stone, as the Rue Paul-Belmondo shows them
+  {
+    const s = wallOn(out, STRIP[4], STRIP[5])
+    for (const u of [3.5, 8.5]) s.rect(u - 1.1, u + 1.1, 0.4, 8.5, LOBBY, 0.1)
+    const w = wallOn(out, MAIN[7], MAIN[8])
+    w.rect(1.2, 2.8, 9, 27, LOBBY, 0.1)
+    w.rect(1.2, 2.8, 0.4, 8.5, LOBBY, 0.1)
   }
-  stripWall(out, wall, 2.9, 3.05, C, MULLION)
-  stripWall(out, wall, 0, 0.14, C, shade(STONE, 0.8))
-  // a few posts carrying the eave out over the walk
-  for (let i = 2; i <= 10; i += 4) {
-    const p = eave[i]
-    loft(out, [{ x: p.x - 0.2, z: p.z - 0.2 }, { x: p.x + 0.2, z: p.z - 0.2 }, { x: p.x + 0.2, z: p.z + 0.2 }, { x: p.x - 0.2, z: p.z + 0.2 }], 0, [{ x: p.x - 0.2, z: p.z - 0.2 }, { x: p.x + 0.2, z: p.z - 0.2 }, { x: p.x + 0.2, z: p.z + 0.2 }, { x: p.x - 0.2, z: p.z + 0.2 }], 6.5, shade(STONE, 0.9))
+  // plant on the roof, where the lidar had it
+  prism(out, pts([-7, 22, -3, 22, -3, 26, -7, 26]), 28.5, 30.2, STONE_DEEP, PLAIN)
+  prism(out, pts([0, 23.5, 4, 23.5, 4, 26.5, 0, 26.5]), 28.5, 29.8, STONE_DEEP, PLAIN)
+  // ---- the foyer: its roof over the court (10 m: the lidar's 11, kept under the zinc where that meets the stone) and out to the glass; a 22 m block standing in the court
+  cap(out, wound([FOYER])[0], 10, shade(STONE, 0.86), PLAIN)
+  prism(out, pts([-6, 3, 1, 3, 1, 9, -6, 9]), 11, 22, STONE_DEEP, PLAIN)
+
+  // ---- the curved tower at the north-west: a bowed west face, leaning out, its top sloping up toward the middle of the front
+  {
+    const a = dee(-15, 14, 11.5, rad(143), rad(217), 7, -12)
+    const b = dee(-16.2, 14.3, 12.1, rad(143), rad(217), 7, -12.6)
+    const ys = b.map((p) => 25.5 - (p.z - 14) * 0.21)
+    loftTo(out, a, 0, b, ys, STONE, PLAIN)
+    // five rows of square windows in three columns on the bow, one column of slots on the flat south face
+    for (const y of [9.5, 12.8, 16.1, 19.4, 22.7]) {
+      for (const s of [1, 3, 5]) windowOn(out, a, 0, b, ys, s + 0.12, s + 0.88, (y - 1) / 25.5, (y + 1) / 25.5, GLASS)
+      windowOn(out, a, 0, b, ys, 7.3, 7.42, (y - 1) / 25.5, (y + 1.2) / 25.5, GLASS)
+    }
   }
-  // the name on the fascia, facing the park (the wall's normal at the skirt's middle)
-  const m = eave[6]
-  const heading = Math.atan2(m.x - C.x, m.z - C.z)
-  sign(out, { type: 'flat', text: 'CINÉMATHÈQUE', h: 1.15, face: 'grotesque', weight: 'bold', colour: hex('#ece6d6'), lit: 'none', w: 20 }, { x: m.x + Math.sin(heading) * 0.15, y: 8.4, z: m.z + Math.cos(heading) * 0.15, heading })
+  // ---- the planar tower in the middle: the highest, leaning west, its top a slope up to the west and north
+  {
+    const a = pts([-21, -14, -11, -14, -11, -2, -21, -2])
+    const b = pts([-22.3, -14.3, -11.9, -14.3, -11.9, -1.7, -22.3, -1.7])
+    const ys = [32.4, 28.6, 29.6, 33.4]
+    loftTo(out, a, 0, b, ys, shade(STONE, 1.03), PLAIN)
+    // the tall glazed slit up its west face, by the south corner, and a column of windows on the north
+    windowOn(out, a, 0, b, ys, 3.1, 3.24, 11 / 32, 30 / 32, GLASS)
+    for (const y of [14, 18, 22, 26]) windowOn(out, a, 0, b, ys, 2.45, 2.6, (y - 1.2) / 32, (y + 1.2) / 32, GLASS)
+  }
+  // ---- the petal over the entrance: a sail of limestone, bowed to the west, swelling out over the doors and rounding off
+  {
+    // a lens in plan, 11 m wide at its foot in the skirt and 14.5 m at the crest, its bow swelling out over the doors by 1 m past the
+    // glass, the top edge rounded off and higher at the north; its back is in the tower
+    const sail = (cx: number, r: number, spread: number, back: number): P2[] => {
+      const bow = arc(cx, -3.8, r, rad(180 - spread), rad(180 + spread), 8)
+      return [...bow, { x: back, z: bow[8].z }, { x: back, z: bow[0].z }]
+    }
+    const r0 = sail(-14.5, 9.5, 36, -17.5), r1 = sail(-15.5, 11.5, 36, -18.5), r2 = sail(-16, 13, 34, -19.5), r3 = sail(-16.5, 12, 30, -19.5)
+    const flat = (ring: P2[], y: number): number[] => ring.map(() => y)
+    loftTo(out, r0, 7, r1, flat(r1, 12), STONE, PLAIN)
+    loftTo(out, r1, 12, r2, flat(r2, 16), STONE, PLAIN)
+    loftTo(out, r2, 16, r3, r3.map((p) => 17.6 + (p.z + 3.8) * 0.08), STONE, PLAIN)
+  }
+  // ---- the shoulder block right of the tower: a bow in front of the wing, leaning out, its top sloping down to the south
+  {
+    const a = dee(-9, -20.5, 13, rad(160), rad(200), 5, -18.3)
+    const b = dee(-10, -20.5, 13.3, rad(160), rad(200), 5, -18.3)
+    const ys = b.map((p) => 21.5 + (p.z + 20.5) * 0.38)
+    loftTo(out, a, 0, b, ys, STONE_DEEP, PLAIN)
+    for (const y of [12, 16]) windowOn(out, a, 0, b, ys, 2.2, 2.8, (y - 0.9) / 21.5, (y + 0.9) / 21.5, GLASS)
+  }
+
+  // ---- the glass lobby along the west edge: panes in dark mullions, a transom, the doors, the canopy, the name
+  const inner: P2 = { x: -12, z: -5 }
+  const panes: P2[] = []
+  for (let i = 0; i + 1 < G.length; i++) {
+    const a = G[i], b = G[i + 1]
+    const n = Math.max(1, Math.round(Math.hypot(b.x - a.x, b.z - a.z) / 1.6))
+    for (let k = 0; k < n; k++) panes.push({ x: a.x + ((b.x - a.x) * k) / n, z: a.z + ((b.z - a.z) * k) / n })
+  }
+  panes.push(G[G.length - 1])
+  stripWall(out, panes, 0.15, 6.5, inner, LOBBY, GLAZED)
+  stripWall(out, G, 0, 0.15, inner, shade(STONE, 0.7), PLAIN)
+  stripWall(out, G, 3.25, 3.4, inner, MULLION)
+  for (const p of panes) {
+    panel(out, [[p.x - 0.08, 0, p.z - 0.08], [p.x + 0.08, 0, p.z + 0.08], [p.x + 0.08, 6.5, p.z + 0.08], [p.x - 0.08, 6.5, p.z - 0.08]], [inner.x, 3, inner.z], MULLION)
+    panel(out, [[p.x - 0.08, 0, p.z + 0.08], [p.x + 0.08, 0, p.z - 0.08], [p.x + 0.08, 6.5, p.z - 0.08], [p.x - 0.08, 6.5, p.z + 0.08]], [inner.x, 3, inner.z], MULLION)
+  }
+  // the doors, three pairs in the middle run, in heavier frames
+  {
+    const w = wallOn(out, G[3], G[4])
+    for (const u of [0.9, 2.7, 4.5]) {
+      w.rect(u - 0.85, u + 0.85, 0.15, 2.7, MULLION, 0.1)
+      w.rect(u - 0.7, u + 0.7, 0.2, 2.6, shade(LOBBY, 0.8), 0.12)
+    }
+  }
+  // the canopy at door height: a thin sheet of glass out over the pavement, on the middle three runs
+  {
+    const run = G.slice(2, 6)
+    const outer = run.map((p) => ({ x: p.x - 2.2, z: p.z }))
+    for (let i = 0; i + 1 < run.length; i++) {
+      const a = run[i], b = run[i + 1], c = outer[i + 1], d = outer[i]
+      panel(out, [[a.x, 3.72, a.z], [b.x, 3.72, b.z], [c.x, 3.62, c.z], [d.x, 3.62, d.z]], [inner.x, -10, inner.z], hex('#8a9ca4'))
+      panel(out, [[a.x, 3.6, a.z], [b.x, 3.6, b.z], [c.x, 3.5, c.z], [d.x, 3.5, d.z]], [inner.x, 30, inner.z], hex('#6f7f86'))
+      panel(out, [[d.x, 3.5, d.z], [c.x, 3.5, c.z], [c.x, 3.62, c.z], [d.x, 3.62, d.z]], [inner.x, 3.5, inner.z], MULLION)
+    }
+  }
+  // the name on the glass, in pale capitals, facing the park
+  sign(out, { type: 'flat', text: 'LA CINÉMATHÈQUE FRANÇAISE', h: 0.8, face: 'grotesque', weight: 'bold', colour: hex('#e9eff1'), lit: 'none', w: 24 }, { x: -27.4, y: 5.1, z: -4.5, heading: -Math.PI / 2 })
+
+  // ---- the zinc skirt: a fascia on the eave, the soffit back to the glass, and the sweep up from the eave to the stone, steeper and higher at the north
+  stripWall(out, E, 6.5, 7.2, inner, shade(ZINC, 0.9), METAL)
+  for (let i = 0; i + 1 < E.length; i++) {
+    panel(out, [[E[i].x, 6.5, E[i].z], [E[i + 1].x, 6.5, E[i + 1].z], [G[i + 1].x, 6.5, G[i + 1].z], [G[i].x, 6.5, G[i].z]], [inner.x, 20, inner.z], shade(ZINC, 0.8), METAL)
+    panel(out, [[E[i].x, 7.2, E[i].z], [E[i + 1].x, 7.2, E[i + 1].z], [I[i + 1].x, I_Y[i + 1], I[i + 1].z], [I[i].x, I_Y[i], I[i].z]], [inner.x, 2, inner.z], ZINC, METAL)
+  }
 }
