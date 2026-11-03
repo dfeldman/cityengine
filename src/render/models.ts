@@ -626,7 +626,7 @@ export function bollard(colour: Rgb, height: number): (out: MeshBuilder) => void
  * A box of half-extents (hx, hy, hz) about (cx, cy, cz), turned `tilt` radians about the x axis (positive leans its
  * top towards −z). For a bench's slats and its frames' raked members.
  */
-function slab(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, tilt: number,
+export function slab(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, tilt: number,
               colour: Rgb, tag = FIXED): void {
   const c = Math.cos(tilt), s = Math.sin(tilt)
   // (y, z) turned about x: y' = y c + z s, z' = −y s + z c
@@ -647,7 +647,7 @@ function slab(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, 
 }
 
 /** A member along a side profile at x: boxes from point to point of `pts` ([z, y]), `w` wide in x and `t` thick. */
-function member(out: MeshBuilder, x: number, pts: [number, number][], w: number, t: number, colour: Rgb): void {
+export function member(out: MeshBuilder, x: number, pts: [number, number][], w: number, t: number, colour: Rgb): void {
   for (let k = 0; k + 1 < pts.length; k++) {
     const [za, ya] = pts[k], [zb, yb] = pts[k + 1]
     const L = Math.hypot(zb - za, yb - ya)
@@ -722,10 +722,11 @@ export function bench(out: MeshBuilder): void {
 
 /** An upright n-sided prism about the y axis, from y0 to y1, radius r (optionally narrowing to r1 at the top). */
 export function prism(out: MeshBuilder, cx: number, cz: number, y0: number, y1: number, r: number, sides: number,
-                      colour: Rgb, tag = FIXED, r1 = r, cap = true): void {
+                      colour: Rgb, tag = FIXED, r1 = r, cap = true, phase = 0): void {
+  // (`phase` turns the first vertex off +z: π/4 on four sides stands a square lantern square to the axes)
   for (let i = 0; i < sides; i++) {
-    const a0 = (i / sides) * Math.PI * 2
-    const a1 = ((i + 1) / sides) * Math.PI * 2
+    const a0 = (i / sides) * Math.PI * 2 + phase
+    const a1 = ((i + 1) / sides) * Math.PI * 2 + phase
     const am = (a0 + a1) / 2
     out.quad([
       [cx + Math.sin(a0) * r, y0, cz + Math.cos(a0) * r], [cx + Math.sin(a1) * r, y0, cz + Math.cos(a1) * r],
@@ -735,7 +736,7 @@ export function prism(out: MeshBuilder, cx: number, cz: number, y0: number, y1: 
   if (!cap || r1 <= 0.001) return
   for (let i = 0; i < sides; i += 2) {
     const p = (k: number): [number, number, number] => {
-      const a = (k / sides) * Math.PI * 2
+      const a = (k / sides) * Math.PI * 2 + phase
       return [cx + Math.sin(a) * r1, y1, cz + Math.cos(a) * r1]
     }
     out.quad([p(i), p(i + 1), p(i + 2), [cx, y1, cz]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
@@ -804,22 +805,6 @@ export function genericEntrance(out: MeshBuilder): void {
   box(out, 1.05, 2.6, 1.9, 0.04, 0.3, 0.3, [0.9, 0.9, 0.9], FIXED)
 }
 
-/**
- * A Wallace fountain: four caryatids holding up a dome, on a pedestal, all in the same dark green. Sir
- * Richard Wallace gave Paris a hundred of them in 1872; they are still in every quarter.
- */
-export function wallaceFountain(out: MeshBuilder): void {
-  const g = PARIS_GREEN
-  prism(out, 0, 0, 0, 0.35, 0.45, 8, g)
-  prism(out, 0, 0, 0.35, 0.95, 0.3, 8, g, FIXED, 0.26)
-  for (let i = 0; i < 4; i++) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4
-    prism(out, Math.sin(a) * 0.2, Math.cos(a) * 0.2, 0.95, 1.95, 0.06, 6, g)     // the caryatids
-  }
-  prism(out, 0, 0, 1.95, 2.15, 0.36, 8, g)
-  prism(out, 0, 0, 2.15, 2.55, 0.34, 8, g, FIXED, 0.08)                          // the dome
-  prism(out, 0, 0, 2.55, 2.72, 0.05, 6, g, FIXED, 0.0)                           // the finial
-}
 
 /** Any other drinking tap: a slim post with a little basin. */
 export function drinkingTap(out: MeshBuilder): void {
@@ -864,24 +849,6 @@ export function parisBarrier(out: MeshBuilder): void {
   }
 }
 
-/**
- * A Paris street lamp (owner, 2026-10-29: "streetlights are very different from SF, and much rarer"): on the boulevards
- * and avenues only — the side streets light from lamps on the walls — a tall, slender dark-green column on a moulded
- * base, a curved arm out over the road and the lantern hanging from it. About 9 m. Local frame: +z along the street, the
- * arm out over +x (toward the road).
- */
-export function parisLamp(out: MeshBuilder): void {
-  const iron: Rgb = [0.12, 0.17, 0.15]
-  prism(out, 0, 0, 0, 0.7, 0.2, 8, iron)
-  prism(out, 0, 0, 0.7, 7.6, 0.075, 8, iron, FIXED, 0.055)
-  prism(out, 0, 0, 7.6, 7.8, 0.1, 8, iron)
-  // the arm: out and a little up, in three pieces, then the lantern under its end
-  box(out, 0.35, 7.95, 0, 0.35, 0.04, 0.04, iron, FIXED)
-  box(out, 0.95, 8.1, 0, 0.3, 0.04, 0.04, iron, FIXED)
-  box(out, 1.3, 8.05, 0, 0.06, 0.12, 0.05, iron, FIXED)
-  prism(out, 1.3, 0, 7.55, 7.95, 0.24, 8, iron, FIXED, 0.12)
-  prism(out, 1.3, 0, 7.35, 7.55, 0.2, 8, [1.0, 0.92, 0.72], EMIT, 0.24)
-}
 
 /**
  * The Métro's totem (owner, 2026-10-29: "the big M in a circle signs seem to signal stairs down to the metro, which are
@@ -917,42 +884,7 @@ export function metroTotem(out: MeshBuilder): void {
   }
 }
 
-/**
- * A Paris bus stop (owner, 2026-10-29, from street view: Paris has "bus stops", and there were none): Norman Foster's
- * JCDecaux abribus — a thin pale roof on slender dark legs, a glass back, the route map at one end and a lit poster at
- * the other, a bench in the shelter — and beside it RATP's stop post, the grey pole with its flag. Local frame: +z
- * toward the street, the shelter's open side; about 3.4 m long.
- */
-export function parisBusStop(out: MeshBuilder, shelter = true): void {
-  if (!shelter) { ratpPost(out, 0, 0); return }
-  const leg: Rgb = [0.2, 0.21, 0.22]
-  const glass: Rgb = [0.6, 0.68, 0.72]
-  const roof: Rgb = [0.86, 0.87, 0.86]
-  box(out, 0, 2.52, -0.1, 1.75, 0.04, 0.8, roof, FIXED)
-  for (const x of [-1.62, 1.62]) box(out, x, 1.25, -0.72, 0.035, 1.25, 0.035, leg, FIXED)
-  box(out, 0, 1.4, -0.75, 1.58, 0.95, 0.012, glass, FIXED)
-  // the route map's panel at one end (dark, a pale map on its inner face), the lit poster at the other
-  box(out, -1.62, 1.3, -0.35, 0.03, 0.95, 0.38, leg, FIXED)
-  box(out, -1.58, 1.4, -0.35, 0.005, 0.6, 0.3, [0.9, 0.9, 0.86], FIXED)
-  box(out, 1.62, 1.3, -0.35, 0.06, 0.95, 0.38, leg, FIXED)
-  box(out, 1.69, 1.35, -0.35, 0.005, 0.85, 0.32, [0.95, 0.88, 0.7], EMIT)
-  box(out, 1.55, 1.35, -0.35, 0.005, 0.85, 0.32, [0.7, 0.82, 0.92], EMIT)
-  // the bench, on two brackets off the back
-  box(out, 0.1, 0.47, -0.55, 1.0, 0.03, 0.16, [0.55, 0.47, 0.36], FIXED)
-  for (const x of [-0.7, 0.9]) box(out, x, 0.24, -0.62, 0.03, 0.22, 0.03, leg, FIXED)
-  // RATP's stop post past the open end
-  ratpPost(out, 2.15, 0.25)
-}
 
-/** RATP's stop post: the grey pole, the flag with its green band and the white "bus" plate */
-function ratpPost(out: MeshBuilder, x: number, z: number): void {
-  box(out, x, 1.45, z, 0.035, 1.45, 0.035, [0.45, 0.47, 0.49], FIXED)
-  box(out, x, 2.72, z, 0.02, 0.26, 0.24, [0.18, 0.2, 0.24], FIXED)
-  for (const sx of [-1, 1]) {
-    box(out, x + sx * 0.022, 2.85, z, 0.002, 0.07, 0.22, [0.0, 0.6, 0.5], FIXED)
-    box(out, x + sx * 0.022, 2.65, z, 0.002, 0.09, 0.16, [0.95, 0.95, 0.93], FIXED)
-  }
-}
 
 /**
  * A Paris news kiosque, after Davioud's: hexagonal, dark green, a frieze of posters, a scalloped canopy and a
@@ -988,6 +920,15 @@ export function parisNewsstand(out: MeshBuilder): void {
       flat(c, 0.02, 0, 1.3, 0.48, 0.55, [0.08, 0.08, 0.08])
       box(out, c.cx + c.nx * 0.2, 0.8, c.cz + c.nz * 0.2, 0.45, 0.03, 0.2, dark, FIXED)
       for (let i = 0; i < 4; i++) flat(c, 0.03, -0.33 + i * 0.22, 1.05, 0.09, 0.13, posterColours[(i + 2) % 6])
+      // the PRESSE board over the opening, cream with its dark lettering (owner, 2026-11-03: "newsstands… more paris-y"),
+      // in the frieze's place on this face
+      flat(c, 0.03, 0, 2.05, 0.46, 0.17, [0.93, 0.88, 0.72])
+      for (let i = 0; i < 6; i++) flat(c, 0.04, -0.3 + i * 0.12, 2.05, 0.035, 0.07, dark)
+      // the postcard carousel by the counter: a turning rack, cards in rows round it
+      const rx = c.cx + c.nx * 0.55 + c.tx * 0.95, rz = c.cz + c.nz * 0.55 + c.tz * 0.95
+      prism(out, rx, rz, 0, 0.05, 0.2, 6, dark)
+      prism(out, rx, rz, 0.05, 1.7, 0.02, 6, [0.4, 0.4, 0.4])
+      for (let row = 0; row < 4; row++) prism(out, rx, rz, 0.5 + row * 0.3, 0.72 + row * 0.3, 0.16, 6, posterColours[(row + k) % 6], FIXED, 0.16, false)
     } else {
       // the shutters, with magazines pinned in two rows
       for (let r = 0; r < 2; r++) for (let i = 0; i < 3; i++) flat(c, 0.02, -0.3 + i * 0.3, 1.0 + r * 0.42, 0.12, 0.16, posterColours[(k + r * 2 + i) % 6])

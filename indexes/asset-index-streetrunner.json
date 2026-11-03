@@ -8673,6 +8673,16 @@
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/atlas.png"
+        },
+        {
+          "filename": "asset-693604805c-facade-texture-atlas.png",
+          "hash": "693604805c06ad6d1264bb1331e0bdc06f5adc54d01980048b17cf4ce49518a4",
+          "size": 4877679,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
           "localPath": "public/facades/atlas.png"
         }
       ],
@@ -9360,6 +9370,16 @@
           "filename": "asset-2089a42268-facade-wall-texture-marais-far.png",
           "hash": "2089a42268f7369840fe71c9ff44fad05dfef5193fddaddac735fe96c7961557",
           "size": 26984,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/walls/marais-far.png"
+        },
+        {
+          "filename": "asset-e10090d1a4-facade-wall-texture-marais-far.png",
+          "hash": "e10090d1a492811094462edcf9119336868b562b1bd3fe785248052b5d9571ec",
+          "size": 26977,
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
@@ -11642,6 +11662,38 @@
       "extra": {
         "streetrunner": {
           "path": "facades/walls/presidioStucco.png"
+        }
+      }
+    },
+    {
+      "id": "model-paris-wallace",
+      "name": "Wallace fountain",
+      "folder": "models",
+      "notes": "The owner's Wallace fountain (Tripo, 2026-11-03), packed by tools/glb/pack.ts: quantized, KTX2 textures (ETC1S colour, UASTC normal). Stands at every Wallace point of the Paris bake.",
+      "type": "3d",
+      "subtype": "sculpture",
+      "generator": {
+        "script": "streetrunner/tools/glb/pack.ts"
+      },
+      "assetKeywords": [
+        "paris",
+        "wallace",
+        "fountain",
+        "street furniture"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-16ee0e82bc-paris-wallace-fountain-street-furniture.glb",
+          "hash": "16ee0e82bcd4d27ef8846ea021d55d8dd7216dd130a82037b30cd025af459ba1",
+          "size": 1101972,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/paris/wallace.glb"
         }
       }
     }

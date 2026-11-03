@@ -12,6 +12,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { box, prism } from './models.ts'
+import { boxwoodPot } from './paris/furniture.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { pavementDepth, streetIndex } from '../city/frontage.ts'
 import { unpackPoints, type CityPackage, type PackedBuilding } from '../city/package.ts'
@@ -151,6 +152,10 @@ export function buildTerraces(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'bu
     table(t, topColour)
     const ch = new MeshBuilder()
     chair(ch, weave, pattern)
+    // the box balls in their pots that close a terrace's ends (owner, 2026-11-03: "plants on sidewalks"), most cafés
+    const pot = new MeshBuilder()
+    boxwoodPot(pot, Math.round(poi.x * 3 + poi.z * 5))
+    const pots = rnd() < 0.75
     // chairs face the street (+normal): heading so that local +z is the wall's outward normal
     const face = Math.atan2(best.nx, best.nz)
     const along2 = Math.atan2(best.ux, best.uz)
@@ -162,6 +167,14 @@ export function buildTerraces(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'bu
      * conversation, a chair either side across the table. Level, and turned only a few degrees at random: a
      * larger turn read as chairs tipped over.
      */
+    if (pots) {
+      for (const sd of [-1, 1]) {
+        const a = sd * (along / 2 + 0.45)
+        const x = best.x + best.ux * a + best.nx * 0.75
+        const z = best.z + best.uz * a + best.nz * 0.75
+        stamp(out, pot, x, terrain.heightAt(x, z) + 0.15, z, 0)
+      }
+    }
     for (let r = 0; r < rows; r++) {
       const off = 0.9 + r * 1.45
       for (let i = 0; i < per; i++) {

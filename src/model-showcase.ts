@@ -25,7 +25,8 @@ import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
 import { bartEntrance } from './render/sf/furniture.ts'
 import { sfFireAlarmBox, nycFireAlarmBox } from './render/us-furniture.ts'
-import { bench } from './render/models.ts'
+import { bench, parisNewsstand } from './render/models.ts'
+import { boxwoodPot, horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit, wallaceFountain } from './render/paris/furniture.ts'
 import { court } from './render/sports.ts'
 import { fitCourt, type CourtSport } from './city/sports.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
@@ -47,7 +48,13 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   // a landmark builder, or a vehicle (the rolling stock's models, which take no fit)
   const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
   // (and street furniture, drawn in the game's own static material: `?model=bartEntrance`)
-  const FURNITURE: Record<string, (o: MeshBuilder) => void> = { bartEntrance, bench, sfFireAlarmBox, nycFireAlarmBox }
+  const FURNITURE: Record<string, (o: MeshBuilder) => void> = {
+    bartEntrance, bench, sfFireAlarmBox, nycFireAlarmBox,
+    // Paris's pavement (render/paris/furniture.ts): `?model=parisBench`
+    parisBench, parisLamp, parisLampConsole, wallaceFountain, parisNewsstand, horodateur, treePit: treePit(true),
+    parisBusStop: (o) => parisBusStop(o, true, 3), parisStopPost: (o) => parisBusStop(o, false, 5),
+    sucette: (o) => sucette(o, 4), jardiniere: (o) => jardiniere(o, 2), jardiniereConcrete: (o) => jardiniere(o, 7), boxwoodPot: (o) => boxwoodPot(o, 1),
+  }
   /*
    * THE SPORTS COURTS (BUGS.md #214). Each is built on a ROTATED, slightly off-square ring — the polygon a
    * mapper actually draws — rather than an axis-aligned rectangle, because an axis-aligned shot would prove

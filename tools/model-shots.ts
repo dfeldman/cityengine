@@ -48,6 +48,10 @@ const SETS: Record<string, V[]> = {
   garfield: [['front', -1.57, 1.45, 16, 0, 4.5, 0], ['three-quarter', -2.2, 1.4, 16, 0, 4.5, 0], ['mourner', -1.57, 1.5, 6, 0, 2.2, -1.5]],
   // the LOVE Blocks and the jacks (misfit-toys.ts): from the south-west, where the owner's photographs were taken
   toys: [['sw', -2.2, 1.35, 22, 0, 1, 0], ['low', -2.0, 1.5, 12, 0, 1, 0]],
+  // a piece of pavement furniture a person's height (paris/furniture.ts): front +z, three-quarter, and the side (+x, the pavement side)
+  furniture: [['front', 1.57, 1.45, 6.5, 0, 1.1, 0], ['three-quarter', 0.9, 1.35, 7, 0, 1.1, 0], ['side', 0.0, 1.4, 6.5, 0, 1.1, 0]],
+  // a lamp post, eight metres
+  lamp: [['front', 1.57, 1.45, 20, 0, 4.2, 0], ['lantern', 0.9, 1.35, 7, 0, 7.2, 0]],
   // a fire alarm box (us-furniture.ts): its front is +z, so alpha +π/2 looks at it head-on
   callbox: [['front', 1.57, 1.5, 3, 0, 1.1, 0], ['three-quarter', 0.9, 1.35, 3.4, 0, 1.1, 0], ['close', 1.2, 1.3, 1.5, 0, 1.3, 0]],
   // Pomodoro's sphere (de-young-garden.ts): at the rift (its bearing 150, so alpha −1.05) and from the side

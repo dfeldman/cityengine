@@ -17,6 +17,7 @@
     "statues_to_model",
     "incoming_models",
     "tests",
-    "incoming_assets"
+    "incoming_assets",
+    ".claude"
   ]
 }

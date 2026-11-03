@@ -12,6 +12,8 @@
  * drawn separately, and a city is the case where that bites hardest.
  */
 import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
+import { horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit } from './paris/furniture.ts'
+import { WallaceFountains } from './paris/wallace.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
@@ -34,7 +36,7 @@ import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
   bench, bikeDocks, bollard, box, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
-  morrisColumn, parisBusStop, parisLamp, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
+  morrisColumn, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
 import { centreDistance, facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
@@ -1505,6 +1507,10 @@ export class City {
   private readonly shopsIn = new Map<string, { x: number; z: number }[]>()
   /** OSM's point furniture (Métro entrances, fountains, columns, kiosks, bike docks) by tile */
   private readonly pointsIn = new Map<string, PackedFurniture[]>()
+  /** the bake's trees by tile, five numbers each (city/plantings.ts): where Paris's tree pits go */
+  private readonly plantingsIn = new Map<string, number[]>()
+  /** the Wallace fountains, one model instanced at every point (render/paris/wallace.ts); made at the first one */
+  private wallace: WallaceFountains | null = null
   /** edges that are structures (bridges, ramps) rather than painted ground; see render/bridges.ts */
   readonly raisedIds = new Set<number>()
   /** raised footways that are a road bridge's own sidewalks, drawn by the road's deck — and (BUGS.md #136)
@@ -1908,6 +1914,7 @@ export class City {
     }
     if (this.ingested.has(t.key)) return
     this.ingested.add(t.key)
+    if (t.plantings.length > 0) this.plantingsIn.set(t.key, t.plantings)
     if (this.region.viaduct === 'paris') addRailDecks(t)
     /*
      * The tile's own fine ground FIRST, before anything reads a height (BUGS.md #206c). `build()` is gated
@@ -2327,6 +2334,7 @@ export class City {
     if (!t) return false
     for (const m of t.meshes) m.dispose()
     for (const [name, ms] of t.layers) { for (const m of ms) m.dispose(); this.layerByName.get(name)?.release?.(k) }
+    this.wallace?.release(k)
     this.tiles.delete(k)
     this.nearCache.delete(k)
     this.heads.delete(k)
@@ -2680,6 +2688,7 @@ export class City {
       if (dist(k) > VIEW + 1) {
         for (const m of t.meshes) m.dispose()
         for (const [name, ms] of t.layers) { for (const m of ms) m.dispose(); this.layerByName.get(name)?.release?.(k) }
+        this.wallace?.release(k)
         this.tiles.delete(k)
         this.nearCache.delete(k)
         this.heads.delete(k)
@@ -3653,27 +3662,64 @@ export class City {
           if (skippedIf(kerbside.whyNoFurniture(px, pz, market ? 7 : 4), px, pz, 'lamp/bench') || insideTwin(e, pts, px, pz)) { acc += market ? 15 : 22 + ((e.id + n) % 9); n++; continue }
           // what stands on the pavement is regional: Paris hangs its lamps on the buildings
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
-          if ((e.id + n) % 14 === 0 && walk >= 2.5) {
+          // (Paris sits more often: a Davioud bench one slot in ten, render/paris/furniture.ts)
+          const parisSeats = this.region.roadPaint === 'paris'
+          if ((e.id + n) % (parisSeats ? 10 : 14) === 0 && walk >= 2.5) {
             /*
              * Along the kerb, not across the pavement (owner, 2026-10-06: "benches on the street are almost always
              * parallel to the street … all of ours are [perpendicular]"), facing the road, in the slot a lamp post
              * would take (the building side has the racks and bins). `heading` turns a model's +z ALONG the street; a
              * bench is long in x and faces +z, so it takes the normal towards the road.
              */
-            if (this.region.furniture.benches && !nearStairMouth(px, pz)) placeModel(furniture, bench, px, 0.15, pz, Math.atan2(dz * side, -dx * side))
+            if (this.region.furniture.benches && !nearStairMouth(px, pz)) placeModel(furniture, parisSeats ? parisBench : bench, px, 0.15, pz, Math.atan2(dz * side, -dx * side))
           } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
             placeModel(furniture, market ? pathOfGold : lampPost, px, 0.15, pz, heading)
           } else if (this.region.furniture.boulevardLamps && walk >= 1.8 && !nearStairMouth(px, pz)) {
             // Paris: the dark lanterns on their posts along every street with the pavement for them, staggered side to side
             // every 22–31 m (owner, 2026-10-30: "we also don't have any lampposts in paris. They are a key part of the
             // city's look" — they had stood on the boulevards only, every other slot; the narrow rues keep their wall lamps)
-            placeModel(furniture, parisLamp, px, 0.15, pz, heading)
+            // (the avenue's two-armed candelabra on the wide streets, the single lantern elsewhere; one pattern per street)
+            placeModel(furniture, e.width >= 10 && walk >= 3.5 && e.id % 2 === 0 ? parisLampConsole : parisLamp, px, 0.15, pz, heading)
           }
-          // (Market's Path of Gold stands closer: about every 30 m each side, so ~15 m alternating)
-          acc += market ? 15 : 22 + ((e.id + n) % 9)
+          const pitch = market ? 15 : 22 + ((e.id + n) % 9)
+          /*
+           * PARIS'S PAVEMENT between the lamps (owner, 2026-11-03: "put some cycles into Paris street furniture… make it more
+           * paris-y"): halfway to the next slot, on the lamps' own line (mid-pavement, clear of the kerb's bollards), a horodateur
+           * where the street has a parking lane, a sucette where the pavement is wide enough to pass one, a jardinière on the
+           * widest; nothing in about half the slots.
+           */
+          if (this.region.furniture.boulevardLamps && acc + pitch / 2 < seg) {
+            const tm = (acc + pitch / 2) / seg
+            const mx = pts[i - 1].x + dx * tm + (-dz / seg) * off * side
+            const mz = pts[i - 1].z + dz * tm + (dx / seg) * off * side
+            const h = ((Math.imul((e.id * 31 + n) ^ 0x9e3779b9, 0x85ebca6b) >>> 0) % 1000) / 1000
+            const model = h < 0.3 && e.width >= 5 && walk >= 1.8 ? horodateur
+              : h < 0.42 && walk >= 2.8 ? (o: MeshBuilder) => sucette(o, e.id * 7 + n)
+              : h < 0.54 && walk >= 3.2 ? (o: MeshBuilder) => jardiniere(o, e.id * 13 + n)
+              : null
+            if (model && !skippedIf(kerbside.whyNoFurniture(mx, mz, 4), mx, mz, 'paris pavement') && !insideTwin(e, pts, mx, mz) && !nearStairMouth(mx, mz)) {
+              placeModel(furniture, model, mx, 0.15, mz, heading)
+            }
+          }
+          acc += pitch
           n++
         }
         acc -= seg
+      }
+    }
+    /*
+     * PARIS'S TREE PITS (owner, 2026-11-03: "plants on sidewalks"): the cast-iron grate round every street tree that stands
+     * on a pavement, and the corset of bars round a third of them, as round the young ones. The bake's street trees are in
+     * the tile's plantings as they stand (only the park scatter is thickened at render time, render/infill.ts).
+     */
+    if (this.region.pointFurniture.parisStreet && !this.off.has('furniture')) {
+      const pl = this.plantingsIn.get(k) ?? []
+      for (let i = 0; i + 4 < pl.length; i += 5) {
+        if (pl[i + 4]) continue
+        const x = pl[i], z = pl[i + 1]
+        if (!kerbside.onPavement(x, z)) continue
+        const h = ((Math.imul(Math.round(x * 7 + z * 13) ^ 0x9e3779b9, 0x85ebca6b) >>> 0) % 1000) / 1000
+        placeModel(furniture, treePit(h < 0.33), x, 0.15, z, this.streetBearing(x, z))
       }
     }
     /*
@@ -4721,9 +4767,17 @@ export class City {
         : f.kind === 'motoparking' ? rowOf(4 + (Math.abs(Math.round(f.x * 17 + f.z * 5)) % 7), 1, 2)
         : f.kind === 'bikeshare' && pf.bikeShare === 'velib' ? rowOf(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), 0.8, 6) : 1
       if (!row) continue
+      // a Wallace fountain is the owner's model, one for all of them (render/paris/wallace.ts): the tile hands it its point.
+      // (Every drinking fountain of a region whose `fountain` is `wallace`, as the procedural one stood before — 1,273 points
+      //  in the paris-centre bake, of which 119 OSM tags as Wallace; the rest are its taps and park fountains)
+      if (f.kind === 'fountain' && (pf.fountain === 'wallace' || f.wallace) && !this.off.has('furniture')) {
+        this.wallace ??= new WallaceFountains(this.scene)
+        this.wallace.add(k, f.x, this.terrain.heightAt(f.x, f.z) + 0.15, f.z, heading)
+        continue
+      }
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
-        : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
+        : f.kind === 'fountain' ? drinkingTap
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
         // (Paris's Vélib': a long row, 18 to 30 docks, its length by the station's own place)
@@ -4735,7 +4789,7 @@ export class City {
         : pf.american && f.kind === 'postbox' ? uspsBox
         : f.kind === 'callbox' && pf.callBox ? (pf.callBox === 'nyc' ? nycFireAlarmBox : sfFireAlarmBox)
         : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
-        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : pf.busStop === 'paris' ? (o: MeshBuilder) => parisBusStop(o, f.shelter ?? false) : plainStop)
+        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : pf.busStop === 'paris' ? (o: MeshBuilder) => parisBusStop(o, f.shelter ?? false, Math.round(f.x * 7 + f.z * 13)) : plainStop)
         : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)
       /*
        * A street clock on its post (OSM amenity=clock, support=pole): the dark iron column, the drum head and its four

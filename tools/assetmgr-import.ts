@@ -183,6 +183,30 @@ async function main() {
   }
   console.log(`signs: ${signs} added or replaced`)
 
+  // ---- the owner's own models the game stands in numbers (tools/glb/pack.ts → public/models/<region>/): the Wallace
+  // fountain, one model thin-instanced at every Wallace point in Paris (src/render/paris/wallace.ts)
+  const OWN_MODELS = [
+    { file: 'paris/wallace.glb', name: 'Wallace fountain', keywords: ['paris', 'wallace', 'fountain', 'street furniture'],
+      notes: "The owner's Wallace fountain (Tripo, 2026-11-03), packed by tools/glb/pack.ts: quantized, KTX2 textures (ETC1S colour, UASTC normal). Stands at every Wallace point of the Paris bake." },
+  ]
+  let own = 0
+  for (const m of OWN_MODELS) {
+    const src = join(PUB, 'models', m.file)
+    if (!existsSync(src)) { console.log(`${m.file}: not packed here, skipped`); continue }
+    const id = slugify(`model-${m.file.replace(/\.glb$/, '').replace(/\//g, '-')}`)
+    const changed = await upsert(id, {
+      src,
+      asset: {
+        id, name: m.name, type: '3d', subtype: 'sculpture', folder: 'models', assetKeywords: m.keywords,
+        generator: { script: 'streetrunner/tools/glb/pack.ts' }, notes: m.notes,
+        extra: { streetrunner: { path: `models/${m.file}` } },
+      },
+      file: { isProd: true },
+    }, await readFile(src))
+    if (changed) own++
+  }
+  console.log(`own models: ${own} added or replaced`)
+
   // ---- files the game reads from public/ by fixed name (and two screenshots): kept out of git, put back by
   // `npx assetmgr restore` through their localPath. Bytes are uploaded as they are (no renaming inside).
   const FIXED = [
