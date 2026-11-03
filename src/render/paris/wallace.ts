@@ -1,9 +1,9 @@
 /**
  * The Wallace fountains from the owner's model (2026-11-03: "a decent wallace glb… use that as our wallace model"):
  * ONE GLB (`models/paris/wallace.glb`, packed by tools/glb/pack.ts with KTX2 textures, in the shared bucket through
- * the streetrunner asset index), loaded once and thin-instanced at every fountain point the city places as a Wallace —
- * all 1,273 drinking fountains of the paris-centre bake, as the procedural one stood, 119 of them tagged Wallace by
- * OSM — rather than one statue-pool slot each (render/statues.ts keeps at most 24 models in memory,
+ * the streetrunner asset index), loaded once and thin-instanced at every fountain OSM tags as a Wallace — 119 in
+ * the paris-centre bake; its other 1,100-odd drinking fountains are other kinds and keep the tap — rather than one
+ * statue-pool slot each (render/statues.ts keeps at most 24 models in memory,
  * and they are all the same model).
  *
  * Until the model arrives, and if it never does (no bucket, a failed load), the procedural stand-in

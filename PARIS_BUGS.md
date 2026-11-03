@@ -121,8 +121,8 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       iron, the bus shelter Decaux's 2015 anthracite with the stop name along the roof and RATP's post with its route
       squares; between the lamps a horodateur (the nearest thing to a vending machine), a sucette ad panel or a jardinière
       of box and lavender; a cast-iron grate round every pavement tree and a corset round a third. The Wallace fountain
-      is the owner's GLB (models/paris/wallace.glb in the bucket, KTX2 textures), one model thin-instanced at every fountain point,
-      as the procedural one stood (render/paris/wallace.ts; 1,273 in the bake, 119 tagged Wallace by OSM); the Vélib' rows untouched. Checked in the showcase and at a fountain; the lamps, benches
+      is the owner's GLB (models/paris/wallace.glb in the bucket, KTX2 textures), one model thin-instanced at the 119 fountains OSM tags as
+      Wallace (render/paris/wallace.ts); the bake's other 1,100-odd drinking fountains keep the tap; the Vélib' rows untouched. Checked in the showcase and at a fountain; the lamps, benches
       and meters along a boulevard await a look in the city.
 - [x] **Terrain from IGN's LiDAR HD** (the 0336 bake, 2026-10-30): every fine sample from the lidar; it sits a median
       3.2 m under the terrarium (5–95%: −12.5…+2.2 m), which had counted buildings and trees as ground. The quays are sheer

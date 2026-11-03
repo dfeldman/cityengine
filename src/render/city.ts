@@ -4768,9 +4768,9 @@ export class City {
         : f.kind === 'bikeshare' && pf.bikeShare === 'velib' ? rowOf(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), 0.8, 6) : 1
       if (!row) continue
       // a Wallace fountain is the owner's model, one for all of them (render/paris/wallace.ts): the tile hands it its point.
-      // (Every drinking fountain of a region whose `fountain` is `wallace`, as the procedural one stood before — 1,273 points
-      //  in the paris-centre bake, of which 119 OSM tags as Wallace; the rest are its taps and park fountains)
-      if (f.kind === 'fountain' && (pf.fountain === 'wallace' || f.wallace) && !this.off.has('furniture')) {
+      // Only the ones OSM tags as Wallace — 119 of the paris-centre bake's 1,273 drinking fountains; the rest are other
+      // kinds of fountain and keep the tap (owner, 2026-11-03: "stick with the 119 wallace fountains")
+      if (f.kind === 'fountain' && f.wallace && pf.fountain === 'wallace' && !this.off.has('furniture')) {
         this.wallace ??= new WallaceFountains(this.scene)
         this.wallace.add(k, f.x, this.terrain.heightAt(f.x, f.z) + 0.15, f.z, heading)
         continue
