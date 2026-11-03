@@ -1,0 +1,699 @@
+[
+  {
+    "name": "Carousel (node/9666378680)",
+    "procedural": "parisManege",
+    "lat": 48.815108,
+    "lon": 2.320841,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/9666378680, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/10168776348)",
+    "procedural": "parisManege",
+    "lat": 48.820156,
+    "lon": 2.251388,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/10168776348, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/8329001157)",
+    "procedural": "parisManege",
+    "lat": 48.821642,
+    "lon": 2.414123,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/8329001157, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/9217159502)",
+    "procedural": "parisManege",
+    "lat": 48.823206,
+    "lon": 2.339925,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/9217159502, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Manège du parc Georges Brassens",
+    "procedural": "parisManege",
+    "lat": 48.831752,
+    "lon": 2.301245,
+    "size": [
+      8.9,
+      8.9
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1327050187, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Le paradis des enfants",
+    "procedural": "parisManege",
+    "lat": 48.832378,
+    "lon": 2.325324,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/6318502554, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Baby Zoo",
+    "procedural": "parisManege",
+    "lat": 48.832851,
+    "lon": 2.414115,
+    "size": [
+      9.5,
+      9.5
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/395864518, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Baby Zoo",
+    "procedural": "parisManege",
+    "lat": 48.833036,
+    "lon": 2.413708,
+    "size": [
+      11,
+      11
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/62819281, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Limonaire Frères",
+    "procedural": "parisManege",
+    "lat": 48.836464,
+    "lon": 2.381917,
+    "size": [
+      10.8,
+      10.8
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1071482635, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Au Petit Poulbot",
+    "procedural": "parisManege",
+    "lat": 48.837203,
+    "lon": 2.296853,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/9714512122, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Au P’tit Saint-Lambert",
+    "procedural": "parisManege",
+    "lat": 48.841942,
+    "lon": 2.297752,
+    "size": [
+      9.2,
+      9.2
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1185533965, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/647018956)",
+    "procedural": "parisManege",
+    "lat": 48.841976,
+    "lon": 2.389272,
+    "size": [
+      10,
+      10
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/647018956, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Dodo manège",
+    "procedural": "parisManege",
+    "lat": 48.843078,
+    "lon": 2.361695,
+    "size": [
+      8.2,
+      8.2
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/83976101, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/12089238698)",
+    "procedural": "parisManege",
+    "lat": 48.844794,
+    "lon": 2.293754,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/12089238698, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: L'Éléphant Blanc",
+    "procedural": "parisManege",
+    "lat": 48.846224,
+    "lon": 2.334199,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/9848180370, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Carrousel Jules Verne",
+    "procedural": "parisManege",
+    "lat": 48.846711,
+    "lon": 2.285237,
+    "size": [
+      8.6,
+      8.6
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1241614263, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/6135491044)",
+    "procedural": "parisManege",
+    "lat": 48.851714,
+    "lon": 2.271503,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/6135491044, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Manège 1913",
+    "procedural": "parisManege",
+    "lat": 48.854159,
+    "lon": 2.299972,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/12568501797, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/69074728)",
+    "procedural": "parisManege",
+    "lat": 48.855347,
+    "lon": 2.300757,
+    "size": [
+      6.3,
+      6.3
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/69074728, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/1197828228)",
+    "procedural": "parisManege",
+    "lat": 48.85537,
+    "lon": 2.359968,
+    "size": [
+      8.7,
+      8.7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1197828228, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/3093646259)",
+    "procedural": "parisManege",
+    "lat": 48.857047,
+    "lon": 2.379191,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/3093646259, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Le Carrousel de la Tour Eiffel",
+    "procedural": "parisManege",
+    "lat": 48.858922,
+    "lon": 2.292621,
+    "size": [
+      10.3,
+      10.3
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/239873024, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/6066233436)",
+    "procedural": "parisManege",
+    "lat": 48.860297,
+    "lon": 2.290027,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/6066233436, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/333422703)",
+    "procedural": "parisManege",
+    "lat": 48.864704,
+    "lon": 2.326403,
+    "size": [
+      10.6,
+      10.6
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/333422703, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/12998136992)",
+    "procedural": "parisManege",
+    "lat": 48.867682,
+    "lon": 2.390681,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/12998136992, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Le Petit Carrousel",
+    "procedural": "parisManege",
+    "lat": 48.878565,
+    "lon": 2.260961,
+    "size": [
+      10,
+      10
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/86177330, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/9919747981)",
+    "procedural": "parisManege",
+    "lat": 48.879517,
+    "lon": 2.415694,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/9919747981, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/4861495926)",
+    "procedural": "parisManege",
+    "lat": 48.879895,
+    "lon": 2.309665,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/4861495926, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/11497507659)",
+    "procedural": "parisManege",
+    "lat": 48.880627,
+    "lon": 2.340454,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/11497507659, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/341889724)",
+    "procedural": "parisManege",
+    "lat": 48.881422,
+    "lon": 2.315804,
+    "size": [
+      8.7,
+      8.7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/341889724, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/679089565)",
+    "procedural": "parisManege",
+    "lat": 48.88204,
+    "lon": 2.383739,
+    "size": [
+      7.2,
+      7.2
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/679089565, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/974837211)",
+    "procedural": "parisManege",
+    "lat": 48.884382,
+    "lon": 2.338533,
+    "size": [
+      10,
+      10
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/974837211, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel: Carrousel de Montmartre",
+    "procedural": "parisManege",
+    "lat": 48.884688,
+    "lon": 2.343224,
+    "size": [
+      11,
+      11
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/163689495, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/966431097)",
+    "procedural": "parisManege",
+    "lat": 48.887255,
+    "lon": 2.315953,
+    "size": [
+      6.3,
+      6.3
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/966431097, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/81743428)",
+    "procedural": "parisManege",
+    "lat": 48.892352,
+    "lon": 2.38874,
+    "size": [
+      7.3,
+      7.3
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/81743428, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/81743419)",
+    "procedural": "parisManege",
+    "lat": 48.892435,
+    "lon": 2.388491,
+    "size": [
+      11,
+      11
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/81743419, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/1469778251)",
+    "procedural": "parisManege",
+    "lat": 48.892635,
+    "lon": 2.344844,
+    "size": [
+      8.3,
+      8.3
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1469778251, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/1157956212)",
+    "procedural": "parisManege",
+    "lat": 48.894373,
+    "lon": 2.250384,
+    "size": [
+      11,
+      11
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/1157956212, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (node/8596117875)",
+    "procedural": "parisManege",
+    "lat": 48.894798,
+    "lon": 2.287597,
+    "size": [
+      7,
+      7
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM node/8596117875, attraction=carousel; a point: 7 m (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/362568486)",
+    "procedural": "parisManege",
+    "lat": 48.900502,
+    "lon": 2.270708,
+    "size": [
+      11,
+      11
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/362568486, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Carousel (way/927100731)",
+    "procedural": "parisManege",
+    "lat": 48.900786,
+    "lon": 2.305787,
+    "size": [
+      9.4,
+      9.4
+    ],
+    "height": 6,
+    "front": 0,
+    "kind": "monument",
+    "shadow": false,
+    "sign": false,
+    "note": "OSM way/927100731, attraction=carousel; sized by its outline (tools/paris-carousels.ts).",
+    "madeBy": "claude-opus-5-5"
+  }
+]

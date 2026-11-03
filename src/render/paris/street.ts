@@ -5,7 +5,7 @@
  * Tertre's painters. Each along +z, its front to +x; placed by render/city.ts from the bake's furniture.
  */
 import type { MeshBuilder } from '../buildings.ts'
-import { box, FIXED, prism, strut, type Rgb } from '../models.ts'
+import { box, EMIT, FIXED, prism, strut, type Rgb } from '../models.ts'
 
 export const PARIS_STREET = new Set<string>(['litter', 'recycling', 'sanisette', 'statue', 'bust', 'sculpture', 'market', 'crepes', 'glaces', 'souvenirs', 'painter'])
 
@@ -28,6 +28,33 @@ function litterHoop(out: MeshBuilder): void {
   prism(out, 0, 0, 0.3, 0.92, 0.13, 10, [0.62, 0.74, 0.55], FIXED, 0.21)
 }
 
+/**
+ * THE CAGE BIN, the city's newer litter bin (owner, 2026-11-03, with a photograph: "distinctive see-through trash cans"):
+ * a bulging cage of stainless rods standing on the pavement, a ring at its mouth holding the clear sack, which shows the
+ * rubbish through the bars. No post. 0.95 m high, 0.55 m across at its widest.
+ */
+function cageBin(out: MeshBuilder): void {
+  const steel: Rgb = [0.72, 0.73, 0.72]
+  const sack: Rgb = [0.9, 0.91, 0.91]
+  const N = 10
+  // the rods: from the foot ring out to the belly and in again to the mouth
+  const at = (k: number, r: number, y: number): [number, number, number] => {
+    const a = (k / N) * Math.PI * 2
+    return [Math.sin(a) * r, y, Math.cos(a) * r]
+  }
+  for (let k = 0; k < N; k++) {
+    strut(out, at(k, 0.17, 0.02), at(k, 0.27, 0.42), 0.016, 0.016, steel, FIXED, false)
+    strut(out, at(k, 0.27, 0.42), at(k, 0.24, 0.9), 0.016, 0.016, steel, FIXED, false)
+  }
+  prism(out, 0, 0, 0.0, 0.03, 0.18, N, steel, FIXED, 0.18, false)                       // the foot ring
+  prism(out, 0, 0, 0.88, 0.94, 0.26, N, steel, FIXED, 0.26, false)                      // the mouth ring
+  // the clear sack inside, hanging slack and well clear of the bars so they read against it, its lip turned over the ring
+  prism(out, 0, 0, 0.06, 0.4, 0.1, 7, sack, FIXED, 0.19, false)
+  prism(out, 0, 0, 0.4, 0.86, 0.19, 7, sack, FIXED, 0.16, false)
+  prism(out, 0, 0, 0.86, 0.9, 0.16, 7, sack, FIXED, 0.25, false)
+  prism(out, 0, 0, 0.9, 0.97, 0.275, 8, sack, FIXED, 0.27, false)
+}
+
 /** the glass bell (colonne à verre): a dark green drum, domed, with its round mouths; every so often a pair */
 function glassBell(seed: number): (out: MeshBuilder) => void {
   return (out) => {
@@ -44,17 +71,51 @@ function glassBell(seed: number): (out: MeshBuilder) => void {
   }
 }
 
-/** the Sanisette: a rounded grey-green booth, a steel door in its long side, a roof that overhangs */
+/**
+ * THE SANISETTE, JCDecaux's street toilet (owner, 2026-11-03: "a public toilet on the street is part of the street landscape
+ * of the city"; "many of these [drinking fountains] are in fact on the side of a gray public toilet"): a light grey cabin
+ * with rounded ends, a dark band round its top carrying the WC sign and pictograms, the stainless sliding door with its
+ * status light in the long side facing the pavement (+x), and at one end (−z) the drinking tap in its dark niche, the
+ * blue drop over it. Long along the street (z), 3.7 × 1.7 m, 2.6 m high.
+ */
 function sanisette(out: MeshBuilder): void {
-  const body: Rgb = [0.42, 0.47, 0.44]
-  const roof: Rgb = [0.25, 0.28, 0.27]
-  box(out, 0, 1.25, 0, 1.05, 1.25, 1.45, body, FIXED)
-  for (const z of [-1.45, 1.45]) prism(out, 0, z, 0, 2.5, 1.05, 12, body)
-  box(out, 0, 2.58, 0, 1.15, 0.08, 1.55, roof, FIXED)
-  for (const z of [-1.45, 1.45]) prism(out, 0, z, 2.5, 2.66, 1.15, 12, roof)
-  box(out, 1.06, 1.05, 0.2, 0.02, 1.05, 0.5, [0.66, 0.68, 0.68], FIXED)
-  box(out, 1.06, 2.25, 0.2, 0.02, 0.1, 0.5, [0.1, 0.25, 0.5], FIXED)
-  box(out, 1.06, 2.25, 0.2, 0.024, 0.05, 0.36, [0.9, 0.9, 0.88], FIXED)
+  const body: Rgb = [0.68, 0.69, 0.66]
+  const rib: Rgb = [0.6, 0.61, 0.58]
+  const band: Rgb = [0.2, 0.22, 0.23]
+  const steel: Rgb = [0.74, 0.76, 0.77]
+  const HX = 0.85, HZ = 1.0
+  box(out, 0, 0.06, 0, HX + 0.03, 0.06, HZ, band, FIXED)                                          // the plinth
+  for (const z of [-HZ, HZ]) prism(out, 0, z, 0, 0.12, HX + 0.03, 12, band, FIXED, HX + 0.03, false)
+  box(out, 0, 1.17, 0, HX, 1.05, HZ, body, FIXED)
+  for (const z of [-HZ, HZ]) prism(out, 0, z, 0.12, 2.22, HX, 12, body, FIXED, HX, false)
+  // the band round the top, and the roof over it
+  box(out, 0, 2.38, 0, HX + 0.01, 0.16, HZ, band, FIXED)
+  for (const z of [-HZ, HZ]) prism(out, 0, z, 2.22, 2.54, HX + 0.01, 12, band, FIXED, HX + 0.01, false)
+  box(out, 0, 2.57, 0, HX + 0.06, 0.03, HZ, [0.5, 0.51, 0.5], FIXED)
+  for (const z of [-HZ, HZ]) prism(out, 0, z, 2.54, 2.6, HX + 0.06, 12, [0.5, 0.51, 0.5], FIXED, HX + 0.06)
+  // the wall's vertical ribs, both long sides
+  for (const sx of [-1, 1]) for (let i = 0; i < 7; i++) {
+    const z = -0.9 + i * 0.3
+    if (sx > 0 && Math.abs(z - 0.25) < 0.55) continue                                             // (the door)
+    box(out, sx * (HX + 0.005), 1.17, z, 0.006, 1.0, 0.02, rib, FIXED)
+  }
+  // the door, stainless, with its status light and the instructions beside it
+  box(out, HX + 0.012, 1.08, 0.25, 0.01, 1.0, 0.46, steel, FIXED)
+  box(out, HX + 0.018, 1.08, -0.13, 0.006, 0.98, 0.012, [0.5, 0.52, 0.53], FIXED)
+  box(out, HX + 0.02, 1.85, 0.86, 0.008, 0.05, 0.05, [0.2, 0.75, 0.35], EMIT)
+  box(out, HX + 0.015, 1.4, 0.86, 0.006, 0.22, 0.1, [0.9, 0.9, 0.88], FIXED)
+  // the sign on the band, both long sides: "WC" in white and the pictograms
+  for (const sx of [-1, 1]) {
+    const x = sx * (HX + 0.02)
+    box(out, x, 2.38, -0.35, 0.006, 0.09, 0.32, [0.92, 0.92, 0.9], FIXED)
+    for (const [z, c] of [[0.2, [0.25, 0.5, 0.8]], [0.42, [0.85, 0.3, 0.45]], [0.64, [0.25, 0.5, 0.8]]] as [number, Rgb][]) box(out, x, 2.38, z, 0.006, 0.09, 0.08, c, FIXED)
+  }
+  // the drinking tap at −z: a dark niche in the rounded end, the basin and spout, the blue drop over it
+  const zEnd = -HZ - HX
+  box(out, 0, 1.0, zEnd + 0.03, 0.22, 0.42, 0.03, [0.15, 0.16, 0.17], FIXED)
+  box(out, 0, 0.78, zEnd - 0.04, 0.16, 0.03, 0.07, steel, FIXED)
+  box(out, 0, 1.12, zEnd - 0.03, 0.025, 0.06, 0.05, steel, FIXED)
+  box(out, 0, 1.55, zEnd + 0.01, 0.06, 0.08, 0.008, [0.15, 0.45, 0.85], FIXED)
 }
 
 /** a standing figure on the plinth's top, of height `h`: the legs in a long coat, the arms, the head; one arm out, by seed */
@@ -218,7 +279,8 @@ function painter(seed: number): (out: MeshBuilder) => void {
 
 export function parisStreetModel(kind: string, seed: number): ((out: MeshBuilder) => void) | null {
   switch (kind) {
-    case 'litter': return litterHoop
+    // (the newer cage beside the older hoop, about six in ten of them)
+    case 'litter': return seed % 10 < 6 ? cageBin : litterHoop
     case 'recycling': return glassBell(seed)
     case 'sanisette': return sanisette
     case 'statue': return statue(seed)

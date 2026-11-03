@@ -277,7 +277,7 @@ export function pier39Gate(out: MeshBuilder, _fit: Fit): void {
 }
 
 /** a carousel horse, prancing, its nose along +x from (x, y, z) (y the hooves' plane), turned `a` about the vertical */
-function horse(mb: MeshBuilder, x: number, y: number, z: number, a: number, coat: Rgb, saddle: Rgb, tag: number): void {
+export function horse(mb: MeshBuilder, x: number, y: number, z: number, a: number, coat: Rgb, saddle: Rgb, tag: number): void {
   const c = Math.cos(a), s = Math.sin(a)
   const P = (u: number, v: number, w: number): V3 => [x + u * c - w * s, y + v, z + u * s + w * c]
   const GOLD: Rgb = [0.85, 0.68, 0.25]

@@ -4,7 +4,8 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { ranelaghKiosk, ranelaghManege } from '../batch1/parks.ts'
+import { ranelaghKiosk } from '../batch1/parks.ts'
+import { parisManege } from '../carousels.ts'
 import { fondationSuisse, maisonBresil } from './cite.ts'
 import { carmesChurch, debreGate, fochGate, rothschildGate, tenonGate, trousseauGate } from './fronts.ts'
 import { acclimRocher, acclimSeoul, acclimVoliere, batignollesKiosk, batignollesRocks, bellevilleBelvedere, bellevilleCascade, bellevilleVines, COULEE_VIADUCT, serresAuteuil } from './parks.ts'
@@ -22,7 +23,8 @@ export const PARIS_BATCH2: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   acclimSeoul,
   acclimRocher,
   acclimKiosk: ranelaghKiosk,
-  acclimCarrousel: ranelaghManege,
+  // (the Grand Carrousel turns, as every Paris manège now does: paris/carousels.ts)
+  acclimCarrousel: parisManege,
   fondationSuisse,
   maisonBresil,
   unescoSiege,

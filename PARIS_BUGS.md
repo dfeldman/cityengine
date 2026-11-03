@@ -124,6 +124,17 @@ Owner's priority (2026-10-30): "biggest issue is the seine bridges since the sei
       is the owner's GLB (models/paris/wallace.glb in the bucket, KTX2 textures), one model thin-instanced at the 119 fountains OSM tags as
       Wallace (render/paris/wallace.ts); the bake's other 1,100-odd drinking fountains keep the tap; the Vélib' rows untouched. Checked in the showcase and at a fountain; the lamps, benches
       and meters along a boulevard await a look in the city.
+- [~] **The street's second pass** (owner, 2026-11-03, with street-view photographs): the Sanisette is JCDecaux's grey cabin
+      with its door to the pavement and the drinking tap on its end, and a fountain within 4 m of one (its tap) or inside a
+      building is no longer drawn; litter bins are six in ten the new stainless cage with its clear sack; the bake's 1,618 post
+      boxes are La Poste's yellow and its 109 ground billboards Paris's 8 m² panel (both had been drawn in American cities
+      only); the sucette is the low Clear Channel frame or Cityz's tall fluted column, with the city's own posters among the
+      ads; café terraces get their A-board (chalk menu or poster) and, sometimes, planters along the edge; bike racks are
+      messier and their bikes have wheels; paved squares of 600 m² and more have their low granite benches; and the 41
+      children's carousels OSM maps (tools/paris-carousels.ts → paris/carousels.json) turn, as Pier 39's does, the Grand
+      Carrousel and Square Boucicaut's with them. For the next bake: OSM's poster boxes, notice boards and parking machines
+      at their real places, and the city's register of Sanisettes (opendata.paris.fr sanisettesparis: 422, of which OSM has
+      252).
 - [x] **Terrain from IGN's LiDAR HD** (the 0336 bake, 2026-10-30): every fine sample from the lidar; it sits a median
       3.2 m under the terrarium (5–95%: −12.5…+2.2 m), which had counted buildings and trees as ground. The quays are sheer
       walls now (the Vert-Galant, the Conciergerie's quay), not smears. APUR's measured heights on the buildings OSM gave none.

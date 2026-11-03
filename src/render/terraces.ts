@@ -12,7 +12,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { box, prism } from './models.ts'
-import { boxwoodPot } from './paris/furniture.ts'
+import { boxwoodPot, cafeBoard, jardiniere } from './paris/furniture.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { pavementDepth, streetIndex } from '../city/frontage.ts'
 import { unpackPoints, type CityPackage, type PackedBuilding } from '../city/package.ts'
@@ -173,6 +173,31 @@ export function buildTerraces(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'bu
         const x = best.x + best.ux * a + best.nx * 0.75
         const z = best.z + best.uz * a + best.nz * 0.75
         stamp(out, pot, x, terrain.heightAt(x, z) + 0.15, z, 0)
+      }
+    }
+    /*
+     * The board on the pavement, chalked or printed (owner, 2026-11-03: "chalkboards in front of cafes"), at most cafés: past
+     * one end of the terrace, its faces along the front so the passer-by reads it; and on a deep terrace, sometimes, the row
+     * of planters along its outer edge that keeps the tables from the pavement.
+     */
+    const seedC = Math.round(poi.x * 7 + poi.z * 11)
+    if (rnd() < 0.7) {
+      const sd = rnd() < 0.5 ? -1 : 1
+      const a = sd * (along / 2 + 1.1)
+      const x = best.x + best.ux * a + best.nx * 1.2
+      const z = best.z + best.uz * a + best.nz * 1.2
+      const b = new MeshBuilder()
+      cafeBoard(b, seedC)
+      stamp(out, b, x, terrain.heightAt(x, z) + 0.15, z, Math.atan2(best.ux, best.uz) + (rnd() - 0.5) * 0.3)
+    }
+    const edge = 0.9 + (rows - 1) * 1.45 + 0.9
+    if (rows === 2 && rnd() < 0.35 && edge < best.depth - 1.2) {
+      const j = new MeshBuilder()
+      jardiniere(j, seedC + 3)
+      for (let a = -along / 2 + 0.7; a <= along / 2 - 0.6; a += 1.45) {
+        const x = best.x + best.ux * a + best.nx * edge
+        const z = best.z + best.uz * a + best.nz * edge
+        stamp(out, j, x, terrain.heightAt(x, z) + 0.15, z, Math.atan2(best.ux, best.uz))
       }
     }
     for (let r = 0; r < rows; r++) {

@@ -12,7 +12,7 @@
  * drawn separately, and a city is the case where that bites hardest.
  */
 import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
-import { horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit } from './paris/furniture.ts'
+import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisPanel, stoneBench, sucette, treePit } from './paris/furniture.ts'
 import { WallaceFountains } from './paris/wallace.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
@@ -3723,6 +3723,42 @@ export class City {
       }
     }
     /*
+     * THE SQUARES' STONE BENCHES (owner, 2026-11-03, with a photograph: "many plazas have these type of low stone benches"):
+     * along the edges of a paved square of 600 m² and more, two metres in, one every sixteen metres or so and only in about
+     * half the places, long along the edge; none in a road, a building or on a tree.
+     */
+    if (this.region.pointFurniture.parisStreet && !this.off.has('furniture')) {
+      const houses = (this.buildingsIn.get(k) ?? []).map((b) => unpackPoints(b.ring))
+      const trees = this.plantingsIn.get(k) ?? []
+      const onTree = (x: number, z: number): boolean => {
+        for (let i = 0; i + 4 < trees.length; i += 5) if (Math.abs(trees[i] - x) < 1.6 && Math.abs(trees[i + 1] - z) < 1.6) return true
+        return false
+      }
+      for (const a of areasHere) {
+        if (a.kind !== 'paved') continue
+        const ring = unpackPoints(a.ring)
+        let area2 = 0
+        for (let i = 0; i < ring.length; i++) { const p = ring[i], q = ring[(i + 1) % ring.length]; area2 += p.x * q.z - q.x * p.z }
+        if (Math.abs(area2) / 2 < 600) continue
+        for (let i = 0; i < ring.length; i++) {
+          const p = ring[i], q = ring[(i + 1) % ring.length]
+          const ex = q.x - p.x, ez = q.z - p.z, L = Math.hypot(ex, ez)
+          if (L < 9) continue
+          const ux = ex / L, uz = ez / L
+          for (let s = 4.5; s < L - 4.5; s += 16) {
+            const h = ((Math.imul(Math.round((p.x + ux * s) * 3 + (p.z + uz * s) * 7) ^ 0x9e3779b9, 0x85ebca6b) >>> 0) % 1000) / 1000
+            if (h > 0.5) continue
+            // two metres in from the edge, on whichever side is the square
+            let x = p.x + ux * s - uz * 2, z = p.z + uz * s + ux * 2
+            if (!insideRing(ring, x, z)) { x = p.x + ux * s + uz * 2; z = p.z + uz * s - ux * 2 }
+            if (!insideRing(ring, x, z) || (a.holes ?? []).some((hl) => insideRing(unpackPoints(hl), x, z))) continue
+            if (kerbside.inside(x, z, 1) || houses.some((r) => insideRing(r, x, z)) || onTree(x, z)) continue
+            placeModel(furniture, (o) => stoneBench(o, Math.round(h * 10)), x, 0.15, z, Math.atan2(-uz, ux))
+          }
+        }
+      }
+    }
+    /*
      * Fire hydrants, where the region has them (North America): one every sixty metres of pavement wide
      * enough for one, 0.3 m in from the kerb. Small, red, and nowhere in Europe — a cheap, strong signal.
      */
@@ -4714,6 +4750,14 @@ export class City {
       }
       return rs
     })()
+    // the Sanisettes round this tile, whose own taps OSM often maps as a drinking fountain beside them
+    const sanisettesNear = (x: number, z: number): boolean => {
+      const [tx, tz] = tileOf(x, z)
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+        for (const q of this.pointsIn.get(key(tx + dx, tz + dz)) ?? []) if (q.kind === 'sanisette' && Math.hypot(q.x - x, q.z - z) < 4) return true
+      }
+      return false
+    }
     for (const f of this.pointsIn.get(k) ?? []) {
       /*
        * Paris's street (render/paris/street.ts): nothing in a building (OSM's sculptures are many in courtyards, some indoors
@@ -4738,7 +4782,21 @@ export class City {
         }
         if (!standsFree(f.x, f.z)) continue
         const model = parisStreetModel(f.kind, seed)
-        if (model) placeModel(furniture, model, f.x, 0.15, f.z, this.streetBearing(f.x, f.z))
+        let bearing = this.streetBearing(f.x, f.z)
+        /*
+         * A SANISETTE's door, in its long side (local +x), opens onto the pavement, its back to the traffic: turned so +x points
+         * away from the nearest carriageway (local +z stays along the street).
+         */
+        if (f.kind === 'sanisette') {
+          const nr = pointKerb.near(f.x, f.z).sort((a, b) => a.d - b.d)[0]
+          if (nr && nr.d < 25) {
+            const sx = nr.s.bx - nr.s.ax, sz = nr.s.bz - nr.s.az
+            const t = Math.max(0, Math.min(1, ((f.x - nr.s.ax) * sx + (f.z - nr.s.az) * sz) / (sx * sx + sz * sz || 1)))
+            const ux = f.x - (nr.s.ax + sx * t), uz = f.z - (nr.s.az + sz * t)
+            if (Math.hypot(ux, uz) > 0.1) bearing = Math.atan2(-uz, ux)
+          }
+        }
+        if (model) placeModel(furniture, model, f.x, 0.15, f.z, bearing)
         continue
       }
       if (kerbOnly.has(f.kind) && skippedIf(pointKerb.whyNoFurniture(f.x, f.z), f.x, f.z, `osm ${f.kind}`)) continue
@@ -4767,6 +4825,15 @@ export class City {
         : f.kind === 'motoparking' ? rowOf(4 + (Math.abs(Math.round(f.x * 17 + f.z * 5)) % 7), 1, 2)
         : f.kind === 'bikeshare' && pf.bikeShare === 'velib' ? rowOf(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), 0.8, 6) : 1
       if (!row) continue
+      /*
+       * NOT EVERY DRINKING FOUNTAIN (owner, 2026-11-03: "most of the drinking fountains and toilets are likely not on the street
+       * - in a playground or park, or even inside a building"; "many of these are in fact on the side of a gray public toilet"):
+       * none inside a building, and none within 4 m of a Sanisette — that is the toilet's own tap, which the Sanisette draws.
+       */
+      if (f.kind === 'fountain' && pf.parisStreet) {
+        if (blockRings().some((r) => insideRing(r, f.x, f.z))) continue
+        if (!f.wallace && sanisettesNear(f.x, f.z)) continue
+      }
       // a Wallace fountain is the owner's model, one for all of them (render/paris/wallace.ts): the tile hands it its point.
       // Only the ones OSM tags as Wallace — 119 of the paris-centre bake's 1,273 drinking fountains; the rest are other
       // kinds of fountain and keep the tap (owner, 2026-11-03: "stick with the 119 wallace fountains")
@@ -4789,6 +4856,9 @@ export class City {
         : pf.american && f.kind === 'postbox' ? uspsBox
         : f.kind === 'callbox' && pf.callBox ? (pf.callBox === 'nyc' ? nycFireAlarmBox : sfFireAlarmBox)
         : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
+        // Paris's own (render/paris/furniture.ts): the yellow La Poste box, the 8 m² panel for a billboard on the ground or a pole
+        : pf.parisStreet && f.kind === 'postbox' ? laPosteBox
+        : pf.parisStreet && f.kind === 'billboard' ? (o: MeshBuilder) => parisPanel(o, Math.round(f.x * 7 + f.z * 13))
         : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : pf.busStop === 'paris' ? (o: MeshBuilder) => parisBusStop(o, f.shelter ?? false, Math.round(f.x * 7 + f.z * 13)) : plainStop)
         : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)
       /*
@@ -4830,6 +4900,16 @@ export class City {
        * to the road"): the model is long in x, and everything here is placed with local z along the street, so every one of them
        * stood across the pavement. Turned so local +z points at the nearest carriageway.
        */
+      if (f.kind === 'postbox' && pf.parisStreet) {
+        const nr = pointKerb.near(px, pz).sort((a, b) => a.d - b.d)[0]
+        if (nr && nr.d < 25) {
+          const sx = nr.s.bx - nr.s.ax, sz = nr.s.bz - nr.s.az
+          const t = Math.max(0, Math.min(1, ((px - nr.s.ax) * sx + (pz - nr.s.az) * sz) / (sx * sx + sz * sz || 1)))
+          const ux = px - (nr.s.ax + sx * t), uz = pz - (nr.s.az + sz * t)
+          // (local +x to (ux, uz): the box's front, with its slot, to the pavement and the people on it)
+          if (Math.hypot(ux, uz) > 0.1) turn = Math.atan2(-uz, ux) - heading
+        }
+      }
       if (f.kind === 'busstop' && pf.busStop === 'paris' && f.shelter) {
         const nr = pointKerb.near(px, pz).sort((a, b) => a.d - b.d)[0]
         if (nr) {

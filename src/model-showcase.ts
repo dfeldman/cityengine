@@ -25,8 +25,9 @@ import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
 import { bartEntrance } from './render/sf/furniture.ts'
 import { sfFireAlarmBox, nycFireAlarmBox } from './render/us-furniture.ts'
-import { bench, parisNewsstand } from './render/models.ts'
-import { boxwoodPot, horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit, wallaceFountain } from './render/paris/furniture.ts'
+import { bench, bikeParking, parisNewsstand } from './render/models.ts'
+import { parisStreetModel } from './render/paris/street.ts'
+import { cafeBoard, stoneBench, laPosteBox, parisPanel, boxwoodPot, horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit, wallaceFountain } from './render/paris/furniture.ts'
 import { court } from './render/sports.ts'
 import { fitCourt, type CourtSport } from './city/sports.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
@@ -53,7 +54,10 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     // Paris's pavement (render/paris/furniture.ts): `?model=parisBench`
     parisBench, parisLamp, parisLampConsole, wallaceFountain, parisNewsstand, horodateur, treePit: treePit(true),
     parisBusStop: (o) => parisBusStop(o, true, 3), parisStopPost: (o) => parisBusStop(o, false, 5),
-    sucette: (o) => sucette(o, 4), jardiniere: (o) => jardiniere(o, 2), jardiniereConcrete: (o) => jardiniere(o, 7), boxwoodPot: (o) => boxwoodPot(o, 1),
+    sanisette: (o) => parisStreetModel('sanisette', 1)!(o),
+    bikeRack: (o) => bikeParking(6, 11)(o), bikeRackEmpty: (o) => bikeParking(6, 4)(o),
+    cageBin: (o) => parisStreetModel('litter', 1)!(o), litterHoop: (o) => parisStreetModel('litter', 7)!(o), laPosteBox, parisPanel: (o) => parisPanel(o, 2),
+    sucette: (o) => sucette(o, 4), sucetteTall: (o) => sucette(o, 1), cafeBoard: (o) => cafeBoard(o, 2), cafeBoardPoster: (o) => cafeBoard(o, 3), stoneBench, jardiniere: (o) => jardiniere(o, 2), jardiniereConcrete: (o) => jardiniere(o, 7), boxwoodPot: (o) => boxwoodPot(o, 1),
   }
   /*
    * THE SPORTS COURTS (BUGS.md #214). Each is built on a ROTATED, slightly off-square ring — the polygon a

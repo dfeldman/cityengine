@@ -123,6 +123,11 @@ function poster(out: MeshBuilder, cx: number, cy: number, cz: number, hw: number
     [[0.88, 0.3, 0.5], [0.98, 0.94, 0.9], [0.2, 0.2, 0.3]],
     [[0.2, 0.6, 0.64], [0.98, 0.98, 0.96], [0.98, 0.5, 0.2]],
     [[0.97, 0.95, 0.9], [0.3, 0.2, 0.16], [0.85, 0.6, 0.2]],
+    // the city's own (owner's photographs, 2026-11-03): Ville de Paris's pale sheet with its navy lettering, and the
+    // saturated gradient of an event poster, orange on blue
+    [[0.95, 0.95, 0.93], [0.12, 0.2, 0.45], [0.78, 0.84, 0.9]],
+    [[0.95, 0.95, 0.93], [0.12, 0.2, 0.45], [0.86, 0.72, 0.5]],
+    [[0.2, 0.3, 0.8], [0.25, 0.3, 0.85], [0.98, 0.45, 0.2]],
   ]
   const [bg, ink, accent] = palettes[Math.floor(hash(seed, 1) * palettes.length)]
   // (the layers centimetres apart, not millimetres: they fought from across the street — owner, 2026-10-06)
@@ -224,15 +229,35 @@ export function horodateur(out: MeshBuilder): void {
 }
 
 /**
- * THE SUCETTE: JCDecaux's lit ad panel on its post — 1.2 × 1.76 m of poster in an anthracite frame, a face each way
- * along the pavement (±z), the thing a Paris pavement has on every other block.
+ * THE SUCETTE (owner, 2026-11-03, with photographs of two: "here are some panel ads"): the 2 m² panel, 1.2 × 1.76 m of
+ * poster in a dark frame with a flat cap, a face each way along the pavement (±z). Two kinds by seed —
+ * - the low one (Clear Channel's), the frame standing almost on the pavement on a short fluted base;
+ * - the tall one (Cityz's), high on a fluted dark green column over a plain base block, the city's medallion on the column.
  */
 export function sucette(out: MeshBuilder, seed = 0): void {
-  box(out, 0, 0.3, 0, 0.14, 0.3, 0.06, ANTHRACITE, FIXED)
-  box(out, 0, 1.56, 0, 0.68, 0.96, 0.05, ANTHRACITE, FIXED)
-  box(out, 0, 2.55, 0, 0.7, 0.03, 0.07, ANTHRACITE, FIXED)
-  poster(out, 0, 1.56, 0.05, 0.6, 0.88, 1, seed)
-  poster(out, 0, 1.56, -0.05, 0.6, 0.88, -1, seed + 1)
+  const frame: Rgb = [0.2, 0.23, 0.22]
+  const tall = hash(seed, 9) < 0.4
+  const fluted = (y0: number, y1: number, hx: number, hz: number): void => {
+    box(out, 0, (y0 + y1) / 2, 0, hx, (y1 - y0) / 2, hz, frame, FIXED)
+    // the flutes: ribs down each face
+    for (const s of [-1, 1]) {
+      for (let i = 0; i < 4; i++) box(out, -hx + (i + 0.5) * (hx * 2 / 4), (y0 + y1) / 2, s * (hz + 0.008), 0.012, (y1 - y0) / 2 - 0.02, 0.008, [0.26, 0.3, 0.28], FIXED)
+      for (let i = 0; i < 3; i++) box(out, s * (hx + 0.008), (y0 + y1) / 2, -hz + (i + 0.5) * (hz * 2 / 3), 0.008, (y1 - y0) / 2 - 0.02, 0.012, [0.26, 0.3, 0.28], FIXED)
+    }
+  }
+  const y = tall ? 2.95 : 1.3                                    // the panel's centre
+  if (tall) {
+    box(out, 0, 0.42, 0, 0.17, 0.42, 0.13, frame, FIXED)         // the base block
+    fluted(0.84, 2.07, 0.14, 0.1)
+    box(out, 0, 1.7, 0.115, 0.07, 0.07, 0.01, [0.32, 0.36, 0.33], FIXED)   // the medallion, both faces
+    box(out, 0, 1.7, -0.115, 0.07, 0.07, 0.01, [0.32, 0.36, 0.33], FIXED)
+  } else {
+    fluted(0, 0.34, 0.6, 0.08)
+  }
+  box(out, 0, y, 0, 0.7, 0.98, 0.07, frame, FIXED)
+  box(out, 0, y + 1.02, 0, 0.74, 0.04, 0.1, frame, FIXED)        // the cap
+  poster(out, 0, y, 0.07, 0.6, 0.88, 1, seed)
+  poster(out, 0, y, -0.07, 0.6, 0.88, -1, seed + 1)
 }
 
 /**
@@ -293,4 +318,78 @@ export function boxwoodPot(out: MeshBuilder, seed = 0): void {
   prism(out, 0, 0, 0.42, 0.47, 0.27, 8, pot, FIXED, 0.27)
   prism(out, 0, 0, 0.46, 0.475, 0.22, 8, [0.22, 0.17, 0.12])
   shrub(out, 0, 0.47, 0, 0.3, 0.55, hash(seed, 2) < 0.7 ? [0.18, 0.34, 0.16] : [0.26, 0.42, 0.2])
+}
+
+/**
+ * THE LA POSTE BOX, the yellow post box of every Paris street (owner, 2026-11-03: the bake had 1,618 and Paris drew none):
+ * a yellow box on its grey post, its top rounded over, the slot and its lip in the front (+x), the blue plate with the
+ * bird under it. 1.3 m to the top.
+ */
+export function laPosteBox(out: MeshBuilder): void {
+  const yellow: Rgb = [1.0, 0.85, 0.12]
+  const blue: Rgb = [0.1, 0.24, 0.55]
+  box(out, 0, 0.03, 0, 0.12, 0.03, 0.12, ANTHRACITE, FIXED)
+  box(out, 0, 0.42, 0, 0.05, 0.4, 0.05, [0.45, 0.46, 0.47], FIXED)
+  box(out, 0, 1.02, 0, 0.19, 0.22, 0.24, yellow, FIXED)
+  // the top: rounded over front to back, as a prism on its side would be; in three slabs
+  slab(out, 0, 1.27, 0, 0.19, 0.03, 0.22, 0, yellow)
+  slab(out, 0, 1.3, 0, 0.17, 0.02, 0.17, 0, yellow)
+  box(out, 0.192, 1.14, 0, 0.006, 0.02, 0.15, [0.08, 0.08, 0.09], FIXED)                 // the slot
+  box(out, 0.2, 1.17, 0, 0.012, 0.012, 0.17, yellow, FIXED)                              // its lip
+  box(out, 0.194, 0.96, 0, 0.004, 0.08, 0.13, blue, FIXED)
+  box(out, 0.198, 0.96, 0, 0.003, 0.035, 0.06, yellow, FIXED)                           // the bird
+  box(out, 0.194, 0.86, 0, 0.004, 0.012, 0.13, [0.92, 0.92, 0.9], FIXED)                // the collection times
+}
+
+/**
+ * A PARIS AD PANEL, the 8 m² "senior" on one post (the billboard OSM maps on the ground or a pole; owner, 2026-11-03:
+ * "tons of advertisement stands… some flat"): an anthracite frame 3.4 × 2.4 m, its foot 2.3 m up on a single column, a
+ * poster each way (±z), the lamp hood along the top. Across the pavement, as the sucette stands.
+ */
+export function parisPanel(out: MeshBuilder, seed = 0): void {
+  box(out, 0, 1.2, 0, 0.12, 1.2, 0.12, ANTHRACITE, FIXED)
+  box(out, 0, 3.5, 0, 1.75, 1.25, 0.09, ANTHRACITE, FIXED)
+  box(out, 0, 4.8, 0, 1.6, 0.04, 0.2, ANTHRACITE, FIXED)                                  // the lamp hood
+  poster(out, 0, 3.5, 0.09, 1.65, 1.15, 1, seed)
+  poster(out, 0, 3.5, -0.09, 1.65, 1.15, -1, seed + 3)
+}
+
+/**
+ * THE CAFÉ BOARD (owner, 2026-11-03, with a photograph: "chalkboards in front of cafes - many have a chalkboard menus"):
+ * the A-frame on the pavement by a terrace — two leaves splayed at the foot, each a frame with its header panel and,
+ * by seed, the slate with the day's menu chalked on it or a printed poster. 0.65 × 1.1 m; its faces to ±z.
+ */
+export function cafeBoard(out: MeshBuilder, seed = 0): void {
+  const white = hash(seed, 1) < 0.5
+  const frame: Rgb = white ? [0.9, 0.9, 0.88] : [0.12, 0.12, 0.13]
+  const slate = hash(seed, 2) < 0.65
+  const T = 0.2                                                      // the splay of each leaf, radians
+  for (const s of [1, -1] as const) {
+    const t = s * T
+    // a point on the leaf, `v` up it and `d` out from its face: the leaf leans from its foot at z = ±0.2 to the top at z 0
+    const z0 = s * 0.2
+    const at = (v: number, d: number): [number, number] => [v * Math.cos(T) + 0, z0 - s * v * Math.sin(T) + s * d * Math.cos(T)]
+    const [cy, cz] = at(0.56, 0)
+    slab(out, 0, cy, cz, 0.33, 0.56, 0.015, t, frame)
+    const [fy, fz] = at(0.5, 0.018)
+    slab(out, 0, fy, fz, 0.27, 0.4, 0.004, t, slate ? [0.1, 0.12, 0.11] : COLOURS[Math.floor(hash(seed, 3 + (s > 0 ? 0 : 1)) * COLOURS.length)])
+    const [hy, hz] = at(1.0, 0.018)
+    slab(out, 0, hy, hz, 0.27, 0.06, 0.004, t, white ? [0.25, 0.22, 0.2] : [0.92, 0.9, 0.84])  // the header, with the café's name
+    if (slate) for (let k = 0; k < 6; k++) {
+      const [ly, lz] = at(0.78 - k * 0.11, 0.024)
+      slab(out, -0.05 + (hash(seed, 10 + k) - 0.5) * 0.08, ly, lz, 0.12 + hash(seed, 20 + k) * 0.1, 0.012, 0.003, t, [0.9, 0.9, 0.86])
+    }
+  }
+}
+const COLOURS: Rgb[] = [[0.85, 0.3, 0.25], [0.95, 0.78, 0.3], [0.3, 0.5, 0.75], [0.62, 0.42, 0.22], [0.55, 0.25, 0.45], [0.3, 0.55, 0.32]]
+
+/**
+ * THE STONE BENCH of the Paris squares (owner, 2026-11-03, with a photograph: "many plazas have these type of low stone
+ * benches"): a long granite slab in sections, 0.45 m up on square granite legs, no back. 4.4 m long in x.
+ */
+export function stoneBench(out: MeshBuilder, seed = 0): void {
+  // (a darker grey than it looks: in the noon sun a 0.6 granite read as white marble)
+  const tones: Rgb[] = [[0.5, 0.5, 0.48], [0.47, 0.47, 0.46], [0.52, 0.51, 0.49], [0.48, 0.48, 0.47]]
+  for (let i = 0; i < 4; i++) box(out, -1.65 + i * 1.1, 0.4, 0, 0.545, 0.075, 0.22, tones[(i + seed) % tones.length], FIXED)
+  for (const x of [-1.9, -0.65, 0.65, 1.9]) box(out, x, 0.165, 0, 0.13, 0.165, 0.13, [0.44, 0.44, 0.43], FIXED)
 }

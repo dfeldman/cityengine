@@ -1032,6 +1032,8 @@ export function velibStation(n: number, seed: number): (out: MeshBuilder) => voi
  * the inverted-U stands 0.9 m apart along z, nearly every one with a bike or two locked to it in their owners' colours, the
  * shared e-bikes' greens and greys among them. The bikes stand out toward +x.
  */
+const skew0 = (u: number): number => (u - 0.5) * 0.5
+
 export function bikeParking(n: number, seed: number): (out: MeshBuilder) => void {
   return (out) => {
     const steel: Rgb = [0.42, 0.43, 0.44]
@@ -1041,21 +1043,55 @@ export function bikeParking(n: number, seed: number): (out: MeshBuilder) => void
     let h = seed >>> 0
     const r = (): number => { h = (Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return h / 4294967296 }
     const L = (n - 1) * 0.9
-    const bike = (z: number, x0: number, c: Rgb): void => {
-      for (const wx of [x0, x0 + 1.05]) box(out, wx, 0.33, z, 0.33, 0.33, 0.012, tyre, FIXED)
-      box(out, x0 + 0.52, 0.6, z, 0.45, 0.03, 0.025, c, FIXED)
-      box(out, x0 + 0.3, 0.48, z, 0.035, 0.2, 0.025, c, FIXED)
-      box(out, x0 + 0.3, 0.84, z, 0.11, 0.025, 0.05, tyre, FIXED)
-      box(out, x0 + 0.95, 0.9, z, 0.03, 0.28, 0.025, c, FIXED)
+    /*
+     * MESSY, and mostly full (owner, 2026-11-03: "almost every block has a big, messy bike rack. Usually close to full,
+     * although that varies"): each row has its own fill, and every bike stands askew — turned a little, pushed in or out,
+     * its bars turned — built at the origin and stamped in, so one in a dozen can lie locked across the row's end too.
+     */
+    const bike = (z: number, x0: number, c: Rgb, yaw: number): void => {
+      const b = new MeshBuilder()
+      // each wheel a ring of eight tyre segments and a hub, not a slab: a square of black read as a box from the side
+      for (const wx of [0, 1.05]) {
+        for (let k = 0; k < 8; k++) {
+          const a0 = (k / 8) * Math.PI * 2, a1 = ((k + 1) / 8) * Math.PI * 2
+          strut(b, [wx + Math.cos(a0) * 0.31, 0.33 + Math.sin(a0) * 0.31, 0], [wx + Math.cos(a1) * 0.31, 0.33 + Math.sin(a1) * 0.31, 0], 0.035, 0.04, tyre, FIXED, false)
+        }
+        box(b, wx, 0.33, 0, 0.03, 0.03, 0.02, [0.55, 0.55, 0.56], FIXED)
+        for (const a of [0.4, 2.0]) strut(b, [wx + Math.cos(a) * 0.3, 0.33 + Math.sin(a) * 0.3, 0], [wx - Math.cos(a) * 0.3, 0.33 - Math.sin(a) * 0.3, 0], 0.006, 0.006, [0.6, 0.6, 0.62], FIXED, false)
+      }
+      box(b, 0.52, 0.6, 0, 0.45, 0.03, 0.025, c, FIXED)
+      box(b, 0.3, 0.48, 0, 0.035, 0.2, 0.025, c, FIXED)
+      strut(b, [0.95, 0.62, 0], [0.42, 0.33, 0], 0.04, 0.04, c, FIXED, false)              // the down tube
+      strut(b, [0.42, 0.33, 0], [0, 0.33, 0], 0.03, 0.03, c, FIXED, false)                 // the chain stay
+      box(b, 0.3, 0.84, 0, 0.11, 0.025, 0.05, tyre, FIXED)
+      box(b, 0.95, 0.9, 0, 0.03, 0.28, 0.025, c, FIXED)
+      const bars = (r() - 0.5) * 0.9
+      box(b, 0.95, 1.18, 0, 0.03 + Math.abs(Math.sin(bars)) * 0.2, 0.02, 0.03 + Math.abs(Math.cos(bars)) * 0.24, tyre, FIXED)
+      if (r() < 0.25) box(b, 1.2, 0.7, 0, 0.14, 0.08, 0.13, r() < 0.5 ? [0.1, 0.1, 0.1] : [0.5, 0.38, 0.22], FIXED)   // a basket
+      const cs = Math.cos(yaw), sn = Math.sin(yaw), base = out.positions.length / 3
+      for (let i = 0; i < b.positions.length; i += 3) {
+        const px = b.positions[i], pz = b.positions[i + 2]
+        out.positions.push(x0 + px * cs + pz * sn, b.positions[i + 1], z - px * sn + pz * cs)
+        const nx = b.normals[i], nz = b.normals[i + 2]
+        out.normals.push(nx * cs + nz * sn, b.normals[i + 1], -nx * sn + nz * cs)
+      }
+      out.uvs.push(...b.uvs)
+      out.colors.push(...b.colors)
+      for (const k of b.indices) out.indices.push(base + k)
     }
+    const fill = 0.45 + r() * 0.55
     for (let i = 0; i < n; i++) {
       const z = -L / 2 + i * 0.9
       // the hoop: two legs and the bar across, 0.8 m tall
       for (const x of [0.15, 0.75]) box(out, x, 0.4, z, 0.025, 0.4, 0.025, steel, FIXED)
       box(out, 0.45, 0.8, z, 0.32, 0.025, 0.025, steel, FIXED)
-      if (r() < 0.9) bike(z + 0.12, -0.05, PAINT[Math.floor(r() * PAINT.length)])
-      if (r() < 0.6) bike(z - 0.12, 0.05, PAINT[Math.floor(r() * PAINT.length)])
+      const skew = (): number => (r() - 0.5) * 0.36
+      if (r() < fill) bike(z + 0.12 + (r() - 0.5) * 0.08, -0.05 - r() * 0.25, PAINT[Math.floor(r() * PAINT.length)], skew())
+      if (r() < fill * 0.8) bike(z - 0.12 + (r() - 0.5) * 0.08, 0.05 - r() * 0.2, PAINT[Math.floor(r() * PAINT.length)], skew())
     }
+    // one across the end of the row, locked to the last hoop
+    // (turned so it runs on from the row's end, along it, rather than back through the last hoop)
+    if (r() < 0.35) bike(L / 2 + 0.35, 0.35, PAINT[Math.floor(r() * PAINT.length)], -Math.PI / 2 + skew0(r()))
   }
 }
 

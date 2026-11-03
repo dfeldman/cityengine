@@ -1354,6 +1354,9 @@
     "include": "paris/batch12.json"
   },
   {
+    "include": "paris/carousels.json"
+  },
+  {
     "include": "paris/bugs.json"
   },
   {
