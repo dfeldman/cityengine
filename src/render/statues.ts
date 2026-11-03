@@ -24,6 +24,8 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import '@babylonjs/loaders/glTF/2.0'
+// KTX2 textures (assetkit's image-to-GLB models) decode with the game's own transcoder, not Babylon's CDN
+import './ktx2.ts'
 import type { Scene } from '@babylonjs/core/scene'
 import type { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Plane } from '@babylonjs/core/Maths/math.plane'

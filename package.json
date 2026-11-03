@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@babylonjs/core": "9.26.0",
+    "@babylonjs/ktx2decoder": "9.26.0",
     "@babylonjs/loaders": "^9.26.0",
     "@types/earcut": "^3.0.0",
     "@types/pngjs": "^6.0.5",
