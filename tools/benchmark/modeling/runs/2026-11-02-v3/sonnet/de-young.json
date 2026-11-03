@@ -1,0 +1,200 @@
+{
+ "building": "de-young",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:29.800Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The de Young is a long, low copper-clad volume (about 10-12 m high) with a sloping, angular roofline and a deep canopy over the front entrance. At the east end a tall tower twists and widens toward the top, with a big square cantilevered observation box. The tower is modelled as a twist tapering toward the base with a wide cap slab. Copper brown colour throughout.\", \"parts\": [{\"type\": \"prism\", \"points\": [[-78, -37], [66, -37], [78, 36], [-78, 37]], \"y0\": 0, \"y1\": 9, \"material\": \"copper\", \"colour\": \"#5e4437\"}, {\"type\": \"prism\", \"points\": [[-78, -37], [66, -37], [70, -10], [-78, -10]], \"y0\": 9, \"y1\": 11.5, \"material\": \"copper\", \"colour\": \"#5a4034\"}, {\"type\": \"box\", \"center\": [-35, 10], \"size\": [80, 50], \"y0\": 9, \"y1\": 13, \"material\": \"copper\", \"colour\": \"#5e4437\"}, {\"type\": \"box\", \"center\": [-45, -30], \"size\": [60, 14], \"y0\": 7.5, \"y1\": 8.6, \"material\": \"metal\", \"colour\": \"#3d3a3a\"}, {\"type\": \"twist\", \"center\": [52, 12], \"size\": [14, 14], \"y0\": 8, \"y1\": 33, \"turn\": -25, \"steps\": 12, \"topScale\": 1.9, \"material\": \"copper\", \"colour\": \"#4f3a30\"}, {\"type\": \"box\", \"center\": [52, 12], \"size\": [25, 25], \"y0\": 33, \"y1\": 44, \"material\": \"copper\", \"colour\": \"#5a4236\"}, {\"type\": \"box\", \"center\": [52, 12], \"size\": [24, 24], \"y0\": 33, \"y1\": 36, \"material\": \"glass\", \"colour\": \"#2f3b48\"}]}",
+   "stop": "end_turn",
+   "input": 3222,
+   "output": 614,
+   "cacheRead": 0,
+   "cost": 0.033004,
+   "ms": 5250,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The de Young is a long, low copper-clad volume (about 10-12 m high) with a sloping, angular roofline and a deep canopy over the front entrance. At the east end a tall tower twists and widens toward the top, with a big square cantilevered observation box. The tower is modelled as a twist tapering toward the base with a wide cap slab. Copper brown colour throughout.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -78,
+       -37
+      ],
+      [
+       66,
+       -37
+      ],
+      [
+       78,
+       36
+      ],
+      [
+       -78,
+       37
+      ]
+     ],
+     "y0": 0,
+     "y1": 9,
+     "material": "copper",
+     "colour": "#5e4437"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -78,
+       -37
+      ],
+      [
+       66,
+       -37
+      ],
+      [
+       70,
+       -10
+      ],
+      [
+       -78,
+       -10
+      ]
+     ],
+     "y0": 9,
+     "y1": 11.5,
+     "material": "copper",
+     "colour": "#5a4034"
+    },
+    {
+     "type": "box",
+     "center": [
+      -35,
+      10
+     ],
+     "size": [
+      80,
+      50
+     ],
+     "y0": 9,
+     "y1": 13,
+     "material": "copper",
+     "colour": "#5e4437"
+    },
+    {
+     "type": "box",
+     "center": [
+      -45,
+      -30
+     ],
+     "size": [
+      60,
+      14
+     ],
+     "y0": 7.5,
+     "y1": 8.6,
+     "material": "metal",
+     "colour": "#3d3a3a"
+    },
+    {
+     "type": "twist",
+     "center": [
+      52,
+      12
+     ],
+     "size": [
+      14,
+      14
+     ],
+     "y0": 8,
+     "y1": 33,
+     "turn": -25,
+     "steps": 12,
+     "topScale": 1.9,
+     "material": "copper",
+     "colour": "#4f3a30"
+    },
+    {
+     "type": "box",
+     "center": [
+      52,
+      12
+     ],
+     "size": [
+      25,
+      25
+     ],
+     "y0": 33,
+     "y1": 44,
+     "material": "copper",
+     "colour": "#5a4236"
+    },
+    {
+     "type": "box",
+     "center": [
+      52,
+      12
+     ],
+     "size": [
+      24,
+      24
+     ],
+     "y0": 33,
+     "y1": 36,
+     "material": "glass",
+     "colour": "#2f3b48"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low copper-clad volume (about 10-12 m high) with a sloping, angular roofline and a deep canopy over the front entrance. At the east end a tall tower twists and widens toward the top, with a big square cantilevered observation box. The tower is modelled as a twist tapering toward the base with a wide cap slab. Copper brown colour throughout.",
+  "triangles": 172,
+  "parts": 7
+ },
+ "totals": {
+  "input": 3222,
+  "output": 614,
+  "cost": 0.033004,
+  "ms": 5250
+ }
+}

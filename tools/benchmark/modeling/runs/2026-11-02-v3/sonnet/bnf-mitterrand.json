@@ -1,0 +1,330 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:19:01.095Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"A raised timber esplanade platform fills the site, with stepped timber ramps on the sides. Four L-shaped glass towers, 79 m tall, stand at the corners, each made of two slabs forming an open book. A sunken garden with trees lies in the middle, surrounded by low reading-room galleries.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [330, 170], \"y0\": 0, \"y1\": 8, \"material\": \"stone\", \"colour\": \"#a58b6a\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [260, 100], \"y0\": 7.5, \"y1\": 8.2, \"material\": \"grass\", \"colour\": \"#4f6b3a\"},\n{\"type\": \"box\", \"center\": [0, -62], \"size\": [260, 30], \"y0\": 8, \"y1\": 9, \"material\": \"stone\", \"colour\": \"#b09574\"},\n{\"type\": \"box\", \"center\": [0, 62], \"size\": [260, 30], \"y0\": 8, \"y1\": 9, \"material\": \"stone\", \"colour\": \"#b09574\"},\n{\"type\": \"box\", \"center\": [-120, 0], \"size\": [30, 100], \"y0\": 8, \"y1\": 16, \"material\": \"glass\", \"colour\": \"#6b7a80\"},\n{\"type\": \"box\", \"center\": [120, 0], \"size\": [30, 100], \"y0\": 8, \"y1\": 16, \"material\": \"glass\", \"colour\": \"#6b7a80\"},\n{\"type\": \"box\", \"center\": [-142, -62], \"size\": [45, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [-153, -45], \"size\": [24, 45], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [142, -62], \"size\": [45, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [153, -45], \"size\": [24, 45], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [-142, 62], \"size\": [45, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [-153, 45], \"size\": [24, 45], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [142, 62], \"size\": [45, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}},\n{\"type\": \"box\", \"center\": [153, 45], \"size\": [24, 45], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7b57\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"pitch\": 2, \"solid\": 0.2}}\n]}",
+   "stop": "end_turn",
+   "input": 3195,
+   "output": 1282,
+   "cacheRead": 8168,
+   "cost": 0.020843599999999997,
+   "ms": 8110,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A raised timber esplanade platform fills the site, with stepped timber ramps on the sides. Four L-shaped glass towers, 79 m tall, stand at the corners, each made of two slabs forming an open book. A sunken garden with trees lies in the middle, surrounded by low reading-room galleries.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#a58b6a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      260,
+      100
+     ],
+     "y0": 7.5,
+     "y1": 8.2,
+     "material": "grass",
+     "colour": "#4f6b3a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -62
+     ],
+     "size": [
+      260,
+      30
+     ],
+     "y0": 8,
+     "y1": 9,
+     "material": "stone",
+     "colour": "#b09574"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      62
+     ],
+     "size": [
+      260,
+      30
+     ],
+     "y0": 8,
+     "y1": 9,
+     "material": "stone",
+     "colour": "#b09574"
+    },
+    {
+     "type": "box",
+     "center": [
+      -120,
+      0
+     ],
+     "size": [
+      30,
+      100
+     ],
+     "y0": 8,
+     "y1": 16,
+     "material": "glass",
+     "colour": "#6b7a80"
+    },
+    {
+     "type": "box",
+     "center": [
+      120,
+      0
+     ],
+     "size": [
+      30,
+      100
+     ],
+     "y0": 8,
+     "y1": 16,
+     "material": "glass",
+     "colour": "#6b7a80"
+    },
+    {
+     "type": "box",
+     "center": [
+      -142,
+      -62
+     ],
+     "size": [
+      45,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -153,
+      -45
+     ],
+     "size": [
+      24,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      142,
+      -62
+     ],
+     "size": [
+      45,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      153,
+      -45
+     ],
+     "size": [
+      24,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -142,
+      62
+     ],
+     "size": [
+      45,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -153,
+      45
+     ],
+     "size": [
+      24,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      142,
+      62
+     ],
+     "size": [
+      45,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      153,
+      45
+     ],
+     "size": [
+      24,
+      45
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7b57",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "pitch": 2,
+      "solid": 0.2
+     }
+    }
+   ]
+  },
+  "notes": "A raised timber esplanade platform fills the site, with stepped timber ramps on the sides. Four L-shaped glass towers, 79 m tall, stand at the corners, each made of two slabs forming an open book. A sunken garden with trees lies in the middle, surrounded by low reading-room galleries.",
+  "triangles": 1448,
+  "parts": 14
+ },
+ "totals": {
+  "input": 3195,
+  "output": 1282,
+  "cost": 0.020843599999999997,
+  "ms": 8110
+ }
+}

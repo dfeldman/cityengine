@@ -1,0 +1,863 @@
+{
+ "building": "musee-orsay",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:10:48.477Z",
+ "userText": "Building: Musée d'Orsay, Paris (museum (former station)).\nThe front (−z) is the river front on the Seine.\nFootprint: 188.3 m along x by 77.3 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[49.7,-38.4],[49.7,-37],[78.8,-37.3],[78.9,-9.7],[93.8,-9.9],[94.1,26.6],[79.4,26.8],[79.6,38.7],[-93.3,38.7],[-94.1,-35.2],[-92.2,-35.5],[-92.2,-36.9],[-85.9,-37.3],[-84.8,-36.1],[-79.4,-36.2],[-78.3,-37.4],[-74.1,-37.4],[-70,-35.8],[-59.7,-35.9],[-59.7,-36.6],[-1.6,-36.5],[-1.6,-37.3],[27.4,-36.8],[29.5,-38.2],[35.8,-38.6],[37.5,-36.9],[41.6,-36.9],[43.3,-38.7]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. river-front three-quarter of the whole long station-museum with arched vaults, central clock pavilion and pitched roof, daylight\n  2. elevated view of the west end and entrance forecourt with its glass canopy and the vaulted roof behind\n  3. street-side three-quarter at the pavilion end with the arched fronts and the barrel roof, dusk-light daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   188.3,
+   77.3
+  ],
+  "outline": [
+   [
+    49.7,
+    -38.4
+   ],
+   [
+    49.7,
+    -37
+   ],
+   [
+    78.8,
+    -37.3
+   ],
+   [
+    78.9,
+    -9.7
+   ],
+   [
+    93.8,
+    -9.9
+   ],
+   [
+    94.1,
+    26.6
+   ],
+   [
+    79.4,
+    26.8
+   ],
+   [
+    79.6,
+    38.7
+   ],
+   [
+    -93.3,
+    38.7
+   ],
+   [
+    -94.1,
+    -35.2
+   ],
+   [
+    -92.2,
+    -35.5
+   ],
+   [
+    -92.2,
+    -36.9
+   ],
+   [
+    -85.9,
+    -37.3
+   ],
+   [
+    -84.8,
+    -36.1
+   ],
+   [
+    -79.4,
+    -36.2
+   ],
+   [
+    -78.3,
+    -37.4
+   ],
+   [
+    -74.1,
+    -37.4
+   ],
+   [
+    -70,
+    -35.8
+   ],
+   [
+    -59.7,
+    -35.9
+   ],
+   [
+    -59.7,
+    -36.6
+   ],
+   [
+    -1.6,
+    -36.5
+   ],
+   [
+    -1.6,
+    -37.3
+   ],
+   [
+    27.4,
+    -36.8
+   ],
+   [
+    29.5,
+    -38.2
+   ],
+   [
+    35.8,
+    -38.6
+   ],
+   [
+    37.5,
+    -36.9
+   ],
+   [
+    41.6,
+    -36.9
+   ],
+   [
+    43.3,
+    -38.7
+   ]
+  ],
+  "height": 38,
+  "turn": 1.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Musée d'Orsay is a former railway station: a long cream-stone river front on the Seine with a central clock pavilion under a steep pitched roof, arched glazed hall bays beside it, and hotel-style mansard ranges to the west. Behind the facade a grey glazed barrel vault runs the length of the nave, and the east end projects as a separate pavilion. Signature features modelled: the clock pavilion with its clock face, the arcaded hall front, the mansard ranges, and the glass barrel vault.\",\n  \"parts\": [\n    {\n      \"type\": \"vault\",\n      \"center\": [0, -1],\n      \"size\": [170, 38],\n      \"y0\": 24,\n      \"rise\": 12,\n      \"axis\": \"x\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#7d8c90\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -29],\n      \"size\": [24, 18],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#dcd0b6\",\n      \"storeys\": [\n        {\"height\": 7, \"kind\": \"rusticated\"},\n        {\"height\": 17, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"faces\": [\"front\"],\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"disc\",\n      \"center\": [0, 17, -38.6],\n      \"radius\": 4.5,\n      \"facing\": \"front\",\n      \"colour\": \"#e8e0cc\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [50, -29],\n      \"size\": [80, 18],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d9cdb4\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 22, \"kind\": \"arcade\", \"floors\": 1}\n      ],\n      \"faces\": [\"front\"],\n      \"roof\": {\"kind\": \"balustrade\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-55, -29],\n      \"size\": [78, 18],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d8ccb0\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 18, \"kind\": \"pilasters\", \"floors\": 3}\n      ],\n      \"faces\": [\"front\"],\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 7, \"dormers\": true, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-7, 30],\n      \"size\": [174, 17],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#cfc4aa\",\n      \"storeys\": [\n        {\"height\": 20, \"kind\": \"punched\", \"floors\": 4}\n      ],\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 6, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [87, 8.5],\n      \"size\": [15, 36],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d9cdb4\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 20, \"kind\": \"punched\", \"floors\": 3}\n      ],\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 8, \"colour\": \"#4f5862\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5306,
+   "output": 3272,
+   "cacheRead": 8401,
+   "cost": 0.00225061,
+   "ms": 15007,
+   "errors": [],
+   "warnings": [
+    "parts[3]>box4.windows.floor: 22 lowered to the maximum 20",
+    "parts[3]>box5.windows.floor: 22 lowered to the maximum 20",
+    "parts[3]>box6.windows.floor: 22 lowered to the maximum 20"
+   ]
+  },
+  {
+   "kind": "feedback",
+   "reply": "{\n  \"notes\": \"Three biggest differences: (1) the back (+z) street front is missing its arched entrance range. The photographs show a tall arched glazed front behind a glass canopy, with domed cupolas on its corners and a mansard roof, but the model has a plain punched block there. (2) The rear block's flat punched windows make it read as an office wing; it should be a three-storey arched hall front with a mansard. (3) The clock pavilion is too low and plain. Its steep pavilion roof is the most recognisable silhouette on the river front, so it needs more height, and the hall front needs its arched glazing shown more clearly.\",\n  \"parts\": [\n    {\n      \"type\": \"vault\",\n      \"center\": [0, -1],\n      \"size\": [170, 38],\n      \"y0\": 24,\n      \"rise\": 12,\n      \"axis\": \"x\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#7d8c90\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -29],\n      \"size\": [24, 18],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#dcd0b6\",\n      \"storeys\": [\n        {\"height\": 7, \"kind\": \"rusticated\"},\n        {\"height\": 14, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"faces\": [\"front\"],\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 17, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"disc\",\n      \"center\": [0, 17, -38.6],\n      \"radius\": 4.5,\n      \"facing\": \"front\",\n      \"colour\": \"#e8e0cc\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [50, -29],\n      \"size\": [80, 18],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d9cdb4\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 22, \"kind\": \"arcade\", \"floors\": 1}\n      ],\n      \"faces\": [\"front\"],\n      \"roof\": {\"kind\": \"balustrade\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-55, -29],\n      \"size\": [78, 18],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d8ccb0\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 18, \"kind\": \"pilasters\", \"floors\": 3}\n      ],\n      \"faces\": [\"front\"],\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 7, \"dormers\": true, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-7, 30],\n      \"size\": [174, 17],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d4c9b0\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 18, \"kind\": \"arched\", \"floors\": 2}\n      ],\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 7, \"dormers\": true, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 34],\n      \"size\": [44, 8],\n      \"y0\": 5,\n      \"y1\": 7,\n      \"material\": \"glass\",\n      \"colour\": \"#c9d4d6\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [-40, 30],\n      \"radius\": 4,\n      \"y0\": 26,\n      \"y1\": 33,\n      \"material\": \"stone\",\n      \"colour\": \"#d9cdb4\"\n    },\n    {\n      \"type\": \"dome\",\n      \"center\": [-40, 30],\n      \"radius\": 4.5,\n      \"y0\": 33,\n      \"height\": 5,\n      \"material\": \"metal\",\n      \"colour\": \"#4f5862\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [40, 30],\n      \"radius\": 4,\n      \"y0\": 26,\n      \"y1\": 33,\n      \"material\": \"stone\",\n      \"colour\": \"#d9cdb4\"\n    },\n    {\n      \"type\": \"dome\",\n      \"center\": [40, 30],\n      \"radius\": 4.5,\n      \"y0\": 33,\n      \"height\": 5,\n      \"material\": \"metal\",\n      \"colour\": \"#4f5862\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [87, 8.5],\n      \"size\": [15, 36],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d9cdb4\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 20, \"kind\": \"punched\", \"floors\": 3}\n      ],\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 8, \"colour\": \"#4f5862\"}\n    }\n  ]\n}",
+   "stop": "end_turn",
+   "input": 10044,
+   "output": 5600,
+   "cacheRead": 8401,
+   "cost": 0.0038884099999999997,
+   "ms": 26735,
+   "errors": [],
+   "warnings": [
+    "parts[3]>box4.windows.floor: 22 lowered to the maximum 20",
+    "parts[3]>box5.windows.floor: 22 lowered to the maximum 20",
+    "parts[3]>box6.windows.floor: 22 lowered to the maximum 20"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Three biggest differences: (1) the back (+z) street front is missing its arched entrance range. The photographs show a tall arched glazed front behind a glass canopy, with domed cupolas on its corners and a mansard roof, but the model has a plain punched block there. (2) The rear block's flat punched windows make it read as an office wing; it should be a three-storey arched hall front with a mansard. (3) The clock pavilion is too low and plain. Its steep pavilion roof is the most recognisable silhouette on the river front, so it needs more height, and the hall front needs its arched glazing shown more clearly.",
+   "parts": [
+    {
+     "type": "vault",
+     "center": [
+      0,
+      -1
+     ],
+     "size": [
+      170,
+      38
+     ],
+     "y0": 24,
+     "rise": 12,
+     "axis": "x",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#7d8c90"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -29
+     ],
+     "size": [
+      24,
+      18
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#dcd0b6",
+     "storeys": [
+      {
+       "height": 7,
+       "kind": "rusticated"
+      },
+      {
+       "height": 14,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "roof": {
+      "kind": "pavilion",
+      "rise": 17,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "disc",
+     "center": [
+      0,
+      17,
+      -38.6
+     ],
+     "radius": 4.5,
+     "facing": "front",
+     "colour": "#e8e0cc"
+    },
+    {
+     "type": "block",
+     "center": [
+      50,
+      -29
+     ],
+     "size": [
+      80,
+      18
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d9cdb4",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 22,
+       "kind": "arcade",
+       "floors": 1
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -55,
+      -29
+     ],
+     "size": [
+      78,
+      18
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8ccb0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 18,
+       "kind": "pilasters",
+       "floors": 3
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "roof": {
+      "kind": "mansard",
+      "rise": 7,
+      "dormers": true,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -7,
+      30
+     ],
+     "size": [
+      174,
+      17
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d4c9b0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 18,
+       "kind": "arched",
+       "floors": 2
+      }
+     ],
+     "roof": {
+      "kind": "mansard",
+      "rise": 7,
+      "dormers": true,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      34
+     ],
+     "size": [
+      44,
+      8
+     ],
+     "y0": 5,
+     "y1": 7,
+     "material": "glass",
+     "colour": "#c9d4d6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -40,
+      30
+     ],
+     "radius": 4,
+     "y0": 26,
+     "y1": 33,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "dome",
+     "center": [
+      -40,
+      30
+     ],
+     "radius": 4.5,
+     "y0": 33,
+     "height": 5,
+     "material": "metal",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      40,
+      30
+     ],
+     "radius": 4,
+     "y0": 26,
+     "y1": 33,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "dome",
+     "center": [
+      40,
+      30
+     ],
+     "radius": 4.5,
+     "y0": 33,
+     "height": 5,
+     "material": "metal",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "block",
+     "center": [
+      87,
+      8.5
+     ],
+     "size": [
+      15,
+      36
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d9cdb4",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 20,
+       "kind": "punched",
+       "floors": 3
+      }
+     ],
+     "roof": {
+      "kind": "pavilion",
+      "rise": 8,
+      "colour": "#4f5862"
+     }
+    }
+   ]
+  },
+  "notes": "Three biggest differences: (1) the back (+z) street front is missing its arched entrance range. The photographs show a tall arched glazed front behind a glass canopy, with domed cupolas on its corners and a mansard roof, but the model has a plain punched block there. (2) The rear block's flat punched windows make it read as an office wing; it should be a three-storey arched hall front with a mansard. (3) The clock pavilion is too low and plain. Its steep pavilion roof is the most recognisable silhouette on the river front, so it needs more height, and the hall front needs its arched glazing shown more clearly.",
+  "triangles": 6572,
+  "parts": 171
+ },
+ "totals": {
+  "input": 18657,
+  "output": 15562,
+  "cost": 0.00983555,
+  "ms": 75185
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the river front from the Seine, showing the long cream stone facade, the central clock pavilion with a pitched roof, the arched glazed hall bays to the right of the clock, and the grey barrel roof behind the hotel-style block on the left.\",\n    \"photo 2: elevated view of the west end and forecourt, showing the glass canopy over the entrance, the vaulted glass roof rising behind the facade, and the mansard roofs with dormers on the front ranges.\",\n    \"photo 3: street-side three-quarter view of the pavilion end, showing the tall arched windows of the hall front, the balustraded attic, the small domed cupolas on the corners and the slate mansard roof.\"\n  ],\n  \"components\": [\n    {\"name\": \"station hall barrel vault\", \"part\": \"vault\", \"where\": \"the long central hall behind the river front\", \"center\": [0, 6], \"size\": [170, 40], \"height\": 32,\n     \"settings\": {\"span\": 40, \"rise\": 8, \"length\": 170, \"glazed\": true, \"colour\": \"#7d8c90\"},\n     \"why\": \"photos 1 and 3: the grey barrel roof of the former station nave shows above the facades\"},\n    {\"name\": \"central clock pavilion\", \"part\": \"block\", \"where\": \"centre of the river front\", \"center\": [0, -28], \"size\": [26, 20], \"height\": 38,\n     \"settings\": {\"storeys\": [{\"height\": 7, \"kind\": \"rusticated\"}, {\"height\": 17, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"pavilion\", \"rise\": 14}, \"colour\": \"#dcd0b6\"},\n     \"why\": \"photo 1: the central pavilion with the clock and steep pitched roof is the tallest point of the front\"},\n    {\"name\": \"clock face\", \"part\": \"disc\", \"where\": \"on the river face of the clock pavilion\", \"center\": [0, -38.2], \"elevation\": 17, \"size\": [9, 9], \"height\": 9,\n     \"settings\": {\"radius\": 4.5, \"colour\": \"#e8e0cc\", \"facing\": \"front\"},\n     \"why\": \"photos 1 and 3: the large round clock sits in the upper middle of the pavilion\"},\n    {\"name\": \"hall front with arched glazing\", \"part\": \"block\", \"where\": \"river front east of the clock pavilion\", \"center\": [50, -27], \"size\": [90, 22], \"height\": 28,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 22, \"kind\": \"arcade\", \"floors\": 1}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d9cdb4\"},\n     \"why\": \"photos 1 and 3: the tall round-arched glazed bays of the station hall line the river front beside the clock\"},\n    {\"name\": \"west river front ranges\", \"part\": \"block\", \"where\": \"river front west of the clock pavilion\", \"center\": [-55, -27], \"size\": [78, 22], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 18, \"kind\": \"pilasters\", \"floors\": 3}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"mansard\", \"rise\": 7, \"dormers\": true}, \"colour\": \"#d8ccb0\"},\n     \"why\": \"photos 1 and 2: the hotel-style ranges with mansard roofs and dormers flank the hall to the west\"},\n    {\"name\": \"rear wing\", \"part\": \"block\", \"where\": \"back edge of the footprint\", \"center\": [-7, 30], \"size\": [174, 17], \"height\": 20,\n     \"settings\": {\"storeys\": [{\"height\": 20, \"kind\": \"punched\", \"floors\": 4}], \"faces\": [], \"roof\": {\"kind\": \"mansard\", \"rise\": 6, \"dormers\": false}, \"colour\": \"#cfc4aa\"},\n     \"why\": \"the footprint extends to the back, where the service ranges close the hall\"},\n    {\"name\": \"east end pavilion\", \"part\": \"block\", \"where\": \"east end of the building\", \"center\": [87, 8.5], \"size\": [15, 36], \"height\": 26,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 20, \"kind\": \"punched\", \"floors\": 3}], \"faces\": [], \"roof\": {\"kind\": \"pavilion\", \"rise\": 8}, \"colour\": \"#d9cdb4\"},\n     \"why\": \"the east end projects as a separate block with a steep roof, as in photo 1 at the right\"}\n  ]\n}\n```",
+  "input": 3307,
+  "output": 6690,
+  "cost": 0.0036965300000000004,
+  "ms": 33443,
+  "json": {
+   "photos": [
+    "photo 1: the river front from the Seine, showing the long cream stone facade, the central clock pavilion with a pitched roof, the arched glazed hall bays to the right of the clock, and the grey barrel roof behind the hotel-style block on the left.",
+    "photo 2: elevated view of the west end and forecourt, showing the glass canopy over the entrance, the vaulted glass roof rising behind the facade, and the mansard roofs with dormers on the front ranges.",
+    "photo 3: street-side three-quarter view of the pavilion end, showing the tall arched windows of the hall front, the balustraded attic, the small domed cupolas on the corners and the slate mansard roof."
+   ],
+   "components": [
+    {
+     "name": "station hall barrel vault",
+     "part": "vault",
+     "where": "the long central hall behind the river front",
+     "center": [
+      0,
+      6
+     ],
+     "size": [
+      170,
+      40
+     ],
+     "height": 32,
+     "settings": {
+      "span": 40,
+      "rise": 8,
+      "length": 170,
+      "glazed": true,
+      "colour": "#7d8c90"
+     },
+     "why": "photos 1 and 3: the grey barrel roof of the former station nave shows above the facades"
+    },
+    {
+     "name": "central clock pavilion",
+     "part": "block",
+     "where": "centre of the river front",
+     "center": [
+      0,
+      -28
+     ],
+     "size": [
+      26,
+      20
+     ],
+     "height": 38,
+     "settings": {
+      "storeys": [
+       {
+        "height": 7,
+        "kind": "rusticated"
+       },
+       {
+        "height": 17,
+        "kind": "pilasters",
+        "floors": 2
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "pavilion",
+       "rise": 14
+      },
+      "colour": "#dcd0b6"
+     },
+     "why": "photo 1: the central pavilion with the clock and steep pitched roof is the tallest point of the front"
+    },
+    {
+     "name": "clock face",
+     "part": "disc",
+     "where": "on the river face of the clock pavilion",
+     "center": [
+      0,
+      -38.2
+     ],
+     "elevation": 17,
+     "size": [
+      9,
+      9
+     ],
+     "height": 9,
+     "settings": {
+      "radius": 4.5,
+      "colour": "#e8e0cc",
+      "facing": "front"
+     },
+     "why": "photos 1 and 3: the large round clock sits in the upper middle of the pavilion"
+    },
+    {
+     "name": "hall front with arched glazing",
+     "part": "block",
+     "where": "river front east of the clock pavilion",
+     "center": [
+      50,
+      -27
+     ],
+     "size": [
+      90,
+      22
+     ],
+     "height": 28,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 22,
+        "kind": "arcade",
+        "floors": 1
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d9cdb4"
+     },
+     "why": "photos 1 and 3: the tall round-arched glazed bays of the station hall line the river front beside the clock"
+    },
+    {
+     "name": "west river front ranges",
+     "part": "block",
+     "where": "river front west of the clock pavilion",
+     "center": [
+      -55,
+      -27
+     ],
+     "size": [
+      78,
+      22
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 18,
+        "kind": "pilasters",
+        "floors": 3
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "mansard",
+       "rise": 7,
+       "dormers": true
+      },
+      "colour": "#d8ccb0"
+     },
+     "why": "photos 1 and 2: the hotel-style ranges with mansard roofs and dormers flank the hall to the west"
+    },
+    {
+     "name": "rear wing",
+     "part": "block",
+     "where": "back edge of the footprint",
+     "center": [
+      -7,
+      30
+     ],
+     "size": [
+      174,
+      17
+     ],
+     "height": 20,
+     "settings": {
+      "storeys": [
+       {
+        "height": 20,
+        "kind": "punched",
+        "floors": 4
+       }
+      ],
+      "faces": [],
+      "roof": {
+       "kind": "mansard",
+       "rise": 6,
+       "dormers": false
+      },
+      "colour": "#cfc4aa"
+     },
+     "why": "the footprint extends to the back, where the service ranges close the hall"
+    },
+    {
+     "name": "east end pavilion",
+     "part": "block",
+     "where": "east end of the building",
+     "center": [
+      87,
+      8.5
+     ],
+     "size": [
+      15,
+      36
+     ],
+     "height": 26,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 20,
+        "kind": "punched",
+        "floors": 3
+       }
+      ],
+      "faces": [],
+      "roof": {
+       "kind": "pavilion",
+       "rise": 8
+      },
+      "colour": "#d9cdb4"
+     },
+     "why": "the east end projects as a separate block with a steep roof, as in photo 1 at the right"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "The Musée d'Orsay is a former railway station: a long cream-stone river front on the Seine with a central clock pavilion under a steep pitched roof, arched glazed hall bays beside it, and hotel-style mansard ranges to the west. Behind the facade a grey glazed barrel vault runs the length of the nave, and the east end projects as a separate pavilion. Signature features modelled: the clock pavilion with its clock face, the arcaded hall front, the mansard ranges, and the glass barrel vault.",
+   "parts": [
+    {
+     "type": "vault",
+     "center": [
+      0,
+      -1
+     ],
+     "size": [
+      170,
+      38
+     ],
+     "y0": 24,
+     "rise": 12,
+     "axis": "x",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#7d8c90"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -29
+     ],
+     "size": [
+      24,
+      18
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#dcd0b6",
+     "storeys": [
+      {
+       "height": 7,
+       "kind": "rusticated"
+      },
+      {
+       "height": 17,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "disc",
+     "center": [
+      0,
+      17,
+      -38.6
+     ],
+     "radius": 4.5,
+     "facing": "front",
+     "colour": "#e8e0cc"
+    },
+    {
+     "type": "block",
+     "center": [
+      50,
+      -29
+     ],
+     "size": [
+      80,
+      18
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d9cdb4",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 22,
+       "kind": "arcade",
+       "floors": 1
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -55,
+      -29
+     ],
+     "size": [
+      78,
+      18
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8ccb0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 18,
+       "kind": "pilasters",
+       "floors": 3
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "roof": {
+      "kind": "mansard",
+      "rise": 7,
+      "dormers": true,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -7,
+      30
+     ],
+     "size": [
+      174,
+      17
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#cfc4aa",
+     "storeys": [
+      {
+       "height": 20,
+       "kind": "punched",
+       "floors": 4
+      }
+     ],
+     "roof": {
+      "kind": "mansard",
+      "rise": 6,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      87,
+      8.5
+     ],
+     "size": [
+      15,
+      36
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d9cdb4",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 20,
+       "kind": "punched",
+       "floors": 3
+      }
+     ],
+     "roof": {
+      "kind": "pavilion",
+      "rise": 8,
+      "colour": "#4f5862"
+     }
+    }
+   ]
+  },
+  "notes": "The Musée d'Orsay is a former railway station: a long cream-stone river front on the Seine with a central clock pavilion under a steep pitched roof, arched glazed hall bays beside it, and hotel-style mansard ranges to the west. Behind the facade a grey glazed barrel vault runs the length of the nave, and the east end projects as a separate pavilion. Signature features modelled: the clock pavilion with its clock face, the arcaded hall front, the mansard ranges, and the glass barrel vault.",
+  "triangles": 3848,
+  "parts": 88
+ }
+}

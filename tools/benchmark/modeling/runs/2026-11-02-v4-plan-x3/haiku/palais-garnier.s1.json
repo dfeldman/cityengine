@@ -1,0 +1,474 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:39.983Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Palais Garnier is a long cream stone front: an arcaded ground floor with a two-storey loggia of columns, and corner pavilions with gilded statues. Behind the front rises the tall stage house with a steep gable roof, and a green copper dome sits on the roof at the centre, visible above the pediment. I will model the foyer block, the stage-house gable, the copper dome on a drum, the two corner pavilions, and gold corner pedestals.\", \"parts\": [{\"type\": \"block\", \"center\": [0, -52], \"size\": [101.7, 48], \"y0\": 0, \"bay\": 5, \"colour\": \"#d8cbb0\", \"trim\": \"#ece4d2\", \"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"columns\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": 1, \"roof\": {\"kind\": \"balustrade\"}}, {\"type\": \"block\", \"center\": [0, -2], \"size\": [56, 60], \"y0\": 0, \"bay\": 5, \"colour\": \"#cfc3a6\", \"trim\": \"#e6dccb\", \"storeys\": [{\"height\": 16, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 16, \"kind\": \"punched\", \"floors\": 2}, {\"height\": 12, \"kind\": \"bands\"}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"gable\", \"rise\": 12}}, {\"type\": \"rotunda\", \"center\": [0, -14], \"radius\": 10, \"y0\": 38, \"base\": 1, \"height\": 6, \"count\": 16, \"open\": false, \"drum\": 3, \"dome\": {\"height\": 12, \"colour\": \"#5fa88a\", \"material\": \"copper\"}, \"lantern\": true, \"colour\": \"#c9bda3\", \"trim\": \"#e6dccb\"}, {\"type\": \"block\", \"center\": [-44, -52], \"size\": [14, 40], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cbb0\", \"trim\": \"#ece4d2\", \"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": 1, \"roof\": {\"kind\": \"pavilion\", \"rise\": 8}}, {\"type\": \"block\", \"center\": [44, -52], \"size\": [14, 40], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cbb0\", \"trim\": \"#ece4d2\", \"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": 1, \"roof\": {\"kind\": \"pavilion\", \"rise\": 8}}, {\"type\": \"cylinder\", \"center\": [-44, -52], \"radius\": 2, \"y0\": 30, \"y1\": 38, \"colour\": \"#c9a24a\", \"material\": \"metal\", \"sides\": 8}, {\"type\": \"cylinder\", \"center\": [44, -52], \"radius\": 2, \"y0\": 30, \"y1\": 38, \"colour\": \"#c9a24a\", \"material\": \"metal\", \"sides\": 8}]}",
+   "stop": "end_turn",
+   "input": 4957,
+   "output": 3401,
+   "cacheRead": 8401,
+   "cost": 0.00228021,
+   "ms": 15804,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Palais Garnier is a long cream stone front: an arcaded ground floor with a two-storey loggia of columns, and corner pavilions with gilded statues. Behind the front rises the tall stage house with a steep gable roof, and a green copper dome sits on the roof at the centre, visible above the pediment. I will model the foyer block, the stage-house gable, the copper dome on a drum, the two corner pavilions, and gold corner pedestals.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -52
+     ],
+     "size": [
+      101.7,
+      48
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8cbb0",
+     "trim": "#ece4d2",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 14,
+       "kind": "columns",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -2
+     ],
+     "size": [
+      56,
+      60
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#cfc3a6",
+     "trim": "#e6dccb",
+     "storeys": [
+      {
+       "height": 16,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 16,
+       "kind": "punched",
+       "floors": 2
+      },
+      {
+       "height": 12,
+       "kind": "bands"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "gable",
+      "rise": 12
+     }
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -14
+     ],
+     "radius": 10,
+     "y0": 38,
+     "base": 1,
+     "height": 6,
+     "count": 16,
+     "open": false,
+     "drum": 3,
+     "dome": {
+      "height": 12,
+      "colour": "#5fa88a",
+      "material": "copper"
+     },
+     "lantern": true,
+     "colour": "#c9bda3",
+     "trim": "#e6dccb"
+    },
+    {
+     "type": "block",
+     "center": [
+      -44,
+      -52
+     ],
+     "size": [
+      14,
+      40
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cbb0",
+     "trim": "#ece4d2",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 14,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 8
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      44,
+      -52
+     ],
+     "size": [
+      14,
+      40
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cbb0",
+     "trim": "#ece4d2",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 14,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 8
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -44,
+      -52
+     ],
+     "radius": 2,
+     "y0": 30,
+     "y1": 38,
+     "colour": "#c9a24a",
+     "material": "metal",
+     "sides": 8
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      44,
+      -52
+     ],
+     "radius": 2,
+     "y0": 30,
+     "y1": 38,
+     "colour": "#c9a24a",
+     "material": "metal",
+     "sides": 8
+    }
+   ]
+  },
+  "notes": "The Palais Garnier is a long cream stone front: an arcaded ground floor with a two-storey loggia of columns, and corner pavilions with gilded statues. Behind the front rises the tall stage house with a steep gable roof, and a green copper dome sits on the roof at the centre, visible above the pediment. I will model the foyer block, the stage-house gable, the copper dome on a drum, the two corner pavilions, and gold corner pedestals.",
+  "triangles": 7456,
+  "parts": 86
+ },
+ "totals": {
+  "input": 8268,
+  "output": 6740,
+  "cost": 0.004301640000000001,
+  "ms": 31358
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the south-west at eye level, showing the long cream loggia of paired columns over arcaded ground floor, the central pediment with a green copper dome rising behind it, and gilded statues on the corner pavilions against blue sky\",\n    \"photo 2: elevated view from the rooftops of the stage-house gable and the side wing, with the rusticated and window-banded stone, the gable with sculpted pediment, and the Eiffel Tower in the distance\",\n    \"photo 3: elevated overcast view of the great stage house, its tall gable roof and the green dome at left, with the mansard-roofed neighbouring blocks in front\"\n  ],\n  \"components\": [\n    {\"name\": \"front foyer block\", \"part\": \"block\", \"where\": \"the front third of the footprint, facing the avenue\", \"center\": [0, -52], \"size\": [101.7, 48], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"columns\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": true, \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8cbb0\"},\n     \"why\": \"photo 1: the long arcaded ground floor and two-storey loggia of columns define the front, with a balustraded roof\"},\n    {\"name\": \"stage house\", \"part\": \"block\", \"where\": \"central mass behind the front, under the great gable\", \"center\": [0, -6], \"size\": [56, 70], \"height\": 56,\n     \"settings\": {\"storeys\": [{\"height\": 16, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 16, \"kind\": \"punched\", \"floors\": 2}, {\"height\": 12, \"kind\": \"bands\"}], \"faces\": \"front\", \"cornice\": true, \"roof\": {\"kind\": \"gable\", \"rise\": 12}, \"colour\": \"#cfc3a6\"},\n     \"why\": \"photos 2 and 3: the tall stage house rises above the foyer with a steep gable roof and pedimented front\"},\n    {\"name\": \"green copper dome\", \"part\": \"rotunda\", \"where\": \"centre of the front, on the foyer roof behind the pediment\", \"center\": [0, -24], \"base\": 24,\n     \"settings\": {\"radius\": 11, \"column_height\": 6, \"columns\": 16, \"open\": false, \"drum\": true, \"dome_height\": 14, \"colour\": \"#5fa88a\", \"lantern\": true},\n     \"why\": \"photos 1 and 3: the green dome sits behind the central pediment and is visible above the roofline\"},\n    {\"name\": \"corner side pavilions\", \"part\": \"block\", \"where\": \"the two ends of the front, flanking the loggia\", \"center\": [-44, -52], \"size\": [14, 40], \"height\": 30,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": true, \"roof\": {\"kind\": \"pavilion\", \"rise\": 8}, \"colour\": \"#d8cbb0\"},\n     \"why\": \"photo 1: the end pavilions with arched pediments rise above the wings at each corner\"},\n    {\"name\": \"east corner pavilion\", \"part\": \"block\", \"where\": \"the other end of the front, mirroring the west pavilion\", \"center\": [44, -52], \"size\": [14, 40], \"height\": 30,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": true, \"roof\": {\"kind\": \"pavilion\", \"rise\": 8}, \"colour\": \"#d8cbb0\"},\n     \"why\": \"photo 1: the matching end pavilion on the right of the front\"}\n  ]\n}\n```",
+  "input": 3311,
+  "output": 3339,
+  "cost": 0.0020214300000000003,
+  "ms": 15554,
+  "json": {
+   "photos": [
+    "photo 1: the front from the south-west at eye level, showing the long cream loggia of paired columns over arcaded ground floor, the central pediment with a green copper dome rising behind it, and gilded statues on the corner pavilions against blue sky",
+    "photo 2: elevated view from the rooftops of the stage-house gable and the side wing, with the rusticated and window-banded stone, the gable with sculpted pediment, and the Eiffel Tower in the distance",
+    "photo 3: elevated overcast view of the great stage house, its tall gable roof and the green dome at left, with the mansard-roofed neighbouring blocks in front"
+   ],
+   "components": [
+    {
+     "name": "front foyer block",
+     "part": "block",
+     "where": "the front third of the footprint, facing the avenue",
+     "center": [
+      0,
+      -52
+     ],
+     "size": [
+      101.7,
+      48
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "arcade"
+       },
+       {
+        "height": 14,
+        "kind": "columns",
+        "floors": 2
+       }
+      ],
+      "faces": "front",
+      "cornice": true,
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8cbb0"
+     },
+     "why": "photo 1: the long arcaded ground floor and two-storey loggia of columns define the front, with a balustraded roof"
+    },
+    {
+     "name": "stage house",
+     "part": "block",
+     "where": "central mass behind the front, under the great gable",
+     "center": [
+      0,
+      -6
+     ],
+     "size": [
+      56,
+      70
+     ],
+     "height": 56,
+     "settings": {
+      "storeys": [
+       {
+        "height": 16,
+        "kind": "pilasters",
+        "floors": 2
+       },
+       {
+        "height": 16,
+        "kind": "punched",
+        "floors": 2
+       },
+       {
+        "height": 12,
+        "kind": "bands"
+       }
+      ],
+      "faces": "front",
+      "cornice": true,
+      "roof": {
+       "kind": "gable",
+       "rise": 12
+      },
+      "colour": "#cfc3a6"
+     },
+     "why": "photos 2 and 3: the tall stage house rises above the foyer with a steep gable roof and pedimented front"
+    },
+    {
+     "name": "green copper dome",
+     "part": "rotunda",
+     "where": "centre of the front, on the foyer roof behind the pediment",
+     "center": [
+      0,
+      -24
+     ],
+     "base": 24,
+     "settings": {
+      "radius": 11,
+      "column_height": 6,
+      "columns": 16,
+      "open": false,
+      "drum": true,
+      "dome_height": 14,
+      "colour": "#5fa88a",
+      "lantern": true
+     },
+     "why": "photos 1 and 3: the green dome sits behind the central pediment and is visible above the roofline"
+    },
+    {
+     "name": "corner side pavilions",
+     "part": "block",
+     "where": "the two ends of the front, flanking the loggia",
+     "center": [
+      -44,
+      -52
+     ],
+     "size": [
+      14,
+      40
+     ],
+     "height": 30,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "arcade"
+       },
+       {
+        "height": 14,
+        "kind": "pilasters",
+        "floors": 2
+       }
+      ],
+      "faces": "front",
+      "cornice": true,
+      "roof": {
+       "kind": "pavilion",
+       "rise": 8
+      },
+      "colour": "#d8cbb0"
+     },
+     "why": "photo 1: the end pavilions with arched pediments rise above the wings at each corner"
+    },
+    {
+     "name": "east corner pavilion",
+     "part": "block",
+     "where": "the other end of the front, mirroring the west pavilion",
+     "center": [
+      44,
+      -52
+     ],
+     "size": [
+      14,
+      40
+     ],
+     "height": 30,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "arcade"
+       },
+       {
+        "height": 14,
+        "kind": "pilasters",
+        "floors": 2
+       }
+      ],
+      "faces": "front",
+      "cornice": true,
+      "roof": {
+       "kind": "pavilion",
+       "rise": 8
+      },
+      "colour": "#d8cbb0"
+     },
+     "why": "photo 1: the matching end pavilion on the right of the front"
+    }
+   ]
+  }
+ }
+}

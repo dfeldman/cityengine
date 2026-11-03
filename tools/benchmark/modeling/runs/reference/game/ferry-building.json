@@ -1,0 +1,14 @@
+{
+ "building": "ferry-building",
+ "modelId": "game",
+ "model": "ferryBuilding",
+ "fit": {
+  "turn": 0,
+  "mirror": false,
+  "iou": 0.92
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: ferryBuilding, 8192 tris, fit IoU 0.92"
+ }
+}

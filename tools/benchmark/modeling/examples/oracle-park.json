@@ -1,0 +1,17 @@
+{
+ "notes": "Hand-written primitive test, not a careful model: a horseshoe bowl open to the back, a grass field, a brick arcade along the front, two clock towers, light towers, a vaulted canopy and a shed roof.",
+ "parts": [
+  {"type": "box", "center": [0, 20], "size": [150, 150], "y0": 0, "y1": 0.3, "material": "grass"},
+  {"type": "bowl", "center": [0, 0], "size": [200, 250], "inner": [130, 160], "y0": 0, "y1": 32, "innerHeight": 4, "shape": "rect", "arc": [135, 405], "material": "concrete", "colour": "#c9c4ba"},
+  {"type": "arcade", "from": [-90, -133], "to": [90, -133], "y0": 0, "height": 20, "count": 16, "thickness": 2, "material": "brick", "colour": "#9b4f3a"},
+  {"type": "box", "center": [-30, -126], "size": [10, 10], "y0": 0, "y1": 40, "material": "brick", "colour": "#9b4f3a"},
+  {"type": "roof", "kind": "pyramid", "center": [-30, -126], "size": [10, 10], "y0": 40, "rise": 5, "material": "copper"},
+  {"type": "box", "center": [30, -126], "size": [10, 10], "y0": 0, "y1": 40, "material": "brick", "colour": "#9b4f3a"},
+  {"type": "roof", "kind": "hip", "center": [30, -126], "size": [10, 10], "y0": 40, "rise": 5, "material": "copper"},
+  {"type": "repeat", "count": 4, "offset": [50, 0, 0], "part": {"type": "beam", "from": [-75, 0, -110], "to": [-75, 45, -110], "width": 1.5, "material": "metal"}},
+  {"type": "vault", "center": [0, -105], "size": [80, 12], "y0": 32, "rise": 4, "axis": "x", "ends": "glass", "material": "metal"},
+  {"type": "roof", "kind": "shed", "center": [-90, 0], "size": [16, 120], "y0": 32, "rise": 4, "ridge": "z", "material": "metal"},
+  {"type": "roof", "kind": "gable", "center": [90, 60], "size": [14, 40], "y0": 0, "rise": 6, "material": "tile"},
+  {"type": "prism", "points": [[60, 100], [90, 100], [90, 130], [75, 120], [60, 130]], "y0": 0, "y1": 8, "material": "stucco"}
+ ]
+}

@@ -1,0 +1,322 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:53.030Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"La Madeleine is a Greek-revival church: a blank stone cella under a long low pitched roof, wrapped by a peristyle of free-standing Corinthian columns on a raised podium. The south front has eight columns under a sculpted pediment with an inscription band, and the green-copper roof is a gable running along z. The plan's pediment and block settings used fields the parts do not take, so I rewrote them in the correct grammar and used free-standing colonnades for the peristyle.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [30, 110], \"y0\": 0, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#e8e0cf\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 4, \"material\": \"stone\", \"colour\": \"#dcd3bf\"},\n    {\"type\": \"box\", \"center\": [0, -62], \"size\": [40, 10], \"y0\": 0, \"y1\": 4, \"material\": \"stone\", \"colour\": \"#dcd3bf\"},\n    {\"type\": \"colonnade\", \"from\": [-16, -57], \"to\": [16, -57], \"y0\": 4, \"height\": 22, \"count\": 8, \"entablature\": 2, \"radius\": 0.9, \"colour\": \"#ece5d4\"},\n    {\"type\": \"colonnade\", \"from\": [-19, -52], \"to\": [-19, 52], \"y0\": 4, \"height\": 22, \"count\": 18, \"entablature\": 2, \"radius\": 0.9, \"colour\": \"#ece5d4\"},\n    {\"type\": \"colonnade\", \"from\": [19, -52], \"to\": [19, 52], \"y0\": 4, \"height\": 22, \"count\": 18, \"entablature\": 2, \"radius\": 0.9, \"colour\": \"#ece5d4\"},\n    {\"type\": \"colonnade\", \"from\": [-16, 57], \"to\": [16, 57], \"y0\": 4, \"height\": 22, \"count\": 8, \"entablature\": 2, \"radius\": 0.9, \"colour\": \"#ece5d4\"},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 26, \"rise\": 10, \"ridge\": \"z\", \"material\": \"metal\", \"colour\": \"#7fae92\"},\n    {\"type\": \"pediment\", \"from\": [-21.6, -62], \"to\": [21.6, -62], \"y0\": 26, \"height\": 10, \"depth\": 3, \"material\": \"stone\", \"colour\": \"#e8e0cf\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4204,
+   "output": 2261,
+   "cacheRead": 8401,
+   "cost": 0.00163491,
+   "ms": 10438,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "La Madeleine is a Greek-revival church: a blank stone cella under a long low pitched roof, wrapped by a peristyle of free-standing Corinthian columns on a raised podium. The south front has eight columns under a sculpted pediment with an inscription band, and the green-copper roof is a gable running along z. The plan's pediment and block settings used fields the parts do not take, so I rewrote them in the correct grammar and used free-standing colonnades for the peristyle.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      30,
+      110
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#e8e0cf"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stone",
+     "colour": "#dcd3bf"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -62
+     ],
+     "size": [
+      40,
+      10
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stone",
+     "colour": "#dcd3bf"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      -57
+     ],
+     "to": [
+      16,
+      -57
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 8,
+     "entablature": 2,
+     "radius": 0.9,
+     "colour": "#ece5d4"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19,
+      -52
+     ],
+     "to": [
+      -19,
+      52
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 18,
+     "entablature": 2,
+     "radius": 0.9,
+     "colour": "#ece5d4"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      19,
+      -52
+     ],
+     "to": [
+      19,
+      52
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 18,
+     "entablature": 2,
+     "radius": 0.9,
+     "colour": "#ece5d4"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      57
+     ],
+     "to": [
+      16,
+      57
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 8,
+     "entablature": 2,
+     "radius": 0.9,
+     "colour": "#ece5d4"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 26,
+     "rise": 10,
+     "ridge": "z",
+     "material": "metal",
+     "colour": "#7fae92"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -62
+     ],
+     "to": [
+      21.6,
+      -62
+     ],
+     "y0": 26,
+     "height": 10,
+     "depth": 3,
+     "material": "stone",
+     "colour": "#e8e0cf"
+    }
+   ]
+  },
+  "notes": "La Madeleine is a Greek-revival church: a blank stone cella under a long low pitched roof, wrapped by a peristyle of free-standing Corinthian columns on a raised podium. The south front has eight columns under a sculpted pediment with an inscription band, and the green-copper roof is a gable running along z. The plan's pediment and block settings used fields the parts do not take, so I rewrote them in the correct grammar and used free-standing colonnades for the peristyle.",
+  "triangles": 4676,
+  "parts": 9
+ },
+ "totals": {
+  "input": 7404,
+  "output": 4256,
+  "cost": 0.0029732400000000003,
+  "ms": 20923
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade on a tall podium with a sculpted pediment and inscription band above the portico.\",\n    \"photo 2: the long side along the colonnade, with the front pediment at left, showing the continuous row of Corinthian columns on the flank and a low pitched roof behind the entablature.\",\n    \"photo 3: an elevated view over the rooftops of the front, showing the pedimented portico with its tall columns and the pitched roof, which is covered in green-tinted metal.\"\n  ],\n  \"components\": [\n    {\"name\": \"peristyle body\", \"part\": \"block\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"height\": 36,\n     \"settings\": {\"storeys\": [\n        {\"height\": 4, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 22, \"kind\": \"columns\", \"windows\": false}\n      ],\n      \"faces\": [\"front\", \"back\", \"left\", \"right\"],\n      \"cornice\": true,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 10},\n      \"colour\": \"#e8e0cf\"},\n     \"why\": \"photos 1 and 2 show a full peripteral Corinthian colonnade on a podium with a low pitched roof; the cella has no visible windows\"},\n    {\"name\": \"front pediment\", \"part\": \"pediment\", \"where\": \"centre of the south front, over the portico\", \"center\": [0, -62], \"height\": 36,\n     \"settings\": {\"width\": 43.2, \"height\": 10, \"base\": 26, \"depth\": 3, \"colour\": \"#e8e0cf\"},\n     \"why\": \"photos 1 and 3 show the triangular pediment with its sculpted frieze and inscription, the main signature of the front\"},\n    {\"name\": \"portico steps and podium\", \"part\": \"block\", \"where\": \"the front podium, projecting toward the Rue Royale\", \"center\": [0, -70], \"size\": [36, 16], \"height\": 4,\n     \"settings\": {\"storeys\": [{\"height\": 4, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#dcd3bf\"},\n     \"why\": \"photos 1 and 2 show a raised plinth and wide front steps carrying the colonnade\"}\n  ]\n}\n```",
+  "input": 3200,
+  "output": 1995,
+  "cost": 0.00133833,
+  "ms": 10485,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade on a tall podium with a sculpted pediment and inscription band above the portico.",
+    "photo 2: the long side along the colonnade, with the front pediment at left, showing the continuous row of Corinthian columns on the flank and a low pitched roof behind the entablature.",
+    "photo 3: an elevated view over the rooftops of the front, showing the pedimented portico with its tall columns and the pitched roof, which is covered in green-tinted metal."
+   ],
+   "components": [
+    {
+     "name": "peristyle body",
+     "part": "block",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "height": 36,
+     "settings": {
+      "storeys": [
+       {
+        "height": 4,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 22,
+        "kind": "columns",
+        "windows": false
+       }
+      ],
+      "faces": [
+       "front",
+       "back",
+       "left",
+       "right"
+      ],
+      "cornice": true,
+      "roof": {
+       "kind": "gable",
+       "rise": 10
+      },
+      "colour": "#e8e0cf"
+     },
+     "why": "photos 1 and 2 show a full peripteral Corinthian colonnade on a podium with a low pitched roof; the cella has no visible windows"
+    },
+    {
+     "name": "front pediment",
+     "part": "pediment",
+     "where": "centre of the south front, over the portico",
+     "center": [
+      0,
+      -62
+     ],
+     "height": 36,
+     "settings": {
+      "width": 43.2,
+      "height": 10,
+      "base": 26,
+      "depth": 3,
+      "colour": "#e8e0cf"
+     },
+     "why": "photos 1 and 3 show the triangular pediment with its sculpted frieze and inscription, the main signature of the front"
+    },
+    {
+     "name": "portico steps and podium",
+     "part": "block",
+     "where": "the front podium, projecting toward the Rue Royale",
+     "center": [
+      0,
+      -70
+     ],
+     "size": [
+      36,
+      16
+     ],
+     "height": 4,
+     "settings": {
+      "storeys": [
+       {
+        "height": 4,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#dcd3bf"
+     },
+     "why": "photos 1 and 2 show a raised plinth and wide front steps carrying the colonnade"
+    }
+   ]
+  }
+ }
+}

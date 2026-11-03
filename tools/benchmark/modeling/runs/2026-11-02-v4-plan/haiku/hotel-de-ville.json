@@ -1,0 +1,451 @@
+{
+ "building": "hotel-de-ville",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:57.827Z",
+ "userText": "Building: Hôtel de Ville, Paris (city hall).\nThe front (−z) is the west front on the Place de l’Hôtel-de-Ville.\nFootprint: 144.1 m along x by 89.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-72.1,-40.9],[-71,-41.7],[-29.9,-44.5],[27.4,-44.6],[71,-41.4],[72,-39.5],[72.1,40.6],[71.3,41.5],[38.4,44.5],[29.1,44.6],[-38.2,44.5],[-71.2,40.6],[-72.1,39.8]]\nHeight: the highest point is 55 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the square: central clock tower, corner pavilions and steep slate roofs, daylight\n  2. three-quarter from a bridge along the river side, showing the long wing, towers and mansard roofs\n  3. view along the long flank facade with its repeated arched bays and mansard roof\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   144.1,
+   89.1
+  ],
+  "outline": [
+   [
+    -72.1,
+    -40.9
+   ],
+   [
+    -71,
+    -41.7
+   ],
+   [
+    -29.9,
+    -44.5
+   ],
+   [
+    27.4,
+    -44.6
+   ],
+   [
+    71,
+    -41.4
+   ],
+   [
+    72,
+    -39.5
+   ],
+   [
+    72.1,
+    40.6
+   ],
+   [
+    71.3,
+    41.5
+   ],
+   [
+    38.4,
+    44.5
+   ],
+   [
+    29.1,
+    44.6
+   ],
+   [
+    -38.2,
+    44.5
+   ],
+   [
+    -71.2,
+    40.6
+   ],
+   [
+    -72.1,
+    39.8
+   ]
+  ],
+  "height": 55,
+  "turn": -19.9
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Hôtel de Ville is a large pale stone palace built round a closed courtyard, with a grey slate mansard roof and dormers over the whole block. The signature features are the tall openwork clock tower with its slim spire on the west front, left of centre, and a steep pavilion roof with iron cresting on each front corner. The body is modelled as a closed court with pilastered storeys, and the corner pavilions and tower sit on top of or in front of it.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [144, 89],\n      \"wing\": 22,\n      \"open\": \"none\",\n      \"y0\": 0,\n      \"bay\": 5,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 10, \"kind\": \"pilasters\", \"floors\": 2},\n        {\"height\": 6, \"kind\": \"punched\"}\n      ],\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 8, \"dormers\": true, \"colour\": \"#4f5862\"},\n      \"colour\": \"#d8cdb8\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [-20, -42],\n      \"y0\": 0,\n      \"colour\": \"#cfc6b0\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 7, \"height\": 20, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 7, \"height\": 10, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 7, \"height\": 8, \"kind\": \"clock\"},\n        {\"shape\": \"square\", \"width\": 6, \"height\": 6, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 11, \"colour\": \"#3f4a52\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [58, -30],\n      \"size\": [26, 22],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"faces\": [\"front\", \"right\"],\n      \"colour\": \"#d8cdb8\",\n      \"trim\": \"#e8e1d0\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2},\n        {\"height\": 6, \"kind\": \"punched\"}\n      ],\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 16, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-58, -30],\n      \"size\": [26, 22],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"faces\": [\"front\", \"left\"],\n      \"colour\": \"#d8cdb8\",\n      \"trim\": \"#e8e1d0\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2},\n        {\"height\": 6, \"kind\": \"punched\"}\n      ],\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 16, \"colour\": \"#4f5862\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5194,
+   "output": 2017,
+   "cacheRead": 8401,
+   "cost": 0.00161191,
+   "ms": 9275,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Hôtel de Ville is a large pale stone palace built round a closed courtyard, with a grey slate mansard roof and dormers over the whole block. The signature features are the tall openwork clock tower with its slim spire on the west front, left of centre, and a steep pavilion roof with iron cresting on each front corner. The body is modelled as a closed court with pilastered storeys, and the corner pavilions and tower sit on top of or in front of it.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      144,
+      89
+     ],
+     "wing": 22,
+     "open": "none",
+     "y0": 0,
+     "bay": 5,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 10,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 6,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 8,
+      "dormers": true,
+      "colour": "#4f5862"
+     },
+     "colour": "#d8cdb8",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "tower",
+     "center": [
+      -20,
+      -42
+     ],
+     "y0": 0,
+     "colour": "#cfc6b0",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 20,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 10,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 8,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 6,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 11,
+      "colour": "#3f4a52"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      58,
+      -30
+     ],
+     "size": [
+      26,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "faces": [
+      "front",
+      "right"
+     ],
+     "colour": "#d8cdb8",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 6,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 16,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -58,
+      -30
+     ],
+     "size": [
+      26,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "faces": [
+      "front",
+      "left"
+     ],
+     "colour": "#d8cdb8",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 6,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 16,
+      "colour": "#4f5862"
+     }
+    }
+   ]
+  },
+  "notes": "The Hôtel de Ville is a large pale stone palace built round a closed courtyard, with a grey slate mansard roof and dormers over the whole block. The signature features are the tall openwork clock tower with its slim spire on the west front, left of centre, and a steep pavilion roof with iron cresting on each front corner. The body is modelled as a closed court with pilastered storeys, and the corner pavilions and tower sit on top of or in front of it.",
+  "triangles": 7750,
+  "parts": 424
+ },
+ "totals": {
+  "input": 8704,
+  "output": 4703,
+  "cost": 0.00332674,
+  "ms": 22546
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the west front from the Place de l'Hôtel-de-Ville, three-quarter view. A tall clock tower with a slim openwork spire rises left of centre, with steep grey slate mansard roofs, dormers, and tall stone chimneys. A corner pavilion on the right has a steep roof with an iron cresting and lantern.\",\n    \"photo 2: three-quarter view from the bridge over the Seine. The long wing is pale stone with rows of tall windows, and the clock tower and chimneys stand above the mansard roofs. The right-hand corner pavilion has a steep roof with dormers and a cresting.\",\n    \"photo 3: the long flank facade. Repeated arched and round-headed bays run along the ground and upper floors, with pilasters and sculpted panels. A steep mansard roof with dormers and carved dormer pediments runs along the length, and a corner pavilion with statues rises at the end.\"\n  ],\n  \"components\": [\n    {\"name\": \"main body\", \"part\": \"court\", \"where\": \"the whole footprint, a closed court of wings round an inner courtyard\", \"center\": [0, 0], \"size\": [144, 89], \"height\": 30,\n     \"settings\": {\"open\": \"none\", \"wing\": 22, \"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 6, \"kind\": \"punched\"}], \"roof\": {\"kind\": \"mansard\", \"rise\": 12, \"dormers\": true}, \"colour\": \"#d8cdb8\"},\n     \"why\": \"photos 1 to 3 show a large stone block with a grey mansard roof and a closed courtyard, so a closed court is the right base\"},\n    {\"name\": \"central clock tower\", \"part\": \"tower\", \"where\": \"front (west) facade, left of centre\", \"center\": [-20, -42], \"height\": 55,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 7, \"height\": 20, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 7, \"height\": 10, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 7, \"height\": 8, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 6, \"height\": 6, \"kind\": \"open\"}], \"top\": {\"kind\": \"spire\", \"height\": 11}, \"colour\": \"#cfc6b0\"},\n     \"why\": \"photo 1 and photo 2 show a tall clock tower with a belfry and a slim spire rising above the front\"},\n    {\"name\": \"east corner pavilion\", \"part\": \"block\", \"where\": \"front-right corner, with a steep pavilion roof\", \"center\": [58, -30], \"size\": [26, 22], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 6, \"kind\": \"punched\"}], \"roof\": {\"kind\": \"pavilion\", \"rise\": 16}, \"faces\": [\"-z\", \"+x\"], \"colour\": \"#d8cdb8\"},\n     \"why\": \"photo 1 and photo 3 show a corner pavilion with a steep roof taller than the body\"},\n    {\"name\": \"west corner pavilion\", \"part\": \"block\", \"where\": \"front-left corner, with a steep pavilion roof\", \"center\": [-58, -30], \"size\": [26, 22], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 6, \"kind\": \"punched\"}], \"roof\": {\"kind\": \"pavilion\", \"rise\": 16}, \"faces\": [\"-z\", \"-x\"], \"colour\": \"#d8cdb8\"},\n     \"why\": \"photo 1 shows a matching corner pavilion on the left of the front\"}\n  ]\n}\n```",
+  "input": 3510,
+  "output": 2686,
+  "cost": 0.0017148299999999999,
+  "ms": 13271,
+  "json": {
+   "photos": [
+    "photo 1: the west front from the Place de l'Hôtel-de-Ville, three-quarter view. A tall clock tower with a slim openwork spire rises left of centre, with steep grey slate mansard roofs, dormers, and tall stone chimneys. A corner pavilion on the right has a steep roof with an iron cresting and lantern.",
+    "photo 2: three-quarter view from the bridge over the Seine. The long wing is pale stone with rows of tall windows, and the clock tower and chimneys stand above the mansard roofs. The right-hand corner pavilion has a steep roof with dormers and a cresting.",
+    "photo 3: the long flank facade. Repeated arched and round-headed bays run along the ground and upper floors, with pilasters and sculpted panels. A steep mansard roof with dormers and carved dormer pediments runs along the length, and a corner pavilion with statues rises at the end."
+   ],
+   "components": [
+    {
+     "name": "main body",
+     "part": "court",
+     "where": "the whole footprint, a closed court of wings round an inner courtyard",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      144,
+      89
+     ],
+     "height": 30,
+     "settings": {
+      "open": "none",
+      "wing": 22,
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 12,
+        "kind": "pilasters",
+        "floors": 2
+       },
+       {
+        "height": 6,
+        "kind": "punched"
+       }
+      ],
+      "roof": {
+       "kind": "mansard",
+       "rise": 12,
+       "dormers": true
+      },
+      "colour": "#d8cdb8"
+     },
+     "why": "photos 1 to 3 show a large stone block with a grey mansard roof and a closed courtyard, so a closed court is the right base"
+    },
+    {
+     "name": "central clock tower",
+     "part": "tower",
+     "where": "front (west) facade, left of centre",
+     "center": [
+      -20,
+      -42
+     ],
+     "height": 55,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 7,
+        "height": 20,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 7,
+        "height": 10,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 7,
+        "height": 8,
+        "kind": "clock"
+       },
+       {
+        "shape": "square",
+        "width": 6,
+        "height": 6,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "spire",
+       "height": 11
+      },
+      "colour": "#cfc6b0"
+     },
+     "why": "photo 1 and photo 2 show a tall clock tower with a belfry and a slim spire rising above the front"
+    },
+    {
+     "name": "east corner pavilion",
+     "part": "block",
+     "where": "front-right corner, with a steep pavilion roof",
+     "center": [
+      58,
+      -30
+     ],
+     "size": [
+      26,
+      22
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 12,
+        "kind": "pilasters",
+        "floors": 2
+       },
+       {
+        "height": 6,
+        "kind": "punched"
+       }
+      ],
+      "roof": {
+       "kind": "pavilion",
+       "rise": 16
+      },
+      "faces": [
+       "-z",
+       "+x"
+      ],
+      "colour": "#d8cdb8"
+     },
+     "why": "photo 1 and photo 3 show a corner pavilion with a steep roof taller than the body"
+    },
+    {
+     "name": "west corner pavilion",
+     "part": "block",
+     "where": "front-left corner, with a steep pavilion roof",
+     "center": [
+      -58,
+      -30
+     ],
+     "size": [
+      26,
+      22
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 12,
+        "kind": "pilasters",
+        "floors": 2
+       },
+       {
+        "height": 6,
+        "kind": "punched"
+       }
+      ],
+      "roof": {
+       "kind": "pavilion",
+       "rise": 16
+      },
+      "faces": [
+       "-z",
+       "-x"
+      ],
+      "colour": "#d8cdb8"
+     },
+     "why": "photo 1 shows a matching corner pavilion on the left of the front"
+    }
+   ]
+  }
+ }
+}

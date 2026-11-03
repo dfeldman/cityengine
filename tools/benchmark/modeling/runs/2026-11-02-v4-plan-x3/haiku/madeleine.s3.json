@@ -1,0 +1,230 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:56.639Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Église de la Madeleine: a windowless Roman-temple cella wrapped in a full peripteral Corinthian colonnade, with a deep front portico under a large sculpted pediment. The roof is a low gable running along the long axis, and it is green copper in the aerial photo. The model uses a columned block for the body, a free-standing portico, and a pediment whose slope matches the roof.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [43.2, 128.3],\n      \"y0\": 0,\n      \"y1\": 36,\n      \"colour\": \"#e9e2d0\",\n      \"material\": \"stone\",\n      \"bay\": 4.5,\n      \"storeys\": [\n        {\"height\": 26, \"kind\": \"columns\", \"windows\": false}\n      ],\n      \"faces\": [\"front\", \"back\", \"left\", \"right\"],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 10, \"colour\": \"#6f9e8a\"}\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-18, -60],\n      \"to\": [18, -60],\n      \"y0\": 2,\n      \"height\": 24,\n      \"count\": 8,\n      \"radius\": 1.0,\n      \"entablature\": 2.5,\n      \"colour\": \"#efe8d6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-21.6, -61],\n      \"to\": [21.6, -61],\n      \"y0\": 26,\n      \"height\": 10,\n      \"depth\": 3,\n      \"colour\": \"#e9e2d0\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4106,
+   "output": 1438,
+   "cacheRead": 8401,
+   "cost": 0.0012136100000000002,
+   "ms": 7100,
+   "errors": [],
+   "warnings": [
+    "parts[0].y1: \"block\" has no field \"y1\"; ignored"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Église de la Madeleine: a windowless Roman-temple cella wrapped in a full peripteral Corinthian colonnade, with a deep front portico under a large sculpted pediment. The roof is a low gable running along the long axis, and it is green copper in the aerial photo. The model uses a columned block for the body, a free-standing portico, and a pediment whose slope matches the roof.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 36,
+     "colour": "#e9e2d0",
+     "material": "stone",
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 26,
+       "kind": "columns",
+       "windows": false
+      }
+     ],
+     "faces": [
+      "front",
+      "back",
+      "left",
+      "right"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "gable",
+      "rise": 10,
+      "colour": "#6f9e8a"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -60
+     ],
+     "to": [
+      18,
+      -60
+     ],
+     "y0": 2,
+     "height": 24,
+     "count": 8,
+     "radius": 1,
+     "entablature": 2.5,
+     "colour": "#efe8d6",
+     "material": "stone"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -61
+     ],
+     "to": [
+      21.6,
+      -61
+     ],
+     "y0": 26,
+     "height": 10,
+     "depth": 3,
+     "colour": "#e9e2d0",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "Église de la Madeleine: a windowless Roman-temple cella wrapped in a full peripteral Corinthian colonnade, with a deep front portico under a large sculpted pediment. The roof is a low gable running along the long axis, and it is green copper in the aerial photo. The model uses a columned block for the body, a free-standing portico, and a pediment whose slope matches the roof.",
+  "triangles": 8020,
+  "parts": 9
+ },
+ "totals": {
+  "input": 7306,
+  "output": 3408,
+  "cost": 0.00253944,
+  "ms": 17672
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade wrapping the long side, with the pediment and its sculpted group at left, under daylight.\",\n    \"photo 2: the long side from the front-right, a row of about twenty-five tall Corinthian columns on a raised podium, the front pediment with an inscription band and sculpture at left.\",\n    \"photo 3: an elevated view of the pedimented front with a low-pitched green copper roof running back along the long axis, seen over the rooftops of Paris.\"\n  ],\n  \"components\": [\n    {\"name\": \"peripteral cella and colonnade\", \"part\": \"block\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"height\": 36,\n     \"settings\": {\"storeys\": [{\"height\": 26, \"kind\": \"columns\", \"windows\": false}], \"faces\": [\"front\", \"back\", \"left\", \"right\"], \"roof\": {\"kind\": \"gable\", \"rise\": 10}, \"colour\": \"#e9e2d0\"},\n     \"why\": \"photos 1 and 2 show a full Corinthian colonnade on all sides of a windowless cella, and photo 3 shows the low gable roof along the long axis\"},\n    {\"name\": \"front portico colonnade\", \"part\": \"colonnade\", \"where\": \"front face, south portico\", \"center\": [0, -63], \"height\": 26,\n     \"settings\": {\"count\": 8, \"span\": 40, \"height\": 22, \"radius\": 0.9, \"capital\": \"corinthian\", \"colour\": \"#efe8d6\"},\n     \"why\": \"photos 1 and 3 show a deep portico of Corinthian columns across the front, the signature facade\"},\n    {\"name\": \"front pediment\", \"part\": \"pediment\", \"where\": \"front gable above the portico\", \"center\": [0, -62], \"height\": 36,\n     \"settings\": {\"width\": 43.2, \"height\": 9, \"colour\": \"#e9e2d0\"},\n     \"why\": \"photos 1 and 3 show a large triangular pediment with a sculpted group and inscription band over the front\"}\n  ]\n}",
+  "input": 3200,
+  "output": 1970,
+  "cost": 0.0013258299999999998,
+  "ms": 10572,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade wrapping the long side, with the pediment and its sculpted group at left, under daylight.",
+    "photo 2: the long side from the front-right, a row of about twenty-five tall Corinthian columns on a raised podium, the front pediment with an inscription band and sculpture at left.",
+    "photo 3: an elevated view of the pedimented front with a low-pitched green copper roof running back along the long axis, seen over the rooftops of Paris."
+   ],
+   "components": [
+    {
+     "name": "peripteral cella and colonnade",
+     "part": "block",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "height": 36,
+     "settings": {
+      "storeys": [
+       {
+        "height": 26,
+        "kind": "columns",
+        "windows": false
+       }
+      ],
+      "faces": [
+       "front",
+       "back",
+       "left",
+       "right"
+      ],
+      "roof": {
+       "kind": "gable",
+       "rise": 10
+      },
+      "colour": "#e9e2d0"
+     },
+     "why": "photos 1 and 2 show a full Corinthian colonnade on all sides of a windowless cella, and photo 3 shows the low gable roof along the long axis"
+    },
+    {
+     "name": "front portico colonnade",
+     "part": "colonnade",
+     "where": "front face, south portico",
+     "center": [
+      0,
+      -63
+     ],
+     "height": 26,
+     "settings": {
+      "count": 8,
+      "span": 40,
+      "height": 22,
+      "radius": 0.9,
+      "capital": "corinthian",
+      "colour": "#efe8d6"
+     },
+     "why": "photos 1 and 3 show a deep portico of Corinthian columns across the front, the signature facade"
+    },
+    {
+     "name": "front pediment",
+     "part": "pediment",
+     "where": "front gable above the portico",
+     "center": [
+      0,
+      -62
+     ],
+     "height": 36,
+     "settings": {
+      "width": 43.2,
+      "height": 9,
+      "colour": "#e9e2d0"
+     },
+     "why": "photos 1 and 3 show a large triangular pediment with a sculpted group and inscription band over the front"
+    }
+   ]
+  }
+ }
+}

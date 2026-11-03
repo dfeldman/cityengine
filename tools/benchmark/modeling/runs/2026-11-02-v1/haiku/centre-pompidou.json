@@ -1,0 +1,251 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:25.576Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "reply": "{\"notes\": \"The Centre Pompidou is a long seven-storey rectangular box, about 168 by 66 m, with a glazed facade behind an exposed steel frame. The front (-z) carries a diagonal zig-zag escalator tube in glass and steel, and the roof is topped with blue and red service ducts and red boxes. I model the main glazed volume, the exposed frame band, the escalator tubes, the roof ducts and the red end-boxes.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 0, \"y1\": 35, \"material\": \"glass\", \"colour\": \"#9fb3bd\", \"windows\": {\"kind\": \"curtain\", \"glass\": \"#7f97a3\"}}, {\"type\": \"box\", \"center\": [0, -33.5], \"size\": [168, 1.5], \"y0\": 0, \"y1\": 35, \"material\": \"metal\", \"colour\": \"#a9adb0\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 35, \"y1\": 38, \"material\": \"metal\", \"colour\": \"#4a7fc1\"}, {\"type\": \"box\", \"center\": [-62, 0], \"size\": [16, 10], \"y0\": 38, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d8262b\"}, {\"type\": \"box\", \"center\": [62, 0], \"size\": [14, 8], \"y0\": 38, \"y1\": 41, \"material\": \"metal\", \"colour\": \"#d8262b\"}, {\"type\": \"box\", \"center\": [-20, 0], \"size\": [22, 10], \"y0\": 38, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#f2f2f0\"}, {\"type\": \"beam\", \"from\": [-80, 0, -37], \"to\": [-50, 14, -37], \"width\": 5, \"material\": \"glass\", \"colour\": \"#c9d9e0\"}, {\"type\": \"beam\", \"from\": [-50, 14, -37], \"to\": [-15, 20, -37], \"width\": 5, \"material\": \"glass\", \"colour\": \"#c9d9e0\"}, {\"type\": \"beam\", \"from\": [-15, 20, -37], \"to\": [30, 36, -37], \"width\": 5, \"material\": \"glass\", \"colour\": \"#c9d9e0\"}, {\"type\": \"beam\", \"from\": [-80, 0, -36], \"to\": [-50, 14, -36], \"width\": 1.2, \"material\": \"metal\", \"colour\": \"#d8262b\"}]}",
+   "stop": "end_turn",
+   "input": 3375,
+   "output": 1834,
+   "cacheRead": 3474,
+   "cost": 0.00128924,
+   "ms": 9301,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Centre Pompidou is a long seven-storey rectangular box, about 168 by 66 m, with a glazed facade behind an exposed steel frame. The front (-z) carries a diagonal zig-zag escalator tube in glass and steel, and the roof is topped with blue and red service ducts and red boxes. I model the main glazed volume, the exposed frame band, the escalator tubes, the roof ducts and the red end-boxes.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 0,
+     "y1": 35,
+     "material": "glass",
+     "colour": "#9fb3bd",
+     "windows": {
+      "kind": "curtain",
+      "glass": "#7f97a3"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -33.5
+     ],
+     "size": [
+      168,
+      1.5
+     ],
+     "y0": 0,
+     "y1": 35,
+     "material": "metal",
+     "colour": "#a9adb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 35,
+     "y1": 38,
+     "material": "metal",
+     "colour": "#4a7fc1"
+    },
+    {
+     "type": "box",
+     "center": [
+      -62,
+      0
+     ],
+     "size": [
+      16,
+      10
+     ],
+     "y0": 38,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d8262b"
+    },
+    {
+     "type": "box",
+     "center": [
+      62,
+      0
+     ],
+     "size": [
+      14,
+      8
+     ],
+     "y0": 38,
+     "y1": 41,
+     "material": "metal",
+     "colour": "#d8262b"
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      0
+     ],
+     "size": [
+      22,
+      10
+     ],
+     "y0": 38,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#f2f2f0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -80,
+      0,
+      -37
+     ],
+     "to": [
+      -50,
+      14,
+      -37
+     ],
+     "width": 5,
+     "material": "glass",
+     "colour": "#c9d9e0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -50,
+      14,
+      -37
+     ],
+     "to": [
+      -15,
+      20,
+      -37
+     ],
+     "width": 5,
+     "material": "glass",
+     "colour": "#c9d9e0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -15,
+      20,
+      -37
+     ],
+     "to": [
+      30,
+      36,
+      -37
+     ],
+     "width": 5,
+     "material": "glass",
+     "colour": "#c9d9e0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -80,
+      0,
+      -36
+     ],
+     "to": [
+      -50,
+      14,
+      -36
+     ],
+     "width": 1.2,
+     "material": "metal",
+     "colour": "#d8262b"
+    }
+   ]
+  },
+  "notes": "The Centre Pompidou is a long seven-storey rectangular box, about 168 by 66 m, with a glazed facade behind an exposed steel frame. The front (-z) carries a diagonal zig-zag escalator tube in glass and steel, and the roof is topped with blue and red service ducts and red boxes. I model the main glazed volume, the exposed frame band, the escalator tubes, the roof ducts and the red end-boxes.",
+  "triangles": 184,
+  "parts": 10
+ },
+ "totals": {
+  "input": 3375,
+  "output": 1834,
+  "cost": 0.00128924,
+  "ms": 9301
+ }
+}

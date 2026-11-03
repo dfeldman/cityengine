@@ -1,0 +1,586 @@
+{
+ "building": "sacre-coeur",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:55.301Z",
+ "userText": "Building: Basilique du Sacré-Cœur, Paris (basilica).\nThe front (−z) is the south front at the top of the steps, looking out over Paris.\nFootprint: 50.1 m along x by 95.9 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-19.8,-35.7],[-19.9,-39.5],[-10.6,-39.2],[-9.3,-47.7],[9.2,-48],[9.2,-44],[10.6,-43.9],[10.5,-39.1],[19.9,-39.2],[21,-34.7],[25,-34.3],[25.1,6.7],[21.6,6.7],[21.6,14.6],[24,18.6],[23.9,21.3],[20.7,24.3],[19.3,30.7],[14.6,32.2],[10.8,37.4],[7,37.6],[7.2,48],[-7.3,47.9],[-7.1,37.3],[-11.5,36.9],[-13.9,32.9],[-19.1,31],[-20.6,28.6],[-20.6,24.3],[-24.4,20.9],[-24.2,17.3],[-21.8,14.5],[-21.7,6.7],[-25,7],[-25.1,-34],[-21.5,-34.1]]\nHeight: the highest point is 84 m above the ground.\n\n3 photographs attached, in order:\n  1. full front from the gardens below the hill, daylight: the white domes over the terraces and steps\n  2. front three-quarter from the left (west), daylight: the arched portico, the main dome and the smaller domes\n  3. the front close up, daylight: the main dome on its drum with the smaller domes around it\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   50.1,
+   95.9
+  ],
+  "outline": [
+   [
+    -19.8,
+    -35.7
+   ],
+   [
+    -19.9,
+    -39.5
+   ],
+   [
+    -10.6,
+    -39.2
+   ],
+   [
+    -9.3,
+    -47.7
+   ],
+   [
+    9.2,
+    -48
+   ],
+   [
+    9.2,
+    -44
+   ],
+   [
+    10.6,
+    -43.9
+   ],
+   [
+    10.5,
+    -39.1
+   ],
+   [
+    19.9,
+    -39.2
+   ],
+   [
+    21,
+    -34.7
+   ],
+   [
+    25,
+    -34.3
+   ],
+   [
+    25.1,
+    6.7
+   ],
+   [
+    21.6,
+    6.7
+   ],
+   [
+    21.6,
+    14.6
+   ],
+   [
+    24,
+    18.6
+   ],
+   [
+    23.9,
+    21.3
+   ],
+   [
+    20.7,
+    24.3
+   ],
+   [
+    19.3,
+    30.7
+   ],
+   [
+    14.6,
+    32.2
+   ],
+   [
+    10.8,
+    37.4
+   ],
+   [
+    7,
+    37.6
+   ],
+   [
+    7.2,
+    48
+   ],
+   [
+    -7.3,
+    47.9
+   ],
+   [
+    -7.1,
+    37.3
+   ],
+   [
+    -11.5,
+    36.9
+   ],
+   [
+    -13.9,
+    32.9
+   ],
+   [
+    -19.1,
+    31
+   ],
+   [
+    -20.6,
+    28.6
+   ],
+   [
+    -20.6,
+    24.3
+   ],
+   [
+    -24.4,
+    20.9
+   ],
+   [
+    -24.2,
+    17.3
+   ],
+   [
+    -21.8,
+    14.5
+   ],
+   [
+    -21.7,
+    6.7
+   ],
+   [
+    -25,
+    7
+   ],
+   [
+    -25.1,
+    -34
+   ],
+   [
+    -21.5,
+    -34.1
+   ]
+  ],
+  "height": 84,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Romano-Byzantine basilica in white stone. A Greek-cross plan with a central drum carrying the tall main dome and lantern (84 m total). Four smaller domes on drums sit around it, two flanking the front over the portico. The front has a three-arch portico with two equestrian statue plinths and a gabled upper storey. A bell tower stands at the back (+z). It sits on a terrace with a stepped base.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, -2], \"size\": [50, 80], \"y0\": 0, \"y1\": 3, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n{\"type\": \"box\", \"center\": [0, -30], \"size\": [40, 20], \"y0\": 3, \"y1\": 20, \"material\": \"stone\", \"colour\": \"#e4dfd2\"},\n{\"type\": \"box\", \"center\": [0, -2], \"size\": [46, 40], \"y0\": 3, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#e4dfd2\"},\n{\"type\": \"box\", \"center\": [0, 22], \"size\": [30, 36], \"y0\": 3, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#e0dacc\"},\n{\"type\": \"box\", \"center\": [0, -8], \"size\": [22, 40], \"y0\": 3, \"y1\": 32, \"material\": \"stone\", \"colour\": \"#e4dfd2\"},\n{\"type\": \"arcade\", \"from\": [-16, -40], \"to\": [16, -40], \"y0\": 3, \"height\": 11, \"count\": 3, \"thickness\": 3},\n{\"type\": \"box\", \"center\": [-17, -38], \"size\": [5, 5], \"y0\": 3, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#e4dfd2\"},\n{\"type\": \"box\", \"center\": [17, -38], \"size\": [5, 5], \"y0\": 3, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#e4dfd2\"},\n{\"type\": \"box\", \"center\": [0, -38], \"size\": [30, 6], \"y0\": 14, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#e4dfd2\"},\n{\"type\": \"pediment\", \"from\": [-8, -36], \"to\": [8, -36], \"y0\": 28, \"height\": 8, \"depth\": 3},\n{\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 13, \"y0\": 32, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#e2ddd0\", \"sides\": 32},\n{\"type\": \"dome\", \"center\": [0, -2], \"radius\": 13, \"y0\": 52, \"height\": 22, \"material\": \"stone\", \"colour\": \"#d9d4c6\"},\n{\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 3.2, \"y0\": 74, \"y1\": 82, \"material\": \"stone\", \"colour\": \"#e2ddd0\"},\n{\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 3.2, \"y0\": 82, \"y1\": 84, \"radiusTop\": 0, \"material\": \"stone\", \"colour\": \"#d9d4c6\"},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [30, 0, 0], \"part\": {\"type\": \"cylinder\", \"center\": [-15, -22], \"radius\": 6, \"y0\": 24, \"y1\": 38, \"material\": \"stone\", \"colour\": \"#e2ddd0\"}},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [30, 0, 0], \"part\": {\"type\": \"dome\", \"center\": [-15, -22], \"radius\": 6, \"y0\": 38, \"height\": 12, \"material\": \"stone\", \"colour\": \"#d9d4c6\"}},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [30, 0, 0], \"part\": {\"type\": \"cylinder\", \"center\": [-15, -22], \"radius\": 1.6, \"y0\": 50, \"y1\": 56, \"material\": \"stone\", \"colour\": \"#e2ddd0\"}},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [30, 0, 0], \"part\": {\"type\": \"cylinder\", \"center\": [-15, 18], \"radius\": 6, \"y0\": 22, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#e2ddd0\"}},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [30, 0, 0], \"part\": {\"type\": \"dome\", \"center\": [-15, 18], \"radius\": 6, \"y0\": 36, \"height\": 12, \"material\": \"stone\", \"colour\": \"#d9d4c6\"}},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [24, 0, 0], \"part\": {\"type\": \"cylinder\", \"center\": [-12, -33], \"radius\": 2.5, \"y0\": 20, \"y1\": 34, \"radiusTop\": 2.2, \"material\": \"stone\", \"colour\": \"#e2ddd0\"}},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [24, 0, 0], \"part\": {\"type\": \"dome\", \"center\": [-12, -33], \"radius\": 2.5, \"y0\": 34, \"height\": 4, \"material\": \"stone\", \"colour\": \"#d9d4c6\"}},\n{\"type\": \"box\", \"center\": [22, -12], \"size\": [6, 8], \"y0\": 3, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#ddd7c9\"},\n{\"type\": \"repeat\", \"count\": 2, \"offset\": [34, 0, 0], \"part\": {\"type\": \"box\", \"center\": [-17, -38], \"size\": [3, 3], \"y0\": 22, \"y1\": 24, \"material\": \"copper\", \"colour\": \"#5f9a84\"}}\n]}",
+   "stop": "end_turn",
+   "input": 3748,
+   "output": 1839,
+   "cacheRead": 8168,
+   "cost": 0.027519599999999998,
+   "ms": 10595,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Romano-Byzantine basilica in white stone. A Greek-cross plan with a central drum carrying the tall main dome and lantern (84 m total). Four smaller domes on drums sit around it, two flanking the front over the portico. The front has a three-arch portico with two equestrian statue plinths and a gabled upper storey. A bell tower stands at the back (+z). It sits on a terrace with a stepped base.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -2
+     ],
+     "size": [
+      50,
+      80
+     ],
+     "y0": 0,
+     "y1": 3,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -30
+     ],
+     "size": [
+      40,
+      20
+     ],
+     "y0": 3,
+     "y1": 20,
+     "material": "stone",
+     "colour": "#e4dfd2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -2
+     ],
+     "size": [
+      46,
+      40
+     ],
+     "y0": 3,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#e4dfd2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      22
+     ],
+     "size": [
+      30,
+      36
+     ],
+     "y0": 3,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#e0dacc"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -8
+     ],
+     "size": [
+      22,
+      40
+     ],
+     "y0": 3,
+     "y1": 32,
+     "material": "stone",
+     "colour": "#e4dfd2"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -16,
+      -40
+     ],
+     "to": [
+      16,
+      -40
+     ],
+     "y0": 3,
+     "height": 11,
+     "count": 3,
+     "thickness": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      -17,
+      -38
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 3,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#e4dfd2"
+    },
+    {
+     "type": "box",
+     "center": [
+      17,
+      -38
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 3,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#e4dfd2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -38
+     ],
+     "size": [
+      30,
+      6
+     ],
+     "y0": 14,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#e4dfd2"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -8,
+      -36
+     ],
+     "to": [
+      8,
+      -36
+     ],
+     "y0": 28,
+     "height": 8,
+     "depth": 3
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 13,
+     "y0": 32,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#e2ddd0",
+     "sides": 32
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 13,
+     "y0": 52,
+     "height": 22,
+     "material": "stone",
+     "colour": "#d9d4c6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 3.2,
+     "y0": 74,
+     "y1": 82,
+     "material": "stone",
+     "colour": "#e2ddd0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 3.2,
+     "y0": 82,
+     "y1": 84,
+     "radiusTop": 0,
+     "material": "stone",
+     "colour": "#d9d4c6"
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -15,
+       -22
+      ],
+      "radius": 6,
+      "y0": 24,
+      "y1": 38,
+      "material": "stone",
+      "colour": "#e2ddd0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "dome",
+      "center": [
+       -15,
+       -22
+      ],
+      "radius": 6,
+      "y0": 38,
+      "height": 12,
+      "material": "stone",
+      "colour": "#d9d4c6"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -15,
+       -22
+      ],
+      "radius": 1.6,
+      "y0": 50,
+      "y1": 56,
+      "material": "stone",
+      "colour": "#e2ddd0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -15,
+       18
+      ],
+      "radius": 6,
+      "y0": 22,
+      "y1": 36,
+      "material": "stone",
+      "colour": "#e2ddd0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "dome",
+      "center": [
+       -15,
+       18
+      ],
+      "radius": 6,
+      "y0": 36,
+      "height": 12,
+      "material": "stone",
+      "colour": "#d9d4c6"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      24,
+      0,
+      0
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -12,
+       -33
+      ],
+      "radius": 2.5,
+      "y0": 20,
+      "y1": 34,
+      "radiusTop": 2.2,
+      "material": "stone",
+      "colour": "#e2ddd0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      24,
+      0,
+      0
+     ],
+     "part": {
+      "type": "dome",
+      "center": [
+       -12,
+       -33
+      ],
+      "radius": 2.5,
+      "y0": 34,
+      "height": 4,
+      "material": "stone",
+      "colour": "#d9d4c6"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -12
+     ],
+     "size": [
+      6,
+      8
+     ],
+     "y0": 3,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#ddd7c9"
+    },
+    {
+     "type": "repeat",
+     "count": 2,
+     "offset": [
+      34,
+      0,
+      0
+     ],
+     "part": {
+      "type": "box",
+      "center": [
+       -17,
+       -38
+      ],
+      "size": [
+       3,
+       3
+      ],
+      "y0": 22,
+      "y1": 24,
+      "material": "copper",
+      "colour": "#5f9a84"
+     }
+    }
+   ]
+  },
+  "notes": "Romano-Byzantine basilica in white stone. A Greek-cross plan with a central drum carrying the tall main dome and lantern (84 m total). Four smaller domes on drums sit around it, two flanking the front over the portico. The front has a three-arch portico with two equestrian statue plinths and a gabled upper storey. A bell tower stands at the back (+z). It sits on a terrace with a stepped base.",
+  "triangles": 3838,
+  "parts": 31
+ },
+ "totals": {
+  "input": 3748,
+  "output": 1839,
+  "cost": 0.027519599999999998,
+  "ms": 10595
+ }
+}

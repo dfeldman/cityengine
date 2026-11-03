@@ -1,0 +1,697 @@
+{
+ "building": "hotel-de-ville",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:03:04.728Z",
+ "userText": "Building: Hôtel de Ville, Paris (city hall).\nThe front (−z) is the west front on the Place de l’Hôtel-de-Ville.\nFootprint: 144.1 m along x by 89.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-72.1,-40.9],[-71,-41.7],[-29.9,-44.5],[27.4,-44.6],[71,-41.4],[72,-39.5],[72.1,40.6],[71.3,41.5],[38.4,44.5],[29.1,44.6],[-38.2,44.5],[-71.2,40.6],[-72.1,39.8]]\nHeight: the highest point is 55 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the square: central clock tower, corner pavilions and steep slate roofs, daylight\n  2. three-quarter from a bridge along the river side, showing the long wing, towers and mansard roofs\n  3. view along the long flank facade with its repeated arched bays and mansard roof\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   144.1,
+   89.1
+  ],
+  "outline": [
+   [
+    -72.1,
+    -40.9
+   ],
+   [
+    -71,
+    -41.7
+   ],
+   [
+    -29.9,
+    -44.5
+   ],
+   [
+    27.4,
+    -44.6
+   ],
+   [
+    71,
+    -41.4
+   ],
+   [
+    72,
+    -39.5
+   ],
+   [
+    72.1,
+    40.6
+   ],
+   [
+    71.3,
+    41.5
+   ],
+   [
+    38.4,
+    44.5
+   ],
+   [
+    29.1,
+    44.6
+   ],
+   [
+    -38.2,
+    44.5
+   ],
+   [
+    -71.2,
+    40.6
+   ],
+   [
+    -72.1,
+    39.8
+   ]
+  ],
+  "height": 55,
+  "turn": -19.9
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Hôtel de Ville is a long, mostly cream-grey Second Empire stone block with a steep slate mansard roof running round all four wings. Its signature features are the tall clock tower with a slender spire set left of centre on the west (−z) front, and the taller corner pavilions with their own mansard caps. The building wraps a central courtyard, so I model it as four wings around an open court.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -36.3], \"size\": [144, 16.6], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [0, 36.3], \"size\": [144, 16.6], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [-64, 0], \"size\": [16, 56], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [64, 0], \"size\": [16, 56], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -36.3], \"size\": [144, 16.6], \"y0\": 24, \"rise\": 12, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, 36.3], \"size\": [144, 16.6], \"y0\": 24, \"rise\": 12, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-64, 0], \"size\": [16, 56], \"y0\": 24, \"rise\": 12, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [64, 0], \"size\": [16, 56], \"y0\": 24, \"rise\": 12, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [-60, -36], \"size\": [24, 20], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [60, -36], \"size\": [24, 20], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-60, -36], \"size\": [24, 20], \"y0\": 30, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [60, -36], \"size\": [24, 20], \"y0\": 30, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [-12, -38], \"size\": [12, 12], \"y0\": 0, \"y1\": 46, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 3.5}},\n    {\"type\": \"box\", \"center\": [-12, -38], \"size\": [13, 13], \"y0\": 46, \"y1\": 49, \"material\": \"stone\", \"colour\": \"#d8cdb8\"},\n    {\"type\": \"cylinder\", \"center\": [-12, -38], \"radius\": 3.5, \"y0\": 49, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#d8cdb8\"},\n    {\"type\": \"cylinder\", \"center\": [-12, -38], \"radius\": 1.6, \"radiusTop\": 0, \"y0\": 52, \"y1\": 55, \"material\": \"metal\", \"colour\": \"#3d4650\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3510,
+   "output": 2730,
+   "cacheRead": 7616,
+   "cost": 0.00179216,
+   "ms": 11723,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "Three biggest differences from the real building:\n\n1. **Clock tower too small and too low.** It reads as a small tower on the roof, but on the real building it is the dominant vertical on the front. It needs a larger base, a taller shaft and a proper belfry stage under the spire.\n2. **Corner pavilions not distinct.** The real corner pavilions project forward and rise above the wings. In the render they barely separate from the wings, so they need more height and projection.\n3. **Courtyard too small and wings too thick.** The real court is large and open. The render's wings are too deep, so the building reads as a closed block with a narrow slot in the middle.\n\n```json\n{\n  \"notes\": \"Three biggest differences: the clock tower is too small and too low to be the dominant front feature, so it needs a larger shaft, a belfry stage and a spire; the corner pavilions do not project or rise enough to read as distinct masses; the wings are too deep, which closes up the central courtyard that should be large and open. Colours and the mansard roofs are broadly right.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -37.6], \"size\": [144, 14], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [0, 37.6], \"size\": [144, 14], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [-65, 0], \"size\": [14, 60], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [65, 0], \"size\": [14, 60], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -37.6], \"size\": [144, 14], \"y0\": 24, \"rise\": 10, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, 37.6], \"size\": [144, 14], \"y0\": 24, \"rise\": 10, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-65, 0], \"size\": [14, 60], \"y0\": 24, \"rise\": 10, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [65, 0], \"size\": [14, 60], \"y0\": 24, \"rise\": 10, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [-58, -40], \"size\": [26, 18], \"y0\": 0, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [58, -40], \"size\": [26, 18], \"y0\": 0, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-58, -40], \"size\": [26, 18], \"y0\": 36, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [58, -40], \"size\": [26, 18], \"y0\": 36, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [-12, -39], \"size\": [14, 14], \"y0\": 0, \"y1\": 40, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 3.5}},\n    {\"type\": \"box\", \"center\": [-12, -39], \"size\": [16, 16], \"y0\": 40, \"y1\": 44, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"arched\", \"floor\": 4, \"pitch\": 3.5}},\n    {\"type\": \"cylinder\", \"center\": [-12, -39], \"radius\": 5, \"y0\": 44, \"y1\": 50, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"arched\"}},\n    {\"type\": \"cylinder\", \"center\": [-12, -39], \"radius\": 2.2, \"radiusTop\": 0, \"y0\": 50, \"y1\": 55, \"material\": \"metal\", \"colour\": \"#3d4650\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 7706,
+   "output": 2574,
+   "cacheRead": 7616,
+   "cost": 0.00213376,
+   "ms": 11213,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Three biggest differences: the clock tower is too small and too low to be the dominant front feature, so it needs a larger shaft, a belfry stage and a spire; the corner pavilions do not project or rise enough to read as distinct masses; the wings are too deep, which closes up the central courtyard that should be large and open. Colours and the mansard roofs are broadly right.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -37.6
+     ],
+     "size": [
+      144,
+      14
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      37.6
+     ],
+     "size": [
+      144,
+      14
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -65,
+      0
+     ],
+     "size": [
+      14,
+      60
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      65,
+      0
+     ],
+     "size": [
+      14,
+      60
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -37.6
+     ],
+     "size": [
+      144,
+      14
+     ],
+     "y0": 24,
+     "rise": 10,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      37.6
+     ],
+     "size": [
+      144,
+      14
+     ],
+     "y0": 24,
+     "rise": 10,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -65,
+      0
+     ],
+     "size": [
+      14,
+      60
+     ],
+     "y0": 24,
+     "rise": 10,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      65,
+      0
+     ],
+     "size": [
+      14,
+      60
+     ],
+     "y0": 24,
+     "rise": 10,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -58,
+      -40
+     ],
+     "size": [
+      26,
+      18
+     ],
+     "y0": 0,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      58,
+      -40
+     ],
+     "size": [
+      26,
+      18
+     ],
+     "y0": 0,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -58,
+      -40
+     ],
+     "size": [
+      26,
+      18
+     ],
+     "y0": 36,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      58,
+      -40
+     ],
+     "size": [
+      26,
+      18
+     ],
+     "y0": 36,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -39
+     ],
+     "size": [
+      14,
+      14
+     ],
+     "y0": 0,
+     "y1": 40,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -39
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 40,
+     "y1": 44,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "arched",
+      "floor": 4,
+      "pitch": 3.5
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -12,
+      -39
+     ],
+     "radius": 5,
+     "y0": 44,
+     "y1": 50,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "arched"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -12,
+      -39
+     ],
+     "radius": 2.2,
+     "radiusTop": 0,
+     "y0": 50,
+     "y1": 55,
+     "material": "metal",
+     "colour": "#3d4650"
+    }
+   ]
+  },
+  "notes": "Three biggest differences: the clock tower is too small and too low to be the dominant front feature, so it needs a larger shaft, a belfry stage and a spire; the corner pavilions do not project or rise enough to read as distinct masses; the wings are too deep, which closes up the central courtyard that should be large and open. Colours and the mansard roofs are broadly right.",
+  "triangles": 3594,
+  "parts": 16
+ },
+ "totals": {
+  "input": 11216,
+  "output": 5304,
+  "cost": 0.00392592,
+  "ms": 22936
+ },
+ "draft": {
+  "json": {
+   "notes": "The Hôtel de Ville is a long, mostly cream-grey Second Empire stone block with a steep slate mansard roof running round all four wings. Its signature features are the tall clock tower with a slender spire set left of centre on the west (−z) front, and the taller corner pavilions with their own mansard caps. The building wraps a central courtyard, so I model it as four wings around an open court.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -36.3
+     ],
+     "size": [
+      144,
+      16.6
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      36.3
+     ],
+     "size": [
+      144,
+      16.6
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -64,
+      0
+     ],
+     "size": [
+      16,
+      56
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      64,
+      0
+     ],
+     "size": [
+      16,
+      56
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -36.3
+     ],
+     "size": [
+      144,
+      16.6
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      36.3
+     ],
+     "size": [
+      144,
+      16.6
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -64,
+      0
+     ],
+     "size": [
+      16,
+      56
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      64,
+      0
+     ],
+     "size": [
+      16,
+      56
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      -36
+     ],
+     "size": [
+      24,
+      20
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      -36
+     ],
+     "size": [
+      24,
+      20
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -60,
+      -36
+     ],
+     "size": [
+      24,
+      20
+     ],
+     "y0": 30,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      60,
+      -36
+     ],
+     "size": [
+      24,
+      20
+     ],
+     "y0": 30,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -38
+     ],
+     "size": [
+      12,
+      12
+     ],
+     "y0": 0,
+     "y1": 46,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -38
+     ],
+     "size": [
+      13,
+      13
+     ],
+     "y0": 46,
+     "y1": 49,
+     "material": "stone",
+     "colour": "#d8cdb8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -12,
+      -38
+     ],
+     "radius": 3.5,
+     "y0": 49,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#d8cdb8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -12,
+      -38
+     ],
+     "radius": 1.6,
+     "radiusTop": 0,
+     "y0": 52,
+     "y1": 55,
+     "material": "metal",
+     "colour": "#3d4650"
+    }
+   ]
+  },
+  "notes": "The Hôtel de Ville is a long, mostly cream-grey Second Empire stone block with a steep slate mansard roof running round all four wings. Its signature features are the tall clock tower with a slender spire set left of centre on the west (−z) front, and the taller corner pavilions with their own mansard caps. The building wraps a central courtyard, so I model it as four wings around an open court.",
+  "triangles": 3394,
+  "parts": 16
+ }
+}

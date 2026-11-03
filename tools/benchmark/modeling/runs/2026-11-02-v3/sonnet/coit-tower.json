@@ -1,0 +1,262 @@
+{
+ "building": "coit-tower",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:44.378Z",
+ "userText": "Building: Coit Tower, San Francisco (monument tower).\nThe front (−z) is the parking circle side.\nFootprint: 21.9 m along x by 22.2 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-5.9,8.5],[-8.9,8.5],[-8.9,5.8],[-9.8,5.8],[-11,3],[-10.9,-2.9],[-9.8,-5.7],[-8.9,-5.7],[-8.9,-8.6],[-5.9,-8.6],[-5.6,-10],[-1.7,-11.1],[2.6,-10.9],[5.3,-10],[5.4,-8.6],[8.6,-8.6],[8.6,-5.7],[10,-5.7],[10.9,-1.6],[11,2.6],[10,5.8],[8.6,5.8],[8.6,8.5],[5.4,8.5],[5.4,11.1],[-5.9,11.1]]\nHeight: the highest point is 64 m above the ground.\n\n3 photographs attached, in order:\n  1. whole fluted concrete tower on its hilltop with trees below, clear sky\n  2. tower rising behind the Telegraph Hill apartment building, showing the full shaft and the arcaded crown, flag on top\n  3. high oblique aerial of the tower and the circular drive and park on Telegraph Hill\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   21.9,
+   22.2
+  ],
+  "outline": [
+   [
+    -5.9,
+    8.5
+   ],
+   [
+    -8.9,
+    8.5
+   ],
+   [
+    -8.9,
+    5.8
+   ],
+   [
+    -9.8,
+    5.8
+   ],
+   [
+    -11,
+    3
+   ],
+   [
+    -10.9,
+    -2.9
+   ],
+   [
+    -9.8,
+    -5.7
+   ],
+   [
+    -8.9,
+    -5.7
+   ],
+   [
+    -8.9,
+    -8.6
+   ],
+   [
+    -5.9,
+    -8.6
+   ],
+   [
+    -5.6,
+    -10
+   ],
+   [
+    -1.7,
+    -11.1
+   ],
+   [
+    2.6,
+    -10.9
+   ],
+   [
+    5.3,
+    -10
+   ],
+   [
+    5.4,
+    -8.6
+   ],
+   [
+    8.6,
+    -8.6
+   ],
+   [
+    8.6,
+    -5.7
+   ],
+   [
+    10,
+    -5.7
+   ],
+   [
+    10.9,
+    -1.6
+   ],
+   [
+    11,
+    2.6
+   ],
+   [
+    10,
+    5.8
+   ],
+   [
+    8.6,
+    5.8
+   ],
+   [
+    8.6,
+    8.5
+   ],
+   [
+    5.4,
+    8.5
+   ],
+   [
+    5.4,
+    11.1
+   ],
+   [
+    -5.9,
+    11.1
+   ]
+  ],
+  "height": 64,
+  "turn": 14.5
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Coit Tower is a tall fluted concrete cylinder, about 10 m in diameter, on a low base with small wings. The crown has an open arcaded gallery with tall arched openings, a balustrade ring, and a flat top. I model a low square-ish base with side wings, a long tapered round shaft, an arched upper stage, and a solid cap.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [20, 16], \"y0\": 0, \"y1\": 5, \"material\": \"concrete\", \"colour\": \"#cfc8b8\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [12, 21], \"y0\": 0, \"y1\": 4, \"material\": \"concrete\", \"colour\": \"#cfc8b8\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 6.2, \"y0\": 0, \"y1\": 12, \"sides\": 24, \"material\": \"concrete\", \"colour\": \"#d2cbbb\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5.6, \"radiusTop\": 5.1, \"y0\": 12, \"y1\": 48, \"sides\": 24, \"material\": \"concrete\", \"colour\": \"#d0c9b9\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5.4, \"y0\": 48, \"y1\": 51, \"sides\": 24, \"material\": \"concrete\", \"colour\": \"#d0c9b9\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5.4, \"y0\": 51, \"y1\": 62, \"sides\": 24, \"material\": \"concrete\", \"colour\": \"#cfc8b8\", \"windows\": {\"kind\": \"arched\", \"floor\": 8, \"pitch\": 5, \"solid\": 0.45}}, {\"type\": \"ring\", \"center\": [0, 0], \"radius\": 5.6, \"inner\": 4.0, \"y0\": 62, \"y1\": 64, \"material\": \"concrete\", \"colour\": \"#d0c9b9\"}]}",
+   "stop": "end_turn",
+   "input": 3577,
+   "output": 662,
+   "cacheRead": 8168,
+   "cost": 0.0154076,
+   "ms": 6253,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Coit Tower is a tall fluted concrete cylinder, about 10 m in diameter, on a low base with small wings. The crown has an open arcaded gallery with tall arched openings, a balustrade ring, and a flat top. I model a low square-ish base with side wings, a long tapered round shaft, an arched upper stage, and a solid cap.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      20,
+      16
+     ],
+     "y0": 0,
+     "y1": 5,
+     "material": "concrete",
+     "colour": "#cfc8b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      12,
+      21
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "concrete",
+     "colour": "#cfc8b8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 6.2,
+     "y0": 0,
+     "y1": 12,
+     "sides": 24,
+     "material": "concrete",
+     "colour": "#d2cbbb"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5.6,
+     "radiusTop": 5.1,
+     "y0": 12,
+     "y1": 48,
+     "sides": 24,
+     "material": "concrete",
+     "colour": "#d0c9b9"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5.4,
+     "y0": 48,
+     "y1": 51,
+     "sides": 24,
+     "material": "concrete",
+     "colour": "#d0c9b9"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5.4,
+     "y0": 51,
+     "y1": 62,
+     "sides": 24,
+     "material": "concrete",
+     "colour": "#cfc8b8",
+     "windows": {
+      "kind": "arched",
+      "floor": 8,
+      "pitch": 5,
+      "solid": 0.45
+     }
+    },
+    {
+     "type": "ring",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5.6,
+     "inner": 4,
+     "y0": 62,
+     "y1": 64,
+     "material": "concrete",
+     "colour": "#d0c9b9"
+    }
+   ]
+  },
+  "notes": "Coit Tower is a tall fluted concrete cylinder, about 10 m in diameter, on a low base with small wings. The crown has an open arcaded gallery with tall arched openings, a balustrade ring, and a flat top. I model a low square-ish base with side wings, a long tapered round shaft, an arched upper stage, and a solid cap.",
+  "triangles": 648,
+  "parts": 7
+ },
+ "totals": {
+  "input": 3577,
+  "output": 662,
+  "cost": 0.0154076,
+  "ms": 6253
+ }
+}

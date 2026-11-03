@@ -1,0 +1,623 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:12:29.341Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Palais Garnier: a cream stone front with a two-storey colonnaded loggia over an arcade, an arched central pediment, and a green copper dome rising behind it over the foyer. Gilded figures sit on the front corner pavilions. The great stage house at the rear has a tall stone gable with a large round-headed window, flanked by slate mansard wings, and the whole mass reaches about 56 m at the dome's lantern.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, -69],\n      \"size\": [59, 14],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"faces\": [\"front\"],\n      \"colour\": \"#ece3cf\",\n      \"trim\": \"#f4efe2\",\n      \"storeys\": [\n        {\"height\": 7, \"kind\": \"arcade\"},\n        {\"height\": 17, \"kind\": \"columns\", \"floors\": 2},\n        {\"height\": 8, \"kind\": \"pilasters\", \"floors\": 1}\n      ],\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"balustrade\"}\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-17, -69],\n      \"to\": [17, -69],\n      \"y0\": 32,\n      \"height\": 10,\n      \"depth\": 4,\n      \"colour\": \"#e8dcc4\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, -18],\n      \"radius\": 10,\n      \"y0\": 26,\n      \"base\": 1,\n      \"height\": 8,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 4,\n      \"dome\": {\"height\": 12, \"colour\": \"#6fae95\", \"material\": \"copper\"},\n      \"lantern\": true,\n      \"colour\": \"#e6dccb\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 42],\n      \"size\": [56, 52],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#dccfb3\",\n      \"trim\": \"#eee6d4\",\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"rusticated\"},\n        {\"height\": 32, \"kind\": \"pilasters\", \"floors\": 3}\n      ],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 10, \"ridge\": \"x\"}\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-26, -70],\n      \"size\": [6, 6],\n      \"y0\": 32,\n      \"y1\": 40,\n      \"material\": \"metal\",\n      \"colour\": \"#d4a53a\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [26, -70],\n      \"size\": [6, 6],\n      \"y0\": 32,\n      \"y1\": 40,\n      \"material\": \"metal\",\n      \"colour\": \"#d4a53a\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4955,
+   "output": 3672,
+   "cacheRead": 8401,
+   "cost": 0.00241551,
+   "ms": 17777,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"Three biggest differences: (1) the middle of the footprint is empty, so the auditorium and foyer masses that fill the plan between the front loggia and the stage house are missing; I am adding a wide stone body over that area. (2) The stage-house gable is hidden under a dark slate roof and is too plain; the real gable is cream stone and taller, and its face carries few windows, so I am making the gable stone-coloured and steeper and removing the window grid from the pilasters. (3) The green dome is too small and sits too low, and the gilded corner figures read as cubes, so I am enlarging the dome on a taller drum and making the figures taller.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, -69],\n      \"size\": [59, 14],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"faces\": [\"front\"],\n      \"colour\": \"#ece3cf\",\n      \"trim\": \"#f4efe2\",\n      \"storeys\": [\n        {\"height\": 7, \"kind\": \"arcade\"},\n        {\"height\": 17, \"kind\": \"columns\", \"floors\": 2},\n        {\"height\": 8, \"kind\": \"pilasters\", \"floors\": 1}\n      ],\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"balustrade\"}\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-17, -69],\n      \"to\": [17, -69],\n      \"y0\": 32,\n      \"height\": 10,\n      \"depth\": 4,\n      \"colour\": \"#e8dcc4\"\n    },\n    {\n      \"type\": \"prism\",\n      \"points\": [[-33, -62], [33, -62], [51, -3], [33, 56], [-33, 56], [-51, -3]],\n      \"y0\": 0,\n      \"y1\": 34,\n      \"material\": \"stone\",\n      \"colour\": \"#e2d8c3\",\n      \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4, \"solid\": 0.6}\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, -18],\n      \"radius\": 13,\n      \"y0\": 28,\n      \"base\": 1,\n      \"height\": 8,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 4,\n      \"dome\": {\"height\": 13, \"colour\": \"#6fae95\", \"material\": \"copper\"},\n      \"lantern\": true,\n      \"colour\": \"#e6dccb\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 42],\n      \"size\": [56, 52],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#dccfb3\",\n      \"trim\": \"#eee6d4\",\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"rusticated\"},\n        {\"height\": 28, \"kind\": \"pilasters\", \"floors\": 3, \"windows\": false}\n      ],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 14, \"ridge\": \"x\", \"colour\": \"#d6cbb2\"}\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-26, -70],\n      \"size\": [7, 7],\n      \"y0\": 32,\n      \"y1\": 42,\n      \"material\": \"metal\",\n      \"colour\": \"#d4a53a\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [26, -70],\n      \"size\": [7, 7],\n      \"y0\": 32,\n      \"y1\": 42,\n      \"material\": \"metal\",\n      \"colour\": \"#d4a53a\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 10093,
+   "output": 4293,
+   "cacheRead": 8401,
+   "cost": 0.0032398100000000005,
+   "ms": 20595,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Three biggest differences: (1) the middle of the footprint is empty, so the auditorium and foyer masses that fill the plan between the front loggia and the stage house are missing; I am adding a wide stone body over that area. (2) The stage-house gable is hidden under a dark slate roof and is too plain; the real gable is cream stone and taller, and its face carries few windows, so I am making the gable stone-coloured and steeper and removing the window grid from the pilasters. (3) The green dome is too small and sits too low, and the gilded corner figures read as cubes, so I am enlarging the dome on a taller drum and making the figures taller.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -69
+     ],
+     "size": [
+      59,
+      14
+     ],
+     "y0": 0,
+     "bay": 5,
+     "faces": [
+      "front"
+     ],
+     "colour": "#ece3cf",
+     "trim": "#f4efe2",
+     "storeys": [
+      {
+       "height": 7,
+       "kind": "arcade"
+      },
+      {
+       "height": 17,
+       "kind": "columns",
+       "floors": 2
+      },
+      {
+       "height": 8,
+       "kind": "pilasters",
+       "floors": 1
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -17,
+      -69
+     ],
+     "to": [
+      17,
+      -69
+     ],
+     "y0": 32,
+     "height": 10,
+     "depth": 4,
+     "colour": "#e8dcc4"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -33,
+       -62
+      ],
+      [
+       33,
+       -62
+      ],
+      [
+       51,
+       -3
+      ],
+      [
+       33,
+       56
+      ],
+      [
+       -33,
+       56
+      ],
+      [
+       -51,
+       -3
+      ]
+     ],
+     "y0": 0,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#e2d8c3",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 13,
+     "y0": 28,
+     "base": 1,
+     "height": 8,
+     "count": 12,
+     "open": false,
+     "drum": 4,
+     "dome": {
+      "height": 13,
+      "colour": "#6fae95",
+      "material": "copper"
+     },
+     "lantern": true,
+     "colour": "#e6dccb"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      42
+     ],
+     "size": [
+      56,
+      52
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#dccfb3",
+     "trim": "#eee6d4",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "rusticated"
+      },
+      {
+       "height": 28,
+       "kind": "pilasters",
+       "floors": 3,
+       "windows": false
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "gable",
+      "rise": 14,
+      "ridge": "x",
+      "colour": "#d6cbb2"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -26,
+      -70
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 32,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d4a53a"
+    },
+    {
+     "type": "box",
+     "center": [
+      26,
+      -70
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 32,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d4a53a"
+    }
+   ]
+  },
+  "notes": "Three biggest differences: (1) the middle of the footprint is empty, so the auditorium and foyer masses that fill the plan between the front loggia and the stage house are missing; I am adding a wide stone body over that area. (2) The stage-house gable is hidden under a dark slate roof and is too plain; the real gable is cream stone and taller, and its face carries few windows, so I am making the gable stone-coloured and steeper and removing the window grid from the pilasters. (3) The green dome is too small and sits too low, and the gilded corner figures read as cubes, so I am enlarging the dome on a taller drum and making the figures taller.",
+  "triangles": 6380,
+  "parts": 105
+ },
+ "totals": {
+  "input": 18359,
+  "output": 14560,
+  "cost": 0.00930475,
+  "ms": 71325
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front (−z) at eye level from the south-west: a wide two-storey loggia of paired columns over an arcade ground floor, a central arched pediment with sculpture, a green copper dome rising behind the pediment, and gilded winged figures on the corner pavilions. Blue sky, cream stone.\",\n    \"photo 2: elevated view from the rooftops toward the rear: the great stage-house gable with a tall rounded window and sculpted cornice, flanked by a side wing with a slate mansard roof and dormers, and the Eiffel Tower far off. Clear sky.\",\n    \"photo 3: elevated view of the great stage house from the north-west, overcast: a large pitched gable of cream stone over the stage house, its roof partly sheeted in scaffolding, with the green dome at left and mansard roofs with dormers on the neighbouring blocks.\"\n  ],\n  \"components\": [\n    {\"name\": \"front loggia\", \"part\": \"block\", \"where\": \"the front (−z) of the building\", \"center\": [0, -69], \"size\": [59, 14], \"height\": 32,\n     \"settings\": {\"faces\": [\"front\"], \"storeys\": [{\"height\": 7, \"kind\": \"arcade\"}, {\"height\": 17, \"kind\": \"columns\", \"floors\": 2}, {\"height\": 8, \"kind\": \"pilasters\", \"floors\": 1}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#ece3cf\"},\n     \"why\": \"photo 1: the two-storey colonnaded loggia over an arcade is the signature front\"},\n    {\"name\": \"central pediment\", \"part\": \"pediment\", \"where\": \"centre of the front, above the loggia\", \"center\": [0, -69], \"size\": [34, 14], \"height\": 42,\n     \"settings\": {\"width\": 34, \"depth\": 14, \"rise\": 10, \"base\": 32, \"colour\": \"#e8dcc4\"},\n     \"why\": \"photo 1: the arched central pediment crowns the front\"},\n    {\"name\": \"green dome over foyer\", \"part\": \"rotunda\", \"where\": \"centre of the roof, behind the front pediment\", \"center\": [0, -18], \"height\": 56,\n     \"settings\": {\"open\": false, \"radius\": 10, \"column_height\": 0, \"columns\": 12, \"drum\": true, \"dome_height\": 22, \"lantern\": true, \"lantern_height\": 8, \"base\": 26, \"colour\": \"#6fae95\"},\n     \"why\": \"photo 1: the green copper dome rises behind the pediment and carries the lyre group at the top\"},\n    {\"name\": \"stage house with gable\", \"part\": \"block\", \"where\": \"rear of the building, behind the auditorium\", \"center\": [0, 42], \"size\": [56, 52], \"height\": 50,\n     \"settings\": {\"faces\": [\"back\"], \"storeys\": [{\"height\": 8, \"kind\": \"rusticated\"}, {\"height\": 32, \"kind\": \"pilasters\", \"floors\": 3}], \"roof\": {\"kind\": \"gable\", \"rise\": 10}, \"colour\": \"#dccfb3\"},\n     \"why\": \"photos 2 and 3: the great stage-house gable is the tallest mass seen from the rooftops\"},\n    {\"name\": \"gilded corner group left\", \"part\": \"box\", \"where\": \"front left corner pavilion\", \"center\": [-26, -70], \"size\": [6, 6], \"height\": 8,\n     \"settings\": {\"base\": 32, \"colour\": \"#d4a53a\"},\n     \"why\": \"photo 1: gilded winged figures stand on the front corner pavilions\"},\n    {\"name\": \"gilded corner group right\", \"part\": \"box\", \"where\": \"front right corner pavilion\", \"center\": [26, -70], \"size\": [6, 6], \"height\": 8,\n     \"settings\": {\"base\": 32, \"colour\": \"#d4a53a\"},\n     \"why\": \"photo 1: matching gilded figure on the right corner pavilion\"}\n  ]\n}\n```",
+  "input": 3311,
+  "output": 6595,
+  "cost": 0.0036494300000000004,
+  "ms": 32953,
+  "json": {
+   "photos": [
+    "photo 1: the front (−z) at eye level from the south-west: a wide two-storey loggia of paired columns over an arcade ground floor, a central arched pediment with sculpture, a green copper dome rising behind the pediment, and gilded winged figures on the corner pavilions. Blue sky, cream stone.",
+    "photo 2: elevated view from the rooftops toward the rear: the great stage-house gable with a tall rounded window and sculpted cornice, flanked by a side wing with a slate mansard roof and dormers, and the Eiffel Tower far off. Clear sky.",
+    "photo 3: elevated view of the great stage house from the north-west, overcast: a large pitched gable of cream stone over the stage house, its roof partly sheeted in scaffolding, with the green dome at left and mansard roofs with dormers on the neighbouring blocks."
+   ],
+   "components": [
+    {
+     "name": "front loggia",
+     "part": "block",
+     "where": "the front (−z) of the building",
+     "center": [
+      0,
+      -69
+     ],
+     "size": [
+      59,
+      14
+     ],
+     "height": 32,
+     "settings": {
+      "faces": [
+       "front"
+      ],
+      "storeys": [
+       {
+        "height": 7,
+        "kind": "arcade"
+       },
+       {
+        "height": 17,
+        "kind": "columns",
+        "floors": 2
+       },
+       {
+        "height": 8,
+        "kind": "pilasters",
+        "floors": 1
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#ece3cf"
+     },
+     "why": "photo 1: the two-storey colonnaded loggia over an arcade is the signature front"
+    },
+    {
+     "name": "central pediment",
+     "part": "pediment",
+     "where": "centre of the front, above the loggia",
+     "center": [
+      0,
+      -69
+     ],
+     "size": [
+      34,
+      14
+     ],
+     "height": 42,
+     "settings": {
+      "width": 34,
+      "depth": 14,
+      "rise": 10,
+      "base": 32,
+      "colour": "#e8dcc4"
+     },
+     "why": "photo 1: the arched central pediment crowns the front"
+    },
+    {
+     "name": "green dome over foyer",
+     "part": "rotunda",
+     "where": "centre of the roof, behind the front pediment",
+     "center": [
+      0,
+      -18
+     ],
+     "height": 56,
+     "settings": {
+      "open": false,
+      "radius": 10,
+      "column_height": 0,
+      "columns": 12,
+      "drum": true,
+      "dome_height": 22,
+      "lantern": true,
+      "lantern_height": 8,
+      "base": 26,
+      "colour": "#6fae95"
+     },
+     "why": "photo 1: the green copper dome rises behind the pediment and carries the lyre group at the top"
+    },
+    {
+     "name": "stage house with gable",
+     "part": "block",
+     "where": "rear of the building, behind the auditorium",
+     "center": [
+      0,
+      42
+     ],
+     "size": [
+      56,
+      52
+     ],
+     "height": 50,
+     "settings": {
+      "faces": [
+       "back"
+      ],
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "rusticated"
+       },
+       {
+        "height": 32,
+        "kind": "pilasters",
+        "floors": 3
+       }
+      ],
+      "roof": {
+       "kind": "gable",
+       "rise": 10
+      },
+      "colour": "#dccfb3"
+     },
+     "why": "photos 2 and 3: the great stage-house gable is the tallest mass seen from the rooftops"
+    },
+    {
+     "name": "gilded corner group left",
+     "part": "box",
+     "where": "front left corner pavilion",
+     "center": [
+      -26,
+      -70
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "height": 8,
+     "settings": {
+      "base": 32,
+      "colour": "#d4a53a"
+     },
+     "why": "photo 1: gilded winged figures stand on the front corner pavilions"
+    },
+    {
+     "name": "gilded corner group right",
+     "part": "box",
+     "where": "front right corner pavilion",
+     "center": [
+      26,
+      -70
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "height": 8,
+     "settings": {
+      "base": 32,
+      "colour": "#d4a53a"
+     },
+     "why": "photo 1: matching gilded figure on the right corner pavilion"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "Palais Garnier: a cream stone front with a two-storey colonnaded loggia over an arcade, an arched central pediment, and a green copper dome rising behind it over the foyer. Gilded figures sit on the front corner pavilions. The great stage house at the rear has a tall stone gable with a large round-headed window, flanked by slate mansard wings, and the whole mass reaches about 56 m at the dome's lantern.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -69
+     ],
+     "size": [
+      59,
+      14
+     ],
+     "y0": 0,
+     "bay": 5,
+     "faces": [
+      "front"
+     ],
+     "colour": "#ece3cf",
+     "trim": "#f4efe2",
+     "storeys": [
+      {
+       "height": 7,
+       "kind": "arcade"
+      },
+      {
+       "height": 17,
+       "kind": "columns",
+       "floors": 2
+      },
+      {
+       "height": 8,
+       "kind": "pilasters",
+       "floors": 1
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -17,
+      -69
+     ],
+     "to": [
+      17,
+      -69
+     ],
+     "y0": 32,
+     "height": 10,
+     "depth": 4,
+     "colour": "#e8dcc4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 10,
+     "y0": 26,
+     "base": 1,
+     "height": 8,
+     "count": 12,
+     "open": false,
+     "drum": 4,
+     "dome": {
+      "height": 12,
+      "colour": "#6fae95",
+      "material": "copper"
+     },
+     "lantern": true,
+     "colour": "#e6dccb"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      42
+     ],
+     "size": [
+      56,
+      52
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#dccfb3",
+     "trim": "#eee6d4",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "rusticated"
+      },
+      {
+       "height": 32,
+       "kind": "pilasters",
+       "floors": 3
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "gable",
+      "rise": 10,
+      "ridge": "x"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -26,
+      -70
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 32,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#d4a53a"
+    },
+    {
+     "type": "box",
+     "center": [
+      26,
+      -70
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 32,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#d4a53a"
+    }
+   ]
+  },
+  "notes": "Palais Garnier: a cream stone front with a two-storey colonnaded loggia over an arcade, an arched central pediment, and a green copper dome rising behind it over the foyer. Gilded figures sit on the front corner pavilions. The great stage house at the rear has a tall stone gable with a large round-headed window, flanked by slate mansard wings, and the whole mass reaches about 56 m at the dome's lantern.",
+  "triangles": 5276,
+  "parts": 104
+ }
+}

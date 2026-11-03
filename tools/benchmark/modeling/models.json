@@ -1,0 +1,86 @@
+{
+  "note": "Contestants. provider 'anthropic' uses the SDK (ANTHROPIC_API_KEY or an `ant auth login` profile); 'openai' is any OpenAI-compatible /chat/completions (OpenRouter, Strata on ml1). price is $ per million tokens [input, output], used only where the provider does not report cost. OpenRouter slugs change: `run.ts --list-openrouter` prints the current cheap vision models. Add `--model=openrouter:<slug>` to try one without editing this file.",
+  "models": [
+    {
+      "id": "haiku",
+      "role": "control",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "effort": "medium",
+      "price": [
+        0.1,
+        0.5
+      ]
+    },
+    {
+      "id": "sonnet",
+      "role": "ceiling",
+      "provider": "anthropic",
+      "model": "claude-sonnet-5-5",
+      "effort": "high",
+      "price": [
+        2.0,
+        10.0
+      ],
+      "note": "Not a contestant: a ceiling, to tell a model limit from a setup limit."
+    },
+    {
+      "id": "qwen-local",
+      "provider": "openai",
+      "baseUrl": "http://192.168.10.145:8080/v1",
+      "keyEnv": "STRATA_API_KEY",
+      "model": "auto",
+      "maxTokens": 12000,
+      "timeoutS": 1800,
+      "price": [
+        0,
+        0
+      ],
+      "note": "Qwen3.8-Flash-Next IQ3_XXS through Strata on ml1 (32K context, pictures via the CPU reader at ~10 s each). 'auto' takes the first id /v1/models lists. Key: `~/.local/bin/strata launch --show-key --preset ml1` on ml1."
+    },
+    {
+      "id": "gemini-flash-lite",
+      "provider": "openai",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "keyEnv": "OPENROUTER_API_KEY",
+      "model": "google/gemini-2.5-flash-lite",
+      "price": [
+        0.1,
+        0.4
+      ]
+    },
+    {
+      "id": "gpt-nano",
+      "provider": "openai",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "keyEnv": "OPENROUTER_API_KEY",
+      "model": "openai/gpt-5-nano",
+      "price": [
+        0.05,
+        0.4
+      ]
+    },
+    {
+      "id": "llama-scout",
+      "provider": "openai",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "keyEnv": "OPENROUTER_API_KEY",
+      "model": "meta-llama/llama-4-scout",
+      "price": [
+        0.08,
+        0.3
+      ]
+    },
+    {
+      "id": "mistral-small",
+      "provider": "openai",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "keyEnv": "OPENROUTER_API_KEY",
+      "model": "mistralai/mistral-small-3.2-24b-instruct",
+      "price": [
+        0.05,
+        0.1
+      ]
+    }
+  ]
+}

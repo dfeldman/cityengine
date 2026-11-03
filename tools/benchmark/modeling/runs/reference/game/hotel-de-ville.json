@@ -1,0 +1,14 @@
+{
+ "building": "hotel-de-ville",
+ "modelId": "game",
+ "model": "hotelDeVille",
+ "fit": {
+  "turn": 0,
+  "mirror": false,
+  "iou": 0.93
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: hotelDeVille, 9670 tris, fit IoU 0.93"
+ }
+}

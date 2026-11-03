@@ -1,0 +1,9 @@
+{
+  "name": "modelling-benchmark",
+  "private": true,
+  "description": "tools/benchmark/modeling: its own package so the Anthropic SDK stays out of the game's dependencies",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.4.0"
+  }
+}

@@ -1,0 +1,336 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:27.147Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Parc des Princes: an oval concrete bowl ringed by tall, tapered, pointed concrete fins (about 50 radial ribs) that carry the raked stands and a ring roof. The pitch is grass inside the bowl. A lower, curved, light-coloured roofed stand sits at the left (-x) end in the satellite view. I model the bowl, the pitch, an upper roof ring, a repeat of radial fin beams around the perimeter, and the lower stand on the west end.\", \"parts\": [\n{\"type\": \"bowl\", \"center\": [0, 0], \"size\": [270, 192], \"inner\": [124, 84], \"y0\": 0, \"y1\": 30, \"innerHeight\": 4, \"shape\": \"oval\", \"material\": \"concrete\", \"colour\": \"#b9b5aa\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [122, 82], \"y0\": 0, \"y1\": 0.4, \"material\": \"grass\", \"colour\": \"#3f7a3a\"},\n{\"type\": \"bowl\", \"center\": [0, 0], \"size\": [262, 186], \"inner\": [160, 110], \"y0\": 38, \"y1\": 41, \"innerHeight\": 40, \"shape\": \"oval\", \"material\": \"concrete\", \"colour\": \"#aaa69c\"},\n{\"type\": \"repeat\", \"count\": 50, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"beam\", \"from\": [134, 0, 0], \"to\": [126, 46, 0], \"width\": 3.5, \"material\": \"concrete\", \"colour\": \"#bdb9ae\"}},\n{\"type\": \"repeat\", \"count\": 50, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"beam\", \"from\": [128, 30, 0], \"to\": [90, 38, 0], \"width\": 1.5, \"material\": \"concrete\", \"colour\": \"#a8a49a\"}},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 1, \"y0\": 0, \"y1\": 0.1, \"material\": \"grass\"},\n{\"type\": \"prism\", \"points\": [[-136, 14], [-134, -1], [-110, -26], [-90, -10], [-85, 30], [-90, 66], [-110, 50], [-136, 22]], \"y0\": 0, \"y1\": 34, \"material\": \"concrete\", \"colour\": \"#d9d9d6\"},\n{\"type\": \"box\", \"center\": [0, -88], \"size\": [90, 14], \"y0\": 0, \"y1\": 12, \"material\": \"concrete\", \"colour\": \"#a9a59b\", \"windows\": {\"kind\": \"bands\", \"floor\": 6, \"solid\": 0.6}}\n]}",
+   "stop": "end_turn",
+   "input": 3520,
+   "output": 862,
+   "cacheRead": 7616,
+   "cost": 0.0171832,
+   "ms": 7574,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Parc des Princes: an oval concrete bowl ringed by tall, tapered, pointed concrete fins (about 50 radial ribs) that carry the raked stands and a ring roof. The pitch is grass inside the bowl. A lower, curved, light-coloured roofed stand sits at the left (-x) end in the satellite view. I model the bowl, the pitch, an upper roof ring, a repeat of radial fin beams around the perimeter, and the lower stand on the west end.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      270,
+      192
+     ],
+     "inner": [
+      124,
+      84
+     ],
+     "y0": 0,
+     "y1": 30,
+     "innerHeight": 4,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#b9b5aa"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      122,
+      82
+     ],
+     "y0": 0,
+     "y1": 0.4,
+     "material": "grass",
+     "colour": "#3f7a3a"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      262,
+      186
+     ],
+     "inner": [
+      160,
+      110
+     ],
+     "y0": 38,
+     "y1": 41,
+     "innerHeight": 40,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#aaa69c"
+    },
+    {
+     "type": "repeat",
+     "count": 50,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       134,
+       0,
+       0
+      ],
+      "to": [
+       126,
+       46,
+       0
+      ],
+      "width": 3.5,
+      "material": "concrete",
+      "colour": "#bdb9ae"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 50,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       128,
+       30,
+       0
+      ],
+      "to": [
+       90,
+       38,
+       0
+      ],
+      "width": 1.5,
+      "material": "concrete",
+      "colour": "#a8a49a"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 1,
+     "y0": 0,
+     "y1": 0.1,
+     "material": "grass"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -136,
+       14
+      ],
+      [
+       -134,
+       -1
+      ],
+      [
+       -110,
+       -26
+      ],
+      [
+       -90,
+       -10
+      ],
+      [
+       -85,
+       30
+      ],
+      [
+       -90,
+       66
+      ],
+      [
+       -110,
+       50
+      ],
+      [
+       -136,
+       22
+      ]
+     ],
+     "y0": 0,
+     "y1": 34,
+     "material": "concrete",
+     "colour": "#d9d9d6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -88
+     ],
+     "size": [
+      90,
+      14
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "concrete",
+     "colour": "#a9a59b",
+     "windows": {
+      "kind": "bands",
+      "floor": 6,
+      "solid": 0.6
+     }
+    }
+   ]
+  },
+  "notes": "Parc des Princes: an oval concrete bowl ringed by tall, tapered, pointed concrete fins (about 50 radial ribs) that carry the raked stands and a ring roof. The pitch is grass inside the bowl. A lower, curved, light-coloured roofed stand sits at the left (-x) end in the satellite view. I model the bowl, the pitch, an upper roof ring, a repeat of radial fin beams around the perimeter, and the lower stand on the west end.",
+  "triangles": 2080,
+  "parts": 106
+ },
+ "totals": {
+  "input": 3520,
+  "output": 862,
+  "cost": 0.0171832,
+  "ms": 7574
+ }
+}

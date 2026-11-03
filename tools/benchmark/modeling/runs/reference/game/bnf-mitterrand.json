@@ -1,0 +1,14 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "game",
+ "model": "bnfEsplanade",
+ "fit": {
+  "turn": 46,
+  "mirror": false,
+  "iou": 0
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: bnfEsplanade, 672 tris, fit IoU 0.00"
+ }
+}

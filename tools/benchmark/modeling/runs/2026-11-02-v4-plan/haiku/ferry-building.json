@@ -1,0 +1,314 @@
+{
+ "building": "ferry-building",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:48.225Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Ferry Building is a long, low, two-storey arcaded hall running along the Embarcadero, under a shallow shed roof. The signature feature is the tall white clock tower rising from the middle of the front, with clock faces, an open belfry and a slender spire. A projecting arched entrance bay sits beneath the tower on the front face.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [201, 56],\n      \"y0\": 0,\n      \"bay\": 6,\n      \"colour\": \"#d8d2c2\",\n      \"trim\": \"#e8e1d0\",\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"arcade\", \"windows\": false},\n        {\"height\": 10, \"kind\": \"arched\", \"floors\": 1}\n      ],\n      \"faces\": [\"front\", \"back\"],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 4, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [0, -22],\n      \"y0\": 0,\n      \"colour\": \"#e8e4da\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 13, \"height\": 30, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 13, \"height\": 10, \"kind\": \"clock\"},\n        {\"shape\": \"square\", \"width\": 10, \"height\": 15, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 20, \"colour\": \"#e8e4da\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -25],\n      \"size\": [30, 6],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#e0dacb\",\n      \"trim\": \"#e8e1d0\",\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"arcade\", \"windows\": false},\n        {\"height\": 12, \"kind\": \"arched\", \"floors\": 1}\n      ],\n      \"faces\": [\"front\"],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"flat\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4501,
+   "output": 1506,
+   "cacheRead": 8401,
+   "cost": 0.0012871100000000002,
+   "ms": 7517,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Ferry Building is a long, low, two-storey arcaded hall running along the Embarcadero, under a shallow shed roof. The signature feature is the tall white clock tower rising from the middle of the front, with clock faces, an open belfry and a slender spire. A projecting arched entrance bay sits beneath the tower on the front face.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 0,
+     "bay": 6,
+     "colour": "#d8d2c2",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 10,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": [
+      "front",
+      "back"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "gable",
+      "rise": 4,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      0,
+      -22
+     ],
+     "y0": 0,
+     "colour": "#e8e4da",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 13,
+       "height": 30,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 13,
+       "height": 10,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 10,
+       "height": 15,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 20,
+      "colour": "#e8e4da"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -25
+     ],
+     "size": [
+      30,
+      6
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#e0dacb",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 12,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    }
+   ]
+  },
+  "notes": "The Ferry Building is a long, low, two-storey arcaded hall running along the Embarcadero, under a shallow shed roof. The signature feature is the tall white clock tower rising from the middle of the front, with clock faces, an open belfry and a slender spire. A projecting arched entrance bay sits beneath the tower on the front face.",
+  "triangles": 5152,
+  "parts": 27
+ },
+ "totals": {
+  "input": 7856,
+  "output": 3263,
+  "cost": 0.0025219400000000003,
+  "ms": 16685
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: the front from the south-west, showing the long two-storey arcaded facade with a row of round-arched openings, a central clock tower rising to a spire, and the bay behind\", \"photo 2: aerial three-quarter from the north, showing the long low-pitched roof of the shed, the clock tower with clock faces and a stepped belfry, and the arcade along the street side\", \"photo 3: high oblique over the piers, showing the tower on the front, the long shed roof running back toward the water, and the open plaza with palms in front\"],\n  \"components\": [\n    {\"name\": \"main arcaded body\", \"part\": \"block\", \"where\": \"the long two-storey hall behind the plaza\", \"center\": [0, 0], \"size\": [201, 56], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 10, \"kind\": \"arched\", \"floors\": 1}], \"faces\": [\"front\", \"back\"], \"roof\": {\"kind\": \"hip\", \"rise\": 4}, \"colour\": \"#d8d2c2\"},\n     \"why\": \"photos 1 and 2: a long arcaded ground floor under a row of arched upper windows, topped by a long low shed roof\"},\n    {\"name\": \"central clock tower\", \"part\": \"tower\", \"where\": \"centre of the front, at the Embarcadero facade\", \"center\": [0, -22], \"height\": 75,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 13, \"height\": 30, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 13, \"height\": 10, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 10, \"height\": 15, \"kind\": \"open\"}], \"top\": {\"kind\": \"spire\", \"height\": 20}, \"colour\": \"#e8e4da\"},\n     \"why\": \"photos 1 to 3: the tall white clock tower with clock faces, a belfry and a slender spire rises from the middle of the front\"},\n    {\"name\": \"front central portal block\", \"part\": \"block\", \"where\": \"central front bay below the tower\", \"center\": [0, -27], \"size\": [30, 6], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 12, \"kind\": \"arched\", \"floors\": 1}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#e0dacb\"},\n     \"why\": \"photo 1: the central part of the front is a slightly projecting arched entrance bay under the tower\"}\n  ]\n}",
+  "input": 3355,
+  "output": 1757,
+  "cost": 0.00123483,
+  "ms": 9168,
+  "json": {
+   "photos": [
+    "photo 1: the front from the south-west, showing the long two-storey arcaded facade with a row of round-arched openings, a central clock tower rising to a spire, and the bay behind",
+    "photo 2: aerial three-quarter from the north, showing the long low-pitched roof of the shed, the clock tower with clock faces and a stepped belfry, and the arcade along the street side",
+    "photo 3: high oblique over the piers, showing the tower on the front, the long shed roof running back toward the water, and the open plaza with palms in front"
+   ],
+   "components": [
+    {
+     "name": "main arcaded body",
+     "part": "block",
+     "where": "the long two-storey hall behind the plaza",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "arcade",
+        "windows": false
+       },
+       {
+        "height": 10,
+        "kind": "arched",
+        "floors": 1
+       }
+      ],
+      "faces": [
+       "front",
+       "back"
+      ],
+      "roof": {
+       "kind": "hip",
+       "rise": 4
+      },
+      "colour": "#d8d2c2"
+     },
+     "why": "photos 1 and 2: a long arcaded ground floor under a row of arched upper windows, topped by a long low shed roof"
+    },
+    {
+     "name": "central clock tower",
+     "part": "tower",
+     "where": "centre of the front, at the Embarcadero facade",
+     "center": [
+      0,
+      -22
+     ],
+     "height": 75,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 13,
+        "height": 30,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 13,
+        "height": 10,
+        "kind": "clock"
+       },
+       {
+        "shape": "square",
+        "width": 10,
+        "height": 15,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "spire",
+       "height": 20
+      },
+      "colour": "#e8e4da"
+     },
+     "why": "photos 1 to 3: the tall white clock tower with clock faces, a belfry and a slender spire rises from the middle of the front"
+    },
+    {
+     "name": "front central portal block",
+     "part": "block",
+     "where": "central front bay below the tower",
+     "center": [
+      0,
+      -27
+     ],
+     "size": [
+      30,
+      6
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "arcade",
+        "windows": false
+       },
+       {
+        "height": 12,
+        "kind": "arched",
+        "floors": 1
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#e0dacb"
+     },
+     "why": "photo 1: the central part of the front is a slightly projecting arched entrance bay under the tower"
+    }
+   ]
+  }
+ }
+}

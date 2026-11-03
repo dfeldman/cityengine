@@ -1,0 +1,422 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:10:15.531Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"An oval concrete bowl of raked stands, about 276 by 196 m, rising to roughly 48 m, with an open pitch in the middle and slate-grey seating. The signature feature is the row of tall, pointed, tilted concrete fins along the front stand on Rue du Commandant-Guilbaud, which I model as pilasters on a flat-topped block in front of the bowl. Ground-level colour is pale concrete, with the seating in darker grey.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276.4, 196.4],\n      \"inner\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 40,\n      \"innerHeight\": 4,\n      \"shape\": \"oval\",\n      \"material\": \"concrete\",\n      \"colour\": \"#6b7480\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 0.3,\n      \"material\": \"grass\",\n      \"colour\": \"#3f7a3a\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -80],\n      \"size\": [200, 22],\n      \"y0\": 0,\n      \"bay\": 6,\n      \"colour\": \"#b9b6ad\",\n      \"trim\": \"#a8a59c\",\n      \"storeys\": [\n        {\"height\": 14, \"kind\": \"pilasters\", \"windows\": false, \"floors\": 2},\n        {\"height\": 34, \"kind\": \"pilasters\", \"windows\": false, \"floors\": 4}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"flat\"},\n      \"material\": \"concrete\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4365,
+   "output": 1616,
+   "cacheRead": 8401,
+   "cost": 0.0013285100000000002,
+   "ms": 8271,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real building:\n\n1. **No raked tiers.** The bowl reads as a solid drum with a flat top. The real stands rise in steep tiers toward the outer edge, and the seating is visible from above.\n2. **No tilted fins.** The front stand reads as a blank wall with faint pilasters. The real facade is a row of tall, pointed concrete fins, tilted outward and stepping up toward the top, and they are the building's signature.\n3. **Height and placement.** The bowl stops at 40 m and the front wall runs flat along the street, so the 48 m top, which the fins reach, is missing from the bowl.\n\n```json\n{\n  \"notes\": \"An oval concrete bowl of raked stands around an open pitch, with a dark slate seating colour and a pale concrete front. The signature is the row of tall, tilted, pointed concrete fins along the front stand on Rue du Commandant-Guilbaud, rising to 48 m. The fixes are a raked outer ring with a raised inner edge, the fins as tilted beams in place of a blank wall, and the outer top at about 36 m so the fins give the 48 m height.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276.4, 196.4],\n      \"inner\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 36,\n      \"innerHeight\": 14,\n      \"shape\": \"oval\",\n      \"material\": \"concrete\",\n      \"colour\": \"#6b7480\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 0.3,\n      \"material\": \"grass\",\n      \"colour\": \"#3f7a3a\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -80],\n      \"size\": [200, 22],\n      \"y0\": 0,\n      \"bay\": 6,\n      \"colour\": \"#b9b6ad\",\n      \"trim\": \"#a8a59c\",\n      \"storeys\": [\n        {\"height\": 14, \"kind\": \"pilasters\", \"windows\": false, \"floors\": 2},\n        {\"height\": 20, \"kind\": \"pilasters\", \"windows\": false, \"floors\": 3}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"flat\"},\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 13,\n      \"offset\": [16, 0, 0],\n      \"part\": {\n        \"type\": \"beam\",\n        \"from\": [-96, 30, -86],\n        \"to\": [-90, 48, -101],\n        \"width\": 3,\n        \"material\": \"concrete\",\n        \"colour\": \"#b9b6ad\"\n      }\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 7447,
+   "output": 2067,
+   "cacheRead": 8401,
+   "cost": 0.00186221,
+   "ms": 10733,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "An oval concrete bowl of raked stands around an open pitch, with a dark slate seating colour and a pale concrete front. The signature is the row of tall, tilted, pointed concrete fins along the front stand on Rue du Commandant-Guilbaud, rising to 48 m. The fixes are a raked outer ring with a raised inner edge, the fins as tilted beams in place of a blank wall, and the outer top at about 36 m so the fins give the 48 m height.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "inner": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 36,
+     "innerHeight": 14,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#6b7480"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#3f7a3a"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -80
+     ],
+     "size": [
+      200,
+      22
+     ],
+     "y0": 0,
+     "bay": 6,
+     "colour": "#b9b6ad",
+     "trim": "#a8a59c",
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "pilasters",
+       "windows": false,
+       "floors": 2
+      },
+      {
+       "height": 20,
+       "kind": "pilasters",
+       "windows": false,
+       "floors": 3
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     },
+     "material": "concrete"
+    },
+    {
+     "type": "repeat",
+     "count": 13,
+     "offset": [
+      16,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -96,
+       30,
+       -86
+      ],
+      "to": [
+       -90,
+       48,
+       -101
+      ],
+      "width": 3,
+      "material": "concrete",
+      "colour": "#b9b6ad"
+     }
+    }
+   ]
+  },
+  "notes": "An oval concrete bowl of raked stands around an open pitch, with a dark slate seating colour and a pale concrete front. The signature is the row of tall, tilted, pointed concrete fins along the front stand on Rue du Commandant-Guilbaud, rising to 48 m. The fixes are a raked outer ring with a raised inner edge, the fins as tilted beams in place of a blank wall, and the outer top at about 36 m so the fins give the 48 m height.",
+  "triangles": 1416,
+  "parts": 87
+ },
+ "totals": {
+  "input": 15332,
+  "output": 5498,
+  "cost": 0.004471050000000001,
+  "ms": 28327
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\"photos\": [\"photo 1: the ribbed concrete stand fins rising above the Peripherique tunnel mouth, seen from the elevated road in daylight, with the pointed fins stepping up along the top of the stand\", \"photo 2: distant view along the elevated road of the long concrete facade of pointed, tilted ribs over blue hoardings, with the stand's sloped tiers visible beneath the fins\", \"photo 3: satellite view of the oval bowl, a ring of raked stands with open sky above the pitch, the ribbed fins radiating outward on the outer ring, and the pitch open at its centre\"],\n \"components\": [\n  {\"name\": \"oval stadium bowl\", \"part\": \"bowl\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [276.4, 196.4], \"height\": 48,\n   \"settings\": {\"shape\": \"oval\", \"open\": \"none\", \"middle\": \"open pitch\", \"tiers\": 3, \"roof\": \"open\", \"ribs\": true, \"colour\": \"#b9b6ad\"},\n   \"why\": \"photo 3 shows a closed oval ring of raked stands around an open pitch; photos 1 and 2 show the stands rising to 48 m\"},\n  {\"name\": \"ribbed front stand facade\", \"part\": \"block\", \"where\": \"the front stand on Rue du Commandant-Guilbaud\", \"center\": [0, -80], \"size\": [200, 22], \"height\": 48,\n   \"settings\": {\"storeys\": [{\"height\": 14, \"kind\": \"pilasters\", \"windows\": false, \"floors\": 2}, {\"height\": 34, \"kind\": \"pilasters\", \"windows\": false, \"floors\": 4}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b9b6ad\"},\n   \"why\": \"photos 1 and 2 show tall pointed concrete fins in a row along the front stand, read as vertical pilasters above a blank wall\"}\n ]\n}",
+  "input": 3520,
+  "output": 1815,
+  "cost": 0.0012803299999999999,
+  "ms": 9323,
+  "json": {
+   "photos": [
+    "photo 1: the ribbed concrete stand fins rising above the Peripherique tunnel mouth, seen from the elevated road in daylight, with the pointed fins stepping up along the top of the stand",
+    "photo 2: distant view along the elevated road of the long concrete facade of pointed, tilted ribs over blue hoardings, with the stand's sloped tiers visible beneath the fins",
+    "photo 3: satellite view of the oval bowl, a ring of raked stands with open sky above the pitch, the ribbed fins radiating outward on the outer ring, and the pitch open at its centre"
+   ],
+   "components": [
+    {
+     "name": "oval stadium bowl",
+     "part": "bowl",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "height": 48,
+     "settings": {
+      "shape": "oval",
+      "open": "none",
+      "middle": "open pitch",
+      "tiers": 3,
+      "roof": "open",
+      "ribs": true,
+      "colour": "#b9b6ad"
+     },
+     "why": "photo 3 shows a closed oval ring of raked stands around an open pitch; photos 1 and 2 show the stands rising to 48 m"
+    },
+    {
+     "name": "ribbed front stand facade",
+     "part": "block",
+     "where": "the front stand on Rue du Commandant-Guilbaud",
+     "center": [
+      0,
+      -80
+     ],
+     "size": [
+      200,
+      22
+     ],
+     "height": 48,
+     "settings": {
+      "storeys": [
+       {
+        "height": 14,
+        "kind": "pilasters",
+        "windows": false,
+        "floors": 2
+       },
+       {
+        "height": 34,
+        "kind": "pilasters",
+        "windows": false,
+        "floors": 4
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b9b6ad"
+     },
+     "why": "photos 1 and 2 show tall pointed concrete fins in a row along the front stand, read as vertical pilasters above a blank wall"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "An oval concrete bowl of raked stands, about 276 by 196 m, rising to roughly 48 m, with an open pitch in the middle and slate-grey seating. The signature feature is the row of tall, pointed, tilted concrete fins along the front stand on Rue du Commandant-Guilbaud, which I model as pilasters on a flat-topped block in front of the bowl. Ground-level colour is pale concrete, with the seating in darker grey.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "inner": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 40,
+     "innerHeight": 4,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#6b7480"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#3f7a3a"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -80
+     ],
+     "size": [
+      200,
+      22
+     ],
+     "y0": 0,
+     "bay": 6,
+     "colour": "#b9b6ad",
+     "trim": "#a8a59c",
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "pilasters",
+       "windows": false,
+       "floors": 2
+      },
+      {
+       "height": 34,
+       "kind": "pilasters",
+       "windows": false,
+       "floors": 4
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     },
+     "material": "concrete"
+    }
+   ]
+  },
+  "notes": "An oval concrete bowl of raked stands, about 276 by 196 m, rising to roughly 48 m, with an open pitch in the middle and slate-grey seating. The signature feature is the row of tall, pointed, tilted concrete fins along the front stand on Rue du Commandant-Guilbaud, which I model as pilasters on a flat-topped block in front of the bowl. Ground-level colour is pale concrete, with the seating in darker grey.",
+  "triangles": 1260,
+  "parts": 74
+ }
+}

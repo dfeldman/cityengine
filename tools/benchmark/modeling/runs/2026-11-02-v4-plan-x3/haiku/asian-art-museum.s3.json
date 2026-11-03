@@ -1,0 +1,246 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:32.159Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A neoclassical civic building of cream stone: wings round a court that opens toward the west, with a rusticated base, a two-storey arched and columned upper part, a plain attic and a low hipped slate roof. The signature feature is the tall row of free-standing giant columns across the Larkin Street front, set just inside the facade.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [55, 106.5],\n      \"rotate\": 0,\n      \"y0\": 0,\n      \"wing\": 12,\n      \"open\": \"left\",\n      \"courtColonnade\": false,\n      \"bay\": 5,\n      \"colour\": \"#e6e1d3\",\n      \"trim\": \"#ece7da\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 16, \"kind\": \"arched\", \"floors\": 2},\n        {\"height\": 4, \"kind\": \"punched\"}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"hip\", \"rise\": 3, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-20, -51.5],\n      \"to\": [20, -51.5],\n      \"y0\": 6,\n      \"height\": 22,\n      \"count\": 10,\n      \"radius\": 0.9,\n      \"entablature\": 2.5,\n      \"colour\": \"#e6e1d3\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4168,
+   "output": 1734,
+   "cacheRead": 8401,
+   "cost": 0.00136781,
+   "ms": 8760,
+   "errors": [],
+   "warnings": [
+    "parts[0].faces: \"court\" has no field \"faces\"; ignored"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A neoclassical civic building of cream stone: wings round a court that opens toward the west, with a rusticated base, a two-storey arched and columned upper part, a plain attic and a low hipped slate roof. The signature feature is the tall row of free-standing giant columns across the Larkin Street front, set just inside the facade.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      55,
+      106.5
+     ],
+     "rotate": 0,
+     "y0": 0,
+     "wing": 12,
+     "open": "left",
+     "courtColonnade": false,
+     "bay": 5,
+     "colour": "#e6e1d3",
+     "trim": "#ece7da",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 16,
+       "kind": "arched",
+       "floors": 2
+      },
+      {
+       "height": 4,
+       "kind": "punched"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "hip",
+      "rise": 3,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -20,
+      -51.5
+     ],
+     "to": [
+      20,
+      -51.5
+     ],
+     "y0": 6,
+     "height": 22,
+     "count": 10,
+     "radius": 0.9,
+     "entablature": 2.5,
+     "colour": "#e6e1d3"
+    }
+   ]
+  },
+  "notes": "A neoclassical civic building of cream stone: wings round a court that opens toward the west, with a rusticated base, a two-storey arched and columned upper part, a plain attic and a low hipped slate roof. The signature feature is the tall row of free-standing giant columns across the Larkin Street front, set just inside the facade.",
+  "triangles": 2878,
+  "parts": 22
+ },
+ "totals": {
+  "input": 7483,
+  "output": 3994,
+  "cost": 0.00285014,
+  "ms": 20881
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from across Civic Center Plaza, showing the long neoclassical facade with a tall colonnade of giant columns over a rusticated base, an inscribed attic band, and a low hipped slate roof.\",\n    \"photo 2: a close corner view of the front, showing the giant columns, the inscription 'Asian Art Museum', the recessed entrance doors on the rusticated base, and the side elevation with tall arched windows.\",\n    \"photo 3: an aerial view of the whole building from above, showing the long rectangular plan, the hipped roof, a courtyard-like notch open toward the west side, and the plaza in front with the fountain.\"\n  ],\n  \"components\": [\n    {\"name\": \"main body\", \"part\": \"court\", \"where\": \"the whole footprint, with the west notch open\", \"center\": [0, 0], \"size\": [55, 106.5], \"height\": 29,\n     \"settings\": {\"open\": \"left\", \"wing\": 13, \"faces\": \"front\",\n       \"storeys\": [\n         {\"height\": 6, \"kind\": \"rusticated\"},\n         {\"height\": 16, \"kind\": \"arched\", \"floors\": 2},\n         {\"height\": 4, \"kind\": \"punched\"}\n       ],\n       \"roof\": {\"kind\": \"hip\", \"rise\": 3},\n       \"colour\": \"#e6e1d3\"},\n     \"why\": \"photos 1-3: a building of wings round an open court on the west side, with a rusticated base, a two-storey arched and columned upper part, an attic and a hipped roof\"},\n    {\"name\": \"front entrance colonnade\", \"part\": \"colonnade\", \"where\": \"the front (Larkin Street side), before the facade\", \"center\": [0, -55.5], \"size\": [40, 2.5], \"height\": 16,\n     \"settings\": {\"count\": 10, \"column_height\": 16, \"beam\": true, \"colour\": \"#e6e1d3\"},\n     \"why\": \"photos 1-2: a row of tall free-standing giant columns marks the Larkin Street front before the recessed wall\"}\n  ]\n}\n```",
+  "input": 3315,
+  "output": 2260,
+  "cost": 0.00148233,
+  "ms": 12121,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from across Civic Center Plaza, showing the long neoclassical facade with a tall colonnade of giant columns over a rusticated base, an inscribed attic band, and a low hipped slate roof.",
+    "photo 2: a close corner view of the front, showing the giant columns, the inscription 'Asian Art Museum', the recessed entrance doors on the rusticated base, and the side elevation with tall arched windows.",
+    "photo 3: an aerial view of the whole building from above, showing the long rectangular plan, the hipped roof, a courtyard-like notch open toward the west side, and the plaza in front with the fountain."
+   ],
+   "components": [
+    {
+     "name": "main body",
+     "part": "court",
+     "where": "the whole footprint, with the west notch open",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      55,
+      106.5
+     ],
+     "height": 29,
+     "settings": {
+      "open": "left",
+      "wing": 13,
+      "faces": "front",
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 16,
+        "kind": "arched",
+        "floors": 2
+       },
+       {
+        "height": 4,
+        "kind": "punched"
+       }
+      ],
+      "roof": {
+       "kind": "hip",
+       "rise": 3
+      },
+      "colour": "#e6e1d3"
+     },
+     "why": "photos 1-3: a building of wings round an open court on the west side, with a rusticated base, a two-storey arched and columned upper part, an attic and a hipped roof"
+    },
+    {
+     "name": "front entrance colonnade",
+     "part": "colonnade",
+     "where": "the front (Larkin Street side), before the facade",
+     "center": [
+      0,
+      -55.5
+     ],
+     "size": [
+      40,
+      2.5
+     ],
+     "height": 16,
+     "settings": {
+      "count": 10,
+      "column_height": 16,
+      "beam": true,
+      "colour": "#e6e1d3"
+     },
+     "why": "photos 1-2: a row of tall free-standing giant columns marks the Larkin Street front before the recessed wall"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "notes": "Hand-written check answer (not shown to contestants). A Greek cross of plain stone walls about 25 m high, a portico of 6 Corinthian columns under a pediment facing −z, and at the crossing a drum ringed by columns carrying a dome with a lantern, topping out at 83 m.",
+ "parts": [
+  {"type": "box", "center": [0, 5], "size": [36, 100], "y0": 0, "y1": 26, "material": "stone", "colour": "#d8cfbd"},
+  {"type": "box", "center": [0, 5], "size": [84, 38], "y0": 0, "y1": 26, "material": "stone", "colour": "#d8cfbd"},
+  {"type": "box", "center": [0, -48], "size": [41, 16], "y0": 0, "y1": 2, "material": "stone", "colour": "#cfc6b4"},
+  {"type": "colonnade", "from": [-19, -55], "to": [19, -55], "y0": 2, "height": 23, "count": 6, "radius": 1.0},
+  {"type": "colonnade", "from": [-19, -47], "to": [19, -47], "y0": 2, "height": 23, "count": 6, "radius": 1.0},
+  {"type": "box", "center": [0, -51], "size": [41, 10], "y0": 22, "y1": 25, "material": "stone", "colour": "#d8cfbd"},
+  {"type": "pediment", "from": [-20.5, -51], "to": [20.5, -51], "y0": 25, "height": 8, "depth": 10, "colour": "#d8cfbd"},
+  {"type": "roof", "kind": "gable", "center": [0, -30], "size": [36, 28], "y0": 26, "rise": 6, "ridge": "z", "material": "stone", "colour": "#cfc6b4"},
+  {"type": "cylinder", "center": [0, 5], "radius": 17, "y0": 26, "y1": 33, "material": "stone", "colour": "#d8cfbd"},
+  {"type": "cylinder", "center": [0, 5], "radius": 14, "y0": 33, "y1": 52, "material": "stone", "colour": "#d4cbb8", "windows": {"kind": "arched", "floor": 18, "pitch": 6}},
+  {"type": "repeat", "count": 32, "around": {"center": [0, 5]}, "part": {"type": "cylinder", "center": [16.5, 5], "radius": 0.8, "y0": 33, "y1": 50}},
+  {"type": "cylinder", "center": [0, 5], "radius": 17.2, "y0": 50, "y1": 53, "material": "stone", "colour": "#d8cfbd"},
+  {"type": "cylinder", "center": [0, 5], "radius": 13, "y0": 53, "y1": 58, "material": "stone", "colour": "#d4cbb8"},
+  {"type": "dome", "center": [0, 5], "radius": 12.5, "y0": 58, "height": 16, "material": "metal", "colour": "#8d979b"},
+  {"type": "cylinder", "center": [0, 5], "radius": 2.6, "y0": 73, "y1": 79, "material": "stone", "colour": "#d8cfbd"},
+  {"type": "dome", "center": [0, 5], "radius": 2.6, "y0": 79, "height": 4, "material": "metal", "colour": "#8d979b"}
+ ]
+}

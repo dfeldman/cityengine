@@ -1,0 +1,218 @@
+{
+ "building": "sfmoma",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:06.358Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "reply": "{\n  \"notes\": \"SFMOMA's Botta building: a brick front with stepped brick masses and a striped cylindrical drum with a glass oculus at its centre, set against the white, folded Snohetta extension behind and to the east. I model the brick base and side towers, the striped drum with its glass circle, the white extension as a tall stepped volume, and the grey glass block on the east side.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [108, 40], \"y0\": 0, \"y1\": 14, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"box\", \"center\": [-30, -22], \"size\": [18, 20], \"y0\": 14, \"y1\": 22, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"box\", \"center\": [30, -22], \"size\": [18, 20], \"y0\": 14, \"y1\": 22, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"cylinder\", \"center\": [0, -36], \"radius\": 12, \"y0\": 4, \"y1\": 24, \"material\": \"concrete\", \"colour\": \"#e4e2dc\", \"sides\": 32},\n    {\"type\": \"cylinder\", \"center\": [0, -36], \"radius\": 8, \"y0\": 8, \"y1\": 20, \"material\": \"glass\", \"colour\": \"#8fa6aa\", \"sides\": 32},\n    {\"type\": \"box\", \"center\": [-10, 14], \"size\": [100, 56], \"y0\": 0, \"y1\": 26, \"material\": \"concrete\", \"colour\": \"#e9e6df\", \"windows\": {\"kind\": \"bands\", \"floor\": 4, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [34, 14], \"size\": [40, 36], \"y0\": 0, \"y1\": 38, \"material\": \"concrete\", \"colour\": \"#e9e6df\", \"windows\": {\"kind\": \"bands\", \"floor\": 4, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [40, -18], \"size\": [28, 40], \"y0\": 0, \"y1\": 30, \"material\": \"glass\", \"colour\": \"#b8c4c8\", \"windows\": {\"kind\": \"curtain\"}}\n  ]\n}",
+   "stop": "end_turn",
+   "input": 3483,
+   "output": 2108,
+   "cacheRead": 3474,
+   "cost": 0.0014370399999999999,
+   "ms": 11240,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "SFMOMA's Botta building: a brick front with stepped brick masses and a striped cylindrical drum with a glass oculus at its centre, set against the white, folded Snohetta extension behind and to the east. I model the brick base and side towers, the striped drum with its glass circle, the white extension as a tall stepped volume, and the grey glass block on the east side.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      108,
+      40
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -30,
+      -22
+     ],
+     "size": [
+      18,
+      20
+     ],
+     "y0": 14,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "box",
+     "center": [
+      30,
+      -22
+     ],
+     "size": [
+      18,
+      20
+     ],
+     "y0": 14,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -36
+     ],
+     "radius": 12,
+     "y0": 4,
+     "y1": 24,
+     "material": "concrete",
+     "colour": "#e4e2dc",
+     "sides": 32
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -36
+     ],
+     "radius": 8,
+     "y0": 8,
+     "y1": 20,
+     "material": "glass",
+     "colour": "#8fa6aa",
+     "sides": 32
+    },
+    {
+     "type": "box",
+     "center": [
+      -10,
+      14
+     ],
+     "size": [
+      100,
+      56
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "concrete",
+     "colour": "#e9e6df",
+     "windows": {
+      "kind": "bands",
+      "floor": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      34,
+      14
+     ],
+     "size": [
+      40,
+      36
+     ],
+     "y0": 0,
+     "y1": 38,
+     "material": "concrete",
+     "colour": "#e9e6df",
+     "windows": {
+      "kind": "bands",
+      "floor": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      -18
+     ],
+     "size": [
+      28,
+      40
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "glass",
+     "colour": "#b8c4c8",
+     "windows": {
+      "kind": "curtain"
+     }
+    }
+   ]
+  },
+  "notes": "SFMOMA's Botta building: a brick front with stepped brick masses and a striped cylindrical drum with a glass oculus at its centre, set against the white, folded Snohetta extension behind and to the east. I model the brick base and side towers, the striped drum with its glass circle, the white extension as a tall stepped volume, and the grey glass block on the east side.",
+  "triangles": 496,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3483,
+  "output": 2108,
+  "cost": 0.0014370399999999999,
+  "ms": 11240
+ }
+}

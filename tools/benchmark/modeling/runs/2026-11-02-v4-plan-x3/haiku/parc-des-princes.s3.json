@@ -1,0 +1,289 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:12.895Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Parc des Princes is an oval concrete bowl of raked stand tiers around an open green pitch. Its signature is the outer ring of splayed, ribbed concrete fins that rise to 48 m, with blue advertising panels on the front. A lower closed block fills the north-west corner, outside the stands.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276, 196],\n      \"inner\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 48,\n      \"innerHeight\": 3,\n      \"shape\": \"oval\",\n      \"material\": \"concrete\",\n      \"colour\": \"#b9b7b1\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 0.3,\n      \"material\": \"grass\",\n      \"colour\": \"#2e7d32\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-120, 5],\n      \"size\": [24, 16],\n      \"y0\": 0,\n      \"y1\": 16,\n      \"material\": \"concrete\",\n      \"colour\": \"#a8a6a0\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4361,
+   "output": 2106,
+   "cacheRead": 8401,
+   "cost": 0.0015731100000000002,
+   "ms": 10493,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Parc des Princes is an oval concrete bowl of raked stand tiers around an open green pitch. Its signature is the outer ring of splayed, ribbed concrete fins that rise to 48 m, with blue advertising panels on the front. A lower closed block fills the north-west corner, outside the stands.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276,
+      196
+     ],
+     "inner": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 48,
+     "innerHeight": 3,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#b9b7b1"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#2e7d32"
+    },
+    {
+     "type": "box",
+     "center": [
+      -120,
+      5
+     ],
+     "size": [
+      24,
+      16
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "concrete",
+     "colour": "#a8a6a0"
+    }
+   ]
+  },
+  "notes": "The Parc des Princes is an oval concrete bowl of raked stand tiers around an open green pitch. Its signature is the outer ring of splayed, ribbed concrete fins that rise to 48 m, with blue advertising panels on the front. A lower closed block fills the north-west corner, outside the stands.",
+  "triangles": 408,
+  "parts": 3
+ },
+ "totals": {
+  "input": 7881,
+  "output": 3372,
+  "cost": 0.00257894,
+  "ms": 17724
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the ribbed concrete stand fins rise above the Peripherique tunnel mouth, seen from the elevated road, with sawtooth fins stepping up along the stand and sky between them\",\n    \"photo 2: distant view along the elevated road of the long concrete facade of pointed, splayed ribs with large blue advertising panels, the stands open behind the fins\",\n    \"photo 3: satellite view of the oval bowl, a ring of raked stand tiers around an open green pitch, with the outer fin ring and a closed corner at the north-west\"\n  ],\n  \"components\": [\n    {\"name\": \"stadium bowl\", \"part\": \"bowl\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [276, 196], \"height\": 48,\n     \"settings\": {\"shape\": \"oval\", \"open_middle\": {\"size\": [105, 68]}, \"open_end\": \"none\", \"tiers\": 4, \"tier_rise\": 12, \"fins\": {\"count\": 40, \"depth\": 8, \"kind\": \"ribbed\"}, \"pitch\": {\"colour\": \"#2e7d32\"}, \"seats\": \"#3c4a5c\", \"colour\": \"#b9b7b1\"},\n     \"why\": \"photos 1 and 3: an oval bowl of raked stands round an open pitch, with the ribbed concrete fins on the outer ring rising to the highest point of 48 m\"},\n    {\"name\": \"north-west closed corner\", \"part\": \"block\", \"where\": \"the north-west corner, beside the road\", \"center\": [-112, -40], \"size\": [40, 60], \"height\": 16,\n     \"settings\": {\"storeys\": [{\"height\": 16, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a8a6a0\"},\n     \"why\": \"photo 3: a lower closed block fills the north-west corner of the footprint, outside the stands and below their height\"}\n  ]\n}\n```",
+  "input": 3520,
+  "output": 1266,
+  "cost": 0.00100583,
+  "ms": 7231,
+  "json": {
+   "photos": [
+    "photo 1: the ribbed concrete stand fins rise above the Peripherique tunnel mouth, seen from the elevated road, with sawtooth fins stepping up along the stand and sky between them",
+    "photo 2: distant view along the elevated road of the long concrete facade of pointed, splayed ribs with large blue advertising panels, the stands open behind the fins",
+    "photo 3: satellite view of the oval bowl, a ring of raked stand tiers around an open green pitch, with the outer fin ring and a closed corner at the north-west"
+   ],
+   "components": [
+    {
+     "name": "stadium bowl",
+     "part": "bowl",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276,
+      196
+     ],
+     "height": 48,
+     "settings": {
+      "shape": "oval",
+      "open_middle": {
+       "size": [
+        105,
+        68
+       ]
+      },
+      "open_end": "none",
+      "tiers": 4,
+      "tier_rise": 12,
+      "fins": {
+       "count": 40,
+       "depth": 8,
+       "kind": "ribbed"
+      },
+      "pitch": {
+       "colour": "#2e7d32"
+      },
+      "seats": "#3c4a5c",
+      "colour": "#b9b7b1"
+     },
+     "why": "photos 1 and 3: an oval bowl of raked stands round an open pitch, with the ribbed concrete fins on the outer ring rising to the highest point of 48 m"
+    },
+    {
+     "name": "north-west closed corner",
+     "part": "block",
+     "where": "the north-west corner, beside the road",
+     "center": [
+      -112,
+      -40
+     ],
+     "size": [
+      40,
+      60
+     ],
+     "height": 16,
+     "settings": {
+      "storeys": [
+       {
+        "height": 16,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a8a6a0"
+     },
+     "why": "photo 3: a lower closed block fills the north-west corner of the footprint, outside the stands and below their height"
+    }
+   ]
+  }
+ }
+}

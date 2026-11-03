@@ -1,0 +1,207 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:17:47.404Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Beaux-Arts former Main Library: a large pale granite block with a rusticated base, tall arched windows on the long sides, and a hipped slate roof. The signature feature is the row of tall free-standing columns across the front (−z) carrying the entablature with the inscription. Side and back wings sit on the same roof line, and the top of the hipped roof reaches about 29 m.\", \"parts\": [{\"type\": \"box\", \"center\": [0, -6.5], \"size\": [55, 106.5], \"y0\": 0, \"y1\": 20, \"material\": \"stone\", \"colour\": \"#d8d3c8\", \"windows\": {\"kind\": \"arched\", \"floor\": 4.5, \"pitch\": 4, \"solid\": 0.6}}, {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, -6.5], \"size\": [55, 106.5], \"y0\": 20, \"rise\": 9, \"material\": \"tile\", \"colour\": \"#4a5058\"}, {\"type\": \"box\", \"center\": [-21.7, -10], \"size\": [11.8, 53.4], \"y0\": 0, \"y1\": 16, \"material\": \"stone\", \"colour\": \"#d8d3c8\"}, {\"type\": \"box\", \"center\": [-1.5, 46.6], \"size\": [26, 13], \"y0\": 0, \"y1\": 16, \"material\": \"stone\", \"colour\": \"#d8d3c8\"}, {\"type\": \"colonnade\", \"from\": [-17, -50.5], \"to\": [17, -50.5], \"y0\": 6, \"height\": 14, \"count\": 10, \"material\": \"stone\", \"colour\": \"#e6e1d6\"}, {\"type\": \"pediment\", \"from\": [-18, -50.5], \"to\": [18, -50.5], \"y0\": 20, \"height\": 4, \"depth\": 3, \"material\": \"stone\", \"colour\": \"#d8d3c8\"}]}",
+   "stop": "end_turn",
+   "input": 3315,
+   "output": 1835,
+   "cacheRead": 8168,
+   "cost": 0.00133068,
+   "ms": 9438,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Beaux-Arts former Main Library: a large pale granite block with a rusticated base, tall arched windows on the long sides, and a hipped slate roof. The signature feature is the row of tall free-standing columns across the front (−z) carrying the entablature with the inscription. Side and back wings sit on the same roof line, and the top of the hipped roof reaches about 29 m.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -6.5
+     ],
+     "size": [
+      55,
+      106.5
+     ],
+     "y0": 0,
+     "y1": 20,
+     "material": "stone",
+     "colour": "#d8d3c8",
+     "windows": {
+      "kind": "arched",
+      "floor": 4.5,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      -6.5
+     ],
+     "size": [
+      55,
+      106.5
+     ],
+     "y0": 20,
+     "rise": 9,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -21.7,
+      -10
+     ],
+     "size": [
+      11.8,
+      53.4
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "stone",
+     "colour": "#d8d3c8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -1.5,
+      46.6
+     ],
+     "size": [
+      26,
+      13
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "stone",
+     "colour": "#d8d3c8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -50.5
+     ],
+     "to": [
+      17,
+      -50.5
+     ],
+     "y0": 6,
+     "height": 14,
+     "count": 10,
+     "material": "stone",
+     "colour": "#e6e1d6"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -18,
+      -50.5
+     ],
+     "to": [
+      18,
+      -50.5
+     ],
+     "y0": 20,
+     "height": 4,
+     "depth": 3,
+     "material": "stone",
+     "colour": "#d8d3c8"
+    }
+   ]
+  },
+  "notes": "Beaux-Arts former Main Library: a large pale granite block with a rusticated base, tall arched windows on the long sides, and a hipped slate roof. The signature feature is the row of tall free-standing columns across the front (−z) carrying the entablature with the inscription. Side and back wings sit on the same roof line, and the top of the hipped roof reaches about 29 m.",
+  "triangles": 3130,
+  "parts": 6
+ },
+ "totals": {
+  "input": 3315,
+  "output": 1835,
+  "cost": 0.00133068,
+  "ms": 9438
+ }
+}

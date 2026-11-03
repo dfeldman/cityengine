@@ -1,0 +1,411 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:44.881Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A low, long Beaux-Arts palace of pale grey stone: a court of colonnaded wings open toward the front, closed by a tall central triumphal arch with an arcade and sculpted panels, and end pavilions with friezes. The signature features are the tall round-headed arch on the front and the green copper dome rising behind it, plus the Ionic colonnades lining the court.\",\n  \"parts\": [\n    {\"type\": \"block\", \"center\": [0, -42.8], \"size\": [14, 8], \"y0\": 0, \"colour\": \"#d8d2c4\", \"material\": \"stone\", \"trim\": \"#e4dfd2\", \"storeys\": [{\"height\": 15, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 8, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": [\"front\"], \"cornice\": 1, \"roof\": {\"kind\": \"balustrade\", \"rise\": 0.5, \"colour\": \"#d8d2c4\"}},\n    {\"type\": \"court\", \"center\": [0, -2.75], \"size\": [60.4, 88.1], \"y0\": 0, \"wing\": 18, \"open\": \"front\", \"courtColonnade\": true, \"bay\": 4.5, \"colour\": \"#d8d2c4\", \"trim\": \"#e4dfd2\", \"material\": \"stone\", \"storeys\": [{\"height\": 9, \"kind\": \"columns\", \"windows\": false}, {\"height\": 6, \"kind\": \"blank\", \"windows\": false}], \"cornice\": 1, \"roof\": {\"kind\": \"balustrade\", \"rise\": 0.5, \"colour\": \"#d8d2c4\"}},\n    {\"type\": \"colonnade\", \"from\": [-28, -44], \"to\": [28, -44], \"y0\": 0, \"height\": 9, \"count\": 18, \"colour\": \"#e4dfd2\", \"material\": \"stone\"},\n    {\"type\": \"block\", \"center\": [-23, -34], \"size\": [14, 20], \"y0\": 0, \"colour\": \"#d8d2c4\", \"trim\": \"#e4dfd2\", \"material\": \"stone\", \"storeys\": [{\"height\": 16, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": [\"front\"], \"cornice\": 1, \"roof\": {\"kind\": \"flat\", \"colour\": \"#d8d2c4\"}},\n    {\"type\": \"block\", \"center\": [23, -34], \"size\": [14, 20], \"y0\": 0, \"colour\": \"#d8d2c4\", \"trim\": \"#e4dfd2\", \"material\": \"stone\", \"storeys\": [{\"height\": 16, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": [\"front\"], \"cornice\": 1, \"roof\": {\"kind\": \"flat\", \"colour\": \"#d8d2c4\"}},\n    {\"type\": \"rotunda\", \"center\": [0, -18], \"radius\": 9, \"y0\": 15, \"base\": 1, \"height\": 6, \"count\": 24, \"open\": false, \"entablature\": 1, \"drum\": 2, \"dome\": {\"height\": 8, \"colour\": \"#5f9e8a\", \"material\": \"copper\"}, \"lantern\": false, \"colour\": \"#d8d2c4\", \"trim\": \"#e4dfd2\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4797,
+   "output": 2212,
+   "cacheRead": 8401,
+   "cost": 0.00166971,
+   "ms": 9301,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A low, long Beaux-Arts palace of pale grey stone: a court of colonnaded wings open toward the front, closed by a tall central triumphal arch with an arcade and sculpted panels, and end pavilions with friezes. The signature features are the tall round-headed arch on the front and the green copper dome rising behind it, plus the Ionic colonnades lining the court.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -42.8
+     ],
+     "size": [
+      14,
+      8
+     ],
+     "y0": 0,
+     "colour": "#d8d2c4",
+     "material": "stone",
+     "trim": "#e4dfd2",
+     "storeys": [
+      {
+       "height": 15,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 8,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade",
+      "rise": 0.5,
+      "colour": "#d8d2c4"
+     }
+    },
+    {
+     "type": "court",
+     "center": [
+      0,
+      -2.75
+     ],
+     "size": [
+      60.4,
+      88.1
+     ],
+     "y0": 0,
+     "wing": 18,
+     "open": "front",
+     "courtColonnade": true,
+     "bay": 4.5,
+     "colour": "#d8d2c4",
+     "trim": "#e4dfd2",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "columns",
+       "windows": false
+      },
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade",
+      "rise": 0.5,
+      "colour": "#d8d2c4"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -28,
+      -44
+     ],
+     "to": [
+      28,
+      -44
+     ],
+     "y0": 0,
+     "height": 9,
+     "count": 18,
+     "colour": "#e4dfd2",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      -23,
+      -34
+     ],
+     "size": [
+      14,
+      20
+     ],
+     "y0": 0,
+     "colour": "#d8d2c4",
+     "trim": "#e4dfd2",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 16,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat",
+      "colour": "#d8d2c4"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      23,
+      -34
+     ],
+     "size": [
+      14,
+      20
+     ],
+     "y0": 0,
+     "colour": "#d8d2c4",
+     "trim": "#e4dfd2",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 16,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat",
+      "colour": "#d8d2c4"
+     }
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 9,
+     "y0": 15,
+     "base": 1,
+     "height": 6,
+     "count": 24,
+     "open": false,
+     "entablature": 1,
+     "drum": 2,
+     "dome": {
+      "height": 8,
+      "colour": "#5f9e8a",
+      "material": "copper"
+     },
+     "lantern": false,
+     "colour": "#d8d2c4",
+     "trim": "#e4dfd2"
+    }
+   ]
+  },
+  "notes": "A low, long Beaux-Arts palace of pale grey stone: a court of colonnaded wings open toward the front, closed by a tall central triumphal arch with an arcade and sculpted panels, and end pavilions with friezes. The signature features are the tall round-headed arch on the front and the green copper dome rising behind it, plus the Ionic colonnades lining the court.",
+  "triangles": 19024,
+  "parts": 97
+ },
+ "totals": {
+  "input": 8074,
+  "output": 4717,
+  "cost": 0.0032707400000000003,
+  "ms": 22199
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the front from the forecourt, showing the central triumphal arch with the inscription and sculpted panels, flanking colonnades of paired columns, and low end pavilions with sculpted friezes, grey stone under blue sky\",\n    \"photo 2: night view across the reflecting pond, showing the low colonnaded front with the central arch lit from within, the green dome visible through the arch, and the flat-topped wings with balustrades\",\n    \"photo 3: daylight view inside the court, showing the Ionic colonnade of the wing along the court side, the arched portico with the 'HONNEUR ET PATRIE' inscription, and flat roofs with balustrades\"\n  ],\n  \"components\": [\n    {\"name\": \"central triumphal arch\", \"part\": \"block\", \"where\": \"centre of the front, the arch pavilion\", \"center\": [0, -42.8], \"size\": [14, 8], \"height\": 23,\n     \"settings\": {\"storeys\": [{\"height\": 15, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 8, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8d2c4\"},\n     \"why\": \"photo 1: a single tall round-headed arch with sculpted panels rises above the front, the tallest point of the building\"},\n    {\"name\": \"main body around court\", \"part\": \"court\", \"where\": \"the whole footprint\", \"center\": [0, -2.75], \"size\": [60.4, 88.1], \"height\": 15,\n     \"settings\": {\"open\": \"front\", \"wing\": 18, \"colonnades\": true, \"storeys\": [{\"height\": 9, \"kind\": \"columns\", \"windows\": false}, {\"height\": 6, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8d2c4\"},\n     \"why\": \"photos 1 and 3: colonnaded wings line an open Court of Honor that opens toward the entrance, with flat balustraded roofs\"},\n    {\"name\": \"flanking colonnade wings\", \"part\": \"colonnade\", \"where\": \"both sides of the arch, along the front\", \"center\": [0, -44], \"size\": [60, 4], \"height\": 9,\n     \"settings\": {\"columns\": 18, \"column_height\": 9, \"beam\": true, \"colour\": \"#e4dfd2\"},\n     \"why\": \"photo 1: long rows of columns run from the arch out to the end pavilions\"},\n    {\"name\": \"end pavilions\", \"part\": \"block\", \"where\": \"left and right ends of the front\", \"center\": [-23, -34], \"size\": [14, 20], \"height\": 16,\n     \"settings\": {\"storeys\": [{\"height\": 16, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8d2c4\"},\n     \"why\": \"photo 1: low end pavilions with sculpted friezes close the front on each side; a mirror pavilion sits on the other side\"},\n    {\"name\": \"central green dome\", \"part\": \"rotunda\", \"where\": \"centre of the main body, behind the arch\", \"center\": [0, -2], \"height\": 20,\n     \"settings\": {\"open\": false, \"radius\": 9, \"base height\": 12, \"column height\": 0, \"column count\": 0, \"drum\": true, \"dome height\": 8, \"colour\": \"#5f9e8a\", \"lantern\": false},\n     \"why\": \"photos 1 and 2: a green copper dome is visible behind the arch and rises above the court wings\"}\n  ]\n}",
+  "input": 3277,
+  "output": 2505,
+  "cost": 0.00160103,
+  "ms": 12898,
+  "json": {
+   "photos": [
+    "photo 1: the front from the forecourt, showing the central triumphal arch with the inscription and sculpted panels, flanking colonnades of paired columns, and low end pavilions with sculpted friezes, grey stone under blue sky",
+    "photo 2: night view across the reflecting pond, showing the low colonnaded front with the central arch lit from within, the green dome visible through the arch, and the flat-topped wings with balustrades",
+    "photo 3: daylight view inside the court, showing the Ionic colonnade of the wing along the court side, the arched portico with the 'HONNEUR ET PATRIE' inscription, and flat roofs with balustrades"
+   ],
+   "components": [
+    {
+     "name": "central triumphal arch",
+     "part": "block",
+     "where": "centre of the front, the arch pavilion",
+     "center": [
+      0,
+      -42.8
+     ],
+     "size": [
+      14,
+      8
+     ],
+     "height": 23,
+     "settings": {
+      "storeys": [
+       {
+        "height": 15,
+        "kind": "arcade",
+        "windows": false
+       },
+       {
+        "height": 8,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8d2c4"
+     },
+     "why": "photo 1: a single tall round-headed arch with sculpted panels rises above the front, the tallest point of the building"
+    },
+    {
+     "name": "main body around court",
+     "part": "court",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      -2.75
+     ],
+     "size": [
+      60.4,
+      88.1
+     ],
+     "height": 15,
+     "settings": {
+      "open": "front",
+      "wing": 18,
+      "colonnades": true,
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "columns",
+        "windows": false
+       },
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8d2c4"
+     },
+     "why": "photos 1 and 3: colonnaded wings line an open Court of Honor that opens toward the entrance, with flat balustraded roofs"
+    },
+    {
+     "name": "flanking colonnade wings",
+     "part": "colonnade",
+     "where": "both sides of the arch, along the front",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      60,
+      4
+     ],
+     "height": 9,
+     "settings": {
+      "columns": 18,
+      "column_height": 9,
+      "beam": true,
+      "colour": "#e4dfd2"
+     },
+     "why": "photo 1: long rows of columns run from the arch out to the end pavilions"
+    },
+    {
+     "name": "end pavilions",
+     "part": "block",
+     "where": "left and right ends of the front",
+     "center": [
+      -23,
+      -34
+     ],
+     "size": [
+      14,
+      20
+     ],
+     "height": 16,
+     "settings": {
+      "storeys": [
+       {
+        "height": 16,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8d2c4"
+     },
+     "why": "photo 1: low end pavilions with sculpted friezes close the front on each side; a mirror pavilion sits on the other side"
+    },
+    {
+     "name": "central green dome",
+     "part": "rotunda",
+     "where": "centre of the main body, behind the arch",
+     "center": [
+      0,
+      -2
+     ],
+     "height": 20,
+     "settings": {
+      "open": false,
+      "radius": 9,
+      "base height": 12,
+      "column height": 0,
+      "column count": 0,
+      "drum": true,
+      "dome height": 8,
+      "colour": "#5f9e8a",
+      "lantern": false
+     },
+     "why": "photos 1 and 2: a green copper dome is visible behind the arch and rises above the court wings"
+    }
+   ]
+  }
+ }
+}

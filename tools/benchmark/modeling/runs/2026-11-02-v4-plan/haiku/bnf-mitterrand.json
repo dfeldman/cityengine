@@ -1,0 +1,385 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:47.109Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A raised, enclosed esplanade about 10 m high forms a ring of wings around a sunken garden, with stepped timber terraces on its faces. Four tall glass towers stand at the corners: two tall ones (about 79 m) on one diagonal and two lower ones (about 62 m) on the other. The towers are pale bronze-grey curtain glass with flat tops and a solid base.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [330, 170],\n      \"wing\": 30,\n      \"open\": \"none\",\n      \"y0\": 0,\n      \"storeys\": [{\"height\": 10, \"kind\": \"blank\", \"windows\": false}],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#b8b2a6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [125, -60],\n      \"size\": [40, 30],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 73, \"kind\": \"curtain\"}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#8c8a7f\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-125, 60],\n      \"size\": [40, 30],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 73, \"kind\": \"curtain\"}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#8c8a7f\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-125, -60],\n      \"size\": [40, 30],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 56, \"kind\": \"curtain\"}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#8c8a7f\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [125, 60],\n      \"size\": [40, 30],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 56, \"kind\": \"curtain\"}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#8c8a7f\",\n      \"material\": \"glass\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4706,
+   "output": 1761,
+   "cacheRead": 8401,
+   "cost": 0.00143511,
+   "ms": 8037,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A raised, enclosed esplanade about 10 m high forms a ring of wings around a sunken garden, with stepped timber terraces on its faces. Four tall glass towers stand at the corners: two tall ones (about 79 m) on one diagonal and two lower ones (about 62 m) on the other. The towers are pale bronze-grey curtain glass with flat tops and a solid base.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "wing": 30,
+     "open": "none",
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b8b2a6",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      125,
+      -60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 73,
+       "kind": "curtain"
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#8c8a7f",
+     "material": "glass"
+    },
+    {
+     "type": "block",
+     "center": [
+      -125,
+      60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 73,
+       "kind": "curtain"
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#8c8a7f",
+     "material": "glass"
+    },
+    {
+     "type": "block",
+     "center": [
+      -125,
+      -60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 56,
+       "kind": "curtain"
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#8c8a7f",
+     "material": "glass"
+    },
+    {
+     "type": "block",
+     "center": [
+      125,
+      60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 56,
+       "kind": "curtain"
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#8c8a7f",
+     "material": "glass"
+    }
+   ]
+  },
+  "notes": "A raised, enclosed esplanade about 10 m high forms a ring of wings around a sunken garden, with stepped timber terraces on its faces. Four tall glass towers stand at the corners: two tall ones (about 79 m) on one diagonal and two lower ones (about 62 m) on the other. The towers are pale bronze-grey curtain glass with flat tops and a solid base.",
+  "triangles": 656,
+  "parts": 24
+ },
+ "totals": {
+  "input": 7901,
+  "output": 4065,
+  "cost": 0.00292744,
+  "ms": 19187
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: river view from the Seine (front, −z side) across the water, showing two glass towers on the left and a taller tower at centre-right, with a low bank and bridge beyond.\",\n    \"photo 2: view from the footbridge side over the raised timber deck, showing two tall glass towers on the left and two on the right, all with curtain-glass faces and flat tops.\",\n    \"photo 3: street-level view along the avenue, with the stepped timber deck rising in terraces to the base of one tall glass tower on the right.\"\n  ],\n  \"components\": [\n    {\"name\": \"raised esplanade\", \"part\": \"court\", \"where\": \"the whole site, a raised deck with a sunken garden in the middle\", \"center\": [0, 0], \"size\": [330, 170], \"height\": 10,\n     \"settings\": {\"open\": \"none\", \"wing\": 30, \"storeys\": [{\"height\": 10, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b8b2a6\"},\n     \"why\": \"photos 2 and 3 show a raised deck with stepped timber surfaces; the sunken garden lies in the middle of the enclosed deck\"},\n    {\"name\": \"north-east tall tower\", \"part\": \"block\", \"where\": \"front-right corner (+x, −z)\", \"center\": [125, -60], \"size\": [40, 30], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 73, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8c8a7f\"},\n     \"why\": \"photo 1 shows a tall glass tower at the river-facing corner; photo 2 shows the tallest towers at 79 m\"},\n    {\"name\": \"south-west tall tower\", \"part\": \"block\", \"where\": \"back-left corner (−x, +z)\", \"center\": [-125, 60], \"size\": [40, 30], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 73, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8c8a7f\"},\n     \"why\": \"photo 2 shows tall glass towers at the diagonal corners, matching the 79 m height\"},\n    {\"name\": \"north-west lower tower\", \"part\": \"block\", \"where\": \"front-left corner (−x, −z)\", \"center\": [-125, -60], \"size\": [40, 30], \"height\": 62,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 56, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8c8a7f\"},\n     \"why\": \"photo 1 shows a lower glass tower at the left of the river front, shorter than the tallest tower\"},\n    {\"name\": \"south-east lower tower\", \"part\": \"block\", \"where\": \"back-right corner (+x, +z)\", \"center\": [125, 60], \"size\": [40, 30], \"height\": 62,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 56, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8c8a7f\"},\n     \"why\": \"photo 2 shows a lower glass tower stepped beside the taller one on the right\"}\n  ]\n}",
+  "input": 3195,
+  "output": 2304,
+  "cost": 0.0014923299999999998,
+  "ms": 11150,
+  "json": {
+   "photos": [
+    "photo 1: river view from the Seine (front, −z side) across the water, showing two glass towers on the left and a taller tower at centre-right, with a low bank and bridge beyond.",
+    "photo 2: view from the footbridge side over the raised timber deck, showing two tall glass towers on the left and two on the right, all with curtain-glass faces and flat tops.",
+    "photo 3: street-level view along the avenue, with the stepped timber deck rising in terraces to the base of one tall glass tower on the right."
+   ],
+   "components": [
+    {
+     "name": "raised esplanade",
+     "part": "court",
+     "where": "the whole site, a raised deck with a sunken garden in the middle",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "height": 10,
+     "settings": {
+      "open": "none",
+      "wing": 30,
+      "storeys": [
+       {
+        "height": 10,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b8b2a6"
+     },
+     "why": "photos 2 and 3 show a raised deck with stepped timber surfaces; the sunken garden lies in the middle of the enclosed deck"
+    },
+    {
+     "name": "north-east tall tower",
+     "part": "block",
+     "where": "front-right corner (+x, −z)",
+     "center": [
+      125,
+      -60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 73,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8c8a7f"
+     },
+     "why": "photo 1 shows a tall glass tower at the river-facing corner; photo 2 shows the tallest towers at 79 m"
+    },
+    {
+     "name": "south-west tall tower",
+     "part": "block",
+     "where": "back-left corner (−x, +z)",
+     "center": [
+      -125,
+      60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 73,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8c8a7f"
+     },
+     "why": "photo 2 shows tall glass towers at the diagonal corners, matching the 79 m height"
+    },
+    {
+     "name": "north-west lower tower",
+     "part": "block",
+     "where": "front-left corner (−x, −z)",
+     "center": [
+      -125,
+      -60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "height": 62,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 56,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8c8a7f"
+     },
+     "why": "photo 1 shows a lower glass tower at the left of the river front, shorter than the tallest tower"
+    },
+    {
+     "name": "south-east lower tower",
+     "part": "block",
+     "where": "back-right corner (+x, +z)",
+     "center": [
+      125,
+      60
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "height": 62,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 56,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8c8a7f"
+     },
+     "why": "photo 2 shows a lower glass tower stepped beside the taller one on the right"
+    }
+   ]
+  }
+ }
+}

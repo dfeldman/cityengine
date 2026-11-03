@@ -1,0 +1,354 @@
+{
+ "building": "conservatory-of-flowers",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:04.111Z",
+ "userText": "Building: Conservatory of Flowers, San Francisco (glasshouse).\nThe front (−z) is the south front facing the flower beds.\nFootprint: 74.9 m along x by 35 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-4.2,-15.9],[1.3,-17.5],[1.4,-15.9],[3.7,-16],[3.7,-8.9],[8.4,-5.5],[25.5,-5.5],[25.5,-13.4],[27,-15],[34.9,-15.1],[36.4,-13.4],[37.5,4.4],[35.3,6.6],[8.6,5.5],[5.6,8.4],[34.5,8.4],[34.4,11.6],[19.2,12.8],[19.1,17.5],[-25.8,16.7],[-25.9,14.2],[-32.2,14.2],[-32.2,8.3],[-6.5,8.3],[-9.3,5.4],[-37.5,5],[-37.4,-13.2],[-30,-16.2],[-25.9,-13.1],[-26,-5.7],[-9.3,-6.1],[-4.2,-9]]\nHeight: the highest point is 15 m above the ground.\n\n3 photographs attached, in order:\n  1. front view along the garden axis: central domed pavilion with the two long glasshouse wings and steps, blue sky\n  2. side three-quarter showing the long glazed wing and the central domes, white timber frame\n  3. other side three-quarter: long curved glazed wing at left with the central dome and cupola at right\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   74.9,
+   35
+  ],
+  "outline": [
+   [
+    -4.2,
+    -15.9
+   ],
+   [
+    1.3,
+    -17.5
+   ],
+   [
+    1.4,
+    -15.9
+   ],
+   [
+    3.7,
+    -16
+   ],
+   [
+    3.7,
+    -8.9
+   ],
+   [
+    8.4,
+    -5.5
+   ],
+   [
+    25.5,
+    -5.5
+   ],
+   [
+    25.5,
+    -13.4
+   ],
+   [
+    27,
+    -15
+   ],
+   [
+    34.9,
+    -15.1
+   ],
+   [
+    36.4,
+    -13.4
+   ],
+   [
+    37.5,
+    4.4
+   ],
+   [
+    35.3,
+    6.6
+   ],
+   [
+    8.6,
+    5.5
+   ],
+   [
+    5.6,
+    8.4
+   ],
+   [
+    34.5,
+    8.4
+   ],
+   [
+    34.4,
+    11.6
+   ],
+   [
+    19.2,
+    12.8
+   ],
+   [
+    19.1,
+    17.5
+   ],
+   [
+    -25.8,
+    16.7
+   ],
+   [
+    -25.9,
+    14.2
+   ],
+   [
+    -32.2,
+    14.2
+   ],
+   [
+    -32.2,
+    8.3
+   ],
+   [
+    -6.5,
+    8.3
+   ],
+   [
+    -9.3,
+    5.4
+   ],
+   [
+    -37.5,
+    5
+   ],
+   [
+    -37.4,
+    -13.2
+   ],
+   [
+    -30,
+    -16.2
+   ],
+   [
+    -25.9,
+    -13.1
+   ],
+   [
+    -26,
+    -5.7
+   ],
+   [
+    -9.3,
+    -6.1
+   ],
+   [
+    -4.2,
+    -9
+   ]
+  ],
+  "height": 15,
+  "turn": 6
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A white painted-timber glasshouse: a tall glazed domed pavilion with a lantern sits at the centre, flanked by two long glazed wings with barrel-vaulted roofs that run along x. The front (-z) has a small pedimented entrance porch over the steps. The white frame and glazing are the key colour and material cues.\",\n  \"parts\": [\n    {\"type\": \"rotunda\", \"center\": [0, 0], \"radius\": 10, \"y0\": 0, \"base\": 1, \"height\": 6, \"count\": 16, \"open\": false, \"drum\": 2, \"dome\": {\"height\": 5, \"colour\": \"#f4f4f0\", \"material\": \"glass\"}, \"lantern\": true, \"colour\": \"#f4f4f0\", \"trim\": \"#ffffff\"},\n    {\"type\": \"vault\", \"center\": [-22, -2], \"size\": [30, 22], \"y0\": 0, \"rise\": 8, \"axis\": \"x\", \"ends\": \"closed\", \"material\": \"glass\", \"colour\": \"#f4f4f0\"},\n    {\"type\": \"vault\", \"center\": [23, -3], \"size\": [28, 22], \"y0\": 0, \"rise\": 8, \"axis\": \"x\", \"ends\": \"closed\", \"material\": \"glass\", \"colour\": \"#f4f4f0\"},\n    {\"type\": \"pediment\", \"from\": [-4, -12], \"to\": [4, -12], \"y0\": 4, \"height\": 3, \"depth\": 2, \"material\": \"stone\", \"colour\": \"#f4f4f0\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4346,
+   "output": 1430,
+   "cacheRead": 8401,
+   "cost": 0.0012336100000000002,
+   "ms": 7209,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A white painted-timber glasshouse: a tall glazed domed pavilion with a lantern sits at the centre, flanked by two long glazed wings with barrel-vaulted roofs that run along x. The front (-z) has a small pedimented entrance porch over the steps. The white frame and glazing are the key colour and material cues.",
+   "parts": [
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 10,
+     "y0": 0,
+     "base": 1,
+     "height": 6,
+     "count": 16,
+     "open": false,
+     "drum": 2,
+     "dome": {
+      "height": 5,
+      "colour": "#f4f4f0",
+      "material": "glass"
+     },
+     "lantern": true,
+     "colour": "#f4f4f0",
+     "trim": "#ffffff"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -22,
+      -2
+     ],
+     "size": [
+      30,
+      22
+     ],
+     "y0": 0,
+     "rise": 8,
+     "axis": "x",
+     "ends": "closed",
+     "material": "glass",
+     "colour": "#f4f4f0"
+    },
+    {
+     "type": "vault",
+     "center": [
+      23,
+      -3
+     ],
+     "size": [
+      28,
+      22
+     ],
+     "y0": 0,
+     "rise": 8,
+     "axis": "x",
+     "ends": "closed",
+     "material": "glass",
+     "colour": "#f4f4f0"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -4,
+      -12
+     ],
+     "to": [
+      4,
+      -12
+     ],
+     "y0": 4,
+     "height": 3,
+     "depth": 2,
+     "material": "stone",
+     "colour": "#f4f4f0"
+    }
+   ]
+  },
+  "notes": "A white painted-timber glasshouse: a tall glazed domed pavilion with a lantern sits at the centre, flanked by two long glazed wings with barrel-vaulted roofs that run along x. The front (-z) has a small pedimented entrance porch over the steps. The white frame and glazing are the key colour and material cues.",
+  "triangles": 2000,
+  "parts": 26
+ },
+ "totals": {
+  "input": 7689,
+  "output": 3342,
+  "cost": 0.00254474,
+  "ms": 17177
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the front from the south, along the garden axis, showing the central domed pavilion with a glass dome and cupola, the two long glazed wings extending left and right, and the steps up to the entrance, under blue sky.\",\n    \"photo 2: a side three-quarter view of the long glazed wing curving up to a low barrel roof at left, with the central dome and lantern at right and small glazed end pavilions with cupolas.\",\n    \"photo 3: the other side three-quarter view, with the long curved glazed wing at left and the central dome, cupola and lower glazed drum at right, all white painted timber frame.\"\n  ],\n  \"components\": [\n    {\"name\": \"central domed pavilion\", \"part\": \"rotunda\", \"where\": \"centre of the footprint\", \"center\": [0, 0], \"radius\": 10, \"column_height\": 9, \"columns\": 16, \"open\": false, \"drum\": {\"height\": 4}, \"dome\": {\"height\": 6, \"colour\": \"#f4f4f0\"}, \"lantern\": true, \"colour\": \"#f4f4f0\", \"why\": \"photos 1-3: the tall white glazed dome with a cupola on top sits in the centre\"},\n    {\"name\": \"west glasshouse wing\", \"part\": \"vault\", \"where\": \"west wing, running along x\", \"center\": [-23, -2], \"size\": [28, 20], \"height\": 8, \"settings\": {\"axis\": \"x\", \"colour\": \"#f4f4f0\", \"glazed\": true}, \"why\": \"photos 1 and 3: the long curved glazed wing at the left has a barrel roof\"},\n    {\"name\": \"east glasshouse wing\", \"part\": \"vault\", \"where\": \"east wing, running along x\", \"center\": [23, -4], \"size\": [28, 20], \"height\": 8, \"settings\": {\"axis\": \"x\", \"colour\": \"#f4f4f0\", \"glazed\": true}, \"why\": \"photo 1: the matching long glazed wing on the right, with a curved barrel roof\"},\n    {\"name\": \"front entrance pediment\", \"part\": \"pediment\", \"where\": \"centre of the south front, over the steps\", \"center\": [0, -14], \"size\": [8, 4], \"height\": 4, \"settings\": {\"colour\": \"#f4f4f0\"}, \"why\": \"photos 1 and 2: a small pedimented entrance porch sits at the centre of the front\"}\n  ]\n}",
+  "input": 3343,
+  "output": 1912,
+  "cost": 0.0013111300000000002,
+  "ms": 9968,
+  "json": {
+   "photos": [
+    "photo 1: the front from the south, along the garden axis, showing the central domed pavilion with a glass dome and cupola, the two long glazed wings extending left and right, and the steps up to the entrance, under blue sky.",
+    "photo 2: a side three-quarter view of the long glazed wing curving up to a low barrel roof at left, with the central dome and lantern at right and small glazed end pavilions with cupolas.",
+    "photo 3: the other side three-quarter view, with the long curved glazed wing at left and the central dome, cupola and lower glazed drum at right, all white painted timber frame."
+   ],
+   "components": [
+    {
+     "name": "central domed pavilion",
+     "part": "rotunda",
+     "where": "centre of the footprint",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 10,
+     "column_height": 9,
+     "columns": 16,
+     "open": false,
+     "drum": {
+      "height": 4
+     },
+     "dome": {
+      "height": 6,
+      "colour": "#f4f4f0"
+     },
+     "lantern": true,
+     "colour": "#f4f4f0",
+     "why": "photos 1-3: the tall white glazed dome with a cupola on top sits in the centre"
+    },
+    {
+     "name": "west glasshouse wing",
+     "part": "vault",
+     "where": "west wing, running along x",
+     "center": [
+      -23,
+      -2
+     ],
+     "size": [
+      28,
+      20
+     ],
+     "height": 8,
+     "settings": {
+      "axis": "x",
+      "colour": "#f4f4f0",
+      "glazed": true
+     },
+     "why": "photos 1 and 3: the long curved glazed wing at the left has a barrel roof"
+    },
+    {
+     "name": "east glasshouse wing",
+     "part": "vault",
+     "where": "east wing, running along x",
+     "center": [
+      23,
+      -4
+     ],
+     "size": [
+      28,
+      20
+     ],
+     "height": 8,
+     "settings": {
+      "axis": "x",
+      "colour": "#f4f4f0",
+      "glazed": true
+     },
+     "why": "photo 1: the matching long glazed wing on the right, with a curved barrel roof"
+    },
+    {
+     "name": "front entrance pediment",
+     "part": "pediment",
+     "where": "centre of the south front, over the steps",
+     "center": [
+      0,
+      -14
+     ],
+     "size": [
+      8,
+      4
+     ],
+     "height": 4,
+     "settings": {
+      "colour": "#f4f4f0"
+     },
+     "why": "photos 1 and 2: a small pedimented entrance porch sits at the centre of the front"
+    }
+   ]
+  }
+ }
+}

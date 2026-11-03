@@ -1,0 +1,259 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:38.548Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Neoclassical Beaux-Arts library in pale grey granite. The front (-z) is a rusticated base with three doorways, above it a recessed upper storey with a row of 8 free-standing Corinthian columns, and arched end bays. A heavy cornice runs round the top and a low hipped slate roof sits behind it. Plan is a long main block with a stepped rear wing. I model the rusticated base, the colonnade, the cornice, the roof and the rear service wings.\",\"parts\":[{\"type\":\"block\",\"center\":[0,-18],\"size\":[55,70],\"y0\":0,\"bay\":5,\"colour\":\"#cfcdc4\",\"trim\":\"#dedbd2\",\"storeys\":[{\"height\":10,\"kind\":\"rusticated\",\"floors\":1},{\"height\":14,\"kind\":\"arched\",\"floors\":1}],\"faces\":\"all\",\"cornice\":2,\"roof\":{\"kind\":\"flat\"}},{\"type\":\"colonnade\",\"from\":[-17,-54],\"to\":[17,-54],\"y0\":10,\"height\":14,\"count\":8,\"radius\":0.9,\"entablature\":1.5,\"colour\":\"#d6d3ca\"},{\"type\":\"box\",\"center\":[0,-52.5],\"size\":[44,1.5],\"y0\":10,\"y1\":24,\"colour\":\"#c4c1b8\"},{\"type\":\"roof\",\"kind\":\"hip\",\"center\":[0,-14],\"size\":[50,78],\"y0\":26,\"rise\":3,\"material\":\"metal\",\"colour\":\"#5d6468\"},{\"type\":\"box\",\"center\":[0,-14],\"size\":[55,78],\"y0\":24,\"y1\":26,\"colour\":\"#d3d0c6\"},{\"type\":\"box\",\"center\":[1,28],\"size\":[53,24],\"y0\":0,\"y1\":24,\"colour\":\"#cfcdc4\",\"material\":\"stone\"},{\"type\":\"box\",\"center\":[1,28],\"size\":[50,22],\"y0\":24,\"y1\":26,\"colour\":\"#bdbab0\"},{\"type\":\"box\",\"center\":[1,46],\"size\":[26,14],\"y0\":0,\"y1\":20,\"colour\":\"#c9c6bc\"},{\"type\":\"box\",\"center\":[0,0],\"size\":[40,60],\"y0\":26,\"y1\":29,\"material\":\"metal\",\"colour\":\"#6a7074\"}]}",
+   "stop": "end_turn",
+   "input": 3315,
+   "output": 742,
+   "cacheRead": 8168,
+   "cost": 0.0156836,
+   "ms": 7573,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Neoclassical Beaux-Arts library in pale grey granite. The front (-z) is a rusticated base with three doorways, above it a recessed upper storey with a row of 8 free-standing Corinthian columns, and arched end bays. A heavy cornice runs round the top and a low hipped slate roof sits behind it. Plan is a long main block with a stepped rear wing. I model the rusticated base, the colonnade, the cornice, the roof and the rear service wings.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      55,
+      70
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#cfcdc4",
+     "trim": "#dedbd2",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "rusticated",
+       "floors": 1
+      },
+      {
+       "height": 14,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": "all",
+     "cornice": 2,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -54
+     ],
+     "to": [
+      17,
+      -54
+     ],
+     "y0": 10,
+     "height": 14,
+     "count": 8,
+     "radius": 0.9,
+     "entablature": 1.5,
+     "colour": "#d6d3ca"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -52.5
+     ],
+     "size": [
+      44,
+      1.5
+     ],
+     "y0": 10,
+     "y1": 24,
+     "colour": "#c4c1b8"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      -14
+     ],
+     "size": [
+      50,
+      78
+     ],
+     "y0": 26,
+     "rise": 3,
+     "material": "metal",
+     "colour": "#5d6468"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -14
+     ],
+     "size": [
+      55,
+      78
+     ],
+     "y0": 24,
+     "y1": 26,
+     "colour": "#d3d0c6"
+    },
+    {
+     "type": "box",
+     "center": [
+      1,
+      28
+     ],
+     "size": [
+      53,
+      24
+     ],
+     "y0": 0,
+     "y1": 24,
+     "colour": "#cfcdc4",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      1,
+      28
+     ],
+     "size": [
+      50,
+      22
+     ],
+     "y0": 24,
+     "y1": 26,
+     "colour": "#bdbab0"
+    },
+    {
+     "type": "box",
+     "center": [
+      1,
+      46
+     ],
+     "size": [
+      26,
+      14
+     ],
+     "y0": 0,
+     "y1": 20,
+     "colour": "#c9c6bc"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      40,
+      60
+     ],
+     "y0": 26,
+     "y1": 29,
+     "material": "metal",
+     "colour": "#6a7074"
+    }
+   ]
+  },
+  "notes": "Neoclassical Beaux-Arts library in pale grey granite. The front (-z) is a rusticated base with three doorways, above it a recessed upper storey with a row of 8 free-standing Corinthian columns, and arched end bays. A heavy cornice runs round the top and a low hipped slate roof sits behind it. Plan is a long main block with a stepped rear wing. I model the rusticated base, the colonnade, the cornice, the roof and the rear service wings.",
+  "triangles": 1408,
+  "parts": 12
+ },
+ "totals": {
+  "input": 3315,
+  "output": 742,
+  "cost": 0.0156836,
+  "ms": 7573
+ }
+}

@@ -1,0 +1,317 @@
+{
+ "building": "ferry-building",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:17.306Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"A long, two-storey arcaded shed (about 200 m by 45 m) with a gray-green slate roof and a raised clerestory ridge along its length. A taller central entrance block at the front (-z) carries three big arched openings. The slender clock tower rises from it in stages to 75 m: a square shaft with clocks, an open belfry stage, and a tapering spire with a flagpole. Colour is pale gray-beige stone.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 3], \"size\": [201, 50], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#cfcbbd\"},\n{\"type\": \"box\", \"center\": [0, 4], \"size\": [196, 30], \"y0\": 14, \"y1\": 18, \"material\": \"concrete\", \"colour\": \"#7d8286\"},\n{\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 4], \"size\": [196, 36], \"y0\": 18, \"rise\": 4, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#6b7074\"},\n{\"type\": \"arcade\", \"from\": [-98, -20], \"to\": [-24, -27], \"y0\": 0, \"height\": 10, \"count\": 20, \"thickness\": 1.5},\n{\"type\": \"arcade\", \"from\": [24, -27], \"to\": [98, -20], \"y0\": 0, \"height\": 10, \"count\": 20, \"thickness\": 1.5},\n{\"type\": \"box\", \"center\": [0, -20], \"size\": [44, 16], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#c8c4b6\"},\n{\"type\": \"arcade\", \"from\": [-16, -28.5], \"to\": [16, -28.5], \"y0\": 0, \"height\": 14, \"count\": 3, \"thickness\": 2},\n{\"type\": \"box\", \"center\": [0, -20], \"size\": [46, 17], \"y0\": 22, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8d4c6\"},\n{\"type\": \"box\", \"center\": [0, -18], \"size\": [15, 15], \"y0\": 24, \"y1\": 50, \"material\": \"stone\", \"colour\": \"#d4d0c2\"},\n{\"type\": \"box\", \"center\": [0, -18], \"size\": [16, 16], \"y0\": 50, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#d8d4c6\"},\n{\"type\": \"box\", \"center\": [0, -18], \"size\": [11, 11], \"y0\": 52, \"y1\": 60, \"material\": \"stone\", \"colour\": \"#d4d0c2\"},\n{\"type\": \"box\", \"center\": [0, -18], \"size\": [12.5, 12.5], \"y0\": 60, \"y1\": 61.5, \"material\": \"stone\", \"colour\": \"#d8d4c6\"},\n{\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 5.5, \"radiusTop\": 3, \"y0\": 61.5, \"y1\": 67, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#d4d0c2\"},\n{\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 3, \"radiusTop\": 0.5, \"y0\": 67, \"y1\": 72, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#cfcabb\"},\n{\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 0.25, \"radiusTop\": 0.1, \"y0\": 72, \"y1\": 75, \"material\": \"metal\", \"colour\": \"#555555\"},\n{\"type\": \"box\", \"center\": [-100, 3], \"size\": [2, 50], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#bfbcb0\"}\n]}",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 1199,
+   "cacheRead": 7616,
+   "cost": 0.0202232,
+   "ms": 9345,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long, two-storey arcaded shed (about 200 m by 45 m) with a gray-green slate roof and a raised clerestory ridge along its length. A taller central entrance block at the front (-z) carries three big arched openings. The slender clock tower rises from it in stages to 75 m: a square shaft with clocks, an open belfry stage, and a tapering spire with a flagpole. Colour is pale gray-beige stone.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      3
+     ],
+     "size": [
+      201,
+      50
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#cfcbbd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      196,
+      30
+     ],
+     "y0": 14,
+     "y1": 18,
+     "material": "concrete",
+     "colour": "#7d8286"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      196,
+      36
+     ],
+     "y0": 18,
+     "rise": 4,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#6b7074"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -98,
+      -20
+     ],
+     "to": [
+      -24,
+      -27
+     ],
+     "y0": 0,
+     "height": 10,
+     "count": 20,
+     "thickness": 1.5
+    },
+    {
+     "type": "arcade",
+     "from": [
+      24,
+      -27
+     ],
+     "to": [
+      98,
+      -20
+     ],
+     "y0": 0,
+     "height": 10,
+     "count": 20,
+     "thickness": 1.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      44,
+      16
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#c8c4b6"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -16,
+      -28.5
+     ],
+     "to": [
+      16,
+      -28.5
+     ],
+     "y0": 0,
+     "height": 14,
+     "count": 3,
+     "thickness": 2
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      46,
+      17
+     ],
+     "y0": 22,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8d4c6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      15,
+      15
+     ],
+     "y0": 24,
+     "y1": 50,
+     "material": "stone",
+     "colour": "#d4d0c2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 50,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#d8d4c6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      11,
+      11
+     ],
+     "y0": 52,
+     "y1": 60,
+     "material": "stone",
+     "colour": "#d4d0c2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      12.5,
+      12.5
+     ],
+     "y0": 60,
+     "y1": 61.5,
+     "material": "stone",
+     "colour": "#d8d4c6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 5.5,
+     "radiusTop": 3,
+     "y0": 61.5,
+     "y1": 67,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#d4d0c2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 3,
+     "radiusTop": 0.5,
+     "y0": 67,
+     "y1": 72,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#cfcabb"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 0.25,
+     "radiusTop": 0.1,
+     "y0": 72,
+     "y1": 75,
+     "material": "metal",
+     "colour": "#555555"
+    },
+    {
+     "type": "box",
+     "center": [
+      -100,
+      3
+     ],
+     "size": [
+      2,
+      50
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#bfbcb0"
+    }
+   ]
+  },
+  "notes": "A long, two-storey arcaded shed (about 200 m by 45 m) with a gray-green slate roof and a raised clerestory ridge along its length. A taller central entrance block at the front (-z) carries three big arched openings. The slender clock tower rises from it in stages to 75 m: a square shaft with clocks, an open belfry stage, and a tapering spire with a flagpole. Colour is pale gray-beige stone.",
+  "triangles": 2524,
+  "parts": 16
+ },
+ "totals": {
+  "input": 3355,
+  "output": 1199,
+  "cost": 0.0202232,
+  "ms": 9345
+ }
+}

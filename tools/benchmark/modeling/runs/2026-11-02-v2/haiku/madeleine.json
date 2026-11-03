@@ -1,0 +1,197 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:00:03.606Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Madeleine is a peripteral Corinthian temple: a tall stone podium, a full ring of free-standing Corinthian columns with an 8-column front portico under a pediment, and a pitched roof whose ridge runs along z, with pediments at both ends. The long sides carry a colonnade of about 22 columns each, and the roof is green-tinted copper-zinc. I will model the podium, cella, side and front colonnades, pediment, and pitched roof.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 4, \"material\": \"stone\", \"colour\": \"#d8d0bd\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [36, 116], \"y0\": 4, \"y1\": 23, \"material\": \"stone\", \"colour\": \"#e3dccb\"}, {\"type\": \"colonnade\", \"from\": [-16, -61], \"to\": [16, -61], \"y0\": 4, \"height\": 22, \"count\": 8, \"radius\": 1.1, \"entablature\": 2}, {\"type\": \"colonnade\", \"from\": [-19.5, -58], \"to\": [-19.5, 58], \"y0\": 4, \"height\": 22, \"count\": 22, \"radius\": 1.1, \"entablature\": 2}, {\"type\": \"colonnade\", \"from\": [19.5, -58], \"to\": [19.5, 58], \"y0\": 4, \"height\": 22, \"count\": 22, \"radius\": 1.1, \"entablature\": 2}, {\"type\": \"colonnade\", \"from\": [-16, 61], \"to\": [16, 61], \"y0\": 4, \"height\": 22, \"count\": 8, \"radius\": 1.1, \"entablature\": 2}, {\"type\": \"pediment\", \"from\": [-17, -62], \"to\": [17, -62], \"y0\": 23, \"height\": 9, \"depth\": 3, \"colour\": \"#e3dccb\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [42, 126], \"y0\": 24, \"rise\": 12, \"ridge\": \"z\", \"material\": \"copper\", \"colour\": \"#8fa890\"}]}",
+   "stop": "end_turn",
+   "input": 3200,
+   "output": 1715,
+   "cacheRead": 7616,
+   "cost": 0.00125366,
+   "ms": 11022,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Madeleine is a peripteral Corinthian temple: a tall stone podium, a full ring of free-standing Corinthian columns with an 8-column front portico under a pediment, and a pitched roof whose ridge runs along z, with pediments at both ends. The long sides carry a colonnade of about 22 columns each, and the roof is green-tinted copper-zinc. I will model the podium, cella, side and front colonnades, pediment, and pitched roof.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stone",
+     "colour": "#d8d0bd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      116
+     ],
+     "y0": 4,
+     "y1": 23,
+     "material": "stone",
+     "colour": "#e3dccb"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      -61
+     ],
+     "to": [
+      16,
+      -61
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 8,
+     "radius": 1.1,
+     "entablature": 2
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19.5,
+      -58
+     ],
+     "to": [
+      -19.5,
+      58
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 22,
+     "radius": 1.1,
+     "entablature": 2
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      19.5,
+      -58
+     ],
+     "to": [
+      19.5,
+      58
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 22,
+     "radius": 1.1,
+     "entablature": 2
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      61
+     ],
+     "to": [
+      16,
+      61
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 8,
+     "radius": 1.1,
+     "entablature": 2
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -17,
+      -62
+     ],
+     "to": [
+      17,
+      -62
+     ],
+     "y0": 23,
+     "height": 9,
+     "depth": 3,
+     "colour": "#e3dccb"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      126
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "z",
+     "material": "copper",
+     "colour": "#8fa890"
+    }
+   ]
+  },
+  "notes": "The Madeleine is a peripteral Corinthian temple: a tall stone podium, a full ring of free-standing Corinthian columns with an 8-column front portico under a pediment, and a pitched roof whose ridge runs along z, with pediments at both ends. The long sides carry a colonnade of about 22 columns each, and the roof is green-tinted copper-zinc. I will model the podium, cella, side and front colonnades, pediment, and pitched roof.",
+  "triangles": 5368,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3200,
+  "output": 1715,
+  "cost": 0.00125366,
+  "ms": 11022
+ }
+}

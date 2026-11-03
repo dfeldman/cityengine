@@ -1,0 +1,256 @@
+{
+ "building": "palace-of-fine-arts",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:47.888Z",
+ "userText": "Building: Palace of Fine Arts (rotunda and colonnades), San Francisco (exhibition rotunda).\nThe front (−z) is the lagoon side of the rotunda.\nFootprint: 72.9 m along x by 68.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[30.8,4.7],[36.4,8.8],[19.8,10.8],[14.5,17.2],[16.1,34],[6.5,21.7],[-7.9,28.4],[-17.1,14.7],[-20,19],[-25.2,15.2],[-22.6,-1.8],[-36.4,-8.7],[-25.7,-8.4],[-14.7,-17.2],[-16.1,-33.9],[-6.2,-21.8],[1.7,-22.5],[4.8,-34],[16.7,-14.7],[27.8,-17],[32.4,-11.4],[21.7,-6.1],[22.3,2.2]]\nHeight: the highest point is 49 m above the ground.\nModel the rotunda only: the long curving colonnades that run off on either side are outside this footprint.\n\n3 photographs attached, in order:\n  1. front view across the lagoon of the domed rotunda and flanking curved colonnades, daylight\n  2. three-quarter from the lawn across the lagoon showing the rotunda, colonnade at left and trees, daylight\n  3. view from the Marina side showing the rotunda dome and the long hall behind it, houses in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   72.9,
+   68.1
+  ],
+  "outline": [
+   [
+    30.8,
+    4.7
+   ],
+   [
+    36.4,
+    8.8
+   ],
+   [
+    19.8,
+    10.8
+   ],
+   [
+    14.5,
+    17.2
+   ],
+   [
+    16.1,
+    34
+   ],
+   [
+    6.5,
+    21.7
+   ],
+   [
+    -7.9,
+    28.4
+   ],
+   [
+    -17.1,
+    14.7
+   ],
+   [
+    -20,
+    19
+   ],
+   [
+    -25.2,
+    15.2
+   ],
+   [
+    -22.6,
+    -1.8
+   ],
+   [
+    -36.4,
+    -8.7
+   ],
+   [
+    -25.7,
+    -8.4
+   ],
+   [
+    -14.7,
+    -17.2
+   ],
+   [
+    -16.1,
+    -33.9
+   ],
+   [
+    -6.2,
+    -21.8
+   ],
+   [
+    1.7,
+    -22.5
+   ],
+   [
+    4.8,
+    -34
+   ],
+   [
+    16.7,
+    -14.7
+   ],
+   [
+    27.8,
+    -17
+   ],
+   [
+    32.4,
+    -11.4
+   ],
+   [
+    21.7,
+    -6.1
+   ],
+   [
+    22.3,
+    2.2
+   ]
+  ],
+  "height": 49,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"The Palace of Fine Arts rotunda is a domed Roman-style drum on a raised stone platform. Its ground stage is a ring of great round-headed arches between piers, with paired red-brown columns in front. Above sits a sculpted frieze band and a pale dome. I model the platform, the arcaded rotunda and the dome, and omit the colonnades outside the footprint.\",\"parts\":[{\"type\":\"box\",\"center\":[0,0],\"size\":[36,36],\"y0\":0,\"y1\":3,\"material\":\"stone\",\"colour\":\"#cfc2a4\"},{\"type\":\"rotunda\",\"center\":[0,0],\"radius\":16,\"y0\":3,\"base\":1,\"height\":18,\"count\":16,\"arches\":8,\"open\":false,\"drum\":5,\"dome\":{\"height\":22,\"colour\":\"#d8cdb0\",\"material\":\"metal\"},\"lantern\":false,\"material\":\"stone\",\"colour\":\"#d9c7a6\",\"trim\":\"#b9654f\"}]}",
+   "stop": "end_turn",
+   "input": 4193,
+   "output": 916,
+   "cacheRead": 8401,
+   "cost": 0.00096131,
+   "ms": 4778,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Palace of Fine Arts rotunda is a domed Roman-style drum on a raised stone platform. Its ground stage is a ring of great round-headed arches between piers, with paired red-brown columns in front. Above sits a sculpted frieze band and a pale dome. I model the platform, the arcaded rotunda and the dome, and omit the colonnades outside the footprint.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      36
+     ],
+     "y0": 0,
+     "y1": 3,
+     "material": "stone",
+     "colour": "#cfc2a4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 16,
+     "y0": 3,
+     "base": 1,
+     "height": 18,
+     "count": 16,
+     "arches": 8,
+     "open": false,
+     "drum": 5,
+     "dome": {
+      "height": 22,
+      "colour": "#d8cdb0",
+      "material": "metal"
+     },
+     "lantern": false,
+     "material": "stone",
+     "colour": "#d9c7a6",
+     "trim": "#b9654f"
+    }
+   ]
+  },
+  "notes": "The Palace of Fine Arts rotunda is a domed Roman-style drum on a raised stone platform. Its ground stage is a ring of great round-headed arches between piers, with paired red-brown columns in front. Above sits a sculpted frieze band and a pale dome. I model the platform, the arcaded rotunda and the dome, and omit the colonnades outside the footprint.",
+  "triangles": 2288,
+  "parts": 29
+ },
+ "totals": {
+  "input": 7620,
+  "output": 2493,
+  "cost": 0.00211334,
+  "ms": 12882
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the front from the lagoon, showing the domed rotunda with a tall drum of great round arches between piers, a sculpted frieze above, a pale dome, and curved colonnades off to each side.\",\n    \"photo 2: three-quarter view from the lawn across the lagoon, showing the rotunda's arched colonnade with red-and-cream columns and a pale dome, with trees in front and the colonnade at left.\",\n    \"photo 3: view from the Marina side, showing the rotunda's copper-coloured dome, the sculpted drum, and a long plain hall behind it.\"\n  ],\n  \"components\": [\n    {\"name\": \"rotunda with great arches\", \"part\": \"rotunda\", \"where\": \"centre of the footprint\", \"center\": [0, 0], \"size\": [32, 32], \"height\": 49,\n     \"settings\": {\"radius\": 16, \"base_height\": 3, \"column_height\": 18, \"column_count\": 16, \"arches\": 8, \"open\": false, \"drum\": {\"height\": 6, \"kind\": \"sculpted frieze\"}, \"dome\": {\"height\": 22, \"colour\": \"#d8cdb0\"}, \"lantern\": false, \"colour\": \"#d9c7a6\", \"column_colour\": \"#b9654f\"},\n     \"why\": \"photos 1 to 3: the signature domed rotunda, with a ring of great open arches between piers under a drum and a dome\"},\n    {\"name\": \"rotunda stylobate\", \"part\": \"box\", \"where\": \"ground platform under the rotunda\", \"center\": [0, 0], \"size\": [36, 36], \"height\": 3,\n     \"settings\": {\"colour\": \"#cfc2a4\"},\n     \"why\": \"photos 1 and 2: the rotunda stands on a raised stone platform above the lagoon edge\"}\n  ]\n}",
+  "input": 3427,
+  "output": 1577,
+  "cost": 0.00115203,
+  "ms": 8104,
+  "json": {
+   "photos": [
+    "photo 1: the front from the lagoon, showing the domed rotunda with a tall drum of great round arches between piers, a sculpted frieze above, a pale dome, and curved colonnades off to each side.",
+    "photo 2: three-quarter view from the lawn across the lagoon, showing the rotunda's arched colonnade with red-and-cream columns and a pale dome, with trees in front and the colonnade at left.",
+    "photo 3: view from the Marina side, showing the rotunda's copper-coloured dome, the sculpted drum, and a long plain hall behind it."
+   ],
+   "components": [
+    {
+     "name": "rotunda with great arches",
+     "part": "rotunda",
+     "where": "centre of the footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      32,
+      32
+     ],
+     "height": 49,
+     "settings": {
+      "radius": 16,
+      "base_height": 3,
+      "column_height": 18,
+      "column_count": 16,
+      "arches": 8,
+      "open": false,
+      "drum": {
+       "height": 6,
+       "kind": "sculpted frieze"
+      },
+      "dome": {
+       "height": 22,
+       "colour": "#d8cdb0"
+      },
+      "lantern": false,
+      "colour": "#d9c7a6",
+      "column_colour": "#b9654f"
+     },
+     "why": "photos 1 to 3: the signature domed rotunda, with a ring of great open arches between piers under a drum and a dome"
+    },
+    {
+     "name": "rotunda stylobate",
+     "part": "box",
+     "where": "ground platform under the rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      36
+     ],
+     "height": 3,
+     "settings": {
+      "colour": "#cfc2a4"
+     },
+     "why": "photos 1 and 2: the rotunda stands on a raised stone platform above the lagoon edge"
+    }
+   ]
+  }
+ }
+}

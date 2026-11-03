@@ -1,0 +1,834 @@
+{
+ "building": "sacre-coeur",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:11:21.027Z",
+ "userText": "Building: Basilique du Sacré-Cœur, Paris (basilica).\nThe front (−z) is the south front at the top of the steps, looking out over Paris.\nFootprint: 50.1 m along x by 95.9 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-19.8,-35.7],[-19.9,-39.5],[-10.6,-39.2],[-9.3,-47.7],[9.2,-48],[9.2,-44],[10.6,-43.9],[10.5,-39.1],[19.9,-39.2],[21,-34.7],[25,-34.3],[25.1,6.7],[21.6,6.7],[21.6,14.6],[24,18.6],[23.9,21.3],[20.7,24.3],[19.3,30.7],[14.6,32.2],[10.8,37.4],[7,37.6],[7.2,48],[-7.3,47.9],[-7.1,37.3],[-11.5,36.9],[-13.9,32.9],[-19.1,31],[-20.6,28.6],[-20.6,24.3],[-24.4,20.9],[-24.2,17.3],[-21.8,14.5],[-21.7,6.7],[-25,7],[-25.1,-34],[-21.5,-34.1]]\nHeight: the highest point is 84 m above the ground.\n\n3 photographs attached, in order:\n  1. full front from the gardens below the hill, daylight: the white domes over the terraces and steps\n  2. front three-quarter from the left (west), daylight: the arched portico, the main dome and the smaller domes\n  3. the front close up, daylight: the main dome on its drum with the smaller domes around it\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   50.1,
+   95.9
+  ],
+  "outline": [
+   [
+    -19.8,
+    -35.7
+   ],
+   [
+    -19.9,
+    -39.5
+   ],
+   [
+    -10.6,
+    -39.2
+   ],
+   [
+    -9.3,
+    -47.7
+   ],
+   [
+    9.2,
+    -48
+   ],
+   [
+    9.2,
+    -44
+   ],
+   [
+    10.6,
+    -43.9
+   ],
+   [
+    10.5,
+    -39.1
+   ],
+   [
+    19.9,
+    -39.2
+   ],
+   [
+    21,
+    -34.7
+   ],
+   [
+    25,
+    -34.3
+   ],
+   [
+    25.1,
+    6.7
+   ],
+   [
+    21.6,
+    6.7
+   ],
+   [
+    21.6,
+    14.6
+   ],
+   [
+    24,
+    18.6
+   ],
+   [
+    23.9,
+    21.3
+   ],
+   [
+    20.7,
+    24.3
+   ],
+   [
+    19.3,
+    30.7
+   ],
+   [
+    14.6,
+    32.2
+   ],
+   [
+    10.8,
+    37.4
+   ],
+   [
+    7,
+    37.6
+   ],
+   [
+    7.2,
+    48
+   ],
+   [
+    -7.3,
+    47.9
+   ],
+   [
+    -7.1,
+    37.3
+   ],
+   [
+    -11.5,
+    36.9
+   ],
+   [
+    -13.9,
+    32.9
+   ],
+   [
+    -19.1,
+    31
+   ],
+   [
+    -20.6,
+    28.6
+   ],
+   [
+    -20.6,
+    24.3
+   ],
+   [
+    -24.4,
+    20.9
+   ],
+   [
+    -24.2,
+    17.3
+   ],
+   [
+    -21.8,
+    14.5
+   ],
+   [
+    -21.7,
+    6.7
+   ],
+   [
+    -25,
+    7
+   ],
+   [
+    -25.1,
+    -34
+   ],
+   [
+    -21.5,
+    -34.1
+   ]
+  ],
+  "height": 84,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The basilica is a white travertine body, roughly 50 m wide, carrying a large central dome on a solid drum with a lantern. Two smaller domes with lanterns flank it on the left and right over the side bays. At the front, a projecting portico of three round arches sits under a gable, with slender turrets at each corner carrying equestrian statues. I will model the main dome, the two flanking domes, the body, the portico and both front turrets, keeping the white colour throughout.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 4],\n      \"size\": [50, 88],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#efe9dd\",\n      \"trim\": \"#e8e2d4\",\n      \"storeys\": [\n        {\"height\": 12, \"kind\": \"arcade\", \"windows\": false},\n        {\"height\": 16, \"kind\": \"arched\", \"floors\": 1}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -43],\n      \"size\": [20, 10],\n      \"y0\": 0,\n      \"bay\": 4,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\",\n      \"storeys\": [\n        {\"height\": 12, \"kind\": \"arcade\", \"windows\": false},\n        {\"height\": 14, \"kind\": \"arched\", \"floors\": 1}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 4}\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, -2],\n      \"radius\": 10,\n      \"y0\": 28,\n      \"base\": 2,\n      \"height\": 24,\n      \"count\": 16,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 26, \"colour\": \"#eeeae0\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [-14, -6],\n      \"radius\": 8.5,\n      \"y0\": 28,\n      \"base\": 2,\n      \"height\": 10,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 18, \"colour\": \"#eeeae0\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [14, -6],\n      \"radius\": 8.5,\n      \"y0\": 28,\n      \"base\": 2,\n      \"height\": 10,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 18, \"colour\": \"#eeeae0\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [-16, -40],\n      \"y0\": 0,\n      \"colour\": \"#ece6da\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 6, \"height\": 28, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 5, \"height\": 6, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 10, \"colour\": \"#e0d8c8\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [16, -40],\n      \"y0\": 0,\n      \"colour\": \"#ece6da\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 6, \"height\": 28, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 5, \"height\": 6, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 10, \"colour\": \"#e0d8c8\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5445,
+   "output": 5588,
+   "cacheRead": 8401,
+   "cost": 0.00342251,
+   "ms": 24227,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"Differences from the photographs: (1) the main dome is too pointed and its drum too short, so it reads as an onion rather than a broad hemisphere on a tall drum; I am raising the drum and flattening the dome. (2) The front turrets end in tall thin spires, but the real ones carry squat domed caps, and the equestrian statues on their pedestals are missing; I am adding domed caps and bronze-green statue pedestals. (3) The body's ground storey is drawn as a dark arcade band, but the real side walls have tall narrow arched windows, so I am changing that storey to arched windows. The flanking domes also sit slightly too far out, so I am moving them in. The main body is white stone and the domes are white, not the grey of the render.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 4],\n      \"size\": [50, 88],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#efe9dd\",\n      \"trim\": \"#e8e2d4\",\n      \"storeys\": [\n        {\"height\": 12, \"kind\": \"arched\", \"floors\": 2},\n        {\"height\": 16, \"kind\": \"arched\", \"floors\": 1}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -43],\n      \"size\": [20, 10],\n      \"y0\": 0,\n      \"bay\": 4,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\",\n      \"storeys\": [\n        {\"height\": 14, \"kind\": \"arcade\", \"windows\": false},\n        {\"height\": 16, \"kind\": \"arched\", \"floors\": 1}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"gable\", \"rise\": 6}\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, -2],\n      \"radius\": 10,\n      \"y0\": 28,\n      \"base\": 2,\n      \"height\": 28,\n      \"count\": 16,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 22, \"colour\": \"#eeeae0\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [-13, -6],\n      \"radius\": 8.5,\n      \"y0\": 28,\n      \"base\": 2,\n      \"height\": 10,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 17, \"colour\": \"#eeeae0\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [13, -6],\n      \"radius\": 8.5,\n      \"y0\": 28,\n      \"base\": 2,\n      \"height\": 10,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 17, \"colour\": \"#eeeae0\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#f2efe8\",\n      \"trim\": \"#e8e2d4\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [-16, -40],\n      \"y0\": 0,\n      \"colour\": \"#ece6da\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 6, \"height\": 28, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 5, \"height\": 6, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"dome\", \"height\": 8, \"colour\": \"#e0d8c8\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [16, -40],\n      \"y0\": 0,\n      \"colour\": \"#ece6da\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 6, \"height\": 28, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 5, \"height\": 6, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"dome\", \"height\": 8, \"colour\": \"#e0d8c8\"}\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-12, -44],\n      \"size\": [3, 3],\n      \"y0\": 22,\n      \"y1\": 30,\n      \"colour\": \"#d8d0c0\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [-12, -44],\n      \"size\": [3, 2],\n      \"y0\": 30,\n      \"y1\": 36,\n      \"colour\": \"#4f7a6a\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [12, -44],\n      \"size\": [3, 3],\n      \"y0\": 22,\n      \"y1\": 30,\n      \"colour\": \"#d8d0c0\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [12, -44],\n      \"size\": [3, 2],\n      \"y0\": 30,\n      \"y1\": 36,\n      \"colour\": \"#4f7a6a\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 12499,
+   "output": 5484,
+   "cacheRead": 8401,
+   "cost": 0.004075909999999999,
+   "ms": 25842,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Differences from the photographs: (1) the main dome is too pointed and its drum too short, so it reads as an onion rather than a broad hemisphere on a tall drum; I am raising the drum and flattening the dome. (2) The front turrets end in tall thin spires, but the real ones carry squat domed caps, and the equestrian statues on their pedestals are missing; I am adding domed caps and bronze-green statue pedestals. (3) The body's ground storey is drawn as a dark arcade band, but the real side walls have tall narrow arched windows, so I am changing that storey to arched windows. The flanking domes also sit slightly too far out, so I am moving them in. The main body is white stone and the domes are white, not the grey of the render.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      50,
+      88
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#efe9dd",
+     "trim": "#e8e2d4",
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "arched",
+       "floors": 2
+      },
+      {
+       "height": 16,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -43
+     ],
+     "size": [
+      20,
+      10
+     ],
+     "y0": 0,
+     "bay": 4,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4",
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 16,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "gable",
+      "rise": 6
+     }
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 10,
+     "y0": 28,
+     "base": 2,
+     "height": 28,
+     "count": 16,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 22,
+      "colour": "#eeeae0",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      -13,
+      -6
+     ],
+     "radius": 8.5,
+     "y0": 28,
+     "base": 2,
+     "height": 10,
+     "count": 12,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 17,
+      "colour": "#eeeae0",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      13,
+      -6
+     ],
+     "radius": 8.5,
+     "y0": 28,
+     "base": 2,
+     "height": 10,
+     "count": 12,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 17,
+      "colour": "#eeeae0",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4"
+    },
+    {
+     "type": "tower",
+     "center": [
+      -16,
+      -40
+     ],
+     "y0": 0,
+     "colour": "#ece6da",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 6,
+       "height": 28,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 5,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 8,
+      "colour": "#e0d8c8"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      16,
+      -40
+     ],
+     "y0": 0,
+     "colour": "#ece6da",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 6,
+       "height": 28,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 5,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 8,
+      "colour": "#e0d8c8"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -44
+     ],
+     "size": [
+      3,
+      3
+     ],
+     "y0": 22,
+     "y1": 30,
+     "colour": "#d8d0c0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -44
+     ],
+     "size": [
+      3,
+      2
+     ],
+     "y0": 30,
+     "y1": 36,
+     "colour": "#4f7a6a"
+    },
+    {
+     "type": "box",
+     "center": [
+      12,
+      -44
+     ],
+     "size": [
+      3,
+      3
+     ],
+     "y0": 22,
+     "y1": 30,
+     "colour": "#d8d0c0"
+    },
+    {
+     "type": "box",
+     "center": [
+      12,
+      -44
+     ],
+     "size": [
+      3,
+      2
+     ],
+     "y0": 30,
+     "y1": 36,
+     "colour": "#4f7a6a"
+    }
+   ]
+  },
+  "notes": "Differences from the photographs: (1) the main dome is too pointed and its drum too short, so it reads as an onion rather than a broad hemisphere on a tall drum; I am raising the drum and flattening the dome. (2) The front turrets end in tall thin spires, but the real ones carry squat domed caps, and the equestrian statues on their pedestals are missing; I am adding domed caps and bronze-green statue pedestals. (3) The body's ground storey is drawn as a dark arcade band, but the real side walls have tall narrow arched windows, so I am changing that storey to arched windows. The flanking domes also sit slightly too far out, so I am moving them in. The main body is white stone and the domes are white, not the grey of the render.",
+  "triangles": 8304,
+  "parts": 83
+ },
+ "totals": {
+  "input": 21692,
+  "output": 15623,
+  "cost": 0.01016955,
+  "ms": 71996
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the full south front from the gardens below, daylight: the white facade and portico sit on a terrace above the steps, the main dome on a drum rises at the centre, with two smaller domes and tall turrets flanking it.\",\n    \"photo 2: front three-quarter from the west, daylight: the arched portico with three large openings and equestrian statues on pedestals, the main dome on its drum behind, and smaller domes with lanterns and spires around it.\",\n    \"photo 3: the front close up, daylight: the main dome on a drum with arched windows, the small domes with tall spires on each side, the central tympanum with a statue, and the flanking turrets.\"\n  ],\n  \"components\": [\n    {\"name\": \"main dome\", \"part\": \"rotunda\", \"where\": \"centre of the crossing above the body\", \"center\": [0, -2], \"height\": 84,\n     \"settings\": {\"base\": 28, \"radius\": 10, \"open\": false, \"column_height\": 16, \"columns\": 16, \"drum\": 0, \"dome_height\": 40, \"colour\": \"#f2efe8\", \"lantern\": true},\n     \"why\": \"photos 1 and 3: a large white dome on a solid wall drum with a lantern is the signature of the basilica\"},\n    {\"name\": \"west flanking dome\", \"part\": \"rotunda\", \"where\": \"left of the main dome, over the side bays\", \"center\": [-14, -6], \"height\": 58,\n     \"settings\": {\"base\": 28, \"radius\": 8.5, \"open\": false, \"column_height\": 6, \"columns\": 12, \"drum\": 0, \"dome_height\": 24, \"colour\": \"#f2efe8\", \"lantern\": true},\n     \"why\": \"photos 2 and 3: smaller domes with lanterns flank the main dome on both sides\"},\n    {\"name\": \"east flanking dome\", \"part\": \"rotunda\", \"where\": \"right of the main dome, over the side bays\", \"center\": [14, -6], \"height\": 58,\n     \"settings\": {\"base\": 28, \"radius\": 8.5, \"open\": false, \"column_height\": 6, \"columns\": 12, \"drum\": 0, \"dome_height\": 24, \"colour\": \"#f2efe8\", \"lantern\": true},\n     \"why\": \"photos 1 and 2: the second smaller dome balances the main dome on the right\"},\n    {\"name\": \"main body\", \"part\": \"block\", \"where\": \"the whole nave and apse body behind the front\", \"center\": [0, 4], \"size\": [50, 88], \"height\": 28,\n     \"settings\": {\"storeys\": [{\"height\": 12, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 16, \"kind\": \"arched\", \"floors\": 1}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#f2efe8\"},\n     \"why\": \"photos 1 and 2: a long white stone body with arched openings carries the domes\"},\n    {\"name\": \"front portico facade\", \"part\": \"block\", \"where\": \"the front centre, at the top of the steps\", \"center\": [0, -43], \"size\": [20, 10], \"height\": 30,\n     \"settings\": {\"storeys\": [{\"height\": 12, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 12, \"kind\": \"arched\", \"floors\": 1}], \"faces\": \"front\", \"roof\": {\"kind\": \"gable\"}, \"colour\": \"#f2efe8\"},\n     \"why\": \"photos 2 and 3: three large round arches under a gabled front with a statue in a niche\"},\n    {\"name\": \"front corner turrets\", \"part\": \"tower\", \"where\": \"left and right of the portico, carrying the equestrian statues\", \"center\": [-16, -40], \"height\": 44,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 6, \"height\": 28, \"kind\": \"arched\"}, {\"shape\": \"square\", \"width\": 5, \"height\": 6, \"kind\": \"open\"}], \"top\": {\"kind\": \"spire\", \"height\": 10}},\n     \"why\": \"photos 2 and 3: tall slender turrets with small spires rise at the front corners beside the statues\"}\n  ]\n}\n```",
+  "input": 3748,
+  "output": 4551,
+  "cost": 0.0026711300000000003,
+  "ms": 21927,
+  "json": {
+   "photos": [
+    "photo 1: the full south front from the gardens below, daylight: the white facade and portico sit on a terrace above the steps, the main dome on a drum rises at the centre, with two smaller domes and tall turrets flanking it.",
+    "photo 2: front three-quarter from the west, daylight: the arched portico with three large openings and equestrian statues on pedestals, the main dome on its drum behind, and smaller domes with lanterns and spires around it.",
+    "photo 3: the front close up, daylight: the main dome on a drum with arched windows, the small domes with tall spires on each side, the central tympanum with a statue, and the flanking turrets."
+   ],
+   "components": [
+    {
+     "name": "main dome",
+     "part": "rotunda",
+     "where": "centre of the crossing above the body",
+     "center": [
+      0,
+      -2
+     ],
+     "height": 84,
+     "settings": {
+      "base": 28,
+      "radius": 10,
+      "open": false,
+      "column_height": 16,
+      "columns": 16,
+      "drum": 0,
+      "dome_height": 40,
+      "colour": "#f2efe8",
+      "lantern": true
+     },
+     "why": "photos 1 and 3: a large white dome on a solid wall drum with a lantern is the signature of the basilica"
+    },
+    {
+     "name": "west flanking dome",
+     "part": "rotunda",
+     "where": "left of the main dome, over the side bays",
+     "center": [
+      -14,
+      -6
+     ],
+     "height": 58,
+     "settings": {
+      "base": 28,
+      "radius": 8.5,
+      "open": false,
+      "column_height": 6,
+      "columns": 12,
+      "drum": 0,
+      "dome_height": 24,
+      "colour": "#f2efe8",
+      "lantern": true
+     },
+     "why": "photos 2 and 3: smaller domes with lanterns flank the main dome on both sides"
+    },
+    {
+     "name": "east flanking dome",
+     "part": "rotunda",
+     "where": "right of the main dome, over the side bays",
+     "center": [
+      14,
+      -6
+     ],
+     "height": 58,
+     "settings": {
+      "base": 28,
+      "radius": 8.5,
+      "open": false,
+      "column_height": 6,
+      "columns": 12,
+      "drum": 0,
+      "dome_height": 24,
+      "colour": "#f2efe8",
+      "lantern": true
+     },
+     "why": "photos 1 and 2: the second smaller dome balances the main dome on the right"
+    },
+    {
+     "name": "main body",
+     "part": "block",
+     "where": "the whole nave and apse body behind the front",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      50,
+      88
+     ],
+     "height": 28,
+     "settings": {
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "arcade",
+        "windows": false
+       },
+       {
+        "height": 16,
+        "kind": "arched",
+        "floors": 1
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#f2efe8"
+     },
+     "why": "photos 1 and 2: a long white stone body with arched openings carries the domes"
+    },
+    {
+     "name": "front portico facade",
+     "part": "block",
+     "where": "the front centre, at the top of the steps",
+     "center": [
+      0,
+      -43
+     ],
+     "size": [
+      20,
+      10
+     ],
+     "height": 30,
+     "settings": {
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "arcade",
+        "windows": false
+       },
+       {
+        "height": 12,
+        "kind": "arched",
+        "floors": 1
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "gable"
+      },
+      "colour": "#f2efe8"
+     },
+     "why": "photos 2 and 3: three large round arches under a gabled front with a statue in a niche"
+    },
+    {
+     "name": "front corner turrets",
+     "part": "tower",
+     "where": "left and right of the portico, carrying the equestrian statues",
+     "center": [
+      -16,
+      -40
+     ],
+     "height": 44,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 6,
+        "height": 28,
+        "kind": "arched"
+       },
+       {
+        "shape": "square",
+        "width": 5,
+        "height": 6,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "spire",
+       "height": 10
+      }
+     },
+     "why": "photos 2 and 3: tall slender turrets with small spires rise at the front corners beside the statues"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "The basilica is a white travertine body, roughly 50 m wide, carrying a large central dome on a solid drum with a lantern. Two smaller domes with lanterns flank it on the left and right over the side bays. At the front, a projecting portico of three round arches sits under a gable, with slender turrets at each corner carrying equestrian statues. I will model the main dome, the two flanking domes, the body, the portico and both front turrets, keeping the white colour throughout.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      50,
+      88
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#efe9dd",
+     "trim": "#e8e2d4",
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 16,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -43
+     ],
+     "size": [
+      20,
+      10
+     ],
+     "y0": 0,
+     "bay": 4,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4",
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 14,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "gable",
+      "rise": 4
+     }
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 10,
+     "y0": 28,
+     "base": 2,
+     "height": 24,
+     "count": 16,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 26,
+      "colour": "#eeeae0",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      -14,
+      -6
+     ],
+     "radius": 8.5,
+     "y0": 28,
+     "base": 2,
+     "height": 10,
+     "count": 12,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 18,
+      "colour": "#eeeae0",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      14,
+      -6
+     ],
+     "radius": 8.5,
+     "y0": 28,
+     "base": 2,
+     "height": 10,
+     "count": 12,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 18,
+      "colour": "#eeeae0",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe8",
+     "trim": "#e8e2d4"
+    },
+    {
+     "type": "tower",
+     "center": [
+      -16,
+      -40
+     ],
+     "y0": 0,
+     "colour": "#ece6da",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 6,
+       "height": 28,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 5,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 10,
+      "colour": "#e0d8c8"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      16,
+      -40
+     ],
+     "y0": 0,
+     "colour": "#ece6da",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 6,
+       "height": 28,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 5,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 10,
+      "colour": "#e0d8c8"
+     }
+    }
+   ]
+  },
+  "notes": "The basilica is a white travertine body, roughly 50 m wide, carrying a large central dome on a solid drum with a lantern. Two smaller domes with lanterns flank it on the left and right over the side bays. At the front, a projecting portico of three round arches sits under a gable, with slender turrets at each corner carrying equestrian statues. I will model the main dome, the two flanking domes, the body, the portico and both front turrets, keeping the white colour throughout.",
+  "triangles": 7380,
+  "parts": 83
+ }
+}

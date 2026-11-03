@@ -1,0 +1,323 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:00:22.869Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Parc des Princes is an oval bowl of raked concrete stands with a tall sawtooth ring of pointed, ribbed concrete fins around its upper outer edge, rising to about 48 m. The seating is dark blue-grey and the concrete is pale grey. I will model the oval bowl with an open pitch, then repeat slanted fins around the top rim, mainly on the front (-z) stand.\",\"parts\":[{\"type\":\"bowl\",\"center\":[0,0],\"size\":[276,196],\"inner\":[120,80],\"y0\":0,\"y1\":34,\"innerHeight\":2,\"shape\":\"oval\",\"material\":\"concrete\",\"colour\":\"#9d9a92\"},{\"type\":\"repeat\",\"count\":32,\"around\":{\"center\":[0,0]},\"part\":{\"type\":\"beam\",\"from\":[0,20,-88],\"to\":[0,48,-100],\"width\":5,\"material\":\"concrete\",\"colour\":\"#b8b5ad\"}},{\"type\":\"repeat\",\"count\":32,\"around\":{\"center\":[0,0]},\"part\":{\"type\":\"beam\",\"from\":[0,30,-82],\"to\":[0,34,-90],\"width\":8,\"material\":\"concrete\",\"colour\":\"#3a4550\"}}]}",
+   "stop": "end_turn",
+   "input": 3520,
+   "output": 1472,
+   "cacheRead": 3474,
+   "cost": 0.0011227400000000001,
+   "ms": 10200,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The bowl is a solid ring with a flat top. The real stands rake up steeply from a low inner edge to a high outer rim, so the bowl should be lower inside and taller outside. The fins are far too small and too few. On the real building they are large, sawtooth-shaped concrete ribs rising to about 48 m around the whole top of the bowl. The pitch opening is also too small: the real playing area is a much larger oval, so the stand ring is thinner.\n\nCorrected JSON:\n\n{\"notes\":\"Biggest differences: (1) the bowl is a solid ring with a flat top, but the real stands are raked, low at the pitch and high at the outer rim, with a dark blue-grey seat band; (2) the fins are tiny stubs, while the real building has large pointed concrete fins rising to 48 m all round the top; (3) the pitch opening is too small, so the stand ring is too thick. I am raking the bowl, enlarging the fins into a tall sawtooth crown and widening the pitch opening.\",\"parts\":[{\"type\":\"bowl\",\"center\":[0,0],\"size\":[276,196],\"inner\":[150,100],\"y0\":0,\"y1\":30,\"innerHeight\":8,\"shape\":\"oval\",\"material\":\"concrete\",\"colour\":\"#6b7078\"},{\"type\":\"repeat\",\"count\":36,\"around\":{\"center\":[0,0]},\"part\":{\"type\":\"beam\",\"from\":[0,22,-96],\"to\":[0,48,-108],\"width\":7,\"material\":\"concrete\",\"colour\":\"#b8b5ad\"}},{\"type\":\"repeat\",\"count\":36,\"around\":{\"center\":[0,0]},\"part\":{\"type\":\"beam\",\"from\":[0,30,-90],\"to\":[0,34,-98],\"width\":9,\"material\":\"concrete\",\"colour\":\"#3a4550\"}}]}",
+   "stop": "end_turn",
+   "input": 6458,
+   "output": 1221,
+   "cacheRead": 3474,
+   "cost": 0.00129104,
+   "ms": 20498,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Biggest differences: (1) the bowl is a solid ring with a flat top, but the real stands are raked, low at the pitch and high at the outer rim, with a dark blue-grey seat band; (2) the fins are tiny stubs, while the real building has large pointed concrete fins rising to 48 m all round the top; (3) the pitch opening is too small, so the stand ring is too thick. I am raking the bowl, enlarging the fins into a tall sawtooth crown and widening the pitch opening.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276,
+      196
+     ],
+     "inner": [
+      150,
+      100
+     ],
+     "y0": 0,
+     "y1": 30,
+     "innerHeight": 8,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#6b7078"
+    },
+    {
+     "type": "repeat",
+     "count": 36,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       0,
+       22,
+       -96
+      ],
+      "to": [
+       0,
+       48,
+       -108
+      ],
+      "width": 7,
+      "material": "concrete",
+      "colour": "#b8b5ad"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 36,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       0,
+       30,
+       -90
+      ],
+      "to": [
+       0,
+       34,
+       -98
+      ],
+      "width": 9,
+      "material": "concrete",
+      "colour": "#3a4550"
+     }
+    }
+   ]
+  },
+  "notes": "Biggest differences: (1) the bowl is a solid ring with a flat top, but the real stands are raked, low at the pitch and high at the outer rim, with a dark blue-grey seat band; (2) the fins are tiny stubs, while the real building has large pointed concrete fins rising to 48 m all round the top; (3) the pitch opening is too small, so the stand ring is too thick. I am raking the bowl, enlarging the fins into a tall sawtooth crown and widening the pitch opening.",
+  "triangles": 1248,
+  "parts": 73
+ },
+ "totals": {
+  "input": 9978,
+  "output": 2693,
+  "cost": 0.00241378,
+  "ms": 30698
+ },
+ "draft": {
+  "json": {
+   "notes": "Parc des Princes is an oval bowl of raked concrete stands with a tall sawtooth ring of pointed, ribbed concrete fins around its upper outer edge, rising to about 48 m. The seating is dark blue-grey and the concrete is pale grey. I will model the oval bowl with an open pitch, then repeat slanted fins around the top rim, mainly on the front (-z) stand.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276,
+      196
+     ],
+     "inner": [
+      120,
+      80
+     ],
+     "y0": 0,
+     "y1": 34,
+     "innerHeight": 2,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#9d9a92"
+    },
+    {
+     "type": "repeat",
+     "count": 32,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       0,
+       20,
+       -88
+      ],
+      "to": [
+       0,
+       48,
+       -100
+      ],
+      "width": 5,
+      "material": "concrete",
+      "colour": "#b8b5ad"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 32,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       0,
+       30,
+       -82
+      ],
+      "to": [
+       0,
+       34,
+       -90
+      ],
+      "width": 8,
+      "material": "concrete",
+      "colour": "#3a4550"
+     }
+    }
+   ]
+  },
+  "notes": "Parc des Princes is an oval bowl of raked concrete stands with a tall sawtooth ring of pointed, ribbed concrete fins around its upper outer edge, rising to about 48 m. The seating is dark blue-grey and the concrete is pale grey. I will model the oval bowl with an open pitch, then repeat slanted fins around the top rim, mainly on the front (-z) stand.",
+  "triangles": 1152,
+  "parts": 65
+ }
+}

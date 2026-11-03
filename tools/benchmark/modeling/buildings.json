@@ -1,0 +1,1542 @@
+{
+ "version": 1,
+ "note": "The modelling benchmark set: see README.md. Photos are Wikimedia Commons files, fetched by photos.ts; heights are the highest point in metres; front is the compass bearing the front faces.",
+ "buildings": [
+  {
+   "id": "oracle-park",
+   "name": "Oracle Park",
+   "city": "San Francisco",
+   "type": "baseball stadium",
+   "difficulty": 3,
+   "wiki": "Oracle Park",
+   "front": 225,
+   "frontIs": "the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind",
+   "height": 45,
+   "osm": [
+    "relation/7330762",
+    "relation/7325085",
+    "way/24352572",
+    "way/499568642",
+    "way/499568643",
+    "way/499568644",
+    "way/499568645",
+    "way/499568646",
+    "way/499568647",
+    "way/499568648",
+    "way/499568649",
+    "way/499568652",
+    "way/368214736",
+    "way/368214737",
+    "way/368215207",
+    "way/368215208"
+   ],
+   "reference": "oraclePark",
+   "features": [
+    {
+     "label": "Seating bowl that is a horseshoe open on the bay side, not a closed ring",
+     "check": {
+      "types": [
+       "bowl"
+      ]
+     }
+    },
+    {
+     "label": "Red-brick outer walls with tall arched openings along the street sides",
+     "check": {
+      "minArches": 6
+     }
+    },
+    {
+     "label": "Grass field inside the bowl",
+     "check": {
+      "material": "grass"
+     }
+    },
+    {
+     "label": "Clock tower(s) and tall light towers above the stands",
+     "check": {
+      "minTop": 38
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:AT&T Park northern side 1.JPG",
+     "view": "ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)",
+     "license": "CC BY-SA 4.0",
+     "artist": "BrokenSphere",
+     "width": 2272,
+     "height": 1704
+    },
+    {
+     "title": "File:AT&T Park (5028749409).jpg",
+     "view": "vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight",
+     "license": "CC BY 2.0",
+     "artist": "Craig Howell from San Carlos, CA, USA",
+     "width": 4000,
+     "height": 3000
+    },
+    {
+     "title": "File:Aerial photograph of AT&T Park, home of the San Francisco Giants.jpg",
+     "view": "oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall",
+     "license": "CC BY 2.5",
+     "artist": "The original uploader was Grant.gibson at English Wikipedia.",
+     "width": 3200,
+     "height": 2400
+    }
+   ],
+   "referenceEntry": {
+    "name": "Oracle Park",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "chase-center",
+   "name": "Chase Center",
+   "city": "San Francisco",
+   "type": "arena",
+   "difficulty": 2,
+   "wiki": "Chase Center",
+   "front": 180,
+   "frontIs": "the south face on the plaza",
+   "height": 38,
+   "osm": [
+    "way/579646390"
+   ],
+   "reference": "chaseCenter",
+   "features": [
+    {
+     "label": "Rounded, drum-like body with softened corners (not a sharp box)"
+    },
+    {
+     "label": "Glazed lower storey under a solid light upper band",
+     "check": {
+      "material": "glass"
+     }
+    },
+    {
+     "label": "Flat roof over the whole drum"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Chase Center 2019.jpg",
+     "view": "front three-quarter from the street corner: glazed curved facade with canopy, white oval shell and layered roof edge, blue sky",
+     "license": "CC BY-SA 4.0",
+     "artist": "Willowcharter",
+     "width": 3448,
+     "height": 2274
+    },
+    {
+     "title": "File:Chase Center - Warriors.jpg",
+     "view": "elevated aerial of the oval white-roofed arena with CHASE CENTER lettering and the city behind",
+     "license": "CC BY 2.0",
+     "artist": "Christopher Michel",
+     "width": 8000,
+     "height": 6000
+    },
+    {
+     "title": "File:Chase Center - July 2019 (7858).jpg",
+     "view": "low three-quarter from the tram stop on the other side: white shell, roof overhang, canopy over entrance, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Gregory Varnum",
+     "width": 6000,
+     "height": 4000
+    }
+   ],
+   "referenceEntry": {
+    "name": "Chase Center",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "sfmoma",
+   "name": "San Francisco Museum of Modern Art (Botta building)",
+   "city": "San Francisco",
+   "type": "museum",
+   "difficulty": 2,
+   "wiki": "San Francisco Museum of Modern Art",
+   "front": 225,
+   "frontIs": "the Third Street front, across from Yerba Buena Gardens",
+   "height": 38,
+   "osm": [
+    "way/41692824"
+   ],
+   "reference": "sfmoma_151_third",
+   "features": [
+    {
+     "label": "Stepped, symmetrical brick masses rising toward the centre",
+     "check": {
+      "types": [
+       "box",
+       "prism"
+      ],
+      "material": "brick",
+      "min": 3
+     }
+    },
+    {
+     "label": "Central cylinder (the oculus) cut off at a slant, striped in bands",
+     "check": {
+      "types": [
+       "cylinder"
+      ],
+      "minRadius": 5,
+      "minTop": 28
+     }
+    },
+    {
+     "label": "Mostly blank brick walls with very few windows"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:2017 SFMOMA from Yerba Buena Gardens.jpg",
+     "view": "front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Beyond My Ken",
+     "width": 3034,
+     "height": 2244
+    },
+    {
+     "title": "File:San Francisco Museum of Modern Art Building.jpg",
+     "view": "corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond",
+     "license": "CC BY-SA 4.0",
+     "artist": "Minette Lontsie",
+     "width": 4608,
+     "height": 3072
+    },
+    {
+     "title": "File:Yerba-Buena-Gardens-MOMA.jpg",
+     "view": "view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight",
+     "license": "Public domain",
+     "artist": "",
+     "width": 1524,
+     "height": 1880
+    }
+   ],
+   "referenceEntry": {
+    "name": "San Francisco Museum of Modern Art",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "de-young",
+   "name": "de Young Museum",
+   "city": "San Francisco",
+   "type": "museum",
+   "difficulty": 3,
+   "wiki": "de Young Museum",
+   "front": 138,
+   "frontIs": "the entrance court on Music Concourse Drive",
+   "height": 44,
+   "osm": [
+    "relation/1652482",
+    "way/444230154",
+    "way/1418750068",
+    "way/1418750069",
+    "way/1418750070",
+    "way/1418750071",
+    "way/1418750072",
+    "way/1418750073",
+    "way/1418972816",
+    "way/1418972817"
+   ],
+   "reference": "deYoungMuseum",
+   "features": [
+    {
+     "label": "Long, low gallery wings clad in dark copper",
+     "check": {
+      "material": "copper"
+     }
+    },
+    {
+     "label": "Twisting tower rising from one end of the wings",
+     "check": {
+      "minTop": 35
+     }
+    },
+    {
+     "label": "Deep flat roof overhang cantilevered over the entrance"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:De Young Museum 02.jpg",
+     "view": "wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky",
+     "license": "CC BY-SA 3.0",
+     "artist": "Joe Mabel",
+     "width": 4288,
+     "height": 2848
+    },
+    {
+     "title": "File:Hamon Tower De Young Museum 2009-02.jpg",
+     "view": "close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight",
+     "license": "CC BY-SA 2.0",
+     "artist": "Helder Ribeiro from Campinas, Brazil",
+     "width": 4272,
+     "height": 2848
+    },
+    {
+     "title": "File:M. H. de Young Memorial Museum.jpg",
+     "view": "front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky",
+     "license": "Public domain",
+     "artist": "Mark Miller",
+     "width": 3264,
+     "height": 2448
+    }
+   ],
+   "referenceEntry": {
+    "name": "de Young Museum",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "legion-of-honor",
+   "name": "California Palace of the Legion of Honor",
+   "city": "San Francisco",
+   "type": "museum",
+   "difficulty": 2,
+   "wiki": "California Palace of the Legion of Honor",
+   "front": 49,
+   "frontIs": "the Court of Honor and its entrance arch",
+   "height": 23,
+   "osm": [
+    "relation/21115818"
+   ],
+   "reference": "legionOfHonor",
+   "features": [
+    {
+     "label": "U-shaped neoclassical building around an open court"
+    },
+    {
+     "label": "Ionic colonnades lining the court",
+     "check": {
+      "minColumns": 8
+     }
+    },
+    {
+     "label": "Triumphal-arch entrance gateway at the open end of the court",
+     "check": {
+      "minArches": 1
+     }
+    },
+    {
+     "label": "Central portico with a pediment at the head of the court",
+     "check": {
+      "types": [
+       "pediment"
+      ]
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:California Palace of the Legion of Honor, 01.JPG",
+     "view": "head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky",
+     "license": "CC BY-SA 3.0",
+     "artist": "sailko",
+     "width": 2592,
+     "height": 1944
+    },
+    {
+     "title": "File:Legion of Honor at night.jpg",
+     "view": "night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)",
+     "license": "CC BY-SA 4.0",
+     "artist": "Frank Schulenburg",
+     "width": 4247,
+     "height": 2654
+    },
+    {
+     "title": "File:California Palace of the Legion of Honor 184 2015-01-03.JPG",
+     "view": "daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving",
+     "license": "CC BY-SA 4.0",
+     "artist": "FASTILY",
+     "width": 3264,
+     "height": 2448
+    }
+   ],
+   "referenceEntry": {
+    "name": "California Palace of the Legion of Honor",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "asian-art-museum",
+   "name": "Asian Art Museum (former Main Library)",
+   "city": "San Francisco",
+   "type": "museum",
+   "difficulty": 2,
+   "wiki": "Asian Art Museum (San Francisco)",
+   "front": 270,
+   "frontIs": "the Larkin Street front, facing west across Civic Center Plaza to City Hall",
+   "height": 29,
+   "osm": [
+    "way/24588037"
+   ],
+   "reference": "asianArtMuseum",
+   "features": [
+    {
+     "label": "Grey granite Beaux-Arts block with a flat roof",
+     "check": {
+      "material": "stone"
+     }
+    },
+    {
+     "label": "Giant columns across the upper storeys of the main front",
+     "check": {
+      "minColumns": 6
+     }
+    },
+    {
+     "label": "Arched openings at the ground floor",
+     "check": {
+      "minArches": 3
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Asian Art Musium, San Francisco - panoramio.jpg",
+     "view": "front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight",
+     "license": "CC BY 3.0",
+     "artist": "Roman SUZUKI",
+     "width": 3072,
+     "height": 2304
+    },
+    {
+     "title": "File:Asian Art Museum - San Francisco - Joy of Museums - 2.jpg",
+     "view": "corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Joyofmuseums",
+     "width": 2736,
+     "height": 1824
+    },
+    {
+     "title": "File:Memorial Day 2020 - San Francisco Under Quarantine (49936445757).jpg",
+     "view": "aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight",
+     "license": "CC BY 2.0",
+     "artist": "Christopher Michel from San Francisco, USA",
+     "width": 5390,
+     "height": 3594
+    }
+   ],
+   "referenceEntry": {
+    "name": "Asian Art Museum",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "ferry-building",
+   "name": "San Francisco Ferry Building",
+   "city": "San Francisco",
+   "type": "ferry terminal",
+   "difficulty": 2,
+   "wiki": "San Francisco Ferry Building",
+   "front": 225,
+   "frontIs": "the Embarcadero front at the foot of Market Street",
+   "height": 75,
+   "osm": [
+    "way/558731934",
+    "way/24460886"
+   ],
+   "reference": "ferryBuilding",
+   "features": [
+    {
+     "label": "Clock tower at the centre, about 75 m",
+     "check": {
+      "minTop": 60
+     }
+    },
+    {
+     "label": "Long arcade of round arches along the whole front",
+     "check": {
+      "minArches": 10
+     }
+    },
+    {
+     "label": "Long two- to three-storey body under a low roof",
+     "check": {
+      "types": [
+       "box",
+       "prism"
+      ],
+      "min": 1
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Ferry Building San Francisco from Hyatt Regency with R-Evolution and Bay Bridge 2026 dllu.jpg",
+     "view": "elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Daniel Lu (User:dllu)",
+     "width": 10638,
+     "height": 7092
+    },
+    {
+     "title": "File:Ferry Building from Steuart Tower 1.JPG",
+     "view": "aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight",
+     "license": "CC BY-SA 3.0",
+     "artist": "BrokenSphere",
+     "width": 3264,
+     "height": 2448
+    },
+    {
+     "title": "File:Embarc from spear tower.jpg",
+     "view": "high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers",
+     "license": "CC BY-SA 3.0",
+     "artist": "Wesman83",
+     "width": 2048,
+     "height": 1536
+    }
+   ],
+   "referenceEntry": {
+    "name": "Ferry Building",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "palace-of-fine-arts",
+   "name": "Palace of Fine Arts (rotunda and colonnades)",
+   "city": "San Francisco",
+   "type": "exhibition rotunda",
+   "difficulty": 2,
+   "wiki": "Palace of Fine Arts",
+   "front": 120,
+   "frontIs": "the lagoon side of the rotunda",
+   "height": 49,
+   "osm": [
+    "way/288371295"
+   ],
+   "reference": "palaceOfFineArts_3301_lyon",
+   "features": [
+    {
+     "label": "Open rotunda: a dome on a ring of columns, with no walls between them",
+     "check": {
+      "types": [
+       "dome"
+      ],
+      "minRadius": 10
+     }
+    },
+    {
+     "label": "Ring of columns (or paired columns) carrying the dome",
+     "check": {
+      "minColumns": 8
+     }
+    },
+    {
+     "label": "Tall drum or entablature between the columns and the dome",
+     "check": {
+      "types": [
+       "cylinder"
+      ],
+      "minRadius": 10
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:San Francisco (CA, USA), Palace of Fine Arts -- 2022 -- 0918.jpg",
+     "view": "front view across the lagoon of the domed rotunda and flanking curved colonnades, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Dietmar Rabich",
+     "width": 5472,
+     "height": 3648
+    },
+    {
+     "title": "File:San Francisco Exploratorium.jpg",
+     "view": "three-quarter from the lawn across the lagoon showing the rotunda, colonnade at left and trees, daylight",
+     "license": "CC BY-SA 3.0",
+     "artist": "Figure8",
+     "width": 3264,
+     "height": 2448
+    },
+    {
+     "title": "File:San Francisco - Exploratorium - visto dalla baia - Agosto 2011.jpg",
+     "view": "view from the Marina side showing the rotunda dome and the long hall behind it, houses in front, daylight",
+     "license": "CC BY-SA 3.0",
+     "artist": "Sidvics",
+     "width": 2792,
+     "height": 1861
+    }
+   ],
+   "scope": "Model the rotunda only: the long curving colonnades that run off on either side are outside this footprint.",
+   "referenceEntry": {
+    "name": "Palace of Fine Arts",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "coit-tower",
+   "name": "Coit Tower",
+   "city": "San Francisco",
+   "type": "monument tower",
+   "difficulty": 1,
+   "wiki": "Coit Tower",
+   "front": 180,
+   "frontIs": "the parking circle side",
+   "height": 64,
+   "osm": [
+    "way/28824850"
+   ],
+   "reference": "coitTower",
+   "features": [
+    {
+     "label": "Tall fluted cylindrical shaft",
+     "check": {
+      "types": [
+       "cylinder"
+      ],
+      "minTop": 55
+     }
+    },
+    {
+     "label": "Arched openings at the top observation level"
+    },
+    {
+     "label": "A wider, low plinth at the foot of the shaft (the footprint is the tower alone; the hilltop buildings around it are outside)",
+     "check": {
+      "types": [
+       "box",
+       "prism",
+       "cylinder"
+      ],
+      "maxTop": 10
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:San Francisco July 16, 2013 - 008.jpg",
+     "view": "whole fluted concrete tower on its hilltop with trees below, clear sky",
+     "license": "CC BY-SA 3.0",
+     "artist": "Amadscientist",
+     "width": 4185,
+     "height": 3084
+    },
+    {
+     "title": "File:COIT Tower, San Francisco,CA - panoramio.jpg",
+     "view": "tower rising behind the Telegraph Hill apartment building, showing the full shaft and the arcaded crown, flag on top",
+     "license": "CC BY-SA 3.0",
+     "artist": "Aaron Zhu",
+     "width": 1200,
+     "height": 1600
+    },
+    {
+     "title": "File:Coit Tower aerial.jpg",
+     "view": "high oblique aerial of the tower and the circular drive and park on Telegraph Hill",
+     "license": "CC BY 2.0",
+     "artist": "Kyle Harmon from Oakland, CA, USA",
+     "width": 3264,
+     "height": 2448
+    }
+   ],
+   "referenceEntry": {
+    "name": "Coit Tower",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "conservatory-of-flowers",
+   "name": "Conservatory of Flowers",
+   "city": "San Francisco",
+   "type": "glasshouse",
+   "difficulty": 2,
+   "wiki": "Conservatory of Flowers",
+   "front": 180,
+   "frontIs": "the south front facing the flower beds",
+   "height": 15,
+   "osm": [
+    "way/30675038"
+   ],
+   "reference": "conservatoryGlasshouse",
+   "features": [
+    {
+     "label": "White-framed glass greenhouse",
+     "check": {
+      "material": "glass"
+     }
+    },
+    {
+     "label": "Central pavilion with a tall dome or curved roof",
+     "check": {
+      "types": [
+       "dome",
+       "vault"
+      ]
+     }
+    },
+    {
+     "label": "Two long wings ending in end pavilions"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Conservatory of Flowers Greenhouse from overpassMG 7197.jpg",
+     "view": "front view along the garden axis: central domed pavilion with the two long glasshouse wings and steps, blue sky",
+     "license": "CC BY-SA 3.0",
+     "artist": "PeteBobb",
+     "width": 1800,
+     "height": 1200
+    },
+    {
+     "title": "File:San Francisco Conservatory of Flowers-18.jpg",
+     "view": "side three-quarter showing the long glazed wing and the central domes, white timber frame",
+     "license": "CC BY-SA 3.0",
+     "artist": "Almonroth",
+     "width": 5616,
+     "height": 3744
+    },
+    {
+     "title": "File:San Francisco Conservatory of Flowers-19.jpg",
+     "view": "other side three-quarter: long curved glazed wing at left with the central dome and cupola at right",
+     "license": "CC BY-SA 3.0",
+     "artist": "Almonroth",
+     "width": 5616,
+     "height": 3744
+    }
+   ],
+   "referenceEntry": {
+    "name": "Conservatory of Flowers",
+    "city": "san-francisco"
+   }
+  },
+  {
+   "id": "parc-des-princes",
+   "name": "Parc des Princes",
+   "city": "Paris",
+   "type": "football stadium",
+   "difficulty": 3,
+   "wiki": "Parc des Princes",
+   "front": 125,
+   "frontIs": "the main stand on the Rue du Commandant-Guilbaud",
+   "height": 48,
+   "osm": [
+    "relation/152838",
+    "way/87832955",
+    "way/87833006",
+    "way/87833032",
+    "way/87833060",
+    "way/87833104",
+    "way/87833153",
+    "way/87833226",
+    "way/87833281",
+    "way/87936887",
+    "way/87936888",
+    "way/87936890",
+    "way/87936891",
+    "way/87936892",
+    "way/87936894",
+    "way/87936895",
+    "way/87936896",
+    "way/87936898",
+    "way/87936899",
+    "way/87936900",
+    "way/87936902",
+    "way/87936903",
+    "way/87936907",
+    "way/87936908",
+    "way/87936909"
+   ],
+   "reference": "parcDesPrinces",
+   "features": [
+    {
+     "label": "Closed oval bowl of stands",
+     "check": {
+      "types": [
+       "bowl"
+      ]
+     }
+    },
+    {
+     "label": "Ring of many tall concrete ribs around the outside",
+     "check": {
+      "min": 30
+     }
+    },
+    {
+     "label": "Roof canopy over the stands"
+    },
+    {
+     "label": "Grass pitch inside",
+     "check": {
+      "material": "grass"
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Boulevard Périphérique vu depuis Avenue Parc Princes - Paris XVI (FR75) - 2022-05-28 - 2.jpg",
+     "view": "exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Chabe01",
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "title": "File:Avenue Parc Princes - Paris XVI (FR75) - 2021-08-11 - 2.jpg",
+     "view": "distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Chabe01",
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "title": "File:Paris, ortophotograph Parc des Princes.jpg",
+     "view": "top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)",
+     "license": "Licence Ouverte",
+     "artist": "Original photograph by Christian Quest for the French National Geographic Institute; source IGN 2018; cropped by Blackca",
+     "width": 9762,
+     "height": 6508
+    }
+   ],
+   "referenceEntry": {
+    "name": "Parc des Princes",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "centre-pompidou",
+   "name": "Centre Pompidou",
+   "city": "Paris",
+   "type": "museum",
+   "difficulty": 2,
+   "wiki": "Centre Pompidou",
+   "front": 291,
+   "frontIs": "the west face on the sloping piazza",
+   "height": 42,
+   "osm": [
+    "way/55503397"
+   ],
+   "reference": "pompidou",
+   "features": [
+    {
+     "label": "Rectangular glass-and-steel box",
+     "check": {
+      "material": "glass"
+     }
+    },
+    {
+     "label": "Exposed structural frame and cross-bracing on the facades",
+     "check": {
+      "types": [
+       "beam"
+      ],
+      "min": 10
+     }
+    },
+    {
+     "label": "Escalator tube climbing diagonally across the west front",
+     "check": {
+      "types": [
+       "beam",
+       "cylinder"
+      ]
+     }
+    },
+    {
+     "label": "Brightly coloured service ducts on the east side"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Centre Pompidou @ Beaubourg @ Paris (15448205062).jpg",
+     "view": "front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight",
+     "license": "CC BY 2.0",
+     "artist": "Guilhem Vellut from Annecy, France",
+     "width": 3968,
+     "height": 2976
+    },
+    {
+     "title": "File:Le Centre Georges-Pompidou en travaux (2026).jpg",
+     "view": "side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky",
+     "license": "CC BY-SA 4.0",
+     "artist": "JeremyJeanguenin",
+     "width": 3264,
+     "height": 2448
+    },
+    {
+     "title": "File:Centre Beaubourg 2009.jpg",
+     "view": "elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around",
+     "license": "CC BY 2.0",
+     "artist": "Maureen from Buffalo, USA",
+     "width": 3008,
+     "height": 2000
+    }
+   ],
+   "referenceEntry": {
+    "name": "Centre Pompidou",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "musee-orsay",
+   "name": "Musée d'Orsay",
+   "city": "Paris",
+   "type": "museum (former station)",
+   "difficulty": 2,
+   "wiki": "Musée d'Orsay",
+   "front": 25.5,
+   "frontIs": "the river front on the Seine",
+   "height": 38,
+   "osm": [
+    "way/63178753"
+   ],
+   "reference": "museeOrsay",
+   "features": [
+    {
+     "label": "Long barrel-vaulted glass roof over the central hall",
+     "check": {
+      "types": [
+       "vault"
+      ]
+     }
+    },
+    {
+     "label": "Beaux-Arts stone river front with large arched openings",
+     "check": {
+      "minArches": 5
+     }
+    },
+    {
+     "label": "End pavilions with big clock faces and pavilion roofs",
+     "check": {
+      "types": [
+       "roof"
+      ]
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Paris musee d'orsay (30957833954).jpg",
+     "view": "river-front three-quarter of the whole long station-museum with arched vaults, central clock pavilion and pitched roof, daylight",
+     "license": "CC BY-SA 2.0",
+     "artist": "Chris",
+     "width": 6000,
+     "height": 4000
+    },
+    {
+     "title": "File:Parvis du musée d'Orsay, Paris 29 November 2008.jpg",
+     "view": "elevated view of the west end and entrance forecourt with its glass canopy and the vaulted roof behind",
+     "license": "CC BY 2.0",
+     "artist": "Yorick_R from Amsterdam, Netherlands",
+     "width": 3648,
+     "height": 2736
+    },
+    {
+     "title": "File:Exterior of the Musée d'Orsay (15).jpg",
+     "view": "street-side three-quarter at the pavilion end with the arched fronts and the barrel roof, dusk-light daylight",
+     "license": "CC BY 3.0",
+     "artist": "randreu",
+     "width": 4896,
+     "height": 2752
+    }
+   ],
+   "referenceEntry": {
+    "name": "Musée d'Orsay",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "pantheon",
+   "name": "Panthéon",
+   "city": "Paris",
+   "type": "mausoleum (former church)",
+   "difficulty": 2,
+   "wiki": "Panthéon",
+   "front": 288.2,
+   "frontIs": "the portico, facing down the Rue Soufflot",
+   "height": 83,
+   "osm": [
+    "way/16407465"
+   ],
+   "reference": "pantheonFull",
+   "features": [
+    {
+     "label": "Dome on a tall drum ringed with columns",
+     "check": {
+      "types": [
+       "dome"
+      ],
+      "minTop": 70
+     }
+    },
+    {
+     "label": "Portico of Corinthian columns",
+     "check": {
+      "minColumns": 6
+     }
+    },
+    {
+     "label": "Triangular pediment over the portico",
+     "check": {
+      "types": [
+       "pediment"
+      ]
+     }
+    },
+    {
+     "label": "Cross-shaped plan of plain, windowless walls"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Panthéon de Paris in July 2022 (2).jpg",
+     "view": "front three-quarter from the corner: Corinthian portico with pediment and the tall drum and dome, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Maksim Sokolov (maxergon.com)",
+     "width": 5145,
+     "height": 3598
+    },
+    {
+     "title": "File:Panteón, París, Francia, 2022-10-29, DD 66.jpg",
+     "view": "view of the rear and side of the cross-shaped body with the drum and dome above, trees in front",
+     "license": "CC BY-SA 4.0",
+     "artist": "Diego Delso",
+     "width": 7063,
+     "height": 4709
+    },
+    {
+     "title": "File:Fresque \"Joséphine\" réalisée par Gwendoline Finaz de Villaine Place du Panthéon, 3 juin 2022.jpg",
+     "view": "elevated view of the whole portico front and flank across the square, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Pierrebourgeois6",
+     "width": 2724,
+     "height": 3491
+    }
+   ],
+   "referenceEntry": {
+    "name": "Panthéon",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "madeleine",
+   "name": "Église de la Madeleine",
+   "city": "Paris",
+   "type": "church",
+   "difficulty": 1,
+   "wiki": "La Madeleine, Paris",
+   "front": 206,
+   "frontIs": "the south portico facing the Rue Royale",
+   "height": 36,
+   "osm": [
+    "way/1459282733",
+    "way/1459282734",
+    "way/1459282735",
+    "way/1459282736",
+    "way/1459282737",
+    "way/1459282738",
+    "way/1459282739",
+    "way/1459282740",
+    "way/1459282741",
+    "way/1459664492",
+    "way/1459664493",
+    "way/1459664494",
+    "way/1459664495",
+    "way/1459664496",
+    "way/1459664497",
+    "way/1459664498",
+    "way/1459664499",
+    "way/1459664500",
+    "way/1459664501",
+    "way/1459664502",
+    "way/1459664503",
+    "way/1459664504",
+    "way/1459664505",
+    "way/1459664506",
+    "way/1459664507",
+    "way/1459664508",
+    "way/1459664509",
+    "way/1459664510",
+    "way/1459664511",
+    "way/1459664512",
+    "way/1459664513",
+    "way/1459664514",
+    "way/1459664515",
+    "way/1459664516",
+    "way/1459664517",
+    "way/1459664518",
+    "way/1459664519",
+    "way/1459664520",
+    "way/1459664521",
+    "way/1459664522",
+    "way/1459664523",
+    "way/1459664524",
+    "way/1459664525",
+    "way/1459664526",
+    "way/1459664527",
+    "way/1459664528",
+    "way/1459664529",
+    "way/1459664530",
+    "way/1459664531",
+    "way/1459664532",
+    "way/1459664533",
+    "way/1459664534",
+    "way/1459664535",
+    "way/1459664536",
+    "way/1459664537",
+    "way/1459664538",
+    "way/1459664539",
+    "way/1459664540",
+    "way/1459664541",
+    "way/1459664542",
+    "way/1459664543",
+    "way/1459664544",
+    "way/1459664545"
+   ],
+   "reference": "madeleine",
+   "features": [
+    {
+     "label": "Roman temple with columns on all four sides",
+     "check": {
+      "minColumns": 40
+     }
+    },
+    {
+     "label": "Pediments at the ends",
+     "check": {
+      "types": [
+       "pediment"
+      ]
+     }
+    },
+    {
+     "label": "Raised podium with steps at the front"
+    },
+    {
+     "label": "Low-pitched roof",
+     "check": {
+      "types": [
+       "roof"
+      ]
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Église Madeleine - Paris VIII (FR75) - 2024-05-22 - 1.jpg",
+     "view": "front three-quarter: full peripteral Corinthian colonnade with pediment, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "Chabe01",
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "title": "File:Église de Sainte Madeleine, Paris - Exterior of Église de la Madeleine - Tagzania - 1791909569237.jpg",
+     "view": "long-side three-quarter along the colonnade with the front pediment at left, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "jokinzuru (Tagzania user ID: 778)",
+     "width": 1773,
+     "height": 2364
+    },
+    {
+     "title": "File:Fancy Monument.jpg",
+     "view": "elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)",
+     "license": "CC BY-SA 4.0",
+     "artist": "Daphne Rose",
+     "width": 1536,
+     "height": 2560
+    }
+   ],
+   "referenceEntry": {
+    "name": "Église de la Madeleine",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "sacre-coeur",
+   "name": "Basilique du Sacré-Cœur",
+   "city": "Paris",
+   "type": "basilica",
+   "difficulty": 2,
+   "wiki": "Sacré-Cœur, Paris",
+   "front": 175.6,
+   "frontIs": "the south front at the top of the steps, looking out over Paris",
+   "height": 84,
+   "osm": [
+    "way/23762981"
+   ],
+   "reference": "sacreCoeurFull",
+   "features": [
+    {
+     "label": "Large central dome on a tall drum, about 83 m up",
+     "check": {
+      "types": [
+       "dome"
+      ],
+      "minTop": 60
+     }
+    },
+    {
+     "label": "Several smaller domes and turrets clustered around the main dome",
+     "check": {
+      "types": [
+       "dome"
+      ],
+      "min": 4
+     }
+    },
+    {
+     "label": "Front portico of three round arches",
+     "check": {
+      "minArches": 3
+     }
+    },
+    {
+     "label": "Square bell tower rising behind the dome",
+     "check": {
+      "types": [
+       "box",
+       "prism",
+       "cylinder"
+      ],
+      "minTop": 60,
+      "min": 2
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Paris - Basilique du Sacré-Cœur de Montmartre - 2025-09-30 23-31-57 001.jpg",
+     "view": "full front from the gardens below the hill, daylight: the white domes over the terraces and steps",
+     "license": "CC BY-SA 4.0",
+     "artist": "Giò Terra (Terragio67)",
+     "width": 9228,
+     "height": 7488
+    },
+    {
+     "title": "File:Sacre-Coeur, Paris 02.jpg",
+     "view": "front three-quarter from the left (west), daylight: the arched portico, the main dome and the smaller domes",
+     "license": "CC BY 4.0",
+     "artist": "HJ Mitchell",
+     "width": 4000,
+     "height": 3000
+    },
+    {
+     "title": "File:Basilica of the Sacred Heart of Montmartre, Paris (61048).jpg",
+     "view": "the front close up, daylight: the main dome on its drum with the smaller domes around it",
+     "license": "CC BY-SA 3.0",
+     "artist": "Aliva Sahoo",
+     "width": 2996,
+     "height": 4096
+    }
+   ],
+   "referenceEntry": {
+    "name": "Sacré-Cœur",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "gare-de-lyon",
+   "name": "Gare de Lyon",
+   "city": "Paris",
+   "type": "railway station",
+   "difficulty": 2,
+   "wiki": "Gare de Lyon",
+   "front": 310,
+   "frontIs": "the station front on the Place Louis-Armand",
+   "height": 67,
+   "osm": [
+    "way/1161318094",
+    "way/115948337",
+    "way/231098536",
+    "way/115928131",
+    "way/115948181",
+    "way/1161318096",
+    "way/231098535",
+    "way/115948339",
+    "way/231095201",
+    "way/231095204"
+   ],
+   "reference": "gareDeLyon",
+   "features": [
+    {
+     "label": "Clock tower at one corner, about 67 m",
+     "check": {
+      "minTop": 55
+     }
+    },
+    {
+     "label": "Long stone front with large arched windows",
+     "check": {
+      "minArches": 3
+     }
+    },
+    {
+     "label": "Train-shed roofs (vaulted or pitched) behind the front",
+     "check": {
+      "types": [
+       "vault",
+       "roof"
+      ]
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Paris-Gare-de-Lyon (52331440171).jpg",
+     "view": "front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight",
+     "license": "CC BY-SA 2.0",
+     "artist": "Alexandre Prevot from Nancy, France",
+     "width": 3000,
+     "height": 2000
+    },
+    {
+     "title": "File:Gare de Lyon 2013 - Vue sud.jpg",
+     "view": "high view looking down along the station's train shed roofs and tracks",
+     "license": "CC BY 2.0",
+     "artist": "patrick janicek",
+     "width": 3648,
+     "height": 2736
+    },
+    {
+     "title": "File:Entrance to the Gare de Lyon.jpg",
+     "view": "view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight",
+     "license": "CC BY-SA 4.0",
+     "artist": "DiscoA340",
+     "width": 4000,
+     "height": 3000
+    }
+   ],
+   "referenceEntry": {
+    "name": "Gare de Lyon",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "bnf-mitterrand",
+   "name": "Bibliothèque nationale de France (François-Mitterrand)",
+   "city": "Paris",
+   "type": "library",
+   "difficulty": 1,
+   "wiki": "Bibliothèque nationale de France",
+   "front": 50,
+   "frontIs": "the side facing the Seine",
+   "height": 79,
+   "osm": [
+    "way/73247228"
+   ],
+   "reference": "bnfEsplanade",
+   "features": [
+    {
+     "label": "Four L-shaped glass towers at the corners, like open books",
+     "check": {
+      "types": [
+       "box",
+       "prism"
+      ],
+      "minTop": 60,
+      "min": 4
+     }
+    },
+    {
+     "label": "Huge raised flat esplanade between them"
+    },
+    {
+     "label": "Sunken garden in the middle"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Seine east of Paris.jpg",
+     "view": "river view across the Seine of the four glass corner towers, daylight",
+     "license": "Public domain",
+     "artist": "Tangopaso",
+     "width": 4416,
+     "height": 3312
+    },
+    {
+     "title": "File:Paris 13e BNF Site François-Mitterrand 746.jpg",
+     "view": "daylight view of the four towers from the footbridge side with the raised deck",
+     "license": "CC BY-SA 3.0",
+     "artist": "GFreihalter",
+     "width": 4896,
+     "height": 3264
+    },
+    {
+     "title": "File:Quai François-Mauriac April 2011.jpg",
+     "view": "street-level view of the stepped timber deck rising to one tower, daylight",
+     "license": "CC BY-SA 2.0",
+     "artist": "besopha",
+     "width": 1996,
+     "height": 1313
+    }
+   ],
+   "rect": [
+    330,
+    170
+   ],
+   "scope": "The footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.",
+   "referenceEntry": {
+    "name": "Bibliothèque François-Mitterrand",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "palais-garnier",
+   "name": "Palais Garnier",
+   "city": "Paris",
+   "type": "opera house",
+   "difficulty": 3,
+   "wiki": "Palais Garnier",
+   "front": 165,
+   "frontIs": "the main front facing the Avenue de l’Opéra",
+   "height": 56,
+   "osm": [
+    "way/822291002",
+    "way/822290986",
+    "way/822290987",
+    "way/822290991",
+    "way/822290992",
+    "way/822291001",
+    "way/822290990",
+    "way/822290988",
+    "way/822290989",
+    "way/822291000"
+   ],
+   "reference": "palaisGarnier",
+   "features": [
+    {
+     "label": "Loggia of paired columns above arched ground-floor openings",
+     "check": {
+      "minColumns": 8
+     }
+    },
+    {
+     "label": "Arched openings across the ground floor of the front",
+     "check": {
+      "minArches": 5
+     }
+    },
+    {
+     "label": "Green copper dome over the auditorium",
+     "check": {
+      "types": [
+       "dome"
+      ]
+     }
+    },
+    {
+     "label": "Tall gabled stage-house roof behind the dome",
+     "check": {
+      "types": [
+       "roof"
+      ]
+     }
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Paris Opera full frontal architecture, May 2009.jpg",
+     "view": "front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky",
+     "license": "CC BY 2.0",
+     "artist": "Peter Rivera",
+     "width": 2079,
+     "height": 1397
+    },
+    {
+     "title": "File:20180623 - Paris - 91 (42987263014).jpg",
+     "view": "elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky",
+     "license": "CC BY 2.0",
+     "artist": "eugene_o",
+     "width": 3840,
+     "height": 2552
+    },
+    {
+     "title": "File:Palais Garnier - Paris IX (FR75) - 2023-05-06 - 5.jpg",
+     "view": "elevated rooftop view of the great stage house and the green dome at left, overcast",
+     "license": "CC BY-SA 4.0",
+     "artist": "Chabe01",
+     "width": 4032,
+     "height": 3024
+    }
+   ],
+   "referenceEntry": {
+    "name": "Palais Garnier",
+    "city": "paris"
+   }
+  },
+  {
+   "id": "hotel-de-ville",
+   "name": "Hôtel de Ville",
+   "city": "Paris",
+   "type": "city hall",
+   "difficulty": 3,
+   "wiki": "Hôtel de Ville, Paris",
+   "front": 270,
+   "frontIs": "the west front on the Place de l’Hôtel-de-Ville",
+   "height": 55,
+   "osm": [
+    "relation/284089",
+    "way/331242775",
+    "way/1204205154",
+    "way/331242768",
+    "way/331242770",
+    "way/1204205146",
+    "way/331242767",
+    "way/331242769",
+    "way/331242774",
+    "way/331242776",
+    "way/331242778",
+    "way/1204205151",
+    "way/1204205152",
+    "way/1204205153"
+   ],
+   "reference": "hotelDeVille",
+   "features": [
+    {
+     "label": "French Renaissance block with steep slate roofs over corner pavilions",
+     "check": {
+      "types": [
+       "roof"
+      ],
+      "min": 3
+     }
+    },
+    {
+     "label": "Central clock tower",
+     "check": {
+      "minTop": 45
+     }
+    },
+    {
+     "label": "Regular rows of tall windows"
+    }
+   ],
+   "photos": [
+    {
+     "title": "File:Paris 2010 (18).jpg",
+     "view": "front three-quarter across the square: central clock tower, corner pavilions and steep slate roofs, daylight",
+     "license": "CC BY-SA 3.0",
+     "artist": "stephanemat",
+     "width": 4320,
+     "height": 3240
+    },
+    {
+     "title": "File:Hôtel de Ville - panoramio (10).jpg",
+     "view": "three-quarter from a bridge along the river side, showing the long wing, towers and mansard roofs",
+     "license": "CC BY 3.0",
+     "artist": "Mister No",
+     "width": 1600,
+     "height": 1200
+    },
+    {
+     "title": "File:Back of the Hôtel de Ville in Paris 3.jpg",
+     "view": "view along the long flank facade with its repeated arched bays and mansard roof",
+     "license": "CC BY-SA 4.0",
+     "artist": "DiscoA340",
+     "width": 4000,
+     "height": 3000
+    }
+   ],
+   "referenceEntry": {
+    "name": "Hôtel de Ville",
+    "city": "paris"
+   }
+  }
+ ]
+}

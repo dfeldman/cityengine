@@ -1,0 +1,5 @@
+{"notes": "Macro test (rotunda with open arches): an octagon of great open arches between piers, paired columns at each pier, a drum with relief panels and a shallow dome; planters at the corners.",
+ "parts": [
+  {"type": "rotunda", "center": [0, 0], "radius": 20, "y0": 0, "base": 2, "height": 24, "arches": 8, "entablature": 4, "drum": 7, "dome": {"height": 13, "colour": "#d8c39a"}, "colour": "#c99a76", "trim": "#b5644f"},
+  {"type": "repeat", "count": 8, "around": {"center": [0, 0], "step": 45}, "part": {"type": "box", "center": [25.5, 10.5], "size": [4, 4], "y0": 26, "y1": 30, "colour": "#c99a76"}}
+ ]}

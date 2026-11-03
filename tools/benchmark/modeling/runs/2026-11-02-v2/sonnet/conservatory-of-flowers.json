@@ -1,0 +1,497 @@
+{
+ "building": "conservatory-of-flowers",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:26.772Z",
+ "userText": "Building: Conservatory of Flowers, San Francisco (glasshouse).\nThe front (−z) is the south front facing the flower beds.\nFootprint: 74.9 m along x by 35 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-4.2,-15.9],[1.3,-17.5],[1.4,-15.9],[3.7,-16],[3.7,-8.9],[8.4,-5.5],[25.5,-5.5],[25.5,-13.4],[27,-15],[34.9,-15.1],[36.4,-13.4],[37.5,4.4],[35.3,6.6],[8.6,5.5],[5.6,8.4],[34.5,8.4],[34.4,11.6],[19.2,12.8],[19.1,17.5],[-25.8,16.7],[-25.9,14.2],[-32.2,14.2],[-32.2,8.3],[-6.5,8.3],[-9.3,5.4],[-37.5,5],[-37.4,-13.2],[-30,-16.2],[-25.9,-13.1],[-26,-5.7],[-9.3,-6.1],[-4.2,-9]]\nHeight: the highest point is 15 m above the ground.\n\n3 photographs attached, in order:\n  1. front view along the garden axis: central domed pavilion with the two long glasshouse wings and steps, blue sky\n  2. side three-quarter showing the long glazed wing and the central domes, white timber frame\n  3. other side three-quarter: long curved glazed wing at left with the central dome and cupola at right\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   74.9,
+   35
+  ],
+  "outline": [
+   [
+    -4.2,
+    -15.9
+   ],
+   [
+    1.3,
+    -17.5
+   ],
+   [
+    1.4,
+    -15.9
+   ],
+   [
+    3.7,
+    -16
+   ],
+   [
+    3.7,
+    -8.9
+   ],
+   [
+    8.4,
+    -5.5
+   ],
+   [
+    25.5,
+    -5.5
+   ],
+   [
+    25.5,
+    -13.4
+   ],
+   [
+    27,
+    -15
+   ],
+   [
+    34.9,
+    -15.1
+   ],
+   [
+    36.4,
+    -13.4
+   ],
+   [
+    37.5,
+    4.4
+   ],
+   [
+    35.3,
+    6.6
+   ],
+   [
+    8.6,
+    5.5
+   ],
+   [
+    5.6,
+    8.4
+   ],
+   [
+    34.5,
+    8.4
+   ],
+   [
+    34.4,
+    11.6
+   ],
+   [
+    19.2,
+    12.8
+   ],
+   [
+    19.1,
+    17.5
+   ],
+   [
+    -25.8,
+    16.7
+   ],
+   [
+    -25.9,
+    14.2
+   ],
+   [
+    -32.2,
+    14.2
+   ],
+   [
+    -32.2,
+    8.3
+   ],
+   [
+    -6.5,
+    8.3
+   ],
+   [
+    -9.3,
+    5.4
+   ],
+   [
+    -37.5,
+    5
+   ],
+   [
+    -37.4,
+    -13.2
+   ],
+   [
+    -30,
+    -16.2
+   ],
+   [
+    -25.9,
+    -13.1
+   ],
+   [
+    -26,
+    -5.7
+   ],
+   [
+    -9.3,
+    -6.1
+   ],
+   [
+    -4.2,
+    -9
+   ]
+  ],
+  "height": 15,
+  "turn": 6
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Victorian white timber and glass conservatory. A central two-stage domed pavilion (drum, glazed dome, finial) sits at the middle with a lower dome ring around it. Two long low glazed wings with curved vault roofs run left and right, each ending in a smaller dome pavilion with a spire. A low brick base runs under the glass. A small entrance porch sits at the front, and a grass lawn lies in front.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [74, 30], \"y0\": 0, \"y1\": 0.3, \"material\": \"grass\", \"colour\": \"#6b8f45\"},\n{\"type\": \"box\", \"center\": [-21, -4], \"size\": [32, 17], \"y0\": 0, \"y1\": 1.2, \"material\": \"brick\", \"colour\": \"#8a4a45\"},\n{\"type\": \"box\", \"center\": [24, -4], \"size\": [27, 17], \"y0\": 0, \"y1\": 1.2, \"material\": \"brick\", \"colour\": \"#8a4a45\"},\n{\"type\": \"box\", \"center\": [-21, -4], \"size\": [31, 16], \"y0\": 1.2, \"y1\": 3.5, \"material\": \"stucco\", \"colour\": \"#f4f6f6\"},\n{\"type\": \"box\", \"center\": [24, -4], \"size\": [26, 16], \"y0\": 1.2, \"y1\": 3.5, \"material\": \"stucco\", \"colour\": \"#f4f6f6\"},\n{\"type\": \"vault\", \"center\": [-20, -4], \"size\": [30, 16], \"y0\": 3.5, \"rise\": 5.5, \"axis\": \"x\", \"material\": \"glass\", \"colour\": \"#eef3f5\", \"ends\": \"closed\"},\n{\"type\": \"vault\", \"center\": [24, -3], \"size\": [25, 16], \"y0\": 3.5, \"rise\": 5.5, \"axis\": \"x\", \"material\": \"glass\", \"colour\": \"#eef3f5\", \"ends\": \"closed\"},\n{\"type\": \"box\", \"center\": [-21, 11], \"size\": [10, 6], \"y0\": 0, \"y1\": 4, \"material\": \"stucco\", \"colour\": \"#f4f6f6\"},\n{\"type\": \"vault\", \"center\": [-1, 12], \"size\": [40, 9], \"y0\": 3, \"rise\": 4, \"axis\": \"x\", \"material\": \"glass\", \"colour\": \"#eef3f5\", \"ends\": \"closed\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [20, 16], \"y0\": 0, \"y1\": 7, \"material\": \"stucco\", \"colour\": \"#f6f8f8\"},\n{\"type\": \"dome\", \"center\": [0, 0], \"radius\": 9, \"y0\": 7, \"height\": 3.5, \"material\": \"glass\", \"colour\": \"#eef3f5\"},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 6.5, \"y0\": 9, \"y1\": 11.5, \"material\": \"stucco\", \"colour\": \"#f6f8f8\", \"sides\": 16},\n{\"type\": \"dome\", \"center\": [0, 0], \"radius\": 6.5, \"y0\": 11.5, \"height\": 3, \"material\": \"glass\", \"colour\": \"#eef3f5\"},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 0.5, \"radiusTop\": 0, \"y0\": 14.3, \"y1\": 15, \"material\": \"metal\", \"colour\": \"#ffffff\"},\n{\"type\": \"box\", \"center\": [0, -9], \"size\": [7, 4], \"y0\": 0, \"y1\": 5, \"material\": \"stucco\", \"colour\": \"#f6f8f8\"},\n{\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, -9], \"size\": [7, 4], \"y0\": 5, \"rise\": 2, \"ridge\": \"z\", \"material\": \"glass\", \"colour\": \"#eef3f5\"},\n{\"type\": \"cylinder\", \"center\": [-31, -4], \"radius\": 6, \"y0\": 0, \"y1\": 3.5, \"material\": \"stucco\", \"colour\": \"#f4f6f6\", \"sides\": 12},\n{\"type\": \"dome\", \"center\": [-31, -4], \"radius\": 6.5, \"y0\": 3.5, \"height\": 5, \"material\": \"glass\", \"colour\": \"#eef3f5\"},\n{\"type\": \"cylinder\", \"center\": [-31, -4], \"radius\": 0.3, \"radiusTop\": 0, \"y0\": 8.5, \"y1\": 11, \"material\": \"metal\", \"colour\": \"#ffffff\"},\n{\"type\": \"cylinder\", \"center\": [32, -5], \"radius\": 5.5, \"y0\": 0, \"y1\": 3.5, \"material\": \"stucco\", \"colour\": \"#f4f6f6\", \"sides\": 12},\n{\"type\": \"dome\", \"center\": [32, -5], \"radius\": 6, \"y0\": 3.5, \"height\": 5, \"material\": \"glass\", \"colour\": \"#eef3f5\"},\n{\"type\": \"cylinder\", \"center\": [32, -5], \"radius\": 0.3, \"radiusTop\": 0, \"y0\": 8.5, \"y1\": 11, \"material\": \"metal\", \"colour\": \"#ffffff\"}\n]}",
+   "stop": "end_turn",
+   "input": 3343,
+   "output": 1660,
+   "cacheRead": 7616,
+   "cost": 0.0248092,
+   "ms": 10806,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Victorian white timber and glass conservatory. A central two-stage domed pavilion (drum, glazed dome, finial) sits at the middle with a lower dome ring around it. Two long low glazed wings with curved vault roofs run left and right, each ending in a smaller dome pavilion with a spire. A low brick base runs under the glass. A small entrance porch sits at the front, and a grass lawn lies in front.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      74,
+      30
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#6b8f45"
+    },
+    {
+     "type": "box",
+     "center": [
+      -21,
+      -4
+     ],
+     "size": [
+      32,
+      17
+     ],
+     "y0": 0,
+     "y1": 1.2,
+     "material": "brick",
+     "colour": "#8a4a45"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      -4
+     ],
+     "size": [
+      27,
+      17
+     ],
+     "y0": 0,
+     "y1": 1.2,
+     "material": "brick",
+     "colour": "#8a4a45"
+    },
+    {
+     "type": "box",
+     "center": [
+      -21,
+      -4
+     ],
+     "size": [
+      31,
+      16
+     ],
+     "y0": 1.2,
+     "y1": 3.5,
+     "material": "stucco",
+     "colour": "#f4f6f6"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      -4
+     ],
+     "size": [
+      26,
+      16
+     ],
+     "y0": 1.2,
+     "y1": 3.5,
+     "material": "stucco",
+     "colour": "#f4f6f6"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -20,
+      -4
+     ],
+     "size": [
+      30,
+      16
+     ],
+     "y0": 3.5,
+     "rise": 5.5,
+     "axis": "x",
+     "material": "glass",
+     "colour": "#eef3f5",
+     "ends": "closed"
+    },
+    {
+     "type": "vault",
+     "center": [
+      24,
+      -3
+     ],
+     "size": [
+      25,
+      16
+     ],
+     "y0": 3.5,
+     "rise": 5.5,
+     "axis": "x",
+     "material": "glass",
+     "colour": "#eef3f5",
+     "ends": "closed"
+    },
+    {
+     "type": "box",
+     "center": [
+      -21,
+      11
+     ],
+     "size": [
+      10,
+      6
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stucco",
+     "colour": "#f4f6f6"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -1,
+      12
+     ],
+     "size": [
+      40,
+      9
+     ],
+     "y0": 3,
+     "rise": 4,
+     "axis": "x",
+     "material": "glass",
+     "colour": "#eef3f5",
+     "ends": "closed"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      20,
+      16
+     ],
+     "y0": 0,
+     "y1": 7,
+     "material": "stucco",
+     "colour": "#f6f8f8"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 9,
+     "y0": 7,
+     "height": 3.5,
+     "material": "glass",
+     "colour": "#eef3f5"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 6.5,
+     "y0": 9,
+     "y1": 11.5,
+     "material": "stucco",
+     "colour": "#f6f8f8",
+     "sides": 16
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 6.5,
+     "y0": 11.5,
+     "height": 3,
+     "material": "glass",
+     "colour": "#eef3f5"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 0.5,
+     "radiusTop": 0,
+     "y0": 14.3,
+     "y1": 15,
+     "material": "metal",
+     "colour": "#ffffff"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -9
+     ],
+     "size": [
+      7,
+      4
+     ],
+     "y0": 0,
+     "y1": 5,
+     "material": "stucco",
+     "colour": "#f6f8f8"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      -9
+     ],
+     "size": [
+      7,
+      4
+     ],
+     "y0": 5,
+     "rise": 2,
+     "ridge": "z",
+     "material": "glass",
+     "colour": "#eef3f5"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -31,
+      -4
+     ],
+     "radius": 6,
+     "y0": 0,
+     "y1": 3.5,
+     "material": "stucco",
+     "colour": "#f4f6f6",
+     "sides": 12
+    },
+    {
+     "type": "dome",
+     "center": [
+      -31,
+      -4
+     ],
+     "radius": 6.5,
+     "y0": 3.5,
+     "height": 5,
+     "material": "glass",
+     "colour": "#eef3f5"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -31,
+      -4
+     ],
+     "radius": 0.3,
+     "radiusTop": 0,
+     "y0": 8.5,
+     "y1": 11,
+     "material": "metal",
+     "colour": "#ffffff"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      32,
+      -5
+     ],
+     "radius": 5.5,
+     "y0": 0,
+     "y1": 3.5,
+     "material": "stucco",
+     "colour": "#f4f6f6",
+     "sides": 12
+    },
+    {
+     "type": "dome",
+     "center": [
+      32,
+      -5
+     ],
+     "radius": 6,
+     "y0": 3.5,
+     "height": 5,
+     "material": "glass",
+     "colour": "#eef3f5"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      32,
+      -5
+     ],
+     "radius": 0.3,
+     "radiusTop": 0,
+     "y0": 8.5,
+     "y1": 11,
+     "material": "metal",
+     "colour": "#ffffff"
+    }
+   ]
+  },
+  "notes": "Victorian white timber and glass conservatory. A central two-stage domed pavilion (drum, glazed dome, finial) sits at the middle with a lower dome ring around it. Two long low glazed wings with curved vault roofs run left and right, each ending in a smaller dome pavilion with a spire. A low brick base runs under the glass. A small entrance porch sits at the front, and a grass lawn lies in front.",
+  "triangles": 1896,
+  "parts": 22
+ },
+ "totals": {
+  "input": 3343,
+  "output": 1660,
+  "cost": 0.0248092,
+  "ms": 10806
+ }
+}

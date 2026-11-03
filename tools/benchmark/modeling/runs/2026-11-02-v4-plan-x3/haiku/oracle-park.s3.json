@@ -1,0 +1,388 @@
+{
+ "building": "oracle-park",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:14:51.726Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Oracle Park is a brick-faced street front on the −z side, with a cream-banded facade and a brick clock tower on the right. Behind it, a steel-framed horseshoe grandstand in stacked tiers wraps the diamond and opens toward the bay on the −x side. Tall open steel light towers stand at the bowl corners, and a long arched promenade wall runs along the water.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [205, 270],\n      \"inner\": [120, 170],\n      \"y0\": 0,\n      \"y1\": 38,\n      \"innerHeight\": 3,\n      \"shape\": \"oval\",\n      \"arc\": [200, 520],\n      \"material\": \"concrete\",\n      \"colour\": \"#3c6b5e\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [118, 160],\n      \"y0\": 0,\n      \"y1\": 0.3,\n      \"material\": \"grass\",\n      \"colour\": \"#2f7a3a\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-10, -124],\n      \"size\": [170, 22],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#a5523a\",\n      \"trim\": \"#e6e0d2\",\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"rusticated\"},\n        {\"height\": 14, \"kind\": \"punched\", \"floors\": 2}\n      ],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [45, -124],\n      \"y0\": 0,\n      \"colour\": \"#a5523a\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 9, \"height\": 22, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 9, \"height\": 6, \"kind\": \"clock\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 6, \"colour\": \"#5a6468\"}\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-99, -55],\n      \"to\": [-99, 135],\n      \"y0\": 0,\n      \"height\": 9,\n      \"count\": 30,\n      \"thickness\": 4,\n      \"colour\": \"#e6e0d2\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [90, -60],\n      \"y0\": 0,\n      \"colour\": \"#4d5a5e\",\n      \"material\": \"metal\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 4, \"height\": 45, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"flat\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4932,
+   "output": 2745,
+   "cacheRead": 8401,
+   "cost": 0.0019497100000000001,
+   "ms": 13550,
+   "errors": [],
+   "warnings": [
+    "parts[5]>box0.windows.floor: 45 lowered to the maximum 20"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park is a brick-faced street front on the −z side, with a cream-banded facade and a brick clock tower on the right. Behind it, a steel-framed horseshoe grandstand in stacked tiers wraps the diamond and opens toward the bay on the −x side. Tall open steel light towers stand at the bowl corners, and a long arched promenade wall runs along the water.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      205,
+      270
+     ],
+     "inner": [
+      120,
+      170
+     ],
+     "y0": 0,
+     "y1": 38,
+     "innerHeight": 3,
+     "shape": "oval",
+     "arc": [
+      200,
+      520
+     ],
+     "material": "concrete",
+     "colour": "#3c6b5e"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      118,
+      160
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#2f7a3a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -10,
+      -124
+     ],
+     "size": [
+      170,
+      22
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#a5523a",
+     "trim": "#e6e0d2",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "rusticated"
+      },
+      {
+       "height": 14,
+       "kind": "punched",
+       "floors": 2
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      45,
+      -124
+     ],
+     "y0": 0,
+     "colour": "#a5523a",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 9,
+       "height": 22,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 9,
+       "height": 6,
+       "kind": "clock"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 6,
+      "colour": "#5a6468"
+     }
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -99,
+      -55
+     ],
+     "to": [
+      -99,
+      135
+     ],
+     "y0": 0,
+     "height": 9,
+     "count": 30,
+     "thickness": 4,
+     "colour": "#e6e0d2",
+     "material": "concrete"
+    },
+    {
+     "type": "tower",
+     "center": [
+      90,
+      -60
+     ],
+     "y0": 0,
+     "colour": "#4d5a5e",
+     "material": "metal",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 4,
+       "height": 45,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "flat"
+     }
+    }
+   ]
+  },
+  "notes": "Oracle Park is a brick-faced street front on the −z side, with a cream-banded facade and a brick clock tower on the right. Behind it, a steel-framed horseshoe grandstand in stacked tiers wraps the diamond and opens toward the bay on the −x side. Tall open steel light towers stand at the bowl corners, and a long arched promenade wall runs along the water.",
+  "triangles": 3064,
+  "parts": 16
+ },
+ "totals": {
+  "input": 8501,
+  "output": 5510,
+  "cost": 0.00370994,
+  "ms": 27753
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: ground-level three-quarter view of the brick street-side facade at Third and King, with the clock tower on the right, light standards along the sidewalk, and the older AT&T Park signage on the upper facade.\",\n    \"photo 2: vertical aerial of the whole ballpark, showing the horseshoe grandstand wrapping the asymmetric diamond, the open outfield, the brick low-rise blocks on the street side, and the waterfront edge.\",\n    \"photo 3: oblique aerial from the bay side along the right-field edge, showing the open bowl with its stacked grandstand tiers, the steel light towers, and the long arched promenade wall along the water.\"\n  ],\n  \"components\": [\n    {\"name\": \"grandstand bowl\", \"part\": \"bowl\", \"where\": \"whole footprint, horseshoe open toward the bay\", \"center\": [0, 0], \"size\": [205, 270], \"height\": 38,\n     \"settings\": {\"open\": \"left\", \"tiers\": 4, \"outer_radius\": 100, \"inner_radius\": 62, \"colour\": \"#3c6b5e\"},\n     \"why\": \"photos 2 and 3 show a horseshoe grandstand in tiers around an open field, open toward the bay\"},\n    {\"name\": \"brick street facade\", \"part\": \"block\", \"where\": \"front edge along Third and King\", \"center\": [-10, -124], \"size\": [170, 22], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"rusticated\"}, {\"height\": 14, \"kind\": \"punched\", \"floors\": 2}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a5523a\"},\n     \"why\": \"photo 1 shows a low brick street facade with rows of windows and a cream band\"},\n    {\"name\": \"clock tower\", \"part\": \"tower\", \"where\": \"right of the front facade\", \"center\": [45, -124], \"height\": 34,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 9, \"height\": 22, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 9, \"height\": 6, \"kind\": \"clock\"}], \"top\": {\"kind\": \"spire\", \"height\": 6}, \"colour\": \"#a5523a\"},\n     \"why\": \"photo 1 shows a brick clock tower with a pyramidal cap rising above the facade\"},\n    {\"name\": \"bay promenade arcade\", \"part\": \"arcade\", \"where\": \"bay-side edge along the outfield\", \"center\": [-99, 40], \"size\": [8, 190], \"height\": 9,\n     \"settings\": {\"colour\": \"#e6e0d2\"},\n     \"why\": \"photo 3 shows a long promenade wall of round arches along the water edge\"},\n    {\"name\": \"steel light tower\", \"part\": \"tower\", \"where\": \"right-field corner at the bowl edge\", \"center\": [90, -60], \"height\": 45,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 4, \"height\": 40, \"kind\": \"open\"}], \"top\": {\"kind\": \"flat\"}, \"colour\": \"#4d5a5e\"},\n     \"why\": \"photos 1 and 3 show tall open steel light towers, the highest points on the site\"}\n  ]\n}\n```",
+  "input": 3569,
+  "output": 2765,
+  "cost": 0.00176023,
+  "ms": 14203,
+  "json": {
+   "photos": [
+    "photo 1: ground-level three-quarter view of the brick street-side facade at Third and King, with the clock tower on the right, light standards along the sidewalk, and the older AT&T Park signage on the upper facade.",
+    "photo 2: vertical aerial of the whole ballpark, showing the horseshoe grandstand wrapping the asymmetric diamond, the open outfield, the brick low-rise blocks on the street side, and the waterfront edge.",
+    "photo 3: oblique aerial from the bay side along the right-field edge, showing the open bowl with its stacked grandstand tiers, the steel light towers, and the long arched promenade wall along the water."
+   ],
+   "components": [
+    {
+     "name": "grandstand bowl",
+     "part": "bowl",
+     "where": "whole footprint, horseshoe open toward the bay",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      205,
+      270
+     ],
+     "height": 38,
+     "settings": {
+      "open": "left",
+      "tiers": 4,
+      "outer_radius": 100,
+      "inner_radius": 62,
+      "colour": "#3c6b5e"
+     },
+     "why": "photos 2 and 3 show a horseshoe grandstand in tiers around an open field, open toward the bay"
+    },
+    {
+     "name": "brick street facade",
+     "part": "block",
+     "where": "front edge along Third and King",
+     "center": [
+      -10,
+      -124
+     ],
+     "size": [
+      170,
+      22
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "rusticated"
+       },
+       {
+        "height": 14,
+        "kind": "punched",
+        "floors": 2
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a5523a"
+     },
+     "why": "photo 1 shows a low brick street facade with rows of windows and a cream band"
+    },
+    {
+     "name": "clock tower",
+     "part": "tower",
+     "where": "right of the front facade",
+     "center": [
+      45,
+      -124
+     ],
+     "height": 34,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 9,
+        "height": 22,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 9,
+        "height": 6,
+        "kind": "clock"
+       }
+      ],
+      "top": {
+       "kind": "spire",
+       "height": 6
+      },
+      "colour": "#a5523a"
+     },
+     "why": "photo 1 shows a brick clock tower with a pyramidal cap rising above the facade"
+    },
+    {
+     "name": "bay promenade arcade",
+     "part": "arcade",
+     "where": "bay-side edge along the outfield",
+     "center": [
+      -99,
+      40
+     ],
+     "size": [
+      8,
+      190
+     ],
+     "height": 9,
+     "settings": {
+      "colour": "#e6e0d2"
+     },
+     "why": "photo 3 shows a long promenade wall of round arches along the water edge"
+    },
+    {
+     "name": "steel light tower",
+     "part": "tower",
+     "where": "right-field corner at the bowl edge",
+     "center": [
+      90,
+      -60
+     ],
+     "height": 45,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 4,
+        "height": 40,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "flat"
+      },
+      "colour": "#4d5a5e"
+     },
+     "why": "photos 1 and 3 show tall open steel light towers, the highest points on the site"
+    }
+   ]
+  }
+ }
+}

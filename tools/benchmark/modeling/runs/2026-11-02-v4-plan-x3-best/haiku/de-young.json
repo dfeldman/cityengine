@@ -1,0 +1,252 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:02.131Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long, low, dark copper-clad box with almost no openings and a flat top, set under palms. A sheared, stepping observation tower rises behind it toward the rear right, its upper volume cantilevered over the lower stages. The recessed entrance sits on the front face toward the street.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [157, 76],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#5a3d2e\",\n      \"material\": \"metal\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 20, \"kind\": \"blank\", \"windows\": false}\n      ],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"twist\",\n      \"center\": [40, 10],\n      \"size\": [24, 24],\n      \"y0\": 0,\n      \"y1\": 44,\n      \"turn\": 15,\n      \"steps\": 16,\n      \"topScale\": 0.8,\n      \"material\": \"copper\",\n      \"colour\": \"#6b4a36\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -38],\n      \"size\": [30, 4],\n      \"y0\": 0,\n      \"y1\": 8,\n      \"material\": \"metal\",\n      \"colour\": \"#4b3428\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4209,
+   "output": 1066,
+   "cacheRead": 8401,
+   "cost": 0.0010379100000000002,
+   "ms": 5244,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long, low, dark copper-clad box with almost no openings and a flat top, set under palms. A sheared, stepping observation tower rises behind it toward the rear right, its upper volume cantilevered over the lower stages. The recessed entrance sits on the front face toward the street.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#5a3d2e",
+     "material": "metal",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 20,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "twist",
+     "center": [
+      40,
+      10
+     ],
+     "size": [
+      24,
+      24
+     ],
+     "y0": 0,
+     "y1": 44,
+     "turn": 15,
+     "steps": 16,
+     "topScale": 0.8,
+     "material": "copper",
+     "colour": "#6b4a36"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -38
+     ],
+     "size": [
+      30,
+      4
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "metal",
+     "colour": "#4b3428"
+    }
+   ]
+  },
+  "notes": "A long, low, dark copper-clad box with almost no openings and a flat top, set under palms. A sheared, stepping observation tower rises behind it toward the rear right, its upper volume cantilevered over the lower stages. The recessed entrance sits on the front face toward the street.",
+  "triangles": 180,
+  "parts": 5
+ },
+ "totals": {
+  "input": 7431,
+  "output": 1779,
+  "cost": 0.006737620000000001,
+  "ms": 8842
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\"photos\": [\"photo 1: wide three-quarter from the south-east access road, showing a long low copper-clad box with a flat roof under palms, and a tall boxy tower rising at the rear right, blue sky\", \"photo 2: close side view of the angular copper-clad wall with perforated panels and a sheared, stepping tower behind it, its upper volume cantilevered over the lower stages\", \"photo 3: front three-quarter from the street, a low copper-clad volume with the tall tower behind, palms in front, lions and a sculpture at the entrance\"],\n\"components\": [\n{\"name\": \"main copper box\", \"part\": \"block\", \"where\": \"the whole low body of the museum\", \"center\": [0, 0], \"size\": [157, 76], \"height\": 26,\n \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 20, \"kind\": \"blank\", \"windows\": false}], \"faces\": [], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#5a3d2e\"},\n \"why\": \"photos 1 and 3: a long low copper-clad box with almost no windows and a flat top\"},\n{\"name\": \"twisted observation tower\", \"part\": \"twist\", \"where\": \"behind the main body, toward the back right\", \"center\": [40, 10], \"size\": [24, 24], \"height\": 44,\n \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 22, \"height\": 14, \"kind\": \"blank\"}, {\"shape\": \"square\", \"width\": 22, \"height\": 14, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 24, \"height\": 16, \"kind\": \"blank\"}], \"taper\": 0.1, \"twist\": 15, \"colour\": \"#6b4a36\"},\n \"why\": \"photos 1 to 3: a sheared, twisting tower rising above the body, with a cantilevered upper volume\"},\n{\"name\": \"entrance court portal\", \"part\": \"box\", \"where\": \"the front entrance, facing the street\", \"center\": [0, -38], \"size\": [30, 4], \"height\": 8,\n \"settings\": {\"colour\": \"#4b3428\"},\n \"why\": \"photo 3: a recessed entrance on the front face\"}\n]}",
+  "input": 3222,
+  "output": 713,
+  "cost": 0.00069953,
+  "ms": 3598,
+  "json": {
+   "photos": [
+    "photo 1: wide three-quarter from the south-east access road, showing a long low copper-clad box with a flat roof under palms, and a tall boxy tower rising at the rear right, blue sky",
+    "photo 2: close side view of the angular copper-clad wall with perforated panels and a sheared, stepping tower behind it, its upper volume cantilevered over the lower stages",
+    "photo 3: front three-quarter from the street, a low copper-clad volume with the tall tower behind, palms in front, lions and a sculpture at the entrance"
+   ],
+   "components": [
+    {
+     "name": "main copper box",
+     "part": "block",
+     "where": "the whole low body of the museum",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "height": 26,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 20,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "faces": [],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#5a3d2e"
+     },
+     "why": "photos 1 and 3: a long low copper-clad box with almost no windows and a flat top"
+    },
+    {
+     "name": "twisted observation tower",
+     "part": "twist",
+     "where": "behind the main body, toward the back right",
+     "center": [
+      40,
+      10
+     ],
+     "size": [
+      24,
+      24
+     ],
+     "height": 44,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 22,
+        "height": 14,
+        "kind": "blank"
+       },
+       {
+        "shape": "square",
+        "width": 22,
+        "height": 14,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 24,
+        "height": 16,
+        "kind": "blank"
+       }
+      ],
+      "taper": 0.1,
+      "twist": 15,
+      "colour": "#6b4a36"
+     },
+     "why": "photos 1 to 3: a sheared, twisting tower rising above the body, with a cantilevered upper volume"
+    },
+    {
+     "name": "entrance court portal",
+     "part": "box",
+     "where": "the front entrance, facing the street",
+     "center": [
+      0,
+      -38
+     ],
+     "size": [
+      30,
+      4
+     ],
+     "height": 8,
+     "settings": {
+      "colour": "#4b3428"
+     },
+     "why": "photo 3: a recessed entrance on the front face"
+    }
+   ]
+  }
+ },
+ "selected": {
+  "from": 3,
+  "valid": 3,
+  "pick": "de-young.s1",
+  "why": "It has the long, low, dark bronze massing with a stepped, tapered tower at one end, which matches the de Young's perforated copper-brown walls and tower better than the plain cube towers of models 2 and 3.",
+  "selectorCost": 0.0005053
+ }
+}

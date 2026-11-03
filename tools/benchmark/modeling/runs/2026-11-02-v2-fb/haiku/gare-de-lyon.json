@@ -1,0 +1,505 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:45.629Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Gare de Lyon: a long Beaux-Arts station front along the street (−z) with a mansard slate roof, tall arched ground-floor windows and a square clock tower with a dome at the front-right corner (+x). Behind it, three long barrel-roofed train sheds run back along the tracks (+z), grey metal and slate. Side blocks sit at the rear corners.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -96], \"size\": [180, 22], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8d0bc\", \"windows\": {\"kind\": \"arched\", \"floor\": 5.5, \"pitch\": 6, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -96], \"size\": [180, 22], \"y0\": 22, \"rise\": 8, \"material\": \"tile\", \"colour\": \"#4a5258\"},\n    {\"type\": \"box\", \"center\": [62, -96], \"size\": [16, 16], \"y0\": 0, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#e2dccd\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [62, -96], \"size\": [18, 18], \"y0\": 40, \"y1\": 44, \"material\": \"stone\", \"colour\": \"#d8d0bc\"},\n    {\"type\": \"dome\", \"center\": [62, -96], \"radius\": 8, \"y0\": 52, \"height\": 13, \"material\": \"metal\", \"colour\": \"#7d878d\"},\n    {\"type\": \"cylinder\", \"center\": [62, -96], \"radius\": 1.5, \"radiusTop\": 0, \"y0\": 65, \"y1\": 67, \"material\": \"metal\", \"colour\": \"#5a6166\"},\n    {\"type\": \"vault\", \"center\": [-45, 15], \"size\": [40, 190], \"y0\": 16, \"rise\": 12, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#6b7075\", \"ends\": \"open\"},\n    {\"type\": \"vault\", \"center\": [0, 15], \"size\": [40, 190], \"y0\": 16, \"rise\": 12, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#6b7075\", \"ends\": \"open\"},\n    {\"type\": \"vault\", \"center\": [45, 15], \"size\": [40, 190], \"y0\": 16, \"rise\": 12, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#6b7075\", \"ends\": \"open\"},\n    {\"type\": \"box\", \"center\": [-72, 80], \"size\": [36, 50], \"y0\": 0, \"y1\": 30, \"material\": \"stucco\", \"colour\": \"#e0dcd2\", \"windows\": {\"kind\": \"punched\", \"floor\": 3.5, \"pitch\": 3.5}},\n    {\"type\": \"box\", \"center\": [76, 50], \"size\": [28, 110], \"y0\": 0, \"y1\": 24, \"material\": \"stucco\", \"colour\": \"#dcd6c8\", \"windows\": {\"kind\": \"punched\", \"floor\": 3.5, \"pitch\": 3.5}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3370,
+   "output": 2165,
+   "cacheRead": 7616,
+   "cost": 0.00149566,
+   "ms": 10325,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real station:\n\n1. **The train sheds are far too tall and fat.** They read as three giant drums in the views. The real roofs are low, shallow barrels with a ridge, so the springing height and rise must come down.\n2. **The office and hotel blocks are too uniform.** Both are covered in punched windows, but the real rear blocks are long, flat-faced buildings with horizontal banding and a sheer face, not dotted holes.\n3. **The front mansard and the clock tower are about right, but the tower's dome is slightly undersized.** The real dome is a broad grey drum with a lantern, so I'm widening it slightly and keeping the same top height.\n\n```json\n{\n  \"notes\": \"Gare de Lyon: a long Beaux-Arts station front along the street (−z) with a mansard slate roof and tall arched ground-floor windows, and a square clock tower with a dome at the front-right corner (+x). Behind it, three long, low barrel-roofed train sheds run back along the tracks (+z), grey metal. The rear blocks are long, flat-faced office buildings with horizontal banding. Corrected: lower, flatter sheds; banded office blocks; slightly broader tower dome.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -96], \"size\": [180, 22], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8d0bc\", \"windows\": {\"kind\": \"arched\", \"floor\": 5.5, \"pitch\": 6, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -96], \"size\": [180, 22], \"y0\": 22, \"rise\": 8, \"material\": \"tile\", \"colour\": \"#4a5258\"},\n    {\"type\": \"box\", \"center\": [62, -96], \"size\": [16, 16], \"y0\": 0, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#e2dccd\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [62, -96], \"size\": [18, 18], \"y0\": 40, \"y1\": 44, \"material\": \"stone\", \"colour\": \"#d8d0bc\"},\n    {\"type\": \"cylinder\", \"center\": [62, -96], \"radius\": 8.5, \"y0\": 50, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#d8d0bc\"},\n    {\"type\": \"dome\", \"center\": [62, -96], \"radius\": 9, \"y0\": 52, \"height\": 13, \"material\": \"metal\", \"colour\": \"#7d878d\"},\n    {\"type\": \"cylinder\", \"center\": [62, -96], \"radius\": 1.5, \"radiusTop\": 0, \"y0\": 65, \"y1\": 67, \"material\": \"metal\", \"colour\": \"#5a6166\"},\n    {\"type\": \"vault\", \"center\": [-45, 15], \"size\": [40, 190], \"y0\": 13, \"rise\": 7, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#6b7075\", \"ends\": \"open\"},\n    {\"type\": \"vault\", \"center\": [0, 15], \"size\": [40, 190], \"y0\": 13, \"rise\": 7, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#6b7075\", \"ends\": \"open\"},\n    {\"type\": \"vault\", \"center\": [45, 15], \"size\": [40, 190], \"y0\": 13, \"rise\": 7, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#6b7075\", \"ends\": \"open\"},\n    {\"type\": \"box\", \"center\": [-72, 80], \"size\": [36, 50], \"y0\": 0, \"y1\": 30, \"material\": \"stucco\", \"colour\": \"#e0dcd2\", \"windows\": {\"kind\": \"bands\", \"floor\": 3.5}},\n    {\"type\": \"box\", \"center\": [76, 50], \"size\": [28, 110], \"y0\": 0, \"y1\": 24, \"material\": \"stucco\", \"colour\": \"#dcd6c8\", \"windows\": {\"kind\": \"bands\", \"floor\": 3.5}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 7001,
+   "output": 1998,
+   "cacheRead": 7616,
+   "cost": 0.0017752600000000003,
+   "ms": 8588,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Gare de Lyon: a long Beaux-Arts station front along the street (−z) with a mansard slate roof and tall arched ground-floor windows, and a square clock tower with a dome at the front-right corner (+x). Behind it, three long, low barrel-roofed train sheds run back along the tracks (+z), grey metal. The rear blocks are long, flat-faced office buildings with horizontal banding. Corrected: lower, flatter sheds; banded office blocks; slightly broader tower dome.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -96
+     ],
+     "size": [
+      180,
+      22
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8d0bc",
+     "windows": {
+      "kind": "arched",
+      "floor": 5.5,
+      "pitch": 6,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -96
+     ],
+     "size": [
+      180,
+      22
+     ],
+     "y0": 22,
+     "rise": 8,
+     "material": "tile",
+     "colour": "#4a5258"
+    },
+    {
+     "type": "box",
+     "center": [
+      62,
+      -96
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 0,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#e2dccd",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      62,
+      -96
+     ],
+     "size": [
+      18,
+      18
+     ],
+     "y0": 40,
+     "y1": 44,
+     "material": "stone",
+     "colour": "#d8d0bc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      62,
+      -96
+     ],
+     "radius": 8.5,
+     "y0": 50,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#d8d0bc"
+    },
+    {
+     "type": "dome",
+     "center": [
+      62,
+      -96
+     ],
+     "radius": 9,
+     "y0": 52,
+     "height": 13,
+     "material": "metal",
+     "colour": "#7d878d"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      62,
+      -96
+     ],
+     "radius": 1.5,
+     "radiusTop": 0,
+     "y0": 65,
+     "y1": 67,
+     "material": "metal",
+     "colour": "#5a6166"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -45,
+      15
+     ],
+     "size": [
+      40,
+      190
+     ],
+     "y0": 13,
+     "rise": 7,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#6b7075",
+     "ends": "open"
+    },
+    {
+     "type": "vault",
+     "center": [
+      0,
+      15
+     ],
+     "size": [
+      40,
+      190
+     ],
+     "y0": 13,
+     "rise": 7,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#6b7075",
+     "ends": "open"
+    },
+    {
+     "type": "vault",
+     "center": [
+      45,
+      15
+     ],
+     "size": [
+      40,
+      190
+     ],
+     "y0": 13,
+     "rise": 7,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#6b7075",
+     "ends": "open"
+    },
+    {
+     "type": "box",
+     "center": [
+      -72,
+      80
+     ],
+     "size": [
+      36,
+      50
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stucco",
+     "colour": "#e0dcd2",
+     "windows": {
+      "kind": "bands",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      76,
+      50
+     ],
+     "size": [
+      28,
+      110
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stucco",
+     "colour": "#dcd6c8",
+     "windows": {
+      "kind": "bands",
+      "floor": 3.5
+     }
+    }
+   ]
+  },
+  "notes": "Gare de Lyon: a long Beaux-Arts station front along the street (−z) with a mansard slate roof and tall arched ground-floor windows, and a square clock tower with a dome at the front-right corner (+x). Behind it, three long, low barrel-roofed train sheds run back along the tracks (+z), grey metal. The rear blocks are long, flat-faced office buildings with horizontal banding. Corrected: lower, flatter sheds; banded office blocks; slightly broader tower dome.",
+  "triangles": 2858,
+  "parts": 12
+ },
+ "totals": {
+  "input": 10371,
+  "output": 4163,
+  "cost": 0.00327092,
+  "ms": 18913
+ },
+ "draft": {
+  "json": {
+   "notes": "Gare de Lyon: a long Beaux-Arts station front along the street (−z) with a mansard slate roof, tall arched ground-floor windows and a square clock tower with a dome at the front-right corner (+x). Behind it, three long barrel-roofed train sheds run back along the tracks (+z), grey metal and slate. Side blocks sit at the rear corners.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -96
+     ],
+     "size": [
+      180,
+      22
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8d0bc",
+     "windows": {
+      "kind": "arched",
+      "floor": 5.5,
+      "pitch": 6,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -96
+     ],
+     "size": [
+      180,
+      22
+     ],
+     "y0": 22,
+     "rise": 8,
+     "material": "tile",
+     "colour": "#4a5258"
+    },
+    {
+     "type": "box",
+     "center": [
+      62,
+      -96
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 0,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#e2dccd",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      62,
+      -96
+     ],
+     "size": [
+      18,
+      18
+     ],
+     "y0": 40,
+     "y1": 44,
+     "material": "stone",
+     "colour": "#d8d0bc"
+    },
+    {
+     "type": "dome",
+     "center": [
+      62,
+      -96
+     ],
+     "radius": 8,
+     "y0": 52,
+     "height": 13,
+     "material": "metal",
+     "colour": "#7d878d"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      62,
+      -96
+     ],
+     "radius": 1.5,
+     "radiusTop": 0,
+     "y0": 65,
+     "y1": 67,
+     "material": "metal",
+     "colour": "#5a6166"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -45,
+      15
+     ],
+     "size": [
+      40,
+      190
+     ],
+     "y0": 16,
+     "rise": 12,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#6b7075",
+     "ends": "open"
+    },
+    {
+     "type": "vault",
+     "center": [
+      0,
+      15
+     ],
+     "size": [
+      40,
+      190
+     ],
+     "y0": 16,
+     "rise": 12,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#6b7075",
+     "ends": "open"
+    },
+    {
+     "type": "vault",
+     "center": [
+      45,
+      15
+     ],
+     "size": [
+      40,
+      190
+     ],
+     "y0": 16,
+     "rise": 12,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#6b7075",
+     "ends": "open"
+    },
+    {
+     "type": "box",
+     "center": [
+      -72,
+      80
+     ],
+     "size": [
+      36,
+      50
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stucco",
+     "colour": "#e0dcd2",
+     "windows": {
+      "kind": "punched",
+      "floor": 3.5,
+      "pitch": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      76,
+      50
+     ],
+     "size": [
+      28,
+      110
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stucco",
+     "colour": "#dcd6c8",
+     "windows": {
+      "kind": "punched",
+      "floor": 3.5,
+      "pitch": 3.5
+     }
+    }
+   ]
+  },
+  "notes": "Gare de Lyon: a long Beaux-Arts station front along the street (−z) with a mansard slate roof, tall arched ground-floor windows and a square clock tower with a dome at the front-right corner (+x). Behind it, three long barrel-roofed train sheds run back along the tracks (+z), grey metal and slate. Side blocks sit at the rear corners.",
+  "triangles": 4358,
+  "parts": 11
+ }
+}

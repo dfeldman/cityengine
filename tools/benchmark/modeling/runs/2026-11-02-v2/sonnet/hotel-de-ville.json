@@ -1,0 +1,575 @@
+{
+ "building": "hotel-de-ville",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:54.786Z",
+ "userText": "Building: Hôtel de Ville, Paris (city hall).\nThe front (−z) is the west front on the Place de l’Hôtel-de-Ville.\nFootprint: 144.1 m along x by 89.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-72.1,-40.9],[-71,-41.7],[-29.9,-44.5],[27.4,-44.6],[71,-41.4],[72,-39.5],[72.1,40.6],[71.3,41.5],[38.4,44.5],[29.1,44.6],[-38.2,44.5],[-71.2,40.6],[-72.1,39.8]]\nHeight: the highest point is 55 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the square: central clock tower, corner pavilions and steep slate roofs, daylight\n  2. three-quarter from a bridge along the river side, showing the long wing, towers and mansard roofs\n  3. view along the long flank facade with its repeated arched bays and mansard roof\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   144.1,
+   89.1
+  ],
+  "outline": [
+   [
+    -72.1,
+    -40.9
+   ],
+   [
+    -71,
+    -41.7
+   ],
+   [
+    -29.9,
+    -44.5
+   ],
+   [
+    27.4,
+    -44.6
+   ],
+   [
+    71,
+    -41.4
+   ],
+   [
+    72,
+    -39.5
+   ],
+   [
+    72.1,
+    40.6
+   ],
+   [
+    71.3,
+    41.5
+   ],
+   [
+    38.4,
+    44.5
+   ],
+   [
+    29.1,
+    44.6
+   ],
+   [
+    -38.2,
+    44.5
+   ],
+   [
+    -71.2,
+    40.6
+   ],
+   [
+    -72.1,
+    39.8
+   ]
+  ],
+  "height": 55,
+  "turn": -19.9
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Hôtel de Ville is a large rectangular Neo-Renaissance block around an inner courtyard. It has a pale stone body of about 22 m with arched windows and a ground-floor arcade of bays. Steep grey slate mansard roofs sit on top, with tall corner and mid-facade pavilions with their own steep roofs. The central clock tower (belfry, slate spire) rises on the front, with tall chimney stacks. Modelled as four wings around a court, corner pavilions with mansards, a central clock pavilion and tower, and chimney stacks.\",\"parts\":[{\"type\":\"box\",\"center\":[0,-35],\"size\":[142,18],\"y0\":0,\"y1\":21,\"material\":\"stone\",\"colour\":\"#cfc4ae\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"box\",\"center\":[0,35],\"size\":[142,18],\"y0\":0,\"y1\":21,\"material\":\"stone\",\"colour\":\"#cfc4ae\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"box\",\"center\":[-63,0],\"size\":[18,60],\"y0\":0,\"y1\":21,\"material\":\"stone\",\"colour\":\"#cfc4ae\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"box\",\"center\":[63,0],\"size\":[18,60],\"y0\":0,\"y1\":21,\"material\":\"stone\",\"colour\":\"#cfc4ae\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[0,-35],\"size\":[142,18],\"y0\":21,\"rise\":9,\"material\":\"tile\",\"colour\":\"#575b66\",\"ridge\":\"x\"},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[0,35],\"size\":[142,18],\"y0\":21,\"rise\":9,\"material\":\"tile\",\"colour\":\"#575b66\",\"ridge\":\"x\"},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-63,0],\"size\":[18,60],\"y0\":21,\"rise\":9,\"material\":\"tile\",\"colour\":\"#575b66\",\"ridge\":\"z\"},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[63,0],\"size\":[18,60],\"y0\":21,\"rise\":9,\"material\":\"tile\",\"colour\":\"#575b66\",\"ridge\":\"z\"},{\"type\":\"box\",\"center\":[-60,-34],\"size\":[22,20],\"y0\":0,\"y1\":28,\"material\":\"stone\",\"colour\":\"#d3c8b2\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-60,-34],\"size\":[22,20],\"y0\":28,\"rise\":14,\"material\":\"tile\",\"colour\":\"#575b66\"},{\"type\":\"box\",\"center\":[60,-34],\"size\":[22,20],\"y0\":0,\"y1\":28,\"material\":\"stone\",\"colour\":\"#d3c8b2\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[60,-34],\"size\":[22,20],\"y0\":28,\"rise\":14,\"material\":\"tile\",\"colour\":\"#575b66\"},{\"type\":\"box\",\"center\":[-60,34],\"size\":[22,20],\"y0\":0,\"y1\":28,\"material\":\"stone\",\"colour\":\"#d3c8b2\"},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-60,34],\"size\":[22,20],\"y0\":28,\"rise\":14,\"material\":\"tile\",\"colour\":\"#575b66\"},{\"type\":\"box\",\"center\":[60,34],\"size\":[22,20],\"y0\":0,\"y1\":28,\"material\":\"stone\",\"colour\":\"#d3c8b2\"},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[60,34],\"size\":[22,20],\"y0\":28,\"rise\":14,\"material\":\"tile\",\"colour\":\"#575b66\"},{\"type\":\"box\",\"center\":[0,-36],\"size\":[26,16],\"y0\":0,\"y1\":30,\"material\":\"stone\",\"colour\":\"#d3c8b2\",\"windows\":{\"kind\":\"arched\",\"floor\":7,\"pitch\":4,\"solid\":0.55}},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[0,-36],\"size\":[26,16],\"y0\":30,\"rise\":10,\"material\":\"tile\",\"colour\":\"#575b66\"},{\"type\":\"box\",\"center\":[0,-34],\"size\":[9,9],\"y0\":38,\"y1\":46,\"material\":\"stone\",\"colour\":\"#4d525e\"},{\"type\":\"cylinder\",\"center\":[0,-34],\"radius\":4,\"radiusTop\":2.5,\"y0\":46,\"y1\":50,\"sides\":8,\"material\":\"tile\",\"colour\":\"#4d525e\"},{\"type\":\"dome\",\"center\":[0,-34],\"radius\":2.6,\"y0\":50,\"height\":3.5,\"material\":\"tile\",\"colour\":\"#4d525e\"},{\"type\":\"cylinder\",\"center\":[0,-34],\"radius\":0.3,\"radiusTop\":0,\"y0\":53.5,\"y1\":55,\"material\":\"metal\"},{\"type\":\"box\",\"center\":[-30,-36],\"size\":[5,5],\"y0\":28,\"y1\":42,\"material\":\"stone\",\"colour\":\"#d8cfba\"},{\"type\":\"box\",\"center\":[30,-36],\"size\":[5,5],\"y0\":28,\"y1\":42,\"material\":\"stone\",\"colour\":\"#d8cfba\"},{\"type\":\"box\",\"center\":[-15,0],\"size\":[5,5],\"y0\":28,\"y1\":40,\"material\":\"stone\",\"colour\":\"#d8cfba\"},{\"type\":\"box\",\"center\":[15,0],\"size\":[5,5],\"y0\":28,\"y1\":40,\"material\":\"stone\",\"colour\":\"#d8cfba\"},{\"type\":\"box\",\"center\":[60,-34],\"size\":[6,6],\"y0\":42,\"y1\":55,\"material\":\"tile\",\"colour\":\"#575b66\"},{\"type\":\"box\",\"center\":[0,0],\"size\":[100,40],\"y0\":0,\"y1\":0.3,\"material\":\"stone\",\"colour\":\"#b8b0a0\"}]}",
+   "stop": "end_turn",
+   "input": 3510,
+   "output": 2052,
+   "cacheRead": 7616,
+   "cost": 0.0290632,
+   "ms": 11743,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Hôtel de Ville is a large rectangular Neo-Renaissance block around an inner courtyard. It has a pale stone body of about 22 m with arched windows and a ground-floor arcade of bays. Steep grey slate mansard roofs sit on top, with tall corner and mid-facade pavilions with their own steep roofs. The central clock tower (belfry, slate spire) rises on the front, with tall chimney stacks. Modelled as four wings around a court, corner pavilions with mansards, a central clock pavilion and tower, and chimney stacks.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -35
+     ],
+     "size": [
+      142,
+      18
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#cfc4ae",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      35
+     ],
+     "size": [
+      142,
+      18
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#cfc4ae",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -63,
+      0
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#cfc4ae",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      63,
+      0
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#cfc4ae",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -35
+     ],
+     "size": [
+      142,
+      18
+     ],
+     "y0": 21,
+     "rise": 9,
+     "material": "tile",
+     "colour": "#575b66",
+     "ridge": "x"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      35
+     ],
+     "size": [
+      142,
+      18
+     ],
+     "y0": 21,
+     "rise": 9,
+     "material": "tile",
+     "colour": "#575b66",
+     "ridge": "x"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -63,
+      0
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 21,
+     "rise": 9,
+     "material": "tile",
+     "colour": "#575b66",
+     "ridge": "z"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      63,
+      0
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 21,
+     "rise": 9,
+     "material": "tile",
+     "colour": "#575b66",
+     "ridge": "z"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      -34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "stone",
+     "colour": "#d3c8b2",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -60,
+      -34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 28,
+     "rise": 14,
+     "material": "tile",
+     "colour": "#575b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      -34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "stone",
+     "colour": "#d3c8b2",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      60,
+      -34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 28,
+     "rise": 14,
+     "material": "tile",
+     "colour": "#575b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "stone",
+     "colour": "#d3c8b2"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -60,
+      34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 28,
+     "rise": 14,
+     "material": "tile",
+     "colour": "#575b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "stone",
+     "colour": "#d3c8b2"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      60,
+      34
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 28,
+     "rise": 14,
+     "material": "tile",
+     "colour": "#575b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -36
+     ],
+     "size": [
+      26,
+      16
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d3c8b2",
+     "windows": {
+      "kind": "arched",
+      "floor": 7,
+      "pitch": 4,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -36
+     ],
+     "size": [
+      26,
+      16
+     ],
+     "y0": 30,
+     "rise": 10,
+     "material": "tile",
+     "colour": "#575b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -34
+     ],
+     "size": [
+      9,
+      9
+     ],
+     "y0": 38,
+     "y1": 46,
+     "material": "stone",
+     "colour": "#4d525e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -34
+     ],
+     "radius": 4,
+     "radiusTop": 2.5,
+     "y0": 46,
+     "y1": 50,
+     "sides": 8,
+     "material": "tile",
+     "colour": "#4d525e"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -34
+     ],
+     "radius": 2.6,
+     "y0": 50,
+     "height": 3.5,
+     "material": "tile",
+     "colour": "#4d525e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -34
+     ],
+     "radius": 0.3,
+     "radiusTop": 0,
+     "y0": 53.5,
+     "y1": 55,
+     "material": "metal"
+    },
+    {
+     "type": "box",
+     "center": [
+      -30,
+      -36
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 28,
+     "y1": 42,
+     "material": "stone",
+     "colour": "#d8cfba"
+    },
+    {
+     "type": "box",
+     "center": [
+      30,
+      -36
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 28,
+     "y1": 42,
+     "material": "stone",
+     "colour": "#d8cfba"
+    },
+    {
+     "type": "box",
+     "center": [
+      -15,
+      0
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 28,
+     "y1": 40,
+     "material": "stone",
+     "colour": "#d8cfba"
+    },
+    {
+     "type": "box",
+     "center": [
+      15,
+      0
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 28,
+     "y1": 40,
+     "material": "stone",
+     "colour": "#d8cfba"
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      -34
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 42,
+     "y1": 55,
+     "material": "tile",
+     "colour": "#575b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      100,
+      40
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "stone",
+     "colour": "#b8b0a0"
+    }
+   ]
+  },
+  "notes": "Hôtel de Ville is a large rectangular Neo-Renaissance block around an inner courtyard. It has a pale stone body of about 22 m with arched windows and a ground-floor arcade of bays. Steep grey slate mansard roofs sit on top, with tall corner and mid-facade pavilions with their own steep roofs. The central clock tower (belfry, slate spire) rises on the front, with tall chimney stacks. Modelled as four wings around a court, corner pavilions with mansards, a central clock pavilion and tower, and chimney stacks.",
+  "triangles": 7262,
+  "parts": 28
+ },
+ "totals": {
+  "input": 3510,
+  "output": 2052,
+  "cost": 0.0290632,
+  "ms": 11743
+ }
+}

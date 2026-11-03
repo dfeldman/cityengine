@@ -1,0 +1,348 @@
+{
+ "building": "sfmoma",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:11.043Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The San Francisco MoMA is a brick-clad Botta block at the front, with a striped cylindrical drum and glass oculus projecting from its centre, and a white, glass-banded Snohetta extension rising behind it to the tallest mass. Lower brick wings sit left and right of the drum. The cylinder and oculus are the signature features, so they are modelled at the front centre.\",\n\"parts\": [\n{\"type\": \"block\", \"center\": [-5, 18], \"size\": [108, 40], \"y0\": 0, \"colour\": \"#e8e6e0\", \"material\": \"concrete\", \"storeys\": [{\"height\": 14, \"kind\": \"blank\", \"windows\": false}, {\"height\": 12, \"kind\": \"bands\"}, {\"height\": 12, \"kind\": \"bands\"}], \"roof\": {\"kind\": \"flat\"}},\n{\"type\": \"block\", \"center\": [-22, -22], \"size\": [64, 40], \"y0\": 0, \"colour\": \"#a8583a\", \"material\": \"brick\", \"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 8, \"kind\": \"bands\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}},\n{\"type\": \"block\", \"center\": [33, -18], \"size\": [44, 48], \"y0\": 0, \"colour\": \"#a8583a\", \"material\": \"brick\", \"storeys\": [{\"height\": 9, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}},\n{\"type\": \"cylinder\", \"center\": [-21, -35], \"radius\": 7, \"y0\": 0, \"y1\": 22, \"colour\": \"#f2f2f2\", \"material\": \"concrete\", \"sides\": 32},\n{\"type\": \"disc\", \"center\": [-21, 14, -42.3], \"radius\": 5, \"facing\": \"front\", \"colour\": \"#9fc5c8\", \"material\": \"glass\"}\n]}",
+   "stop": "end_turn",
+   "input": 4831,
+   "output": 1740,
+   "cacheRead": 8401,
+   "cost": 0.0014371100000000001,
+   "ms": 8911,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The San Francisco MoMA is a brick-clad Botta block at the front, with a striped cylindrical drum and glass oculus projecting from its centre, and a white, glass-banded Snohetta extension rising behind it to the tallest mass. Lower brick wings sit left and right of the drum. The cylinder and oculus are the signature features, so they are modelled at the front centre.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -5,
+      18
+     ],
+     "size": [
+      108,
+      40
+     ],
+     "y0": 0,
+     "colour": "#e8e6e0",
+     "material": "concrete",
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 12,
+       "kind": "bands"
+      },
+      {
+       "height": 12,
+       "kind": "bands"
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      -22
+     ],
+     "size": [
+      64,
+      40
+     ],
+     "y0": 0,
+     "colour": "#a8583a",
+     "material": "brick",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 8,
+       "kind": "bands",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      33,
+      -18
+     ],
+     "size": [
+      44,
+      48
+     ],
+     "y0": 0,
+     "colour": "#a8583a",
+     "material": "brick",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -21,
+      -35
+     ],
+     "radius": 7,
+     "y0": 0,
+     "y1": 22,
+     "colour": "#f2f2f2",
+     "material": "concrete",
+     "sides": 32
+    },
+    {
+     "type": "disc",
+     "center": [
+      -21,
+      14,
+      -42.3
+     ],
+     "radius": 5,
+     "facing": "front",
+     "colour": "#9fc5c8",
+     "material": "glass"
+    }
+   ]
+  },
+  "notes": "The San Francisco MoMA is a brick-clad Botta block at the front, with a striped cylindrical drum and glass oculus projecting from its centre, and a white, glass-banded Snohetta extension rising behind it to the tallest mass. Lower brick wings sit left and right of the drum. The cylinder and oculus are the signature features, so they are modelled at the front centre.",
+  "triangles": 322,
+  "parts": 14
+ },
+ "totals": {
+  "input": 8314,
+  "output": 4586,
+  "cost": 0.0032292400000000004,
+  "ms": 22456
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\"photo 1: the Third Street front from the south-west, showing the brick stepped masses flanking the striped cylindrical oculus, the white Snohetta extension with horizontal glass bands rising behind, and towers beyond.\", \"photo 2: corner three-quarter view of the brick facade with the striped cylinder, the white extension at left, and the Art Deco towers beyond.\", \"photo 3: view from the Yerba Buena garden side showing the low stepped brick masses, the striped cylinder at centre, and the glass-banded white extension behind and to the right.\"],\n  \"components\": [\n    {\"name\": \"white extension\", \"part\": \"block\", \"where\": \"rear half of the footprint, behind the brick\", \"center\": [-5, 18], \"size\": [108, 40], \"height\": 38,\n     \"settings\": {\"storeys\": [{\"height\": 14, \"kind\": \"blank\", \"windows\": false}, {\"height\": 12, \"kind\": \"bands\"}, {\"height\": 12, \"kind\": \"bands\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#e8e6e0\"},\n     \"why\": \"photos 1 and 2: the white Snohetta extension is the tallest mass, with horizontal glass bands and a sloping, stepped top\"},\n    {\"name\": \"brick front block\", \"part\": \"block\", \"where\": \"front left of the footprint, the main brick mass\", \"center\": [-22, -22], \"size\": [64, 40], \"height\": 14,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 8, \"kind\": \"bands\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a0522d\"},\n     \"why\": \"photos 1 and 3: the stepped brick-clad masses are the Botta building's main body, with little or no window opening\"},\n    {\"name\": \"brick east block\", \"part\": \"block\", \"where\": \"front right of the footprint, lower brick wing\", \"center\": [33, -18], \"size\": [44, 48], \"height\": 9,\n     \"settings\": {\"storeys\": [{\"height\": 9, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a0522d\"},\n     \"why\": \"photos 1 and 2: a lower brick mass lies to the right of the cylinder\"},\n    {\"name\": \"striped cylinder\", \"part\": \"cylinder\", \"where\": \"centre of the front, projecting from the brick\", \"center\": [-21, -40], \"height\": 22,\n     \"settings\": {\"radius\": 7, \"height\": 22, \"colour\": \"#f2f2f2\"},\n     \"why\": \"photos 1 to 3: the striped cylindrical drum is the building's signature feature, rising above the brick\"},\n    {\"name\": \"glass oculus\", \"part\": \"disc\", \"where\": \"face of the striped cylinder\", \"center\": [-21, -42.5], \"radius\": 5, \"height\": 22,\n     \"settings\": {\"radius\": 5, \"colour\": \"#9fc5c8\"},\n     \"why\": \"photos 1 to 3: the glass oculus sits inside the striped ring\"}\n  ]\n}\n```",
+  "input": 3483,
+  "output": 2846,
+  "cost": 0.00179213,
+  "ms": 13545,
+  "json": {
+   "photos": [
+    "photo 1: the Third Street front from the south-west, showing the brick stepped masses flanking the striped cylindrical oculus, the white Snohetta extension with horizontal glass bands rising behind, and towers beyond.",
+    "photo 2: corner three-quarter view of the brick facade with the striped cylinder, the white extension at left, and the Art Deco towers beyond.",
+    "photo 3: view from the Yerba Buena garden side showing the low stepped brick masses, the striped cylinder at centre, and the glass-banded white extension behind and to the right."
+   ],
+   "components": [
+    {
+     "name": "white extension",
+     "part": "block",
+     "where": "rear half of the footprint, behind the brick",
+     "center": [
+      -5,
+      18
+     ],
+     "size": [
+      108,
+      40
+     ],
+     "height": 38,
+     "settings": {
+      "storeys": [
+       {
+        "height": 14,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 12,
+        "kind": "bands"
+       },
+       {
+        "height": 12,
+        "kind": "bands"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#e8e6e0"
+     },
+     "why": "photos 1 and 2: the white Snohetta extension is the tallest mass, with horizontal glass bands and a sloping, stepped top"
+    },
+    {
+     "name": "brick front block",
+     "part": "block",
+     "where": "front left of the footprint, the main brick mass",
+     "center": [
+      -22,
+      -22
+     ],
+     "size": [
+      64,
+      40
+     ],
+     "height": 14,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 8,
+        "kind": "bands",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a0522d"
+     },
+     "why": "photos 1 and 3: the stepped brick-clad masses are the Botta building's main body, with little or no window opening"
+    },
+    {
+     "name": "brick east block",
+     "part": "block",
+     "where": "front right of the footprint, lower brick wing",
+     "center": [
+      33,
+      -18
+     ],
+     "size": [
+      44,
+      48
+     ],
+     "height": 9,
+     "settings": {
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a0522d"
+     },
+     "why": "photos 1 and 2: a lower brick mass lies to the right of the cylinder"
+    },
+    {
+     "name": "striped cylinder",
+     "part": "cylinder",
+     "where": "centre of the front, projecting from the brick",
+     "center": [
+      -21,
+      -40
+     ],
+     "height": 22,
+     "settings": {
+      "radius": 7,
+      "height": 22,
+      "colour": "#f2f2f2"
+     },
+     "why": "photos 1 to 3: the striped cylindrical drum is the building's signature feature, rising above the brick"
+    },
+    {
+     "name": "glass oculus",
+     "part": "disc",
+     "where": "face of the striped cylinder",
+     "center": [
+      -21,
+      -42.5
+     ],
+     "radius": 5,
+     "height": 22,
+     "settings": {
+      "radius": 5,
+      "colour": "#9fc5c8"
+     },
+     "why": "photos 1 to 3: the glass oculus sits inside the striped ring"
+    }
+   ]
+  }
+ }
+}

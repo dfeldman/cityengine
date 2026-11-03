@@ -1,0 +1,352 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:38.518Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The Bibliothèque nationale de France is a raised stone-grey esplanade ring round a sunken garden, with four tall gold-grey glass corner towers standing on it: the two north-east and south-east towers rise to about 79 m, and the two western towers to about 66 m. The towers are plain curtain-glass slabs, so no windows are added to the podium and no ornament is needed.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [330, 170],\n      \"wing\": 35,\n      \"open\": \"none\",\n      \"courtColonnade\": false,\n      \"y0\": 0,\n      \"bay\": 5,\n      \"storeys\": [{\"height\": 12, \"kind\": \"blank\", \"windows\": false}],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#c9bfae\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [148, -66],\n      \"size\": [28, 28],\n      \"y0\": 12,\n      \"storeys\": [{\"height\": 67, \"kind\": \"curtain\"}],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#b8a98a\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [148, 66],\n      \"size\": [28, 28],\n      \"y0\": 12,\n      \"storeys\": [{\"height\": 67, \"kind\": \"curtain\"}],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#b8a98a\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-148, -66],\n      \"size\": [28, 28],\n      \"y0\": 12,\n      \"storeys\": [{\"height\": 54, \"kind\": \"curtain\"}],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#b8a98a\",\n      \"material\": \"glass\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-148, 66],\n      \"size\": [28, 28],\n      \"y0\": 12,\n      \"storeys\": [{\"height\": 54, \"kind\": \"curtain\"}],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#b8a98a\",\n      \"material\": \"glass\"\n    }\n  ]\n}",
+   "stop": "end_turn",
+   "input": 4643,
+   "output": 1464,
+   "cacheRead": 8401,
+   "cost": 0.00128031,
+   "ms": 6630,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Bibliothèque nationale de France is a raised stone-grey esplanade ring round a sunken garden, with four tall gold-grey glass corner towers standing on it: the two north-east and south-east towers rise to about 79 m, and the two western towers to about 66 m. The towers are plain curtain-glass slabs, so no windows are added to the podium and no ornament is needed.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "wing": 35,
+     "open": "none",
+     "courtColonnade": false,
+     "y0": 0,
+     "bay": 5,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#c9bfae",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      148,
+      -66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "y0": 12,
+     "storeys": [
+      {
+       "height": 67,
+       "kind": "curtain"
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b8a98a",
+     "material": "glass"
+    },
+    {
+     "type": "block",
+     "center": [
+      148,
+      66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "y0": 12,
+     "storeys": [
+      {
+       "height": 67,
+       "kind": "curtain"
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b8a98a",
+     "material": "glass"
+    },
+    {
+     "type": "block",
+     "center": [
+      -148,
+      -66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "y0": 12,
+     "storeys": [
+      {
+       "height": 54,
+       "kind": "curtain"
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b8a98a",
+     "material": "glass"
+    },
+    {
+     "type": "block",
+     "center": [
+      -148,
+      66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "y0": 12,
+     "storeys": [
+      {
+       "height": 54,
+       "kind": "curtain"
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b8a98a",
+     "material": "glass"
+    }
+   ]
+  },
+  "notes": "The Bibliothèque nationale de France is a raised stone-grey esplanade ring round a sunken garden, with four tall gold-grey glass corner towers standing on it: the two north-east and south-east towers rise to about 79 m, and the two western towers to about 66 m. The towers are plain curtain-glass slabs, so no windows are added to the podium and no ornament is needed.",
+  "triangles": 464,
+  "parts": 8
+ },
+ "totals": {
+  "input": 7838,
+  "output": 4224,
+  "cost": 0.0030006399999999997,
+  "ms": 20831
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: river view across the Seine from the south-east, showing two tall glass towers side by side (the left one with a stepped, L-shaped outline) and a lower tower behind, all with gold-grey curtain walls rising above the low quays.\",\n    \"photo 2: view from the footbridge side over the raised timber-deck approach, showing two pairs of glass towers, one pair on each side, with the taller slab towers in pale glazing and a lower companion block beside each.\",\n    \"photo 3: street-level view from the avenue showing a stepped timber deck rising in long terraces toward a tall glazed tower with a grey stone base, the deck forming a raised esplanade edge.\"\n  ],\n  \"components\": [\n    {\"name\": \"raised esplanade with sunken garden\", \"part\": \"court\", \"where\": \"the whole footprint, a raised podium ring round a sunken garden\", \"center\": [0, 0], \"size\": [330, 170], \"height\": 12,\n     \"settings\": {\"open\": \"none\", \"wing\": 35, \"storeys\": [{\"height\": 12, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#c9bfae\"},\n     \"why\": \"photos 1 and 3 show a raised stepped esplanade with a sunken garden in the middle, a closed ring of podium round an open well\"},\n    {\"name\": \"north-east glass tower\", \"part\": \"block\", \"where\": \"north-east corner tower, on the esplanade\", \"center\": [148, -66], \"size\": [28, 28], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b8a98a\"},\n     \"why\": \"photos 1 and 2: one of the four tall glass corner towers, the tallest at about 79 m\"},\n    {\"name\": \"south-east glass tower\", \"part\": \"block\", \"where\": \"south-east corner tower, on the esplanade\", \"center\": [148, 66], \"size\": [28, 28], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b8a98a\"},\n     \"why\": \"photos 2 and 3: the tall slab tower rising from the stepped deck, one of the four corner glass towers\"},\n    {\"name\": \"north-west glass tower\", \"part\": \"block\", \"where\": \"north-west corner tower, on the esplanade\", \"center\": [-148, -66], \"size\": [28, 28], \"height\": 66,\n     \"settings\": {\"storeys\": [{\"height\": 66, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b8a98a\"},\n     \"why\": \"photo 1: the lower L-shaped tower in the left of the river view, a corner tower shorter than the tallest\"},\n    {\"name\": \"south-west glass tower\", \"part\": \"block\", \"where\": \"south-west corner tower, on the esplanade\", \"center\": [-148, 66], \"size\": [28, 28], \"height\": 66,\n     \"settings\": {\"storeys\": [{\"height\": 66, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b8a98a\"},\n     \"why\": \"photo 2: the lower companion tower beside the taller slab, one of the four corner towers\"}\n  ]\n}\n```",
+  "input": 3195,
+  "output": 2760,
+  "cost": 0.00172033,
+  "ms": 14201,
+  "json": {
+   "photos": [
+    "photo 1: river view across the Seine from the south-east, showing two tall glass towers side by side (the left one with a stepped, L-shaped outline) and a lower tower behind, all with gold-grey curtain walls rising above the low quays.",
+    "photo 2: view from the footbridge side over the raised timber-deck approach, showing two pairs of glass towers, one pair on each side, with the taller slab towers in pale glazing and a lower companion block beside each.",
+    "photo 3: street-level view from the avenue showing a stepped timber deck rising in long terraces toward a tall glazed tower with a grey stone base, the deck forming a raised esplanade edge."
+   ],
+   "components": [
+    {
+     "name": "raised esplanade with sunken garden",
+     "part": "court",
+     "where": "the whole footprint, a raised podium ring round a sunken garden",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "height": 12,
+     "settings": {
+      "open": "none",
+      "wing": 35,
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#c9bfae"
+     },
+     "why": "photos 1 and 3 show a raised stepped esplanade with a sunken garden in the middle, a closed ring of podium round an open well"
+    },
+    {
+     "name": "north-east glass tower",
+     "part": "block",
+     "where": "north-east corner tower, on the esplanade",
+     "center": [
+      148,
+      -66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b8a98a"
+     },
+     "why": "photos 1 and 2: one of the four tall glass corner towers, the tallest at about 79 m"
+    },
+    {
+     "name": "south-east glass tower",
+     "part": "block",
+     "where": "south-east corner tower, on the esplanade",
+     "center": [
+      148,
+      66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b8a98a"
+     },
+     "why": "photos 2 and 3: the tall slab tower rising from the stepped deck, one of the four corner glass towers"
+    },
+    {
+     "name": "north-west glass tower",
+     "part": "block",
+     "where": "north-west corner tower, on the esplanade",
+     "center": [
+      -148,
+      -66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "height": 66,
+     "settings": {
+      "storeys": [
+       {
+        "height": 66,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b8a98a"
+     },
+     "why": "photo 1: the lower L-shaped tower in the left of the river view, a corner tower shorter than the tallest"
+    },
+    {
+     "name": "south-west glass tower",
+     "part": "block",
+     "where": "south-west corner tower, on the esplanade",
+     "center": [
+      -148,
+      66
+     ],
+     "size": [
+      28,
+      28
+     ],
+     "height": 66,
+     "settings": {
+      "storeys": [
+       {
+        "height": 66,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b8a98a"
+     },
+     "why": "photo 2: the lower companion tower beside the taller slab, one of the four corner towers"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "building": "de-young",
+ "modelId": "game",
+ "model": "deYoungMuseum",
+ "fit": {
+  "turn": 179,
+  "mirror": false,
+  "iou": 0.94
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: deYoungMuseum, 416 tris, fit IoU 0.94"
+ }
+}

@@ -1,0 +1,256 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:12.095Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"The de Young is a long, low, nearly windowless copper-clad box spanning the footprint, with a tall, sheared, stepped copper tower rising behind it toward the back-right. The tower overhangs toward the viewer and is the signature feature to model. A paved entrance forecourt lies in front on the street side.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [157, 76],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 9, \"kind\": \"blank\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#4e3b31\",\n      \"material\": \"copper\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [40, 10],\n      \"y0\": 0,\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 14, \"height\": 16, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 18, \"height\": 14, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 17, \"height\": 14, \"kind\": \"blank\"}\n      ],\n      \"top\": {\"kind\": \"flat\", \"height\": 0, \"colour\": \"#5a4a40\"},\n      \"colour\": \"#5a4a40\",\n      \"material\": \"copper\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -43],\n      \"size\": [60, 10],\n      \"y0\": 0,\n      \"y1\": 0.6,\n      \"colour\": \"#b9b2a4\",\n      \"material\": \"stone\"\n    }\n  ]\n}",
+   "stop": "end_turn",
+   "input": 4217,
+   "output": 1451,
+   "cacheRead": 8401,
+   "cost": 0.00123121,
+   "ms": 6810,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The de Young is a long, low, nearly windowless copper-clad box spanning the footprint, with a tall, sheared, stepped copper tower rising behind it toward the back-right. The tower overhangs toward the viewer and is the signature feature to model. A paved entrance forecourt lies in front on the street side.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 9,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#4e3b31",
+     "material": "copper"
+    },
+    {
+     "type": "tower",
+     "center": [
+      40,
+      10
+     ],
+     "y0": 0,
+     "stages": [
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 16,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 18,
+       "height": 14,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 17,
+       "height": 14,
+       "kind": "blank"
+      }
+     ],
+     "top": {
+      "kind": "flat",
+      "height": 0,
+      "colour": "#5a4a40"
+     },
+     "colour": "#5a4a40",
+     "material": "copper"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -43
+     ],
+     "size": [
+      60,
+      10
+     ],
+     "y0": 0,
+     "y1": 0.6,
+     "colour": "#b9b2a4",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low, nearly windowless copper-clad box spanning the footprint, with a tall, sheared, stepped copper tower rising behind it toward the back-right. The tower overhangs toward the viewer and is the signature feature to model. A paved entrance forecourt lies in front on the street side.",
+  "triangles": 288,
+  "parts": 10
+ },
+ "totals": {
+  "input": 7439,
+  "output": 2783,
+  "cost": 0.00224024,
+  "ms": 13546
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: the front three-quarter from the south-east access road, showing a long low copper-clad box under palms with the twisted observation tower rising behind it to the right, under blue sky\", \"photo 2: a close side view of the angular copper-clad wall, with the sheared, stacked tower stepping up and outward behind it, in daylight\", \"photo 3: the front three-quarter from the street, showing the low copper-clad volume with the tall tower behind, palms in front and a plaza with a lion sculpture\"],\n  \"components\": [\n    {\"name\": \"main copper box\", \"part\": \"block\", \"where\": \"the whole footprint, a low long box\", \"center\": [0, 0], \"size\": [157, 76], \"height\": 18,\n     \"settings\": {\"storeys\": [{\"height\": 9, \"kind\": \"blank\", \"windows\": false}, {\"height\": 9, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#4e3b31\"},\n     \"why\": \"photos 1 and 3 show a long, low, nearly windowless perforated copper-clad volume that spans the whole footprint\"},\n    {\"name\": \"twisted observation tower\", \"part\": \"tower\", \"where\": \"behind the main box, toward the back-right\", \"center\": [40, 10], \"height\": 44,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 14, \"height\": 16, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 18, \"height\": 14, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 17, \"height\": 14, \"kind\": \"blank\"}], \"top\": {\"kind\": \"flat\"}, \"colour\": \"#5a4a40\"},\n     \"why\": \"photos 1 to 3 show a tall sheared, stepped copper tower that rises well above the low box and overhangs toward the viewer\"},\n    {\"name\": \"front plaza forecourt\", \"part\": \"box\", \"where\": \"in front of the main box, on the entrance side\", \"center\": [0, -52], \"size\": [60, 14], \"height\": 0.6,\n     \"settings\": {\"colour\": \"#b9b2a4\"},\n     \"why\": \"photo 3 shows a paved entrance forecourt in front of the building, which gives the front its ground plane\"}\n  ]\n}",
+  "input": 3222,
+  "output": 1332,
+  "cost": 0.00100903,
+  "ms": 6736,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the south-east access road, showing a long low copper-clad box under palms with the twisted observation tower rising behind it to the right, under blue sky",
+    "photo 2: a close side view of the angular copper-clad wall, with the sheared, stacked tower stepping up and outward behind it, in daylight",
+    "photo 3: the front three-quarter from the street, showing the low copper-clad volume with the tall tower behind, palms in front and a plaza with a lion sculpture"
+   ],
+   "components": [
+    {
+     "name": "main copper box",
+     "part": "block",
+     "where": "the whole footprint, a low long box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "height": 18,
+     "settings": {
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 9,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#4e3b31"
+     },
+     "why": "photos 1 and 3 show a long, low, nearly windowless perforated copper-clad volume that spans the whole footprint"
+    },
+    {
+     "name": "twisted observation tower",
+     "part": "tower",
+     "where": "behind the main box, toward the back-right",
+     "center": [
+      40,
+      10
+     ],
+     "height": 44,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 14,
+        "height": 16,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 18,
+        "height": 14,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 17,
+        "height": 14,
+        "kind": "blank"
+       }
+      ],
+      "top": {
+       "kind": "flat"
+      },
+      "colour": "#5a4a40"
+     },
+     "why": "photos 1 to 3 show a tall sheared, stepped copper tower that rises well above the low box and overhangs toward the viewer"
+    },
+    {
+     "name": "front plaza forecourt",
+     "part": "box",
+     "where": "in front of the main box, on the entrance side",
+     "center": [
+      0,
+      -52
+     ],
+     "size": [
+      60,
+      14
+     ],
+     "height": 0.6,
+     "settings": {
+      "colour": "#b9b2a4"
+     },
+     "why": "photo 3 shows a paved entrance forecourt in front of the building, which gives the front its ground plane"
+    }
+   ]
+  }
+ }
+}

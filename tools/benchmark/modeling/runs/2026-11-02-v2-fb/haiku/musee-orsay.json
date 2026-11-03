@@ -1,0 +1,357 @@
+{
+ "building": "musee-orsay",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:30.287Z",
+ "userText": "Building: Musée d'Orsay, Paris (museum (former station)).\nThe front (−z) is the river front on the Seine.\nFootprint: 188.3 m along x by 77.3 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[49.7,-38.4],[49.7,-37],[78.8,-37.3],[78.9,-9.7],[93.8,-9.9],[94.1,26.6],[79.4,26.8],[79.6,38.7],[-93.3,38.7],[-94.1,-35.2],[-92.2,-35.5],[-92.2,-36.9],[-85.9,-37.3],[-84.8,-36.1],[-79.4,-36.2],[-78.3,-37.4],[-74.1,-37.4],[-70,-35.8],[-59.7,-35.9],[-59.7,-36.6],[-1.6,-36.5],[-1.6,-37.3],[27.4,-36.8],[29.5,-38.2],[35.8,-38.6],[37.5,-36.9],[41.6,-36.9],[43.3,-38.7]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. river-front three-quarter of the whole long station-museum with arched vaults, central clock pavilion and pitched roof, daylight\n  2. elevated view of the west end and entrance forecourt with its glass canopy and the vaulted roof behind\n  3. street-side three-quarter at the pavilion end with the arched fronts and the barrel roof, dusk-light daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   188.3,
+   77.3
+  ],
+  "outline": [
+   [
+    49.7,
+    -38.4
+   ],
+   [
+    49.7,
+    -37
+   ],
+   [
+    78.8,
+    -37.3
+   ],
+   [
+    78.9,
+    -9.7
+   ],
+   [
+    93.8,
+    -9.9
+   ],
+   [
+    94.1,
+    26.6
+   ],
+   [
+    79.4,
+    26.8
+   ],
+   [
+    79.6,
+    38.7
+   ],
+   [
+    -93.3,
+    38.7
+   ],
+   [
+    -94.1,
+    -35.2
+   ],
+   [
+    -92.2,
+    -35.5
+   ],
+   [
+    -92.2,
+    -36.9
+   ],
+   [
+    -85.9,
+    -37.3
+   ],
+   [
+    -84.8,
+    -36.1
+   ],
+   [
+    -79.4,
+    -36.2
+   ],
+   [
+    -78.3,
+    -37.4
+   ],
+   [
+    -74.1,
+    -37.4
+   ],
+   [
+    -70,
+    -35.8
+   ],
+   [
+    -59.7,
+    -35.9
+   ],
+   [
+    -59.7,
+    -36.6
+   ],
+   [
+    -1.6,
+    -36.5
+   ],
+   [
+    -1.6,
+    -37.3
+   ],
+   [
+    27.4,
+    -36.8
+   ],
+   [
+    29.5,
+    -38.2
+   ],
+   [
+    35.8,
+    -38.6
+   ],
+   [
+    37.5,
+    -36.9
+   ],
+   [
+    41.6,
+    -36.9
+   ],
+   [
+    43.3,
+    -38.7
+   ]
+  ],
+  "height": 38,
+  "turn": 1.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Former Gare d'Orsay: a long cream limestone station-hotel with a Second Empire mansard roof, arched upper windows and a central clock pavilion on the river (-z) front. Behind it the long barrel-vaulted glass and metal hall runs along x, with end wings and a small spire on the clock pavilion. The model uses a stone front block, a clock pavilion with a mansard and cupola, a metal-and-glass vault for the hall, and stone end wings.\", \"parts\": [{\"type\": \"box\", \"center\": [0, -28], \"size\": [188, 20], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8ccb4\", \"windows\": {\"kind\": \"arched\", \"floor\": 5, \"pitch\": 4, \"solid\": 0.6}}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -28], \"size\": [188, 20], \"y0\": 24, \"rise\": 7, \"material\": \"tile\", \"colour\": \"#4f5862\"}, {\"type\": \"box\", \"center\": [10, -34], \"size\": [24, 10], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#e0d5bf\", \"windows\": {\"kind\": \"arched\", \"floor\": 5, \"pitch\": 4, \"solid\": 0.6}}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [10, -34], \"size\": [24, 10], \"y0\": 30, \"rise\": 7, \"material\": \"tile\", \"colour\": \"#4f5862\"}, {\"type\": \"cylinder\", \"center\": [10, -34], \"radius\": 4, \"y0\": 37, \"y1\": 38, \"material\": \"stone\", \"colour\": \"#e0d5bf\"}, {\"type\": \"cylinder\", \"center\": [10, -34], \"radius\": 0.5, \"radiusTop\": 0, \"y0\": 38, \"y1\": 38, \"material\": \"metal\", \"colour\": \"#3f4a4f\", \"sides\": 4}, {\"type\": \"vault\", \"center\": [0, 8], \"size\": [160, 58], \"y0\": 22, \"rise\": 14, \"axis\": \"x\", \"material\": \"metal\", \"colour\": \"#6f7a7e\", \"ends\": \"glass\"}, {\"type\": \"box\", \"center\": [-80, -10], \"size\": [28, 70], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8ccb4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5, \"solid\": 0.5}}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-80, -10], \"size\": [28, 70], \"y0\": 24, \"rise\": 6, \"material\": \"tile\", \"colour\": \"#4f5862\"}, {\"type\": \"box\", \"center\": [84, 0], \"size\": [20, 70], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8ccb4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5, \"solid\": 0.5}}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [84, 0], \"size\": [20, 70], \"y0\": 24, \"rise\": 6, \"material\": \"tile\", \"colour\": \"#4f5862\"}]}",
+   "stop": "end_turn",
+   "input": 3307,
+   "output": 1982,
+   "cacheRead": 7616,
+   "cost": 0.0013978600000000001,
+   "ms": 9381,
+   "errors": [
+    "parts[5]: y1 (38) must be above y0 (38)"
+   ],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "invalid",
+  "json": {
+   "notes": "Former Gare d'Orsay: a long cream limestone station-hotel with a Second Empire mansard roof, arched upper windows and a central clock pavilion on the river (-z) front. Behind it the long barrel-vaulted glass and metal hall runs along x, with end wings and a small spire on the clock pavilion. The model uses a stone front block, a clock pavilion with a mansard and cupola, a metal-and-glass vault for the hall, and stone end wings.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -28
+     ],
+     "size": [
+      188,
+      20
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8ccb4",
+     "windows": {
+      "kind": "arched",
+      "floor": 5,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -28
+     ],
+     "size": [
+      188,
+      20
+     ],
+     "y0": 24,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "box",
+     "center": [
+      10,
+      -34
+     ],
+     "size": [
+      24,
+      10
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#e0d5bf",
+     "windows": {
+      "kind": "arched",
+      "floor": 5,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      10,
+      -34
+     ],
+     "size": [
+      24,
+      10
+     ],
+     "y0": 30,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      10,
+      -34
+     ],
+     "radius": 4,
+     "y0": 37,
+     "y1": 38,
+     "material": "stone",
+     "colour": "#e0d5bf"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      10,
+      -34
+     ],
+     "radius": 0.5,
+     "radiusTop": 0,
+     "y0": 38,
+     "y1": 38,
+     "material": "metal",
+     "colour": "#3f4a4f",
+     "sides": 4
+    },
+    {
+     "type": "vault",
+     "center": [
+      0,
+      8
+     ],
+     "size": [
+      160,
+      58
+     ],
+     "y0": 22,
+     "rise": 14,
+     "axis": "x",
+     "material": "metal",
+     "colour": "#6f7a7e",
+     "ends": "glass"
+    },
+    {
+     "type": "box",
+     "center": [
+      -80,
+      -10
+     ],
+     "size": [
+      28,
+      70
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8ccb4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5,
+      "solid": 0.5
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -80,
+      -10
+     ],
+     "size": [
+      28,
+      70
+     ],
+     "y0": 24,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "box",
+     "center": [
+      84,
+      0
+     ],
+     "size": [
+      20,
+      70
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8ccb4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5,
+      "solid": 0.5
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      84,
+      0
+     ],
+     "size": [
+      20,
+      70
+     ],
+     "y0": 24,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4f5862"
+    }
+   ]
+  }
+ },
+ "totals": {
+  "input": 3307,
+  "output": 1982,
+  "cost": 0.0013978600000000001,
+  "ms": 9381
+ }
+}

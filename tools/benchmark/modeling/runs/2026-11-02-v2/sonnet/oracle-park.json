@@ -1,0 +1,391 @@
+{
+ "building": "oracle-park",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:07.920Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Oracle Park (shown as AT&T Park in the street photo) is a horseshoe brick-and-steel grandstand wrapped around an asymmetric field. It is open toward the bay on the +z side and closed at the front (-z) by a brick entrance block. I model the horseshoe bowl as two arcs, a brick front block with a clock tower and pyramid roof, and a steel truss and scoreboard frame above the front. I add lower stands along the sides, an arched brick promenade wall across the outfield end, and four 45 m light towers. The grass field sits inside the bowl.\",\"parts\":[{\"type\":\"bowl\",\"center\":[0,-30],\"size\":[200,210],\"inner\":[100,100],\"y0\":0,\"y1\":28,\"innerHeight\":3,\"shape\":\"oval\",\"arc\":[150,360],\"material\":\"concrete\",\"colour\":\"#5f6e68\"},{\"type\":\"bowl\",\"center\":[0,-30],\"size\":[200,210],\"inner\":[100,100],\"y0\":0,\"y1\":28,\"innerHeight\":3,\"shape\":\"oval\",\"arc\":[0,30],\"material\":\"concrete\",\"colour\":\"#5f6e68\"},{\"type\":\"box\",\"center\":[0,10],\"size\":[100,150],\"y0\":0,\"y1\":0.3,\"material\":\"grass\",\"colour\":\"#3f7a35\"},{\"type\":\"box\",\"center\":[0,-121],\"size\":[130,26],\"y0\":0,\"y1\":22,\"material\":\"brick\",\"colour\":\"#9a4b3c\",\"windows\":{\"kind\":\"punched\",\"floor\":5,\"pitch\":6,\"solid\":0.6}},{\"type\":\"box\",\"center\":[-62,-112],\"size\":[12,12],\"y0\":0,\"y1\":28,\"material\":\"brick\",\"colour\":\"#9a4b3c\"},{\"type\":\"box\",\"center\":[48,-118],\"size\":[11,11],\"y0\":0,\"y1\":32,\"material\":\"brick\",\"colour\":\"#a24f3f\"},{\"type\":\"roof\",\"kind\":\"pyramid\",\"center\":[48,-118],\"size\":[12,12],\"y0\":32,\"rise\":6,\"material\":\"copper\",\"colour\":\"#5f7f78\"},{\"type\":\"box\",\"center\":[0,-100],\"size\":[150,30],\"y0\":22,\"y1\":38,\"material\":\"metal\",\"colour\":\"#4d5a56\"},{\"type\":\"beam\",\"from\":[-70,38,-100],\"to\":[70,45,-100],\"width\":1.5,\"material\":\"metal\",\"colour\":\"#3d4a48\"},{\"type\":\"box\",\"center\":[-88,50],\"size\":[16,130],\"y0\":0,\"y1\":14,\"material\":\"concrete\",\"colour\":\"#6a7770\"},{\"type\":\"prism\",\"points\":[[78,40],[102,40],[102,90],[79,133],[70,120]],\"y0\":0,\"y1\":16,\"material\":\"concrete\",\"colour\":\"#6a7770\"},{\"type\":\"arcade\",\"from\":[-78,128],\"to\":[72,128],\"y0\":0,\"height\":9,\"count\":22,\"thickness\":2,\"material\":\"stucco\",\"colour\":\"#e6dfcf\"},{\"type\":\"beam\",\"from\":[-95,0,-60],\"to\":[-95,45,-60],\"width\":3,\"material\":\"metal\",\"colour\":\"#4d5a56\"},{\"type\":\"beam\",\"from\":[-95,0,40],\"to\":[-95,40,40],\"width\":3,\"material\":\"metal\",\"colour\":\"#4d5a56\"},{\"type\":\"beam\",\"from\":[88,0,20],\"to\":[88,40,20],\"width\":3,\"material\":\"metal\",\"colour\":\"#4d5a56\"},{\"type\":\"beam\",\"from\":[40,0,-60],\"to\":[40,45,-60],\"width\":3,\"material\":\"metal\",\"colour\":\"#4d5a56\"}]}",
+   "stop": "end_turn",
+   "input": 3569,
+   "output": 2250,
+   "cacheRead": 0,
+   "cost": 0.048678,
+   "ms": 19129,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park (shown as AT&T Park in the street photo) is a horseshoe brick-and-steel grandstand wrapped around an asymmetric field. It is open toward the bay on the +z side and closed at the front (-z) by a brick entrance block. I model the horseshoe bowl as two arcs, a brick front block with a clock tower and pyramid roof, and a steel truss and scoreboard frame above the front. I add lower stands along the sides, an arched brick promenade wall across the outfield end, and four 45 m light towers. The grass field sits inside the bowl.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      -30
+     ],
+     "size": [
+      200,
+      210
+     ],
+     "inner": [
+      100,
+      100
+     ],
+     "y0": 0,
+     "y1": 28,
+     "innerHeight": 3,
+     "shape": "oval",
+     "arc": [
+      150,
+      360
+     ],
+     "material": "concrete",
+     "colour": "#5f6e68"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      -30
+     ],
+     "size": [
+      200,
+      210
+     ],
+     "inner": [
+      100,
+      100
+     ],
+     "y0": 0,
+     "y1": 28,
+     "innerHeight": 3,
+     "shape": "oval",
+     "arc": [
+      0,
+      30
+     ],
+     "material": "concrete",
+     "colour": "#5f6e68"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      10
+     ],
+     "size": [
+      100,
+      150
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#3f7a35"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -121
+     ],
+     "size": [
+      130,
+      26
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#9a4b3c",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 6,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -62,
+      -112
+     ],
+     "size": [
+      12,
+      12
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "brick",
+     "colour": "#9a4b3c"
+    },
+    {
+     "type": "box",
+     "center": [
+      48,
+      -118
+     ],
+     "size": [
+      11,
+      11
+     ],
+     "y0": 0,
+     "y1": 32,
+     "material": "brick",
+     "colour": "#a24f3f"
+    },
+    {
+     "type": "roof",
+     "kind": "pyramid",
+     "center": [
+      48,
+      -118
+     ],
+     "size": [
+      12,
+      12
+     ],
+     "y0": 32,
+     "rise": 6,
+     "material": "copper",
+     "colour": "#5f7f78"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -100
+     ],
+     "size": [
+      150,
+      30
+     ],
+     "y0": 22,
+     "y1": 38,
+     "material": "metal",
+     "colour": "#4d5a56"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -70,
+      38,
+      -100
+     ],
+     "to": [
+      70,
+      45,
+      -100
+     ],
+     "width": 1.5,
+     "material": "metal",
+     "colour": "#3d4a48"
+    },
+    {
+     "type": "box",
+     "center": [
+      -88,
+      50
+     ],
+     "size": [
+      16,
+      130
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "concrete",
+     "colour": "#6a7770"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       78,
+       40
+      ],
+      [
+       102,
+       40
+      ],
+      [
+       102,
+       90
+      ],
+      [
+       79,
+       133
+      ],
+      [
+       70,
+       120
+      ]
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "concrete",
+     "colour": "#6a7770"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -78,
+      128
+     ],
+     "to": [
+      72,
+      128
+     ],
+     "y0": 0,
+     "height": 9,
+     "count": 22,
+     "thickness": 2,
+     "material": "stucco",
+     "colour": "#e6dfcf"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -95,
+      0,
+      -60
+     ],
+     "to": [
+      -95,
+      45,
+      -60
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#4d5a56"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -95,
+      0,
+      40
+     ],
+     "to": [
+      -95,
+      40,
+      40
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#4d5a56"
+    },
+    {
+     "type": "beam",
+     "from": [
+      88,
+      0,
+      20
+     ],
+     "to": [
+      88,
+      40,
+      20
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#4d5a56"
+    },
+    {
+     "type": "beam",
+     "from": [
+      40,
+      0,
+      -60
+     ],
+     "to": [
+      40,
+      45,
+      -60
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#4d5a56"
+    }
+   ]
+  },
+  "notes": "Oracle Park (shown as AT&T Park in the street photo) is a horseshoe brick-and-steel grandstand wrapped around an asymmetric field. It is open toward the bay on the +z side and closed at the front (-z) by a brick entrance block. I model the horseshoe bowl as two arcs, a brick front block with a clock tower and pyramid roof, and a steel truss and scoreboard frame above the front. I add lower stands along the sides, an arched brick promenade wall across the outfield end, and four 45 m light towers. The grass field sits inside the bowl.",
+  "triangles": 1986,
+  "parts": 16
+ },
+ "totals": {
+  "input": 3569,
+  "output": 2250,
+  "cost": 0.048678,
+  "ms": 19129
+ }
+}

@@ -1,0 +1,406 @@
+{
+ "building": "pantheon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:00:02.759Z",
+ "userText": "Building: Panthéon, Paris (mausoleum (former church)).\nThe front (−z) is the portico, facing down the Rue Soufflot.\nFootprint: 84.9 m along x by 112.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-18.5,-56.1],[20.8,-56.1],[20.8,-40.6],[17.2,-40.6],[17.9,-15.7],[20.8,-13],[39.4,-14],[39.5,-5.2],[42.3,-5.2],[42.4,15],[39.6,15],[39.5,23.9],[20.6,22.7],[18,25.5],[17.9,38.6],[25.8,38.7],[25.7,48.4],[16.3,48.4],[16.2,56.1],[-16.3,55.9],[-16.3,48.3],[-25.6,48.3],[-25.6,38.5],[-18,38.5],[-18,25.4],[-20.9,22.6],[-39.6,23.6],[-39.7,14.8],[-42.4,14.8],[-42.3,-5.4],[-39.5,-5.4],[-39.5,-14.2],[-20.9,-13.1],[-18,-15.8],[-17.5,-40.1],[-21.2,-40.1],[-21.2,-56]]\nHeight: the highest point is 83 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the corner: Corinthian portico with pediment and the tall drum and dome, daylight\n  2. view of the rear and side of the cross-shaped body with the drum and dome above, trees in front\n  3. elevated view of the whole portico front and flank across the square, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   84.9,
+   112.1
+  ],
+  "outline": [
+   [
+    -18.5,
+    -56.1
+   ],
+   [
+    20.8,
+    -56.1
+   ],
+   [
+    20.8,
+    -40.6
+   ],
+   [
+    17.2,
+    -40.6
+   ],
+   [
+    17.9,
+    -15.7
+   ],
+   [
+    20.8,
+    -13
+   ],
+   [
+    39.4,
+    -14
+   ],
+   [
+    39.5,
+    -5.2
+   ],
+   [
+    42.3,
+    -5.2
+   ],
+   [
+    42.4,
+    15
+   ],
+   [
+    39.6,
+    15
+   ],
+   [
+    39.5,
+    23.9
+   ],
+   [
+    20.6,
+    22.7
+   ],
+   [
+    18,
+    25.5
+   ],
+   [
+    17.9,
+    38.6
+   ],
+   [
+    25.8,
+    38.7
+   ],
+   [
+    25.7,
+    48.4
+   ],
+   [
+    16.3,
+    48.4
+   ],
+   [
+    16.2,
+    56.1
+   ],
+   [
+    -16.3,
+    55.9
+   ],
+   [
+    -16.3,
+    48.3
+   ],
+   [
+    -25.6,
+    48.3
+   ],
+   [
+    -25.6,
+    38.5
+   ],
+   [
+    -18,
+    38.5
+   ],
+   [
+    -18,
+    25.4
+   ],
+   [
+    -20.9,
+    22.6
+   ],
+   [
+    -39.6,
+    23.6
+   ],
+   [
+    -39.7,
+    14.8
+   ],
+   [
+    -42.4,
+    14.8
+   ],
+   [
+    -42.3,
+    -5.4
+   ],
+   [
+    -39.5,
+    -5.4
+   ],
+   [
+    -39.5,
+    -14.2
+   ],
+   [
+    -20.9,
+    -13.1
+   ],
+   [
+    -18,
+    -15.8
+   ],
+   [
+    -17.5,
+    -40.1
+   ],
+   [
+    -21.2,
+    -40.1
+   ],
+   [
+    -21.2,
+    -56
+   ]
+  ],
+  "height": 83,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Panthéon is a Greek-cross plan with a tall Corinthian portico of six columns and a triangular pediment on the front (-z). A drum with a ring of columns rises from the centre of the cross, carrying a grey dome, a small lantern and a cross on top. The body is pale cream limestone, and the dome is grey metal.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [42, 80], \"y0\": 0, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"box\", \"center\": [0, -48], \"size\": [42, 16], \"y0\": 0, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"box\", \"center\": [0, 48], \"size\": [32, 16], \"y0\": 0, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"box\", \"center\": [31, 5], \"size\": [22, 38], \"y0\": 0, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"box\", \"center\": [-31, 5], \"size\": [22, 38], \"y0\": 0, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"colonnade\", \"from\": [-13, -54], \"to\": [13, -54], \"y0\": 0, \"height\": 21, \"count\": 6, \"radius\": 1.1, \"entablature\": 2.5}, {\"type\": \"pediment\", \"from\": [-21, -56], \"to\": [21, -56], \"y0\": 21, \"height\": 8, \"depth\": 3}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 13, \"y0\": 21, \"y1\": 42, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"repeat\", \"count\": 32, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"cylinder\", \"center\": [14.5, 0], \"radius\": 0.9, \"y0\": 23, \"y1\": 41, \"material\": \"stone\", \"colour\": \"#e6dcc4\"}}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 15, \"y0\": 41, \"y1\": 43, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 13, \"y0\": 43, \"height\": 19, \"material\": \"metal\", \"colour\": \"#7d8488\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 4.5, \"y0\": 60, \"y1\": 72, \"material\": \"stone\", \"colour\": \"#d8ccb0\"}, {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 4.5, \"y0\": 72, \"height\": 5, \"material\": \"metal\", \"colour\": \"#7d8488\"}, {\"type\": \"beam\", \"from\": [0, 77, 0], \"to\": [0, 83, 0], \"width\": 0.6, \"material\": \"metal\", \"colour\": \"#8a7a50\"}]}",
+   "stop": "end_turn",
+   "input": 3574,
+   "output": 2603,
+   "cacheRead": 7616,
+   "cost": 0.0017350599999999999,
+   "ms": 13134,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Panthéon is a Greek-cross plan with a tall Corinthian portico of six columns and a triangular pediment on the front (-z). A drum with a ring of columns rises from the centre of the cross, carrying a grey dome, a small lantern and a cross on top. The body is pale cream limestone, and the dome is grey metal.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      80
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -48
+     ],
+     "size": [
+      42,
+      16
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      48
+     ],
+     "size": [
+      32,
+      16
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      31,
+      5
+     ],
+     "size": [
+      22,
+      38
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -31,
+      5
+     ],
+     "size": [
+      22,
+      38
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -13,
+      -54
+     ],
+     "to": [
+      13,
+      -54
+     ],
+     "y0": 0,
+     "height": 21,
+     "count": 6,
+     "radius": 1.1,
+     "entablature": 2.5
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21,
+      -56
+     ],
+     "to": [
+      21,
+      -56
+     ],
+     "y0": 21,
+     "height": 8,
+     "depth": 3
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 13,
+     "y0": 21,
+     "y1": 42,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "repeat",
+     "count": 32,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "cylinder",
+      "center": [
+       14.5,
+       0
+      ],
+      "radius": 0.9,
+      "y0": 23,
+      "y1": 41,
+      "material": "stone",
+      "colour": "#e6dcc4"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 15,
+     "y0": 41,
+     "y1": 43,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 13,
+     "y0": 43,
+     "height": 19,
+     "material": "metal",
+     "colour": "#7d8488"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 4.5,
+     "y0": 60,
+     "y1": 72,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 4.5,
+     "y0": 72,
+     "height": 5,
+     "material": "metal",
+     "colour": "#7d8488"
+    },
+    {
+     "type": "beam",
+     "from": [
+      0,
+      77,
+      0
+     ],
+     "to": [
+      0,
+      83,
+      0
+     ],
+     "width": 0.6,
+     "material": "metal",
+     "colour": "#8a7a50"
+    }
+   ]
+  },
+  "notes": "The Panthéon is a Greek-cross plan with a tall Corinthian portico of six columns and a triangular pediment on the front (-z). A drum with a ring of columns rises from the centre of the cross, carrying a grey dome, a small lantern and a cross on top. The body is pale cream limestone, and the dome is grey metal.",
+  "triangles": 3024,
+  "parts": 45
+ },
+ "totals": {
+  "input": 3574,
+  "output": 2603,
+  "cost": 0.0017350599999999999,
+  "ms": 13134
+ }
+}

@@ -1,0 +1,8 @@
+{"notes": "Macro test (court, block pavilions, tower, mansard with dormers). A French Renaissance block round a court, pavilions at the corners and centre, a central belfry.",
+ "parts": [
+  {"type": "court", "center": [0, 4], "size": [140, 80], "wing": 18, "open": "none", "y0": 0, "bay": 5, "colour": "#d9cdb4", "storeys": [{"height": 7, "kind": "rusticated"}, {"height": 14, "kind": "pilasters", "floors": 2}], "cornice": 1.2, "roof": {"kind": "mansard", "rise": 8, "dormers": true, "colour": "#50596a"}},
+  {"type": "block", "center": [-62, -36], "size": [20, 16], "y0": 0, "bay": 5, "colour": "#d9cdb4", "storeys": [{"height": 7, "kind": "rusticated"}, {"height": 16, "kind": "pilasters", "floors": 2}], "cornice": 1.2, "roof": {"kind": "pavilion", "rise": 12, "colour": "#50596a"}},
+  {"type": "block", "center": [62, -36], "size": [20, 16], "y0": 0, "bay": 5, "colour": "#d9cdb4", "storeys": [{"height": 7, "kind": "rusticated"}, {"height": 16, "kind": "pilasters", "floors": 2}], "cornice": 1.2, "roof": {"kind": "pavilion", "rise": 12, "colour": "#50596a"}},
+  {"type": "block", "center": [0, -37], "size": [30, 14], "y0": 0, "bay": 5, "colour": "#ddd2ba", "faces": "front", "storeys": [{"height": 7, "kind": "arcade"}, {"height": 16, "kind": "columns"}], "cornice": 1.5, "roof": {"kind": "pavilion", "rise": 10, "colour": "#50596a"}},
+  {"type": "tower", "center": [0, -34], "y0": 33, "stages": [{"shape": "square", "width": 8, "height": 6, "kind": "clock"}, {"shape": "square", "width": 6, "height": 7, "kind": "open"}], "top": {"kind": "spire", "height": 9}, "colour": "#ddd2ba"}
+ ]}

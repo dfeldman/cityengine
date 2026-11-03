@@ -1,0 +1,610 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:11:59.726Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Gare de Lyon front is a long cream Beaux-Arts facade with a rusticated arcaded ground floor, tall pilastered upper storeys, and a grey slate mansard roof with dormers. The clock tower at the right (+x) end is the landmark: a stone shaft with two clock faces under a grey dome and lantern. A taller pavilion roof marks the left corner, and the glazed train sheds run back behind the front over the tracks, with a flat-roofed office block along the east side.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [46, -95],\n      \"size\": [86, 28],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#e6dccb\",\n      \"trim\": \"#f0e9da\",\n      \"material\": \"stone\",\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"arcade\"},\n        {\"height\": 13, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 13, \"dormers\": true, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [72, -100],\n      \"y0\": 0,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 17, \"height\": 36, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 17, \"height\": 12, \"kind\": \"clock\"}\n      ],\n      \"top\": {\"kind\": \"dome\", \"height\": 19, \"colour\": \"#59626a\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-5, -90],\n      \"size\": [20, 20],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#e6dccb\",\n      \"trim\": \"#f0e9da\",\n      \"material\": \"stone\",\n      \"storeys\": [\n        {\"height\": 20, \"kind\": \"pilasters\", \"floors\": 3}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [-15, 10],\n      \"size\": [100, 190],\n      \"y0\": 16,\n      \"rise\": 14,\n      \"axis\": \"z\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#8f959b\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [72, 30],\n      \"size\": [36, 160],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d8d4cc\",\n      \"material\": \"concrete\",\n      \"storeys\": [\n        {\"height\": 26, \"kind\": \"punched\", \"floors\": 7}\n      ],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [0, -111],\n      \"to\": [86, -111],\n      \"y0\": 0,\n      \"height\": 6,\n      \"count\": 12,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5207,
+   "output": 3791,
+   "cacheRead": 8401,
+   "cost": 0.00250021,
+   "ms": 17287,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"1. The clock tower dome is too tall and narrow, an egg shape, and the tower is too short; it should be a wide, shallow dome on a drum, with the stages making up the full 67 m. 2. The train shed is a single huge barrel that rises far above the station front and loads the site; the real sheds are lower than the mansard roof, so the vault is lowered and shortened. 3. The station front reads as a plain punched wall with no arched ground floor; the arcade storey is kept, and the front block is nudged to fill the footprint.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [46, -95],\n      \"size\": [86, 28],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#e6dccb\",\n      \"trim\": \"#f0e9da\",\n      \"material\": \"stone\",\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"arcade\"},\n        {\"height\": 13, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 13, \"dormers\": true, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [72, -100],\n      \"y0\": 0,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 17, \"height\": 42, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 17, \"height\": 14, \"kind\": \"clock\"}\n      ],\n      \"top\": {\"kind\": \"dome\", \"height\": 11, \"colour\": \"#59626a\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-5, -90],\n      \"size\": [20, 20],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#e6dccb\",\n      \"trim\": \"#f0e9da\",\n      \"material\": \"stone\",\n      \"storeys\": [\n        {\"height\": 20, \"kind\": \"pilasters\", \"floors\": 3}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [-18, 16],\n      \"size\": [84, 180],\n      \"y0\": 14,\n      \"rise\": 12,\n      \"axis\": \"z\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#8f959b\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [72, 30],\n      \"size\": [36, 160],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#d8d4cc\",\n      \"material\": \"concrete\",\n      \"storeys\": [\n        {\"height\": 26, \"kind\": \"punched\", \"floors\": 7}\n      ],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [0, -111],\n      \"to\": [86, -111],\n      \"y0\": 0,\n      \"height\": 6,\n      \"count\": 12,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 10464,
+   "output": 3908,
+   "cacheRead": 8401,
+   "cost": 0.0030844099999999997,
+   "ms": 18555,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1. The clock tower dome is too tall and narrow, an egg shape, and the tower is too short; it should be a wide, shallow dome on a drum, with the stages making up the full 67 m. 2. The train shed is a single huge barrel that rises far above the station front and loads the site; the real sheds are lower than the mansard roof, so the vault is lowered and shortened. 3. The station front reads as a plain punched wall with no arched ground floor; the arcade storey is kept, and the front block is nudged to fill the footprint.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      46,
+      -95
+     ],
+     "size": [
+      86,
+      28
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#e6dccb",
+     "trim": "#f0e9da",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 13,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 13,
+      "dormers": true,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      72,
+      -100
+     ],
+     "y0": 0,
+     "colour": "#e6dccb",
+     "material": "stone",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 17,
+       "height": 42,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 17,
+       "height": 14,
+       "kind": "clock"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 11,
+      "colour": "#59626a"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -5,
+      -90
+     ],
+     "size": [
+      20,
+      20
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#e6dccb",
+     "trim": "#f0e9da",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 20,
+       "kind": "pilasters",
+       "floors": 3
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "vault",
+     "center": [
+      -18,
+      16
+     ],
+     "size": [
+      84,
+      180
+     ],
+     "y0": 14,
+     "rise": 12,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#8f959b"
+    },
+    {
+     "type": "block",
+     "center": [
+      72,
+      30
+     ],
+     "size": [
+      36,
+      160
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8d4cc",
+     "material": "concrete",
+     "storeys": [
+      {
+       "height": 26,
+       "kind": "punched",
+       "floors": 7
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      0,
+      -111
+     ],
+     "to": [
+      86,
+      -111
+     ],
+     "y0": 0,
+     "height": 6,
+     "count": 12,
+     "colour": "#e6dccb",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "1. The clock tower dome is too tall and narrow, an egg shape, and the tower is too short; it should be a wide, shallow dome on a drum, with the stages making up the full 67 m. 2. The train shed is a single huge barrel that rises far above the station front and loads the site; the real sheds are lower than the mansard roof, so the vault is lowered and shortened. 3. The station front reads as a plain punched wall with no arched ground floor; the arcade storey is kept, and the front block is nudged to fill the footprint.",
+  "triangles": 5314,
+  "parts": 78
+ },
+ "totals": {
+  "input": 19041,
+  "output": 13407,
+  "cost": 0.008796449999999999,
+  "ms": 65121
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter view from the forecourt. A long cream Beaux-Arts facade runs left to right, with tall round-headed arched windows over an arcaded ground floor, pilastered upper storeys with paired windows, and a grey slate mansard roof with dormers and sculpture. The clock tower stands at the right (+x) end of the front, with a stone shaft, two clock faces, and a grey dome with a lantern.\",\n    \"photo 2: a high view down the train shed. Long parallel grey and brown barrel-roof bays run diagonally toward the back, over tracks. A long rectilinear office or hotel block with a flat roof and many punched windows lines the right (east) side.\",\n    \"photo 3: the arcaded facade from the far end, tower out of frame. Round-headed windows sit over a canopy at ground level, with a sculpted mansard and dormers above. At the left end is a corner pavilion with a steep, tall roof, and the facade continues to the right.\"\n  ],\n  \"components\": [\n    {\"name\": \"main Beaux-Arts station front\", \"part\": \"block\", \"where\": \"the long front along the Place Louis-Armand, east of the left pavilion\", \"center\": [45, -92], \"size\": [90, 36], \"height\": 35,\n     \"settings\": {\"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 13, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": [\"front\"], \"cornice\": true, \"roof\": {\"kind\": \"mansard\", \"rise\": 13, \"dormers\": true}, \"colour\": \"#e6dccb\"},\n     \"why\": \"photos 1 and 3: the long arched and pilastered Beaux-Arts facade with a dormered mansard roof is the station's main face\"},\n    {\"name\": \"clock tower\", \"part\": \"tower\", \"where\": \"the right (+x) front corner, rising from the facade\", \"center\": [72, -102], \"height\": 67,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 17, \"height\": 36, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 17, \"height\": 12, \"kind\": \"clock\"}], \"top\": {\"kind\": \"dome\", \"height\": 19}, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 1: the tall clock tower with a grey dome and lantern at the right end of the front is the landmark\"},\n    {\"name\": \"left corner pavilion\", \"part\": \"block\", \"where\": \"the left (−x) end of the front, where the facade turns\", \"center\": [-12, -94], \"size\": [24, 24], \"height\": 34,\n     \"settings\": {\"storeys\": [{\"height\": 20, \"kind\": \"pilasters\", \"floors\": 3}], \"faces\": [\"front\"], \"cornice\": true, \"roof\": {\"kind\": \"pavilion\"}, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 3: the left end is a corner pavilion with a steep tall roof, higher than the mansard\"},\n    {\"name\": \"train shed\", \"part\": \"vault\", \"where\": \"the tracks behind the station front, running from the front to the back of the footprint\", \"center\": [-25, 18], \"size\": [130, 184], \"height\": 30,\n     \"settings\": {\"span\": 40, \"glazed\": true, \"colour\": \"#8f959b\"},\n     \"why\": \"photo 2: long barrel-roof bays of the train shed run back over the tracks\"},\n    {\"name\": \"east office and hotel wing\", \"part\": \"block\", \"where\": \"the right (+x) side of the site, running back from the front\", \"center\": [72, 30], \"size\": [36, 160], \"height\": 26,\n     \"settings\": {\"storeys\": [{\"height\": 26, \"kind\": \"punched\", \"floors\": 7}], \"faces\": [], \"cornice\": false, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8d4cc\"},\n     \"why\": \"photo 2: the long flat-roofed block with rows of punched windows along the east side\"},\n    {\"name\": \"front forecourt canopy\", \"part\": \"colonnade\", \"where\": \"the ground floor along the front, under the arcades\", \"center\": [40, -110], \"height\": 6,\n     \"settings\": {\"count\": 12, \"span\": 80, \"column_height\": 6, \"colour\": \"#e6dccb\"},\n     \"why\": \"photos 1 and 3: the glazed canopy and ground-floor arcade line the front at street level\"}\n  ]\n}\n```",
+  "input": 3370,
+  "output": 5708,
+  "cost": 0.0032118299999999997,
+  "ms": 29279,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter view from the forecourt. A long cream Beaux-Arts facade runs left to right, with tall round-headed arched windows over an arcaded ground floor, pilastered upper storeys with paired windows, and a grey slate mansard roof with dormers and sculpture. The clock tower stands at the right (+x) end of the front, with a stone shaft, two clock faces, and a grey dome with a lantern.",
+    "photo 2: a high view down the train shed. Long parallel grey and brown barrel-roof bays run diagonally toward the back, over tracks. A long rectilinear office or hotel block with a flat roof and many punched windows lines the right (east) side.",
+    "photo 3: the arcaded facade from the far end, tower out of frame. Round-headed windows sit over a canopy at ground level, with a sculpted mansard and dormers above. At the left end is a corner pavilion with a steep, tall roof, and the facade continues to the right."
+   ],
+   "components": [
+    {
+     "name": "main Beaux-Arts station front",
+     "part": "block",
+     "where": "the long front along the Place Louis-Armand, east of the left pavilion",
+     "center": [
+      45,
+      -92
+     ],
+     "size": [
+      90,
+      36
+     ],
+     "height": 35,
+     "settings": {
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "arcade"
+       },
+       {
+        "height": 13,
+        "kind": "pilasters",
+        "floors": 2
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "cornice": true,
+      "roof": {
+       "kind": "mansard",
+       "rise": 13,
+       "dormers": true
+      },
+      "colour": "#e6dccb"
+     },
+     "why": "photos 1 and 3: the long arched and pilastered Beaux-Arts facade with a dormered mansard roof is the station's main face"
+    },
+    {
+     "name": "clock tower",
+     "part": "tower",
+     "where": "the right (+x) front corner, rising from the facade",
+     "center": [
+      72,
+      -102
+     ],
+     "height": 67,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 17,
+        "height": 36,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 17,
+        "height": 12,
+        "kind": "clock"
+       }
+      ],
+      "top": {
+       "kind": "dome",
+       "height": 19
+      },
+      "colour": "#e6dccb"
+     },
+     "why": "photo 1: the tall clock tower with a grey dome and lantern at the right end of the front is the landmark"
+    },
+    {
+     "name": "left corner pavilion",
+     "part": "block",
+     "where": "the left (−x) end of the front, where the facade turns",
+     "center": [
+      -12,
+      -94
+     ],
+     "size": [
+      24,
+      24
+     ],
+     "height": 34,
+     "settings": {
+      "storeys": [
+       {
+        "height": 20,
+        "kind": "pilasters",
+        "floors": 3
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "cornice": true,
+      "roof": {
+       "kind": "pavilion"
+      },
+      "colour": "#e6dccb"
+     },
+     "why": "photo 3: the left end is a corner pavilion with a steep tall roof, higher than the mansard"
+    },
+    {
+     "name": "train shed",
+     "part": "vault",
+     "where": "the tracks behind the station front, running from the front to the back of the footprint",
+     "center": [
+      -25,
+      18
+     ],
+     "size": [
+      130,
+      184
+     ],
+     "height": 30,
+     "settings": {
+      "span": 40,
+      "glazed": true,
+      "colour": "#8f959b"
+     },
+     "why": "photo 2: long barrel-roof bays of the train shed run back over the tracks"
+    },
+    {
+     "name": "east office and hotel wing",
+     "part": "block",
+     "where": "the right (+x) side of the site, running back from the front",
+     "center": [
+      72,
+      30
+     ],
+     "size": [
+      36,
+      160
+     ],
+     "height": 26,
+     "settings": {
+      "storeys": [
+       {
+        "height": 26,
+        "kind": "punched",
+        "floors": 7
+       }
+      ],
+      "faces": [],
+      "cornice": false,
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8d4cc"
+     },
+     "why": "photo 2: the long flat-roofed block with rows of punched windows along the east side"
+    },
+    {
+     "name": "front forecourt canopy",
+     "part": "colonnade",
+     "where": "the ground floor along the front, under the arcades",
+     "center": [
+      40,
+      -110
+     ],
+     "height": 6,
+     "settings": {
+      "count": 12,
+      "span": 80,
+      "column_height": 6,
+      "colour": "#e6dccb"
+     },
+     "why": "photos 1 and 3: the glazed canopy and ground-floor arcade line the front at street level"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "The Gare de Lyon front is a long cream Beaux-Arts facade with a rusticated arcaded ground floor, tall pilastered upper storeys, and a grey slate mansard roof with dormers. The clock tower at the right (+x) end is the landmark: a stone shaft with two clock faces under a grey dome and lantern. A taller pavilion roof marks the left corner, and the glazed train sheds run back behind the front over the tracks, with a flat-roofed office block along the east side.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      46,
+      -95
+     ],
+     "size": [
+      86,
+      28
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#e6dccb",
+     "trim": "#f0e9da",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 13,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 13,
+      "dormers": true,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      72,
+      -100
+     ],
+     "y0": 0,
+     "colour": "#e6dccb",
+     "material": "stone",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 17,
+       "height": 36,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 17,
+       "height": 12,
+       "kind": "clock"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 19,
+      "colour": "#59626a"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -5,
+      -90
+     ],
+     "size": [
+      20,
+      20
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#e6dccb",
+     "trim": "#f0e9da",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 20,
+       "kind": "pilasters",
+       "floors": 3
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "vault",
+     "center": [
+      -15,
+      10
+     ],
+     "size": [
+      100,
+      190
+     ],
+     "y0": 16,
+     "rise": 14,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#8f959b"
+    },
+    {
+     "type": "block",
+     "center": [
+      72,
+      30
+     ],
+     "size": [
+      36,
+      160
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8d4cc",
+     "material": "concrete",
+     "storeys": [
+      {
+       "height": 26,
+       "kind": "punched",
+       "floors": 7
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      0,
+      -111
+     ],
+     "to": [
+      86,
+      -111
+     ],
+     "y0": 0,
+     "height": 6,
+     "count": 12,
+     "colour": "#e6dccb",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "The Gare de Lyon front is a long cream Beaux-Arts facade with a rusticated arcaded ground floor, tall pilastered upper storeys, and a grey slate mansard roof with dormers. The clock tower at the right (+x) end is the landmark: a stone shaft with two clock faces under a grey dome and lantern. A taller pavilion roof marks the left corner, and the glazed train sheds run back behind the front over the tracks, with a flat-roofed office block along the east side.",
+  "triangles": 5290,
+  "parts": 78
+ }
+}

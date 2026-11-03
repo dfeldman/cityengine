@@ -1,0 +1,298 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:16.293Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Palais Garnier: a pale stone Beaux-Arts opera house. The front (-z) has a two-storey arcaded and columned loggia under a central pediment, with flanking pavilions and gilded statues at the roofline corners. Behind it rises the green copper dome over the auditorium, topped by a lantern and the Apollo group. The rear stage house is a tall block with a steep gable roof.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -4], \"size\": [101.7, 60], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"block\", \"center\": [0, -68], \"size\": [62, 16], \"y0\": 0, \"bay\": 5, \"colour\": \"#e0d6bf\", \"trim\": \"#efe8d6\", \"faces\": \"front\",\n     \"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 16, \"kind\": \"columns\"}],\n     \"cornice\": 1.2, \"roof\": {\"kind\": \"flat\"}},\n    {\"type\": \"pediment\", \"from\": [-17, -76], \"to\": [17, -76], \"y0\": 26, \"height\": 8, \"depth\": 3},\n    {\"type\": \"box\", \"center\": [-45, -40], \"size\": [14, 40], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"box\", \"center\": [45, -40], \"size\": [14, 40], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"box\", \"center\": [-30, -66], \"size\": [4, 4], \"y0\": 24, \"y1\": 32, \"material\": \"metal\", \"colour\": \"#c9a24a\"},\n    {\"type\": \"box\", \"center\": [30, -66], \"size\": [4, 4], \"y0\": 24, \"y1\": 32, \"material\": \"metal\", \"colour\": \"#c9a24a\"},\n    {\"type\": \"rotunda\", \"center\": [0, -10], \"radius\": 12, \"y0\": 24, \"base\": 0, \"height\": 2, \"count\": 16, \"open\": false, \"drum\": 4, \"colour\": \"#d8ccb0\",\n     \"dome\": {\"height\": 14, \"colour\": \"#6aa38a\", \"material\": \"copper\"}, \"lantern\": false},\n    {\"type\": \"cylinder\", \"center\": [0, -10], \"radius\": 2.5, \"y0\": 42, \"y1\": 56, \"radiusTop\": 0.5, \"sides\": 12, \"material\": \"metal\", \"colour\": \"#c9a24a\"},\n    {\"type\": \"box\", \"center\": [0, 30], \"size\": [40, 52], \"y0\": 0, \"y1\": 34, \"material\": \"stone\", \"colour\": \"#cfc4aa\"},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 30], \"size\": [40, 52], \"y0\": 34, \"rise\": 9, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#5b5f66\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3311,
+   "output": 2509,
+   "cacheRead": 8168,
+   "cost": 0.00166728,
+   "ms": 11755,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Palais Garnier: a pale stone Beaux-Arts opera house. The front (-z) has a two-storey arcaded and columned loggia under a central pediment, with flanking pavilions and gilded statues at the roofline corners. Behind it rises the green copper dome over the auditorium, topped by a lantern and the Apollo group. The rear stage house is a tall block with a steep gable roof.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -4
+     ],
+     "size": [
+      101.7,
+      60
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -68
+     ],
+     "size": [
+      62,
+      16
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#e0d6bf",
+     "trim": "#efe8d6",
+     "faces": "front",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 16,
+       "kind": "columns"
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -17,
+      -76
+     ],
+     "to": [
+      17,
+      -76
+     ],
+     "y0": 26,
+     "height": 8,
+     "depth": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      -45,
+      -40
+     ],
+     "size": [
+      14,
+      40
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      -40
+     ],
+     "size": [
+      14,
+      40
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -30,
+      -66
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 24,
+     "y1": 32,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      30,
+      -66
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 24,
+     "y1": 32,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -10
+     ],
+     "radius": 12,
+     "y0": 24,
+     "base": 0,
+     "height": 2,
+     "count": 16,
+     "open": false,
+     "drum": 4,
+     "colour": "#d8ccb0",
+     "dome": {
+      "height": 14,
+      "colour": "#6aa38a",
+      "material": "copper"
+     },
+     "lantern": false
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -10
+     ],
+     "radius": 2.5,
+     "y0": 42,
+     "y1": 56,
+     "radiusTop": 0.5,
+     "sides": 12,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      30
+     ],
+     "size": [
+      40,
+      52
+     ],
+     "y0": 0,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#cfc4aa"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      30
+     ],
+     "size": [
+      40,
+      52
+     ],
+     "y0": 34,
+     "rise": 9,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#5b5f66"
+    }
+   ]
+  },
+  "notes": "Palais Garnier: a pale stone Beaux-Arts opera house. The front (-z) has a two-storey arcaded and columned loggia under a central pediment, with flanking pavilions and gilded statues at the roofline corners. Behind it rises the green copper dome over the auditorium, topped by a lantern and the Apollo group. The rear stage house is a tall block with a steep gable roof.",
+  "triangles": 3840,
+  "parts": 41
+ },
+ "totals": {
+  "input": 3311,
+  "output": 2509,
+  "cost": 0.00166728,
+  "ms": 11755
+ }
+}

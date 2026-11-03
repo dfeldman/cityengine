@@ -1,0 +1,200 @@
+{
+ "building": "ferry-building",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:17.728Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "reply": "{\"notes\": \"The Ferry Building is a long, low, two-storey arcaded market hall on the Embarcadero, roughly 200 m wide, with a dark mansard-style roof and a pale stone-grey facade. Its signature is the tall white clock tower rising from the centre of the front, which reaches the 75 m top. The ground floor is a run of round arches along the front, so I model an arcade and the tower stack.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [201, 52], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d4c8\", \"windows\": {\"kind\": \"arched\", \"floor\": 4.5, \"pitch\": 5, \"solid\": 0.5}}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, 0], \"size\": [199, 50], \"y0\": 17, \"rise\": 4, \"material\": \"tile\", \"colour\": \"#5d6268\"}, {\"type\": \"box\", \"center\": [0, -21], \"size\": [44, 14], \"y0\": 0, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#e2ddd0\", \"windows\": {\"kind\": \"arched\", \"floor\": 4.5, \"pitch\": 5, \"solid\": 0.4}}, {\"type\": \"arcade\", \"from\": [-95, -27], \"to\": [95, -27], \"y0\": 0, \"height\": 8, \"count\": 40, \"thickness\": 1.5}, {\"type\": \"box\", \"center\": [0, -21], \"size\": [13, 13], \"y0\": 21, \"y1\": 58, \"material\": \"stone\", \"colour\": \"#f0ede6\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.7}}, {\"type\": \"box\", \"center\": [0, -21], \"size\": [10, 10], \"y0\": 58, \"y1\": 68, \"material\": \"stone\", \"colour\": \"#f0ede6\"}, {\"type\": \"cylinder\", \"center\": [0, -21], \"radius\": 5.5, \"radiusTop\": 1.0, \"y0\": 68, \"y1\": 75, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#f0ede6\"}]}",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 1464,
+   "cacheRead": 3474,
+   "cost": 0.00110224,
+   "ms": 7345,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Ferry Building is a long, low, two-storey arcaded market hall on the Embarcadero, roughly 200 m wide, with a dark mansard-style roof and a pale stone-grey facade. Its signature is the tall white clock tower rising from the centre of the front, which reaches the 75 m top. The ground floor is a run of round arches along the front, so I model an arcade and the tower stack.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      52
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d4c8",
+     "windows": {
+      "kind": "arched",
+      "floor": 4.5,
+      "pitch": 5,
+      "solid": 0.5
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      199,
+      50
+     ],
+     "y0": 17,
+     "rise": 4,
+     "material": "tile",
+     "colour": "#5d6268"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -21
+     ],
+     "size": [
+      44,
+      14
+     ],
+     "y0": 0,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#e2ddd0",
+     "windows": {
+      "kind": "arched",
+      "floor": 4.5,
+      "pitch": 5,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -95,
+      -27
+     ],
+     "to": [
+      95,
+      -27
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 40,
+     "thickness": 1.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -21
+     ],
+     "size": [
+      13,
+      13
+     ],
+     "y0": 21,
+     "y1": 58,
+     "material": "stone",
+     "colour": "#f0ede6",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -21
+     ],
+     "size": [
+      10,
+      10
+     ],
+     "y0": 58,
+     "y1": 68,
+     "material": "stone",
+     "colour": "#f0ede6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -21
+     ],
+     "radius": 5.5,
+     "radiusTop": 1,
+     "y0": 68,
+     "y1": 75,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#f0ede6"
+    }
+   ]
+  },
+  "notes": "The Ferry Building is a long, low, two-storey arcaded market hall on the Embarcadero, roughly 200 m wide, with a dark mansard-style roof and a pale stone-grey facade. Its signature is the tall white clock tower rising from the centre of the front, which reaches the 75 m top. The ground floor is a run of round arches along the front, so I model an arcade and the tower stack.",
+  "triangles": 4996,
+  "parts": 7
+ },
+ "totals": {
+  "input": 3355,
+  "output": 1464,
+  "cost": 0.00110224,
+  "ms": 7345
+ }
+}

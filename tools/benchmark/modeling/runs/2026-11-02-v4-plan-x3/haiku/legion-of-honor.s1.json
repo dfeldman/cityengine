@@ -1,0 +1,252 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:16.810Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A low, long grey stone colonnaded building with its front open to a forecourt: two colonnaded wings run back from a central triumphal arch, and the court is lined with columns. A green copper dome rises behind the arch at the rear, giving the top of the building at about 23 m. The model uses a colonnaded court open to the front, a single large round-headed arch at the centre of the front, and a copper dome on a drum at the rear.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [60.4, 93.7],\n      \"y0\": 0,\n      \"wing\": 14,\n      \"open\": \"front\",\n      \"courtColonnade\": true,\n      \"bay\": 4.5,\n      \"storeys\": [{\"height\": 14, \"kind\": \"columns\"}],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d6d3ca\",\n      \"trim\": \"#e8e4da\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-5, -44],\n      \"to\": [5, -44],\n      \"y0\": 0,\n      \"height\": 14,\n      \"count\": 1,\n      \"thickness\": 4,\n      \"material\": \"stone\",\n      \"colour\": \"#d6d3ca\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, -44],\n      \"size\": [12, 5],\n      \"y0\": 14,\n      \"y1\": 18,\n      \"material\": \"stone\",\n      \"colour\": \"#d6d3ca\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 28],\n      \"radius\": 10,\n      \"y0\": 14,\n      \"base\": 0,\n      \"height\": 3,\n      \"count\": 16,\n      \"open\": false,\n      \"drum\": 0,\n      \"dome\": {\"height\": 6, \"colour\": \"#6f9e88\", \"material\": \"copper\"},\n      \"lantern\": false,\n      \"colour\": \"#d6d3ca\",\n      \"trim\": \"#e8e4da\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4226,
+   "output": 1565,
+   "cacheRead": 8401,
+   "cost": 0.0012891100000000002,
+   "ms": 7372,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A low, long grey stone colonnaded building with its front open to a forecourt: two colonnaded wings run back from a central triumphal arch, and the court is lined with columns. A green copper dome rises behind the arch at the rear, giving the top of the building at about 23 m. The model uses a colonnaded court open to the front, a single large round-headed arch at the centre of the front, and a copper dome on a drum at the rear.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      93.7
+     ],
+     "y0": 0,
+     "wing": 14,
+     "open": "front",
+     "courtColonnade": true,
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "columns"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d6d3ca",
+     "trim": "#e8e4da",
+     "material": "stone"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -5,
+      -44
+     ],
+     "to": [
+      5,
+      -44
+     ],
+     "y0": 0,
+     "height": 14,
+     "count": 1,
+     "thickness": 4,
+     "material": "stone",
+     "colour": "#d6d3ca"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      12,
+      5
+     ],
+     "y0": 14,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#d6d3ca"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      28
+     ],
+     "radius": 10,
+     "y0": 14,
+     "base": 0,
+     "height": 3,
+     "count": 16,
+     "open": false,
+     "drum": 0,
+     "dome": {
+      "height": 6,
+      "colour": "#6f9e88",
+      "material": "copper"
+     },
+     "lantern": false,
+     "colour": "#d6d3ca",
+     "trim": "#e8e4da"
+    }
+   ]
+  },
+  "notes": "A low, long grey stone colonnaded building with its front open to a forecourt: two colonnaded wings run back from a central triumphal arch, and the court is lined with columns. A green copper dome rises behind the arch at the rear, giving the top of the building at about 23 m. The model uses a colonnaded court open to the front, a single large round-headed arch at the centre of the front, and a copper dome on a drum at the rear.",
+  "triangles": 17076,
+  "parts": 54
+ },
+ "totals": {
+  "input": 7503,
+  "output": 3381,
+  "cost": 0.00254564,
+  "ms": 16734
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: the front from the forecourt, showing the central triumphal arch with its round opening and flanking colonnades, grey stone, blue sky\", \"photo 2: the front at night across the reflecting pond, showing the low colonnaded wings, end pavilions and the central arch, with a green dome glimpsed behind\", \"photo 3: the daylight view inside the court, showing the colonnaded wing with a flat-topped balustrade and stone paving, and the 'HONNEUR ET PATRIE' entablature on the central portico\"],\n  \"components\": [\n    {\"name\": \"main colonnaded wings round the court\", \"part\": \"court\", \"where\": \"the whole footprint, open toward the front\", \"center\": [0, 0], \"size\": [60.4, 93.7], \"height\": 14,\n     \"settings\": {\"open\": \"front\", \"wing\": 14, \"colonnades\": true, \"storeys\": [{\"height\": 14, \"kind\": \"columns\", \"windows\": false}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d6d3ca\"},\n     \"why\": \"photos 1 and 3 show a low colonnaded wing round an open forecourt court, open toward the front\"},\n    {\"name\": \"central triumphal arch\", \"part\": \"arcade\", \"where\": \"centre of the front\", \"center\": [0, -40], \"size\": [12, 6], \"height\": 16,\n     \"settings\": {\"arches\": 1, \"width\": 12, \"depth\": 6, \"height\": 16, \"colour\": \"#d6d3ca\"},\n     \"why\": \"photos 1 and 2: a single large round-headed arch rises above the colonnade at the centre of the front\"},\n    {\"name\": \"rear domed rotunda\", \"part\": \"rotunda\", \"where\": \"centre of the rear\", \"center\": [0, 30], \"radius\": 10, \"base\": 14,\n     \"settings\": {\"open\": false, \"radius\": 10, \"base\": 14, \"columns\": 16, \"column_height\": 14, \"drum\": 3, \"dome_height\": 6, \"colour\": \"#7fb8a0\", \"lantern\": false},\n     \"why\": \"photo 2 shows a green copper dome rising behind the central arch, the top of the building at 23 m\"}\n  ]\n}",
+  "input": 3277,
+  "output": 1816,
+  "cost": 0.00125653,
+  "ms": 9362,
+  "json": {
+   "photos": [
+    "photo 1: the front from the forecourt, showing the central triumphal arch with its round opening and flanking colonnades, grey stone, blue sky",
+    "photo 2: the front at night across the reflecting pond, showing the low colonnaded wings, end pavilions and the central arch, with a green dome glimpsed behind",
+    "photo 3: the daylight view inside the court, showing the colonnaded wing with a flat-topped balustrade and stone paving, and the 'HONNEUR ET PATRIE' entablature on the central portico"
+   ],
+   "components": [
+    {
+     "name": "main colonnaded wings round the court",
+     "part": "court",
+     "where": "the whole footprint, open toward the front",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      93.7
+     ],
+     "height": 14,
+     "settings": {
+      "open": "front",
+      "wing": 14,
+      "colonnades": true,
+      "storeys": [
+       {
+        "height": 14,
+        "kind": "columns",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d6d3ca"
+     },
+     "why": "photos 1 and 3 show a low colonnaded wing round an open forecourt court, open toward the front"
+    },
+    {
+     "name": "central triumphal arch",
+     "part": "arcade",
+     "where": "centre of the front",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      12,
+      6
+     ],
+     "height": 16,
+     "settings": {
+      "arches": 1,
+      "width": 12,
+      "depth": 6,
+      "height": 16,
+      "colour": "#d6d3ca"
+     },
+     "why": "photos 1 and 2: a single large round-headed arch rises above the colonnade at the centre of the front"
+    },
+    {
+     "name": "rear domed rotunda",
+     "part": "rotunda",
+     "where": "centre of the rear",
+     "center": [
+      0,
+      30
+     ],
+     "radius": 10,
+     "base": 14,
+     "settings": {
+      "open": false,
+      "radius": 10,
+      "base": 14,
+      "columns": 16,
+      "column_height": 14,
+      "drum": 3,
+      "dome_height": 6,
+      "colour": "#7fb8a0",
+      "lantern": false
+     },
+     "why": "photo 2 shows a green copper dome rising behind the central arch, the top of the building at 23 m"
+    }
+   ]
+  }
+ }
+}

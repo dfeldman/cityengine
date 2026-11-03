@@ -1,0 +1,255 @@
+{
+ "building": "palace-of-fine-arts",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:38.754Z",
+ "userText": "Building: Palace of Fine Arts (rotunda and colonnades), San Francisco (exhibition rotunda).\nThe front (−z) is the lagoon side of the rotunda.\nFootprint: 72.9 m along x by 68.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[30.8,4.7],[36.4,8.8],[19.8,10.8],[14.5,17.2],[16.1,34],[6.5,21.7],[-7.9,28.4],[-17.1,14.7],[-20,19],[-25.2,15.2],[-22.6,-1.8],[-36.4,-8.7],[-25.7,-8.4],[-14.7,-17.2],[-16.1,-33.9],[-6.2,-21.8],[1.7,-22.5],[4.8,-34],[16.7,-14.7],[27.8,-17],[32.4,-11.4],[21.7,-6.1],[22.3,2.2]]\nHeight: the highest point is 49 m above the ground.\nModel the rotunda only: the long curving colonnades that run off on either side are outside this footprint.\n\n3 photographs attached, in order:\n  1. front view across the lagoon of the domed rotunda and flanking curved colonnades, daylight\n  2. three-quarter from the lawn across the lagoon showing the rotunda, colonnade at left and trees, daylight\n  3. view from the Marina side showing the rotunda dome and the long hall behind it, houses in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   72.9,
+   68.1
+  ],
+  "outline": [
+   [
+    30.8,
+    4.7
+   ],
+   [
+    36.4,
+    8.8
+   ],
+   [
+    19.8,
+    10.8
+   ],
+   [
+    14.5,
+    17.2
+   ],
+   [
+    16.1,
+    34
+   ],
+   [
+    6.5,
+    21.7
+   ],
+   [
+    -7.9,
+    28.4
+   ],
+   [
+    -17.1,
+    14.7
+   ],
+   [
+    -20,
+    19
+   ],
+   [
+    -25.2,
+    15.2
+   ],
+   [
+    -22.6,
+    -1.8
+   ],
+   [
+    -36.4,
+    -8.7
+   ],
+   [
+    -25.7,
+    -8.4
+   ],
+   [
+    -14.7,
+    -17.2
+   ],
+   [
+    -16.1,
+    -33.9
+   ],
+   [
+    -6.2,
+    -21.8
+   ],
+   [
+    1.7,
+    -22.5
+   ],
+   [
+    4.8,
+    -34
+   ],
+   [
+    16.7,
+    -14.7
+   ],
+   [
+    27.8,
+    -17
+   ],
+   [
+    32.4,
+    -11.4
+   ],
+   [
+    21.7,
+    -6.1
+   ],
+   [
+    22.3,
+    2.2
+   ]
+  ],
+  "height": 49,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Palace of Fine Arts rotunda: an octagonal open colonnade of paired pink-terracotta columns on a stone base, with arched openings, a heavy attic of relief panels and corner pylons, then a low drum and a shallow cream dome. It is modelled as a rotunda with an open ring of columns, plus a solid core, an attic ring and a pale dome, all inside the footprint. Height is 49 m.\", \"parts\": [{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 17, \"y0\": 0, \"y1\": 3, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#c9a98a\"}, {\"type\": \"rotunda\", \"center\": [0, 0], \"radius\": 15, \"y0\": 3, \"base\": 1, \"height\": 22, \"count\": 16, \"open\": true, \"entablature\": 3, \"drum\": 0, \"dome\": false, \"lantern\": false, \"colour\": \"#b9705f\", \"trim\": \"#c9a98a\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 9, \"y0\": 3, \"y1\": 26, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#c9a98a\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 16.5, \"y0\": 26, \"y1\": 36, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#c9a98a\"}, {\"type\": \"repeat\", \"count\": 8, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"box\", \"center\": [16.5, 0], \"size\": [3, 4], \"y0\": 36, \"y1\": 40, \"material\": \"stone\", \"colour\": \"#c9a98a\"}}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 14, \"y0\": 36, \"y1\": 40, \"material\": \"stone\", \"colour\": \"#c9a98a\"}, {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 14, \"y0\": 40, \"height\": 9, \"material\": \"stucco\", \"colour\": \"#e8dcc0\"}]}",
+   "stop": "end_turn",
+   "input": 3427,
+   "output": 685,
+   "cacheRead": 8168,
+   "cost": 0.0153376,
+   "ms": 5542,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Palace of Fine Arts rotunda: an octagonal open colonnade of paired pink-terracotta columns on a stone base, with arched openings, a heavy attic of relief panels and corner pylons, then a low drum and a shallow cream dome. It is modelled as a rotunda with an open ring of columns, plus a solid core, an attic ring and a pale dome, all inside the footprint. Height is 49 m.",
+   "parts": [
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 17,
+     "y0": 0,
+     "y1": 3,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#c9a98a"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 15,
+     "y0": 3,
+     "base": 1,
+     "height": 22,
+     "count": 16,
+     "open": true,
+     "entablature": 3,
+     "drum": 0,
+     "dome": false,
+     "lantern": false,
+     "colour": "#b9705f",
+     "trim": "#c9a98a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 9,
+     "y0": 3,
+     "y1": 26,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#c9a98a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 16.5,
+     "y0": 26,
+     "y1": 36,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#c9a98a"
+    },
+    {
+     "type": "repeat",
+     "count": 8,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "box",
+      "center": [
+       16.5,
+       0
+      ],
+      "size": [
+       3,
+       4
+      ],
+      "y0": 36,
+      "y1": 40,
+      "material": "stone",
+      "colour": "#c9a98a"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 14,
+     "y0": 36,
+     "y1": 40,
+     "material": "stone",
+     "colour": "#c9a98a"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 14,
+     "y0": 40,
+     "height": 9,
+     "material": "stucco",
+     "colour": "#e8dcc0"
+    }
+   ]
+  },
+  "notes": "The Palace of Fine Arts rotunda: an octagonal open colonnade of paired pink-terracotta columns on a stone base, with arched openings, a heavy attic of relief panels and corner pylons, then a low drum and a shallow cream dome. It is modelled as a rotunda with an open ring of columns, plus a solid core, an attic ring and a pale dome, all inside the footprint. Height is 49 m.",
+  "triangles": 1684,
+  "parts": 31
+ },
+ "totals": {
+  "input": 3427,
+  "output": 685,
+  "cost": 0.0153376,
+  "ms": 5542
+ }
+}

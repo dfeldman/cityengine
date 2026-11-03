@@ -1,0 +1,216 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:26.914Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The de Young is a long, low, windowless copper-clad box, perforated and dark brown, forming the bulk of the museum. Its signature is the tall, sheared observation tower rising from the back-right corner, with its floors stepping outward and turning as they climb to about 44 m. The tower is modelled as a twist, and the body as a blank block.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [157, 76],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"colour\": \"#5a4034\",\n      \"trim\": \"#6b4a3a\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 10, \"kind\": \"blank\", \"windows\": false}\n      ],\n      \"cornice\": 0,\n      \"roof\": {\"kind\": \"flat\"},\n      \"material\": \"metal\"\n    },\n    {\n      \"type\": \"twist\",\n      \"center\": [48, 18],\n      \"size\": [22, 20],\n      \"y0\": 0,\n      \"y1\": 44,\n      \"turn\": 30,\n      \"steps\": 16,\n      \"topScale\": 0.9,\n      \"material\": \"metal\",\n      \"colour\": \"#6b4a3a\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4102,
+   "output": 1026,
+   "cacheRead": 0,
+   "cost": 0.001973325,
+   "ms": 4986,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The de Young is a long, low, windowless copper-clad box, perforated and dark brown, forming the bulk of the museum. Its signature is the tall, sheared observation tower rising from the back-right corner, with its floors stepping outward and turning as they climb to about 44 m. The tower is modelled as a twist, and the body as a blank block.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#5a4034",
+     "trim": "#6b4a3a",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 10,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "material": "metal"
+    },
+    {
+     "type": "twist",
+     "center": [
+      48,
+      18
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "y0": 0,
+     "y1": 44,
+     "turn": 30,
+     "steps": 16,
+     "topScale": 0.9,
+     "material": "metal",
+     "colour": "#6b4a3a"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low, windowless copper-clad box, perforated and dark brown, forming the bulk of the museum. Its signature is the tall, sheared observation tower rising from the back-right corner, with its floors stepping outward and turning as they climb to about 44 m. The tower is modelled as a twist, and the body as a blank block.",
+  "triangles": 168,
+  "parts": 4
+ },
+ "totals": {
+  "input": 7324,
+  "output": 2747,
+  "cost": 0.0034164,
+  "ms": 14517
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the wide three-quarter view from the south-east access road, showing a long, low, dark copper-clad box under palms, with the tall twisted observation tower rising behind its right end.\",\n    \"photo 2: a close side view of the angular copper-clad wall, with the sheared tower stepping outward and upward behind it and trees beside.\",\n    \"photo 3: the front three-quarter view from the street, showing the low perforated copper volume with the tall tower behind on the right, palms and a planted court in front.\"\n  ],\n  \"components\": [\n    {\"name\": \"copper-clad main box\", \"part\": \"block\", \"where\": \"the whole low body of the museum\", \"center\": [0, 0], \"size\": [157, 76], \"height\": 16,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 10, \"kind\": \"blank\", \"windows\": false}], \"faces\": [], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#6b4a3a\"},\n     \"why\": \"photos 1 and 3: a long, low, windowless perforated copper box forms the bulk of the museum\"},\n    {\"name\": \"twisted observation tower\", \"part\": \"twist\", \"where\": \"back-right corner of the body, behind the front on the +x side\", \"center\": [48, 18], \"size\": [22, 20], \"height\": 44,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 20, \"height\": 16, \"kind\": \"blank\"}, {\"shape\": \"square\", \"width\": 19, \"height\": 14, \"kind\": \"open\"}, {\"shape\": \"square\", \"width\": 18, \"height\": 14, \"kind\": \"blank\"}], \"turn\": 30, \"taper\": 0.1, \"top\": {\"kind\": \"flat\"}, \"colour\": \"#6b4a3a\"},\n     \"why\": \"photos 1 to 3: a tall sheared, stepping tower rises from the back corner, with its floors turning as they climb to the highest point\"}\n  ]\n}",
+  "input": 3222,
+  "output": 1721,
+  "cost": 0.001443075,
+  "ms": 9531,
+  "json": {
+   "photos": [
+    "photo 1: the wide three-quarter view from the south-east access road, showing a long, low, dark copper-clad box under palms, with the tall twisted observation tower rising behind its right end.",
+    "photo 2: a close side view of the angular copper-clad wall, with the sheared tower stepping outward and upward behind it and trees beside.",
+    "photo 3: the front three-quarter view from the street, showing the low perforated copper volume with the tall tower behind on the right, palms and a planted court in front."
+   ],
+   "components": [
+    {
+     "name": "copper-clad main box",
+     "part": "block",
+     "where": "the whole low body of the museum",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "height": 16,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 10,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "faces": [],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#6b4a3a"
+     },
+     "why": "photos 1 and 3: a long, low, windowless perforated copper box forms the bulk of the museum"
+    },
+    {
+     "name": "twisted observation tower",
+     "part": "twist",
+     "where": "back-right corner of the body, behind the front on the +x side",
+     "center": [
+      48,
+      18
+     ],
+     "size": [
+      22,
+      20
+     ],
+     "height": 44,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 20,
+        "height": 16,
+        "kind": "blank"
+       },
+       {
+        "shape": "square",
+        "width": 19,
+        "height": 14,
+        "kind": "open"
+       },
+       {
+        "shape": "square",
+        "width": 18,
+        "height": 14,
+        "kind": "blank"
+       }
+      ],
+      "turn": 30,
+      "taper": 0.1,
+      "top": {
+       "kind": "flat"
+      },
+      "colour": "#6b4a3a"
+     },
+     "why": "photos 1 to 3: a tall sheared, stepping tower rises from the back corner, with its floors turning as they climb to the highest point"
+    }
+   ]
+  }
+ }
+}

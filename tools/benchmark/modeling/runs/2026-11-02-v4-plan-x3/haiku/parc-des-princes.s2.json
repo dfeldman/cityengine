@@ -1,0 +1,400 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:10.276Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"Parc des Princes is an oval concrete bowl with raked tiers of seats round an open pitch, and its signature is the row of tall, pointed concrete fins that rise above the upper tiers on every bay. I model the bowl as a 48 m oval with a low concrete podium ring, a grass pitch in the middle, and a ring of fins around the top. The fin shell from the plan is a solid prism in the outline, which would fill the pitch, so I replace it with a low podium ring that leaves the middle open.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276.4, 196.4],\n      \"inner\": [118, 80],\n      \"y0\": 0,\n      \"y1\": 48,\n      \"innerHeight\": 3,\n      \"shape\": \"oval\",\n      \"colour\": \"#b8b6ae\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276.4, 196.4],\n      \"inner\": [200, 130],\n      \"y0\": 0,\n      \"y1\": 12,\n      \"innerHeight\": 12,\n      \"shape\": \"oval\",\n      \"colour\": \"#c4c1b8\",\n      \"material\": \"concrete\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [118, 80],\n      \"y0\": 0,\n      \"y1\": 0.3,\n      \"colour\": \"#2f6b35\",\n      \"material\": \"grass\"\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 36,\n      \"around\": {\"center\": [0, 0]},\n      \"part\": {\n        \"type\": \"beam\",\n        \"from\": [128, 0, 0],\n        \"to\": [118, 48, 0],\n        \"width\": 3,\n        \"material\": \"concrete\",\n        \"colour\": \"#c4c1b8\"\n      }\n    }\n  ]\n}",
+   "stop": "end_turn",
+   "input": 4696,
+   "output": 1489,
+   "cacheRead": 8401,
+   "cost": 0.00129811,
+   "ms": 7524,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Parc des Princes is an oval concrete bowl with raked tiers of seats round an open pitch, and its signature is the row of tall, pointed concrete fins that rise above the upper tiers on every bay. I model the bowl as a 48 m oval with a low concrete podium ring, a grass pitch in the middle, and a ring of fins around the top. The fin shell from the plan is a solid prism in the outline, which would fill the pitch, so I replace it with a low podium ring that leaves the middle open.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "inner": [
+      118,
+      80
+     ],
+     "y0": 0,
+     "y1": 48,
+     "innerHeight": 3,
+     "shape": "oval",
+     "colour": "#b8b6ae",
+     "material": "concrete"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "inner": [
+      200,
+      130
+     ],
+     "y0": 0,
+     "y1": 12,
+     "innerHeight": 12,
+     "shape": "oval",
+     "colour": "#c4c1b8",
+     "material": "concrete"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      118,
+      80
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "colour": "#2f6b35",
+     "material": "grass"
+    },
+    {
+     "type": "repeat",
+     "count": 36,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       128,
+       0,
+       0
+      ],
+      "to": [
+       118,
+       48,
+       0
+      ],
+      "width": 3,
+      "material": "concrete",
+      "colour": "#c4c1b8"
+     }
+    }
+   ]
+  },
+  "notes": "Parc des Princes is an oval concrete bowl with raked tiers of seats round an open pitch, and its signature is the row of tall, pointed concrete fins that rise above the upper tiers on every bay. I model the bowl as a 48 m oval with a low concrete podium ring, a grass pitch in the middle, and a ring of fins around the top. The fin shell from the plan is a solid prism in the outline, which would fill the pitch, so I replace it with a low podium ring that leaves the middle open.",
+  "triangles": 1212,
+  "parts": 39
+ },
+ "totals": {
+  "input": 8216,
+  "output": 2731,
+  "cost": 0.00229194,
+  "ms": 13731
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the ribbed concrete stand fins rising above the Peripherique tunnel mouth, with the upper tiers of the bowl visible behind the road in daylight\",\n    \"photo 2: a distant view along the elevated road of the long concrete facade, a row of tall pointed ribs of varying height above the stands, with the blue advertising panels at the base\",\n    \"photo 3: a satellite view of the oval bowl, with the pitch inside an open middle, steeply raked tiers of seats and a fin-like rib on every bay around the perimeter, and a flatter open forecourt on the north-west side\"\n  ],\n  \"components\": [\n    {\"name\": \"stadium bowl\", \"part\": \"bowl\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [276.4, 196.4], \"height\": 48,\n     \"settings\": {\"shape\": \"oval\", \"open_end\": \"none\", \"rise\": 48, \"tiers\": 6, \"colour\": \"#b8b6ae\", \"seat_colour\": \"#3b4250\", \"pitch_colour\": \"#2f6b35\"},\n     \"why\": \"photos 1 and 3: an oval bowl of raked stands round an open pitch, with the open top showing the tiers\"},\n    {\"name\": \"outer fin shell\", \"part\": \"box\", \"where\": \"the outer ring of the bowl at ground level\", \"center\": [0, 0], \"size\": [276.4, 196.4], \"height\": 12,\n     \"settings\": {\"colour\": \"#c4c1b8\", \"outline\": [[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]},\n     \"why\": \"photos 1 and 2: a solid concrete base carries the stands and the ribbed fins at street level\"}\n  ]\n}\n```",
+  "input": 3520,
+  "output": 1242,
+  "cost": 0.00099383,
+  "ms": 6207,
+  "json": {
+   "photos": [
+    "photo 1: the ribbed concrete stand fins rising above the Peripherique tunnel mouth, with the upper tiers of the bowl visible behind the road in daylight",
+    "photo 2: a distant view along the elevated road of the long concrete facade, a row of tall pointed ribs of varying height above the stands, with the blue advertising panels at the base",
+    "photo 3: a satellite view of the oval bowl, with the pitch inside an open middle, steeply raked tiers of seats and a fin-like rib on every bay around the perimeter, and a flatter open forecourt on the north-west side"
+   ],
+   "components": [
+    {
+     "name": "stadium bowl",
+     "part": "bowl",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "height": 48,
+     "settings": {
+      "shape": "oval",
+      "open_end": "none",
+      "rise": 48,
+      "tiers": 6,
+      "colour": "#b8b6ae",
+      "seat_colour": "#3b4250",
+      "pitch_colour": "#2f6b35"
+     },
+     "why": "photos 1 and 3: an oval bowl of raked stands round an open pitch, with the open top showing the tiers"
+    },
+    {
+     "name": "outer fin shell",
+     "part": "box",
+     "where": "the outer ring of the bowl at ground level",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "height": 12,
+     "settings": {
+      "colour": "#c4c1b8",
+      "outline": [
+       [
+        -138.2,
+        14.9
+       ],
+       [
+        -135.8,
+        -1.2
+       ],
+       [
+        -42.7,
+        -97.1
+       ],
+       [
+        -34.7,
+        -98.2
+       ],
+       [
+        58.7,
+        -69.4
+       ],
+       [
+        70.4,
+        -64.8
+       ],
+       [
+        81.5,
+        -59
+       ],
+       [
+        93.5,
+        -51.1
+       ],
+       [
+        102.4,
+        -42.9
+       ],
+       [
+        138,
+        0.7
+       ],
+       [
+        138.2,
+        19.5
+       ],
+       [
+        105.9,
+        59.8
+       ],
+       [
+        92.3,
+        72.8
+       ],
+       [
+        71.9,
+        85.1
+       ],
+       [
+        55.3,
+        91.2
+       ],
+       [
+        39.7,
+        95
+       ],
+       [
+        12.7,
+        98.2
+       ],
+       [
+        -9.3,
+        97.6
+       ],
+       [
+        -27.9,
+        95
+       ],
+       [
+        -45,
+        90.7
+       ],
+       [
+        -57.7,
+        86.2
+       ],
+       [
+        -67.8,
+        81.6
+       ],
+       [
+        -77.5,
+        75.5
+       ],
+       [
+        -87.1,
+        68.1
+       ],
+       [
+        -137.7,
+        23.5
+       ]
+      ]
+     },
+     "why": "photos 1 and 2: a solid concrete base carries the stands and the ribbed fins at street level"
+    }
+   ]
+  }
+ }
+}

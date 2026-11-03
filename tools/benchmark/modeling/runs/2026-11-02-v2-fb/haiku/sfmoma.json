@@ -1,0 +1,382 @@
+{
+ "building": "sfmoma",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:01:44.623Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"SFMOMA: a stepped brick-and-stone front block (Botta) on the Third Street side, with a striped cylindrical drum carrying a glass oculus centred on the front. A white, curving, cladded extension (Snohetta) rises behind it to about 30 m, and the tallest point is the striped drum at 38 m. I model the brick mass, the striped drum with a glass disc, and the white rear volume.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [-22, -27], \"size\": [64, 30], \"y0\": 0, \"y1\": 18, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"box\", \"center\": [-36, -27], \"size\": [18, 28], \"y0\": 18, \"y1\": 24, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"box\", \"center\": [-6, -27], \"size\": [14, 28], \"y0\": 18, \"y1\": 24, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"cylinder\", \"center\": [-20, -39], \"radius\": 10.5, \"y0\": 10, \"y1\": 38, \"material\": \"stone\", \"colour\": \"#d8d4cc\"},\n    {\"type\": \"cylinder\", \"center\": [-20, -41.5], \"radius\": 7.5, \"y0\": 15, \"y1\": 29, \"material\": \"glass\", \"colour\": \"#9fb4bb\"},\n    {\"type\": \"prism\", \"points\": [[-54.3, -12], [10.8, -12], [10.8, 6.5], [54.4, 6.4], [54, 33.1], [14.6, 36.9], [-5.2, 37.6], [-5.2, 42.4], [-54.4, 42.2]], \"y0\": 0, \"y1\": 30, \"material\": \"concrete\", \"colour\": \"#e6e4df\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3483,
+   "output": 2499,
+   "cacheRead": 7616,
+   "cost": 0.00167396,
+   "ms": 12793,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "Differences from the real building:\n\n1. The striped drum is too tall and thin, and reads as a separate tower. In the photos it is a wide ring set into the front brick, with a glass oculus at its centre, rising only to the brick's upper roofline.\n2. The white Snohetta extension is one flat, uniform block at 30 m. In the photos it is taller and stepped toward the back, with a curving, sloping top.\n3. The brick front is too low and plain. The flanking brick masses stand higher than the central base, and the drum sits between them.\n\n```json\n{\n  \"notes\": \"SFMOMA: a stepped brick front on the Third Street side, with a wide striped drum set into its centre carrying a glass oculus. Behind it, a white curving extension rises to about 36 m at the back and steps down toward the front. The tallest point is the back of the white extension. I model the brick base, the raised brick flanks, the wide drum with its glass disc, and the stepped white rear volume.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [-22, -27], \"size\": [64, 30], \"y0\": 0, \"y1\": 14, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"box\", \"center\": [-38, -27], \"size\": [20, 28], \"y0\": 14, \"y1\": 22, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"box\", \"center\": [-4, -27], \"size\": [18, 28], \"y0\": 14, \"y1\": 22, \"material\": \"brick\", \"colour\": \"#a8553a\"},\n    {\"type\": \"cylinder\", \"center\": [-20, -39], \"radius\": 11, \"y0\": 6, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#d8d4cc\"},\n    {\"type\": \"cylinder\", \"center\": [-20, -41], \"radius\": 8, \"y0\": 9, \"y1\": 23, \"material\": \"glass\", \"colour\": \"#9fb4bb\"},\n    {\"type\": \"prism\", \"points\": [[-54.3, -12], [10.8, -12], [10.8, 6.5], [54.4, 6.4], [54, 33.1], [14.6, 36.9], [-5.2, 37.6], [-5.2, 42.4], [-54.4, 42.2]], \"y0\": 0, \"y1\": 24, \"material\": \"concrete\", \"colour\": \"#e6e4df\"},\n    {\"type\": \"prism\", \"points\": [[-54.3, 6], [10.8, 6], [54.4, 6], [54, 33.1], [14.6, 36.9], [-5.2, 37.6], [-5.2, 42.4], [-54.4, 42.2]], \"y0\": 24, \"y1\": 36, \"material\": \"concrete\", \"colour\": \"#e6e4df\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 7448,
+   "output": 1572,
+   "cacheRead": 7616,
+   "cost": 0.00160696,
+   "ms": 9092,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "SFMOMA: a stepped brick front on the Third Street side, with a wide striped drum set into its centre carrying a glass oculus. Behind it, a white curving extension rises to about 36 m at the back and steps down toward the front. The tallest point is the back of the white extension. I model the brick base, the raised brick flanks, the wide drum with its glass disc, and the stepped white rear volume.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -27
+     ],
+     "size": [
+      64,
+      30
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -38,
+      -27
+     ],
+     "size": [
+      20,
+      28
+     ],
+     "y0": 14,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -4,
+      -27
+     ],
+     "size": [
+      18,
+      28
+     ],
+     "y0": 14,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -39
+     ],
+     "radius": 11,
+     "y0": 6,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#d8d4cc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -41
+     ],
+     "radius": 8,
+     "y0": 9,
+     "y1": 23,
+     "material": "glass",
+     "colour": "#9fb4bb"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -54.3,
+       -12
+      ],
+      [
+       10.8,
+       -12
+      ],
+      [
+       10.8,
+       6.5
+      ],
+      [
+       54.4,
+       6.4
+      ],
+      [
+       54,
+       33.1
+      ],
+      [
+       14.6,
+       36.9
+      ],
+      [
+       -5.2,
+       37.6
+      ],
+      [
+       -5.2,
+       42.4
+      ],
+      [
+       -54.4,
+       42.2
+      ]
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "concrete",
+     "colour": "#e6e4df"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -54.3,
+       6
+      ],
+      [
+       10.8,
+       6
+      ],
+      [
+       54.4,
+       6
+      ],
+      [
+       54,
+       33.1
+      ],
+      [
+       14.6,
+       36.9
+      ],
+      [
+       -5.2,
+       37.6
+      ],
+      [
+       -5.2,
+       42.4
+      ],
+      [
+       -54.4,
+       42.2
+      ]
+     ],
+     "y0": 24,
+     "y1": 36,
+     "material": "concrete",
+     "colour": "#e6e4df"
+    }
+   ]
+  },
+  "notes": "SFMOMA: a stepped brick front on the Third Street side, with a wide striped drum set into its centre carrying a glass oculus. Behind it, a white curving extension rises to about 36 m at the back and steps down toward the front. The tallest point is the back of the white extension. I model the brick base, the raised brick flanks, the wide drum with its glass disc, and the stepped white rear volume.",
+  "triangles": 280,
+  "parts": 7
+ },
+ "totals": {
+  "input": 10931,
+  "output": 4071,
+  "cost": 0.0032809199999999997,
+  "ms": 21885
+ },
+ "draft": {
+  "json": {
+   "notes": "SFMOMA: a stepped brick-and-stone front block (Botta) on the Third Street side, with a striped cylindrical drum carrying a glass oculus centred on the front. A white, curving, cladded extension (Snohetta) rises behind it to about 30 m, and the tallest point is the striped drum at 38 m. I model the brick mass, the striped drum with a glass disc, and the white rear volume.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -27
+     ],
+     "size": [
+      64,
+      30
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -36,
+      -27
+     ],
+     "size": [
+      18,
+      28
+     ],
+     "y0": 18,
+     "y1": 24,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -6,
+      -27
+     ],
+     "size": [
+      14,
+      28
+     ],
+     "y0": 18,
+     "y1": 24,
+     "material": "brick",
+     "colour": "#a8553a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -39
+     ],
+     "radius": 10.5,
+     "y0": 10,
+     "y1": 38,
+     "material": "stone",
+     "colour": "#d8d4cc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -41.5
+     ],
+     "radius": 7.5,
+     "y0": 15,
+     "y1": 29,
+     "material": "glass",
+     "colour": "#9fb4bb"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -54.3,
+       -12
+      ],
+      [
+       10.8,
+       -12
+      ],
+      [
+       10.8,
+       6.5
+      ],
+      [
+       54.4,
+       6.4
+      ],
+      [
+       54,
+       33.1
+      ],
+      [
+       14.6,
+       36.9
+      ],
+      [
+       -5.2,
+       37.6
+      ],
+      [
+       -5.2,
+       42.4
+      ],
+      [
+       -54.4,
+       42.2
+      ]
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "concrete",
+     "colour": "#e6e4df"
+    }
+   ]
+  },
+  "notes": "SFMOMA: a stepped brick-and-stone front block (Botta) on the Third Street side, with a striped cylindrical drum carrying a glass oculus centred on the front. A white, curving, cladded extension (Snohetta) rises behind it to about 30 m, and the tallest point is the striped drum at 38 m. I model the brick mass, the striped drum with a glass disc, and the white rear volume.",
+  "triangles": 252,
+  "parts": 6
+ }
+}

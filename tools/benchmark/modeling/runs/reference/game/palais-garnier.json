@@ -1,0 +1,14 @@
+{
+ "building": "palais-garnier",
+ "modelId": "game",
+ "model": "palaisGarnier",
+ "fit": {
+  "turn": 92,
+  "mirror": false,
+  "iou": 0.72
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: palaisGarnier, 32940 tris, fit IoU 0.72"
+ }
+}

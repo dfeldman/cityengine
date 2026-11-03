@@ -1,0 +1,225 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:12.234Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "reply": "{\"notes\": \"The Legion of Honor is a pale grey stone palace with a central triumphal arch and portal on the front (-z), a pediment above it, and long colonnades of free-standing Ionic columns running out on both sides to end pavilions. Behind the arch sits a copper-green domed rotunda rising over the central block, which is the tallest point. The low flat-roofed wings carry the colonnades.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [60, 70], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 4, \"solid\": 0.7}}, {\"type\": \"box\", \"center\": [-22, -4], \"size\": [16, 80], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"box\", \"center\": [22, -4], \"size\": [16, 80], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"box\", \"center\": [0, -44], \"size\": [16, 6], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"arcade\", \"from\": [-6, -47.5], \"to\": [6, -47.5], \"y0\": 0, \"height\": 13, \"count\": 1, \"thickness\": 1.5}, {\"type\": \"pediment\", \"from\": [-8, -47.5], \"to\": [8, -47.5], \"y0\": 17, \"height\": 3, \"depth\": 2}, {\"type\": \"colonnade\", \"from\": [-27, -40], \"to\": [-8, -40], \"y0\": 0, \"height\": 12, \"count\": 10, \"material\": \"stone\", \"colour\": \"#e6e1d6\"}, {\"type\": \"colonnade\", \"from\": [8, -40], \"to\": [27, -40], \"y0\": 0, \"height\": 12, \"count\": 10, \"material\": \"stone\", \"colour\": \"#e6e1d6\"}, {\"type\": \"cylinder\", \"center\": [0, 2], \"radius\": 9, \"y0\": 13, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"sides\": 24}, {\"type\": \"dome\", \"center\": [0, 2], \"radius\": 9, \"y0\": 17, \"height\": 6, \"material\": \"copper\", \"colour\": \"#5f9c8a\"}]}",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 1581,
+   "cacheRead": 3474,
+   "cost": 0.00115294,
+   "ms": 7600,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Legion of Honor is a pale grey stone palace with a central triumphal arch and portal on the front (-z), a pediment above it, and long colonnades of free-standing Ionic columns running out on both sides to end pavilions. Behind the arch sits a copper-green domed rotunda rising over the central block, which is the tallest point. The low flat-roofed wings carry the colonnades.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60,
+      70
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -4
+     ],
+     "size": [
+      16,
+      80
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -4
+     ],
+     "size": [
+      16,
+      80
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      16,
+      6
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -6,
+      -47.5
+     ],
+     "to": [
+      6,
+      -47.5
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 1,
+     "thickness": 1.5
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -8,
+      -47.5
+     ],
+     "to": [
+      8,
+      -47.5
+     ],
+     "y0": 17,
+     "height": 3,
+     "depth": 2
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -27,
+      -40
+     ],
+     "to": [
+      -8,
+      -40
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 10,
+     "material": "stone",
+     "colour": "#e6e1d6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      8,
+      -40
+     ],
+     "to": [
+      27,
+      -40
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 10,
+     "material": "stone",
+     "colour": "#e6e1d6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      2
+     ],
+     "radius": 9,
+     "y0": 13,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "sides": 24
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      2
+     ],
+     "radius": 9,
+     "y0": 17,
+     "height": 6,
+     "material": "copper",
+     "colour": "#5f9c8a"
+    }
+   ]
+  },
+  "notes": "The Legion of Honor is a pale grey stone palace with a central triumphal arch and portal on the front (-z), a pediment above it, and long colonnades of free-standing Ionic columns running out on both sides to end pavilions. Behind the arch sits a copper-green domed rotunda rising over the central block, which is the tallest point. The low flat-roofed wings carry the colonnades.",
+  "triangles": 2752,
+  "parts": 10
+ },
+ "totals": {
+  "input": 3277,
+  "output": 1581,
+  "cost": 0.00115294,
+  "ms": 7600
+ }
+}

@@ -1,0 +1,257 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:29.614Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A low, long grey-stone colonnaded court of wings opening toward the front, with a balustraded roofline. A central triumphal arch with a round-headed opening stands on the front axis, and a solid rear rotunda carries a green copper dome. The rotunda is the signature feature visible from behind the arch.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [60.4, 93.7],\n      \"wing\": 14,\n      \"open\": \"front\",\n      \"courtColonnade\": true,\n      \"y0\": 0,\n      \"bay\": 5,\n      \"storeys\": [{\"height\": 12, \"kind\": \"columns\"}],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d8d2c4\",\n      \"trim\": \"#e8e2d4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -44],\n      \"size\": [12, 5],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"storeys\": [{\"height\": 14, \"kind\": \"arcade\", \"windows\": false}],\n      \"faces\": [\"front\"],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d8d2c4\",\n      \"trim\": \"#e8e2d4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 36],\n      \"radius\": 10,\n      \"y0\": 0,\n      \"base\": 1,\n      \"height\": 12,\n      \"count\": 16,\n      \"open\": false,\n      \"drum\": 4,\n      \"dome\": {\"height\": 6, \"colour\": \"#6fa58f\", \"material\": \"copper\"},\n      \"lantern\": false,\n      \"colour\": \"#d8d2c4\",\n      \"trim\": \"#e8e2d4\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4313,
+   "output": 1429,
+   "cacheRead": 8401,
+   "cost": 0.00122981,
+   "ms": 6588,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A low, long grey-stone colonnaded court of wings opening toward the front, with a balustraded roofline. A central triumphal arch with a round-headed opening stands on the front axis, and a solid rear rotunda carries a green copper dome. The rotunda is the signature feature visible from behind the arch.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      93.7
+     ],
+     "wing": 14,
+     "open": "front",
+     "courtColonnade": true,
+     "y0": 0,
+     "bay": 5,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "columns"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d8d2c4",
+     "trim": "#e8e2d4",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      12,
+      5
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "arcade",
+       "windows": false
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d8d2c4",
+     "trim": "#e8e2d4",
+     "material": "stone"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      36
+     ],
+     "radius": 10,
+     "y0": 0,
+     "base": 1,
+     "height": 12,
+     "count": 16,
+     "open": false,
+     "drum": 4,
+     "dome": {
+      "height": 6,
+      "colour": "#6fa58f",
+      "material": "copper"
+     },
+     "lantern": false,
+     "colour": "#d8d2c4",
+     "trim": "#e8e2d4",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "A low, long grey-stone colonnaded court of wings opening toward the front, with a balustraded roofline. A central triumphal arch with a round-headed opening stands on the front axis, and a solid rear rotunda carries a green copper dome. The rotunda is the signature feature visible from behind the arch.",
+  "triangles": 16612,
+  "parts": 64
+ },
+ "totals": {
+  "input": 7590,
+  "output": 3585,
+  "cost": 0.00265634,
+  "ms": 18040
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: the head-on view across the forecourt, showing the central triumphal arch with its 'Honneur et Patrie' frieze, flanking colonnades and end pavilions in grey stone under blue sky\", \"photo 2: the night view across the reflecting pond, showing the low colonnaded front with the central arch, lit from below, with the green copper dome visible through the arch\", \"photo 3: the daylight view inside the court looking along the colonnaded wing, with a Doric-to-Ionic colonnade of columns along the wall and a flat-topped balustraded pavilion above\"],\n  \"components\": [\n    {\"name\": \"colonnaded main body\", \"part\": \"court\", \"where\": \"the whole footprint, a U of wings open to the front\", \"center\": [0, 0], \"size\": [60.4, 93.7], \"height\": 12,\n     \"settings\": {\"open\": \"front\", \"wing\": 14, \"storeys\": [{\"height\": 12, \"kind\": \"columns\"}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8d2c4\"},\n     \"why\": \"photos 1 and 3 show a colonnaded court of wings opening toward the front with a balustraded roofline\"},\n    {\"name\": \"central triumphal arch\", \"part\": \"block\", \"where\": \"centre of the front, the entrance gate between the colonnades\", \"center\": [0, -44], \"size\": [12, 5], \"height\": 14,\n     \"settings\": {\"storeys\": [{\"height\": 14, \"kind\": \"arcade\", \"windows\": false}], \"faces\": [\"front\"], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8d2c4\"},\n     \"why\": \"photo 1 shows the round-arched triumphal gate rising above the colonnades in the middle of the front\"},\n    {\"name\": \"rear domed rotunda\", \"part\": \"rotunda\", \"where\": \"centre of the rear, behind the court\", \"center\": [0, 36], \"height\": 23,\n     \"settings\": {\"open\": false, \"radius\": 10, \"column_height\": 12, \"columns\": 16, \"drum\": true, \"dome_height\": 11, \"dome_colour\": \"#6fa58f\", \"lantern\": false, \"colour\": \"#d8d2c4\"},\n     \"why\": \"photo 2 and the outline's rear point show a central domed rotunda, whose green dome is glimpsed through the arch in photo 1; it is solid, so it is not open\"}\n  ]\n}",
+  "input": 3277,
+  "output": 2156,
+  "cost": 0.00142653,
+  "ms": 11452,
+  "json": {
+   "photos": [
+    "photo 1: the head-on view across the forecourt, showing the central triumphal arch with its 'Honneur et Patrie' frieze, flanking colonnades and end pavilions in grey stone under blue sky",
+    "photo 2: the night view across the reflecting pond, showing the low colonnaded front with the central arch, lit from below, with the green copper dome visible through the arch",
+    "photo 3: the daylight view inside the court looking along the colonnaded wing, with a Doric-to-Ionic colonnade of columns along the wall and a flat-topped balustraded pavilion above"
+   ],
+   "components": [
+    {
+     "name": "colonnaded main body",
+     "part": "court",
+     "where": "the whole footprint, a U of wings open to the front",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      93.7
+     ],
+     "height": 12,
+     "settings": {
+      "open": "front",
+      "wing": 14,
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "columns"
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8d2c4"
+     },
+     "why": "photos 1 and 3 show a colonnaded court of wings opening toward the front with a balustraded roofline"
+    },
+    {
+     "name": "central triumphal arch",
+     "part": "block",
+     "where": "centre of the front, the entrance gate between the colonnades",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      12,
+      5
+     ],
+     "height": 14,
+     "settings": {
+      "storeys": [
+       {
+        "height": 14,
+        "kind": "arcade",
+        "windows": false
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8d2c4"
+     },
+     "why": "photo 1 shows the round-arched triumphal gate rising above the colonnades in the middle of the front"
+    },
+    {
+     "name": "rear domed rotunda",
+     "part": "rotunda",
+     "where": "centre of the rear, behind the court",
+     "center": [
+      0,
+      36
+     ],
+     "height": 23,
+     "settings": {
+      "open": false,
+      "radius": 10,
+      "column_height": 12,
+      "columns": 16,
+      "drum": true,
+      "dome_height": 11,
+      "dome_colour": "#6fa58f",
+      "lantern": false,
+      "colour": "#d8d2c4"
+     },
+     "why": "photo 2 and the outline's rear point show a central domed rotunda, whose green dome is glimpsed through the arch in photo 1; it is solid, so it is not open"
+    }
+   ]
+  }
+ }
+}

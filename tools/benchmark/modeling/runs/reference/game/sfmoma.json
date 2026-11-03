@@ -1,0 +1,14 @@
+{
+ "building": "sfmoma",
+ "modelId": "game",
+ "model": "sfmoma_151_third",
+ "fit": {
+  "turn": 0,
+  "mirror": false,
+  "iou": 0.97
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: sfmoma_151_third, 23497 tris, fit IoU 0.97"
+ }
+}

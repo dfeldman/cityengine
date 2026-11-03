@@ -1,0 +1,322 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:44.159Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "reply": "{\n  \"notes\": \"Palais Garnier: a long cream stone block with a tall front pavilion facing the avenue, a loggia of paired columns over a ground arcade, and a central pediment. The green copper dome of the auditorium rises at the centre with a gilded lyre group on top. Gilded statues stand on the front corners, and a steep gabled stage house sits at the rear.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -10], \"size\": [101.7, 60], \"y0\": 0, \"y1\": 28, \"material\": \"stone\", \"colour\": \"#e2d8c4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [0, -56], \"size\": [68, 40], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#e2d8c4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"box\", \"center\": [0, 50], \"size\": [64, 50], \"y0\": 0, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#d8cdb6\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -10], \"size\": [101.7, 60], \"y0\": 28, \"rise\": 6, \"material\": \"tile\", \"colour\": \"#4f5862\"},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 50], \"size\": [64, 50], \"y0\": 26, \"rise\": 14, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#4f5862\"},\n    {\"type\": \"arcade\", \"from\": [-33, -77], \"to\": [33, -77], \"y0\": 0, \"height\": 8, \"count\": 7},\n    {\"type\": \"colonnade\", \"from\": [-27, -78], \"to\": [27, -78], \"y0\": 8, \"height\": 21, \"count\": 14},\n    {\"type\": \"pediment\", \"from\": [-22, -78], \"to\": [22, -78], \"y0\": 28, \"height\": 8, \"depth\": 3},\n    {\"type\": \"cylinder\", \"center\": [0, -10], \"radius\": 13, \"y0\": 26, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#e2d8c4\", \"sides\": 32},\n    {\"type\": \"dome\", \"center\": [0, -10], \"radius\": 12, \"y0\": 30, \"height\": 14, \"material\": \"copper\", \"colour\": \"#7fb8a0\"},\n    {\"type\": \"cylinder\", \"center\": [0, -10], \"radius\": 3, \"y0\": 44, \"y1\": 50, \"material\": \"metal\", \"colour\": \"#c9a23a\", \"sides\": 12},\n    {\"type\": \"cylinder\", \"center\": [0, -10], \"radius\": 2, \"radiusTop\": 0.5, \"y0\": 50, \"y1\": 56, \"material\": \"metal\", \"colour\": \"#c9a23a\", \"sides\": 10},\n    {\"type\": \"cylinder\", \"center\": [-30, -74], \"radius\": 2.5, \"y0\": 28, \"y1\": 38, \"material\": \"metal\", \"colour\": \"#c9a23a\", \"sides\": 12},\n    {\"type\": \"cylinder\", \"center\": [30, -74], \"radius\": 2.5, \"y0\": 28, \"y1\": 38, \"material\": \"metal\", \"colour\": \"#c9a23a\", \"sides\": 12}\n  ]\n}",
+   "stop": "end_turn",
+   "input": 3311,
+   "output": 2774,
+   "cacheRead": 3474,
+   "cost": 0.00175284,
+   "ms": 12818,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Palais Garnier: a long cream stone block with a tall front pavilion facing the avenue, a loggia of paired columns over a ground arcade, and a central pediment. The green copper dome of the auditorium rises at the centre with a gilded lyre group on top. Gilded statues stand on the front corners, and a steep gabled stage house sits at the rear.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -10
+     ],
+     "size": [
+      101.7,
+      60
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "stone",
+     "colour": "#e2d8c4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -56
+     ],
+     "size": [
+      68,
+      40
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#e2d8c4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      50
+     ],
+     "size": [
+      64,
+      50
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#d8cdb6",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -10
+     ],
+     "size": [
+      101.7,
+      60
+     ],
+     "y0": 28,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      50
+     ],
+     "size": [
+      64,
+      50
+     ],
+     "y0": 26,
+     "rise": 14,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -33,
+      -77
+     ],
+     "to": [
+      33,
+      -77
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 7
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -27,
+      -78
+     ],
+     "to": [
+      27,
+      -78
+     ],
+     "y0": 8,
+     "height": 21,
+     "count": 14
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -22,
+      -78
+     ],
+     "to": [
+      22,
+      -78
+     ],
+     "y0": 28,
+     "height": 8,
+     "depth": 3
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -10
+     ],
+     "radius": 13,
+     "y0": 26,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#e2d8c4",
+     "sides": 32
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -10
+     ],
+     "radius": 12,
+     "y0": 30,
+     "height": 14,
+     "material": "copper",
+     "colour": "#7fb8a0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -10
+     ],
+     "radius": 3,
+     "y0": 44,
+     "y1": 50,
+     "material": "metal",
+     "colour": "#c9a23a",
+     "sides": 12
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -10
+     ],
+     "radius": 2,
+     "radiusTop": 0.5,
+     "y0": 50,
+     "y1": 56,
+     "material": "metal",
+     "colour": "#c9a23a",
+     "sides": 10
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -30,
+      -74
+     ],
+     "radius": 2.5,
+     "y0": 28,
+     "y1": 38,
+     "material": "metal",
+     "colour": "#c9a23a",
+     "sides": 12
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      30,
+      -74
+     ],
+     "radius": 2.5,
+     "y0": 28,
+     "y1": 38,
+     "material": "metal",
+     "colour": "#c9a23a",
+     "sides": 12
+    }
+   ]
+  },
+  "notes": "Palais Garnier: a long cream stone block with a tall front pavilion facing the avenue, a loggia of paired columns over a ground arcade, and a central pediment. The green copper dome of the auditorium rises at the centre with a gilded lyre group on top. Gilded statues stand on the front corners, and a steep gabled stage house sits at the rear.",
+  "triangles": 4516,
+  "parts": 14
+ },
+ "totals": {
+  "input": 3311,
+  "output": 2774,
+  "cost": 0.00175284,
+  "ms": 12818
+ }
+}

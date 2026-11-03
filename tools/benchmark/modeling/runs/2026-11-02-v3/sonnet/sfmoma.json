@@ -1,0 +1,334 @@
+{
+ "building": "sfmoma",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:29.787Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"The Botta building is a stepped brick mass: low brick wings at left and right, two taller brick towers behind them, and a central black-and-white striped cylinder with a slanted oculus. Behind and to the right rises the white Snohetta extension, a rippled white-panelled mass with ribbon windows. I model the brick base and towers, the striped cylinder with a glass top, and the white extension. The footprint is an L-shape and the highest point is 38 m.\",\"parts\":[{\"type\":\"prism\",\"points\":[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]],\"y0\":0,\"y1\":10,\"material\":\"stone\",\"colour\":\"#c9c3b8\"},{\"type\":\"box\",\"center\":[-33,-30],\"size\":[22,24],\"y0\":0,\"y1\":17,\"material\":\"brick\",\"colour\":\"#a8573c\"},{\"type\":\"box\",\"center\":[-1,-30],\"size\":[20,24],\"y0\":0,\"y1\":17,\"material\":\"brick\",\"colour\":\"#a8573c\"},{\"type\":\"box\",\"center\":[-33,-20],\"size\":[18,20],\"y0\":17,\"y1\":27,\"material\":\"brick\",\"colour\":\"#a8573c\"},{\"type\":\"box\",\"center\":[-1,-20],\"size\":[18,20],\"y0\":17,\"y1\":27,\"material\":\"brick\",\"colour\":\"#a8573c\"},{\"type\":\"box\",\"center\":[-17,-22],\"size\":[16,16],\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#222222\"},{\"type\":\"cylinder\",\"center\":[-17,-34],\"radius\":9,\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#cfcfcf\"},{\"type\":\"cylinder\",\"center\":[-17,-34],\"radius\":9,\"y0\":18,\"y1\":30,\"material\":\"stone\",\"colour\":\"#9a9a9a\"},{\"type\":\"cylinder\",\"center\":[-17,-34.1],\"radius\":6.5,\"y0\":19,\"y1\":30.1,\"material\":\"glass\",\"colour\":\"#a9bfb8\"},{\"type\":\"prism\",\"points\":[[-54,-5],[10,-5],[10,10],[54,8],[54,33],[14,37],[-5,37.6],[-5,42],[-54,42]],\"y0\":10,\"y1\":32,\"material\":\"stucco\",\"colour\":\"#e6e2d8\",\"windows\":{\"kind\":\"bands\",\"floor\":5,\"solid\":0.6,\"glass\":\"#6f95a0\"}},{\"type\":\"box\",\"center\":[36,20],\"size\":[36,24],\"y0\":32,\"y1\":38,\"material\":\"stucco\",\"colour\":\"#ece8de\",\"windows\":{\"kind\":\"bands\",\"floor\":5,\"solid\":0.6}},{\"type\":\"box\",\"center\":[44,-10],\"size\":[18,30],\"y0\":0,\"y1\":30,\"material\":\"metal\",\"colour\":\"#c4c8cc\"}]}",
+   "stop": "end_turn",
+   "input": 3483,
+   "output": 1005,
+   "cacheRead": 0,
+   "cost": 0.037436,
+   "ms": 8823,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Botta building is a stepped brick mass: low brick wings at left and right, two taller brick towers behind them, and a central black-and-white striped cylinder with a slanted oculus. Behind and to the right rises the white Snohetta extension, a rippled white-panelled mass with ribbon windows. I model the brick base and towers, the striped cylinder with a glass top, and the white extension. The footprint is an L-shape and the highest point is 38 m.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -54.3,
+       -42.1
+      ],
+      [
+       10.8,
+       -42.4
+      ],
+      [
+       10.9,
+       6.5
+      ],
+      [
+       54.4,
+       6.4
+      ],
+      [
+       54,
+       33.1
+      ],
+      [
+       14.6,
+       36.9
+      ],
+      [
+       -5.2,
+       37.6
+      ],
+      [
+       -5.2,
+       42.4
+      ],
+      [
+       -54.4,
+       42.2
+      ]
+     ],
+     "y0": 0,
+     "y1": 10,
+     "material": "stone",
+     "colour": "#c9c3b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -33,
+      -30
+     ],
+     "size": [
+      22,
+      24
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "brick",
+     "colour": "#a8573c"
+    },
+    {
+     "type": "box",
+     "center": [
+      -1,
+      -30
+     ],
+     "size": [
+      20,
+      24
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "brick",
+     "colour": "#a8573c"
+    },
+    {
+     "type": "box",
+     "center": [
+      -33,
+      -20
+     ],
+     "size": [
+      18,
+      20
+     ],
+     "y0": 17,
+     "y1": 27,
+     "material": "brick",
+     "colour": "#a8573c"
+    },
+    {
+     "type": "box",
+     "center": [
+      -1,
+      -20
+     ],
+     "size": [
+      18,
+      20
+     ],
+     "y0": 17,
+     "y1": 27,
+     "material": "brick",
+     "colour": "#a8573c"
+    },
+    {
+     "type": "box",
+     "center": [
+      -17,
+      -22
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#222222"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -17,
+      -34
+     ],
+     "radius": 9,
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#cfcfcf"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -17,
+      -34
+     ],
+     "radius": 9,
+     "y0": 18,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#9a9a9a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -17,
+      -34.1
+     ],
+     "radius": 6.5,
+     "y0": 19,
+     "y1": 30.1,
+     "material": "glass",
+     "colour": "#a9bfb8"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -54,
+       -5
+      ],
+      [
+       10,
+       -5
+      ],
+      [
+       10,
+       10
+      ],
+      [
+       54,
+       8
+      ],
+      [
+       54,
+       33
+      ],
+      [
+       14,
+       37
+      ],
+      [
+       -5,
+       37.6
+      ],
+      [
+       -5,
+       42
+      ],
+      [
+       -54,
+       42
+      ]
+     ],
+     "y0": 10,
+     "y1": 32,
+     "material": "stucco",
+     "colour": "#e6e2d8",
+     "windows": {
+      "kind": "bands",
+      "floor": 5,
+      "solid": 0.6,
+      "glass": "#6f95a0"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      36,
+      20
+     ],
+     "size": [
+      36,
+      24
+     ],
+     "y0": 32,
+     "y1": 38,
+     "material": "stucco",
+     "colour": "#ece8de",
+     "windows": {
+      "kind": "bands",
+      "floor": 5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      44,
+      -10
+     ],
+     "size": [
+      18,
+      30
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#c4c8cc"
+    }
+   ]
+  },
+  "notes": "The Botta building is a stepped brick mass: low brick wings at left and right, two taller brick towers behind them, and a central black-and-white striped cylinder with a slanted oculus. Behind and to the right rises the white Snohetta extension, a rippled white-panelled mass with ribbon windows. I model the brick base and towers, the striped cylinder with a glass top, and the white extension. The footprint is an L-shape and the highest point is 38 m.",
+  "triangles": 504,
+  "parts": 12
+ },
+ "totals": {
+  "input": 3483,
+  "output": 1005,
+  "cost": 0.037436,
+  "ms": 8823
+ }
+}

@@ -1,0 +1,754 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:03:02.602Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Palais Garnier is a Beaux-Arts opera house: a cream stone body with a two-storey front loggia of columns and arches, a central pediment with an attic, and gilded Apollo-type statues at the front corners. A green copper dome rises over the foyer behind the front, and a tall gabled stage house with a gilded Apollo group on its ridge closes the rear. Side wings run out to the flanks.\", \"parts\": [{\"type\": \"prism\", \"points\": [[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"arcade\", \"from\": [-30,-67], \"to\": [30,-67], \"y0\": 0, \"height\": 8, \"count\": 5, \"thickness\": 3}, {\"type\": \"colonnade\", \"from\": [-28,-70], \"to\": [28,-70], \"y0\": 8, \"height\": 14, \"count\": 11, \"radius\": 0.7}, {\"type\": \"pediment\", \"from\": [-14,-72], \"to\": [14,-72], \"y0\": 22, \"height\": 7, \"depth\": 4}, {\"type\": \"box\", \"center\": [0,-55], \"size\": [62,20], \"y0\": 22, \"y1\": 27, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0,-50], \"size\": [60,46], \"y0\": 27, \"rise\": 9, \"ridge\": \"x\", \"material\": \"stone\", \"colour\": \"#b8ad98\"}, {\"type\": \"cylinder\", \"center\": [0,-20], \"radius\": 14, \"y0\": 24, \"y1\": 34, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"dome\", \"center\": [0,-20], \"radius\": 14, \"y0\": 34, \"height\": 12, \"material\": \"copper\", \"colour\": \"#7fb89a\"}, {\"type\": \"box\", \"center\": [-24,-60], \"size\": [5,5], \"y0\": 27, \"y1\": 36, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"box\", \"center\": [24,-60], \"size\": [5,5], \"y0\": 27, \"y1\": 36, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"box\", \"center\": [-42,-2], \"size\": [18,60], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-42,-2], \"size\": [18,60], \"y0\": 22, \"rise\": 6, \"material\": \"tile\", \"colour\": \"#4f5862\"}, {\"type\": \"box\", \"center\": [42,-2], \"size\": [18,60], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [42,-2], \"size\": [18,60], \"y0\": 22, \"rise\": 6, \"material\": \"tile\", \"colour\": \"#4f5862\"}, {\"type\": \"box\", \"center\": [0,50], \"size\": [56,40], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d0c6b0\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0,0], \"size\": [60,100], \"y0\": 26, \"rise\": 22, \"ridge\": \"z\", \"material\": \"stone\", \"colour\": \"#b8ad98\"}, {\"type\": \"cylinder\", \"center\": [0,-4], \"radius\": 2.5, \"y0\": 48, \"y1\": 53, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"dome\", \"center\": [0,-4], \"radius\": 3, \"y0\": 53, \"height\": 3, \"material\": \"metal\", \"colour\": \"#c9a24a\"}]}",
+   "stop": "end_turn",
+   "input": 3311,
+   "output": 2874,
+   "cacheRead": 7616,
+   "cost": 0.00184426,
+   "ms": 12932,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real building:\n\n1. **The green dome is too small and too low.** In the photographs it is a large copper dome on a drum, rising well above the roofline in front of the stage gable. In the render it is a flat, tiny disc, so I have enlarged the drum and dome.\n2. **The front loggia and central attic are too weak.** The columns and pediment barely register, and the gilded corner statues are too small to read. I have raised the attic and made the statues larger.\n3. **The side wings have the wrong roofs and colour.** They show dark mansard roofs, but the real wings are pale stone with lighter roofs. The stage-house gable is also too low, so the Apollo group at the top is lost. I have fixed the wing roofs, raised the gable, and enlarged the top group.\n\n```json\n{\"notes\": \"1) The green copper dome was far too small and low; it should be a large drum-and-dome rising above the roofline. 2) The front loggia and central attic were too weak, and the gilded corner statues were too small. 3) The side wings had dark mansard roofs and the stage gable was too low, which lost the Apollo group. The building is cream stone throughout, with pale roofs on the wings.\", \"parts\": [{\"type\": \"prism\", \"points\": [[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"arcade\", \"from\": [-30,-67], \"to\": [30,-67], \"y0\": 0, \"height\": 8, \"count\": 5, \"thickness\": 3}, {\"type\": \"colonnade\", \"from\": [-28,-70], \"to\": [28,-70], \"y0\": 8, \"height\": 16, \"count\": 11, \"radius\": 0.9, \"entablature\": 2}, {\"type\": \"pediment\", \"from\": [-15,-72], \"to\": [15,-72], \"y0\": 24, \"height\": 8, \"depth\": 4}, {\"type\": \"box\", \"center\": [0,-55], \"size\": [62,20], \"y0\": 22, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0,-50], \"size\": [60,46], \"y0\": 30, \"rise\": 9, \"ridge\": \"x\", \"material\": \"stone\", \"colour\": \"#c4b9a2\"}, {\"type\": \"cylinder\", \"center\": [0,-20], \"radius\": 15, \"y0\": 24, \"y1\": 38, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"dome\", \"center\": [0,-20], \"radius\": 15, \"y0\": 38, \"height\": 14, \"material\": \"copper\", \"colour\": \"#7fb89a\"}, {\"type\": \"cylinder\", \"center\": [-24,-60], \"radius\": 3, \"y0\": 30, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"cylinder\", \"center\": [24,-60], \"radius\": 3, \"y0\": 30, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"box\", \"center\": [-42,-2], \"size\": [18,60], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"roof\", \"kind\": \"flat\", \"center\": [-42,-2], \"size\": [18,60], \"y0\": 22, \"rise\": 1, \"material\": \"stone\", \"colour\": \"#c4b9a2\"}, {\"type\": \"box\", \"center\": [42,-2], \"size\": [18,60], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d9cdb4\"}, {\"type\": \"roof\", \"kind\": \"flat\", \"center\": [42,-2], \"size\": [18,60], \"y0\": 22, \"rise\": 1, \"material\": \"stone\", \"colour\": \"#c4b9a2\"}, {\"type\": \"box\", \"center\": [0,50], \"size\": [56,40], \"y0\": 0, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#d0c6b0\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0,0], \"size\": [60,100], \"y0\": 28, \"rise\": 24, \"ridge\": \"z\", \"material\": \"stone\", \"colour\": \"#c4b9a2\"}, {\"type\": \"cylinder\", \"center\": [0,-4], \"radius\": 3.5, \"y0\": 52, \"y1\": 56, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"dome\", \"center\": [0,-4], \"radius\": 4, \"y0\": 56, \"height\": 3, \"material\": \"metal\", \"colour\": \"#c9a24a\"}]}\n```",
+   "stop": "end_turn",
+   "input": 7651,
+   "output": 2223,
+   "cacheRead": 7616,
+   "cost": 0.0019527600000000002,
+   "ms": 9523,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1) The green copper dome was far too small and low; it should be a large drum-and-dome rising above the roofline. 2) The front loggia and central attic were too weak, and the gilded corner statues were too small. 3) The side wings had dark mansard roofs and the stage gable was too low, which lost the Apollo group. The building is cream stone throughout, with pale roofs on the wings.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -50.8,
+       -1.6
+      ],
+      [
+       -50.8,
+       -4.5
+      ],
+      [
+       -33.7,
+       -64.4
+      ],
+      [
+       -29.5,
+       -76.4
+      ],
+      [
+       29,
+       -76.4
+      ],
+      [
+       33.2,
+       -64.4
+      ],
+      [
+       50.8,
+       -4.2
+      ],
+      [
+       50.8,
+       -1.2
+      ],
+      [
+       33.2,
+       56.3
+      ],
+      [
+       28.9,
+       64.9
+      ],
+      [
+       21.5,
+       76.4
+      ],
+      [
+       -22.4,
+       76.4
+      ],
+      [
+       -29.7,
+       64.7
+      ],
+      [
+       -33.8,
+       56.3
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -30,
+      -67
+     ],
+     "to": [
+      30,
+      -67
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 5,
+     "thickness": 3
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -28,
+      -70
+     ],
+     "to": [
+      28,
+      -70
+     ],
+     "y0": 8,
+     "height": 16,
+     "count": 11,
+     "radius": 0.9,
+     "entablature": 2
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -15,
+      -72
+     ],
+     "to": [
+      15,
+      -72
+     ],
+     "y0": 24,
+     "height": 8,
+     "depth": 4
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -55
+     ],
+     "size": [
+      62,
+      20
+     ],
+     "y0": 22,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      -50
+     ],
+     "size": [
+      60,
+      46
+     ],
+     "y0": 30,
+     "rise": 9,
+     "ridge": "x",
+     "material": "stone",
+     "colour": "#c4b9a2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -20
+     ],
+     "radius": 15,
+     "y0": 24,
+     "y1": 38,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -20
+     ],
+     "radius": 15,
+     "y0": 38,
+     "height": 14,
+     "material": "copper",
+     "colour": "#7fb89a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -24,
+      -60
+     ],
+     "radius": 3,
+     "y0": 30,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      24,
+      -60
+     ],
+     "radius": 3,
+     "y0": 30,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "roof",
+     "kind": "flat",
+     "center": [
+      -42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 22,
+     "rise": 1,
+     "material": "stone",
+     "colour": "#c4b9a2"
+    },
+    {
+     "type": "box",
+     "center": [
+      42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "roof",
+     "kind": "flat",
+     "center": [
+      42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 22,
+     "rise": 1,
+     "material": "stone",
+     "colour": "#c4b9a2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      50
+     ],
+     "size": [
+      56,
+      40
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#d0c6b0"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60,
+      100
+     ],
+     "y0": 28,
+     "rise": 24,
+     "ridge": "z",
+     "material": "stone",
+     "colour": "#c4b9a2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -4
+     ],
+     "radius": 3.5,
+     "y0": 52,
+     "y1": 56,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -4
+     ],
+     "radius": 4,
+     "y0": 56,
+     "height": 3,
+     "material": "metal",
+     "colour": "#c9a24a"
+    }
+   ]
+  },
+  "notes": "1) The green copper dome was far too small and low; it should be a large drum-and-dome rising above the roofline. 2) The front loggia and central attic were too weak, and the gilded corner statues were too small. 3) The side wings had dark mansard roofs and the stage gable was too low, which lost the Apollo group. The building is cream stone throughout, with pale roofs on the wings.",
+  "triangles": 2500,
+  "parts": 18
+ },
+ "totals": {
+  "input": 10962,
+  "output": 5097,
+  "cost": 0.00379702,
+  "ms": 22455
+ },
+ "draft": {
+  "json": {
+   "notes": "Palais Garnier is a Beaux-Arts opera house: a cream stone body with a two-storey front loggia of columns and arches, a central pediment with an attic, and gilded Apollo-type statues at the front corners. A green copper dome rises over the foyer behind the front, and a tall gabled stage house with a gilded Apollo group on its ridge closes the rear. Side wings run out to the flanks.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -50.8,
+       -1.6
+      ],
+      [
+       -50.8,
+       -4.5
+      ],
+      [
+       -33.7,
+       -64.4
+      ],
+      [
+       -29.5,
+       -76.4
+      ],
+      [
+       29,
+       -76.4
+      ],
+      [
+       33.2,
+       -64.4
+      ],
+      [
+       50.8,
+       -4.2
+      ],
+      [
+       50.8,
+       -1.2
+      ],
+      [
+       33.2,
+       56.3
+      ],
+      [
+       28.9,
+       64.9
+      ],
+      [
+       21.5,
+       76.4
+      ],
+      [
+       -22.4,
+       76.4
+      ],
+      [
+       -29.7,
+       64.7
+      ],
+      [
+       -33.8,
+       56.3
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -30,
+      -67
+     ],
+     "to": [
+      30,
+      -67
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 5,
+     "thickness": 3
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -28,
+      -70
+     ],
+     "to": [
+      28,
+      -70
+     ],
+     "y0": 8,
+     "height": 14,
+     "count": 11,
+     "radius": 0.7
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -14,
+      -72
+     ],
+     "to": [
+      14,
+      -72
+     ],
+     "y0": 22,
+     "height": 7,
+     "depth": 4
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -55
+     ],
+     "size": [
+      62,
+      20
+     ],
+     "y0": 22,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      -50
+     ],
+     "size": [
+      60,
+      46
+     ],
+     "y0": 27,
+     "rise": 9,
+     "ridge": "x",
+     "material": "stone",
+     "colour": "#b8ad98"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -20
+     ],
+     "radius": 14,
+     "y0": 24,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -20
+     ],
+     "radius": 14,
+     "y0": 34,
+     "height": 12,
+     "material": "copper",
+     "colour": "#7fb89a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -24,
+      -60
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 27,
+     "y1": 36,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      -60
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 27,
+     "y1": 36,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 22,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "box",
+     "center": [
+      42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d9cdb4"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      42,
+      -2
+     ],
+     "size": [
+      18,
+      60
+     ],
+     "y0": 22,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4f5862"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      50
+     ],
+     "size": [
+      56,
+      40
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d0c6b0"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60,
+      100
+     ],
+     "y0": 26,
+     "rise": 22,
+     "ridge": "z",
+     "material": "stone",
+     "colour": "#b8ad98"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -4
+     ],
+     "radius": 2.5,
+     "y0": 48,
+     "y1": 53,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -4
+     ],
+     "radius": 3,
+     "y0": 53,
+     "height": 3,
+     "material": "metal",
+     "colour": "#c9a24a"
+    }
+   ]
+  },
+  "notes": "Palais Garnier is a Beaux-Arts opera house: a cream stone body with a two-storey front loggia of columns and arches, a central pediment with an attic, and gilded Apollo-type statues at the front corners. A green copper dome rises over the foyer behind the front, and a tall gabled stage house with a gilded Apollo group on its ridge closes the rear. Side wings run out to the flanks.",
+  "triangles": 2340,
+  "parts": 18
+ }
+}

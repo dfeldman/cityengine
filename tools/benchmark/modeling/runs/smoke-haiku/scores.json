@@ -1,0 +1,80 @@
+[
+ {
+  "building": "coit-tower",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 1,
+  "cost": 0.0012779500000000001,
+  "seconds": 5.558,
+  "input": 3577,
+  "output": 972,
+  "parts": 4,
+  "triangles": 672,
+  "types": [
+   "cylinder"
+  ],
+  "iou": 0.8647032772364924,
+  "spill": 0.0007756232686980609,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Tall fluted cylindrical shaft",
+    "pass": true
+   },
+   {
+    "label": "Arched openings at the top observation level",
+    "pass": null
+   },
+   {
+    "label": "A wider, low plinth at the foot of the shaft (the footprint is the tower alone; the hilltop buildings around it are outside)",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 96
+ },
+ {
+  "building": "pantheon",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 1,
+  "cost": 0.0014436400000000002,
+  "seconds": 10.273,
+  "input": 3574,
+  "output": 2103,
+  "parts": 30,
+  "triangles": 2882,
+  "types": [
+   "box",
+   "colonnade",
+   "cylinder",
+   "dome",
+   "pediment"
+  ],
+  "iou": 0.8291122367368702,
+  "spill": 0.05970430360674263,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Dome on a tall drum ringed with columns",
+    "pass": false
+   },
+   {
+    "label": "Portico of Corinthian columns",
+    "pass": true
+   },
+   {
+    "label": "Triangular pediment over the portico",
+    "pass": true
+   },
+   {
+    "label": "Cross-shaped plan of plain, windowless walls",
+    "pass": null
+   }
+  ],
+  "featureRate": 0.6666666666666666,
+  "screen": 81
+ }
+]

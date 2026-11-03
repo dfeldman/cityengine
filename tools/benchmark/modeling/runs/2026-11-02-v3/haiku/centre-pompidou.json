@@ -1,0 +1,242 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:17:58.566Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Centre Pompidou is a long, low, seven-storey glazed box about 168 m by 66 m, set with its long front facing the piazza. The defining features are the exposed steel frame and colored services on the outside of the west face, a diagonal zigzag escalator tube climbing the front, and a roof crowded with blue and white ducts and red stacks. I model the glass volume, the external steel grid, the escalator tubes and the roof services.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 62], \"y0\": 0, \"y1\": 38, \"material\": \"glass\", \"colour\": \"#9fb3bd\", \"windows\": {\"kind\": \"curtain\", \"glass\": \"#9fb3bd\"}},\n    {\"type\": \"repeat\", \"count\": 15, \"offset\": [11.4, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-80, 0, -36], \"to\": [-80, 40, -36], \"width\": 1.2, \"material\": \"metal\", \"colour\": \"#c9ccd0\"}},\n    {\"type\": \"repeat\", \"count\": 6, \"offset\": [0, 7, 0], \"part\": {\"type\": \"beam\", \"from\": [-82, 6, -36], \"to\": [84, 6, -36], \"width\": 0.7, \"material\": \"metal\", \"colour\": \"#c9ccd0\"}},\n    {\"type\": \"beam\", \"from\": [-80, 2, -40], \"to\": [-30, 22, -40], \"width\": 4, \"material\": \"glass\", \"colour\": \"#d8dde0\"},\n    {\"type\": \"beam\", \"from\": [-30, 22, -40], \"to\": [20, 40, -40], \"width\": 4, \"material\": \"glass\", \"colour\": \"#d8dde0\"},\n    {\"type\": \"box\", \"center\": [20, 0], \"size\": [110, 30], \"y0\": 38, \"y1\": 41, \"material\": \"metal\", \"colour\": \"#4a7fb0\"},\n    {\"type\": \"box\", \"center\": [-60, 0], \"size\": [16, 14], \"y0\": 38, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#c8452e\"},\n    {\"type\": \"box\", \"center\": [-50, -15], \"size\": [8, 6], \"y0\": 38, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#c8452e\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3375,
+   "output": 1702,
+   "cacheRead": 8168,
+   "cost": 0.00127018,
+   "ms": 8655,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Centre Pompidou is a long, low, seven-storey glazed box about 168 m by 66 m, set with its long front facing the piazza. The defining features are the exposed steel frame and colored services on the outside of the west face, a diagonal zigzag escalator tube climbing the front, and a roof crowded with blue and white ducts and red stacks. I model the glass volume, the external steel grid, the escalator tubes and the roof services.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      62
+     ],
+     "y0": 0,
+     "y1": 38,
+     "material": "glass",
+     "colour": "#9fb3bd",
+     "windows": {
+      "kind": "curtain",
+      "glass": "#9fb3bd"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      11.4,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -80,
+       0,
+       -36
+      ],
+      "to": [
+       -80,
+       40,
+       -36
+      ],
+      "width": 1.2,
+      "material": "metal",
+      "colour": "#c9ccd0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      7,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -82,
+       6,
+       -36
+      ],
+      "to": [
+       84,
+       6,
+       -36
+      ],
+      "width": 0.7,
+      "material": "metal",
+      "colour": "#c9ccd0"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      -80,
+      2,
+      -40
+     ],
+     "to": [
+      -30,
+      22,
+      -40
+     ],
+     "width": 4,
+     "material": "glass",
+     "colour": "#d8dde0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -30,
+      22,
+      -40
+     ],
+     "to": [
+      20,
+      40,
+      -40
+     ],
+     "width": 4,
+     "material": "glass",
+     "colour": "#d8dde0"
+    },
+    {
+     "type": "box",
+     "center": [
+      20,
+      0
+     ],
+     "size": [
+      110,
+      30
+     ],
+     "y0": 38,
+     "y1": 41,
+     "material": "metal",
+     "colour": "#4a7fb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      0
+     ],
+     "size": [
+      16,
+      14
+     ],
+     "y0": 38,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#c8452e"
+    },
+    {
+     "type": "box",
+     "center": [
+      -50,
+      -15
+     ],
+     "size": [
+      8,
+      6
+     ],
+     "y0": 38,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#c8452e"
+    }
+   ]
+  },
+  "notes": "Centre Pompidou is a long, low, seven-storey glazed box about 168 m by 66 m, set with its long front facing the piazza. The defining features are the exposed steel frame and colored services on the outside of the west face, a diagonal zigzag escalator tube climbing the front, and a roof crowded with blue and white ducts and red stacks. I model the glass volume, the external steel grid, the escalator tubes and the roof services.",
+  "triangles": 396,
+  "parts": 27
+ },
+ "totals": {
+  "input": 3375,
+  "output": 1702,
+  "cost": 0.00127018,
+  "ms": 8655
+ }
+}

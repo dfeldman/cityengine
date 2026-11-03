@@ -1,0 +1,216 @@
+{
+ "building": "ferry-building",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:38.684Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Ferry Building is a long, low, arcaded building with a tall clock tower at the centre of the front. I model a main two-storey body with arched windows and an arcade on the ground floor. A taller central block with three big arches carries the tower. Behind the front runs a long gabled shed roof in grey. The tower rises in stages to a pale stone shaft with a clock stage, an open belfry and a small spire, reaching 75 m.\", \"parts\": [{\"type\": \"block\", \"center\": [0, -2], \"size\": [201, 22], \"y0\": 0, \"bay\": 4.6, \"colour\": \"#cfcabb\", \"trim\": \"#e0dccf\", \"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 7, \"kind\": \"arched\"}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"box\", \"center\": [0, 12], \"size\": [200, 32], \"y0\": 0, \"y1\": 15, \"material\": \"stucco\", \"colour\": \"#c9c6bb\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 12], \"size\": [196, 30], \"y0\": 15, \"rise\": 5, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#5b6168\"}, {\"type\": \"block\", \"center\": [0, -8], \"size\": [40, 20], \"y0\": 0, \"bay\": 6, \"colour\": \"#cfcabb\", \"trim\": \"#e0dccf\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 8, \"kind\": \"arched\"}, {\"height\": 3, \"kind\": \"blank\"}], \"faces\": \"front\", \"cornice\": 1.5, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"tower\", \"center\": [0, -2], \"y0\": 20, \"colour\": \"#d8d5c9\", \"stages\": [{\"shape\": \"square\", \"width\": 14, \"height\": 20, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 12, \"height\": 12, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 10, \"height\": 9, \"kind\": \"open\"}, {\"shape\": \"square\", \"width\": 7, \"height\": 5, \"kind\": \"blank\"}], \"top\": {\"kind\": \"spire\", \"height\": 9, \"colour\": \"#8a8f8c\"}}]}",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 780,
+   "cacheRead": 8168,
+   "cost": 0.0161436,
+   "ms": 6495,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Ferry Building is a long, low, arcaded building with a tall clock tower at the centre of the front. I model a main two-storey body with arched windows and an arcade on the ground floor. A taller central block with three big arches carries the tower. Behind the front runs a long gabled shed roof in grey. The tower rises in stages to a pale stone shaft with a clock stage, an open belfry and a small spire, reaching 75 m.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -2
+     ],
+     "size": [
+      201,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.6,
+     "colour": "#cfcabb",
+     "trim": "#e0dccf",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 7,
+       "kind": "arched"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      12
+     ],
+     "size": [
+      200,
+      32
+     ],
+     "y0": 0,
+     "y1": 15,
+     "material": "stucco",
+     "colour": "#c9c6bb"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      12
+     ],
+     "size": [
+      196,
+      30
+     ],
+     "y0": 15,
+     "rise": 5,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#5b6168"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -8
+     ],
+     "size": [
+      40,
+      20
+     ],
+     "y0": 0,
+     "bay": 6,
+     "colour": "#cfcabb",
+     "trim": "#e0dccf",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 8,
+       "kind": "arched"
+      },
+      {
+       "height": 3,
+       "kind": "blank"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.5,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      0,
+      -2
+     ],
+     "y0": 20,
+     "colour": "#d8d5c9",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 20,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 12,
+       "height": 12,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 10,
+       "height": 9,
+       "kind": "open"
+      },
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 5,
+       "kind": "blank"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 9,
+      "colour": "#8a8f8c"
+     }
+    }
+   ]
+  },
+  "notes": "The Ferry Building is a long, low, arcaded building with a tall clock tower at the centre of the front. I model a main two-storey body with arched windows and an arcade on the ground floor. A taller central block with three big arches carries the tower. Behind the front runs a long gabled shed roof in grey. The tower rises in stages to a pale stone shaft with a clock stage, an open belfry and a small spire, reaching 75 m.",
+  "triangles": 4716,
+  "parts": 32
+ },
+ "totals": {
+  "input": 3355,
+  "output": 780,
+  "cost": 0.0161436,
+  "ms": 6495
+ }
+}

@@ -1,0 +1,336 @@
+{
+ "building": "oracle-park",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:29.822Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Oracle Park: a horseshoe grandstand bowl open toward the bay (+z), with a red brick entrance building and clock tower at the front corner (-z), and light towers on steel frames. The pitch is an asymmetric grass field with home plate near the front. The bowl is modelled as an arc, with a low arched brick wall along the bay edge at the back.\", \"parts\": [{\"type\": \"bowl\", \"center\": [0, -10], \"size\": [200, 250], \"inner\": [120, 140], \"y0\": 0, \"y1\": 28, \"innerHeight\": 3, \"shape\": \"oval\", \"arc\": [150, 450], \"material\": \"concrete\", \"colour\": \"#4f6b5e\"}, {\"type\": \"box\", \"center\": [0, 15], \"size\": [130, 150], \"y0\": 0, \"y1\": 0.4, \"material\": \"grass\", \"colour\": \"#3f7a3a\"}, {\"type\": \"block\", \"center\": [-25, -112], \"size\": [100, 22], \"y0\": 0, \"bay\": 5, \"colour\": \"#9a4a3a\", \"trim\": \"#d8cfc0\", \"material\": \"brick\", \"storeys\": [{\"height\": 8, \"kind\": \"punched\"}, {\"height\": 10, \"kind\": \"punched\"}, {\"height\": 6, \"kind\": \"blank\"}], \"cornice\": 1, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"block\", \"center\": [-60, -90], \"size\": [60, 30], \"y0\": 0, \"bay\": 5, \"colour\": \"#9a4a3a\", \"trim\": \"#d8cfc0\", \"material\": \"brick\", \"storeys\": [{\"height\": 9, \"kind\": \"punched\"}, {\"height\": 9, \"kind\": \"punched\"}], \"cornice\": 1, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"tower\", \"center\": [45, -95], \"y0\": 0, \"colour\": \"#9a4a3a\", \"stages\": [{\"shape\": \"square\", \"width\": 11, \"height\": 28, \"kind\": \"blank\"}, {\"shape\": \"square\", \"width\": 12, \"height\": 8, \"kind\": \"clock\"}], \"top\": {\"kind\": \"pyramid\", \"height\": 7, \"colour\": \"#59707a\"}}, {\"type\": \"box\", \"center\": [-5, 133], \"size\": [130, 3], \"y0\": 0, \"y1\": 7, \"material\": \"stucco\", \"colour\": \"#e6e0d0\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 5, \"solid\": 0.5}}, {\"type\": \"box\", \"center\": [-85, 60], \"size\": [4, 140], \"y0\": 0, \"y1\": 8, \"material\": \"stucco\", \"colour\": \"#e0dccb\"}, {\"type\": \"beam\", \"from\": [-80, 0, -60], \"to\": [-80, 45, -60], \"width\": 3, \"material\": \"metal\", \"colour\": \"#3d4f4a\"}, {\"type\": \"beam\", \"from\": [70, 0, -35], \"to\": [70, 45, -35], \"width\": 3, \"material\": \"metal\", \"colour\": \"#3d4f4a\"}, {\"type\": \"beam\", \"from\": [70, 0, 70], \"to\": [70, 40, 70], \"width\": 3, \"material\": \"metal\", \"colour\": \"#3d4f4a\"}, {\"type\": \"box\", \"center\": [60, 0], \"size\": [20, 6], \"y0\": 20, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#3d4f4a\", \"rotate\": 70}]}",
+   "stop": "end_turn",
+   "input": 3569,
+   "output": 1135,
+   "cacheRead": 0,
+   "cost": 0.038908,
+   "ms": 8845,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park: a horseshoe grandstand bowl open toward the bay (+z), with a red brick entrance building and clock tower at the front corner (-z), and light towers on steel frames. The pitch is an asymmetric grass field with home plate near the front. The bowl is modelled as an arc, with a low arched brick wall along the bay edge at the back.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      -10
+     ],
+     "size": [
+      200,
+      250
+     ],
+     "inner": [
+      120,
+      140
+     ],
+     "y0": 0,
+     "y1": 28,
+     "innerHeight": 3,
+     "shape": "oval",
+     "arc": [
+      150,
+      450
+     ],
+     "material": "concrete",
+     "colour": "#4f6b5e"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      15
+     ],
+     "size": [
+      130,
+      150
+     ],
+     "y0": 0,
+     "y1": 0.4,
+     "material": "grass",
+     "colour": "#3f7a3a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -25,
+      -112
+     ],
+     "size": [
+      100,
+      22
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#9a4a3a",
+     "trim": "#d8cfc0",
+     "material": "brick",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "punched"
+      },
+      {
+       "height": 10,
+       "kind": "punched"
+      },
+      {
+       "height": 6,
+       "kind": "blank"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -60,
+      -90
+     ],
+     "size": [
+      60,
+      30
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#9a4a3a",
+     "trim": "#d8cfc0",
+     "material": "brick",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "punched"
+      },
+      {
+       "height": 9,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      45,
+      -95
+     ],
+     "y0": 0,
+     "colour": "#9a4a3a",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 28,
+       "kind": "blank"
+      },
+      {
+       "shape": "square",
+       "width": 12,
+       "height": 8,
+       "kind": "clock"
+      }
+     ],
+     "top": {
+      "kind": "pyramid",
+      "height": 7,
+      "colour": "#59707a"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -5,
+      133
+     ],
+     "size": [
+      130,
+      3
+     ],
+     "y0": 0,
+     "y1": 7,
+     "material": "stucco",
+     "colour": "#e6e0d0",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 5,
+      "solid": 0.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -85,
+      60
+     ],
+     "size": [
+      4,
+      140
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stucco",
+     "colour": "#e0dccb"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -80,
+      0,
+      -60
+     ],
+     "to": [
+      -80,
+      45,
+      -60
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#3d4f4a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      70,
+      0,
+      -35
+     ],
+     "to": [
+      70,
+      45,
+      -35
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#3d4f4a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      70,
+      0,
+      70
+     ],
+     "to": [
+      70,
+      40,
+      70
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#3d4f4a"
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      0
+     ],
+     "size": [
+      20,
+      6
+     ],
+     "y0": 20,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#3d4f4a",
+     "rotate": 70
+    }
+   ]
+  },
+  "notes": "Oracle Park: a horseshoe grandstand bowl open toward the bay (+z), with a red brick entrance building and clock tower at the front corner (-z), and light towers on steel frames. The pitch is an asymmetric grass field with home plate near the front. The bowl is modelled as an arc, with a low arched brick wall along the bay edge at the back.",
+  "triangles": 1710,
+  "parts": 26
+ },
+ "totals": {
+  "input": 3569,
+  "output": 1135,
+  "cost": 0.038908,
+  "ms": 8845
+ }
+}

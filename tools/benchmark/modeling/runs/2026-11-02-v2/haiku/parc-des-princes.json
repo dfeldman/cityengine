@@ -1,0 +1,347 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:54.974Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\"notes\": \"Parc des Princes is an oval bowl of grey concrete stands, with the tall pointed concrete fins of the upper tiers rising around the perimeter, and a green pitch inside a blue-and-red surround. I model the stand bowl with its raked tiers, a higher ring of fins and a thin roof ring, the pitch as a grass slab, and rows of fins on the long front and back facades.\",\n \"parts\": [\n  {\"type\": \"bowl\", \"center\": [0, 0], \"size\": [276, 196], \"inner\": [120, 75], \"y0\": 0, \"y1\": 34, \"innerHeight\": 4, \"shape\": \"oval\", \"material\": \"concrete\", \"colour\": \"#9a9c9a\"},\n  {\"type\": \"bowl\", \"center\": [0, 0], \"size\": [262, 182], \"inner\": [130, 85], \"y0\": 34, \"y1\": 48, \"innerHeight\": 30, \"shape\": \"oval\", \"material\": \"concrete\", \"colour\": \"#7e8286\"},\n  {\"type\": \"bowl\", \"center\": [0, 0], \"size\": [270, 190], \"inner\": [150, 100], \"y0\": 44, \"y1\": 46, \"innerHeight\": 44, \"shape\": \"oval\", \"material\": \"metal\", \"colour\": \"#5d6366\"},\n  {\"type\": \"box\", \"center\": [0, 0], \"size\": [106, 64], \"y0\": 0, \"y1\": 0.4, \"material\": \"grass\", \"colour\": \"#3f7a35\"},\n  {\"type\": \"box\", \"center\": [0, 0], \"size\": [116, 74], \"y0\": 0, \"y1\": 0.2, \"material\": \"concrete\", \"colour\": \"#1f3f80\"},\n  {\"type\": \"repeat\", \"count\": 13, \"offset\": [20, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-125, 34, -98], \"to\": [-120, 47, -98], \"width\": 2.4, \"material\": \"concrete\", \"colour\": \"#8d9094\"}},\n  {\"type\": \"repeat\", \"count\": 13, \"offset\": [20, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-125, 34, 96], \"to\": [-120, 47, 96], \"width\": 2.4, \"material\": \"concrete\", \"colour\": \"#8d9094\"}},\n  {\"type\": \"repeat\", \"count\": 9, \"offset\": [0, 0, 20], \"part\": {\"type\": \"beam\", \"from\": [-136, 34, -80], \"to\": [-134, 46, -80], \"width\": 2.4, \"material\": \"concrete\", \"colour\": \"#8d9094\"}},\n  {\"type\": \"repeat\", \"count\": 9, \"offset\": [0, 0, 20], \"part\": {\"type\": \"beam\", \"from\": [136, 34, -80], \"to\": [134, 46, -80], \"width\": 2.4, \"material\": \"concrete\", \"colour\": \"#8d9094\"}}\n ]}\n```",
+   "stop": "end_turn",
+   "input": 3520,
+   "output": 1668,
+   "cacheRead": 7616,
+   "cost": 0.00126216,
+   "ms": 8520,
+   "errors": [
+    "parts[1].innerHeight: must lie between y0 and y1"
+   ],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "invalid",
+  "json": {
+   "notes": "Parc des Princes is an oval bowl of grey concrete stands, with the tall pointed concrete fins of the upper tiers rising around the perimeter, and a green pitch inside a blue-and-red surround. I model the stand bowl with its raked tiers, a higher ring of fins and a thin roof ring, the pitch as a grass slab, and rows of fins on the long front and back facades.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276,
+      196
+     ],
+     "inner": [
+      120,
+      75
+     ],
+     "y0": 0,
+     "y1": 34,
+     "innerHeight": 4,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#9a9c9a"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      262,
+      182
+     ],
+     "inner": [
+      130,
+      85
+     ],
+     "y0": 34,
+     "y1": 48,
+     "innerHeight": 30,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#7e8286"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      270,
+      190
+     ],
+     "inner": [
+      150,
+      100
+     ],
+     "y0": 44,
+     "y1": 46,
+     "innerHeight": 44,
+     "shape": "oval",
+     "material": "metal",
+     "colour": "#5d6366"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      106,
+      64
+     ],
+     "y0": 0,
+     "y1": 0.4,
+     "material": "grass",
+     "colour": "#3f7a35"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      116,
+      74
+     ],
+     "y0": 0,
+     "y1": 0.2,
+     "material": "concrete",
+     "colour": "#1f3f80"
+    },
+    {
+     "type": "repeat",
+     "count": 13,
+     "offset": [
+      20,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -125,
+       34,
+       -98
+      ],
+      "to": [
+       -120,
+       47,
+       -98
+      ],
+      "width": 2.4,
+      "material": "concrete",
+      "colour": "#8d9094"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 13,
+     "offset": [
+      20,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -125,
+       34,
+       96
+      ],
+      "to": [
+       -120,
+       47,
+       96
+      ],
+      "width": 2.4,
+      "material": "concrete",
+      "colour": "#8d9094"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 9,
+     "offset": [
+      0,
+      0,
+      20
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -136,
+       34,
+       -80
+      ],
+      "to": [
+       -134,
+       46,
+       -80
+      ],
+      "width": 2.4,
+      "material": "concrete",
+      "colour": "#8d9094"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 9,
+     "offset": [
+      0,
+      0,
+      20
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       136,
+       34,
+       -80
+      ],
+      "to": [
+       134,
+       46,
+       -80
+      ],
+      "width": 2.4,
+      "material": "concrete",
+      "colour": "#8d9094"
+     }
+    }
+   ]
+  }
+ },
+ "totals": {
+  "input": 3520,
+  "output": 1668,
+  "cost": 0.00126216,
+  "ms": 8520
+ }
+}

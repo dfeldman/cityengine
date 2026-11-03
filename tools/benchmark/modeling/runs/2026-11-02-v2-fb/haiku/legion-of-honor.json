@@ -1,0 +1,408 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:02.271Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Legion of Honor is a long grey limestone front: a tall central triumphal arch block at the Court of Honor, with free-standing colonnades running out to either side and flat-roofed end pavilions. Behind it sits a main hall with a green copper dome over the rotunda. I model the arch block, both colonnades, the wings, the hall and the copper dome.\", \"parts\": [{\"type\": \"box\", \"center\": [0, -41], \"size\": [14, 12], \"y0\": 0, \"y1\": 23, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"box\", \"center\": [-19, -40], \"size\": [22, 8], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"box\", \"center\": [19, -40], \"size\": [22, 8], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"colonnade\", \"from\": [-27, -36], \"to\": [-8, -36], \"y0\": 0, \"height\": 13, \"count\": 9, \"material\": \"stone\", \"colour\": \"#e4e0d6\"}, {\"type\": \"colonnade\", \"from\": [8, -36], \"to\": [27, -36], \"y0\": 0, \"height\": 13, \"count\": 9, \"material\": \"stone\", \"colour\": \"#e4e0d6\"}, {\"type\": \"box\", \"center\": [-22, -10], \"size\": [16, 40], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"box\", \"center\": [22, -10], \"size\": [16, 40], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [44, 60], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"cylinder\", \"center\": [0, 18], \"radius\": 11, \"y0\": 13, \"y1\": 15, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"dome\", \"center\": [0, 18], \"radius\": 11, \"y0\": 15, \"height\": 7, \"material\": \"copper\", \"colour\": \"#6fa58a\"}]}",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 1580,
+   "cacheRead": 7616,
+   "cost": 0.0011938600000000001,
+   "ms": 8329,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "{\"notes\": \"1) The Court of Honor is filled in: the forecourt between the arch and the wings should be open paving, with the colonnades standing free along it, but the model shows solid masses there. 2) The side wings are solid boxes that stop short of the back; they should be lower, colonnaded on their outer edges, and run back to the rear of the footprint (about z=41), which the red outline shows is missing. 3) The arch block is too plain: it lacks the tall round-headed opening and the crowning attic that mark the entrance, so it reads as a blank wall rather than a triumphal arch.\", \"parts\": [{\"type\": \"box\", \"center\": [0, -41], \"size\": [14, 12], \"y0\": 0, \"y1\": 23, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"arcade\", \"from\": [-4, -47], \"to\": [4, -47], \"y0\": 0, \"height\": 12, \"count\": 1, \"thickness\": 3, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"colonnade\", \"from\": [-27, -36], \"to\": [-8, -36], \"y0\": 0, \"height\": 13, \"count\": 9, \"material\": \"stone\", \"colour\": \"#e4e0d6\"}, {\"type\": \"colonnade\", \"from\": [8, -36], \"to\": [27, -36], \"y0\": 0, \"height\": 13, \"count\": 9, \"material\": \"stone\", \"colour\": \"#e4e0d6\"}, {\"type\": \"colonnade\", \"from\": [-28, -36], \"to\": [-28, 10], \"y0\": 0, \"height\": 12, \"count\": 12, \"material\": \"stone\", \"colour\": \"#e4e0d6\"}, {\"type\": \"colonnade\", \"from\": [28, -36], \"to\": [28, 10], \"y0\": 0, \"height\": 12, \"count\": 12, \"material\": \"stone\", \"colour\": \"#e4e0d6\"}, {\"type\": \"box\", \"center\": [-23, 5], \"size\": [12, 72], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"box\", \"center\": [23, 5], \"size\": [12, 72], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"box\", \"center\": [0, 5], \"size\": [40, 72], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"cylinder\", \"center\": [0, 18], \"radius\": 11, \"y0\": 13, \"y1\": 15, \"material\": \"stone\", \"colour\": \"#cfcabd\"}, {\"type\": \"dome\", \"center\": [0, 18], \"radius\": 11, \"y0\": 15, \"height\": 7, \"material\": \"copper\", \"colour\": \"#6fa58a\"}]}",
+   "stop": "end_turn",
+   "input": 6323,
+   "output": 1906,
+   "cacheRead": 7616,
+   "cost": 0.00166146,
+   "ms": 8956,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1) The Court of Honor is filled in: the forecourt between the arch and the wings should be open paving, with the colonnades standing free along it, but the model shows solid masses there. 2) The side wings are solid boxes that stop short of the back; they should be lower, colonnaded on their outer edges, and run back to the rear of the footprint (about z=41), which the red outline shows is missing. 3) The arch block is too plain: it lacks the tall round-headed opening and the crowning attic that mark the entrance, so it reads as a blank wall rather than a triumphal arch.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -41
+     ],
+     "size": [
+      14,
+      12
+     ],
+     "y0": 0,
+     "y1": 23,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -4,
+      -47
+     ],
+     "to": [
+      4,
+      -47
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 1,
+     "thickness": 3,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -27,
+      -36
+     ],
+     "to": [
+      -8,
+      -36
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 9,
+     "material": "stone",
+     "colour": "#e4e0d6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      8,
+      -36
+     ],
+     "to": [
+      27,
+      -36
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 9,
+     "material": "stone",
+     "colour": "#e4e0d6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -28,
+      -36
+     ],
+     "to": [
+      -28,
+      10
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 12,
+     "material": "stone",
+     "colour": "#e4e0d6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      28,
+      -36
+     ],
+     "to": [
+      28,
+      10
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 12,
+     "material": "stone",
+     "colour": "#e4e0d6"
+    },
+    {
+     "type": "box",
+     "center": [
+      -23,
+      5
+     ],
+     "size": [
+      12,
+      72
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "box",
+     "center": [
+      23,
+      5
+     ],
+     "size": [
+      12,
+      72
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      5
+     ],
+     "size": [
+      40,
+      72
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      18
+     ],
+     "radius": 11,
+     "y0": 13,
+     "y1": 15,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      18
+     ],
+     "radius": 11,
+     "y0": 15,
+     "height": 7,
+     "material": "copper",
+     "colour": "#6fa58a"
+    }
+   ]
+  },
+  "notes": "1) The Court of Honor is filled in: the forecourt between the arch and the wings should be open paving, with the colonnades standing free along it, but the model shows solid masses there. 2) The side wings are solid boxes that stop short of the back; they should be lower, colonnaded on their outer edges, and run back to the rear of the footprint (about z=41), which the red outline shows is missing. 3) The arch block is too plain: it lacks the tall round-headed opening and the crowning attic that mark the entrance, so it reads as a blank wall rather than a triumphal arch.",
+  "triangles": 4320,
+  "parts": 11
+ },
+ "totals": {
+  "input": 9600,
+  "output": 3486,
+  "cost": 0.00285532,
+  "ms": 17285
+ },
+ "draft": {
+  "json": {
+   "notes": "The Legion of Honor is a long grey limestone front: a tall central triumphal arch block at the Court of Honor, with free-standing colonnades running out to either side and flat-roofed end pavilions. Behind it sits a main hall with a green copper dome over the rotunda. I model the arch block, both colonnades, the wings, the hall and the copper dome.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -41
+     ],
+     "size": [
+      14,
+      12
+     ],
+     "y0": 0,
+     "y1": 23,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "box",
+     "center": [
+      -19,
+      -40
+     ],
+     "size": [
+      22,
+      8
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "box",
+     "center": [
+      19,
+      -40
+     ],
+     "size": [
+      22,
+      8
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -27,
+      -36
+     ],
+     "to": [
+      -8,
+      -36
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 9,
+     "material": "stone",
+     "colour": "#e4e0d6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      8,
+      -36
+     ],
+     "to": [
+      27,
+      -36
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 9,
+     "material": "stone",
+     "colour": "#e4e0d6"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -10
+     ],
+     "size": [
+      16,
+      40
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -10
+     ],
+     "size": [
+      16,
+      40
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      44,
+      60
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      18
+     ],
+     "radius": 11,
+     "y0": 13,
+     "y1": 15,
+     "material": "stone",
+     "colour": "#cfcabd"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      18
+     ],
+     "radius": 11,
+     "y0": 15,
+     "height": 7,
+     "material": "copper",
+     "colour": "#6fa58a"
+    }
+   ]
+  },
+  "notes": "The Legion of Honor is a long grey limestone front: a tall central triumphal arch block at the Court of Honor, with free-standing colonnades running out to either side and flat-roofed end pavilions. Behind it sits a main hall with a green copper dome over the rotunda. I model the arch block, both colonnades, the wings, the hall and the copper dome.",
+  "triangles": 2132,
+  "parts": 10
+ }
+}

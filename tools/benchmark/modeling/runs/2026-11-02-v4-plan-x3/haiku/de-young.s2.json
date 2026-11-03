@@ -1,0 +1,223 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:11.575Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long, low, nearly windowless copper-clad box fills the footprint, with palms and a plaza in front. A tall, stepped and sheared observation tower rises at the back right, its stages narrowing and then cantilevering out as it climbs, and it is the signature feature. Both masses are clad in dark perforated copper.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [157, 76],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"material\": \"copper\",\n      \"colour\": \"#5e4236\",\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 10, \"kind\": \"blank\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [52, 14],\n      \"y0\": 0,\n      \"material\": \"copper\",\n      \"colour\": \"#6b4d3f\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 18, \"height\": 16, \"kind\": \"blank\"},\n        {\"shape\": \"square\", \"width\": 16, \"height\": 14, \"kind\": \"blank\"},\n        {\"shape\": \"square\", \"width\": 20, \"height\": 14, \"kind\": \"blank\"}\n      ],\n      \"top\": {\"kind\": \"flat\", \"colour\": \"#6b4d3f\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4041,
+   "output": 1321,
+   "cacheRead": 8401,
+   "cost": 0.0011486100000000002,
+   "ms": 6527,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long, low, nearly windowless copper-clad box fills the footprint, with palms and a plaza in front. A tall, stepped and sheared observation tower rises at the back right, its stages narrowing and then cantilevering out as it climbs, and it is the signature feature. Both masses are clad in dark perforated copper.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "bay": 5,
+     "material": "copper",
+     "colour": "#5e4236",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 10,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      52,
+      14
+     ],
+     "y0": 0,
+     "material": "copper",
+     "colour": "#6b4d3f",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 18,
+       "height": 16,
+       "kind": "blank"
+      },
+      {
+       "shape": "square",
+       "width": 16,
+       "height": 14,
+       "kind": "blank"
+      },
+      {
+       "shape": "square",
+       "width": 20,
+       "height": 14,
+       "kind": "blank"
+      }
+     ],
+     "top": {
+      "kind": "flat",
+      "colour": "#6b4d3f"
+     }
+    }
+   ]
+  },
+  "notes": "A long, low, nearly windowless copper-clad box fills the footprint, with palms and a plaza in front. A tall, stepped and sheared observation tower rises at the back right, its stages narrowing and then cantilevering out as it climbs, and it is the signature feature. Both masses are clad in dark perforated copper.",
+  "triangles": 108,
+  "parts": 9
+ },
+ "totals": {
+  "input": 7263,
+  "output": 2847,
+  "cost": 0.0022546400000000005,
+  "ms": 14251
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the south-east access road, showing a long, low copper-clad box under palms, with the tall twisted observation tower rising at the back right, blue sky\",\n    \"photo 2: a close side view of the angular copper-clad wall, with the sheared, stepped tower rising behind it and cantilevered upper volumes, in daylight\",\n    \"photo 3: the front three-quarter from the street, showing the low copper-clad volume with the tall tower behind it, palms in front and blue sky\"\n  ],\n  \"components\": [\n    {\"name\": \"main copper box\", \"part\": \"block\", \"where\": \"the whole low body of the museum\", \"center\": [0, 0], \"size\": [157, 76], \"height\": 18,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"blank\", \"windows\": false}, {\"height\": 10, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#5e4236\"},\n     \"why\": \"photos 1 and 3 show a long, low, nearly windowless copper-clad box filling the footprint\"},\n    {\"name\": \"stepped observation tower\", \"part\": \"tower\", \"where\": \"back right corner, north-east of the box\", \"center\": [52, 14], \"height\": 44,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 18, \"height\": 16, \"kind\": \"blank\"}, {\"shape\": \"square\", \"width\": 16, \"height\": 14, \"kind\": \"blank\"}, {\"shape\": \"square\", \"width\": 20, \"height\": 14, \"kind\": \"blank\"}], \"top\": {\"kind\": \"flat\"}, \"colour\": \"#6b4d3f\"},\n     \"why\": \"photos 1 to 3 show the tall, sheared, stepped copper tower rising behind the low box, the museum's signature feature\"}\n  ]\n}\n```",
+  "input": 3222,
+  "output": 1526,
+  "cost": 0.00110603,
+  "ms": 7724,
+  "json": {
+   "photos": [
+    "photo 1: the front from the south-east access road, showing a long, low copper-clad box under palms, with the tall twisted observation tower rising at the back right, blue sky",
+    "photo 2: a close side view of the angular copper-clad wall, with the sheared, stepped tower rising behind it and cantilevered upper volumes, in daylight",
+    "photo 3: the front three-quarter from the street, showing the low copper-clad volume with the tall tower behind it, palms in front and blue sky"
+   ],
+   "components": [
+    {
+     "name": "main copper box",
+     "part": "block",
+     "where": "the whole low body of the museum",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "height": 18,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 10,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#5e4236"
+     },
+     "why": "photos 1 and 3 show a long, low, nearly windowless copper-clad box filling the footprint"
+    },
+    {
+     "name": "stepped observation tower",
+     "part": "tower",
+     "where": "back right corner, north-east of the box",
+     "center": [
+      52,
+      14
+     ],
+     "height": 44,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 18,
+        "height": 16,
+        "kind": "blank"
+       },
+       {
+        "shape": "square",
+        "width": 16,
+        "height": 14,
+        "kind": "blank"
+       },
+       {
+        "shape": "square",
+        "width": 20,
+        "height": 14,
+        "kind": "blank"
+       }
+      ],
+      "top": {
+       "kind": "flat"
+      },
+      "colour": "#6b4d3f"
+     },
+     "why": "photos 1 to 3 show the tall, sheared, stepped copper tower rising behind the low box, the museum's signature feature"
+    }
+   ]
+  }
+ }
+}

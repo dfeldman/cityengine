@@ -1,0 +1,247 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T01:59:34.329Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The de Young is a long, low, dark copper-clad (perforated bronze-brown) box filling most of the footprint, with a tall, twisted, stacked observation tower set at the rear-right (+x, +z) corner. The tower steps and overhangs as it rises to the 44 m top. I model the low main volume plus the three stepped tower masses, all in copper-brown metal.\", \"parts\": [{\"type\": \"box\", \"center\": [-5, 0], \"size\": [150, 70], \"y0\": 0, \"y1\": 17, \"material\": \"metal\", \"colour\": \"#6e4a3a\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4, \"solid\": 0.7, \"glass\": \"#2c3538\"}}, {\"type\": \"box\", \"center\": [42, 20], \"size\": [20, 18], \"y0\": 17, \"y1\": 26, \"material\": \"metal\", \"colour\": \"#5d4032\", \"windows\": {\"kind\": \"bands\", \"floor\": 4.5, \"solid\": 0.6}}, {\"type\": \"box\", \"center\": [44, 19], \"size\": [24, 22], \"y0\": 26, \"y1\": 34, \"material\": \"metal\", \"colour\": \"#644536\", \"windows\": {\"kind\": \"bands\", \"floor\": 4, \"solid\": 0.6}}, {\"type\": \"box\", \"center\": [46, 18], \"size\": [28, 24], \"y0\": 34, \"y1\": 44, \"material\": \"metal\", \"colour\": \"#7a5444\"}]}",
+   "stop": "end_turn",
+   "input": 3222,
+   "output": 1062,
+   "cacheRead": 0,
+   "cost": 0.00128745,
+   "ms": 6229,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "{\"notes\": \"1. The tower is too small. In the top view it should cover roughly x 42 to 78 and z 8 to 38, about 36 m by 30 m, not the 24 m square I gave it. 2. Its stepped masses are too light: the real tower is a heavy, sheared stack whose upper storeys overhang the lower ones, so the lower storey needs to be wider and the top wider still. 3. The main copper block is roughly right in footprint and height, but its wall texture is punched windows where the real facade is a perforated metal skin with few openings, so I reduce the window coverage.\", \"parts\": [{\"type\": \"box\", \"center\": [-5, 0], \"size\": [150, 70], \"y0\": 0, \"y1\": 17, \"material\": \"metal\", \"colour\": \"#6e4a3a\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 6, \"solid\": 0.9, \"glass\": \"#2c3538\"}}, {\"type\": \"box\", \"center\": [54, 22], \"size\": [28, 26], \"y0\": 17, \"y1\": 26, \"material\": \"metal\", \"colour\": \"#5d4032\", \"windows\": {\"kind\": \"bands\", \"floor\": 4.5, \"solid\": 0.6}}, {\"type\": \"box\", \"center\": [59, 23], \"size\": [34, 30], \"y0\": 26, \"y1\": 34, \"material\": \"metal\", \"colour\": \"#644536\", \"windows\": {\"kind\": \"bands\", \"floor\": 4, \"solid\": 0.6}}, {\"type\": \"box\", \"center\": [60, 24], \"size\": [36, 32], \"y0\": 34, \"y1\": 44, \"material\": \"metal\", \"colour\": \"#7a5444\"}]}",
+   "stop": "end_turn",
+   "input": 5750,
+   "output": 1365,
+   "cacheRead": 3474,
+   "cost": 0.00129224,
+   "ms": 7535,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1. The tower is too small. In the top view it should cover roughly x 42 to 78 and z 8 to 38, about 36 m by 30 m, not the 24 m square I gave it. 2. Its stepped masses are too light: the real tower is a heavy, sheared stack whose upper storeys overhang the lower ones, so the lower storey needs to be wider and the top wider still. 3. The main copper block is roughly right in footprint and height, but its wall texture is punched windows where the real facade is a perforated metal skin with few openings, so I reduce the window coverage.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -5,
+      0
+     ],
+     "size": [
+      150,
+      70
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "metal",
+     "colour": "#6e4a3a",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 6,
+      "solid": 0.9,
+      "glass": "#2c3538"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      54,
+      22
+     ],
+     "size": [
+      28,
+      26
+     ],
+     "y0": 17,
+     "y1": 26,
+     "material": "metal",
+     "colour": "#5d4032",
+     "windows": {
+      "kind": "bands",
+      "floor": 4.5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      59,
+      23
+     ],
+     "size": [
+      34,
+      30
+     ],
+     "y0": 26,
+     "y1": 34,
+     "material": "metal",
+     "colour": "#644536",
+     "windows": {
+      "kind": "bands",
+      "floor": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      24
+     ],
+     "size": [
+      36,
+      32
+     ],
+     "y0": 34,
+     "y1": 44,
+     "material": "metal",
+     "colour": "#7a5444"
+    }
+   ]
+  },
+  "notes": "1. The tower is too small. In the top view it should cover roughly x 42 to 78 and z 8 to 38, about 36 m by 30 m, not the 24 m square I gave it. 2. Its stepped masses are too light: the real tower is a heavy, sheared stack whose upper storeys overhang the lower ones, so the lower storey needs to be wider and the top wider still. 3. The main copper block is roughly right in footprint and height, but its wall texture is punched windows where the real facade is a perforated metal skin with few openings, so I reduce the window coverage.",
+  "triangles": 512,
+  "parts": 4
+ },
+ "totals": {
+  "input": 8972,
+  "output": 2427,
+  "cost": 0.00257969,
+  "ms": 13764
+ },
+ "draft": {
+  "json": {
+   "notes": "The de Young is a long, low, dark copper-clad (perforated bronze-brown) box filling most of the footprint, with a tall, twisted, stacked observation tower set at the rear-right (+x, +z) corner. The tower steps and overhangs as it rises to the 44 m top. I model the low main volume plus the three stepped tower masses, all in copper-brown metal.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -5,
+      0
+     ],
+     "size": [
+      150,
+      70
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "metal",
+     "colour": "#6e4a3a",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4,
+      "solid": 0.7,
+      "glass": "#2c3538"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      42,
+      20
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 17,
+     "y1": 26,
+     "material": "metal",
+     "colour": "#5d4032",
+     "windows": {
+      "kind": "bands",
+      "floor": 4.5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      44,
+      19
+     ],
+     "size": [
+      24,
+      22
+     ],
+     "y0": 26,
+     "y1": 34,
+     "material": "metal",
+     "colour": "#644536",
+     "windows": {
+      "kind": "bands",
+      "floor": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      46,
+      18
+     ],
+     "size": [
+      28,
+      24
+     ],
+     "y0": 34,
+     "y1": 44,
+     "material": "metal",
+     "colour": "#7a5444"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low, dark copper-clad (perforated bronze-brown) box filling most of the footprint, with a tall, twisted, stacked observation tower set at the rear-right (+x, +z) corner. The tower steps and overhangs as it rises to the 44 m top. I model the low main volume plus the three stepped tower masses, all in copper-brown metal.",
+  "triangles": 728,
+  "parts": 4
+ }
+}

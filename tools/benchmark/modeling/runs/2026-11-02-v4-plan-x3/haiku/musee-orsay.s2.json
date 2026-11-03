@@ -1,0 +1,538 @@
+{
+ "building": "musee-orsay",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:32.934Z",
+ "userText": "Building: Musée d'Orsay, Paris (museum (former station)).\nThe front (−z) is the river front on the Seine.\nFootprint: 188.3 m along x by 77.3 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[49.7,-38.4],[49.7,-37],[78.8,-37.3],[78.9,-9.7],[93.8,-9.9],[94.1,26.6],[79.4,26.8],[79.6,38.7],[-93.3,38.7],[-94.1,-35.2],[-92.2,-35.5],[-92.2,-36.9],[-85.9,-37.3],[-84.8,-36.1],[-79.4,-36.2],[-78.3,-37.4],[-74.1,-37.4],[-70,-35.8],[-59.7,-35.9],[-59.7,-36.6],[-1.6,-36.5],[-1.6,-37.3],[27.4,-36.8],[29.5,-38.2],[35.8,-38.6],[37.5,-36.9],[41.6,-36.9],[43.3,-38.7]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. river-front three-quarter of the whole long station-museum with arched vaults, central clock pavilion and pitched roof, daylight\n  2. elevated view of the west end and entrance forecourt with its glass canopy and the vaulted roof behind\n  3. street-side three-quarter at the pavilion end with the arched fronts and the barrel roof, dusk-light daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   188.3,
+   77.3
+  ],
+  "outline": [
+   [
+    49.7,
+    -38.4
+   ],
+   [
+    49.7,
+    -37
+   ],
+   [
+    78.8,
+    -37.3
+   ],
+   [
+    78.9,
+    -9.7
+   ],
+   [
+    93.8,
+    -9.9
+   ],
+   [
+    94.1,
+    26.6
+   ],
+   [
+    79.4,
+    26.8
+   ],
+   [
+    79.6,
+    38.7
+   ],
+   [
+    -93.3,
+    38.7
+   ],
+   [
+    -94.1,
+    -35.2
+   ],
+   [
+    -92.2,
+    -35.5
+   ],
+   [
+    -92.2,
+    -36.9
+   ],
+   [
+    -85.9,
+    -37.3
+   ],
+   [
+    -84.8,
+    -36.1
+   ],
+   [
+    -79.4,
+    -36.2
+   ],
+   [
+    -78.3,
+    -37.4
+   ],
+   [
+    -74.1,
+    -37.4
+   ],
+   [
+    -70,
+    -35.8
+   ],
+   [
+    -59.7,
+    -35.9
+   ],
+   [
+    -59.7,
+    -36.6
+   ],
+   [
+    -1.6,
+    -36.5
+   ],
+   [
+    -1.6,
+    -37.3
+   ],
+   [
+    27.4,
+    -36.8
+   ],
+   [
+    29.5,
+    -38.2
+   ],
+   [
+    35.8,
+    -38.6
+   ],
+   [
+    37.5,
+    -36.9
+   ],
+   [
+    41.6,
+    -36.9
+   ],
+   [
+    43.3,
+    -38.7
+   ]
+  ],
+  "height": 38,
+  "turn": 1.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Musée d'Orsay is a long Beaux-Arts station front on the Seine. Its signature features are the arched-window hall front, the central clock pavilion with a steep roof, and the glass barrel vault rising behind the facade. The west hotel wing has a mansard roof with dormers, and the east end closes with a domed corner pavilion and a lower mansard wing. Stone is pale cream, and the roofs are slate grey.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [-70, 0],\n      \"size\": [48, 77],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\", \"floors\": 1},\n        {\"height\": 18, \"kind\": \"punched\", \"floors\": 3}\n      ],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 8, \"dormers\": true, \"colour\": \"#4f5862\"},\n      \"colour\": \"#d9cfb9\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [20, -6],\n      \"size\": [110, 64],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 18, \"kind\": \"arched\", \"windows\": true, \"floors\": 1}\n      ],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#d8cdb4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [20, 0],\n      \"size\": [100, 50],\n      \"y0\": 18,\n      \"rise\": 20,\n      \"axis\": \"x\",\n      \"ends\": \"glass\",\n      \"material\": \"glass\",\n      \"colour\": \"#8f9aa0\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-8, -30],\n      \"size\": [22, 18],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"pilasters\", \"floors\": 1},\n        {\"height\": 22, \"kind\": \"arched\", \"floors\": 3}\n      ],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"pavilion\", \"rise\": 10, \"colour\": \"#4f5862\"},\n      \"colour\": \"#d9cfb9\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [84, -24],\n      \"size\": [22, 26],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"pilasters\", \"floors\": 1},\n        {\"height\": 16, \"kind\": \"punched\", \"floors\": 2}\n      ],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"dome\", \"rise\": 10, \"colour\": \"#59626a\"},\n      \"colour\": \"#d9cfb9\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [84, 12],\n      \"size\": [20, 50],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 18, \"kind\": \"punched\", \"floors\": 3}\n      ],\n      \"faces\": \"none\",\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 7, \"dormers\": true, \"colour\": \"#4f5862\"},\n      \"colour\": \"#d9cfb9\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5095,
+   "output": 2198,
+   "cacheRead": 8401,
+   "cost": 0.0016925100000000002,
+   "ms": 9489,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Musée d'Orsay is a long Beaux-Arts station front on the Seine. Its signature features are the arched-window hall front, the central clock pavilion with a steep roof, and the glass barrel vault rising behind the facade. The west hotel wing has a mansard roof with dormers, and the east end closes with a domed corner pavilion and a lower mansard wing. Stone is pale cream, and the roofs are slate grey.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -70,
+      0
+     ],
+     "size": [
+      48,
+      77
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated",
+       "floors": 1
+      },
+      {
+       "height": 18,
+       "kind": "punched",
+       "floors": 3
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "mansard",
+      "rise": 8,
+      "dormers": true,
+      "colour": "#4f5862"
+     },
+     "colour": "#d9cfb9",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      20,
+      -6
+     ],
+     "size": [
+      110,
+      64
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 18,
+       "kind": "arched",
+       "windows": true,
+       "floors": 1
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#d8cdb4",
+     "material": "stone"
+    },
+    {
+     "type": "vault",
+     "center": [
+      20,
+      0
+     ],
+     "size": [
+      100,
+      50
+     ],
+     "y0": 18,
+     "rise": 20,
+     "axis": "x",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#8f9aa0"
+    },
+    {
+     "type": "block",
+     "center": [
+      -8,
+      -30
+     ],
+     "size": [
+      22,
+      18
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "pilasters",
+       "floors": 1
+      },
+      {
+       "height": 22,
+       "kind": "arched",
+       "floors": 3
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "pavilion",
+      "rise": 10,
+      "colour": "#4f5862"
+     },
+     "colour": "#d9cfb9",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      84,
+      -24
+     ],
+     "size": [
+      22,
+      26
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "pilasters",
+       "floors": 1
+      },
+      {
+       "height": 16,
+       "kind": "punched",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "dome",
+      "rise": 10,
+      "colour": "#59626a"
+     },
+     "colour": "#d9cfb9",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      84,
+      12
+     ],
+     "size": [
+      20,
+      50
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 18,
+       "kind": "punched",
+       "floors": 3
+      }
+     ],
+     "faces": "none",
+     "roof": {
+      "kind": "mansard",
+      "rise": 7,
+      "dormers": true,
+      "colour": "#4f5862"
+     },
+     "colour": "#d9cfb9",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "The Musée d'Orsay is a long Beaux-Arts station front on the Seine. Its signature features are the arched-window hall front, the central clock pavilion with a steep roof, and the glass barrel vault rising behind the facade. The west hotel wing has a mansard roof with dormers, and the east end closes with a domed corner pavilion and a lower mansard wing. Stone is pale cream, and the roofs are slate grey.",
+  "triangles": 3190,
+  "parts": 85
+ },
+ "totals": {
+  "input": 8402,
+  "output": 5266,
+  "cost": 0.00357804,
+  "ms": 24546
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the river front from the south-west, showing the long Beaux-Arts facade. A five-storey hotel wing with a mansard roof sits at the left (west). The central station hall has tall arched windows, a large clock pavilion with a pediment and sculpture, and a steep roof behind.\",\n    \"photo 2: elevated view of the west end and entrance forecourt, with the glass canopy projecting from the hall and the barrel-vaulted glass roof rising behind the mansard-roofed hotel block.\",\n    \"photo 3: street-side three-quarter view at the pavilion end, with arched window rows on the hall front, a small domed corner pavilion with a belvedere, dormered mansard roofs and a barrel roof behind.\"\n  ],\n  \"components\": [\n    {\"name\": \"central station hall\", \"part\": \"block\", \"where\": \"the central hall front, between the hotel and the east wing\", \"center\": [20, -6], \"size\": [110, 64], \"height\": 18,\n     \"settings\": {\"storeys\": [{\"height\": 18, \"kind\": \"arched\", \"windows\": true, \"floors\": 1}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8cdb4\"},\n     \"why\": \"photo 1 and 3: the tall arched windows of the hall front with its glass-and-iron character\"},\n    {\"name\": \"barrel-vaulted hall roof\", \"part\": \"vault\", \"where\": \"over the central station hall\", \"center\": [20, 0], \"size\": [100, 50], \"height\": 38,\n     \"settings\": {\"colour\": \"#8f9aa0\"},\n     \"why\": \"photo 2 and 3: the glass barrel roof of the former train shed rises behind the facade\"},\n    {\"name\": \"central clock pavilion\", \"part\": \"block\", \"where\": \"centre of the river front, left of the hall's middle\", \"center\": [-8, -30], \"size\": [22, 18], \"height\": 28,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"pilasters\", \"floors\": 1}, {\"height\": 22, \"kind\": \"arched\", \"floors\": 3}], \"faces\": \"front\", \"roof\": {\"kind\": \"pavilion\", \"rise\": 10}, \"colour\": \"#d9cfb9\"},\n     \"why\": \"photo 1: the clock pavilion with its round clock and steep pitched roof rises above the river front\"},\n    {\"name\": \"west hotel wing\", \"part\": \"block\", \"where\": \"the west end of the front, beside the station\", \"center\": [-70, 0], \"size\": [48, 77], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\", \"floors\": 1}, {\"height\": 18, \"kind\": \"punched\", \"floors\": 3}], \"faces\": \"front\", \"roof\": {\"kind\": \"mansard\", \"rise\": 8, \"dormers\": true}, \"colour\": \"#d9cfb9\"},\n     \"why\": \"photo 1 and 2: the hotel block at the west end has a mansard roof with dormers and tall windows\"},\n    {\"name\": \"east corner pavilion\", \"part\": \"block\", \"where\": \"the east end of the front, a corner pavilion\", \"center\": [84, -24], \"size\": [22, 26], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"pilasters\", \"floors\": 1}, {\"height\": 16, \"kind\": \"punched\", \"floors\": 2}], \"faces\": \"front\", \"roof\": {\"kind\": \"dome\", \"rise\": 10}, \"colour\": \"#d9cfb9\"},\n     \"why\": \"photo 3: the domed corner pavilion with its small belvedere at the east end\"},\n    {\"name\": \"east wing\", \"part\": \"block\", \"where\": \"the east wing beside the hall's end\", \"center\": [84, 12], \"size\": [20, 50], \"height\": 18,\n     \"settings\": {\"storeys\": [{\"height\": 18, \"kind\": \"punched\", \"floors\": 3}], \"faces\": \"none\", \"roof\": {\"kind\": \"mansard\", \"rise\": 7, \"dormers\": true}, \"colour\": \"#d9cfb9\"},\n     \"why\": \"the lower east wing with its mansard roof closes the long front\"}\n  ]\n}",
+  "input": 3307,
+  "output": 3068,
+  "cost": 0.00188553,
+  "ms": 15057,
+  "json": {
+   "photos": [
+    "photo 1: the river front from the south-west, showing the long Beaux-Arts facade. A five-storey hotel wing with a mansard roof sits at the left (west). The central station hall has tall arched windows, a large clock pavilion with a pediment and sculpture, and a steep roof behind.",
+    "photo 2: elevated view of the west end and entrance forecourt, with the glass canopy projecting from the hall and the barrel-vaulted glass roof rising behind the mansard-roofed hotel block.",
+    "photo 3: street-side three-quarter view at the pavilion end, with arched window rows on the hall front, a small domed corner pavilion with a belvedere, dormered mansard roofs and a barrel roof behind."
+   ],
+   "components": [
+    {
+     "name": "central station hall",
+     "part": "block",
+     "where": "the central hall front, between the hotel and the east wing",
+     "center": [
+      20,
+      -6
+     ],
+     "size": [
+      110,
+      64
+     ],
+     "height": 18,
+     "settings": {
+      "storeys": [
+       {
+        "height": 18,
+        "kind": "arched",
+        "windows": true,
+        "floors": 1
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8cdb4"
+     },
+     "why": "photo 1 and 3: the tall arched windows of the hall front with its glass-and-iron character"
+    },
+    {
+     "name": "barrel-vaulted hall roof",
+     "part": "vault",
+     "where": "over the central station hall",
+     "center": [
+      20,
+      0
+     ],
+     "size": [
+      100,
+      50
+     ],
+     "height": 38,
+     "settings": {
+      "colour": "#8f9aa0"
+     },
+     "why": "photo 2 and 3: the glass barrel roof of the former train shed rises behind the facade"
+    },
+    {
+     "name": "central clock pavilion",
+     "part": "block",
+     "where": "centre of the river front, left of the hall's middle",
+     "center": [
+      -8,
+      -30
+     ],
+     "size": [
+      22,
+      18
+     ],
+     "height": 28,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "pilasters",
+        "floors": 1
+       },
+       {
+        "height": 22,
+        "kind": "arched",
+        "floors": 3
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "pavilion",
+       "rise": 10
+      },
+      "colour": "#d9cfb9"
+     },
+     "why": "photo 1: the clock pavilion with its round clock and steep pitched roof rises above the river front"
+    },
+    {
+     "name": "west hotel wing",
+     "part": "block",
+     "where": "the west end of the front, beside the station",
+     "center": [
+      -70,
+      0
+     ],
+     "size": [
+      48,
+      77
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated",
+        "floors": 1
+       },
+       {
+        "height": 18,
+        "kind": "punched",
+        "floors": 3
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "mansard",
+       "rise": 8,
+       "dormers": true
+      },
+      "colour": "#d9cfb9"
+     },
+     "why": "photo 1 and 2: the hotel block at the west end has a mansard roof with dormers and tall windows"
+    },
+    {
+     "name": "east corner pavilion",
+     "part": "block",
+     "where": "the east end of the front, a corner pavilion",
+     "center": [
+      84,
+      -24
+     ],
+     "size": [
+      22,
+      26
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "pilasters",
+        "floors": 1
+       },
+       {
+        "height": 16,
+        "kind": "punched",
+        "floors": 2
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "dome",
+       "rise": 10
+      },
+      "colour": "#d9cfb9"
+     },
+     "why": "photo 3: the domed corner pavilion with its small belvedere at the east end"
+    },
+    {
+     "name": "east wing",
+     "part": "block",
+     "where": "the east wing beside the hall's end",
+     "center": [
+      84,
+      12
+     ],
+     "size": [
+      20,
+      50
+     ],
+     "height": 18,
+     "settings": {
+      "storeys": [
+       {
+        "height": 18,
+        "kind": "punched",
+        "floors": 3
+       }
+      ],
+      "faces": "none",
+      "roof": {
+       "kind": "mansard",
+       "rise": 7,
+       "dormers": true
+      },
+      "colour": "#d9cfb9"
+     },
+     "why": "the lower east wing with its mansard roof closes the long front"
+    }
+   ]
+  }
+ }
+}

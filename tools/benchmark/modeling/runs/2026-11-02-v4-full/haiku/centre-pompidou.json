@@ -1,0 +1,714 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:10:29.800Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Centre Pompidou is a long, flat, six-storey glazed box, with its services (blue and white housings, red ventilation boxes) on the roof, and an exposed steel frame wrapping the west (front) face. Its signature feature is the glazed escalator tube zigzagging diagonally up the front, which I model as glass beams in front of the facade. The footprint is taken from the outline, which runs from about z=-28.6 to z=33, so the box is centred slightly toward the back.\",\n  \"parts\": [\n    {\"type\": \"block\", \"center\": [0, 2.2], \"size\": [168, 61.6], \"y0\": 0, \"bay\": 6, \"material\": \"glass\", \"colour\": \"#d3d9dd\",\n     \"storeys\": [\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"}\n     ],\n     \"faces\": \"all\", \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}},\n\n    {\"type\": \"box\", \"center\": [5, 6], \"size\": [110, 14], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#3f7fc0\"},\n    {\"type\": \"box\", \"center\": [-20, 6], \"size\": [40, 10], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#e8ecef\"},\n    {\"type\": \"box\", \"center\": [40, 6], \"size\": [30, 10], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#e8ecef\"},\n\n    {\"type\": \"box\", \"center\": [-62, -18], \"size\": [9, 9], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d33b2c\"},\n    {\"type\": \"box\", \"center\": [60, -10], \"size\": [8, 8], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#d33b2c\"},\n\n    {\"type\": \"beam\", \"from\": [-84, 0, -31], \"to\": [-20, 22, -31], \"width\": 4, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [-20, 22, -31], \"to\": [80, 40, -31], \"width\": 4, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [-84, 0, -29], \"to\": [-20, 20, -29], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#d33b2c\"},\n\n    {\"type\": \"repeat\", \"count\": 12, \"offset\": [14, 0, 0],\n     \"part\": {\"type\": \"beam\", \"from\": [-80, 0, -30], \"to\": [-80, 36, -30], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4638,
+   "output": 2890,
+   "cacheRead": 8401,
+   "cost": 0.00199281,
+   "ms": 13544,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"Three biggest differences: (1) the escalator is a thin flat grey strip, not a glazed tube zigzagging up the front, so the signature feature is lost. (2) The exposed steel frame is missing, so the front reads as a plain dark wall with thin lines. (3) The glazed body renders very dark, unlike the pale steel-and-glass facade in the photographs. The footprint, six-storey massing, roof housings and red ventilation boxes already match and are kept.\",\n  \"parts\": [\n    {\"type\": \"block\", \"center\": [0, 2.2], \"size\": [168, 61.6], \"y0\": 0, \"bay\": 6, \"material\": \"glass\", \"colour\": \"#dfe6ea\",\n     \"storeys\": [\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"},\n       {\"height\": 6, \"kind\": \"curtain\"}\n     ],\n     \"faces\": \"all\", \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}},\n\n    {\"type\": \"box\", \"center\": [5, 6], \"size\": [110, 14], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#3f7fc0\"},\n    {\"type\": \"box\", \"center\": [-20, 6], \"size\": [40, 10], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#e8ecef\"},\n    {\"type\": \"box\", \"center\": [40, 6], \"size\": [30, 10], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#e8ecef\"},\n\n    {\"type\": \"box\", \"center\": [-62, -18], \"size\": [9, 9], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d33b2c\"},\n    {\"type\": \"box\", \"center\": [60, -10], \"size\": [8, 8], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#d33b2c\"},\n\n    {\"type\": \"beam\", \"from\": [-84, 2, -32], \"to\": [-44, 20, -32], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [-44, 20, -32], \"to\": [-26, 20, -32], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [-26, 20, -32], \"to\": [14, 38, -32], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [14, 38, -32], \"to\": [40, 38, -32], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [40, 38, -32], \"to\": [80, 40, -32], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#cfd6da\"},\n    {\"type\": \"beam\", \"from\": [-84, 0, -30], \"to\": [-44, 18, -30], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#d33b2c\"},\n\n    {\"type\": \"repeat\", \"count\": 15, \"offset\": [11, 0, 0],\n     \"part\": {\"type\": \"beam\", \"from\": [-80, 0, -29], \"to\": [-80, 40, -29], \"width\": 1, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n    {\"type\": \"repeat\", \"count\": 7, \"offset\": [0, 6, 0],\n     \"part\": {\"type\": \"beam\", \"from\": [-84, 0, -29], \"to\": [84, 0, -29], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 8994,
+   "output": 3206,
+   "cacheRead": 8401,
+   "cost": 0.00258641,
+   "ms": 15470,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Three biggest differences: (1) the escalator is a thin flat grey strip, not a glazed tube zigzagging up the front, so the signature feature is lost. (2) The exposed steel frame is missing, so the front reads as a plain dark wall with thin lines. (3) The glazed body renders very dark, unlike the pale steel-and-glass facade in the photographs. The footprint, six-storey massing, roof housings and red ventilation boxes already match and are kept.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      2.2
+     ],
+     "size": [
+      168,
+      61.6
+     ],
+     "y0": 0,
+     "bay": 6,
+     "material": "glass",
+     "colour": "#dfe6ea",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      }
+     ],
+     "faces": "all",
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      5,
+      6
+     ],
+     "size": [
+      110,
+      14
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#3f7fc0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      6
+     ],
+     "size": [
+      40,
+      10
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#e8ecef"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      6
+     ],
+     "size": [
+      30,
+      10
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#e8ecef"
+    },
+    {
+     "type": "box",
+     "center": [
+      -62,
+      -18
+     ],
+     "size": [
+      9,
+      9
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d33b2c"
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      -10
+     ],
+     "size": [
+      8,
+      8
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#d33b2c"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      2,
+      -32
+     ],
+     "to": [
+      -44,
+      20,
+      -32
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -44,
+      20,
+      -32
+     ],
+     "to": [
+      -26,
+      20,
+      -32
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -26,
+      20,
+      -32
+     ],
+     "to": [
+      14,
+      38,
+      -32
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      14,
+      38,
+      -32
+     ],
+     "to": [
+      40,
+      38,
+      -32
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      40,
+      38,
+      -32
+     ],
+     "to": [
+      80,
+      40,
+      -32
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -30
+     ],
+     "to": [
+      -44,
+      18,
+      -30
+     ],
+     "width": 0.8,
+     "material": "metal",
+     "colour": "#d33b2c"
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      11,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -80,
+       0,
+       -29
+      ],
+      "to": [
+       -80,
+       40,
+       -29
+      ],
+      "width": 1,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 7,
+     "offset": [
+      0,
+      6,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -29
+      ],
+      "to": [
+       84,
+       0,
+       -29
+      ],
+      "width": 0.8,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    }
+   ]
+  },
+  "notes": "Three biggest differences: (1) the escalator is a thin flat grey strip, not a glazed tube zigzagging up the front, so the signature feature is lost. (2) The exposed steel frame is missing, so the front reads as a plain dark wall with thin lines. (3) The glazed body renders very dark, unlike the pale steel-and-glass facade in the photographs. The footprint, six-storey massing, roof housings and red ventilation boxes already match and are kept.",
+  "triangles": 576,
+  "parts": 44
+ },
+ "totals": {
+  "input": 17007,
+  "output": 9864,
+  "cost": 0.00682155,
+  "ms": 47907
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the piazza (west face, −z side), showing the glazed facade behind an exposed steel grid, a long glass escalator tube running diagonally up across the front, and red and blue service ducts on the frame.\",\n    \"photo 2: a side three-quarter from below, showing the stepped escalator tube climbing the front face, the exposed steel frame with a red-and-white diagonal stair run, and a red service box on the roof.\",\n    \"photo 3: an elevated distant view of the whole long rectangular building, with its flat roof carrying a row of blue and white service housings and red ventilation boxes, surrounded by Paris rooftops.\"\n  ],\n  \"components\": [\n    {\"name\": \"glazed main box\", \"part\": \"block\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [168, 66], \"height\": 36,\n     \"settings\": {\"storeys\": [\n        {\"height\": 6, \"kind\": \"curtain\"},\n        {\"height\": 6, \"kind\": \"curtain\"},\n        {\"height\": 6, \"kind\": \"curtain\"},\n        {\"height\": 6, \"kind\": \"curtain\"},\n        {\"height\": 6, \"kind\": \"curtain\"},\n        {\"height\": 6, \"kind\": \"curtain\"}],\n       \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d3d9dd\"},\n     \"why\": \"photos 1 and 3: the building is one long rectangular glazed box, six floors high, behind an exposed steel grid\"},\n    {\"name\": \"roof service housings\", \"part\": \"box\", \"where\": \"along the roof, mostly the middle and east\", \"center\": [5, 0], \"size\": [110, 14], \"height\": 6,\n     \"settings\": {\"base\": 36, \"colour\": \"#3f7fc0\", \"accent\": \"#e8ecef\"},\n     \"why\": \"photos 2 and 3: a row of blue and white service housings sits on the roof, topping out at about 42 m\"},\n    {\"name\": \"red ventilation towers\", \"part\": \"box\", \"where\": \"two roof corners, west and east\", \"center\": [-62, -18], \"size\": [9, 9], \"height\": 6,\n     \"settings\": {\"base\": 36, \"colour\": \"#d33b2c\"},\n     \"why\": \"photos 2 and 3: red ventilation boxes stand at the roof corners (a second one sits at the east end, see the roof photo)\"},\n    {\"name\": \"external escalator tube\", \"part\": \"beam\", \"where\": \"diagonal across the front (−z) face\", \"center\": [0, -38], \"size\": [168, 4], \"height\": 40,\n     \"settings\": {\"kind\": \"tube\", \"from\": [-84, 0, -38], \"to\": [80, 40, -38], \"diameter\": 4, \"glazed\": true, \"colour\": \"#cfd6da\", \"edge\": \"#d33b2c\"},\n     \"why\": \"photos 1 and 2: the glazed escalator tube climbs diagonally across the front face and is the building's signature feature\"}\n  ]\n}\n```",
+  "input": 3375,
+  "output": 3768,
+  "cost": 0.00224233,
+  "ms": 18893,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the piazza (west face, −z side), showing the glazed facade behind an exposed steel grid, a long glass escalator tube running diagonally up across the front, and red and blue service ducts on the frame.",
+    "photo 2: a side three-quarter from below, showing the stepped escalator tube climbing the front face, the exposed steel frame with a red-and-white diagonal stair run, and a red service box on the roof.",
+    "photo 3: an elevated distant view of the whole long rectangular building, with its flat roof carrying a row of blue and white service housings and red ventilation boxes, surrounded by Paris rooftops."
+   ],
+   "components": [
+    {
+     "name": "glazed main box",
+     "part": "block",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "height": 36,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d3d9dd"
+     },
+     "why": "photos 1 and 3: the building is one long rectangular glazed box, six floors high, behind an exposed steel grid"
+    },
+    {
+     "name": "roof service housings",
+     "part": "box",
+     "where": "along the roof, mostly the middle and east",
+     "center": [
+      5,
+      0
+     ],
+     "size": [
+      110,
+      14
+     ],
+     "height": 6,
+     "settings": {
+      "base": 36,
+      "colour": "#3f7fc0",
+      "accent": "#e8ecef"
+     },
+     "why": "photos 2 and 3: a row of blue and white service housings sits on the roof, topping out at about 42 m"
+    },
+    {
+     "name": "red ventilation towers",
+     "part": "box",
+     "where": "two roof corners, west and east",
+     "center": [
+      -62,
+      -18
+     ],
+     "size": [
+      9,
+      9
+     ],
+     "height": 6,
+     "settings": {
+      "base": 36,
+      "colour": "#d33b2c"
+     },
+     "why": "photos 2 and 3: red ventilation boxes stand at the roof corners (a second one sits at the east end, see the roof photo)"
+    },
+    {
+     "name": "external escalator tube",
+     "part": "beam",
+     "where": "diagonal across the front (−z) face",
+     "center": [
+      0,
+      -38
+     ],
+     "size": [
+      168,
+      4
+     ],
+     "height": 40,
+     "settings": {
+      "kind": "tube",
+      "from": [
+       -84,
+       0,
+       -38
+      ],
+      "to": [
+       80,
+       40,
+       -38
+      ],
+      "diameter": 4,
+      "glazed": true,
+      "colour": "#cfd6da",
+      "edge": "#d33b2c"
+     },
+     "why": "photos 1 and 2: the glazed escalator tube climbs diagonally across the front face and is the building's signature feature"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "Centre Pompidou is a long, flat, six-storey glazed box, with its services (blue and white housings, red ventilation boxes) on the roof, and an exposed steel frame wrapping the west (front) face. Its signature feature is the glazed escalator tube zigzagging diagonally up the front, which I model as glass beams in front of the facade. The footprint is taken from the outline, which runs from about z=-28.6 to z=33, so the box is centred slightly toward the back.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      2.2
+     ],
+     "size": [
+      168,
+      61.6
+     ],
+     "y0": 0,
+     "bay": 6,
+     "material": "glass",
+     "colour": "#d3d9dd",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      },
+      {
+       "height": 6,
+       "kind": "curtain"
+      }
+     ],
+     "faces": "all",
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      5,
+      6
+     ],
+     "size": [
+      110,
+      14
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#3f7fc0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      6
+     ],
+     "size": [
+      40,
+      10
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#e8ecef"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      6
+     ],
+     "size": [
+      30,
+      10
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#e8ecef"
+    },
+    {
+     "type": "box",
+     "center": [
+      -62,
+      -18
+     ],
+     "size": [
+      9,
+      9
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d33b2c"
+    },
+    {
+     "type": "box",
+     "center": [
+      60,
+      -10
+     ],
+     "size": [
+      8,
+      8
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#d33b2c"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -31
+     ],
+     "to": [
+      -20,
+      22,
+      -31
+     ],
+     "width": 4,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -20,
+      22,
+      -31
+     ],
+     "to": [
+      80,
+      40,
+      -31
+     ],
+     "width": 4,
+     "material": "glass",
+     "colour": "#cfd6da"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -29
+     ],
+     "to": [
+      -20,
+      20,
+      -29
+     ],
+     "width": 0.8,
+     "material": "metal",
+     "colour": "#d33b2c"
+    },
+    {
+     "type": "repeat",
+     "count": 12,
+     "offset": [
+      14,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -80,
+       0,
+       -30
+      ],
+      "to": [
+       -80,
+       36,
+       -30
+      ],
+      "width": 0.8,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    }
+   ]
+  },
+  "notes": "Centre Pompidou is a long, flat, six-storey glazed box, with its services (blue and white housings, red ventilation boxes) on the roof, and an exposed steel frame wrapping the west (front) face. Its signature feature is the glazed escalator tube zigzagging diagonally up the front, which I model as glass beams in front of the facade. The footprint is taken from the outline, which runs from about z=-28.6 to z=33, so the box is centred slightly toward the back.",
+  "triangles": 420,
+  "parts": 31
+ }
+}

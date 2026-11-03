@@ -1,0 +1,498 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:11:05.732Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Madeleine is a windowless Greek-revival temple: a full peripteral Corinthian colonnade of free-standing columns on a raised podium, with a sculpted pediment over the south portico and a low pitched roof, copper green, running back along the cella. The model builds the podium, the windowless cream stone cella under a green gable roof reaching 36 m, the eight-column front portico with its pediment, and the two long flank colonnades of 22 columns each.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [43.2, 128.3],\n      \"y0\": 0,\n      \"storeys\": [{\"height\": 3, \"kind\": \"blank\", \"windows\": false}],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#d8cdb6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [36, 116],\n      \"y0\": 3,\n      \"storeys\": [{\"height\": 21, \"kind\": \"blank\", \"windows\": false}],\n      \"roof\": {\"kind\": \"gable\", \"rise\": 12, \"colour\": \"#7fae92\"},\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-18, -62],\n      \"to\": [18, -62],\n      \"y0\": 3,\n      \"height\": 25,\n      \"count\": 8,\n      \"radius\": 1.1,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-21.6, -62],\n      \"to\": [21.6, -62],\n      \"y0\": 25,\n      \"height\": 11,\n      \"depth\": 4,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-19.5, -60],\n      \"to\": [-19.5, 60],\n      \"y0\": 3,\n      \"height\": 25,\n      \"count\": 22,\n      \"radius\": 1.1,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [19.5, -60],\n      \"to\": [19.5, 60],\n      \"y0\": 3,\n      \"height\": 25,\n      \"count\": 22,\n      \"radius\": 1.1,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4762,
+   "output": 3274,
+   "cacheRead": 8401,
+   "cost": 0.0021972100000000002,
+   "ms": 14969,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"1) The cella is 36 m wide and sits almost against the flank colonnades, so the columns read as a fence bolted to a wall; in the photographs the peristyle stands clear with a deep gap to the cella, so the cella must be narrower. 2) The front portico is too shallow and its eight columns are hidden by the roof, so the sculpted pediment does not read as the building's face; the portico must stand clear of the cella and the pediment must sit on it. 3) The flank columns are slightly too slender and the cella walls render grey and dull; the columns need a bit more girth and the stone colour should stay the cream of the photographs. The model keeps a stone podium, a green gable roof reaching 36 m, and the two long flank colonnades of 22 columns each.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [43.2, 128.3],\n      \"y0\": 0,\n      \"storeys\": [{\"height\": 3, \"kind\": \"blank\", \"windows\": false}],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#d8cdb6\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [30, 112],\n      \"y0\": 3,\n      \"storeys\": [{\"height\": 21, \"kind\": \"blank\", \"windows\": false}],\n      \"roof\": {\"kind\": \"gable\", \"rise\": 12, \"colour\": \"#7fae92\"},\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-16, -60],\n      \"to\": [16, -60],\n      \"y0\": 3,\n      \"height\": 25,\n      \"count\": 8,\n      \"radius\": 1.2,\n      \"colour\": \"#eee6d4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-19, -60],\n      \"to\": [19, -60],\n      \"y0\": 25,\n      \"height\": 11,\n      \"depth\": 5,\n      \"colour\": \"#e6dccb\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-18.5, -60],\n      \"to\": [-18.5, 60],\n      \"y0\": 3,\n      \"height\": 25,\n      \"count\": 22,\n      \"radius\": 1.2,\n      \"colour\": \"#eee6d4\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [18.5, -60],\n      \"to\": [18.5, 60],\n      \"y0\": 3,\n      \"height\": 25,\n      \"count\": 22,\n      \"radius\": 1.2,\n      \"colour\": \"#eee6d4\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 9502,
+   "output": 2798,
+   "cacheRead": 8401,
+   "cost": 0.00243321,
+   "ms": 13640,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1) The cella is 36 m wide and sits almost against the flank colonnades, so the columns read as a fence bolted to a wall; in the photographs the peristyle stands clear with a deep gap to the cella, so the cella must be narrower. 2) The front portico is too shallow and its eight columns are hidden by the roof, so the sculpted pediment does not read as the building's face; the portico must stand clear of the cella and the pediment must sit on it. 3) The flank columns are slightly too slender and the cella walls render grey and dull; the columns need a bit more girth and the stone colour should stay the cream of the photographs. The model keeps a stone podium, a green gable roof reaching 36 m, and the two long flank colonnades of 22 columns each.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 3,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#d8cdb6",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      30,
+      112
+     ],
+     "y0": 3,
+     "storeys": [
+      {
+       "height": 21,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "gable",
+      "rise": 12,
+      "colour": "#7fae92"
+     },
+     "colour": "#e6dccb",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      -60
+     ],
+     "to": [
+      16,
+      -60
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 8,
+     "radius": 1.2,
+     "colour": "#eee6d4",
+     "material": "stone"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -19,
+      -60
+     ],
+     "to": [
+      19,
+      -60
+     ],
+     "y0": 25,
+     "height": 11,
+     "depth": 5,
+     "colour": "#e6dccb",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18.5,
+      -60
+     ],
+     "to": [
+      -18.5,
+      60
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 22,
+     "radius": 1.2,
+     "colour": "#eee6d4",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      18.5,
+      -60
+     ],
+     "to": [
+      18.5,
+      60
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 22,
+     "radius": 1.2,
+     "colour": "#eee6d4",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "1) The cella is 36 m wide and sits almost against the flank colonnades, so the columns read as a fence bolted to a wall; in the photographs the peristyle stands clear with a deep gap to the cella, so the cella must be narrower. 2) The front portico is too shallow and its eight columns are hidden by the roof, so the sculpted pediment does not read as the building's face; the portico must stand clear of the cella and the pediment must sit on it. 3) The flank columns are slightly too slender and the cella walls render grey and dull; the columns need a bit more girth and the stone colour should stay the cream of the photographs. The model keeps a stone podium, a green gable roof reaching 36 m, and the two long flank colonnades of 22 columns each.",
+  "triangles": 4676,
+  "parts": 9
+ },
+ "totals": {
+  "input": 17464,
+  "output": 9616,
+  "cost": 0.00674325,
+  "ms": 46305
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade of free-standing columns on a high podium, with the sculpted pediment and the long side colonnade receding to the rear\",\n    \"photo 2: the long side from the front-left, showing the row of many Corinthian columns along the flank under a continuous entablature, with the front pediment at left and a plain stone wall between the columns and the cella\",\n    \"photo 3: an elevated view over the rooftops, showing the pedimented front with its portico and the green copper pitched roof running back along the ridge, with no visible windows on the temple body\"\n  ],\n  \"components\": [\n    {\"name\": \"front pediment\", \"part\": \"pediment\", \"where\": \"front gable above the portico\", \"center\": [0, -62], \"size\": [43.2, 11], \"height\": 25,\n     \"settings\": {\"width\": 43.2, \"rise\": 11, \"depth\": 3, \"sculpture\": true, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 1 and 2: the sculpted triangular pediment over the front portico is the most recognisable feature of the building\"},\n    {\"name\": \"front colonnade\", \"part\": \"colonnade\", \"where\": \"front portico, south face\", \"center\": [0, -62], \"size\": [40, 4], \"height\": 25,\n     \"settings\": {\"count\": 8, \"order\": \"corinthian\", \"base\": 3, \"column_height\": 22, \"radius\": 1.1, \"beam\": true, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 1 and 3: eight Corinthian columns across the front form a deep portico\"},\n    {\"name\": \"west side colonnade\", \"part\": \"colonnade\", \"where\": \"west flank, along the long side\", \"center\": [-19.5, 0], \"size\": [3, 116], \"height\": 25,\n     \"settings\": {\"count\": 22, \"order\": \"corinthian\", \"base\": 3, \"column_height\": 22, \"radius\": 1.1, \"beam\": true, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 2: the peristyle continues as a long row of columns along the side\"},\n    {\"name\": \"east side colonnade\", \"part\": \"colonnade\", \"where\": \"east flank, along the long side\", \"center\": [19.5, 0], \"size\": [3, 116], \"height\": 25,\n     \"settings\": {\"count\": 22, \"order\": \"corinthian\", \"base\": 3, \"column_height\": 22, \"radius\": 1.1, \"beam\": true, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 2 and 3: the matching colonnade runs down the other flank\"},\n    {\"name\": \"cella body\", \"part\": \"block\", \"where\": \"the windowless temple body inside the colonnade\", \"center\": [0, 0], \"size\": [36, 116], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 24, \"kind\": \"blank\", \"windows\": false}], \"faces\": \"none\", \"roof\": {\"kind\": \"gable\", \"rise\": 12, \"colour\": \"#7fae92\"}, \"colour\": \"#e6dccb\"},\n     \"why\": \"photo 1 and 3: the inner cella walls are plain stone with no windows, under a green pitched roof\"},\n    {\"name\": \"podium\", \"part\": \"block\", \"where\": \"the full footprint, base of the temple\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"height\": 3,\n     \"settings\": {\"storeys\": [{\"height\": 3, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8cdb6\"},\n     \"why\": \"photo 1 and 2: the temple stands on a raised stepped podium\"}\n  ]\n}\n```",
+  "input": 3200,
+  "output": 3544,
+  "cost": 0.00211283,
+  "ms": 17696,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade of free-standing columns on a high podium, with the sculpted pediment and the long side colonnade receding to the rear",
+    "photo 2: the long side from the front-left, showing the row of many Corinthian columns along the flank under a continuous entablature, with the front pediment at left and a plain stone wall between the columns and the cella",
+    "photo 3: an elevated view over the rooftops, showing the pedimented front with its portico and the green copper pitched roof running back along the ridge, with no visible windows on the temple body"
+   ],
+   "components": [
+    {
+     "name": "front pediment",
+     "part": "pediment",
+     "where": "front gable above the portico",
+     "center": [
+      0,
+      -62
+     ],
+     "size": [
+      43.2,
+      11
+     ],
+     "height": 25,
+     "settings": {
+      "width": 43.2,
+      "rise": 11,
+      "depth": 3,
+      "sculpture": true,
+      "colour": "#e6dccb"
+     },
+     "why": "photo 1 and 2: the sculpted triangular pediment over the front portico is the most recognisable feature of the building"
+    },
+    {
+     "name": "front colonnade",
+     "part": "colonnade",
+     "where": "front portico, south face",
+     "center": [
+      0,
+      -62
+     ],
+     "size": [
+      40,
+      4
+     ],
+     "height": 25,
+     "settings": {
+      "count": 8,
+      "order": "corinthian",
+      "base": 3,
+      "column_height": 22,
+      "radius": 1.1,
+      "beam": true,
+      "colour": "#e6dccb"
+     },
+     "why": "photo 1 and 3: eight Corinthian columns across the front form a deep portico"
+    },
+    {
+     "name": "west side colonnade",
+     "part": "colonnade",
+     "where": "west flank, along the long side",
+     "center": [
+      -19.5,
+      0
+     ],
+     "size": [
+      3,
+      116
+     ],
+     "height": 25,
+     "settings": {
+      "count": 22,
+      "order": "corinthian",
+      "base": 3,
+      "column_height": 22,
+      "radius": 1.1,
+      "beam": true,
+      "colour": "#e6dccb"
+     },
+     "why": "photo 2: the peristyle continues as a long row of columns along the side"
+    },
+    {
+     "name": "east side colonnade",
+     "part": "colonnade",
+     "where": "east flank, along the long side",
+     "center": [
+      19.5,
+      0
+     ],
+     "size": [
+      3,
+      116
+     ],
+     "height": 25,
+     "settings": {
+      "count": 22,
+      "order": "corinthian",
+      "base": 3,
+      "column_height": 22,
+      "radius": 1.1,
+      "beam": true,
+      "colour": "#e6dccb"
+     },
+     "why": "photo 2 and 3: the matching colonnade runs down the other flank"
+    },
+    {
+     "name": "cella body",
+     "part": "block",
+     "where": "the windowless temple body inside the colonnade",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      116
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 24,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "faces": "none",
+      "roof": {
+       "kind": "gable",
+       "rise": 12,
+       "colour": "#7fae92"
+      },
+      "colour": "#e6dccb"
+     },
+     "why": "photo 1 and 3: the inner cella walls are plain stone with no windows, under a green pitched roof"
+    },
+    {
+     "name": "podium",
+     "part": "block",
+     "where": "the full footprint, base of the temple",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "height": 3,
+     "settings": {
+      "storeys": [
+       {
+        "height": 3,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8cdb6"
+     },
+     "why": "photo 1 and 2: the temple stands on a raised stepped podium"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "The Madeleine is a windowless Greek-revival temple: a full peripteral Corinthian colonnade of free-standing columns on a raised podium, with a sculpted pediment over the south portico and a low pitched roof, copper green, running back along the cella. The model builds the podium, the windowless cream stone cella under a green gable roof reaching 36 m, the eight-column front portico with its pediment, and the two long flank colonnades of 22 columns each.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 3,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#d8cdb6",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      116
+     ],
+     "y0": 3,
+     "storeys": [
+      {
+       "height": 21,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "gable",
+      "rise": 12,
+      "colour": "#7fae92"
+     },
+     "colour": "#e6dccb",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -62
+     ],
+     "to": [
+      18,
+      -62
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 8,
+     "radius": 1.1,
+     "colour": "#e6dccb",
+     "material": "stone"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -62
+     ],
+     "to": [
+      21.6,
+      -62
+     ],
+     "y0": 25,
+     "height": 11,
+     "depth": 4,
+     "colour": "#e6dccb",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19.5,
+      -60
+     ],
+     "to": [
+      -19.5,
+      60
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 22,
+     "radius": 1.1,
+     "colour": "#e6dccb",
+     "material": "stone"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      19.5,
+      -60
+     ],
+     "to": [
+      19.5,
+      60
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 22,
+     "radius": 1.1,
+     "colour": "#e6dccb",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "The Madeleine is a windowless Greek-revival temple: a full peripteral Corinthian colonnade of free-standing columns on a raised podium, with a sculpted pediment over the south portico and a low pitched roof, copper green, running back along the cella. The model builds the podium, the windowless cream stone cella under a green gable roof reaching 36 m, the eight-column front portico with its pediment, and the two long flank colonnades of 22 columns each.",
+  "triangles": 4676,
+  "parts": 9
+ }
+}

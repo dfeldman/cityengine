@@ -1,0 +1,328 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:26.450Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The California Palace of the Legion of Honor is a low, grey stone classical front around an open Court of Honor. The signature features are the central triumphal arch with its round-headed gateway, the long colonnaded wings that run back from it, and the taller end pavilions at the front corners. The court is open to the front, and the arch rises to the highest point at 23 m. Surfaces are pale grey stone with no window openings.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, -40],\n      \"size\": [14, 8],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#d9d4c6\",\n      \"bay\": 4.5,\n      \"storeys\": [{\"height\": 23, \"kind\": \"arcade\", \"windows\": false}],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [60.4, 93.7],\n      \"wing\": 18,\n      \"open\": \"front\",\n      \"courtColonnade\": true,\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"material\": \"stone\",\n      \"colour\": \"#d9d4c6\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"columns\", \"windows\": false},\n        {\"height\": 8, \"kind\": \"pilasters\", \"floors\": 1, \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-22, -38],\n      \"size\": [14, 16],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#d9d4c6\",\n      \"bay\": 4.5,\n      \"storeys\": [{\"height\": 17, \"kind\": \"pilasters\", \"windows\": false}],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"flat\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [22, -38],\n      \"size\": [14, 16],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#d9d4c6\",\n      \"bay\": 4.5,\n      \"storeys\": [{\"height\": 17, \"kind\": \"pilasters\", \"windows\": false}],\n      \"faces\": \"front\",\n      \"roof\": {\"kind\": \"flat\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4605,
+   "output": 1681,
+   "cacheRead": 8401,
+   "cost": 0.0013850100000000003,
+   "ms": 13944,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The California Palace of the Legion of Honor is a low, grey stone classical front around an open Court of Honor. The signature features are the central triumphal arch with its round-headed gateway, the long colonnaded wings that run back from it, and the taller end pavilions at the front corners. The court is open to the front, and the arch rises to the highest point at 23 m. Surfaces are pale grey stone with no window openings.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      14,
+      8
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#d9d4c6",
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 23,
+       "kind": "arcade",
+       "windows": false
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      93.7
+     ],
+     "wing": 18,
+     "open": "front",
+     "courtColonnade": true,
+     "y0": 0,
+     "bay": 4.5,
+     "material": "stone",
+     "colour": "#d9d4c6",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "columns",
+       "windows": false
+      },
+      {
+       "height": 8,
+       "kind": "pilasters",
+       "floors": 1,
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      -38
+     ],
+     "size": [
+      14,
+      16
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#d9d4c6",
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 17,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      22,
+      -38
+     ],
+     "size": [
+      14,
+      16
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#d9d4c6",
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 17,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": "front",
+     "roof": {
+      "kind": "flat"
+     }
+    }
+   ]
+  },
+  "notes": "The California Palace of the Legion of Honor is a low, grey stone classical front around an open Court of Honor. The signature features are the central triumphal arch with its round-headed gateway, the long colonnaded wings that run back from it, and the taller end pavilions at the front corners. The court is open to the front, and the arch rises to the highest point at 23 m. Surfaces are pale grey stone with no window openings.",
+  "triangles": 17548,
+  "parts": 187
+ },
+ "totals": {
+  "input": 7882,
+  "output": 3771,
+  "cost": 0.0027785400000000003,
+  "ms": 24023
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\n    \"photo 1: the front from the forecourt, showing the central triumphal arch with its inscription and sculpted panels, flanking colonnades of paired columns, and low end pavilions with sculpted friezes, grey stone, blue sky\",\n    \"photo 2: the front at night across the reflecting pond, showing the long low colonnaded wings, the central arch with a glimpse of the court beyond, and the end pavilions, with no windows read as openings\",\n    \"photo 3: inside the Court of Honor looking along the colonnaded wing, showing a row of columns on a blank stone wall, a columned portico with the inscription HONNEUR ET PATRIE, and a flat roof with a balustrade, stone paving\"\n  ],\n  \"components\": [\n    {\"name\": \"central triumphal arch\", \"part\": \"block\", \"where\": \"centre of the front, the entrance arch\", \"center\": [0, -40], \"size\": [14, 8], \"height\": 23,\n     \"settings\": {\"storeys\": [{\"height\": 23, \"kind\": \"arcade\", \"windows\": false}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d9d4c6\"},\n     \"why\": \"photo 1 and 2: a monumental round-arched gateway with sculpted panels rises above the colonnades at the centre of the front\"},\n    {\"name\": \"Court of Honor colonnaded wings\", \"part\": \"court\", \"where\": \"the whole footprint, open toward the front\", \"center\": [0, 0], \"size\": [60.4, 93.7], \"height\": 14,\n     \"settings\": {\"open\": \"front\", \"wing\": 18, \"storeys\": [{\"height\": 6, \"kind\": \"columns\", \"windows\": false}, {\"height\": 8, \"kind\": \"pilasters\", \"floors\": 1, \"windows\": false}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d9d4c6\"},\n     \"why\": \"photo 3: the wings are a colonnade of free-standing columns along the court, with the court open to the front; photo 2 shows the low colonnaded front\"},\n    {\"name\": \"front left end pavilion\", \"part\": \"block\", \"where\": \"front left corner\", \"center\": [-22, -38], \"size\": [14, 16], \"height\": 17,\n     \"settings\": {\"storeys\": [{\"height\": 17, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d9d4c6\"},\n     \"why\": \"photo 1: a higher end pavilion with a sculpted frieze closes the left end of the front\"},\n    {\"name\": \"front right end pavilion\", \"part\": \"block\", \"where\": \"front right corner\", \"center\": [22, -38], \"size\": [14, 16], \"height\": 17,\n     \"settings\": {\"storeys\": [{\"height\": 17, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d9d4c6\"},\n     \"why\": \"photo 1: a matching end pavilion with a sculpted frieze closes the right end of the front\"}\n  ]\n}",
+  "input": 3277,
+  "output": 2090,
+  "cost": 0.00139353,
+  "ms": 10079,
+  "json": {
+   "photos": [
+    "photo 1: the front from the forecourt, showing the central triumphal arch with its inscription and sculpted panels, flanking colonnades of paired columns, and low end pavilions with sculpted friezes, grey stone, blue sky",
+    "photo 2: the front at night across the reflecting pond, showing the long low colonnaded wings, the central arch with a glimpse of the court beyond, and the end pavilions, with no windows read as openings",
+    "photo 3: inside the Court of Honor looking along the colonnaded wing, showing a row of columns on a blank stone wall, a columned portico with the inscription HONNEUR ET PATRIE, and a flat roof with a balustrade, stone paving"
+   ],
+   "components": [
+    {
+     "name": "central triumphal arch",
+     "part": "block",
+     "where": "centre of the front, the entrance arch",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      14,
+      8
+     ],
+     "height": 23,
+     "settings": {
+      "storeys": [
+       {
+        "height": 23,
+        "kind": "arcade",
+        "windows": false
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d9d4c6"
+     },
+     "why": "photo 1 and 2: a monumental round-arched gateway with sculpted panels rises above the colonnades at the centre of the front"
+    },
+    {
+     "name": "Court of Honor colonnaded wings",
+     "part": "court",
+     "where": "the whole footprint, open toward the front",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      93.7
+     ],
+     "height": 14,
+     "settings": {
+      "open": "front",
+      "wing": 18,
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "columns",
+        "windows": false
+       },
+       {
+        "height": 8,
+        "kind": "pilasters",
+        "floors": 1,
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d9d4c6"
+     },
+     "why": "photo 3: the wings are a colonnade of free-standing columns along the court, with the court open to the front; photo 2 shows the low colonnaded front"
+    },
+    {
+     "name": "front left end pavilion",
+     "part": "block",
+     "where": "front left corner",
+     "center": [
+      -22,
+      -38
+     ],
+     "size": [
+      14,
+      16
+     ],
+     "height": 17,
+     "settings": {
+      "storeys": [
+       {
+        "height": 17,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d9d4c6"
+     },
+     "why": "photo 1: a higher end pavilion with a sculpted frieze closes the left end of the front"
+    },
+    {
+     "name": "front right end pavilion",
+     "part": "block",
+     "where": "front right corner",
+     "center": [
+      22,
+      -38
+     ],
+     "size": [
+      14,
+      16
+     ],
+     "height": 17,
+     "settings": {
+      "storeys": [
+       {
+        "height": 17,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d9d4c6"
+     },
+     "why": "photo 1: a matching end pavilion with a sculpted frieze closes the right end of the front"
+    }
+   ]
+  }
+ }
+}

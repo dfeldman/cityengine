@@ -1,0 +1,14 @@
+{
+ "building": "coit-tower",
+ "modelId": "game",
+ "model": "coitTower",
+ "fit": {
+  "turn": 176,
+  "mirror": false,
+  "iou": 0.75
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: coitTower, 864 tris, fit IoU 0.75"
+ }
+}

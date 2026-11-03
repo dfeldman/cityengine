@@ -1,0 +1,354 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:49.539Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A monumental Beaux-Arts stone block with a rusticated base, a two-storey colonnade on the Larkin Street front, and a low hipped roof behind a dentilled cornice. A long arched-window side runs east, and a rear wing with a hipped roof projects toward the back. The wings are the same pale stone, and the whole building is modelled as three blocks.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, -18.2],\n      \"size\": [55, 69.6],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#d8d4c8\",\n      \"storeys\": [\n        {\"height\": 7, \"kind\": \"rusticated\"},\n        {\"height\": 12, \"kind\": \"columns\", \"floors\": 2},\n        {\"height\": 7, \"kind\": \"arched\"}\n      ],\n      \"faces\": [\"front\"],\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"hip\", \"rise\": 3, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [21, 28.4],\n      \"size\": [13, 23.6],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#d8d4c8\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 13, \"kind\": \"arched\", \"floors\": 2},\n        {\"height\": 3, \"kind\": \"punched\"}\n      ],\n      \"faces\": \"all\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"hip\", \"rise\": 3, \"colour\": \"#4f5862\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [1.45, 34.9],\n      \"size\": [26.1, 36.5],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#d8d4c8\",\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\"},\n        {\"height\": 13, \"kind\": \"arched\", \"floors\": 2},\n        {\"height\": 3, \"kind\": \"punched\"}\n      ],\n      \"faces\": \"all\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"hip\", \"rise\": 3, \"colour\": \"#4f5862\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4597,
+   "output": 1520,
+   "cacheRead": 8401,
+   "cost": 0.00130371,
+   "ms": 6741,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A monumental Beaux-Arts stone block with a rusticated base, a two-storey colonnade on the Larkin Street front, and a low hipped roof behind a dentilled cornice. A long arched-window side runs east, and a rear wing with a hipped roof projects toward the back. The wings are the same pale stone, and the whole building is modelled as three blocks.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -18.2
+     ],
+     "size": [
+      55,
+      69.6
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#d8d4c8",
+     "storeys": [
+      {
+       "height": 7,
+       "kind": "rusticated"
+      },
+      {
+       "height": 12,
+       "kind": "columns",
+       "floors": 2
+      },
+      {
+       "height": 7,
+       "kind": "arched"
+      }
+     ],
+     "faces": [
+      "front"
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "hip",
+      "rise": 3,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      21,
+      28.4
+     ],
+     "size": [
+      13,
+      23.6
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#d8d4c8",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 13,
+       "kind": "arched",
+       "floors": 2
+      },
+      {
+       "height": 3,
+       "kind": "punched"
+      }
+     ],
+     "faces": "all",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "hip",
+      "rise": 3,
+      "colour": "#4f5862"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      1.45,
+      34.9
+     ],
+     "size": [
+      26.1,
+      36.5
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#d8d4c8",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 13,
+       "kind": "arched",
+       "floors": 2
+      },
+      {
+       "height": 3,
+       "kind": "punched"
+      }
+     ],
+     "faces": "all",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "hip",
+      "rise": 3,
+      "colour": "#4f5862"
+     }
+    }
+   ]
+  },
+  "notes": "A monumental Beaux-Arts stone block with a rusticated base, a two-storey colonnade on the Larkin Street front, and a low hipped roof behind a dentilled cornice. A long arched-window side runs east, and a rear wing with a hipped roof projects toward the back. The wings are the same pale stone, and the whole building is modelled as three blocks.",
+  "triangles": 3196,
+  "parts": 25
+ },
+ "totals": {
+  "input": 7912,
+  "output": 4787,
+  "cost": 0.00328954,
+  "ms": 22757
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter across the plaza, showing the long Beaux-Arts facade with a tall colonnade over a rusticated base, an inscribed band under a dentilled cornice, and a low hipped slate roof behind a parapet.\",\n    \"photo 2: a corner close-up of the front, showing the paired and single columns of the loggia, the dark recesses behind them with banners, the entrance doors and steps, and the plain stone wall of the long side.\",\n    \"photo 3: an aerial view of the roof, showing a solid rectangular main mass with a long hipped roof, a rear wing projecting toward the back, a short east wing, and no inner courtyard. The Civic Center plaza lies in front.\"\n  ],\n  \"components\": [\n    {\"name\": \"main Beaux-Arts facade block\", \"part\": \"block\", \"where\": \"front half of the footprint, Larkin Street front to the west\", \"center\": [0, -18.2], \"size\": [55, 69.6], \"height\": 26,\n     \"settings\": {\"storeys\": [{\"height\": 7, \"kind\": \"rusticated\"}, {\"height\": 12, \"kind\": \"columns\", \"floors\": 2}, {\"height\": 7, \"kind\": \"arched\"}], \"faces\": [\"front\"], \"cornice\": true, \"roof\": {\"kind\": \"hip\", \"rise\": 3}, \"colour\": \"#d8d4c8\"},\n     \"why\": \"photos 1 and 2: the monumental front with a rusticated base, a two-storey colonnade and arched windows on the long sides under a hipped roof\"},\n    {\"name\": \"east wing\", \"part\": \"block\", \"where\": \"east end of the rear, long side toward the street\", \"center\": [21, 28.4], \"size\": [13, 23.6], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 13, \"kind\": \"arched\", \"floors\": 2}, {\"height\": 3, \"kind\": \"punched\"}], \"faces\": [], \"cornice\": true, \"roof\": {\"kind\": \"hip\", \"rise\": 3}, \"colour\": \"#d8d4c8\"},\n     \"why\": \"photo 2 and photo 3: the long side has tall arched windows, and the east end steps back to a lower wing\"},\n    {\"name\": \"rear wing\", \"part\": \"block\", \"where\": \"centre of the back, projecting toward the rear\", \"center\": [1.45, 34.9], \"size\": [26.1, 36.5], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 13, \"kind\": \"arched\", \"floors\": 2}, {\"height\": 3, \"kind\": \"punched\"}], \"faces\": [], \"cornice\": true, \"roof\": {\"kind\": \"hip\", \"rise\": 3}, \"colour\": \"#d8d4c8\"},\n     \"why\": \"photo 3: the aerial shows a rear wing with a long hipped roof and rows of tall arched windows\"}\n  ]\n}\n```",
+  "input": 3315,
+  "output": 3267,
+  "cost": 0.00198583,
+  "ms": 16016,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter across the plaza, showing the long Beaux-Arts facade with a tall colonnade over a rusticated base, an inscribed band under a dentilled cornice, and a low hipped slate roof behind a parapet.",
+    "photo 2: a corner close-up of the front, showing the paired and single columns of the loggia, the dark recesses behind them with banners, the entrance doors and steps, and the plain stone wall of the long side.",
+    "photo 3: an aerial view of the roof, showing a solid rectangular main mass with a long hipped roof, a rear wing projecting toward the back, a short east wing, and no inner courtyard. The Civic Center plaza lies in front."
+   ],
+   "components": [
+    {
+     "name": "main Beaux-Arts facade block",
+     "part": "block",
+     "where": "front half of the footprint, Larkin Street front to the west",
+     "center": [
+      0,
+      -18.2
+     ],
+     "size": [
+      55,
+      69.6
+     ],
+     "height": 26,
+     "settings": {
+      "storeys": [
+       {
+        "height": 7,
+        "kind": "rusticated"
+       },
+       {
+        "height": 12,
+        "kind": "columns",
+        "floors": 2
+       },
+       {
+        "height": 7,
+        "kind": "arched"
+       }
+      ],
+      "faces": [
+       "front"
+      ],
+      "cornice": true,
+      "roof": {
+       "kind": "hip",
+       "rise": 3
+      },
+      "colour": "#d8d4c8"
+     },
+     "why": "photos 1 and 2: the monumental front with a rusticated base, a two-storey colonnade and arched windows on the long sides under a hipped roof"
+    },
+    {
+     "name": "east wing",
+     "part": "block",
+     "where": "east end of the rear, long side toward the street",
+     "center": [
+      21,
+      28.4
+     ],
+     "size": [
+      13,
+      23.6
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 13,
+        "kind": "arched",
+        "floors": 2
+       },
+       {
+        "height": 3,
+        "kind": "punched"
+       }
+      ],
+      "faces": [],
+      "cornice": true,
+      "roof": {
+       "kind": "hip",
+       "rise": 3
+      },
+      "colour": "#d8d4c8"
+     },
+     "why": "photo 2 and photo 3: the long side has tall arched windows, and the east end steps back to a lower wing"
+    },
+    {
+     "name": "rear wing",
+     "part": "block",
+     "where": "centre of the back, projecting toward the rear",
+     "center": [
+      1.45,
+      34.9
+     ],
+     "size": [
+      26.1,
+      36.5
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 13,
+        "kind": "arched",
+        "floors": 2
+       },
+       {
+        "height": 3,
+        "kind": "punched"
+       }
+      ],
+      "faces": [],
+      "cornice": true,
+      "roof": {
+       "kind": "hip",
+       "rise": 3
+      },
+      "colour": "#d8d4c8"
+     },
+     "why": "photo 3: the aerial shows a rear wing with a long hipped roof and rows of tall arched windows"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,410 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:07.274Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Centre Pompidou is a long, nearly rectangular glazed box, about 168 by 66 m, with its steel frame and services exposed on the outside. The signature features are the zigzag glass escalator tube across the west-facing front (-z) and the blue and white duct layer with red service boxes on the flat roof. Glass and pale steel make up the facade, with some red and blue colour accents.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 0, \"y1\": 38, \"material\": \"glass\", \"colour\": \"#c9d3d8\", \"windows\": {\"kind\": \"curtain\", \"floor\": 8, \"pitch\": 3.5, \"solid\": 0.2, \"glass\": \"#9fb4bd\"}}, {\"type\": \"repeat\", \"count\": 21, \"offset\": [8, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-80, 0, -38], \"to\": [-80, 40, -38], \"width\": 1, \"material\": \"metal\", \"colour\": \"#b8c2c8\"}}, {\"type\": \"beam\", \"from\": [-80, 0, -36], \"to\": [-20, 14, -36], \"width\": 2.5, \"material\": \"glass\", \"colour\": \"#e8edf0\"}, {\"type\": \"beam\", \"from\": [-20, 14, -36], \"to\": [30, 26, -36], \"width\": 2.5, \"material\": \"glass\", \"colour\": \"#e8edf0\"}, {\"type\": \"beam\", \"from\": [30, 26, -36], \"to\": [70, 36, -36], \"width\": 2.5, \"material\": \"glass\", \"colour\": \"#e8edf0\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [150, 20], \"y0\": 38, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#7fb3d5\"}, {\"type\": \"box\", \"center\": [-60, -10], \"size\": [10, 8], \"y0\": 38, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d23b2a\"}, {\"type\": \"box\", \"center\": [55, 12], \"size\": [8, 8], \"y0\": 38, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d23b2a\"}]}",
+   "stop": "end_turn",
+   "input": 4763,
+   "output": 1753,
+   "cacheRead": 8401,
+   "cost": 0.00143681,
+   "ms": 8450,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Centre Pompidou is a long, nearly rectangular glazed box, about 168 by 66 m, with its steel frame and services exposed on the outside. The signature features are the zigzag glass escalator tube across the west-facing front (-z) and the blue and white duct layer with red service boxes on the flat roof. Glass and pale steel make up the facade, with some red and blue colour accents.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 0,
+     "y1": 38,
+     "material": "glass",
+     "colour": "#c9d3d8",
+     "windows": {
+      "kind": "curtain",
+      "floor": 8,
+      "pitch": 3.5,
+      "solid": 0.2,
+      "glass": "#9fb4bd"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 21,
+     "offset": [
+      8,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -80,
+       0,
+       -38
+      ],
+      "to": [
+       -80,
+       40,
+       -38
+      ],
+      "width": 1,
+      "material": "metal",
+      "colour": "#b8c2c8"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      -80,
+      0,
+      -36
+     ],
+     "to": [
+      -20,
+      14,
+      -36
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e8edf0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -20,
+      14,
+      -36
+     ],
+     "to": [
+      30,
+      26,
+      -36
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e8edf0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      30,
+      26,
+      -36
+     ],
+     "to": [
+      70,
+      36,
+      -36
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e8edf0"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      150,
+      20
+     ],
+     "y0": 38,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#7fb3d5"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      -10
+     ],
+     "size": [
+      10,
+      8
+     ],
+     "y0": 38,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d23b2a"
+    },
+    {
+     "type": "box",
+     "center": [
+      55,
+      12
+     ],
+     "size": [
+      8,
+      8
+     ],
+     "y0": 38,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d23b2a"
+    }
+   ]
+  },
+  "notes": "The Centre Pompidou is a long, nearly rectangular glazed box, about 168 by 66 m, with its steel frame and services exposed on the outside. The signature features are the zigzag glass escalator tube across the west-facing front (-z) and the blue and white duct layer with red service boxes on the flat roof. Glass and pale steel make up the facade, with some red and blue colour accents.",
+  "triangles": 368,
+  "parts": 28
+ },
+ "totals": {
+  "input": 8138,
+  "output": 3907,
+  "cost": 0.0028721399999999996,
+  "ms": 19363
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the piazza, showing the glazed facade behind an exposed steel frame, with the glass escalator tube running diagonally up across the front and colored ducts on the structure.\",\n    \"photo 2: a side three-quarter from below, showing the stepped zigzag escalator tube against the exposed steel lattice frame and blue sky.\",\n    \"photo 3: an elevated distant view of the long rectangular building, showing the flat roof with blue and red vents and ducts, with Paris rooftops around it.\"\n  ],\n  \"components\": [\n    {\"name\": \"glazed main box\", \"part\": \"block\", \"where\": \"the whole footprint, the long glazed box with exposed frame\", \"center\": [0, 0], \"size\": [168, 66], \"height\": 38,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"curtain\"}, {\"height\": 8, \"kind\": \"curtain\"}, {\"height\": 8, \"kind\": \"curtain\"}, {\"height\": 8, \"kind\": \"curtain\"}, {\"height\": 6, \"kind\": \"curtain\"}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#c9d3d8\"},\n     \"why\": \"photos 1 and 2 show a long glazed box with its structural frame exposed on the front; photo 3 shows the long rectangular plan and flat roof\"},\n    {\"name\": \"external escalator tube\", \"part\": \"beam\", \"where\": \"diagonal across the front (-z) face, rising from the piazza ground at the west end to the upper east end\", \"center\": [0, -38], \"height\": 20,\n     \"settings\": {\"tubes\": [{\"from\": [-80, 0, -38], \"to\": [-20, 14, -38]}, {\"from\": [-20, 14, -38], \"to\": [30, 26, -38]}, {\"from\": [30, 26, -38], \"to\": [70, 36, -38]}], \"radius\": 2.5, \"glazed\": true, \"colour\": \"#e8edf0\"},\n     \"why\": \"photos 1 and 2 show the stepped glass escalator tube zigzagging up the front of the building as its signature feature\"},\n    {\"name\": \"roof duct layer\", \"part\": \"box\", \"where\": \"along the flat roof, centred on the building\", \"center\": [0, 0], \"height\": 42,\n     \"settings\": {\"size\": [150, 60], \"base\": 38, \"top\": 42, \"colour\": \"#7fb3d5\"},\n     \"why\": \"photo 3 shows a band of blue and white ducts and vents running along the roof\"},\n    {\"name\": \"red roof vents\", \"part\": \"box\", \"where\": \"two red service blocks on the roof at the east and west ends\", \"center\": [0, 0], \"height\": 42,\n     \"settings\": {\"boxes\": [{\"center\": [-60, -10], \"size\": [10, 8], \"base\": 38, \"top\": 42}, {\"center\": [55, 12], \"size\": [8, 8], \"base\": 38, \"top\": 42}], \"colour\": \"#d23b2a\"},\n     \"why\": \"photos 2 and 3 show red-painted vent and service boxes on the roof\"}\n  ]\n}\n```",
+  "input": 3375,
+  "output": 2154,
+  "cost": 0.0014353299999999999,
+  "ms": 10913,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the piazza, showing the glazed facade behind an exposed steel frame, with the glass escalator tube running diagonally up across the front and colored ducts on the structure.",
+    "photo 2: a side three-quarter from below, showing the stepped zigzag escalator tube against the exposed steel lattice frame and blue sky.",
+    "photo 3: an elevated distant view of the long rectangular building, showing the flat roof with blue and red vents and ducts, with Paris rooftops around it."
+   ],
+   "components": [
+    {
+     "name": "glazed main box",
+     "part": "block",
+     "where": "the whole footprint, the long glazed box with exposed frame",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "height": 38,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "curtain"
+       },
+       {
+        "height": 8,
+        "kind": "curtain"
+       },
+       {
+        "height": 8,
+        "kind": "curtain"
+       },
+       {
+        "height": 8,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain"
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#c9d3d8"
+     },
+     "why": "photos 1 and 2 show a long glazed box with its structural frame exposed on the front; photo 3 shows the long rectangular plan and flat roof"
+    },
+    {
+     "name": "external escalator tube",
+     "part": "beam",
+     "where": "diagonal across the front (-z) face, rising from the piazza ground at the west end to the upper east end",
+     "center": [
+      0,
+      -38
+     ],
+     "height": 20,
+     "settings": {
+      "tubes": [
+       {
+        "from": [
+         -80,
+         0,
+         -38
+        ],
+        "to": [
+         -20,
+         14,
+         -38
+        ]
+       },
+       {
+        "from": [
+         -20,
+         14,
+         -38
+        ],
+        "to": [
+         30,
+         26,
+         -38
+        ]
+       },
+       {
+        "from": [
+         30,
+         26,
+         -38
+        ],
+        "to": [
+         70,
+         36,
+         -38
+        ]
+       }
+      ],
+      "radius": 2.5,
+      "glazed": true,
+      "colour": "#e8edf0"
+     },
+     "why": "photos 1 and 2 show the stepped glass escalator tube zigzagging up the front of the building as its signature feature"
+    },
+    {
+     "name": "roof duct layer",
+     "part": "box",
+     "where": "along the flat roof, centred on the building",
+     "center": [
+      0,
+      0
+     ],
+     "height": 42,
+     "settings": {
+      "size": [
+       150,
+       60
+      ],
+      "base": 38,
+      "top": 42,
+      "colour": "#7fb3d5"
+     },
+     "why": "photo 3 shows a band of blue and white ducts and vents running along the roof"
+    },
+    {
+     "name": "red roof vents",
+     "part": "box",
+     "where": "two red service blocks on the roof at the east and west ends",
+     "center": [
+      0,
+      0
+     ],
+     "height": 42,
+     "settings": {
+      "boxes": [
+       {
+        "center": [
+         -60,
+         -10
+        ],
+        "size": [
+         10,
+         8
+        ],
+        "base": 38,
+        "top": 42
+       },
+       {
+        "center": [
+         55,
+         12
+        ],
+        "size": [
+         8,
+         8
+        ],
+        "base": 38,
+        "top": 42
+       }
+      ],
+      "colour": "#d23b2a"
+     },
+     "why": "photos 2 and 3 show red-painted vent and service boxes on the roof"
+    }
+   ]
+  }
+ }
+}

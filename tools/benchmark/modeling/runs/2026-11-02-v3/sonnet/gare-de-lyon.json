@@ -1,0 +1,327 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:58.821Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Gare de Lyon: a long Beaux-Arts front building facing -z, with large arched windows over a rusticated ground floor, a pale cream stone facade and a steep slate mansard roof with dormers. The signature clock tower stands at the right (+x) end of the front, with clock faces and a grey domed top, reaching 67 m. Behind the front, long train-shed vaults run back along z. The footprint is irregular, so the front wing is placed along the diagonal edge and the sheds fill the rear.\",\"parts\":[{\"type\":\"block\",\"center\":[50,-100],\"size\":[80,22],\"y0\":0,\"bay\":6,\"colour\":\"#d8cdb4\",\"trim\":\"#e6dfcc\",\"storeys\":[{\"height\":9,\"kind\":\"arcade\"},{\"height\":10,\"kind\":\"pilasters\",\"floors\":2}],\"faces\":\"front\",\"cornice\":1.2,\"roof\":{\"kind\":\"mansard\",\"rise\":11,\"dormers\":true,\"colour\":\"#4c5058\"}},{\"type\":\"prism\",\"points\":[[-25,-82],[-6,-102],[1,-106],[10,-106],[10,-80],[-20,-60]],\"y0\":0,\"y1\":22,\"material\":\"stone\",\"colour\":\"#d8cdb4\",\"windows\":{\"kind\":\"arched\",\"floor\":5,\"pitch\":6}},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-2,-90],\"size\":[30,30],\"y0\":22,\"rise\":10,\"material\":\"tile\",\"colour\":\"#4c5058\"},{\"type\":\"prism\",\"points\":[[-90,106],[-90,85],[-86,47],[-25,-82],[-20,-60],[-20,100]],\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#d8cdb4\",\"windows\":{\"kind\":\"punched\",\"floor\":4.5,\"pitch\":4}},{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-55,50],\"size\":[60,110],\"y0\":24,\"rise\":9,\"ridge\":\"z\",\"material\":\"tile\",\"colour\":\"#4c5058\"},{\"type\":\"tower\",\"center\":[84,-97],\"y0\":0,\"colour\":\"#ddd3bd\",\"stages\":[{\"shape\":\"square\",\"width\":14,\"height\":38,\"kind\":\"punched\"},{\"shape\":\"square\",\"width\":15,\"height\":14,\"kind\":\"clock\"},{\"shape\":\"square\",\"width\":11,\"height\":8,\"kind\":\"punched\"}],\"top\":{\"kind\":\"dome\",\"height\":7,\"colour\":\"#7c858f\"}},{\"type\":\"vault\",\"center\":[40,0],\"size\":[48,170],\"y0\":16,\"rise\":14,\"axis\":\"z\",\"ends\":\"glass\",\"material\":\"glass\",\"colour\":\"#8d9296\"},{\"type\":\"vault\",\"center\":[-10,10],\"size\":[40,160],\"y0\":14,\"rise\":12,\"axis\":\"z\",\"ends\":\"glass\",\"material\":\"glass\",\"colour\":\"#8d9296\"},{\"type\":\"box\",\"center\":[72,10],\"size\":[36,190],\"y0\":0,\"y1\":16,\"material\":\"concrete\",\"colour\":\"#cfc7b6\",\"windows\":{\"kind\":\"punched\",\"floor\":3.5,\"pitch\":3}}]}",
+   "stop": "end_turn",
+   "input": 3370,
+   "output": 1045,
+   "cacheRead": 8168,
+   "cost": 0.0188236,
+   "ms": 7724,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Gare de Lyon: a long Beaux-Arts front building facing -z, with large arched windows over a rusticated ground floor, a pale cream stone facade and a steep slate mansard roof with dormers. The signature clock tower stands at the right (+x) end of the front, with clock faces and a grey domed top, reaching 67 m. Behind the front, long train-shed vaults run back along z. The footprint is irregular, so the front wing is placed along the diagonal edge and the sheds fill the rear.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      50,
+      -100
+     ],
+     "size": [
+      80,
+      22
+     ],
+     "y0": 0,
+     "bay": 6,
+     "colour": "#d8cdb4",
+     "trim": "#e6dfcc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 10,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 11,
+      "dormers": true,
+      "colour": "#4c5058"
+     }
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -25,
+       -82
+      ],
+      [
+       -6,
+       -102
+      ],
+      [
+       1,
+       -106
+      ],
+      [
+       10,
+       -106
+      ],
+      [
+       10,
+       -80
+      ],
+      [
+       -20,
+       -60
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8cdb4",
+     "windows": {
+      "kind": "arched",
+      "floor": 5,
+      "pitch": 6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -2,
+      -90
+     ],
+     "size": [
+      30,
+      30
+     ],
+     "y0": 22,
+     "rise": 10,
+     "material": "tile",
+     "colour": "#4c5058"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       -90,
+       106
+      ],
+      [
+       -90,
+       85
+      ],
+      [
+       -86,
+       47
+      ],
+      [
+       -25,
+       -82
+      ],
+      [
+       -20,
+       -60
+      ],
+      [
+       -20,
+       100
+      ]
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -55,
+      50
+     ],
+     "size": [
+      60,
+      110
+     ],
+     "y0": 24,
+     "rise": 9,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#4c5058"
+    },
+    {
+     "type": "tower",
+     "center": [
+      84,
+      -97
+     ],
+     "y0": 0,
+     "colour": "#ddd3bd",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 38,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 15,
+       "height": 14,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 8,
+       "kind": "punched"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 7,
+      "colour": "#7c858f"
+     }
+    },
+    {
+     "type": "vault",
+     "center": [
+      40,
+      0
+     ],
+     "size": [
+      48,
+      170
+     ],
+     "y0": 16,
+     "rise": 14,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#8d9296"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -10,
+      10
+     ],
+     "size": [
+      40,
+      160
+     ],
+     "y0": 14,
+     "rise": 12,
+     "axis": "z",
+     "ends": "glass",
+     "material": "glass",
+     "colour": "#8d9296"
+    },
+    {
+     "type": "box",
+     "center": [
+      72,
+      10
+     ],
+     "size": [
+      36,
+      190
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "concrete",
+     "colour": "#cfc7b6",
+     "windows": {
+      "kind": "punched",
+      "floor": 3.5,
+      "pitch": 3
+     }
+    }
+   ]
+  },
+  "notes": "Gare de Lyon: a long Beaux-Arts front building facing -z, with large arched windows over a rusticated ground floor, a pale cream stone facade and a steep slate mansard roof with dormers. The signature clock tower stands at the right (+x) end of the front, with clock faces and a grey domed top, reaching 67 m. Behind the front, long train-shed vaults run back along z. The footprint is irregular, so the front wing is placed along the diagonal edge and the sheds fill the rear.",
+  "triangles": 5386,
+  "parts": 64
+ },
+ "totals": {
+  "input": 3370,
+  "output": 1045,
+  "cost": 0.0188236,
+  "ms": 7724
+ }
+}

@@ -1,0 +1,433 @@
+{
+ "building": "musee-orsay",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:50.693Z",
+ "userText": "Building: Musée d'Orsay, Paris (museum (former station)).\nThe front (−z) is the river front on the Seine.\nFootprint: 188.3 m along x by 77.3 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[49.7,-38.4],[49.7,-37],[78.8,-37.3],[78.9,-9.7],[93.8,-9.9],[94.1,26.6],[79.4,26.8],[79.6,38.7],[-93.3,38.7],[-94.1,-35.2],[-92.2,-35.5],[-92.2,-36.9],[-85.9,-37.3],[-84.8,-36.1],[-79.4,-36.2],[-78.3,-37.4],[-74.1,-37.4],[-70,-35.8],[-59.7,-35.9],[-59.7,-36.6],[-1.6,-36.5],[-1.6,-37.3],[27.4,-36.8],[29.5,-38.2],[35.8,-38.6],[37.5,-36.9],[41.6,-36.9],[43.3,-38.7]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. river-front three-quarter of the whole long station-museum with arched vaults, central clock pavilion and pitched roof, daylight\n  2. elevated view of the west end and entrance forecourt with its glass canopy and the vaulted roof behind\n  3. street-side three-quarter at the pavilion end with the arched fronts and the barrel roof, dusk-light daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   188.3,
+   77.3
+  ],
+  "outline": [
+   [
+    49.7,
+    -38.4
+   ],
+   [
+    49.7,
+    -37
+   ],
+   [
+    78.8,
+    -37.3
+   ],
+   [
+    78.9,
+    -9.7
+   ],
+   [
+    93.8,
+    -9.9
+   ],
+   [
+    94.1,
+    26.6
+   ],
+   [
+    79.4,
+    26.8
+   ],
+   [
+    79.6,
+    38.7
+   ],
+   [
+    -93.3,
+    38.7
+   ],
+   [
+    -94.1,
+    -35.2
+   ],
+   [
+    -92.2,
+    -35.5
+   ],
+   [
+    -92.2,
+    -36.9
+   ],
+   [
+    -85.9,
+    -37.3
+   ],
+   [
+    -84.8,
+    -36.1
+   ],
+   [
+    -79.4,
+    -36.2
+   ],
+   [
+    -78.3,
+    -37.4
+   ],
+   [
+    -74.1,
+    -37.4
+   ],
+   [
+    -70,
+    -35.8
+   ],
+   [
+    -59.7,
+    -35.9
+   ],
+   [
+    -59.7,
+    -36.6
+   ],
+   [
+    -1.6,
+    -36.5
+   ],
+   [
+    -1.6,
+    -37.3
+   ],
+   [
+    27.4,
+    -36.8
+   ],
+   [
+    29.5,
+    -38.2
+   ],
+   [
+    35.8,
+    -38.6
+   ],
+   [
+    37.5,
+    -36.9
+   ],
+   [
+    41.6,
+    -36.9
+   ],
+   [
+    43.3,
+    -38.7
+   ]
+  ],
+  "height": 38,
+  "turn": 1.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Musée d'Orsay is a long stone station building along the Seine (front at -z). It has a big barrel-vaulted nave roof running along x behind the front, and a stone front with large arched openings and a central clock pavilion. The ends have taller pavilions with steep slate roofs and a small domed cupola. The west end (left, -x) is a hotel-style block with a mansard roof and a glass canopy at the forecourt. I model the stone body, the vault, the clock pavilion, the end pavilions and the front canopy.\", \"parts\": [{\"type\": \"block\", \"center\": [-45, 0], \"size\": [95, 74], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#cfc3a8\", \"trim\": \"#e0d6bf\", \"storeys\": [{\"height\": 8, \"kind\": \"arched\"}, {\"height\": 10, \"kind\": \"punched\", \"floors\": 2}, {\"height\": 4, \"kind\": \"punched\"}], \"cornice\": 1.2, \"roof\": {\"kind\": \"mansard\", \"rise\": 8, \"dormers\": true, \"colour\": \"#4f5560\"}}, {\"type\": \"block\", \"center\": [30, -26], \"size\": [100, 24], \"y0\": 0, \"bay\": 7, \"colour\": \"#d2c7ac\", \"trim\": \"#e0d6bf\", \"storeys\": [{\"height\": 14, \"kind\": \"arcade\"}, {\"height\": 8, \"kind\": \"pilasters\"}], \"faces\": \"front\", \"cornice\": 1.5, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"box\", \"center\": [30, 8], \"size\": [98, 44], \"y0\": 0, \"y1\": 24, \"colour\": \"#cbbfa5\"}, {\"type\": \"vault\", \"center\": [10, 4], \"size\": [140, 40], \"y0\": 24, \"rise\": 12, \"axis\": \"x\", \"ends\": \"closed\", \"material\": \"glass\", \"colour\": \"#8f9d9a\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [30, -22], \"size\": [100, 24], \"y0\": 22, \"rise\": 6, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#4a4f58\"}, {\"type\": \"block\", \"center\": [-5, -28], \"size\": [26, 18], \"y0\": 0, \"bay\": 5, \"colour\": \"#d2c7ac\", \"trim\": \"#e0d6bf\", \"storeys\": [{\"height\": 14, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\"}], \"faces\": \"front\", \"cornice\": 1.5, \"roof\": {\"kind\": \"pavilion\", \"rise\": 10, \"colour\": \"#4a4f58\"}}, {\"type\": \"cylinder\", \"center\": [-5, -37], \"radius\": 4, \"y0\": 15, \"y1\": 16, \"colour\": \"#e8e0c8\", \"radiusTop\": 4}, {\"type\": \"disc\", \"center\": [-5, 20, -37.5], \"radius\": 3.8, \"facing\": \"front\", \"colour\": \"#f0ead8\"}, {\"type\": \"tower\", \"center\": [-5, 10], \"y0\": 34, \"colour\": \"#cfc3a8\", \"stages\": [{\"shape\": \"square\", \"width\": 14, \"height\": 0.1, \"kind\": \"blank\"}], \"top\": {\"kind\": \"spire\", \"height\": 4, \"colour\": \"#3f444c\"}}, {\"type\": \"block\", \"center\": [74, -15], \"size\": [30, 50], \"y0\": 0, \"bay\": 5, \"colour\": \"#cfc3a8\", \"trim\": \"#e0d6bf\", \"storeys\": [{\"height\": 12, \"kind\": \"arched\"}, {\"height\": 10, \"kind\": \"punched\", \"floors\": 2}], \"cornice\": 1.2, \"roof\": {\"kind\": \"pavilion\", \"rise\": 9, \"colour\": \"#4a4f58\"}}, {\"type\": \"box\", \"center\": [-45, -30], \"size\": [60, 12], \"y0\": 7, \"y1\": 8, \"colour\": \"#9aa8a4\", \"material\": \"glass\"}, {\"type\": \"box\", \"center\": [-45, 0], \"size\": [3, 3], \"y0\": 34, \"y1\": 36, \"colour\": \"#cfc3a8\"}, {\"type\": \"dome\", \"center\": [-50, 10], \"radius\": 3, \"y0\": 34, \"height\": 4, \"material\": \"metal\", \"colour\": \"#7b848a\"}]}",
+   "stop": "end_turn",
+   "input": 3307,
+   "output": 1437,
+   "cacheRead": 8168,
+   "cost": 0.022617599999999998,
+   "ms": 10602,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Musée d'Orsay is a long stone station building along the Seine (front at -z). It has a big barrel-vaulted nave roof running along x behind the front, and a stone front with large arched openings and a central clock pavilion. The ends have taller pavilions with steep slate roofs and a small domed cupola. The west end (left, -x) is a hotel-style block with a mansard roof and a glass canopy at the forecourt. I model the stone body, the vault, the clock pavilion, the end pavilions and the front canopy.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -45,
+      0
+     ],
+     "size": [
+      95,
+      74
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#cfc3a8",
+     "trim": "#e0d6bf",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arched"
+      },
+      {
+       "height": 10,
+       "kind": "punched",
+       "floors": 2
+      },
+      {
+       "height": 4,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 8,
+      "dormers": true,
+      "colour": "#4f5560"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      30,
+      -26
+     ],
+     "size": [
+      100,
+      24
+     ],
+     "y0": 0,
+     "bay": 7,
+     "colour": "#d2c7ac",
+     "trim": "#e0d6bf",
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "arcade"
+      },
+      {
+       "height": 8,
+       "kind": "pilasters"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.5,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      30,
+      8
+     ],
+     "size": [
+      98,
+      44
+     ],
+     "y0": 0,
+     "y1": 24,
+     "colour": "#cbbfa5"
+    },
+    {
+     "type": "vault",
+     "center": [
+      10,
+      4
+     ],
+     "size": [
+      140,
+      40
+     ],
+     "y0": 24,
+     "rise": 12,
+     "axis": "x",
+     "ends": "closed",
+     "material": "glass",
+     "colour": "#8f9d9a"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      30,
+      -22
+     ],
+     "size": [
+      100,
+      24
+     ],
+     "y0": 22,
+     "rise": 6,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#4a4f58"
+    },
+    {
+     "type": "block",
+     "center": [
+      -5,
+      -28
+     ],
+     "size": [
+      26,
+      18
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d2c7ac",
+     "trim": "#e0d6bf",
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.5,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 10,
+      "colour": "#4a4f58"
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -5,
+      -37
+     ],
+     "radius": 4,
+     "y0": 15,
+     "y1": 16,
+     "colour": "#e8e0c8",
+     "radiusTop": 4
+    },
+    {
+     "type": "disc",
+     "center": [
+      -5,
+      20,
+      -37.5
+     ],
+     "radius": 3.8,
+     "facing": "front",
+     "colour": "#f0ead8"
+    },
+    {
+     "type": "tower",
+     "center": [
+      -5,
+      10
+     ],
+     "y0": 34,
+     "colour": "#cfc3a8",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 0.1,
+       "kind": "blank"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 4,
+      "colour": "#3f444c"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      74,
+      -15
+     ],
+     "size": [
+      30,
+      50
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#cfc3a8",
+     "trim": "#e0d6bf",
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "arched"
+      },
+      {
+       "height": 10,
+       "kind": "punched",
+       "floors": 2
+      }
+     ],
+     "cornice": 1.2,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 9,
+      "colour": "#4a4f58"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -45,
+      -30
+     ],
+     "size": [
+      60,
+      12
+     ],
+     "y0": 7,
+     "y1": 8,
+     "colour": "#9aa8a4",
+     "material": "glass"
+    },
+    {
+     "type": "box",
+     "center": [
+      -45,
+      0
+     ],
+     "size": [
+      3,
+      3
+     ],
+     "y0": 34,
+     "y1": 36,
+     "colour": "#cfc3a8"
+    },
+    {
+     "type": "dome",
+     "center": [
+      -50,
+      10
+     ],
+     "radius": 3,
+     "y0": 34,
+     "height": 4,
+     "material": "metal",
+     "colour": "#7b848a"
+    }
+   ]
+  },
+  "notes": "Musée d'Orsay is a long stone station building along the Seine (front at -z). It has a big barrel-vaulted nave roof running along x behind the front, and a stone front with large arched openings and a central clock pavilion. The ends have taller pavilions with steep slate roofs and a small domed cupola. The west end (left, -x) is a hotel-style block with a mansard roof and a glass canopy at the forecourt. I model the stone body, the vault, the clock pavilion, the end pavilions and the front canopy.",
+  "triangles": 5410,
+  "parts": 100
+ },
+ "totals": {
+  "input": 3307,
+  "output": 1437,
+  "cost": 0.022617599999999998,
+  "ms": 10602
+ }
+}

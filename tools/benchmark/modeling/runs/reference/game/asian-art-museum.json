@@ -1,0 +1,14 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "game",
+ "model": "asianArtMuseum",
+ "fit": {
+  "turn": 90,
+  "mirror": false,
+  "iou": 0.92
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: asianArtMuseum, 7628 tris, fit IoU 0.92"
+ }
+}

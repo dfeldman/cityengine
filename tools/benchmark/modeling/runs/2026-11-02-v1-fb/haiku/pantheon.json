@@ -1,0 +1,550 @@
+{
+ "building": "pantheon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:00:45.275Z",
+ "userText": "Building: Panthéon, Paris (mausoleum (former church)).\nThe front (−z) is the portico, facing down the Rue Soufflot.\nFootprint: 84.9 m along x by 112.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-18.5,-56.1],[20.8,-56.1],[20.8,-40.6],[17.2,-40.6],[17.9,-15.7],[20.8,-13],[39.4,-14],[39.5,-5.2],[42.3,-5.2],[42.4,15],[39.6,15],[39.5,23.9],[20.6,22.7],[18,25.5],[17.9,38.6],[25.8,38.7],[25.7,48.4],[16.3,48.4],[16.2,56.1],[-16.3,55.9],[-16.3,48.3],[-25.6,48.3],[-25.6,38.5],[-18,38.5],[-18,25.4],[-20.9,22.6],[-39.6,23.6],[-39.7,14.8],[-42.4,14.8],[-42.3,-5.4],[-39.5,-5.4],[-39.5,-14.2],[-20.9,-13.1],[-18,-15.8],[-17.5,-40.1],[-21.2,-40.1],[-21.2,-56]]\nHeight: the highest point is 83 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the corner: Corinthian portico with pediment and the tall drum and dome, daylight\n  2. view of the rear and side of the cross-shaped body with the drum and dome above, trees in front\n  3. elevated view of the whole portico front and flank across the square, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   84.9,
+   112.1
+  ],
+  "outline": [
+   [
+    -18.5,
+    -56.1
+   ],
+   [
+    20.8,
+    -56.1
+   ],
+   [
+    20.8,
+    -40.6
+   ],
+   [
+    17.2,
+    -40.6
+   ],
+   [
+    17.9,
+    -15.7
+   ],
+   [
+    20.8,
+    -13
+   ],
+   [
+    39.4,
+    -14
+   ],
+   [
+    39.5,
+    -5.2
+   ],
+   [
+    42.3,
+    -5.2
+   ],
+   [
+    42.4,
+    15
+   ],
+   [
+    39.6,
+    15
+   ],
+   [
+    39.5,
+    23.9
+   ],
+   [
+    20.6,
+    22.7
+   ],
+   [
+    18,
+    25.5
+   ],
+   [
+    17.9,
+    38.6
+   ],
+   [
+    25.8,
+    38.7
+   ],
+   [
+    25.7,
+    48.4
+   ],
+   [
+    16.3,
+    48.4
+   ],
+   [
+    16.2,
+    56.1
+   ],
+   [
+    -16.3,
+    55.9
+   ],
+   [
+    -16.3,
+    48.3
+   ],
+   [
+    -25.6,
+    48.3
+   ],
+   [
+    -25.6,
+    38.5
+   ],
+   [
+    -18,
+    38.5
+   ],
+   [
+    -18,
+    25.4
+   ],
+   [
+    -20.9,
+    22.6
+   ],
+   [
+    -39.6,
+    23.6
+   ],
+   [
+    -39.7,
+    14.8
+   ],
+   [
+    -42.4,
+    14.8
+   ],
+   [
+    -42.3,
+    -5.4
+   ],
+   [
+    -39.5,
+    -5.4
+   ],
+   [
+    -39.5,
+    -14.2
+   ],
+   [
+    -20.9,
+    -13.1
+   ],
+   [
+    -18,
+    -15.8
+   ],
+   [
+    -17.5,
+    -40.1
+   ],
+   [
+    -21.2,
+    -40.1
+   ],
+   [
+    -21.2,
+    -56
+   ]
+  ],
+  "height": 83,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Panthéon is a Greek-cross stone mausoleum: a long nave and transepts with a flat-topped body about 22 m high, a deep Corinthian portico with a pediment on the front (-z), and a tall peristyle drum carrying a grey lead dome topped by a small lantern and cross. I model the cross-shaped body, the front portico and pediment, the drum with its ring of columns, the dome, and the lantern.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [42, 112], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8ccb0\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [0, 5], \"size\": [85, 38], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8ccb0\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"colonnade\", \"from\": [-14, -58], \"to\": [14, -58], \"y0\": 0, \"height\": 24, \"count\": 6, \"radius\": 1.1, \"material\": \"stone\", \"colour\": \"#e6dccb\"},\n    {\"type\": \"pediment\", \"from\": [-20, -58], \"to\": [20, -58], \"y0\": 24, \"height\": 8, \"depth\": 4, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 20, \"y0\": 22, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#d8ccb0\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 3, \"solid\": 0.6}},\n    {\"type\": \"repeat\", \"count\": 24, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"cylinder\", \"center\": [21.5, 0], \"radius\": 0.9, \"y0\": 22, \"y1\": 52, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#efe6d4\"}},\n    {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 19, \"y0\": 52, \"height\": 20, \"material\": \"metal\", \"colour\": \"#7f8a8e\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5, \"y0\": 70, \"y1\": 79, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5.5, \"radiusTop\": 0, \"y0\": 79, \"y1\": 83, \"sides\": 8, \"material\": \"metal\", \"colour\": \"#6f7a7e\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3574,
+   "output": 2475,
+   "cacheRead": 3474,
+   "cost": 0.0016296400000000001,
+   "ms": 11760,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real Panthéon:\n\n1. The front portico is too shallow and hard to read. The six columns and the pediment should stand out as the front face, with a deeper colonnade and a taller, more visible pediment.\n2. The flanks are covered in a dense grid of punched windows. The real walls are plain stone with a few tall arched windows and a band of carved ornament, so the window pattern should be much sparser.\n3. The dome sits too low on the drum and the lantern is too short. The real drum rises higher, so the dome and lantern should carry the building to its full 83 m.\n\n```json\n{\n  \"notes\": \"The Panthéon is a Greek-cross stone mausoleum: a long nave and transepts with a flat-topped body about 22 m high, a deep Corinthian portico with a pediment on the front (-z), and a tall peristyle drum carrying a grey lead dome topped by a small lantern and cross. The corrections deepen and enlarge the portico and pediment, strip the dense window grids from the flank walls, and raise the drum, dome and lantern so the silhouette reaches the full 83 m.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [42, 112], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8ccb0\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 6, \"solid\": 0.92}},\n    {\"type\": \"box\", \"center\": [0, 5], \"size\": [85, 38], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8ccb0\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 6, \"solid\": 0.92}},\n    {\"type\": \"box\", \"center\": [0, -52], \"size\": [40, 10], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"colonnade\", \"from\": [-15, -60], \"to\": [15, -60], \"y0\": 0, \"height\": 24, \"count\": 6, \"radius\": 1.3, \"material\": \"stone\", \"colour\": \"#f0e8d8\"},\n    {\"type\": \"pediment\", \"from\": [-21, -60], \"to\": [21, -60], \"y0\": 24, \"height\": 11, \"depth\": 5, \"material\": \"stone\", \"colour\": \"#e2d8c2\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 20, \"y0\": 22, \"y1\": 55, \"material\": \"stone\", \"colour\": \"#d8ccb0\", \"windows\": {\"kind\": \"arched\", \"floor\": 8, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"repeat\", \"count\": 24, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"cylinder\", \"center\": [21.5, 0], \"radius\": 0.9, \"y0\": 22, \"y1\": 55, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#efe6d4\"}},\n    {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 19, \"y0\": 55, \"height\": 22, \"material\": \"metal\", \"colour\": \"#7f8a8e\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5, \"y0\": 73, \"y1\": 79, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#d8ccb0\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 5.5, \"radiusTop\": 0, \"y0\": 79, \"y1\": 83, \"sides\": 8, \"material\": \"metal\", \"colour\": \"#6f7a7e\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 7515,
+   "output": 1799,
+   "cacheRead": 3474,
+   "cost": 0.00168574,
+   "ms": 8244,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Panthéon is a Greek-cross stone mausoleum: a long nave and transepts with a flat-topped body about 22 m high, a deep Corinthian portico with a pediment on the front (-z), and a tall peristyle drum carrying a grey lead dome topped by a small lantern and cross. The corrections deepen and enlarge the portico and pediment, strip the dense window grids from the flank walls, and raise the drum, dome and lantern so the silhouette reaches the full 83 m.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      112
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8ccb0",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 6,
+      "solid": 0.92
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      5
+     ],
+     "size": [
+      85,
+      38
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8ccb0",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 6,
+      "solid": 0.92
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -52
+     ],
+     "size": [
+      40,
+      10
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -15,
+      -60
+     ],
+     "to": [
+      15,
+      -60
+     ],
+     "y0": 0,
+     "height": 24,
+     "count": 6,
+     "radius": 1.3,
+     "material": "stone",
+     "colour": "#f0e8d8"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21,
+      -60
+     ],
+     "to": [
+      21,
+      -60
+     ],
+     "y0": 24,
+     "height": 11,
+     "depth": 5,
+     "material": "stone",
+     "colour": "#e2d8c2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 20,
+     "y0": 22,
+     "y1": 55,
+     "material": "stone",
+     "colour": "#d8ccb0",
+     "windows": {
+      "kind": "arched",
+      "floor": 8,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 24,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "cylinder",
+      "center": [
+       21.5,
+       0
+      ],
+      "radius": 0.9,
+      "y0": 22,
+      "y1": 55,
+      "sides": 8,
+      "material": "stone",
+      "colour": "#efe6d4"
+     }
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 19,
+     "y0": 55,
+     "height": 22,
+     "material": "metal",
+     "colour": "#7f8a8e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5,
+     "y0": 73,
+     "y1": 79,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5.5,
+     "radiusTop": 0,
+     "y0": 79,
+     "y1": 83,
+     "sides": 8,
+     "material": "metal",
+     "colour": "#6f7a7e"
+    }
+   ]
+  },
+  "notes": "The Panthéon is a Greek-cross stone mausoleum: a long nave and transepts with a flat-topped body about 22 m high, a deep Corinthian portico with a pediment on the front (-z), and a tall peristyle drum carrying a grey lead dome topped by a small lantern and cross. The corrections deepen and enlarge the portico and pediment, strip the dense window grids from the flank walls, and raise the drum, dome and lantern so the silhouette reaches the full 83 m.",
+  "triangles": 2962,
+  "parts": 33
+ },
+ "totals": {
+  "input": 11089,
+  "output": 4274,
+  "cost": 0.00331538,
+  "ms": 20004
+ },
+ "draft": {
+  "json": {
+   "notes": "The Panthéon is a Greek-cross stone mausoleum: a long nave and transepts with a flat-topped body about 22 m high, a deep Corinthian portico with a pediment on the front (-z), and a tall peristyle drum carrying a grey lead dome topped by a small lantern and cross. I model the cross-shaped body, the front portico and pediment, the drum with its ring of columns, the dome, and the lantern.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      112
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8ccb0",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      5
+     ],
+     "size": [
+      85,
+      38
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8ccb0",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -14,
+      -58
+     ],
+     "to": [
+      14,
+      -58
+     ],
+     "y0": 0,
+     "height": 24,
+     "count": 6,
+     "radius": 1.1,
+     "material": "stone",
+     "colour": "#e6dccb"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -58
+     ],
+     "to": [
+      20,
+      -58
+     ],
+     "y0": 24,
+     "height": 8,
+     "depth": 4,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 20,
+     "y0": 22,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#d8ccb0",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 3,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 24,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "cylinder",
+      "center": [
+       21.5,
+       0
+      ],
+      "radius": 0.9,
+      "y0": 22,
+      "y1": 52,
+      "sides": 8,
+      "material": "stone",
+      "colour": "#efe6d4"
+     }
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 19,
+     "y0": 52,
+     "height": 20,
+     "material": "metal",
+     "colour": "#7f8a8e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5,
+     "y0": 70,
+     "y1": 79,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#d8ccb0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 5.5,
+     "radiusTop": 0,
+     "y0": 79,
+     "y1": 83,
+     "sides": 8,
+     "material": "metal",
+     "colour": "#6f7a7e"
+    }
+   ]
+  },
+  "notes": "The Panthéon is a Greek-cross stone mausoleum: a long nave and transepts with a flat-topped body about 22 m high, a deep Corinthian portico with a pediment on the front (-z), and a tall peristyle drum carrying a grey lead dome topped by a small lantern and cross. I model the cross-shaped body, the front portico and pediment, the drum with its ring of columns, the dome, and the lantern.",
+  "triangles": 3666,
+  "parts": 32
+ }
+}

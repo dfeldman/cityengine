@@ -1,0 +1,201 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:41.613Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "reply": "```json\n{\"notes\": \"The Bibliothèque nationale de France is four tall glass towers at the corners of a raised stone esplanade, which surrounds sunken gardens at ground level. The towers are 79 m high, clad in bronze-tinted glass with a stone-grey frame. I model the esplanade as a ring of stone boxes around a central sunken garden, and place a tower at each corner.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 65], \"size\": [330, 40], \"y0\": 0, \"y1\": 8, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n{\"type\": \"box\", \"center\": [0, -65], \"size\": [330, 40], \"y0\": 0, \"y1\": 8, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n{\"type\": \"box\", \"center\": [-127, 0], \"size\": [76, 90], \"y0\": 0, \"y1\": 8, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n{\"type\": \"box\", \"center\": [127, 0], \"size\": [76, 90], \"y0\": 0, \"y1\": 8, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n{\"type\": \"box\", \"center\": [-135, 65], \"size\": [40, 36], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#a89a7a\", \"windows\": {\"kind\": \"curtain\"}},\n{\"type\": \"box\", \"center\": [135, 65], \"size\": [40, 36], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#a89a7a\", \"windows\": {\"kind\": \"curtain\"}},\n{\"type\": \"box\", \"center\": [-135, -65], \"size\": [40, 36], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#a89a7a\", \"windows\": {\"kind\": \"curtain\"}},\n{\"type\": \"box\", \"center\": [135, -65], \"size\": [40, 36], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#a89a7a\", \"windows\": {\"kind\": \"curtain\"}}\n]}\n```",
+   "stop": "end_turn",
+   "input": 3195,
+   "output": 1507,
+   "cacheRead": 3474,
+   "cost": 0.00110774,
+   "ms": 7480,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Bibliothèque nationale de France is four tall glass towers at the corners of a raised stone esplanade, which surrounds sunken gardens at ground level. The towers are 79 m high, clad in bronze-tinted glass with a stone-grey frame. I model the esplanade as a ring of stone boxes around a central sunken garden, and place a tower at each corner.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      65
+     ],
+     "size": [
+      330,
+      40
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -65
+     ],
+     "size": [
+      330,
+      40
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      -127,
+      0
+     ],
+     "size": [
+      76,
+      90
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      127,
+      0
+     ],
+     "size": [
+      76,
+      90
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      -135,
+      65
+     ],
+     "size": [
+      40,
+      36
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#a89a7a",
+     "windows": {
+      "kind": "curtain"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      135,
+      65
+     ],
+     "size": [
+      40,
+      36
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#a89a7a",
+     "windows": {
+      "kind": "curtain"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -135,
+      -65
+     ],
+     "size": [
+      40,
+      36
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#a89a7a",
+     "windows": {
+      "kind": "curtain"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      135,
+      -65
+     ],
+     "size": [
+      40,
+      36
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#a89a7a",
+     "windows": {
+      "kind": "curtain"
+     }
+    }
+   ]
+  },
+  "notes": "The Bibliothèque nationale de France is four tall glass towers at the corners of a raised stone esplanade, which surrounds sunken gardens at ground level. The towers are 79 m high, clad in bronze-tinted glass with a stone-grey frame. I model the esplanade as a ring of stone boxes around a central sunken garden, and place a tower at each corner.",
+  "triangles": 640,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3195,
+  "output": 1507,
+  "cost": 0.00110774,
+  "ms": 7480
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "game",
+ "model": "legionOfHonor",
+ "fit": {
+  "turn": 0,
+  "mirror": false,
+  "iou": 0.79
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: legionOfHonor, 14608 tris, fit IoU 0.79"
+ }
+}

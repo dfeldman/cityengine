@@ -1,0 +1,523 @@
+{
+ "building": "musee-orsay",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:33.711Z",
+ "userText": "Building: Musée d'Orsay, Paris (museum (former station)).\nThe front (−z) is the river front on the Seine.\nFootprint: 188.3 m along x by 77.3 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[49.7,-38.4],[49.7,-37],[78.8,-37.3],[78.9,-9.7],[93.8,-9.9],[94.1,26.6],[79.4,26.8],[79.6,38.7],[-93.3,38.7],[-94.1,-35.2],[-92.2,-35.5],[-92.2,-36.9],[-85.9,-37.3],[-84.8,-36.1],[-79.4,-36.2],[-78.3,-37.4],[-74.1,-37.4],[-70,-35.8],[-59.7,-35.9],[-59.7,-36.6],[-1.6,-36.5],[-1.6,-37.3],[27.4,-36.8],[29.5,-38.2],[35.8,-38.6],[37.5,-36.9],[41.6,-36.9],[43.3,-38.7]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. river-front three-quarter of the whole long station-museum with arched vaults, central clock pavilion and pitched roof, daylight\n  2. elevated view of the west end and entrance forecourt with its glass canopy and the vaulted roof behind\n  3. street-side three-quarter at the pavilion end with the arched fronts and the barrel roof, dusk-light daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   188.3,
+   77.3
+  ],
+  "outline": [
+   [
+    49.7,
+    -38.4
+   ],
+   [
+    49.7,
+    -37
+   ],
+   [
+    78.8,
+    -37.3
+   ],
+   [
+    78.9,
+    -9.7
+   ],
+   [
+    93.8,
+    -9.9
+   ],
+   [
+    94.1,
+    26.6
+   ],
+   [
+    79.4,
+    26.8
+   ],
+   [
+    79.6,
+    38.7
+   ],
+   [
+    -93.3,
+    38.7
+   ],
+   [
+    -94.1,
+    -35.2
+   ],
+   [
+    -92.2,
+    -35.5
+   ],
+   [
+    -92.2,
+    -36.9
+   ],
+   [
+    -85.9,
+    -37.3
+   ],
+   [
+    -84.8,
+    -36.1
+   ],
+   [
+    -79.4,
+    -36.2
+   ],
+   [
+    -78.3,
+    -37.4
+   ],
+   [
+    -74.1,
+    -37.4
+   ],
+   [
+    -70,
+    -35.8
+   ],
+   [
+    -59.7,
+    -35.9
+   ],
+   [
+    -59.7,
+    -36.6
+   ],
+   [
+    -1.6,
+    -36.5
+   ],
+   [
+    -1.6,
+    -37.3
+   ],
+   [
+    27.4,
+    -36.8
+   ],
+   [
+    29.5,
+    -38.2
+   ],
+   [
+    35.8,
+    -38.6
+   ],
+   [
+    37.5,
+    -36.9
+   ],
+   [
+    41.6,
+    -36.9
+   ],
+   [
+    43.3,
+    -38.7
+   ]
+  ],
+  "height": 38,
+  "turn": 1.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Musée d'Orsay is a long stone station building with its front on the Seine (-z). It has a central barrel-vaulted nave running along x behind the front range, a pavilion at each end (the west end is on the left, at -x), and a dark mansard roof over the front range. The big clock sits in the central pavilion on the river front, with a tall roof above it and a smaller clock at the east end. Signature features: the long vault, the two end pavilions with their clock roofs, the arched stone front, and the glass canopy on the entrance side.\", \"parts\": [\n{\"type\":\"box\",\"center\":[-7,-24],\"size\":[170,26],\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#d8c9a8\",\"windows\":{\"kind\":\"arched\",\"floor\":8,\"pitch\":5,\"solid\":0.55}},\n{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-7,-24],\"size\":[170,26],\"y0\":24,\"rise\":7,\"material\":\"tile\",\"colour\":\"#4a4d55\",\"ridge\":\"x\"},\n{\"type\":\"box\",\"center\":[-7,26],\"size\":[172,25],\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#d8c9a8\",\"windows\":{\"kind\":\"punched\",\"floor\":6,\"pitch\":4,\"solid\":0.6}},\n{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-7,26],\"size\":[172,25],\"y0\":24,\"rise\":6,\"material\":\"tile\",\"colour\":\"#4a4d55\",\"ridge\":\"x\"},\n{\"type\":\"box\",\"center\":[-7,0],\"size\":[165,30],\"y0\":0,\"y1\":26,\"material\":\"stone\",\"colour\":\"#cfc0a0\"},\n{\"type\":\"vault\",\"center\":[-12,1],\"size\":[140,30],\"y0\":26,\"rise\":10,\"axis\":\"x\",\"material\":\"glass\",\"colour\":\"#a9b8a8\"},\n{\"type\":\"box\",\"center\":[-87,0],\"size\":[14,68],\"y0\":0,\"y1\":27,\"material\":\"stone\",\"colour\":\"#d8c9a8\",\"windows\":{\"kind\":\"punched\",\"floor\":6,\"pitch\":4,\"solid\":0.6}},\n{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[-87,0],\"size\":[14,68],\"y0\":27,\"rise\":7,\"material\":\"tile\",\"colour\":\"#4a4d55\"},\n{\"type\":\"box\",\"center\":[22,-27],\"size\":[46,20],\"y0\":0,\"y1\":28,\"material\":\"stone\",\"colour\":\"#d8c9a8\"},\n{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[22,-27],\"size\":[46,20],\"y0\":28,\"rise\":8,\"material\":\"tile\",\"colour\":\"#3f434b\"},\n{\"type\":\"box\",\"center\":[22,-27],\"size\":[24,18],\"y0\":36,\"y1\":38,\"material\":\"tile\",\"colour\":\"#3f434b\"},\n{\"type\":\"cylinder\",\"center\":[22,-27],\"radius\":1.6,\"radiusTop\":0,\"y0\":36,\"y1\":38,\"material\":\"metal\",\"colour\":\"#2f3236\"},\n{\"type\":\"cylinder\",\"center\":[22,-38.2],\"radius\":4,\"y0\":14,\"y1\":24,\"sides\":24,\"material\":\"stone\",\"colour\":\"#c9bb98\"},\n{\"type\":\"arcade\",\"from\":[-5,-38],\"to\":[60,-38],\"y0\":0,\"height\":12,\"count\":10,\"thickness\":1.5,\"colour\":\"#d8c9a8\"},\n{\"type\":\"box\",\"center\":[72,-12],\"size\":[20,48],\"y0\":0,\"y1\":26,\"material\":\"stone\",\"colour\":\"#d8c9a8\",\"windows\":{\"kind\":\"punched\",\"floor\":6,\"pitch\":4,\"solid\":0.6}},\n{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[72,-12],\"size\":[20,48],\"y0\":26,\"rise\":8,\"material\":\"tile\",\"colour\":\"#4a4d55\"},\n{\"type\":\"box\",\"center\":[86,8],\"size\":[16,36],\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#d8c9a8\",\"windows\":{\"kind\":\"punched\",\"floor\":6,\"pitch\":4,\"solid\":0.6}},\n{\"type\":\"roof\",\"kind\":\"mansard\",\"center\":[86,8],\"size\":[16,36],\"y0\":24,\"rise\":6,\"material\":\"tile\",\"colour\":\"#4a4d55\"},\n{\"type\":\"box\",\"center\":[-60,-31],\"size\":[60,12],\"y0\":0,\"y1\":8,\"material\":\"stone\",\"colour\":\"#d8c9a8\"},\n{\"type\":\"cylinder\",\"center\":[-60,-37],\"radius\":1,\"y0\":0,\"y1\":1,\"material\":\"stone\"},\n{\"type\":\"cylinder\",\"center\":[-80,-25],\"radius\":2.5,\"y0\":24,\"y1\":30,\"material\":\"stone\",\"colour\":\"#d8c9a8\"},\n{\"type\":\"dome\",\"center\":[-80,-25],\"radius\":2.5,\"y0\":30,\"height\":3,\"material\":\"metal\",\"colour\":\"#8a9096\"}\n]}",
+   "stop": "end_turn",
+   "input": 3307,
+   "output": 1669,
+   "cacheRead": 7616,
+   "cost": 0.0248272,
+   "ms": 11320,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Musée d'Orsay is a long stone station building with its front on the Seine (-z). It has a central barrel-vaulted nave running along x behind the front range, a pavilion at each end (the west end is on the left, at -x), and a dark mansard roof over the front range. The big clock sits in the central pavilion on the river front, with a tall roof above it and a smaller clock at the east end. Signature features: the long vault, the two end pavilions with their clock roofs, the arched stone front, and the glass canopy on the entrance side.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -7,
+      -24
+     ],
+     "size": [
+      170,
+      26
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8c9a8",
+     "windows": {
+      "kind": "arched",
+      "floor": 8,
+      "pitch": 5,
+      "solid": 0.55
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -7,
+      -24
+     ],
+     "size": [
+      170,
+      26
+     ],
+     "y0": 24,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#4a4d55",
+     "ridge": "x"
+    },
+    {
+     "type": "box",
+     "center": [
+      -7,
+      26
+     ],
+     "size": [
+      172,
+      25
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8c9a8",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -7,
+      26
+     ],
+     "size": [
+      172,
+      25
+     ],
+     "y0": 24,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4a4d55",
+     "ridge": "x"
+    },
+    {
+     "type": "box",
+     "center": [
+      -7,
+      0
+     ],
+     "size": [
+      165,
+      30
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#cfc0a0"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -12,
+      1
+     ],
+     "size": [
+      140,
+      30
+     ],
+     "y0": 26,
+     "rise": 10,
+     "axis": "x",
+     "material": "glass",
+     "colour": "#a9b8a8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -87,
+      0
+     ],
+     "size": [
+      14,
+      68
+     ],
+     "y0": 0,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d8c9a8",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -87,
+      0
+     ],
+     "size": [
+      14,
+      68
+     ],
+     "y0": 27,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#4a4d55"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -27
+     ],
+     "size": [
+      46,
+      20
+     ],
+     "y0": 0,
+     "y1": 28,
+     "material": "stone",
+     "colour": "#d8c9a8"
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      22,
+      -27
+     ],
+     "size": [
+      46,
+      20
+     ],
+     "y0": 28,
+     "rise": 8,
+     "material": "tile",
+     "colour": "#3f434b"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -27
+     ],
+     "size": [
+      24,
+      18
+     ],
+     "y0": 36,
+     "y1": 38,
+     "material": "tile",
+     "colour": "#3f434b"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      22,
+      -27
+     ],
+     "radius": 1.6,
+     "radiusTop": 0,
+     "y0": 36,
+     "y1": 38,
+     "material": "metal",
+     "colour": "#2f3236"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      22,
+      -38.2
+     ],
+     "radius": 4,
+     "y0": 14,
+     "y1": 24,
+     "sides": 24,
+     "material": "stone",
+     "colour": "#c9bb98"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -5,
+      -38
+     ],
+     "to": [
+      60,
+      -38
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 10,
+     "thickness": 1.5,
+     "colour": "#d8c9a8"
+    },
+    {
+     "type": "box",
+     "center": [
+      72,
+      -12
+     ],
+     "size": [
+      20,
+      48
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#d8c9a8",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      72,
+      -12
+     ],
+     "size": [
+      20,
+      48
+     ],
+     "y0": 26,
+     "rise": 8,
+     "material": "tile",
+     "colour": "#4a4d55"
+    },
+    {
+     "type": "box",
+     "center": [
+      86,
+      8
+     ],
+     "size": [
+      16,
+      36
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8c9a8",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      86,
+      8
+     ],
+     "size": [
+      16,
+      36
+     ],
+     "y0": 24,
+     "rise": 6,
+     "material": "tile",
+     "colour": "#4a4d55"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      -31
+     ],
+     "size": [
+      60,
+      12
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#d8c9a8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -60,
+      -37
+     ],
+     "radius": 1,
+     "y0": 0,
+     "y1": 1,
+     "material": "stone"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -80,
+      -25
+     ],
+     "radius": 2.5,
+     "y0": 24,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8c9a8"
+    },
+    {
+     "type": "dome",
+     "center": [
+      -80,
+      -25
+     ],
+     "radius": 2.5,
+     "y0": 30,
+     "height": 3,
+     "material": "metal",
+     "colour": "#8a9096"
+    }
+   ]
+  },
+  "notes": "The Musée d'Orsay is a long stone station building with its front on the Seine (-z). It has a central barrel-vaulted nave running along x behind the front range, a pavilion at each end (the west end is on the left, at -x), and a dark mansard roof over the front range. The big clock sits in the central pavilion on the river front, with a tall roof above it and a smaller clock at the east end. Signature features: the long vault, the two end pavilions with their clock roofs, the arched stone front, and the glass canopy on the entrance side.",
+  "triangles": 4626,
+  "parts": 22
+ },
+ "totals": {
+  "input": 3307,
+  "output": 1669,
+  "cost": 0.0248272,
+  "ms": 11320
+ }
+}

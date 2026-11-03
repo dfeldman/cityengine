@@ -1,0 +1,240 @@
+{
+ "building": "oracle-park",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:17:38.441Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Oracle Park is a horseshoe grandstand of green-painted steel and concrete tiers wrapping round a grass field, open toward the bay on the west. The street front at -z is a red-brick block with a clock tower and a steel light-tower frame rising above the stands. The stadium is modelled as the stepped bowl, the brick front with its clock tower, a grass field, the bay promenade arcade and two light towers.\",\"parts\":[{\"type\":\"bowl\",\"center\":[0,0],\"size\":[190,240],\"inner\":[100,120],\"y0\":0,\"y1\":32,\"arc\":[-90,180],\"shape\":\"oval\",\"material\":\"concrete\",\"colour\":\"#2f5d4e\"},{\"type\":\"box\",\"center\":[0,0],\"size\":[100,118],\"y0\":0,\"y1\":0.3,\"material\":\"grass\",\"colour\":\"#3f7a3a\"},{\"type\":\"box\",\"center\":[0,-118],\"size\":[150,34],\"y0\":0,\"y1\":24,\"material\":\"brick\",\"colour\":\"#9c4a36\",\"windows\":{\"kind\":\"punched\",\"floor\":4,\"pitch\":6,\"solid\":0.6,\"glass\":\"#3a4248\"}},{\"type\":\"tower\",\"center\":[60,-112],\"y0\":0,\"colour\":\"#9c4a36\",\"stages\":[{\"shape\":\"square\",\"width\":10,\"height\":24,\"kind\":\"blank\"},{\"shape\":\"square\",\"width\":11,\"height\":6,\"kind\":\"clock\"}],\"top\":{\"kind\":\"flat\",\"height\":1,\"colour\":\"#5a6266\"}},{\"type\":\"arcade\",\"from\":[-100,-60],\"to\":[-100,130],\"y0\":0,\"height\":5,\"count\":30,\"thickness\":3},{\"type\":\"beam\",\"from\":[-70,0,-125],\"to\":[-70,45,-125],\"width\":2,\"material\":\"metal\",\"colour\":\"#4a5a60\"},{\"type\":\"beam\",\"from\":[90,0,110],\"to\":[90,45,110],\"width\":2,\"material\":\"metal\",\"colour\":\"#4a5a60\"}]}",
+   "stop": "end_turn",
+   "input": 3569,
+   "output": 2191,
+   "cacheRead": 0,
+   "cost": 0.0024734,
+   "ms": 12437,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park is a horseshoe grandstand of green-painted steel and concrete tiers wrapping round a grass field, open toward the bay on the west. The street front at -z is a red-brick block with a clock tower and a steel light-tower frame rising above the stands. The stadium is modelled as the stepped bowl, the brick front with its clock tower, a grass field, the bay promenade arcade and two light towers.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      190,
+      240
+     ],
+     "inner": [
+      100,
+      120
+     ],
+     "y0": 0,
+     "y1": 32,
+     "arc": [
+      -90,
+      180
+     ],
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#2f5d4e"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      100,
+      118
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#3f7a3a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -118
+     ],
+     "size": [
+      150,
+      34
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "brick",
+     "colour": "#9c4a36",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 6,
+      "solid": 0.6,
+      "glass": "#3a4248"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      60,
+      -112
+     ],
+     "y0": 0,
+     "colour": "#9c4a36",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 10,
+       "height": 24,
+       "kind": "blank"
+      },
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 6,
+       "kind": "clock"
+      }
+     ],
+     "top": {
+      "kind": "flat",
+      "height": 1,
+      "colour": "#5a6266"
+     }
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -100,
+      -60
+     ],
+     "to": [
+      -100,
+      130
+     ],
+     "y0": 0,
+     "height": 5,
+     "count": 30,
+     "thickness": 3
+    },
+    {
+     "type": "beam",
+     "from": [
+      -70,
+      0,
+      -125
+     ],
+     "to": [
+      -70,
+      45,
+      -125
+     ],
+     "width": 2,
+     "material": "metal",
+     "colour": "#4a5a60"
+    },
+    {
+     "type": "beam",
+     "from": [
+      90,
+      0,
+      110
+     ],
+     "to": [
+      90,
+      45,
+      110
+     ],
+     "width": 2,
+     "material": "metal",
+     "colour": "#4a5a60"
+    }
+   ]
+  },
+  "notes": "Oracle Park is a horseshoe grandstand of green-painted steel and concrete tiers wrapping round a grass field, open toward the bay on the west. The street front at -z is a red-brick block with a clock tower and a steel light-tower frame rising above the stands. The stadium is modelled as the stepped bowl, the brick front with its clock tower, a grass field, the bay promenade arcade and two light towers.",
+  "triangles": 2768,
+  "parts": 13
+ },
+ "totals": {
+  "input": 3569,
+  "output": 2191,
+  "cost": 0.0024734,
+  "ms": 12437
+ }
+}

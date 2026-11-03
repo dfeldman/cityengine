@@ -1,0 +1,261 @@
+{
+ "building": "sfmoma",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:31.178Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The San Francisco MoMA is a stepped brick-and-stone front (Botta) with a striped cylindrical drum and glass oculus centred on the Third Street side, and a white curved extension (Snohetta) rising behind it with horizontal glazed bands. The striped drum is the signature feature and is modelled as a white cylinder on the front axis. The brick masses are blocks either side of it, and the tallest mass is the white extension at 38 m.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [-22, -20],\n      \"size\": [64, 44],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 16, \"kind\": \"bands\", \"floors\": 4}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#a85a3a\",\n      \"material\": \"brick\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, -38],\n      \"radius\": 9,\n      \"y0\": 0,\n      \"y1\": 30,\n      \"colour\": \"#e8e8e8\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 24],\n      \"size\": [108, 36],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 12, \"kind\": \"bands\", \"floors\": 2},\n        {\"height\": 26, \"kind\": \"bands\", \"floors\": 6}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#f2f0ea\",\n      \"material\": \"concrete\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4454,
+   "output": 1582,
+   "cacheRead": 8401,
+   "cost": 0.0013204100000000002,
+   "ms": 8500,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The San Francisco MoMA is a stepped brick-and-stone front (Botta) with a striped cylindrical drum and glass oculus centred on the Third Street side, and a white curved extension (Snohetta) rising behind it with horizontal glazed bands. The striped drum is the signature feature and is modelled as a white cylinder on the front axis. The brick masses are blocks either side of it, and the tallest mass is the white extension at 38 m.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -22,
+      -20
+     ],
+     "size": [
+      64,
+      44
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 16,
+       "kind": "bands",
+       "floors": 4
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#a85a3a",
+     "material": "brick"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -38
+     ],
+     "radius": 9,
+     "y0": 0,
+     "y1": 30,
+     "colour": "#e8e8e8",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      24
+     ],
+     "size": [
+      108,
+      36
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "bands",
+       "floors": 2
+      },
+      {
+       "height": 26,
+       "kind": "bands",
+       "floors": 6
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#f2f0ea",
+     "material": "concrete"
+    }
+   ]
+  },
+  "notes": "The San Francisco MoMA is a stepped brick-and-stone front (Botta) with a striped cylindrical drum and glass oculus centred on the Third Street side, and a white curved extension (Snohetta) rising behind it with horizontal glazed bands. The striped drum is the signature feature and is modelled as a white cylinder on the front axis. The brick masses are blocks either side of it, and the tallest mass is the white extension at 38 m.",
+  "triangles": 284,
+  "parts": 9
+ },
+ "totals": {
+  "input": 7937,
+  "output": 4197,
+  "cost": 0.003236585,
+  "ms": 22271
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: the front from the south-west, showing the stepped brick masses with the striped cylindrical oculus centred on the Third Street front, and the white Snohetta extension rising behind and to the left.\", \"photo 2: a corner three-quarter view of the brick facade, with the striped cylinder, the white extension behind it at left, and towers beyond.\", \"photo 3: the view from the Yerba Buena garden side, showing the brick stepped masses, the striped cylinder, and the white extension behind at right.\"],\n  \"components\": [\n    {\"name\": \"brick Botta block\", \"part\": \"block\", \"where\": \"front (-z) half, west of the notch\", \"center\": [-22, -20], \"size\": [64, 44], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}, {\"height\": 16, \"kind\": \"bands\", \"floors\": 4}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a85a3a\"},\n     \"why\": \"photos 1 and 3 show the brick masses forming the front of the museum, stepped and windowed in slots\"},\n    {\"name\": \"striped oculus cylinder\", \"part\": \"cylinder\", \"where\": \"centre of the Third Street front\", \"center\": [0, -38], \"height\": 30,\n     \"settings\": {\"radius\": 9, \"height\": 30, \"colour\": \"#e8e8e8\"},\n     \"why\": \"photos 1 to 3 show the striped cylindrical drum with its glass oculus as the signature feature at the front centre\"},\n    {\"name\": \"white Snohetta extension\", \"part\": \"block\", \"where\": \"rear (+z) half, the full width behind the brick\", \"center\": [0, 24], \"size\": [108, 36], \"height\": 38,\n     \"settings\": {\"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"floors\": 2}, {\"height\": 26, \"kind\": \"bands\", \"floors\": 6}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#f2f0ea\"},\n     \"why\": \"photos 1 and 2 show the white curved extension rising behind the brick, with horizontal glazed bands, and it is the tallest mass at 38 m\"}\n  ]\n}",
+  "input": 3483,
+  "output": 2615,
+  "cost": 0.0019161750000000002,
+  "ms": 13771,
+  "json": {
+   "photos": [
+    "photo 1: the front from the south-west, showing the stepped brick masses with the striped cylindrical oculus centred on the Third Street front, and the white Snohetta extension rising behind and to the left.",
+    "photo 2: a corner three-quarter view of the brick facade, with the striped cylinder, the white extension behind it at left, and towers beyond.",
+    "photo 3: the view from the Yerba Buena garden side, showing the brick stepped masses, the striped cylinder, and the white extension behind at right."
+   ],
+   "components": [
+    {
+     "name": "brick Botta block",
+     "part": "block",
+     "where": "front (-z) half, west of the notch",
+     "center": [
+      -22,
+      -20
+     ],
+     "size": [
+      64,
+      44
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 16,
+        "kind": "bands",
+        "floors": 4
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a85a3a"
+     },
+     "why": "photos 1 and 3 show the brick masses forming the front of the museum, stepped and windowed in slots"
+    },
+    {
+     "name": "striped oculus cylinder",
+     "part": "cylinder",
+     "where": "centre of the Third Street front",
+     "center": [
+      0,
+      -38
+     ],
+     "height": 30,
+     "settings": {
+      "radius": 9,
+      "height": 30,
+      "colour": "#e8e8e8"
+     },
+     "why": "photos 1 to 3 show the striped cylindrical drum with its glass oculus as the signature feature at the front centre"
+    },
+    {
+     "name": "white Snohetta extension",
+     "part": "block",
+     "where": "rear (+z) half, the full width behind the brick",
+     "center": [
+      0,
+      24
+     ],
+     "size": [
+      108,
+      36
+     ],
+     "height": 38,
+     "settings": {
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "bands",
+        "floors": 2
+       },
+       {
+        "height": 26,
+        "kind": "bands",
+        "floors": 6
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#f2f0ea"
+     },
+     "why": "photos 1 and 2 show the white curved extension rising behind the brick, with horizontal glazed bands, and it is the tallest mass at 38 m"
+    }
+   ]
+  }
+ }
+}

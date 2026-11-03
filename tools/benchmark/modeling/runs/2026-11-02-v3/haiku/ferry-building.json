@@ -1,0 +1,145 @@
+{
+ "building": "ferry-building",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:17:50.391Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Ferry Building is a long, low, two-storey Beaux-Arts block of pale stone, with a ground-floor arcade of round arches and an arched upper storey, under a low grey roof. Its signature is the tall white clock tower at the front centre, rising in stages (square shaft, clock stage, open belfry, cupola) to about 75 m. The body is about 200 m long and the tower is set toward the street (-z) side.\", \"parts\": [{\"type\": \"block\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 0, \"bay\": 5, \"colour\": \"#d8d6cc\", \"trim\": \"#ebe8df\", \"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 10, \"kind\": \"arched\", \"floors\": 2}], \"faces\": \"all\", \"cornice\": 1, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"tower\", \"center\": [0, -22], \"y0\": 0, \"colour\": \"#ebe8df\", \"stages\": [{\"shape\": \"square\", \"width\": 12, \"height\": 42, \"kind\": \"blank\"}, {\"shape\": \"square\", \"width\": 11, \"height\": 10, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 8, \"height\": 12, \"kind\": \"open\"}], \"top\": {\"kind\": \"cupola\", \"height\": 11, \"colour\": \"#ebe8df\"}}]}",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 1473,
+   "cacheRead": 8168,
+   "cost": 0.00115368,
+   "ms": 8053,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Ferry Building is a long, low, two-storey Beaux-Arts block of pale stone, with a ground-floor arcade of round arches and an arched upper storey, under a low grey roof. Its signature is the tall white clock tower at the front centre, rising in stages (square shaft, clock stage, open belfry, cupola) to about 75 m. The body is about 200 m long and the tower is set toward the street (-z) side.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8d6cc",
+     "trim": "#ebe8df",
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 10,
+       "kind": "arched",
+       "floors": 2
+      }
+     ],
+     "faces": "all",
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      0,
+      -22
+     ],
+     "y0": 0,
+     "colour": "#ebe8df",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 12,
+       "height": 42,
+       "kind": "blank"
+      },
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 10,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 8,
+       "height": 12,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "cupola",
+      "height": 11,
+      "colour": "#ebe8df"
+     }
+    }
+   ]
+  },
+  "notes": "The Ferry Building is a long, low, two-storey Beaux-Arts block of pale stone, with a ground-floor arcade of round arches and an arched upper storey, under a low grey roof. Its signature is the tall white clock tower at the front centre, rising in stages (square shaft, clock stage, open belfry, cupola) to about 75 m. The body is about 200 m long and the tower is set toward the street (-z) side.",
+  "triangles": 8048,
+  "parts": 27
+ },
+ "totals": {
+  "input": 3355,
+  "output": 1473,
+  "cost": 0.00115368,
+  "ms": 8053
+ }
+}

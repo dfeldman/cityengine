@@ -1,0 +1,242 @@
+{
+ "building": "madeleine",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:37.697Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Madeleine is a Roman peripteral temple on a tall podium, 43x128 m. It has 18 Corinthian columns along each long side and 8 across each end, with a full entablature and a pediment at each end. The cella is a blank stone wall, and a low green-copper pitched roof with its ridge along z runs behind the pediments. I model the podium, the cella, four colonnades, two pediments and the roof. There are no windows on the cella walls.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 7, \"material\": \"stone\", \"colour\": \"#cdbf9f\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [28, 118], \"y0\": 7, \"y1\": 27, \"material\": \"stone\", \"colour\": \"#d4c8a8\"},\n{\"type\": \"colonnade\", \"from\": [-18.5, -60], \"to\": [18.5, -60], \"y0\": 7, \"height\": 24, \"count\": 8, \"radius\": 1.0, \"entablature\": 4},\n{\"type\": \"colonnade\", \"from\": [-18.5, 60], \"to\": [18.5, 60], \"y0\": 7, \"height\": 24, \"count\": 8, \"radius\": 1.0, \"entablature\": 4},\n{\"type\": \"colonnade\", \"from\": [-18.5, -60], \"to\": [-18.5, 60], \"y0\": 7, \"height\": 24, \"count\": 18, \"radius\": 1.0, \"entablature\": 4},\n{\"type\": \"colonnade\", \"from\": [18.5, -60], \"to\": [18.5, 60], \"y0\": 7, \"height\": 24, \"count\": 18, \"radius\": 1.0, \"entablature\": 4},\n{\"type\": \"box\", \"center\": [0, -60], \"size\": [38, 4], \"y0\": 7, \"y1\": 8, \"material\": \"stone\", \"colour\": \"#cdbf9f\"},\n{\"type\": \"pediment\", \"from\": [-20, -60], \"to\": [20, -60], \"y0\": 31, \"height\": 5, \"depth\": 5, \"colour\": \"#d4c8a8\"},\n{\"type\": \"pediment\", \"from\": [-20, 60], \"to\": [20, 60], \"y0\": 31, \"height\": 5, \"depth\": 5, \"colour\": \"#d4c8a8\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [39, 120], \"y0\": 27, \"y1\": 31, \"material\": \"stone\", \"colour\": \"#d0c4a4\"},\n{\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [38, 120], \"y0\": 31, \"rise\": 5, \"ridge\": \"z\", \"material\": \"copper\", \"colour\": \"#7fae8a\"}\n]}",
+   "stop": "end_turn",
+   "input": 3200,
+   "output": 894,
+   "cacheRead": 7616,
+   "cost": 0.016863200000000002,
+   "ms": 6104,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Madeleine is a Roman peripteral temple on a tall podium, 43x128 m. It has 18 Corinthian columns along each long side and 8 across each end, with a full entablature and a pediment at each end. The cella is a blank stone wall, and a low green-copper pitched roof with its ridge along z runs behind the pediments. I model the podium, the cella, four colonnades, two pediments and the roof. There are no windows on the cella walls.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 7,
+     "material": "stone",
+     "colour": "#cdbf9f"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      28,
+      118
+     ],
+     "y0": 7,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d4c8a8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18.5,
+      -60
+     ],
+     "to": [
+      18.5,
+      -60
+     ],
+     "y0": 7,
+     "height": 24,
+     "count": 8,
+     "radius": 1,
+     "entablature": 4
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18.5,
+      60
+     ],
+     "to": [
+      18.5,
+      60
+     ],
+     "y0": 7,
+     "height": 24,
+     "count": 8,
+     "radius": 1,
+     "entablature": 4
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18.5,
+      -60
+     ],
+     "to": [
+      -18.5,
+      60
+     ],
+     "y0": 7,
+     "height": 24,
+     "count": 18,
+     "radius": 1,
+     "entablature": 4
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      18.5,
+      -60
+     ],
+     "to": [
+      18.5,
+      60
+     ],
+     "y0": 7,
+     "height": 24,
+     "count": 18,
+     "radius": 1,
+     "entablature": 4
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -60
+     ],
+     "size": [
+      38,
+      4
+     ],
+     "y0": 7,
+     "y1": 8,
+     "material": "stone",
+     "colour": "#cdbf9f"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -60
+     ],
+     "to": [
+      20,
+      -60
+     ],
+     "y0": 31,
+     "height": 5,
+     "depth": 5,
+     "colour": "#d4c8a8"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      60
+     ],
+     "to": [
+      20,
+      60
+     ],
+     "y0": 31,
+     "height": 5,
+     "depth": 5,
+     "colour": "#d4c8a8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      39,
+      120
+     ],
+     "y0": 27,
+     "y1": 31,
+     "material": "stone",
+     "colour": "#d0c4a4"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      38,
+      120
+     ],
+     "y0": 31,
+     "rise": 5,
+     "ridge": "z",
+     "material": "copper",
+     "colour": "#7fae8a"
+    }
+   ]
+  },
+  "notes": "Madeleine is a Roman peripteral temple on a tall podium, 43x128 m. It has 18 Corinthian columns along each long side and 8 across each end, with a full entablature and a pediment at each end. The cella is a blank stone wall, and a low green-copper pitched roof with its ridge along z runs behind the pediments. I model the podium, the cella, four colonnades, two pediments and the roof. There are no windows on the cella walls.",
+  "triangles": 4696,
+  "parts": 11
+ },
+ "totals": {
+  "input": 3200,
+  "output": 894,
+  "cost": 0.016863200000000002,
+  "ms": 6104
+ }
+}

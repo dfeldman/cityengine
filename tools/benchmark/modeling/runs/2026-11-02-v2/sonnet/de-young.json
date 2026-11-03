@@ -1,0 +1,312 @@
+{
+ "building": "de-young",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:07.917Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The de Young is a long, low copper-clad box (about 10-12 m high) with a cantilevered entrance canopy on the front (-z). Behind it, near the east end, stands a twisted observation tower that flares outward toward the top and ends in a heavy slab, rising to 44 m. I model the long box, the front canopy, the glazed court openings, and the tower as a tapering stack of rotated, widening slabs with a top slab and a glass band. The tower sits at about x=45, z=0.\", \"parts\": [\n{\"type\": \"prism\", \"points\": [[-78.6, 38.1], [-78.5, -20], [-40, -20], [-40, -38.1], [66, -37.7], [78.6, 38.1]], \"y0\": 0, \"y1\": 10, \"material\": \"copper\", \"colour\": \"#6b4a3e\"},\n{\"type\": \"box\", \"center\": [-30, 10], \"size\": [100, 50], \"y0\": 10, \"y1\": 12.5, \"material\": \"copper\", \"colour\": \"#6a493d\"},\n{\"type\": \"box\", \"center\": [-60, -29], \"size\": [36, 18], \"y0\": 8, \"y1\": 10.5, \"material\": \"copper\", \"colour\": \"#5e4036\"},\n{\"type\": \"box\", \"center\": [-5, -36], \"size\": [60, 3], \"y0\": 0, \"y1\": 8, \"material\": \"glass\", \"colour\": \"#2d3a3a\"},\n{\"type\": \"box\", \"center\": [-5, -30], \"size\": [64, 14], \"y0\": 8, \"y1\": 9.5, \"material\": \"copper\", \"colour\": \"#5e4036\"},\n{\"type\": \"box\", \"center\": [-78, 0], \"size\": [1.5, 20], \"y0\": 0, \"y1\": 8, \"material\": \"glass\", \"colour\": \"#2d3a3a\"},\n{\"type\": \"cylinder\", \"center\": [42, -6], \"radius\": 0.1, \"y0\": 0, \"y1\": 0.1, \"material\": \"metal\"},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [16, 16], \"y0\": 10, \"y1\": 20, \"rotate\": 8, \"material\": \"copper\", \"colour\": \"#5f4037\"},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [18, 18], \"y0\": 20, \"y1\": 26, \"rotate\": 14, \"material\": \"copper\", \"colour\": \"#634238\", \"windows\": {\"kind\": \"bands\", \"floor\": 3, \"solid\": 0.6}},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [20, 20], \"y0\": 26, \"y1\": 31, \"rotate\": 20, \"material\": \"copper\", \"colour\": \"#684539\"},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [22, 22], \"y0\": 31, \"y1\": 36, \"rotate\": 26, \"material\": \"copper\", \"colour\": \"#6b483c\", \"windows\": {\"kind\": \"bands\", \"floor\": 2.5, \"solid\": 0.6}},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [23, 23], \"y0\": 36, \"y1\": 38, \"rotate\": 28, \"material\": \"glass\", \"colour\": \"#2f3b44\"},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [25, 25], \"y0\": 38, \"y1\": 44, \"rotate\": 30, \"material\": \"copper\", \"colour\": \"#6e4a3d\"},\n{\"type\": \"box\", \"center\": [45, 5], \"size\": [24, 24], \"y0\": 43.5, \"y1\": 44, \"rotate\": 30, \"material\": \"metal\", \"colour\": \"#555555\"}\n]}",
+   "stop": "end_turn",
+   "input": 3222,
+   "output": 1173,
+   "cacheRead": 0,
+   "cost": 0.037214,
+   "ms": 8229,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The de Young is a long, low copper-clad box (about 10-12 m high) with a cantilevered entrance canopy on the front (-z). Behind it, near the east end, stands a twisted observation tower that flares outward toward the top and ends in a heavy slab, rising to 44 m. I model the long box, the front canopy, the glazed court openings, and the tower as a tapering stack of rotated, widening slabs with a top slab and a glass band. The tower sits at about x=45, z=0.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -78.6,
+       38.1
+      ],
+      [
+       -78.5,
+       -20
+      ],
+      [
+       -40,
+       -20
+      ],
+      [
+       -40,
+       -38.1
+      ],
+      [
+       66,
+       -37.7
+      ],
+      [
+       78.6,
+       38.1
+      ]
+     ],
+     "y0": 0,
+     "y1": 10,
+     "material": "copper",
+     "colour": "#6b4a3e"
+    },
+    {
+     "type": "box",
+     "center": [
+      -30,
+      10
+     ],
+     "size": [
+      100,
+      50
+     ],
+     "y0": 10,
+     "y1": 12.5,
+     "material": "copper",
+     "colour": "#6a493d"
+    },
+    {
+     "type": "box",
+     "center": [
+      -60,
+      -29
+     ],
+     "size": [
+      36,
+      18
+     ],
+     "y0": 8,
+     "y1": 10.5,
+     "material": "copper",
+     "colour": "#5e4036"
+    },
+    {
+     "type": "box",
+     "center": [
+      -5,
+      -36
+     ],
+     "size": [
+      60,
+      3
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "glass",
+     "colour": "#2d3a3a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -5,
+      -30
+     ],
+     "size": [
+      64,
+      14
+     ],
+     "y0": 8,
+     "y1": 9.5,
+     "material": "copper",
+     "colour": "#5e4036"
+    },
+    {
+     "type": "box",
+     "center": [
+      -78,
+      0
+     ],
+     "size": [
+      1.5,
+      20
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "glass",
+     "colour": "#2d3a3a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      42,
+      -6
+     ],
+     "radius": 0.1,
+     "y0": 0,
+     "y1": 0.1,
+     "material": "metal"
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 10,
+     "y1": 20,
+     "rotate": 8,
+     "material": "copper",
+     "colour": "#5f4037"
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      18,
+      18
+     ],
+     "y0": 20,
+     "y1": 26,
+     "rotate": 14,
+     "material": "copper",
+     "colour": "#634238",
+     "windows": {
+      "kind": "bands",
+      "floor": 3,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      20,
+      20
+     ],
+     "y0": 26,
+     "y1": 31,
+     "rotate": 20,
+     "material": "copper",
+     "colour": "#684539"
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      22,
+      22
+     ],
+     "y0": 31,
+     "y1": 36,
+     "rotate": 26,
+     "material": "copper",
+     "colour": "#6b483c",
+     "windows": {
+      "kind": "bands",
+      "floor": 2.5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      23,
+      23
+     ],
+     "y0": 36,
+     "y1": 38,
+     "rotate": 28,
+     "material": "glass",
+     "colour": "#2f3b44"
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      25,
+      25
+     ],
+     "y0": 38,
+     "y1": 44,
+     "rotate": 30,
+     "material": "copper",
+     "colour": "#6e4a3d"
+    },
+    {
+     "type": "box",
+     "center": [
+      45,
+      5
+     ],
+     "size": [
+      24,
+      24
+     ],
+     "y0": 43.5,
+     "y1": 44,
+     "rotate": 30,
+     "material": "metal",
+     "colour": "#555555"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low copper-clad box (about 10-12 m high) with a cantilevered entrance canopy on the front (-z). Behind it, near the east end, stands a twisted observation tower that flares outward toward the top and ends in a heavy slab, rising to 44 m. I model the long box, the front canopy, the glazed court openings, and the tower as a tapering stack of rotated, widening slabs with a top slab and a glass band. The tower sits at about x=45, z=0.",
+  "triangles": 240,
+  "parts": 14
+ },
+ "totals": {
+  "input": 3222,
+  "output": 1173,
+  "cost": 0.037214,
+  "ms": 8229
+ }
+}

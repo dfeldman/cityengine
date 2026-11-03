@@ -1,0 +1,440 @@
+{
+ "building": "palais-garnier",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:19:01.413Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Palais Garnier has a wide front block with a rusticated arcaded base and a tall Corinthian loggia above, plus two projecting end pavilions with arched pediments and gilded statue groups on top. The auditorium sits behind it under a green dome, and the tall stage house behind that has a big triangular gable. Side pavilions and low wings fill the rest of the footprint. I model the front facade, the green dome with its lantern, and the tall gabled stage house.\", \"parts\": [\n{\"type\": \"block\", \"center\": [0, -62], \"size\": [66, 24], \"y0\": 0, \"bay\": 5, \"colour\": \"#d8cbb0\", \"trim\": \"#e6dcc6\", \"faces\": \"front\", \"storeys\": [{\"height\": 10, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"columns\"}, {\"height\": 6, \"kind\": \"blank\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"flat\"}},\n{\"type\": \"block\", \"center\": [-27, -58], \"size\": [18, 22], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cbb0\", \"trim\": \"#e6dcc6\", \"faces\": \"front\", \"storeys\": [{\"height\": 10, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"pilasters\"}, {\"height\": 7, \"kind\": \"blank\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"flat\"}},\n{\"type\": \"block\", \"center\": [27, -58], \"size\": [18, 22], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cbb0\", \"trim\": \"#e6dcc6\", \"faces\": \"front\", \"storeys\": [{\"height\": 10, \"kind\": \"arcade\"}, {\"height\": 14, \"kind\": \"pilasters\"}, {\"height\": 7, \"kind\": \"blank\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"flat\"}},\n{\"type\": \"box\", \"center\": [0, -30], \"size\": [80, 50], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d2c5aa\"},\n{\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, -30], \"size\": [80, 50], \"y0\": 24, \"rise\": 5, \"material\": \"metal\", \"colour\": \"#7d8588\"},\n{\"type\": \"box\", \"center\": [0, -5], \"size\": [60, 40], \"y0\": 0, \"y1\": 32, \"material\": \"stone\", \"colour\": \"#d2c5aa\"},\n{\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 15, \"y0\": 30, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#d2c5aa\"},\n{\"type\": \"dome\", \"center\": [0, -22], \"radius\": 15, \"y0\": 36, \"height\": 11, \"material\": \"copper\", \"colour\": \"#7fb59a\"},\n{\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 3, \"y0\": 47, \"y1\": 51, \"material\": \"stone\", \"colour\": \"#b99a50\"},\n{\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 1.5, \"y0\": 51, \"y1\": 56, \"material\": \"copper\", \"colour\": \"#6fa88c\"},\n{\"type\": \"box\", \"center\": [0, 30], \"size\": [58, 70], \"y0\": 0, \"y1\": 38, \"material\": \"stone\", \"colour\": \"#cfc2a6\"},\n{\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 30], \"size\": [58, 70], \"y0\": 38, \"rise\": 14, \"ridge\": \"z\", \"material\": \"metal\", \"colour\": \"#8a9094\"},\n{\"type\": \"pediment\", \"from\": [-29, 65], \"to\": [29, 65], \"y0\": 38, \"height\": 14, \"depth\": 2},\n{\"type\": \"box\", \"center\": [-40, 25], \"size\": [20, 70], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d2c5aa\"},\n{\"type\": \"box\", \"center\": [40, 25], \"size\": [20, 70], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d2c5aa\"},\n{\"type\": \"roof\", \"kind\": \"hip\", \"center\": [-40, 25], \"size\": [20, 70], \"y0\": 22, \"rise\": 4, \"material\": \"metal\", \"colour\": \"#7d8588\"},\n{\"type\": \"roof\", \"kind\": \"hip\", \"center\": [40, 25], \"size\": [20, 70], \"y0\": 22, \"rise\": 4, \"material\": \"metal\", \"colour\": \"#7d8588\"},\n{\"type\": \"cylinder\", \"center\": [-26, -58], \"radius\": 3, \"y0\": 31, \"y1\": 36, \"material\": \"metal\", \"colour\": \"#d4a62a\"},\n{\"type\": \"cylinder\", \"center\": [26, -58], \"radius\": 3, \"y0\": 31, \"y1\": 36, \"material\": \"metal\", \"colour\": \"#d4a62a\"}\n]}",
+   "stop": "end_turn",
+   "input": 3311,
+   "output": 1647,
+   "cacheRead": 8168,
+   "cost": 0.024725599999999997,
+   "ms": 10742,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Palais Garnier has a wide front block with a rusticated arcaded base and a tall Corinthian loggia above, plus two projecting end pavilions with arched pediments and gilded statue groups on top. The auditorium sits behind it under a green dome, and the tall stage house behind that has a big triangular gable. Side pavilions and low wings fill the rest of the footprint. I model the front facade, the green dome with its lantern, and the tall gabled stage house.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -62
+     ],
+     "size": [
+      66,
+      24
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8cbb0",
+     "trim": "#e6dcc6",
+     "faces": "front",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "arcade"
+      },
+      {
+       "height": 14,
+       "kind": "columns"
+      },
+      {
+       "height": 6,
+       "kind": "blank"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -27,
+      -58
+     ],
+     "size": [
+      18,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cbb0",
+     "trim": "#e6dcc6",
+     "faces": "front",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "arcade"
+      },
+      {
+       "height": 14,
+       "kind": "pilasters"
+      },
+      {
+       "height": 7,
+       "kind": "blank"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      27,
+      -58
+     ],
+     "size": [
+      18,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cbb0",
+     "trim": "#e6dcc6",
+     "faces": "front",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "arcade"
+      },
+      {
+       "height": 14,
+       "kind": "pilasters"
+      },
+      {
+       "height": 7,
+       "kind": "blank"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -30
+     ],
+     "size": [
+      80,
+      50
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d2c5aa"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      -30
+     ],
+     "size": [
+      80,
+      50
+     ],
+     "y0": 24,
+     "rise": 5,
+     "material": "metal",
+     "colour": "#7d8588"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -5
+     ],
+     "size": [
+      60,
+      40
+     ],
+     "y0": 0,
+     "y1": 32,
+     "material": "stone",
+     "colour": "#d2c5aa"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 15,
+     "y0": 30,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#d2c5aa"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 15,
+     "y0": 36,
+     "height": 11,
+     "material": "copper",
+     "colour": "#7fb59a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 3,
+     "y0": 47,
+     "y1": 51,
+     "material": "stone",
+     "colour": "#b99a50"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 1.5,
+     "y0": 51,
+     "y1": 56,
+     "material": "copper",
+     "colour": "#6fa88c"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      30
+     ],
+     "size": [
+      58,
+      70
+     ],
+     "y0": 0,
+     "y1": 38,
+     "material": "stone",
+     "colour": "#cfc2a6"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      30
+     ],
+     "size": [
+      58,
+      70
+     ],
+     "y0": 38,
+     "rise": 14,
+     "ridge": "z",
+     "material": "metal",
+     "colour": "#8a9094"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -29,
+      65
+     ],
+     "to": [
+      29,
+      65
+     ],
+     "y0": 38,
+     "height": 14,
+     "depth": 2
+    },
+    {
+     "type": "box",
+     "center": [
+      -40,
+      25
+     ],
+     "size": [
+      20,
+      70
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d2c5aa"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      25
+     ],
+     "size": [
+      20,
+      70
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d2c5aa"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      -40,
+      25
+     ],
+     "size": [
+      20,
+      70
+     ],
+     "y0": 22,
+     "rise": 4,
+     "material": "metal",
+     "colour": "#7d8588"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      40,
+      25
+     ],
+     "size": [
+      20,
+      70
+     ],
+     "y0": 22,
+     "rise": 4,
+     "material": "metal",
+     "colour": "#7d8588"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -26,
+      -58
+     ],
+     "radius": 3,
+     "y0": 31,
+     "y1": 36,
+     "material": "metal",
+     "colour": "#d4a62a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      26,
+      -58
+     ],
+     "radius": 3,
+     "y0": 31,
+     "y1": 36,
+     "material": "metal",
+     "colour": "#d4a62a"
+    }
+   ]
+  },
+  "notes": "The Palais Garnier has a wide front block with a rusticated arcaded base and a tall Corinthian loggia above, plus two projecting end pavilions with arched pediments and gilded statue groups on top. The auditorium sits behind it under a green dome, and the tall stage house behind that has a big triangular gable. Side pavilions and low wings fill the rest of the footprint. I model the front facade, the green dome with its lantern, and the tall gabled stage house.",
+  "triangles": 4702,
+  "parts": 60
+ },
+ "totals": {
+  "input": 3311,
+  "output": 1647,
+  "cost": 0.024725599999999997,
+  "ms": 10742
+ }
+}

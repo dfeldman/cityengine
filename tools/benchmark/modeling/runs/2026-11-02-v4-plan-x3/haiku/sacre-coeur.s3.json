@@ -1,0 +1,548 @@
+{
+ "building": "sacre-coeur",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:12.279Z",
+ "userText": "Building: Basilique du Sacré-Cœur, Paris (basilica).\nThe front (−z) is the south front at the top of the steps, looking out over Paris.\nFootprint: 50.1 m along x by 95.9 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-19.8,-35.7],[-19.9,-39.5],[-10.6,-39.2],[-9.3,-47.7],[9.2,-48],[9.2,-44],[10.6,-43.9],[10.5,-39.1],[19.9,-39.2],[21,-34.7],[25,-34.3],[25.1,6.7],[21.6,6.7],[21.6,14.6],[24,18.6],[23.9,21.3],[20.7,24.3],[19.3,30.7],[14.6,32.2],[10.8,37.4],[7,37.6],[7.2,48],[-7.3,47.9],[-7.1,37.3],[-11.5,36.9],[-13.9,32.9],[-19.1,31],[-20.6,28.6],[-20.6,24.3],[-24.4,20.9],[-24.2,17.3],[-21.8,14.5],[-21.7,6.7],[-25,7],[-25.1,-34],[-21.5,-34.1]]\nHeight: the highest point is 84 m above the ground.\n\n3 photographs attached, in order:\n  1. full front from the gardens below the hill, daylight: the white domes over the terraces and steps\n  2. front three-quarter from the left (west), daylight: the arched portico, the main dome and the smaller domes\n  3. the front close up, daylight: the main dome on its drum with the smaller domes around it\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   50.1,
+   95.9
+  ],
+  "outline": [
+   [
+    -19.8,
+    -35.7
+   ],
+   [
+    -19.9,
+    -39.5
+   ],
+   [
+    -10.6,
+    -39.2
+   ],
+   [
+    -9.3,
+    -47.7
+   ],
+   [
+    9.2,
+    -48
+   ],
+   [
+    9.2,
+    -44
+   ],
+   [
+    10.6,
+    -43.9
+   ],
+   [
+    10.5,
+    -39.1
+   ],
+   [
+    19.9,
+    -39.2
+   ],
+   [
+    21,
+    -34.7
+   ],
+   [
+    25,
+    -34.3
+   ],
+   [
+    25.1,
+    6.7
+   ],
+   [
+    21.6,
+    6.7
+   ],
+   [
+    21.6,
+    14.6
+   ],
+   [
+    24,
+    18.6
+   ],
+   [
+    23.9,
+    21.3
+   ],
+   [
+    20.7,
+    24.3
+   ],
+   [
+    19.3,
+    30.7
+   ],
+   [
+    14.6,
+    32.2
+   ],
+   [
+    10.8,
+    37.4
+   ],
+   [
+    7,
+    37.6
+   ],
+   [
+    7.2,
+    48
+   ],
+   [
+    -7.3,
+    47.9
+   ],
+   [
+    -7.1,
+    37.3
+   ],
+   [
+    -11.5,
+    36.9
+   ],
+   [
+    -13.9,
+    32.9
+   ],
+   [
+    -19.1,
+    31
+   ],
+   [
+    -20.6,
+    28.6
+   ],
+   [
+    -20.6,
+    24.3
+   ],
+   [
+    -24.4,
+    20.9
+   ],
+   [
+    -24.2,
+    17.3
+   ],
+   [
+    -21.8,
+    14.5
+   ],
+   [
+    -21.7,
+    6.7
+   ],
+   [
+    -25,
+    7
+   ],
+   [
+    -25.1,
+    -34
+   ],
+   [
+    -21.5,
+    -34.1
+   ]
+  ],
+  "height": 84,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The basilica is a long white stone body with a three-arched portico at the south (−z) front, topped by a large dome on a windowed drum with a tall lantern. Two smaller domed towers with arched openings flank the main dome, and a square belfry sits at the front-right corner. I model the dome, the flanking domed towers, the portico arcade and the belfry as the signature features, on a plain stone body.\",\n  \"parts\": [\n    {\"type\": \"block\", \"center\": [0, 0], \"size\": [50, 96], \"y0\": 0, \"bay\": 5, \"colour\": \"#f2efe6\", \"material\": \"stone\", \"storeys\": [{\"height\": 12, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 22, \"kind\": \"arched\", \"floors\": 1}], \"faces\": \"front\", \"cornice\": 1, \"roof\": {\"kind\": \"flat\"}},\n    {\"type\": \"arcade\", \"from\": [-14, -49], \"to\": [14, -49], \"y0\": 0, \"height\": 16, \"count\": 3, \"thickness\": 4, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"rotunda\", \"center\": [0, 0], \"radius\": 11, \"y0\": 34, \"base\": 2, \"height\": 14, \"count\": 12, \"open\": false, \"drum\": 6, \"dome\": {\"height\": 24, \"colour\": \"#eee8d8\", \"material\": \"stone\"}, \"lantern\": true, \"colour\": \"#f2efe6\", \"material\": \"stone\"},\n    {\"type\": \"tower\", \"center\": [-14, -24], \"y0\": 0, \"colour\": \"#eee8d8\", \"material\": \"stone\", \"stages\": [{\"shape\": \"octagon\", \"width\": 8, \"height\": 34, \"kind\": \"arched\"}, {\"shape\": \"round\", \"width\": 8, \"height\": 8, \"kind\": \"open\"}], \"top\": {\"kind\": \"dome\", \"height\": 12, \"colour\": \"#eee8d8\"}},\n    {\"type\": \"tower\", \"center\": [14, -24], \"y0\": 0, \"colour\": \"#eee8d8\", \"material\": \"stone\", \"stages\": [{\"shape\": \"octagon\", \"width\": 8, \"height\": 34, \"kind\": \"arched\"}, {\"shape\": \"round\", \"width\": 8, \"height\": 8, \"kind\": \"open\"}], \"top\": {\"kind\": \"dome\", \"height\": 12, \"colour\": \"#eee8d8\"}},\n    {\"type\": \"tower\", \"center\": [20, -38], \"y0\": 0, \"colour\": \"#f2efe6\", \"material\": \"stone\", \"stages\": [{\"shape\": \"square\", \"width\": 7, \"height\": 30, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 7, \"height\": 8, \"kind\": \"open\"}], \"top\": {\"kind\": \"pyramid\", \"height\": 6, \"colour\": \"#f2efe6\"}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5419,
+   "output": 2721,
+   "cacheRead": 8401,
+   "cost": 0.00198641,
+   "ms": 12048,
+   "errors": [],
+   "warnings": [
+    "parts[0]>box6.windows.floor: 22 lowered to the maximum 20"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The basilica is a long white stone body with a three-arched portico at the south (−z) front, topped by a large dome on a windowed drum with a tall lantern. Two smaller domed towers with arched openings flank the main dome, and a square belfry sits at the front-right corner. I model the dome, the flanking domed towers, the portico arcade and the belfry as the signature features, on a plain stone body.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      50,
+      96
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#f2efe6",
+     "material": "stone",
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "arcade",
+       "windows": false
+      },
+      {
+       "height": 22,
+       "kind": "arched",
+       "floors": 1
+      }
+     ],
+     "faces": "front",
+     "cornice": 1,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -14,
+      -49
+     ],
+     "to": [
+      14,
+      -49
+     ],
+     "y0": 0,
+     "height": 16,
+     "count": 3,
+     "thickness": 4,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 11,
+     "y0": 34,
+     "base": 2,
+     "height": 14,
+     "count": 12,
+     "open": false,
+     "drum": 6,
+     "dome": {
+      "height": 24,
+      "colour": "#eee8d8",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#f2efe6",
+     "material": "stone"
+    },
+    {
+     "type": "tower",
+     "center": [
+      -14,
+      -24
+     ],
+     "y0": 0,
+     "colour": "#eee8d8",
+     "material": "stone",
+     "stages": [
+      {
+       "shape": "octagon",
+       "width": 8,
+       "height": 34,
+       "kind": "arched"
+      },
+      {
+       "shape": "round",
+       "width": 8,
+       "height": 8,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 12,
+      "colour": "#eee8d8"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      14,
+      -24
+     ],
+     "y0": 0,
+     "colour": "#eee8d8",
+     "material": "stone",
+     "stages": [
+      {
+       "shape": "octagon",
+       "width": 8,
+       "height": 34,
+       "kind": "arched"
+      },
+      {
+       "shape": "round",
+       "width": 8,
+       "height": 8,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 12,
+      "colour": "#eee8d8"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      20,
+      -38
+     ],
+     "y0": 0,
+     "colour": "#f2efe6",
+     "material": "stone",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 30,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 8,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "pyramid",
+      "height": 6,
+      "colour": "#f2efe6"
+     }
+    }
+   ]
+  },
+  "notes": "The basilica is a long white stone body with a three-arched portico at the south (−z) front, topped by a large dome on a windowed drum with a tall lantern. Two smaller domed towers with arched openings flank the main dome, and a square belfry sits at the front-right corner. I model the dome, the flanking domed towers, the portico arcade and the belfry as the signature features, on a plain stone body.",
+  "triangles": 4832,
+  "parts": 40
+ },
+ "totals": {
+  "input": 9167,
+  "output": 5621,
+  "cost": 0.00383204,
+  "ms": 26215
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the full front from the gardens below, showing the white stone basilica on its terrace, the central dome on a drum, and the smaller domes on either side of it.\",\n    \"photo 2: front three-quarter from the west, showing the arched portico with three large round arches, the equestrian statues on pedestals, the main dome and the smaller domes with tall lanterns, and a square belfry at the front corner.\",\n    \"photo 3: the front close up, showing the main dome on its windowed drum with a lantern on top, two smaller domed towers flanking the front, and the portico arches and statues below.\"\n  ],\n  \"components\": [\n    {\"name\": \"main dome\", \"part\": \"rotunda\", \"where\": \"centre of the basilica above the crossing\", \"center\": [0, -6], \"height\": 84,\n     \"settings\": {\"open\": false, \"radius\": 10, \"base\": 30, \"columns\": 0, \"drum\": 10, \"dome_height\": 30, \"colour\": \"#eee8d8\", \"lantern\": true},\n     \"why\": \"photos 1 and 3: a large dome on a solid windowed drum, with a lantern on top, rises over the centre of the building\"},\n    {\"name\": \"front left dome tower\", \"part\": \"tower\", \"where\": \"front left flank of the main dome\", \"center\": [-14, -24], \"height\": 54,\n     \"settings\": {\"stages\": [{\"shape\": \"octagon\", \"width\": 8, \"height\": 30, \"kind\": \"arched\"}, {\"shape\": \"round\", \"width\": 8, \"height\": 6, \"kind\": \"open\"}], \"top\": {\"kind\": \"dome\", \"height\": 12}, \"colour\": \"#eee8d8\"},\n     \"why\": \"photos 1 and 2: a smaller domed tower with arched openings flanks the main dome on the left\"},\n    {\"name\": \"front right dome tower\", \"part\": \"tower\", \"where\": \"front right flank of the main dome\", \"center\": [14, -24], \"height\": 54,\n     \"settings\": {\"stages\": [{\"shape\": \"octagon\", \"width\": 8, \"height\": 30, \"kind\": \"arched\"}, {\"shape\": \"round\", \"width\": 8, \"height\": 6, \"kind\": \"open\"}], \"top\": {\"kind\": \"dome\", \"height\": 12}, \"colour\": \"#eee8d8\"},\n     \"why\": \"photos 1 and 3: a matching smaller domed tower flanks the main dome on the right\"},\n    {\"name\": \"portico\", \"part\": \"arcade\", \"where\": \"front centre, before the main body\", \"center\": [0, -46], \"size\": [28, 6], \"height\": 16,\n     \"settings\": {\"arches\": 3, \"height\": 16, \"colour\": \"#f2efe6\"},\n     \"why\": \"photos 2 and 3: the portico has three large round arches with equestrian statues on pedestals at its corners\"},\n    {\"name\": \"main body\", \"part\": \"block\", \"where\": \"the whole footprint below the dome\", \"center\": [0, 0], \"size\": [50, 96], \"height\": 34,\n     \"settings\": {\"storeys\": [{\"height\": 12, \"kind\": \"arcade\", \"windows\": false}, {\"height\": 22, \"kind\": \"arched\", \"floors\": 1}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#f2efe6\"},\n     \"why\": \"photos 1 and 2: a long white stone basilica with a ground portico and tall arched windows above\"},\n    {\"name\": \"east bell tower\", \"part\": \"tower\", \"where\": \"front right corner of the body\", \"center\": [20, -38], \"height\": 44,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 7, \"height\": 30, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 7, \"height\": 8, \"kind\": \"open\"}], \"top\": {\"kind\": \"pyramid\", \"height\": 6}, \"colour\": \"#f2efe6\"},\n     \"why\": \"photo 2: a square belfry with a small roof rises at the front corner\"}\n  ]\n}\n```",
+  "input": 3748,
+  "output": 2900,
+  "cost": 0.00184563,
+  "ms": 14167,
+  "json": {
+   "photos": [
+    "photo 1: the full front from the gardens below, showing the white stone basilica on its terrace, the central dome on a drum, and the smaller domes on either side of it.",
+    "photo 2: front three-quarter from the west, showing the arched portico with three large round arches, the equestrian statues on pedestals, the main dome and the smaller domes with tall lanterns, and a square belfry at the front corner.",
+    "photo 3: the front close up, showing the main dome on its windowed drum with a lantern on top, two smaller domed towers flanking the front, and the portico arches and statues below."
+   ],
+   "components": [
+    {
+     "name": "main dome",
+     "part": "rotunda",
+     "where": "centre of the basilica above the crossing",
+     "center": [
+      0,
+      -6
+     ],
+     "height": 84,
+     "settings": {
+      "open": false,
+      "radius": 10,
+      "base": 30,
+      "columns": 0,
+      "drum": 10,
+      "dome_height": 30,
+      "colour": "#eee8d8",
+      "lantern": true
+     },
+     "why": "photos 1 and 3: a large dome on a solid windowed drum, with a lantern on top, rises over the centre of the building"
+    },
+    {
+     "name": "front left dome tower",
+     "part": "tower",
+     "where": "front left flank of the main dome",
+     "center": [
+      -14,
+      -24
+     ],
+     "height": 54,
+     "settings": {
+      "stages": [
+       {
+        "shape": "octagon",
+        "width": 8,
+        "height": 30,
+        "kind": "arched"
+       },
+       {
+        "shape": "round",
+        "width": 8,
+        "height": 6,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "dome",
+       "height": 12
+      },
+      "colour": "#eee8d8"
+     },
+     "why": "photos 1 and 2: a smaller domed tower with arched openings flanks the main dome on the left"
+    },
+    {
+     "name": "front right dome tower",
+     "part": "tower",
+     "where": "front right flank of the main dome",
+     "center": [
+      14,
+      -24
+     ],
+     "height": 54,
+     "settings": {
+      "stages": [
+       {
+        "shape": "octagon",
+        "width": 8,
+        "height": 30,
+        "kind": "arched"
+       },
+       {
+        "shape": "round",
+        "width": 8,
+        "height": 6,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "dome",
+       "height": 12
+      },
+      "colour": "#eee8d8"
+     },
+     "why": "photos 1 and 3: a matching smaller domed tower flanks the main dome on the right"
+    },
+    {
+     "name": "portico",
+     "part": "arcade",
+     "where": "front centre, before the main body",
+     "center": [
+      0,
+      -46
+     ],
+     "size": [
+      28,
+      6
+     ],
+     "height": 16,
+     "settings": {
+      "arches": 3,
+      "height": 16,
+      "colour": "#f2efe6"
+     },
+     "why": "photos 2 and 3: the portico has three large round arches with equestrian statues on pedestals at its corners"
+    },
+    {
+     "name": "main body",
+     "part": "block",
+     "where": "the whole footprint below the dome",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      50,
+      96
+     ],
+     "height": 34,
+     "settings": {
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "arcade",
+        "windows": false
+       },
+       {
+        "height": 22,
+        "kind": "arched",
+        "floors": 1
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#f2efe6"
+     },
+     "why": "photos 1 and 2: a long white stone basilica with a ground portico and tall arched windows above"
+    },
+    {
+     "name": "east bell tower",
+     "part": "tower",
+     "where": "front right corner of the body",
+     "center": [
+      20,
+      -38
+     ],
+     "height": 44,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 7,
+        "height": 30,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 7,
+        "height": 8,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "pyramid",
+       "height": 6
+      },
+      "colour": "#f2efe6"
+     },
+     "why": "photo 2: a square belfry with a small roof rises at the front corner"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,6 @@
+{"notes": "Macro test (twist): long low copper wings and a twisting tower at the north-east end.",
+ "parts": [
+  {"type": "box", "center": [-8, 0], "size": [140, 70], "y0": 0, "y1": 12, "material": "copper", "colour": "#5a4232"},
+  {"type": "box", "center": [-8, -6], "size": [150, 82], "y0": 12, "y1": 13.2, "material": "copper", "colour": "#4a3628"},
+  {"type": "twist", "center": [58, 18], "size": [18, 26], "y0": 0, "y1": 44, "turn": 30, "steps": 12, "material": "copper", "colour": "#5d4535"}
+ ]}

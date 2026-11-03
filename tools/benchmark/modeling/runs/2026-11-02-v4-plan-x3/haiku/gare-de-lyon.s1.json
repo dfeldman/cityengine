@@ -1,0 +1,292 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:14.223Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long Beaux-Arts station front with a rusticated, round-arched ground floor and a mansard roof with dormers, along the forecourt at the -z side. A tall clock tower with a grey dome and lantern rises at the +x end of the front. Behind the front, long barrel-vaulted train-shed roofs run back over the platforms.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, -93],\n      \"size\": [181, 34],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 8, \"kind\": \"arcade\"},\n        {\"height\": 10, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"faces\": \"front\",\n      \"cornice\": 1.2,\n      \"roof\": {\"kind\": \"mansard\", \"rise\": 8, \"dormers\": true, \"colour\": \"#4f5862\"},\n      \"bay\": 5,\n      \"material\": \"stone\",\n      \"colour\": \"#e6dccb\",\n      \"trim\": \"#f0ebe0\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [62, -98],\n      \"y0\": 0,\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 13, \"height\": 28, \"kind\": \"punched\"},\n        {\"shape\": \"square\", \"width\": 12, \"height\": 12, \"kind\": \"clock\"},\n        {\"shape\": \"square\", \"width\": 11, \"height\": 6, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"dome\", \"height\": 21, \"colour\": \"#8c9499\"},\n      \"material\": \"stone\",\n      \"colour\": \"#ebe4d4\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [0, 17],\n      \"size\": [160, 186],\n      \"y0\": 18,\n      \"rise\": 12,\n      \"axis\": \"z\",\n      \"ends\": \"open\",\n      \"material\": \"metal\",\n      \"colour\": \"#8f9496\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4438,
+   "output": 1431,
+   "cacheRead": 8401,
+   "cost": 0.0012433099999999999,
+   "ms": 7041,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long Beaux-Arts station front with a rusticated, round-arched ground floor and a mansard roof with dormers, along the forecourt at the -z side. A tall clock tower with a grey dome and lantern rises at the +x end of the front. Behind the front, long barrel-vaulted train-shed roofs run back over the platforms.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -93
+     ],
+     "size": [
+      181,
+      34
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 8,
+       "kind": "arcade"
+      },
+      {
+       "height": 10,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 8,
+      "dormers": true,
+      "colour": "#4f5862"
+     },
+     "bay": 5,
+     "material": "stone",
+     "colour": "#e6dccb",
+     "trim": "#f0ebe0"
+    },
+    {
+     "type": "tower",
+     "center": [
+      62,
+      -98
+     ],
+     "y0": 0,
+     "stages": [
+      {
+       "shape": "square",
+       "width": 13,
+       "height": 28,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 12,
+       "height": 12,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 21,
+      "colour": "#8c9499"
+     },
+     "material": "stone",
+     "colour": "#ebe4d4"
+    },
+    {
+     "type": "vault",
+     "center": [
+      0,
+      17
+     ],
+     "size": [
+      160,
+      186
+     ],
+     "y0": 18,
+     "rise": 12,
+     "axis": "z",
+     "ends": "open",
+     "material": "metal",
+     "colour": "#8f9496"
+    }
+   ]
+  },
+  "notes": "A long Beaux-Arts station front with a rusticated, round-arched ground floor and a mansard roof with dormers, along the forecourt at the -z side. A tall clock tower with a grey dome and lantern rises at the +x end of the front. Behind the front, long barrel-vaulted train-shed roofs run back over the platforms.",
+  "triangles": 4944,
+  "parts": 129
+ },
+ "totals": {
+  "input": 7808,
+  "output": 3479,
+  "cost": 0.0026251399999999998,
+  "ms": 17711
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the forecourt, showing the long Beaux-Arts facade with a rusticated arcaded ground floor, tall round-headed windows, a mansard roof with dormers, and the tall clock tower with a dome at the right-hand (+x) end.\",\n    \"photo 2: a high view down the train shed, showing several long barrel-vaulted glass and metal roofs running away from the front toward the back, with tracks below and a neighbouring office block to the right.\",\n    \"photo 3: the arcaded facade and mansard roof seen from the other end, with a tall end pavilion and sculpture on the roof, and the tower out of frame.\"\n  ],\n  \"components\": [\n    {\"name\": \"station front range\", \"part\": \"block\", \"where\": \"the long front facade along the Place Louis-Armand\", \"center\": [0, -93], \"size\": [181, 34], \"height\": 26,\n     \"settings\": {\"storeys\": [{\"height\": 8, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": true, \"roof\": {\"kind\": \"mansard\", \"rise\": 8, \"dormers\": true}, \"colour\": \"#e6dccb\"},\n     \"why\": \"photos 1 and 3: the long Beaux-Arts front with arches on the ground floor and a mansard roof with dormers\"},\n    {\"name\": \"clock tower\", \"part\": \"tower\", \"where\": \"right-hand (+x) end of the front, at the corner of the forecourt\", \"center\": [62, -98], \"height\": 67,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 13, \"height\": 28, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 12, \"height\": 12, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 11, \"height\": 6, \"kind\": \"open\"}], \"top\": {\"kind\": \"dome\", \"height\": 21}, \"colour\": \"#ebe4d4\"},\n     \"why\": \"photo 1: the tall clock tower with a grey dome and lantern rises at the right end of the front\"},\n    {\"name\": \"train shed\", \"part\": \"vault\", \"where\": \"behind the front range, covering the platforms toward the back\", \"center\": [0, 17], \"size\": [160, 186], \"height\": 30,\n     \"settings\": {\"colour\": \"#8f9496\"},\n     \"why\": \"photo 2: long barrel-vaulted train shed roofs running along the tracks\"}\n  ]\n}\n```",
+  "input": 3370,
+  "output": 2048,
+  "cost": 0.00138183,
+  "ms": 10670,
+  "json": {
+   "photos": [
+    "photo 1: the front from the forecourt, showing the long Beaux-Arts facade with a rusticated arcaded ground floor, tall round-headed windows, a mansard roof with dormers, and the tall clock tower with a dome at the right-hand (+x) end.",
+    "photo 2: a high view down the train shed, showing several long barrel-vaulted glass and metal roofs running away from the front toward the back, with tracks below and a neighbouring office block to the right.",
+    "photo 3: the arcaded facade and mansard roof seen from the other end, with a tall end pavilion and sculpture on the roof, and the tower out of frame."
+   ],
+   "components": [
+    {
+     "name": "station front range",
+     "part": "block",
+     "where": "the long front facade along the Place Louis-Armand",
+     "center": [
+      0,
+      -93
+     ],
+     "size": [
+      181,
+      34
+     ],
+     "height": 26,
+     "settings": {
+      "storeys": [
+       {
+        "height": 8,
+        "kind": "arcade"
+       },
+       {
+        "height": 12,
+        "kind": "pilasters",
+        "floors": 2
+       }
+      ],
+      "faces": "front",
+      "cornice": true,
+      "roof": {
+       "kind": "mansard",
+       "rise": 8,
+       "dormers": true
+      },
+      "colour": "#e6dccb"
+     },
+     "why": "photos 1 and 3: the long Beaux-Arts front with arches on the ground floor and a mansard roof with dormers"
+    },
+    {
+     "name": "clock tower",
+     "part": "tower",
+     "where": "right-hand (+x) end of the front, at the corner of the forecourt",
+     "center": [
+      62,
+      -98
+     ],
+     "height": 67,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 13,
+        "height": 28,
+        "kind": "punched"
+       },
+       {
+        "shape": "square",
+        "width": 12,
+        "height": 12,
+        "kind": "clock"
+       },
+       {
+        "shape": "square",
+        "width": 11,
+        "height": 6,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "dome",
+       "height": 21
+      },
+      "colour": "#ebe4d4"
+     },
+     "why": "photo 1: the tall clock tower with a grey dome and lantern rises at the right end of the front"
+    },
+    {
+     "name": "train shed",
+     "part": "vault",
+     "where": "behind the front range, covering the platforms toward the back",
+     "center": [
+      0,
+      17
+     ],
+     "size": [
+      160,
+      186
+     ],
+     "height": 30,
+     "settings": {
+      "colour": "#8f9496"
+     },
+     "why": "photo 2: long barrel-vaulted train shed roofs running along the tracks"
+    }
+   ]
+  }
+ }
+}

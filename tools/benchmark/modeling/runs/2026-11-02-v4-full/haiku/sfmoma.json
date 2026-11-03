@@ -1,0 +1,641 @@
+{
+ "building": "sfmoma",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:08:52.380Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The San Francisco MOMA (Botta) reads as a low brick front, about 12 m high, spanning the full width of the Third Street face, with two taller brick masses flanking a striped drum that carries a glass oculus, centred on the front. Behind and to the east rises the white Snohetta extension, about 38 m high, with horizontal glass bands. The plan's positions hold, except that the flanking brick masses are moved so they sit symmetrically either side of the drum, as in the photographs.\", \"parts\": [{\"type\": \"cylinder\", \"center\": [-22, -33], \"radius\": 8, \"y0\": 0, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#e4e0d8\"}, {\"type\": \"disc\", \"center\": [-22, 21, -41.3], \"radius\": 5.5, \"facing\": \"front\", \"material\": \"glass\", \"colour\": \"#9fb3b8\"}, {\"type\": \"block\", \"center\": [-22, -24], \"size\": [65, 36], \"y0\": 0, \"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"windows\": false}], \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, {\"type\": \"block\", \"center\": [-36.5, -37], \"size\": [9, 10], \"y0\": 0, \"storeys\": [{\"height\": 22, \"kind\": \"rusticated\", \"windows\": false}], \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, {\"type\": \"block\", \"center\": [-7.5, -37], \"size\": [9, 10], \"y0\": 0, \"storeys\": [{\"height\": 22, \"kind\": \"rusticated\", \"windows\": false}], \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, {\"type\": \"block\", \"center\": [-22, 16], \"size\": [64, 44], \"y0\": 0, \"storeys\": [{\"height\": 14, \"kind\": \"bands\", \"windows\": true}, {\"height\": 24, \"kind\": \"bands\", \"floors\": 3}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#ece9e3\"}, {\"type\": \"block\", \"center\": [33, 22], \"size\": [44, 31], \"y0\": 0, \"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"windows\": true}, {\"height\": 18, \"kind\": \"bands\", \"floors\": 2}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#ece9e3\"}]}",
+   "stop": "end_turn",
+   "input": 5082,
+   "output": 5568,
+   "cacheRead": 8401,
+   "cost": 0.00337621,
+   "ms": 25968,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "{\"notes\": \"1. The striped drum was too plain and too low. The real drum rises above the flanking brick masses, is banded black and white, and carries a striped ring round the glass oculus. Now the drum is 30 m tall, with dark bands and a dark ring and glass disc on the front. 2. The white extension was striped with dark glass bands on every storey. The real lower storey is solid white cladding, with glass bands only on the upper floors, so the lower storey now has no windows. 3. The east wing had the same heavy stripes. It is now solid white below with glass bands only above, and the flanking brick masses rise to 24 m.\", \"parts\": [{\"type\": \"cylinder\", \"center\": [-22, -33], \"radius\": 8, \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#e4e0d8\"}, {\"type\": \"repeat\", \"count\": 7, \"offset\": [0, 4, 0], \"part\": {\"type\": \"ring\", \"center\": [-22, -33], \"radius\": 8.15, \"inner\": 7.6, \"y0\": 1, \"y1\": 2.2, \"material\": \"stone\", \"colour\": \"#1f2428\"}}, {\"type\": \"disc\", \"center\": [-22, 21, -41.2], \"radius\": 6.5, \"facing\": \"front\", \"material\": \"stone\", \"colour\": \"#1f2428\"}, {\"type\": \"disc\", \"center\": [-22, 21, -41.4], \"radius\": 5, \"facing\": \"front\", \"material\": \"glass\", \"colour\": \"#9fb3b8\"}, {\"type\": \"block\", \"center\": [-22, -24], \"size\": [65, 36], \"y0\": 0, \"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"windows\": false}], \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, {\"type\": \"block\", \"center\": [-36.5, -37], \"size\": [9, 10], \"y0\": 0, \"storeys\": [{\"height\": 24, \"kind\": \"rusticated\", \"windows\": false}], \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, {\"type\": \"block\", \"center\": [-7.5, -37], \"size\": [9, 10], \"y0\": 0, \"storeys\": [{\"height\": 24, \"kind\": \"rusticated\", \"windows\": false}], \"cornice\": 0, \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, {\"type\": \"block\", \"center\": [-22, 16], \"size\": [64, 44], \"y0\": 0, \"storeys\": [{\"height\": 14, \"kind\": \"bands\", \"windows\": false}, {\"height\": 24, \"kind\": \"bands\", \"floors\": 3, \"windows\": true}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#ece9e3\"}, {\"type\": \"block\", \"center\": [33, 22], \"size\": [44, 31], \"y0\": 0, \"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"windows\": false}, {\"height\": 18, \"kind\": \"bands\", \"floors\": 2, \"windows\": true}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#ece9e3\"}]}",
+   "stop": "end_turn",
+   "input": 12116,
+   "output": 5704,
+   "cacheRead": 8401,
+   "cost": 0.00414761,
+   "ms": 27047,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1. The striped drum was too plain and too low. The real drum rises above the flanking brick masses, is banded black and white, and carries a striped ring round the glass oculus. Now the drum is 30 m tall, with dark bands and a dark ring and glass disc on the front. 2. The white extension was striped with dark glass bands on every storey. The real lower storey is solid white cladding, with glass bands only on the upper floors, so the lower storey now has no windows. 3. The east wing had the same heavy stripes. It is now solid white below with glass bands only above, and the flanking brick masses rise to 24 m.",
+   "parts": [
+    {
+     "type": "cylinder",
+     "center": [
+      -22,
+      -33
+     ],
+     "radius": 8,
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#e4e0d8"
+    },
+    {
+     "type": "repeat",
+     "count": 7,
+     "offset": [
+      0,
+      4,
+      0
+     ],
+     "part": {
+      "type": "ring",
+      "center": [
+       -22,
+       -33
+      ],
+      "radius": 8.15,
+      "inner": 7.6,
+      "y0": 1,
+      "y1": 2.2,
+      "material": "stone",
+      "colour": "#1f2428"
+     }
+    },
+    {
+     "type": "disc",
+     "center": [
+      -22,
+      21,
+      -41.2
+     ],
+     "radius": 6.5,
+     "facing": "front",
+     "material": "stone",
+     "colour": "#1f2428"
+    },
+    {
+     "type": "disc",
+     "center": [
+      -22,
+      21,
+      -41.4
+     ],
+     "radius": 5,
+     "facing": "front",
+     "material": "glass",
+     "colour": "#9fb3b8"
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      -24
+     ],
+     "size": [
+      65,
+      36
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "bands",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b4583a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -36.5,
+      -37
+     ],
+     "size": [
+      9,
+      10
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 24,
+       "kind": "rusticated",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b4583a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -7.5,
+      -37
+     ],
+     "size": [
+      9,
+      10
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 24,
+       "kind": "rusticated",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b4583a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      16
+     ],
+     "size": [
+      64,
+      44
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "bands",
+       "windows": false
+      },
+      {
+       "height": 24,
+       "kind": "bands",
+       "floors": 3,
+       "windows": true
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#ece9e3"
+    },
+    {
+     "type": "block",
+     "center": [
+      33,
+      22
+     ],
+     "size": [
+      44,
+      31
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "bands",
+       "windows": false
+      },
+      {
+       "height": 18,
+       "kind": "bands",
+       "floors": 2,
+       "windows": true
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#ece9e3"
+    }
+   ]
+  },
+  "notes": "1. The striped drum was too plain and too low. The real drum rises above the flanking brick masses, is banded black and white, and carries a striped ring round the glass oculus. Now the drum is 30 m tall, with dark bands and a dark ring and glass disc on the front. 2. The white extension was striped with dark glass bands on every storey. The real lower storey is solid white cladding, with glass bands only on the upper floors, so the lower storey now has no windows. 3. The east wing had the same heavy stripes. It is now solid white below with glass bands only above, and the flanking brick masses rise to 24 m.",
+  "triangles": 2100,
+  "parts": 21
+ },
+ "totals": {
+  "input": 20681,
+  "output": 18163,
+  "cost": 0.011577995,
+  "ms": 88012
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\"photos\": [\"photo 1: the front from the Third Street side, showing the brick front with two stepped flanking masses, the striped cylinder with its glass oculus in the centre, and the white Snohetta extension rising behind with horizontal glass bands.\", \"photo 2: a three-quarter view from the corner, showing the brick facade and cylinder, the white extension with its long glass bands at left and above, and the towers beyond.\", \"photo 3: the view from the Yerba Buena garden side, showing the stepped brick masses and striped cylinder at the centre, with the white extension and glass-clad neighbours at the right.\"], \"components\": [{\"name\": \"striped oculus cylinder\", \"part\": \"cylinder\", \"where\": \"centre of the front, in front of the brick\", \"center\": [-22, -35], \"size\": [16, 16], \"height\": 26, \"settings\": {\"radius\": 8, \"height\": 26, \"colour\": \"#e4e0d8\"}, \"why\": \"photo 1 and 3: the striped drum with the glass oculus is the signature centrepiece of the front\"}, {\"name\": \"brick front base\", \"part\": \"block\", \"where\": \"the lower brick front across the front\", \"center\": [-22, -24], \"size\": [65, 36], \"height\": 12, \"settings\": {\"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, \"why\": \"photo 1: a low brick base spans the full width of the front\"}, {\"name\": \"west brick tower\", \"part\": \"block\", \"where\": \"left flanking brick mass of the front\", \"center\": [-33, -36], \"size\": [14, 12], \"height\": 22, \"settings\": {\"storeys\": [{\"height\": 22, \"kind\": \"rusticated\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, \"why\": \"photo 1: a taller brick mass rises on the left, stepping above the base\"}, {\"name\": \"east brick tower\", \"part\": \"block\", \"where\": \"right flanking brick mass of the front\", \"center\": [3, -36], \"size\": [14, 12], \"height\": 22, \"settings\": {\"storeys\": [{\"height\": 22, \"kind\": \"rusticated\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b4583a\"}, \"why\": \"photo 1: the right brick mass steps up beside the cylinder\"}, {\"name\": \"white extension behind\", \"part\": \"block\", \"where\": \"the whole back of the brick, behind the front\", \"center\": [-22, 16], \"size\": [64, 44], \"height\": 38, \"settings\": {\"storeys\": [{\"height\": 14, \"kind\": \"bands\", \"windows\": true}, {\"height\": 24, \"kind\": \"bands\", \"floors\": 3}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#ece9e3\"}, \"why\": \"photos 1 and 2: the white Snohetta mass with horizontal glass bands rises behind the brick and sets the tallest point\"}, {\"name\": \"east white wing\", \"part\": \"block\", \"where\": \"east side, the wing toward the right of the footprint\", \"center\": [33, 22], \"size\": [44, 31], \"height\": 30, \"settings\": {\"storeys\": [{\"height\": 12, \"kind\": \"bands\", \"windows\": true}, {\"height\": 18, \"kind\": \"bands\", \"floors\": 2}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#ece9e3\"}, \"why\": \"photo 2 and 3: the white extension continues to the east with the same glass bands\"}]}",
+  "input": 3483,
+  "output": 6891,
+  "cost": 0.004054175,
+  "ms": 34997,
+  "json": {
+   "photos": [
+    "photo 1: the front from the Third Street side, showing the brick front with two stepped flanking masses, the striped cylinder with its glass oculus in the centre, and the white Snohetta extension rising behind with horizontal glass bands.",
+    "photo 2: a three-quarter view from the corner, showing the brick facade and cylinder, the white extension with its long glass bands at left and above, and the towers beyond.",
+    "photo 3: the view from the Yerba Buena garden side, showing the stepped brick masses and striped cylinder at the centre, with the white extension and glass-clad neighbours at the right."
+   ],
+   "components": [
+    {
+     "name": "striped oculus cylinder",
+     "part": "cylinder",
+     "where": "centre of the front, in front of the brick",
+     "center": [
+      -22,
+      -35
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "height": 26,
+     "settings": {
+      "radius": 8,
+      "height": 26,
+      "colour": "#e4e0d8"
+     },
+     "why": "photo 1 and 3: the striped drum with the glass oculus is the signature centrepiece of the front"
+    },
+    {
+     "name": "brick front base",
+     "part": "block",
+     "where": "the lower brick front across the front",
+     "center": [
+      -22,
+      -24
+     ],
+     "size": [
+      65,
+      36
+     ],
+     "height": 12,
+     "settings": {
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "bands",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b4583a"
+     },
+     "why": "photo 1: a low brick base spans the full width of the front"
+    },
+    {
+     "name": "west brick tower",
+     "part": "block",
+     "where": "left flanking brick mass of the front",
+     "center": [
+      -33,
+      -36
+     ],
+     "size": [
+      14,
+      12
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 22,
+        "kind": "rusticated",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b4583a"
+     },
+     "why": "photo 1: a taller brick mass rises on the left, stepping above the base"
+    },
+    {
+     "name": "east brick tower",
+     "part": "block",
+     "where": "right flanking brick mass of the front",
+     "center": [
+      3,
+      -36
+     ],
+     "size": [
+      14,
+      12
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 22,
+        "kind": "rusticated",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b4583a"
+     },
+     "why": "photo 1: the right brick mass steps up beside the cylinder"
+    },
+    {
+     "name": "white extension behind",
+     "part": "block",
+     "where": "the whole back of the brick, behind the front",
+     "center": [
+      -22,
+      16
+     ],
+     "size": [
+      64,
+      44
+     ],
+     "height": 38,
+     "settings": {
+      "storeys": [
+       {
+        "height": 14,
+        "kind": "bands",
+        "windows": true
+       },
+       {
+        "height": 24,
+        "kind": "bands",
+        "floors": 3
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#ece9e3"
+     },
+     "why": "photos 1 and 2: the white Snohetta mass with horizontal glass bands rises behind the brick and sets the tallest point"
+    },
+    {
+     "name": "east white wing",
+     "part": "block",
+     "where": "east side, the wing toward the right of the footprint",
+     "center": [
+      33,
+      22
+     ],
+     "size": [
+      44,
+      31
+     ],
+     "height": 30,
+     "settings": {
+      "storeys": [
+       {
+        "height": 12,
+        "kind": "bands",
+        "windows": true
+       },
+       {
+        "height": 18,
+        "kind": "bands",
+        "floors": 2
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#ece9e3"
+     },
+     "why": "photo 2 and 3: the white extension continues to the east with the same glass bands"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "The San Francisco MOMA (Botta) reads as a low brick front, about 12 m high, spanning the full width of the Third Street face, with two taller brick masses flanking a striped drum that carries a glass oculus, centred on the front. Behind and to the east rises the white Snohetta extension, about 38 m high, with horizontal glass bands. The plan's positions hold, except that the flanking brick masses are moved so they sit symmetrically either side of the drum, as in the photographs.",
+   "parts": [
+    {
+     "type": "cylinder",
+     "center": [
+      -22,
+      -33
+     ],
+     "radius": 8,
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#e4e0d8"
+    },
+    {
+     "type": "disc",
+     "center": [
+      -22,
+      21,
+      -41.3
+     ],
+     "radius": 5.5,
+     "facing": "front",
+     "material": "glass",
+     "colour": "#9fb3b8"
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      -24
+     ],
+     "size": [
+      65,
+      36
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "bands",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b4583a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -36.5,
+      -37
+     ],
+     "size": [
+      9,
+      10
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 22,
+       "kind": "rusticated",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b4583a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -7.5,
+      -37
+     ],
+     "size": [
+      9,
+      10
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 22,
+       "kind": "rusticated",
+       "windows": false
+      }
+     ],
+     "cornice": 0,
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#b4583a"
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      16
+     ],
+     "size": [
+      64,
+      44
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 14,
+       "kind": "bands",
+       "windows": true
+      },
+      {
+       "height": 24,
+       "kind": "bands",
+       "floors": 3
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#ece9e3"
+    },
+    {
+     "type": "block",
+     "center": [
+      33,
+      22
+     ],
+     "size": [
+      44,
+      31
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 12,
+       "kind": "bands",
+       "windows": true
+      },
+      {
+       "height": 18,
+       "kind": "bands",
+       "floors": 2
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#ece9e3"
+    }
+   ]
+  },
+  "notes": "The San Francisco MOMA (Botta) reads as a low brick front, about 12 m high, spanning the full width of the Third Street face, with two taller brick masses flanking a striped drum that carries a glass oculus, centred on the front. Behind and to the east rises the white Snohetta extension, about 38 m high, with horizontal glass bands. The plan's positions hold, except that the flanking brick masses are moved so they sit symmetrically either side of the drum, as in the photographs.",
+  "triangles": 326,
+  "parts": 13
+ }
+}

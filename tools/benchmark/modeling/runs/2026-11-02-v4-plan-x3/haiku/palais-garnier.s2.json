@@ -1,0 +1,466 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:39.920Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Palais Garnier is a cream stone palace with a wide body and a two-storey colonnaded loggia projecting toward the avenue at the front. Behind and above it rises the tall stage-house gable with arched windows and oculi, which gives the building its 56 m height. A green copper auditorium dome sits over the middle of the body, and the flanking front pavilions carry the gilded statues. The signature features are the front loggia, the stage-house gable and the green dome.\", \"parts\": [{\"type\": \"block\", \"center\": [0, -8], \"size\": [101.6, 112], \"y0\": 0, \"bay\": 5, \"colour\": \"#d8cdb4\", \"trim\": \"#e8e1d0\", \"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 6, \"kind\": \"punched\"}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"balustrade\"}}, {\"type\": \"block\", \"center\": [0, -70], \"size\": [56, 13], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cdb4\", \"trim\": \"#e8e1d0\", \"storeys\": [{\"height\": 6, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"columns\", \"floors\": 2}, {\"height\": 6, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"balustrade\"}}, {\"type\": \"block\", \"center\": [-33, -70], \"size\": [10, 13], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cdb4\", \"storeys\": [{\"height\": 30, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"block\", \"center\": [33, -70], \"size\": [10, 13], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d8cdb4\", \"storeys\": [{\"height\": 30, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"flat\"}}, {\"type\": \"block\", \"center\": [0, 30], \"size\": [34, 50], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#cfc3a8\", \"trim\": \"#e8e1d0\", \"storeys\": [{\"height\": 10, \"kind\": \"rusticated\"}, {\"height\": 32, \"kind\": \"arched\", \"floors\": 3}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"gable\", \"rise\": 14, \"ridge\": \"x\"}}, {\"type\": \"rotunda\", \"center\": [0, -4], \"radius\": 12, \"y0\": 24, \"base\": 0, \"height\": 10, \"count\": 16, \"open\": false, \"drum\": 4, \"dome\": {\"height\": 10, \"colour\": \"#7fb8a0\", \"material\": \"copper\"}, \"lantern\": false, \"colour\": \"#d8cdb4\"}]}",
+   "stop": "end_turn",
+   "input": 4918,
+   "output": 3356,
+   "cacheRead": 8401,
+   "cost": 0.0022538099999999998,
+   "ms": 15713,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Palais Garnier is a cream stone palace with a wide body and a two-storey colonnaded loggia projecting toward the avenue at the front. Behind and above it rises the tall stage-house gable with arched windows and oculi, which gives the building its 56 m height. A green copper auditorium dome sits over the middle of the body, and the flanking front pavilions carry the gilded statues. The signature features are the front loggia, the stage-house gable and the green dome.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      -8
+     ],
+     "size": [
+      101.6,
+      112
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8cdb4",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 6,
+       "kind": "punched"
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -70
+     ],
+     "size": [
+      56,
+      13
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cdb4",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "columns",
+       "floors": 2
+      },
+      {
+       "height": 6,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "balustrade"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -33,
+      -70
+     ],
+     "size": [
+      10,
+      13
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cdb4",
+     "storeys": [
+      {
+       "height": 30,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      33,
+      -70
+     ],
+     "size": [
+      10,
+      13
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d8cdb4",
+     "storeys": [
+      {
+       "height": 30,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      30
+     ],
+     "size": [
+      34,
+      50
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#cfc3a8",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "rusticated"
+      },
+      {
+       "height": 32,
+       "kind": "arched",
+       "floors": 3
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "gable",
+      "rise": 14,
+      "ridge": "x"
+     }
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -4
+     ],
+     "radius": 12,
+     "y0": 24,
+     "base": 0,
+     "height": 10,
+     "count": 16,
+     "open": false,
+     "drum": 4,
+     "dome": {
+      "height": 10,
+      "colour": "#7fb8a0",
+      "material": "copper"
+     },
+     "lantern": false,
+     "colour": "#d8cdb4"
+    }
+   ]
+  },
+  "notes": "The Palais Garnier is a cream stone palace with a wide body and a two-storey colonnaded loggia projecting toward the avenue at the front. Behind and above it rises the tall stage-house gable with arched windows and oculi, which gives the building its 56 m height. A green copper auditorium dome sits over the middle of the body, and the flanking front pavilions carry the gilded statues. The signature features are the front loggia, the stage-house gable and the green dome.",
+  "triangles": 6064,
+  "parts": 97
+ },
+ "totals": {
+  "input": 8229,
+  "output": 6468,
+  "cost": 0.00416174,
+  "ms": 30993
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the street, showing a two-storey loggia of paired columns over a rusticated arcade, a central attic with a gilded cornice, a green copper dome behind the pediment with a gilded Apollo group on its top, and gilded statues on the corner pavilions\",\n    \"photo 2: an elevated view of the stage-house gable rising above the lower side wings, with its dark slate roofs, tall arched windows in the gable and a gilded figure on the ridge, the Eiffel Tower in the distance under clear sky\",\n    \"photo 3: an elevated view in overcast light of the great stage house, its tall gable with arched windows and rounded oculi, its wide roof behind, and the green copper dome at the left\"\n  ],\n  \"components\": [\n    {\"name\": \"front loggia pavilion\", \"part\": \"block\", \"where\": \"the central front projection\", \"center\": [0, -70], \"size\": [59, 13], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"columns\", \"floors\": 2}, {\"height\": 6, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8cdb4\"},\n     \"why\": \"photos 1 and 2: the arcaded front with a two-storey colonnade of paired columns projects toward the avenue\"},\n    {\"name\": \"main body\", \"part\": \"block\", \"where\": \"the whole middle of the footprint\", \"center\": [0, -8], \"size\": [101.6, 112], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"rusticated\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 6, \"kind\": \"punched\"}], \"faces\": \"front\", \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8cdb4\"},\n     \"why\": \"photos 1 and 2: a wide cream stone body with a balustraded roof gallery and pilastered side wings\"},\n    {\"name\": \"stage house\", \"part\": \"block\", \"where\": \"behind the main body, rising above it\", \"center\": [0, 10], \"size\": [34, 70], \"height\": 42,\n     \"settings\": {\"storeys\": [{\"height\": 10, \"kind\": \"rusticated\"}, {\"height\": 32, \"kind\": \"arched\", \"floors\": 3}], \"faces\": \"front\", \"roof\": {\"kind\": \"gable\", \"rise\": 14}, \"colour\": \"#cfc3a8\"},\n     \"why\": \"photos 2 and 3: the tall stage-house gable with arched windows rises well above the body, giving the building its height of 56 m\"},\n    {\"name\": \"green auditorium dome\", \"part\": \"rotunda\", \"where\": \"centre, behind the front pediment\", \"center\": [0, -4], \"radius\": 12, \"height\": 24,\n     \"settings\": {\"open\": false, \"columns\": 0, \"drum\": 4, \"dome\": {\"height\": 10, \"colour\": \"#7fb8a0\"}, \"lantern\": false},\n     \"why\": \"photos 1 and 3: a solid green copper dome sits on a drum over the auditorium\"},\n    {\"name\": \"gilded corner pavilions\", \"part\": \"block\", \"where\": \"the two front corners of the main body\", \"center\": [0, -70], \"size\": [64, 13], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 24, \"kind\": \"pilasters\", \"windows\": false}], \"faces\": \"front\", \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8cdb4\"},\n     \"why\": \"photo 1: the flanking corner pavilions carry the gilded statue groups, which sit above this line\"}\n  ]\n}\n```",
+  "input": 3311,
+  "output": 3112,
+  "cost": 0.00190793,
+  "ms": 15280,
+  "json": {
+   "photos": [
+    "photo 1: the front from the street, showing a two-storey loggia of paired columns over a rusticated arcade, a central attic with a gilded cornice, a green copper dome behind the pediment with a gilded Apollo group on its top, and gilded statues on the corner pavilions",
+    "photo 2: an elevated view of the stage-house gable rising above the lower side wings, with its dark slate roofs, tall arched windows in the gable and a gilded figure on the ridge, the Eiffel Tower in the distance under clear sky",
+    "photo 3: an elevated view in overcast light of the great stage house, its tall gable with arched windows and rounded oculi, its wide roof behind, and the green copper dome at the left"
+   ],
+   "components": [
+    {
+     "name": "front loggia pavilion",
+     "part": "block",
+     "where": "the central front projection",
+     "center": [
+      0,
+      -70
+     ],
+     "size": [
+      59,
+      13
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "arcade"
+       },
+       {
+        "height": 12,
+        "kind": "columns",
+        "floors": 2
+       },
+       {
+        "height": 6,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8cdb4"
+     },
+     "why": "photos 1 and 2: the arcaded front with a two-storey colonnade of paired columns projects toward the avenue"
+    },
+    {
+     "name": "main body",
+     "part": "block",
+     "where": "the whole middle of the footprint",
+     "center": [
+      0,
+      -8
+     ],
+     "size": [
+      101.6,
+      112
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "rusticated"
+       },
+       {
+        "height": 12,
+        "kind": "pilasters",
+        "floors": 2
+       },
+       {
+        "height": 6,
+        "kind": "punched"
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8cdb4"
+     },
+     "why": "photos 1 and 2: a wide cream stone body with a balustraded roof gallery and pilastered side wings"
+    },
+    {
+     "name": "stage house",
+     "part": "block",
+     "where": "behind the main body, rising above it",
+     "center": [
+      0,
+      10
+     ],
+     "size": [
+      34,
+      70
+     ],
+     "height": 42,
+     "settings": {
+      "storeys": [
+       {
+        "height": 10,
+        "kind": "rusticated"
+       },
+       {
+        "height": 32,
+        "kind": "arched",
+        "floors": 3
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "gable",
+       "rise": 14
+      },
+      "colour": "#cfc3a8"
+     },
+     "why": "photos 2 and 3: the tall stage-house gable with arched windows rises well above the body, giving the building its height of 56 m"
+    },
+    {
+     "name": "green auditorium dome",
+     "part": "rotunda",
+     "where": "centre, behind the front pediment",
+     "center": [
+      0,
+      -4
+     ],
+     "radius": 12,
+     "height": 24,
+     "settings": {
+      "open": false,
+      "columns": 0,
+      "drum": 4,
+      "dome": {
+       "height": 10,
+       "colour": "#7fb8a0"
+      },
+      "lantern": false
+     },
+     "why": "photos 1 and 3: a solid green copper dome sits on a drum over the auditorium"
+    },
+    {
+     "name": "gilded corner pavilions",
+     "part": "block",
+     "where": "the two front corners of the main body",
+     "center": [
+      0,
+      -70
+     ],
+     "size": [
+      64,
+      13
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 24,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "faces": "front",
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8cdb4"
+     },
+     "why": "photo 1: the flanking corner pavilions carry the gilded statue groups, which sit above this line"
+    }
+   ]
+  }
+ }
+}

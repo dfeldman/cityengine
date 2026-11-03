@@ -1,0 +1,578 @@
+{
+ "building": "palais-garnier",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:01:09.706Z",
+ "userText": "Building: Palais Garnier, Paris (opera house).\nThe front (−z) is the main front facing the Avenue de l’Opéra.\nFootprint: 101.7 m along x by 152.8 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]]\nHeight: the highest point is 56 m above the ground.\n\n3 photographs attached, in order:\n  1. front facade, eye level: loggia, central pediment and green dome behind, gilded statues at the corners, blue sky\n  2. elevated rooftop view of the stage-house gable and side wing with the Eiffel Tower in the distance, clear sky\n  3. elevated rooftop view of the great stage house and the green dome at left, overcast\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   101.7,
+   152.8
+  ],
+  "outline": [
+   [
+    -50.8,
+    -1.6
+   ],
+   [
+    -50.8,
+    -4.5
+   ],
+   [
+    -33.7,
+    -64.4
+   ],
+   [
+    -29.5,
+    -76.4
+   ],
+   [
+    29,
+    -76.4
+   ],
+   [
+    33.2,
+    -64.4
+   ],
+   [
+    50.8,
+    -4.2
+   ],
+   [
+    50.8,
+    -1.2
+   ],
+   [
+    33.2,
+    56.3
+   ],
+   [
+    28.9,
+    64.9
+   ],
+   [
+    21.5,
+    76.4
+   ],
+   [
+    -22.4,
+    76.4
+   ],
+   [
+    -29.7,
+    64.7
+   ],
+   [
+    -33.8,
+    56.3
+   ]
+  ],
+  "height": 56,
+  "turn": 0.7
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Palais Garnier: a long, richly ornamented stone block whose front (−z) has a two-storey colonnaded loggia under a central pediment with a gilded attic group. Behind the front, a green copper dome rises over the auditorium on the central axis, with a lantern and Apollo group above it at the top of the building. The stage house is a tall gabled mass at the back (+z) with a steep roof, and gilded figures stand at the front corners.\", \"parts\": [{\"type\": \"prism\", \"points\": [[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8cdb5\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 4, \"solid\": 0.6}}, {\"type\": \"colonnade\", \"from\": [-18, -79.5], \"to\": [18, -79.5], \"y0\": 0, \"height\": 22, \"count\": 9, \"radius\": 0.9, \"entablature\": 2.5}, {\"type\": \"pediment\", \"from\": [-20, -79.5], \"to\": [20, -79.5], \"y0\": 22, \"height\": 7, \"depth\": 3}, {\"type\": \"box\", \"center\": [0, -18], \"size\": [30, 26], \"y0\": 22, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#e0d6c2\"}, {\"type\": \"dome\", \"center\": [0, -18], \"radius\": 12, \"y0\": 26, \"height\": 10, \"material\": \"copper\", \"colour\": \"#6fa58c\"}, {\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 3, \"y0\": 36, \"y1\": 40, \"material\": \"copper\", \"colour\": \"#6fa58c\"}, {\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 1.8, \"y0\": 40, \"y1\": 56, \"material\": \"metal\", \"colour\": \"#c9a24a\", \"sides\": 8}, {\"type\": \"box\", \"center\": [-36, -74], \"size\": [6, 6], \"y0\": 22, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"box\", \"center\": [36, -74], \"size\": [6, 6], \"y0\": 22, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#c9a24a\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 40], \"size\": [36, 54], \"y0\": 22, \"rise\": 12, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#5a5e63\"}, {\"type\": \"box\", \"center\": [0, 40], \"size\": [36, 54], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8cdb5\"}]}",
+   "stop": "end_turn",
+   "input": 3311,
+   "output": 2322,
+   "cacheRead": 3474,
+   "cost": 0.0015268400000000002,
+   "ms": 11487,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "Three biggest differences from the real building:\n\n1. The front lacks the layered, ornate mass of the real facade. The loggia is a thin colonnade, and the central pediment is too low and flat to read as the tall attic it is.\n2. The dome and lantern are too small. The real green dome is a large, prominent drum-and-dome sitting on the central axis, and the gilded Apollo group should be bigger.\n3. The stage house gable is too low and too plain. In the photos it is the dominant back mass, rising well above the main roofline, and the windows are far too dense across the flanks, which are mostly solid stone.\n\n```json\n{\n  \"notes\": \"Palais Garnier: a long, richly ornamented stone block, with a deep loggia of columns and a tall central attic pediment on the front (-z). A large green copper dome rises over the auditorium on the central axis, topped by a lantern and gilded Apollo group. The stage house is a tall, steep gabled mass at the back (+z), and gilded figures stand on the front corner pavilions. The flanks are mostly solid stone with fewer windows than before.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-50.8,-1.6],[-50.8,-4.5],[-33.7,-64.4],[-29.5,-76.4],[29,-76.4],[33.2,-64.4],[50.8,-4.2],[50.8,-1.2],[33.2,56.3],[28.9,64.9],[21.5,76.4],[-22.4,76.4],[-29.7,64.7],[-33.8,56.3]], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8cdb5\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 6, \"solid\": 0.8}},\n    {\"type\": \"colonnade\", \"from\": [-18, -79.5], \"to\": [18, -79.5], \"y0\": 0, \"height\": 22, \"count\": 9, \"radius\": 1.2, \"entablature\": 3},\n    {\"type\": \"box\", \"center\": [0, -74], \"size\": [40, 6], \"y0\": 20, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#e6dcc8\"},\n    {\"type\": \"pediment\", \"from\": [-20, -79.5], \"to\": [20, -79.5], \"y0\": 24, \"height\": 10, \"depth\": 4},\n    {\"type\": \"box\", \"center\": [0, -18], \"size\": [34, 30], \"y0\": 22, \"y1\": 27, \"material\": \"stone\", \"colour\": \"#e0d6c2\"},\n    {\"type\": \"dome\", \"center\": [0, -18], \"radius\": 15, \"y0\": 27, \"height\": 15, \"material\": \"copper\", \"colour\": \"#6fa58c\"},\n    {\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 4, \"y0\": 40, \"y1\": 44, \"material\": \"copper\", \"colour\": \"#6fa58c\"},\n    {\"type\": \"cylinder\", \"center\": [0, -18], \"radius\": 2.2, \"y0\": 44, \"y1\": 56, \"material\": \"metal\", \"colour\": \"#c9a24a\", \"sides\": 8},\n    {\"type\": \"box\", \"center\": [-36, -74], \"size\": [7, 7], \"y0\": 22, \"y1\": 32, \"material\": \"metal\", \"colour\": \"#c9a24a\"},\n    {\"type\": \"box\", \"center\": [36, -74], \"size\": [7, 7], \"y0\": 22, \"y1\": 32, \"material\": \"metal\", \"colour\": \"#c9a24a\"},\n    {\"type\": \"box\", \"center\": [0, 40], \"size\": [36, 54], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8cdb5\"},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 40], \"size\": [36, 54], \"y0\": 22, \"rise\": 16, \"ridge\": \"z\", \"material\": \"tile\", \"colour\": \"#5a5e63\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 7099,
+   "output": 1914,
+   "cacheRead": 3474,
+   "cost": 0.00170164,
+   "ms": 9046,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Palais Garnier: a long, richly ornamented stone block, with a deep loggia of columns and a tall central attic pediment on the front (-z). A large green copper dome rises over the auditorium on the central axis, topped by a lantern and gilded Apollo group. The stage house is a tall, steep gabled mass at the back (+z), and gilded figures stand on the front corner pavilions. The flanks are mostly solid stone with fewer windows than before.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -50.8,
+       -1.6
+      ],
+      [
+       -50.8,
+       -4.5
+      ],
+      [
+       -33.7,
+       -64.4
+      ],
+      [
+       -29.5,
+       -76.4
+      ],
+      [
+       29,
+       -76.4
+      ],
+      [
+       33.2,
+       -64.4
+      ],
+      [
+       50.8,
+       -4.2
+      ],
+      [
+       50.8,
+       -1.2
+      ],
+      [
+       33.2,
+       56.3
+      ],
+      [
+       28.9,
+       64.9
+      ],
+      [
+       21.5,
+       76.4
+      ],
+      [
+       -22.4,
+       76.4
+      ],
+      [
+       -29.7,
+       64.7
+      ],
+      [
+       -33.8,
+       56.3
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8cdb5",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 6,
+      "solid": 0.8
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -79.5
+     ],
+     "to": [
+      18,
+      -79.5
+     ],
+     "y0": 0,
+     "height": 22,
+     "count": 9,
+     "radius": 1.2,
+     "entablature": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -74
+     ],
+     "size": [
+      40,
+      6
+     ],
+     "y0": 20,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#e6dcc8"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -79.5
+     ],
+     "to": [
+      20,
+      -79.5
+     ],
+     "y0": 24,
+     "height": 10,
+     "depth": 4
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      34,
+      30
+     ],
+     "y0": 22,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#e0d6c2"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 15,
+     "y0": 27,
+     "height": 15,
+     "material": "copper",
+     "colour": "#6fa58c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 4,
+     "y0": 40,
+     "y1": 44,
+     "material": "copper",
+     "colour": "#6fa58c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 2.2,
+     "y0": 44,
+     "y1": 56,
+     "material": "metal",
+     "colour": "#c9a24a",
+     "sides": 8
+    },
+    {
+     "type": "box",
+     "center": [
+      -36,
+      -74
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 22,
+     "y1": 32,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      36,
+      -74
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 22,
+     "y1": 32,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      40
+     ],
+     "size": [
+      36,
+      54
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8cdb5"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      40
+     ],
+     "size": [
+      36,
+      54
+     ],
+     "y0": 22,
+     "rise": 16,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#5a5e63"
+    }
+   ]
+  },
+  "notes": "Palais Garnier: a long, richly ornamented stone block, with a deep loggia of columns and a tall central attic pediment on the front (-z). A large green copper dome rises over the auditorium on the central axis, topped by a lantern and gilded Apollo group. The stage house is a tall, steep gabled mass at the back (+z), and gilded figures stand on the front corner pavilions. The flanks are mostly solid stone with fewer windows than before.",
+  "triangles": 1956,
+  "parts": 12
+ },
+ "totals": {
+  "input": 10410,
+  "output": 4236,
+  "cost": 0.00322848,
+  "ms": 20533
+ },
+ "draft": {
+  "json": {
+   "notes": "Palais Garnier: a long, richly ornamented stone block whose front (−z) has a two-storey colonnaded loggia under a central pediment with a gilded attic group. Behind the front, a green copper dome rises over the auditorium on the central axis, with a lantern and Apollo group above it at the top of the building. The stage house is a tall gabled mass at the back (+z) with a steep roof, and gilded figures stand at the front corners.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -50.8,
+       -1.6
+      ],
+      [
+       -50.8,
+       -4.5
+      ],
+      [
+       -33.7,
+       -64.4
+      ],
+      [
+       -29.5,
+       -76.4
+      ],
+      [
+       29,
+       -76.4
+      ],
+      [
+       33.2,
+       -64.4
+      ],
+      [
+       50.8,
+       -4.2
+      ],
+      [
+       50.8,
+       -1.2
+      ],
+      [
+       33.2,
+       56.3
+      ],
+      [
+       28.9,
+       64.9
+      ],
+      [
+       21.5,
+       76.4
+      ],
+      [
+       -22.4,
+       76.4
+      ],
+      [
+       -29.7,
+       64.7
+      ],
+      [
+       -33.8,
+       56.3
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8cdb5",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -79.5
+     ],
+     "to": [
+      18,
+      -79.5
+     ],
+     "y0": 0,
+     "height": 22,
+     "count": 9,
+     "radius": 0.9,
+     "entablature": 2.5
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -79.5
+     ],
+     "to": [
+      20,
+      -79.5
+     ],
+     "y0": 22,
+     "height": 7,
+     "depth": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -18
+     ],
+     "size": [
+      30,
+      26
+     ],
+     "y0": 22,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#e0d6c2"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 12,
+     "y0": 26,
+     "height": 10,
+     "material": "copper",
+     "colour": "#6fa58c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 3,
+     "y0": 36,
+     "y1": 40,
+     "material": "copper",
+     "colour": "#6fa58c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -18
+     ],
+     "radius": 1.8,
+     "y0": 40,
+     "y1": 56,
+     "material": "metal",
+     "colour": "#c9a24a",
+     "sides": 8
+    },
+    {
+     "type": "box",
+     "center": [
+      -36,
+      -74
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 22,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "box",
+     "center": [
+      36,
+      -74
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 22,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#c9a24a"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      40
+     ],
+     "size": [
+      36,
+      54
+     ],
+     "y0": 22,
+     "rise": 12,
+     "ridge": "z",
+     "material": "tile",
+     "colour": "#5a5e63"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      40
+     ],
+     "size": [
+      36,
+      54
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8cdb5"
+    }
+   ]
+  },
+  "notes": "Palais Garnier: a long, richly ornamented stone block whose front (−z) has a two-storey colonnaded loggia under a central pediment with a gilded attic group. Behind the front, a green copper dome rises over the auditorium on the central axis, with a lantern and Apollo group above it at the top of the building. The stage house is a tall gabled mass at the back (+z) with a steep roof, and gilded figures stand at the front corners.",
+  "triangles": 2216,
+  "parts": 11
+ }
+}

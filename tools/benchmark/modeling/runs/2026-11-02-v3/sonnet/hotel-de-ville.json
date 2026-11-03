@@ -1,0 +1,388 @@
+{
+ "building": "hotel-de-ville",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:19:05.957Z",
+ "userText": "Building: Hôtel de Ville, Paris (city hall).\nThe front (−z) is the west front on the Place de l’Hôtel-de-Ville.\nFootprint: 144.1 m along x by 89.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-72.1,-40.9],[-71,-41.7],[-29.9,-44.5],[27.4,-44.6],[71,-41.4],[72,-39.5],[72.1,40.6],[71.3,41.5],[38.4,44.5],[29.1,44.6],[-38.2,44.5],[-71.2,40.6],[-72.1,39.8]]\nHeight: the highest point is 55 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the square: central clock tower, corner pavilions and steep slate roofs, daylight\n  2. three-quarter from a bridge along the river side, showing the long wing, towers and mansard roofs\n  3. view along the long flank facade with its repeated arched bays and mansard roof\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   144.1,
+   89.1
+  ],
+  "outline": [
+   [
+    -72.1,
+    -40.9
+   ],
+   [
+    -71,
+    -41.7
+   ],
+   [
+    -29.9,
+    -44.5
+   ],
+   [
+    27.4,
+    -44.6
+   ],
+   [
+    71,
+    -41.4
+   ],
+   [
+    72,
+    -39.5
+   ],
+   [
+    72.1,
+    40.6
+   ],
+   [
+    71.3,
+    41.5
+   ],
+   [
+    38.4,
+    44.5
+   ],
+   [
+    29.1,
+    44.6
+   ],
+   [
+    -38.2,
+    44.5
+   ],
+   [
+    -71.2,
+    40.6
+   ],
+   [
+    -72.1,
+    39.8
+   ]
+  ],
+  "height": 55,
+  "turn": -19.9
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Hôtel de Ville is a Neo-Renaissance palace built round a large court. It has a long, ornate stone facade with arched ground floor bays, pilasters and statue niches, under steep grey slate mansard roofs. Signature features: tall corner and centre pavilions with steep pavilion roofs, a central clock tower with a slender belfry and cupola on the front, and tall chimney stacks. I model the court-plan body, the pavilions at the corners and mid-flanks, and the central clock tower.\", \"parts\": [\n{\"type\": \"court\", \"center\": [0, 0], \"size\": [143, 88], \"wing\": 20, \"open\": \"none\", \"y0\": 0, \"bay\": 4.5, \"colour\": \"#cfc3a8\", \"trim\": \"#ddd3bc\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 10, \"kind\": \"pilasters\", \"floors\": 1}, {\"height\": 6, \"kind\": \"punched\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"mansard\", \"rise\": 10, \"dormers\": true, \"colour\": \"#575d68\"}},\n{\"type\": \"block\", \"center\": [-62, -33], \"size\": [20, 22], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d0c4a9\", \"trim\": \"#ddd3bc\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 5, \"kind\": \"punched\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"dormers\": true, \"colour\": \"#575d68\"}},\n{\"type\": \"block\", \"center\": [62, -33], \"size\": [20, 22], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d0c4a9\", \"trim\": \"#ddd3bc\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 5, \"kind\": \"punched\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"dormers\": true, \"colour\": \"#575d68\"}},\n{\"type\": \"block\", \"center\": [-62, 33], \"size\": [20, 22], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d0c4a9\", \"trim\": \"#ddd3bc\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 5, \"kind\": \"punched\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"dormers\": true, \"colour\": \"#575d68\"}},\n{\"type\": \"block\", \"center\": [62, 33], \"size\": [20, 22], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d0c4a9\", \"trim\": \"#ddd3bc\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 5, \"kind\": \"punched\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"pavilion\", \"rise\": 14, \"dormers\": true, \"colour\": \"#575d68\"}},\n{\"type\": \"block\", \"center\": [0, -34], \"size\": [30, 20], \"y0\": 0, \"bay\": 4.5, \"colour\": \"#d0c4a9\", \"trim\": \"#ddd3bc\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 12, \"kind\": \"pilasters\", \"floors\": 2}, {\"height\": 6, \"kind\": \"punched\"}], \"cornice\": 1.5, \"roof\": {\"kind\": \"pavilion\", \"rise\": 12, \"dormers\": true, \"colour\": \"#575d68\"}},\n{\"type\": \"tower\", \"center\": [0, -30], \"y0\": 33, \"colour\": \"#cfc3a8\", \"stages\": [{\"shape\": \"square\", \"width\": 11, \"height\": 8, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 7, \"height\": 7, \"kind\": \"open\"}], \"top\": {\"kind\": \"spire\", \"height\": 7, \"colour\": \"#3f464f\"}},\n{\"type\": \"box\", \"center\": [-30, -37], \"size\": [3, 3], \"y0\": 28, \"y1\": 38, \"colour\": \"#d8cfba\"},\n{\"type\": \"box\", \"center\": [30, -37], \"size\": [3, 3], \"y0\": 28, \"y1\": 38, \"colour\": \"#d8cfba\"}\n]}",
+   "stop": "end_turn",
+   "input": 3510,
+   "output": 1547,
+   "cacheRead": 8168,
+   "cost": 0.0241236,
+   "ms": 10635,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Hôtel de Ville is a Neo-Renaissance palace built round a large court. It has a long, ornate stone facade with arched ground floor bays, pilasters and statue niches, under steep grey slate mansard roofs. Signature features: tall corner and centre pavilions with steep pavilion roofs, a central clock tower with a slender belfry and cupola on the front, and tall chimney stacks. I model the court-plan body, the pavilions at the corners and mid-flanks, and the central clock tower.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      143,
+      88
+     ],
+     "wing": 20,
+     "open": "none",
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#cfc3a8",
+     "trim": "#ddd3bc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 10,
+       "kind": "pilasters",
+       "floors": 1
+      },
+      {
+       "height": 6,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "mansard",
+      "rise": 10,
+      "dormers": true,
+      "colour": "#575d68"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -62,
+      -33
+     ],
+     "size": [
+      20,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d0c4a9",
+     "trim": "#ddd3bc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 5,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "dormers": true,
+      "colour": "#575d68"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      62,
+      -33
+     ],
+     "size": [
+      20,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d0c4a9",
+     "trim": "#ddd3bc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 5,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "dormers": true,
+      "colour": "#575d68"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -62,
+      33
+     ],
+     "size": [
+      20,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d0c4a9",
+     "trim": "#ddd3bc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 5,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "dormers": true,
+      "colour": "#575d68"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      62,
+      33
+     ],
+     "size": [
+      20,
+      22
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d0c4a9",
+     "trim": "#ddd3bc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 5,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 14,
+      "dormers": true,
+      "colour": "#575d68"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -34
+     ],
+     "size": [
+      30,
+      20
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "colour": "#d0c4a9",
+     "trim": "#ddd3bc",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 12,
+       "kind": "pilasters",
+       "floors": 2
+      },
+      {
+       "height": 6,
+       "kind": "punched"
+      }
+     ],
+     "cornice": 1.5,
+     "roof": {
+      "kind": "pavilion",
+      "rise": 12,
+      "dormers": true,
+      "colour": "#575d68"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      0,
+      -30
+     ],
+     "y0": 33,
+     "colour": "#cfc3a8",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 8,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 7,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 7,
+      "colour": "#3f464f"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -30,
+      -37
+     ],
+     "size": [
+      3,
+      3
+     ],
+     "y0": 28,
+     "y1": 38,
+     "colour": "#d8cfba"
+    },
+    {
+     "type": "box",
+     "center": [
+      30,
+      -37
+     ],
+     "size": [
+      3,
+      3
+     ],
+     "y0": 28,
+     "y1": 38,
+     "colour": "#d8cfba"
+    }
+   ]
+  },
+  "notes": "Hôtel de Ville is a Neo-Renaissance palace built round a large court. It has a long, ornate stone facade with arched ground floor bays, pilasters and statue niches, under steep grey slate mansard roofs. Signature features: tall corner and centre pavilions with steep pavilion roofs, a central clock tower with a slender belfry and cupola on the front, and tall chimney stacks. I model the court-plan body, the pavilions at the corners and mid-flanks, and the central clock tower.",
+  "triangles": 25482,
+  "parts": 647
+ },
+ "totals": {
+  "input": 3510,
+  "output": 1547,
+  "cost": 0.0241236,
+  "ms": 10635
+ }
+}

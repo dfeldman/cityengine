@@ -1,0 +1,201 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:09.697Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Gare de Lyon: a long cream Beaux-Arts station front on the −z side, with arched ground-floor windows, a slate mansard roof with dormers, and a tall clock tower with a dome at the right (+x) end. Behind it, a long glass-and-steel train shed runs along z under a barrel roof, flanked by pale office blocks on the east side. I'm modelling the front block with mansard roof, the clock tower with its dome, and the vaulted shed.\", \"parts\": [{\"type\": \"block\", \"center\": [-5, -96], \"size\": [180, 26], \"y0\": 0, \"bay\": 5, \"colour\": \"#d8cdb5\", \"trim\": \"#e8e1d0\", \"storeys\": [{\"height\": 9, \"kind\": \"arcade\"}, {\"height\": 13, \"kind\": \"arched\", \"floors\": 2}], \"faces\": \"front\", \"cornice\": 1.2, \"roof\": {\"kind\": \"mansard\", \"rise\": 9, \"dormers\": true, \"colour\": \"#4a5058\"}}, {\"type\": \"tower\", \"center\": [70, -96], \"y0\": 0, \"colour\": \"#e2dccd\", \"stages\": [{\"shape\": \"square\", \"width\": 14, \"height\": 44, \"kind\": \"punched\"}, {\"shape\": \"square\", \"width\": 14, \"height\": 10, \"kind\": \"clock\"}, {\"shape\": \"square\", \"width\": 11, \"height\": 6, \"kind\": \"open\"}], \"top\": {\"kind\": \"dome\", \"height\": 7, \"colour\": \"#59626a\"}}, {\"type\": \"vault\", \"center\": [-5, 10], \"size\": [150, 200], \"y0\": 22, \"rise\": 14, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#7d8a8e\", \"ends\": \"open\"}, {\"type\": \"box\", \"center\": [75, 30], \"size\": [28, 150], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d4cfc6\", \"windows\": {\"kind\": \"punched\", \"floor\": 3.5, \"pitch\": 3}}]}",
+   "stop": "end_turn",
+   "input": 3370,
+   "output": 2023,
+   "cacheRead": 8168,
+   "cost": 0.00143018,
+   "ms": 10641,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Gare de Lyon: a long cream Beaux-Arts station front on the −z side, with arched ground-floor windows, a slate mansard roof with dormers, and a tall clock tower with a dome at the right (+x) end. Behind it, a long glass-and-steel train shed runs along z under a barrel roof, flanked by pale office blocks on the east side. I'm modelling the front block with mansard roof, the clock tower with its dome, and the vaulted shed.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -5,
+      -96
+     ],
+     "size": [
+      180,
+      26
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8cdb5",
+     "trim": "#e8e1d0",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "arcade"
+      },
+      {
+       "height": 13,
+       "kind": "arched",
+       "floors": 2
+      }
+     ],
+     "faces": "front",
+     "cornice": 1.2,
+     "roof": {
+      "kind": "mansard",
+      "rise": 9,
+      "dormers": true,
+      "colour": "#4a5058"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      70,
+      -96
+     ],
+     "y0": 0,
+     "colour": "#e2dccd",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 44,
+       "kind": "punched"
+      },
+      {
+       "shape": "square",
+       "width": 14,
+       "height": 10,
+       "kind": "clock"
+      },
+      {
+       "shape": "square",
+       "width": 11,
+       "height": 6,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "dome",
+      "height": 7,
+      "colour": "#59626a"
+     }
+    },
+    {
+     "type": "vault",
+     "center": [
+      -5,
+      10
+     ],
+     "size": [
+      150,
+      200
+     ],
+     "y0": 22,
+     "rise": 14,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#7d8a8e",
+     "ends": "open"
+    },
+    {
+     "type": "box",
+     "center": [
+      75,
+      30
+     ],
+     "size": [
+      28,
+      150
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d4cfc6",
+     "windows": {
+      "kind": "punched",
+      "floor": 3.5,
+      "pitch": 3
+     }
+    }
+   ]
+  },
+  "notes": "Gare de Lyon: a long cream Beaux-Arts station front on the −z side, with arched ground-floor windows, a slate mansard roof with dormers, and a tall clock tower with a dome at the right (+x) end. Behind it, a long glass-and-steel train shed runs along z under a barrel roof, flanked by pale office blocks on the east side. I'm modelling the front block with mansard roof, the clock tower with its dome, and the vaulted shed.",
+  "triangles": 6804,
+  "parts": 93
+ },
+ "totals": {
+  "input": 3370,
+  "output": 2023,
+  "cost": 0.00143018,
+  "ms": 10641
+ }
+}

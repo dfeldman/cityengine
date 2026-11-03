@@ -1,0 +1,823 @@
+[
+ {
+  "building": "asian-art-museum",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00877845,
+  "seconds": 66.935,
+  "input": 16541,
+  "output": 13871,
+  "parts": 11,
+  "triangles": 2736,
+  "types": [
+   "box",
+   "colonnade",
+   "roof"
+  ],
+  "iou": 0.8932481751824818,
+  "spill": 0.11495422177009156,
+  "heightRatio": 1.0413793103448277,
+  "features": [
+   {
+    "label": "Grey granite Beaux-Arts block with a flat roof",
+    "pass": true
+   },
+   {
+    "label": "Giant columns across the upper storeys of the main front",
+    "pass": true
+   },
+   {
+    "label": "Arched openings at the ground floor",
+    "pass": false
+   }
+  ],
+  "featureRate": 0.6666666666666666,
+  "screen": 81
+ },
+ {
+  "building": "bnf-mitterrand",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00575595,
+  "seconds": 36.313,
+  "input": 16101,
+  "output": 7914,
+  "parts": 17,
+  "triangles": 844,
+  "types": [
+   "box"
+  ],
+  "iou": 0.659047619047619,
+  "spill": 0,
+  "heightRatio": 0.8734177215189873,
+  "features": [
+   {
+    "label": "Four L-shaped glass towers at the corners, like open books",
+    "pass": true
+   },
+   {
+    "label": "Huge raised flat esplanade between them",
+    "pass": null
+   },
+   {
+    "label": "Sunken garden in the middle",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 85
+ },
+ {
+  "building": "centre-pompidou",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00682155,
+  "seconds": 47.907,
+  "input": 17007,
+  "output": 9864,
+  "parts": 44,
+  "triangles": 576,
+  "types": [
+   "beam",
+   "box"
+  ],
+  "iou": 0.9279279279279279,
+  "spill": 0.07766990291262135,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Rectangular glass-and-steel box",
+    "pass": true
+   },
+   {
+    "label": "Exposed structural frame and cross-bracing on the facades",
+    "pass": true
+   },
+   {
+    "label": "Escalator tube climbing diagonally across the west front",
+    "pass": true
+   },
+   {
+    "label": "Brightly coloured service ducts on the east side",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 97
+ },
+ {
+  "building": "chase-center",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.007432595,
+  "seconds": 50.221,
+  "input": 19017,
+  "output": 10205,
+  "parts": 5,
+  "triangles": 580,
+  "types": [
+   "box",
+   "dome",
+   "prism"
+  ],
+  "iou": 0.9685264663805436,
+  "spill": 0.03249630723781388,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Rounded, drum-like body with softened corners (not a sharp box)",
+    "pass": null
+   },
+   {
+    "label": "Glazed lower storey under a solid light upper band",
+    "pass": true
+   },
+   {
+    "label": "Flat roof over the whole drum",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 99
+ },
+ {
+  "building": "coit-tower",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.0041531499999999996,
+  "seconds": 25.073,
+  "input": 14848,
+  "output": 4959,
+  "parts": 3,
+  "triangles": 396,
+  "types": [
+   "box",
+   "cylinder"
+  ],
+  "iou": 0.8111281727034595,
+  "spill": 0.22670360110803325,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Tall fluted cylindrical shaft",
+    "pass": true
+   },
+   {
+    "label": "Arched openings at the top observation level",
+    "pass": null
+   },
+   {
+    "label": "A wider, low plinth at the foot of the shaft (the footprint is the tower alone; the hilltop buildings around it are outside)",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 92
+ },
+ {
+  "building": "conservatory-of-flowers",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.0077547499999999995,
+  "seconds": 53.199,
+  "input": 16954,
+  "output": 11741,
+  "parts": 42,
+  "triangles": 2688,
+  "types": [
+   "box",
+   "cylinder",
+   "dome",
+   "ring",
+   "vault"
+  ],
+  "iou": 0.5606416816484581,
+  "spill": 0.0829713943387749,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "White-framed glass greenhouse",
+    "pass": true
+   },
+   {
+    "label": "Central pavilion with a tall dome or curved roof",
+    "pass": true
+   },
+   {
+    "label": "Two long wings ending in end pavilions",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 86
+ },
+ {
+  "building": "de-young",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.004378395,
+  "seconds": 27.64,
+  "input": 14340,
+  "output": 5032,
+  "parts": 8,
+  "triangles": 352,
+  "types": [
+   "box"
+  ],
+  "iou": 0.9594520547945206,
+  "spill": 0.0422615648201028,
+  "heightRatio": 1.0409090909090908,
+  "features": [
+   {
+    "label": "Long, low gallery wings clad in dark copper",
+    "pass": true
+   },
+   {
+    "label": "Twisting tower rising from one end of the wings",
+    "pass": true
+   },
+   {
+    "label": "Deep flat roof overhang cantilevered over the entrance",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 97
+ },
+ {
+  "building": "ferry-building",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00509825,
+  "seconds": 32.117,
+  "input": 15819,
+  "output": 6655,
+  "parts": 36,
+  "triangles": 6870,
+  "types": [
+   "arcade",
+   "box",
+   "cylinder",
+   "disc",
+   "dome",
+   "ring",
+   "roof"
+  ],
+  "iou": 0.9164341085271318,
+  "spill": 0.0911859245474539,
+  "heightRatio": 1.0160000000000002,
+  "features": [
+   {
+    "label": "Clock tower at the centre, about 75 m",
+    "pass": true
+   },
+   {
+    "label": "Long arcade of round arches along the whole front",
+    "pass": true
+   },
+   {
+    "label": "Long two- to three-storey body under a low roof",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 96
+ },
+ {
+  "building": "gare-de-lyon",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.008796449999999999,
+  "seconds": 65.121,
+  "input": 19041,
+  "output": 13407,
+  "parts": 78,
+  "triangles": 5314,
+  "types": [
+   "arcade",
+   "box",
+   "colonnade",
+   "disc",
+   "dome",
+   "roof",
+   "vault"
+  ],
+  "iou": 0.6612032272409631,
+  "spill": 0.04155362932574605,
+  "heightRatio": 1.008955223880597,
+  "features": [
+   {
+    "label": "Clock tower at one corner, about 67 m",
+    "pass": true
+   },
+   {
+    "label": "Long stone front with large arched windows",
+    "pass": true
+   },
+   {
+    "label": "Train-shed roofs (vaulted or pitched) behind the front",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 89
+ },
+ {
+  "building": "hotel-de-ville",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00689765,
+  "seconds": 46.22,
+  "input": 18088,
+  "output": 9800,
+  "parts": 404,
+  "triangles": 7566,
+  "types": [
+   "box",
+   "disc",
+   "roof"
+  ],
+  "iou": 0.5421052631578948,
+  "spill": 0.05803048065650645,
+  "heightRatio": 1.021818181818182,
+  "features": [
+   {
+    "label": "French Renaissance block with steep slate roofs over corner pavilions",
+    "pass": true
+   },
+   {
+    "label": "Central clock tower",
+    "pass": true
+   },
+   {
+    "label": "Regular rows of tall windows",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 85
+ },
+ {
+  "building": "legion-of-honor",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.007061650000000001,
+  "seconds": 51.133,
+  "input": 16383,
+  "output": 10469,
+  "parts": 350,
+  "triangles": 9532,
+  "types": [
+   "arcade",
+   "box",
+   "colonnade",
+   "cylinder",
+   "dome",
+   "ring"
+  ],
+  "iou": 0.7608025748133945,
+  "spill": 0.034060331397819006,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "U-shaped neoclassical building around an open court",
+    "pass": null
+   },
+   {
+    "label": "Ionic colonnades lining the court",
+    "pass": true
+   },
+   {
+    "label": "Triumphal-arch entrance gateway at the open end of the court",
+    "pass": true
+   },
+   {
+    "label": "Central portico with a pediment at the head of the court",
+    "pass": false
+   }
+  ],
+  "featureRate": 0.6666666666666666,
+  "screen": 79
+ },
+ {
+  "building": "madeleine",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00674325,
+  "seconds": 46.305,
+  "input": 17464,
+  "output": 9616,
+  "parts": 9,
+  "triangles": 4676,
+  "types": [
+   "box",
+   "colonnade",
+   "pediment",
+   "roof"
+  ],
+  "iou": 0.9488866396761133,
+  "spill": 0.05386666666666667,
+  "heightRatio": 1.0277777777777777,
+  "features": [
+   {
+    "label": "Roman temple with columns on all four sides",
+    "pass": true
+   },
+   {
+    "label": "Pediments at the ends",
+    "pass": true
+   },
+   {
+    "label": "Raised podium with steps at the front",
+    "pass": null
+   },
+   {
+    "label": "Low-pitched roof",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 97
+ },
+ {
+  "building": "musee-orsay",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00983555,
+  "seconds": 75.185,
+  "input": 18657,
+  "output": 15562,
+  "parts": 171,
+  "triangles": 6572,
+  "types": [
+   "arcade",
+   "box",
+   "cylinder",
+   "disc",
+   "dome",
+   "roof",
+   "vault"
+  ],
+  "iou": 0.8943346796201288,
+  "spill": 0.053230627730512764,
+  "heightRatio": 1.0263157894736843,
+  "features": [
+   {
+    "label": "Long barrel-vaulted glass roof over the central hall",
+    "pass": true
+   },
+   {
+    "label": "Beaux-Arts stone river front with large arched openings",
+    "pass": true
+   },
+   {
+    "label": "End pavilions with big clock faces and pavilion roofs",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 95
+ },
+ {
+  "building": "oracle-park",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.008671795,
+  "seconds": 64.54,
+  "input": 18069,
+  "output": 12873,
+  "parts": 19,
+  "triangles": 2000,
+  "types": [
+   "arcade",
+   "beam",
+   "bowl",
+   "box",
+   "disc",
+   "roof"
+  ],
+  "iou": 0.6245983239871463,
+  "spill": 0.15787553804625373,
+  "heightRatio": 1.010190394582652,
+  "features": [
+   {
+    "label": "Seating bowl that is a horseshoe open on the bay side, not a closed ring",
+    "pass": true
+   },
+   {
+    "label": "Red-brick outer walls with tall arched openings along the street sides",
+    "pass": true
+   },
+   {
+    "label": "Grass field inside the bowl",
+    "pass": true
+   },
+   {
+    "label": "Clock tower(s) and tall light towers above the stands",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 87
+ },
+ {
+  "building": "palace-of-fine-arts",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00448825,
+  "seconds": 28.672,
+  "input": 14644,
+  "output": 5670,
+  "parts": 29,
+  "triangles": 2400,
+  "types": [
+   "arcade",
+   "cylinder",
+   "dome",
+   "ring"
+  ],
+  "iou": 0.4652522190950422,
+  "spill": 0,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Open rotunda: a dome on a ring of columns, with no walls between them",
+    "pass": true
+   },
+   {
+    "label": "Ring of columns (or paired columns) carrying the dome",
+    "pass": true
+   },
+   {
+    "label": "Tall drum or entablature between the columns and the dome",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 84
+ },
+ {
+  "building": "palais-garnier",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.00930475,
+  "seconds": 71.325,
+  "input": 18359,
+  "output": 14560,
+  "parts": 105,
+  "triangles": 6380,
+  "types": [
+   "arcade",
+   "box",
+   "colonnade",
+   "cylinder",
+   "dome",
+   "pediment",
+   "prism",
+   "ring",
+   "roof"
+  ],
+  "iou": 0.9475971370143149,
+  "spill": 0.005914116739521728,
+  "heightRatio": 1.0558057142857142,
+  "features": [
+   {
+    "label": "Loggia of paired columns above arched ground-floor openings",
+    "pass": true
+   },
+   {
+    "label": "Arched openings across the ground floor of the front",
+    "pass": true
+   },
+   {
+    "label": "Green copper dome over the auditorium",
+    "pass": true
+   },
+   {
+    "label": "Tall gabled stage-house roof behind the dome",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 96
+ },
+ {
+  "building": "pantheon",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.01088345,
+  "seconds": 81.371,
+  "input": 20126,
+  "output": 17364,
+  "parts": 136,
+  "triangles": 4580,
+  "types": [
+   "box",
+   "colonnade",
+   "cylinder",
+   "dome",
+   "pediment",
+   "ring"
+  ],
+  "iou": 0.7304964539007093,
+  "spill": 0.07552500235427065,
+  "heightRatio": 0.9244684337349397,
+  "features": [
+   {
+    "label": "Dome on a tall drum ringed with columns",
+    "pass": true
+   },
+   {
+    "label": "Portico of Corinthian columns",
+    "pass": true
+   },
+   {
+    "label": "Triangular pediment over the portico",
+    "pass": true
+   },
+   {
+    "label": "Cross-shaped plan of plain, windowless walls",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 88
+ },
+ {
+  "building": "parc-des-princes",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.004471050000000001,
+  "seconds": 28.327,
+  "input": 15332,
+  "output": 5498,
+  "parts": 87,
+  "triangles": 1416,
+  "types": [
+   "beam",
+   "bowl",
+   "box"
+  ],
+  "iou": 0.8340236232551005,
+  "spill": 0.1938467173335775,
+  "heightRatio": 1.0208733589866272,
+  "features": [
+   {
+    "label": "Closed oval bowl of stands",
+    "pass": true
+   },
+   {
+    "label": "Ring of many tall concrete ribs around the outside",
+    "pass": true
+   },
+   {
+    "label": "Roof canopy over the stands",
+    "pass": null
+   },
+   {
+    "label": "Grass pitch inside",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 92
+ },
+ {
+  "building": "sacre-coeur",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.01016955,
+  "seconds": 71.996,
+  "input": 21692,
+  "output": 15623,
+  "parts": 83,
+  "triangles": 8304,
+  "types": [
+   "arcade",
+   "box",
+   "cylinder",
+   "dome",
+   "ring",
+   "roof"
+  ],
+  "iou": 0.783150800336984,
+  "spill": 0.2768932874354561,
+  "heightRatio": 1.0057142857142856,
+  "features": [
+   {
+    "label": "Large central dome on a tall drum, about 83 m up",
+    "pass": true
+   },
+   {
+    "label": "Several smaller domes and turrets clustered around the main dome",
+    "pass": true
+   },
+   {
+    "label": "Front portico of three round arches",
+    "pass": true
+   },
+   {
+    "label": "Square bell tower rising behind the dome",
+    "pass": false
+   }
+  ],
+  "featureRate": 0.75,
+  "screen": 80
+ },
+ {
+  "building": "sfmoma",
+  "modelId": "haiku",
+  "sample": "",
+  "status": "ok",
+  "attempts": 2,
+  "repaired": false,
+  "cost": 0.011577995,
+  "seconds": 88.012,
+  "input": 20681,
+  "output": 18163,
+  "parts": 21,
+  "triangles": 2100,
+  "types": [
+   "box",
+   "cylinder",
+   "disc",
+   "ring"
+  ],
+  "iou": 0.9257138551947562,
+  "spill": 0.03979631805718762,
+  "heightRatio": 1.0263157894736843,
+  "features": [
+   {
+    "label": "Stepped, symmetrical brick masses rising toward the centre",
+    "pass": false
+   },
+   {
+    "label": "Central cylinder (the oculus) cut off at a slant, striped in bands",
+    "pass": true
+   },
+   {
+    "label": "Mostly blank brick walls with very few windows",
+    "pass": null
+   }
+  ],
+  "featureRate": 0.5,
+  "screen": 76
+ }
+]

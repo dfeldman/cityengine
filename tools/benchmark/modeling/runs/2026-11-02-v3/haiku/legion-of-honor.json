@@ -1,0 +1,193 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:17:43.926Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A Beaux-Arts museum: a long pale stone front with a tall triumphal arch in the centre of the forecourt, flanked by free-standing colonnades running out to flat-roofed end pavilions with balustrades. A green copper dome sits on a drum at the centre rear, visible through the arch. Columns and arch are the signature features.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -44], \"size\": [14, 5], \"y0\": 0, \"y1\": 23, \"material\": \"stone\", \"colour\": \"#d9d3c5\"},\n    {\"type\": \"box\", \"center\": [0, 5], \"size\": [44, 80], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d9d3c5\"},\n    {\"type\": \"box\", \"center\": [23, -34], \"size\": [14, 25], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d9d3c5\"},\n    {\"type\": \"box\", \"center\": [-23, -34], \"size\": [14, 25], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d9d3c5\"},\n    {\"type\": \"colonnade\", \"from\": [-16, -43], \"to\": [-5, -43], \"y0\": 0, \"height\": 12, \"count\": 9, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [5, -43], \"to\": [16, -43], \"y0\": 0, \"height\": 12, \"count\": 9, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"cylinder\", \"center\": [0, 10], \"radius\": 9, \"y0\": 14, \"y1\": 19, \"material\": \"stone\", \"colour\": \"#d9d3c5\", \"sides\": 24},\n    {\"type\": \"dome\", \"center\": [0, 10], \"radius\": 9, \"y0\": 19, \"height\": 8, \"material\": \"copper\", \"colour\": \"#6fa08f\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 1489,
+   "cacheRead": 8168,
+   "cost": 0.0011538800000000001,
+   "ms": 8089,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A Beaux-Arts museum: a long pale stone front with a tall triumphal arch in the centre of the forecourt, flanked by free-standing colonnades running out to flat-roofed end pavilions with balustrades. A green copper dome sits on a drum at the centre rear, visible through the arch. Columns and arch are the signature features.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      14,
+      5
+     ],
+     "y0": 0,
+     "y1": 23,
+     "material": "stone",
+     "colour": "#d9d3c5"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      5
+     ],
+     "size": [
+      44,
+      80
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d9d3c5"
+    },
+    {
+     "type": "box",
+     "center": [
+      23,
+      -34
+     ],
+     "size": [
+      14,
+      25
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d9d3c5"
+    },
+    {
+     "type": "box",
+     "center": [
+      -23,
+      -34
+     ],
+     "size": [
+      14,
+      25
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d9d3c5"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      -43
+     ],
+     "to": [
+      -5,
+      -43
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 9,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      5,
+      -43
+     ],
+     "to": [
+      16,
+      -43
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 9,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      10
+     ],
+     "radius": 9,
+     "y0": 14,
+     "y1": 19,
+     "material": "stone",
+     "colour": "#d9d3c5",
+     "sides": 24
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      10
+     ],
+     "radius": 9,
+     "y0": 19,
+     "height": 8,
+     "material": "copper",
+     "colour": "#6fa08f"
+    }
+   ]
+  },
+  "notes": "A Beaux-Arts museum: a long pale stone front with a tall triumphal arch in the centre of the forecourt, flanked by free-standing colonnades running out to flat-roofed end pavilions with balustrades. A green copper dome sits on a drum at the centre rear, visible through the arch. Columns and arch are the signature features.",
+  "triangles": 2108,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3277,
+  "output": 1489,
+  "cost": 0.0011538800000000001,
+  "ms": 8089
+ }
+}

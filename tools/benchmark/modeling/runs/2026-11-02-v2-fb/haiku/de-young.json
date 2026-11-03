@@ -1,0 +1,290 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:01:44.700Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The de Young is a long, low, dark copper-clad perforated box, about 18 m high, filling most of the footprint. Its signature is the tall twisted tower on the east side, a stack of offset copper boxes that rises to about 44 m and leans and steps outward as it climbs. Copper-brown metal with a dark tone is used for the whole envelope.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [157, 76], \"y0\": 0, \"y1\": 17, \"material\": \"metal\", \"colour\": \"#5e4236\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [160, 78], \"y0\": 17, \"y1\": 18.5, \"material\": \"metal\", \"colour\": \"#4a3329\"},\n    {\"type\": \"box\", \"center\": [40, 6], \"size\": [30, 30], \"y0\": 0, \"y1\": 20, \"material\": \"metal\", \"colour\": \"#6a4a3b\"},\n    {\"type\": \"box\", \"center\": [46, 5], \"size\": [36, 30], \"y0\": 20, \"y1\": 32, \"material\": \"metal\", \"colour\": \"#6a4a3b\"},\n    {\"type\": \"box\", \"center\": [51, 3], \"size\": [40, 32], \"y0\": 32, \"y1\": 44, \"material\": \"metal\", \"colour\": \"#5a4034\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3222,
+   "output": 1074,
+   "cacheRead": 7616,
+   "cost": 0.00093536,
+   "ms": 10394,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real building:\n1. The tower is too small and too plain. In the photographs it is a large, tall mass that steps out and up in several stacked stages, with the upper stages cantilevering well beyond the lower ones. The render shows two small boxes.\n2. The tower's proportions are wrong. It should be a tall, broad stack, several storeys higher, with the top stage much wider than the base.\n3. The copper envelope reads as flat brown. The real walls are a warmer, redder copper with a perforated texture, and the tower is a lighter reddish-copper.\n\n```json\n{\n  \"notes\": \"The de Young is a long, low, dark copper-clad perforated box, about 18 m high, filling most of the footprint. Its signature is the tall twisted tower on the east side: a stack of broad copper stages that step outward and upward, with the upper stages cantilevering well beyond the lower ones, to about 44 m. The main body is a deep reddish-brown copper and the tower is a slightly lighter copper.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [157, 76], \"y0\": 0, \"y1\": 17, \"material\": \"metal\", \"colour\": \"#5a3d30\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [160, 78], \"y0\": 17, \"y1\": 18.5, \"material\": \"metal\", \"colour\": \"#4a3027\"},\n    {\"type\": \"box\", \"center\": [34, 10], \"size\": [28, 26], \"y0\": 0, \"y1\": 14, \"material\": \"metal\", \"colour\": \"#7a5140\"},\n    {\"type\": \"box\", \"center\": [43, 6], \"size\": [36, 30], \"y0\": 14, \"y1\": 26, \"material\": \"metal\", \"colour\": \"#7a5140\"},\n    {\"type\": \"box\", \"center\": [51, 2], \"size\": [40, 30], \"y0\": 26, \"y1\": 36, \"material\": \"metal\", \"colour\": \"#6e4a3b\"},\n    {\"type\": \"box\", \"center\": [56, 0], \"size\": [44, 34], \"y0\": 36, \"y1\": 44, \"material\": \"metal\", \"colour\": \"#64443a\"},\n    {\"type\": \"beam\", \"from\": [24, 0, 4], \"to\": [56, 44, 0], \"width\": 1.2, \"material\": \"metal\", \"colour\": \"#6e4a3b\"},\n    {\"type\": \"beam\", \"from\": [44, 0, 14], \"to\": [60, 36, 12], \"width\": 1.0, \"material\": \"metal\", \"colour\": \"#6e4a3b\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5762,
+   "output": 1433,
+   "cacheRead": 7616,
+   "cost": 0.0013688600000000002,
+   "ms": 8136,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The de Young is a long, low, dark copper-clad perforated box, about 18 m high, filling most of the footprint. Its signature is the tall twisted tower on the east side: a stack of broad copper stages that step outward and upward, with the upper stages cantilevering well beyond the lower ones, to about 44 m. The main body is a deep reddish-brown copper and the tower is a slightly lighter copper.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "metal",
+     "colour": "#5a3d30"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      160,
+      78
+     ],
+     "y0": 17,
+     "y1": 18.5,
+     "material": "metal",
+     "colour": "#4a3027"
+    },
+    {
+     "type": "box",
+     "center": [
+      34,
+      10
+     ],
+     "size": [
+      28,
+      26
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "metal",
+     "colour": "#7a5140"
+    },
+    {
+     "type": "box",
+     "center": [
+      43,
+      6
+     ],
+     "size": [
+      36,
+      30
+     ],
+     "y0": 14,
+     "y1": 26,
+     "material": "metal",
+     "colour": "#7a5140"
+    },
+    {
+     "type": "box",
+     "center": [
+      51,
+      2
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "y0": 26,
+     "y1": 36,
+     "material": "metal",
+     "colour": "#6e4a3b"
+    },
+    {
+     "type": "box",
+     "center": [
+      56,
+      0
+     ],
+     "size": [
+      44,
+      34
+     ],
+     "y0": 36,
+     "y1": 44,
+     "material": "metal",
+     "colour": "#64443a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      24,
+      0,
+      4
+     ],
+     "to": [
+      56,
+      44,
+      0
+     ],
+     "width": 1.2,
+     "material": "metal",
+     "colour": "#6e4a3b"
+    },
+    {
+     "type": "beam",
+     "from": [
+      44,
+      0,
+      14
+     ],
+     "to": [
+      60,
+      36,
+      12
+     ],
+     "width": 1,
+     "material": "metal",
+     "colour": "#6e4a3b"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low, dark copper-clad perforated box, about 18 m high, filling most of the footprint. Its signature is the tall twisted tower on the east side: a stack of broad copper stages that step outward and upward, with the upper stages cantilevering well beyond the lower ones, to about 44 m. The main body is a deep reddish-brown copper and the tower is a slightly lighter copper.",
+  "triangles": 96,
+  "parts": 8
+ },
+ "totals": {
+  "input": 8984,
+  "output": 2507,
+  "cost": 0.00230422,
+  "ms": 18530
+ },
+ "draft": {
+  "json": {
+   "notes": "The de Young is a long, low, dark copper-clad perforated box, about 18 m high, filling most of the footprint. Its signature is the tall twisted tower on the east side, a stack of offset copper boxes that rises to about 44 m and leans and steps outward as it climbs. Copper-brown metal with a dark tone is used for the whole envelope.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "metal",
+     "colour": "#5e4236"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      160,
+      78
+     ],
+     "y0": 17,
+     "y1": 18.5,
+     "material": "metal",
+     "colour": "#4a3329"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      6
+     ],
+     "size": [
+      30,
+      30
+     ],
+     "y0": 0,
+     "y1": 20,
+     "material": "metal",
+     "colour": "#6a4a3b"
+    },
+    {
+     "type": "box",
+     "center": [
+      46,
+      5
+     ],
+     "size": [
+      36,
+      30
+     ],
+     "y0": 20,
+     "y1": 32,
+     "material": "metal",
+     "colour": "#6a4a3b"
+    },
+    {
+     "type": "box",
+     "center": [
+      51,
+      3
+     ],
+     "size": [
+      40,
+      32
+     ],
+     "y0": 32,
+     "y1": 44,
+     "material": "metal",
+     "colour": "#5a4034"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low, dark copper-clad perforated box, about 18 m high, filling most of the footprint. Its signature is the tall twisted tower on the east side, a stack of offset copper boxes that rises to about 44 m and leans and steps outward as it climbs. Copper-brown metal with a dark tone is used for the whole envelope.",
+  "triangles": 60,
+  "parts": 5
+ }
+}

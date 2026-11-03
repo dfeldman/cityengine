@@ -1,0 +1,14 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "game",
+ "model": "parcDesPrinces",
+ "fit": {
+  "turn": 187,
+  "mirror": false,
+  "iou": 0.83
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: parcDesPrinces, 10736 tris, fit IoU 0.83"
+ }
+}

@@ -1,0 +1,266 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:45.388Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Asian Art Museum is a Beaux-Arts stone block, the former Main Library, with a two-storey colonnade of free-standing columns across the Larkin Street (−z) front above a rusticated base, and a pedimented attic. The long sides have tall arched windows in pale limestone under a dark, low-pitched hipped slate roof. A lower wing projects at the back (+z), and there is a notch on the west (−x) side.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 5, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [0, -53], \"size\": [55, 3], \"y0\": 0, \"y1\": 4, \"material\": \"stone\", \"colour\": \"#cfc8b8\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -56], \"to\": [18, -56], \"y0\": 4, \"height\": 18, \"count\": 8, \"radius\": 0.9, \"entablature\": 2.2},\n    {\"type\": \"pediment\", \"from\": [-20, -56], \"to\": [20, -56], \"y0\": 18, \"height\": 5, \"depth\": 2},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, -6.5], \"size\": [55, 93], \"y0\": 22, \"rise\": 7, \"material\": \"tile\", \"colour\": \"#4a4f55\"},\n    {\"type\": \"box\", \"center\": [1.5, 46.6], \"size\": [26, 13], \"y0\": 0, \"y1\": 16, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [1.5, 46.6], \"size\": [26, 13], \"y0\": 16, \"rise\": 4, \"material\": \"tile\", \"colour\": \"#4a4f55\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3315,
+   "output": 1959,
+   "cacheRead": 7616,
+   "cost": 0.0013871600000000001,
+   "ms": 9658,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Asian Art Museum is a Beaux-Arts stone block, the former Main Library, with a two-storey colonnade of free-standing columns across the Larkin Street (−z) front above a rusticated base, and a pedimented attic. The long sides have tall arched windows in pale limestone under a dark, low-pitched hipped slate roof. A lower wing projects at the back (+z), and there is a notch on the west (−x) side.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -27.5,
+       -53.2
+      ],
+      [
+       2.6,
+       -53.1
+      ],
+      [
+       27.5,
+       -52.1
+      ],
+      [
+       27.5,
+       40.1
+      ],
+      [
+       14.5,
+       40.2
+      ],
+      [
+       14.5,
+       53
+      ],
+      [
+       -11.6,
+       53.2
+      ],
+      [
+       -11.7,
+       16.6
+      ],
+      [
+       -15.9,
+       16.6
+      ],
+      [
+       -15.9,
+       9.3
+      ],
+      [
+       -25.7,
+       9.2
+      ],
+      [
+       -25.5,
+       -36.8
+      ],
+      [
+       -27.5,
+       -36.8
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -53
+     ],
+     "size": [
+      55,
+      3
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stone",
+     "colour": "#cfc8b8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -56
+     ],
+     "to": [
+      18,
+      -56
+     ],
+     "y0": 4,
+     "height": 18,
+     "count": 8,
+     "radius": 0.9,
+     "entablature": 2.2
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -56
+     ],
+     "to": [
+      20,
+      -56
+     ],
+     "y0": 18,
+     "height": 5,
+     "depth": 2
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      -6.5
+     ],
+     "size": [
+      55,
+      93
+     ],
+     "y0": 22,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#4a4f55"
+    },
+    {
+     "type": "box",
+     "center": [
+      1.5,
+      46.6
+     ],
+     "size": [
+      26,
+      13
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      1.5,
+      46.6
+     ],
+     "size": [
+      26,
+      13
+     ],
+     "y0": 16,
+     "rise": 4,
+     "material": "tile",
+     "colour": "#4a4f55"
+    }
+   ]
+  },
+  "notes": "The Asian Art Museum is a Beaux-Arts stone block, the former Main Library, with a two-storey colonnade of free-standing columns across the Larkin Street (−z) front above a rusticated base, and a pedimented attic. The long sides have tall arched windows in pale limestone under a dark, low-pitched hipped slate roof. A lower wing projects at the back (+z), and there is a notch on the west (−x) side.",
+  "triangles": 2076,
+  "parts": 7
+ },
+ "totals": {
+  "input": 3315,
+  "output": 1959,
+  "cost": 0.0013871600000000001,
+  "ms": 9658
+ }
+}

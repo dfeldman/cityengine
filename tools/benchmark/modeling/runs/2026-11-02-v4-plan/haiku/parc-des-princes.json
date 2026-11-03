@@ -1,0 +1,347 @@
+{
+ "building": "parc-des-princes",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:04.127Z",
+ "userText": "Building: Parc des Princes, Paris (football stadium).\nThe front (−z) is the main stand on the Rue du Commandant-Guilbaud.\nFootprint: 276.4 m along x by 196.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-138.2,14.9],[-135.8,-1.2],[-42.7,-97.1],[-34.7,-98.2],[58.7,-69.4],[70.4,-64.8],[81.5,-59],[93.5,-51.1],[102.4,-42.9],[138,0.7],[138.2,19.5],[105.9,59.8],[92.3,72.8],[71.9,85.1],[55.3,91.2],[39.7,95],[12.7,98.2],[-9.3,97.6],[-27.9,95],[-45,90.7],[-57.7,86.2],[-67.8,81.6],[-77.5,75.5],[-87.1,68.1],[-137.7,23.5]]\nHeight: the highest point is 48 m above the ground.\n\n3 photographs attached, in order:\n  1. exterior of the ribbed concrete stand fins above the Peripherique tunnel mouth, daylight\n  2. distant view along the elevated road of the stadium's long concrete facade of pointed ribs, daylight\n  3. top-down satellite view of the whole oval bowl and its surroundings (no oblique aerial found)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   276.4,
+   196.4
+  ],
+  "outline": [
+   [
+    -138.2,
+    14.9
+   ],
+   [
+    -135.8,
+    -1.2
+   ],
+   [
+    -42.7,
+    -97.1
+   ],
+   [
+    -34.7,
+    -98.2
+   ],
+   [
+    58.7,
+    -69.4
+   ],
+   [
+    70.4,
+    -64.8
+   ],
+   [
+    81.5,
+    -59
+   ],
+   [
+    93.5,
+    -51.1
+   ],
+   [
+    102.4,
+    -42.9
+   ],
+   [
+    138,
+    0.7
+   ],
+   [
+    138.2,
+    19.5
+   ],
+   [
+    105.9,
+    59.8
+   ],
+   [
+    92.3,
+    72.8
+   ],
+   [
+    71.9,
+    85.1
+   ],
+   [
+    55.3,
+    91.2
+   ],
+   [
+    39.7,
+    95
+   ],
+   [
+    12.7,
+    98.2
+   ],
+   [
+    -9.3,
+    97.6
+   ],
+   [
+    -27.9,
+    95
+   ],
+   [
+    -45,
+    90.7
+   ],
+   [
+    -57.7,
+    86.2
+   ],
+   [
+    -67.8,
+    81.6
+   ],
+   [
+    -77.5,
+    75.5
+   ],
+   [
+    -87.1,
+    68.1
+   ],
+   [
+    -137.7,
+    23.5
+   ]
+  ],
+  "height": 48,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\n  \"notes\": \"A large oval football stadium: a raked concrete bowl of stands rising to about 48 m, with a band of tall, pointed concrete fins along the top of the stands and a low concrete base at street level. The stands are open at the west (-x) end toward the car park, and the green pitch sits in the open middle. Model the oval bowl with a fin ring on top, a low base ring, and the green pitch.\",\n  \"parts\": [\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276.4, 196.4],\n      \"inner\": [150, 88],\n      \"y0\": 6,\n      \"y1\": 48,\n      \"innerHeight\": 4,\n      \"shape\": \"oval\",\n      \"arc\": [210, 510],\n      \"material\": \"concrete\",\n      \"colour\": \"#9a9c98\"\n    },\n    {\n      \"type\": \"repeat\",\n      \"count\": 36,\n      \"around\": {\"center\": [0, 0]},\n      \"part\": {\"type\": \"beam\", \"from\": [125, 20, 0], \"to\": [135, 48, 0], \"width\": 3, \"material\": \"concrete\", \"colour\": \"#b5b2aa\"}\n    },\n    {\n      \"type\": \"bowl\",\n      \"center\": [0, 0],\n      \"size\": [276.4, 196.4],\n      \"inner\": [236, 170],\n      \"y0\": 0,\n      \"y1\": 6,\n      \"innerHeight\": 6,\n      \"shape\": \"oval\",\n      \"material\": \"concrete\",\n      \"colour\": \"#b5b2aa\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [105, 68],\n      \"y0\": 0,\n      \"y1\": 0.5,\n      \"material\": \"grass\",\n      \"colour\": \"#3f7a3a\"\n    }\n  ]\n}",
+   "stop": "end_turn",
+   "input": 4557,
+   "output": 1787,
+   "cacheRead": 8401,
+   "cost": 0.00143321,
+   "ms": 9222,
+   "errors": [],
+   "warnings": [
+    "parts[0].innerHeight: must lie between y0 and y1 — part dropped"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A large oval football stadium: a raked concrete bowl of stands rising to about 48 m, with a band of tall, pointed concrete fins along the top of the stands and a low concrete base at street level. The stands are open at the west (-x) end toward the car park, and the green pitch sits in the open middle. Model the oval bowl with a fin ring on top, a low base ring, and the green pitch.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "inner": [
+      150,
+      88
+     ],
+     "y0": 6,
+     "y1": 48,
+     "innerHeight": 4,
+     "shape": "oval",
+     "arc": [
+      210,
+      510
+     ],
+     "material": "concrete",
+     "colour": "#9a9c98"
+    },
+    {
+     "type": "repeat",
+     "count": 36,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "beam",
+      "from": [
+       125,
+       20,
+       0
+      ],
+      "to": [
+       135,
+       48,
+       0
+      ],
+      "width": 3,
+      "material": "concrete",
+      "colour": "#b5b2aa"
+     }
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "inner": [
+      236,
+      170
+     ],
+     "y0": 0,
+     "y1": 6,
+     "innerHeight": 6,
+     "shape": "oval",
+     "material": "concrete",
+     "colour": "#b5b2aa"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      105,
+      68
+     ],
+     "y0": 0,
+     "y1": 0.5,
+     "material": "grass",
+     "colour": "#3f7a3a"
+    }
+   ]
+  },
+  "notes": "A large oval football stadium: a raked concrete bowl of stands rising to about 48 m, with a band of tall, pointed concrete fins along the top of the stands and a low concrete base at street level. The stands are open at the west (-x) end toward the car park, and the green pitch sits in the open middle. Model the oval bowl with a fin ring on top, a low base ring, and the green pitch.",
+  "triangles": 828,
+  "parts": 38
+ },
+ "totals": {
+  "input": 8077,
+  "output": 3317,
+  "cost": 0.00257104,
+  "ms": 17500
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the ribbed concrete stand fins rising above the Peripherique tunnel mouth, showing the sloped, pointed fins of the main stand stepping up toward the top of the bowl, with the elevated road and sign boards in front\",\n    \"photo 2: a distant view along the elevated road of the long concrete facade, a row of tall, pointed, angled concrete ribs in a continuous curved line, with blue advertising boards between the fins and the stand seating visible behind\",\n    \"photo 3: a satellite view of the oval bowl, a ring of stands with dark seating and grey concrete fins projecting radially, around an open central pitch, with the stands open at the west end toward the car park and the roads around it\"\n  ],\n  \"components\": [\n    {\"name\": \"stadium bowl\", \"part\": \"bowl\", \"where\": \"the whole footprint, open middle over the pitch\", \"center\": [0, 0], \"size\": [276.4, 196.4], \"height\": 48,\n     \"settings\": {\n       \"outer_size\": [276.4, 196.4],\n       \"inner_size\": [150, 88],\n       \"open_end\": \"left\",\n       \"tiers\": [\n         {\"height\": 22, \"kind\": \"bands\"},\n         {\"height\": 26, \"kind\": \"bands\", \"fins\": true}\n       ],\n       \"fin_height\": 48,\n       \"fin_spacing\": 6,\n       \"colour\": \"#9a9c98\",\n       \"seat_colour\": \"#3d4147\"\n     },\n     \"why\": \"photos 1 and 2 show the ribbed concrete fins of the stands, photo 3 shows the oval bowl of stands open around the pitch and open at one end\"},\n    {\"name\": \"ground concourse plinth\", \"part\": \"ring\", \"where\": \"base of the stands around the bowl\", \"center\": [0, 0], \"size\": [276.4, 196.4], \"height\": 6,\n     \"settings\": {\n       \"outer_size\": [276.4, 196.4],\n       \"inner_size\": [236, 170],\n       \"colour\": \"#b5b2aa\"\n     },\n     \"why\": \"photos 1 and 2 show a low concrete base under the stand fins at street level, with the elevated road running along it\"},\n    {\"name\": \"pitch\", \"part\": \"box\", \"where\": \"centre of the bowl, the playing field\", \"center\": [0, 0], \"size\": [105, 68], \"height\": 0.5,\n     \"settings\": {\"colour\": \"#3f7a3a\"},\n     \"why\": \"photo 3 shows the green pitch at the open middle of the bowl\"}\n  ]\n}\n```",
+  "input": 3520,
+  "output": 1530,
+  "cost": 0.0011378299999999998,
+  "ms": 8278,
+  "json": {
+   "photos": [
+    "photo 1: the ribbed concrete stand fins rising above the Peripherique tunnel mouth, showing the sloped, pointed fins of the main stand stepping up toward the top of the bowl, with the elevated road and sign boards in front",
+    "photo 2: a distant view along the elevated road of the long concrete facade, a row of tall, pointed, angled concrete ribs in a continuous curved line, with blue advertising boards between the fins and the stand seating visible behind",
+    "photo 3: a satellite view of the oval bowl, a ring of stands with dark seating and grey concrete fins projecting radially, around an open central pitch, with the stands open at the west end toward the car park and the roads around it"
+   ],
+   "components": [
+    {
+     "name": "stadium bowl",
+     "part": "bowl",
+     "where": "the whole footprint, open middle over the pitch",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "height": 48,
+     "settings": {
+      "outer_size": [
+       276.4,
+       196.4
+      ],
+      "inner_size": [
+       150,
+       88
+      ],
+      "open_end": "left",
+      "tiers": [
+       {
+        "height": 22,
+        "kind": "bands"
+       },
+       {
+        "height": 26,
+        "kind": "bands",
+        "fins": true
+       }
+      ],
+      "fin_height": 48,
+      "fin_spacing": 6,
+      "colour": "#9a9c98",
+      "seat_colour": "#3d4147"
+     },
+     "why": "photos 1 and 2 show the ribbed concrete fins of the stands, photo 3 shows the oval bowl of stands open around the pitch and open at one end"
+    },
+    {
+     "name": "ground concourse plinth",
+     "part": "ring",
+     "where": "base of the stands around the bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      276.4,
+      196.4
+     ],
+     "height": 6,
+     "settings": {
+      "outer_size": [
+       276.4,
+       196.4
+      ],
+      "inner_size": [
+       236,
+       170
+      ],
+      "colour": "#b5b2aa"
+     },
+     "why": "photos 1 and 2 show a low concrete base under the stand fins at street level, with the elevated road running along it"
+    },
+    {
+     "name": "pitch",
+     "part": "box",
+     "where": "centre of the bowl, the playing field",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      105,
+      68
+     ],
+     "height": 0.5,
+     "settings": {
+      "colour": "#3f7a3a"
+     },
+     "why": "photo 3 shows the green pitch at the open middle of the bowl"
+    }
+   ]
+  }
+ }
+}

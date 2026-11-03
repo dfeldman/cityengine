@@ -1,0 +1,14 @@
+{
+ "building": "chase-center",
+ "modelId": "game",
+ "model": "chaseCenter",
+ "fit": {
+  "turn": 177,
+  "mirror": false,
+  "iou": 0.65
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: chaseCenter, 3578 tris, fit IoU 0.65"
+ }
+}

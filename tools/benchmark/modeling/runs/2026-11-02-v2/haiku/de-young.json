@@ -1,0 +1,131 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:34.329Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The de Young is a long, low copper-clad box with a perforated metal skin, sitting in a flat plan with a cantilevered front. Behind it, toward the east and the back, a tall observation tower stacks up in sheared, offset storeys, with each higher block leaning out over the one below. I model the low main volume and the three stepped and offset tower blocks in dark copper-brown, with no window grid because the skin reads as solid metal.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [157, 76], \"y0\": 0, \"y1\": 18, \"material\": \"copper\", \"colour\": \"#5e3f32\"}, {\"type\": \"box\", \"center\": [42, 8], \"size\": [24, 22], \"y0\": 18, \"y1\": 26, \"material\": \"copper\", \"colour\": \"#5a3d30\"}, {\"type\": \"box\", \"center\": [46, 6], \"size\": [28, 26], \"y0\": 26, \"y1\": 34, \"material\": \"copper\", \"colour\": \"#5a3d30\"}, {\"type\": \"box\", \"center\": [42, 10], \"size\": [30, 26], \"y0\": 34, \"y1\": 44, \"material\": \"copper\", \"colour\": \"#4f3429\"}]}",
+   "stop": "end_turn",
+   "input": 3222,
+   "output": 995,
+   "cacheRead": 7616,
+   "cost": 0.0008958600000000001,
+   "ms": 11357,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The de Young is a long, low copper-clad box with a perforated metal skin, sitting in a flat plan with a cantilevered front. Behind it, toward the east and the back, a tall observation tower stacks up in sheared, offset storeys, with each higher block leaning out over the one below. I model the low main volume and the three stepped and offset tower blocks in dark copper-brown, with no window grid because the skin reads as solid metal.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      157,
+      76
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "copper",
+     "colour": "#5e3f32"
+    },
+    {
+     "type": "box",
+     "center": [
+      42,
+      8
+     ],
+     "size": [
+      24,
+      22
+     ],
+     "y0": 18,
+     "y1": 26,
+     "material": "copper",
+     "colour": "#5a3d30"
+    },
+    {
+     "type": "box",
+     "center": [
+      46,
+      6
+     ],
+     "size": [
+      28,
+      26
+     ],
+     "y0": 26,
+     "y1": 34,
+     "material": "copper",
+     "colour": "#5a3d30"
+    },
+    {
+     "type": "box",
+     "center": [
+      42,
+      10
+     ],
+     "size": [
+      30,
+      26
+     ],
+     "y0": 34,
+     "y1": 44,
+     "material": "copper",
+     "colour": "#4f3429"
+    }
+   ]
+  },
+  "notes": "The de Young is a long, low copper-clad box with a perforated metal skin, sitting in a flat plan with a cantilevered front. Behind it, toward the east and the back, a tall observation tower stacks up in sheared, offset storeys, with each higher block leaning out over the one below. I model the low main volume and the three stepped and offset tower blocks in dark copper-brown, with no window grid because the skin reads as solid metal.",
+  "triangles": 48,
+  "parts": 4
+ },
+ "totals": {
+  "input": 3222,
+  "output": 995,
+  "cost": 0.0008958600000000001,
+  "ms": 11357
+ }
+}

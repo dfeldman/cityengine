@@ -1,0 +1,546 @@
+{
+ "building": "pantheon",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:34.859Z",
+ "userText": "Building: Panthéon, Paris (mausoleum (former church)).\nThe front (−z) is the portico, facing down the Rue Soufflot.\nFootprint: 84.9 m along x by 112.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-18.5,-56.1],[20.8,-56.1],[20.8,-40.6],[17.2,-40.6],[17.9,-15.7],[20.8,-13],[39.4,-14],[39.5,-5.2],[42.3,-5.2],[42.4,15],[39.6,15],[39.5,23.9],[20.6,22.7],[18,25.5],[17.9,38.6],[25.8,38.7],[25.7,48.4],[16.3,48.4],[16.2,56.1],[-16.3,55.9],[-16.3,48.3],[-25.6,48.3],[-25.6,38.5],[-18,38.5],[-18,25.4],[-20.9,22.6],[-39.6,23.6],[-39.7,14.8],[-42.4,14.8],[-42.3,-5.4],[-39.5,-5.4],[-39.5,-14.2],[-20.9,-13.1],[-18,-15.8],[-17.5,-40.1],[-21.2,-40.1],[-21.2,-56]]\nHeight: the highest point is 83 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the corner: Corinthian portico with pediment and the tall drum and dome, daylight\n  2. view of the rear and side of the cross-shaped body with the drum and dome above, trees in front\n  3. elevated view of the whole portico front and flank across the square, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   84.9,
+   112.1
+  ],
+  "outline": [
+   [
+    -18.5,
+    -56.1
+   ],
+   [
+    20.8,
+    -56.1
+   ],
+   [
+    20.8,
+    -40.6
+   ],
+   [
+    17.2,
+    -40.6
+   ],
+   [
+    17.9,
+    -15.7
+   ],
+   [
+    20.8,
+    -13
+   ],
+   [
+    39.4,
+    -14
+   ],
+   [
+    39.5,
+    -5.2
+   ],
+   [
+    42.3,
+    -5.2
+   ],
+   [
+    42.4,
+    15
+   ],
+   [
+    39.6,
+    15
+   ],
+   [
+    39.5,
+    23.9
+   ],
+   [
+    20.6,
+    22.7
+   ],
+   [
+    18,
+    25.5
+   ],
+   [
+    17.9,
+    38.6
+   ],
+   [
+    25.8,
+    38.7
+   ],
+   [
+    25.7,
+    48.4
+   ],
+   [
+    16.3,
+    48.4
+   ],
+   [
+    16.2,
+    56.1
+   ],
+   [
+    -16.3,
+    55.9
+   ],
+   [
+    -16.3,
+    48.3
+   ],
+   [
+    -25.6,
+    48.3
+   ],
+   [
+    -25.6,
+    38.5
+   ],
+   [
+    -18,
+    38.5
+   ],
+   [
+    -18,
+    25.4
+   ],
+   [
+    -20.9,
+    22.6
+   ],
+   [
+    -39.6,
+    23.6
+   ],
+   [
+    -39.7,
+    14.8
+   ],
+   [
+    -42.4,
+    14.8
+   ],
+   [
+    -42.3,
+    -5.4
+   ],
+   [
+    -39.5,
+    -5.4
+   ],
+   [
+    -39.5,
+    -14.2
+   ],
+   [
+    -20.9,
+    -13.1
+   ],
+   [
+    -18,
+    -15.8
+   ],
+   [
+    -17.5,
+    -40.1
+   ],
+   [
+    -21.2,
+    -40.1
+   ],
+   [
+    -21.2,
+    -56
+   ]
+  ],
+  "height": 83,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Greek-cross plan in pale cream limestone. A deep Corinthian portico (6 columns across the front, 3 deep) with a pediment stands on the front (-z) and leads into the nave. Four cross arms are blank-walled, with low pediments at the arm ends. A tall colonnaded drum carries a grey lead dome, and a small lantern with a cross tops it at 83 m. Mostly blank walls, with a few arched windows on the flanks.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, -48], \"size\": [44, 16], \"y0\": 0, \"y1\": 2.5, \"colour\": \"#d6cbb0\"},\n{\"type\": \"box\", \"center\": [0, -27], \"size\": [37, 28], \"y0\": 0, \"y1\": 22, \"colour\": \"#d9ceb2\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [37, 80], \"y0\": 0, \"y1\": 24, \"colour\": \"#d9ceb2\"},\n{\"type\": \"box\", \"center\": [0, 5], \"size\": [82, 36], \"y0\": 0, \"y1\": 24, \"colour\": \"#d9ceb2\"},\n{\"type\": \"box\", \"center\": [0, 42], \"size\": [34, 28], \"y0\": 0, \"y1\": 24, \"colour\": \"#d9ceb2\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [42, 42], \"y0\": 24, \"y1\": 30, \"colour\": \"#d4c9ad\"},\n{\"type\": \"colonnade\", \"from\": [-18, -53], \"to\": [18, -53], \"y0\": 2.5, \"height\": 22, \"count\": 6, \"radius\": 1.1},\n{\"type\": \"colonnade\", \"from\": [-18, -46], \"to\": [18, -46], \"y0\": 2.5, \"height\": 22, \"count\": 6, \"radius\": 1.1},\n{\"type\": \"colonnade\", \"from\": [-18, -49.5], \"to\": [-18, -41], \"y0\": 2.5, \"height\": 22, \"count\": 3, \"radius\": 1.1},\n{\"type\": \"colonnade\", \"from\": [18, -49.5], \"to\": [18, -41], \"y0\": 2.5, \"height\": 22, \"count\": 3, \"radius\": 1.1},\n{\"type\": \"pediment\", \"from\": [-20, -54], \"to\": [20, -54], \"y0\": 24.5, \"height\": 7, \"depth\": 6},\n{\"type\": \"box\", \"center\": [0, -45], \"size\": [40, 18], \"y0\": 24.5, \"y1\": 28, \"colour\": \"#d4c9ad\"},\n{\"type\": \"pediment\", \"from\": [-41, 5], \"to\": [-41, -5], \"y0\": 24, \"height\": 4, \"depth\": 3},\n{\"type\": \"pediment\", \"from\": [41, -5], \"to\": [41, 5], \"y0\": 24, \"height\": 4, \"depth\": 3},\n{\"type\": \"pediment\", \"from\": [-10, 52], \"to\": [10, 52], \"y0\": 24, \"height\": 4, \"depth\": 3},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 14.5, \"y0\": 30, \"y1\": 42, \"colour\": \"#d9ceb2\"},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 15.5, \"y0\": 42, \"y1\": 44, \"colour\": \"#d4c9ad\"},\n{\"type\": \"repeat\", \"count\": 32, \"around\": {\"center\": [0, 0]}, \"part\": {\"type\": \"cylinder\", \"center\": [14.8, 0], \"radius\": 0.55, \"y0\": 32, \"y1\": 43}},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 13.5, \"y0\": 44, \"y1\": 52, \"colour\": \"#d9ceb2\", \"windows\": {\"kind\": \"arched\", \"floor\": 8, \"pitch\": 6, \"solid\": 0.7}},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 14.5, \"y0\": 52, \"y1\": 53, \"colour\": \"#d4c9ad\"},\n{\"type\": \"dome\", \"center\": [0, 0], \"radius\": 12.5, \"y0\": 53, \"height\": 17, \"material\": \"metal\", \"colour\": \"#8f969c\"},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 3.6, \"y0\": 70, \"y1\": 77, \"colour\": \"#d9ceb2\"},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 4.2, \"y0\": 77, \"y1\": 78, \"colour\": \"#d4c9ad\"},\n{\"type\": \"dome\", \"center\": [0, 0], \"radius\": 3.4, \"y0\": 78, \"height\": 3.5, \"material\": \"metal\", \"colour\": \"#8f969c\"},\n{\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 0.2, \"radiusTop\": 0.1, \"y0\": 81.5, \"y1\": 83, \"material\": \"metal\", \"colour\": \"#555555\"}\n]}",
+   "stop": "end_turn",
+   "input": 3574,
+   "output": 1643,
+   "cacheRead": 7616,
+   "cost": 0.0251012,
+   "ms": 10153,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Greek-cross plan in pale cream limestone. A deep Corinthian portico (6 columns across the front, 3 deep) with a pediment stands on the front (-z) and leads into the nave. Four cross arms are blank-walled, with low pediments at the arm ends. A tall colonnaded drum carries a grey lead dome, and a small lantern with a cross tops it at 83 m. Mostly blank walls, with a few arched windows on the flanks.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -48
+     ],
+     "size": [
+      44,
+      16
+     ],
+     "y0": 0,
+     "y1": 2.5,
+     "colour": "#d6cbb0"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -27
+     ],
+     "size": [
+      37,
+      28
+     ],
+     "y0": 0,
+     "y1": 22,
+     "colour": "#d9ceb2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      37,
+      80
+     ],
+     "y0": 0,
+     "y1": 24,
+     "colour": "#d9ceb2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      5
+     ],
+     "size": [
+      82,
+      36
+     ],
+     "y0": 0,
+     "y1": 24,
+     "colour": "#d9ceb2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      42
+     ],
+     "size": [
+      34,
+      28
+     ],
+     "y0": 0,
+     "y1": 24,
+     "colour": "#d9ceb2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      42
+     ],
+     "y0": 24,
+     "y1": 30,
+     "colour": "#d4c9ad"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -53
+     ],
+     "to": [
+      18,
+      -53
+     ],
+     "y0": 2.5,
+     "height": 22,
+     "count": 6,
+     "radius": 1.1
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -46
+     ],
+     "to": [
+      18,
+      -46
+     ],
+     "y0": 2.5,
+     "height": 22,
+     "count": 6,
+     "radius": 1.1
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -49.5
+     ],
+     "to": [
+      -18,
+      -41
+     ],
+     "y0": 2.5,
+     "height": 22,
+     "count": 3,
+     "radius": 1.1
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      18,
+      -49.5
+     ],
+     "to": [
+      18,
+      -41
+     ],
+     "y0": 2.5,
+     "height": 22,
+     "count": 3,
+     "radius": 1.1
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -54
+     ],
+     "to": [
+      20,
+      -54
+     ],
+     "y0": 24.5,
+     "height": 7,
+     "depth": 6
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -45
+     ],
+     "size": [
+      40,
+      18
+     ],
+     "y0": 24.5,
+     "y1": 28,
+     "colour": "#d4c9ad"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -41,
+      5
+     ],
+     "to": [
+      -41,
+      -5
+     ],
+     "y0": 24,
+     "height": 4,
+     "depth": 3
+    },
+    {
+     "type": "pediment",
+     "from": [
+      41,
+      -5
+     ],
+     "to": [
+      41,
+      5
+     ],
+     "y0": 24,
+     "height": 4,
+     "depth": 3
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -10,
+      52
+     ],
+     "to": [
+      10,
+      52
+     ],
+     "y0": 24,
+     "height": 4,
+     "depth": 3
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 14.5,
+     "y0": 30,
+     "y1": 42,
+     "colour": "#d9ceb2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 15.5,
+     "y0": 42,
+     "y1": 44,
+     "colour": "#d4c9ad"
+    },
+    {
+     "type": "repeat",
+     "count": 32,
+     "around": {
+      "center": [
+       0,
+       0
+      ]
+     },
+     "part": {
+      "type": "cylinder",
+      "center": [
+       14.8,
+       0
+      ],
+      "radius": 0.55,
+      "y0": 32,
+      "y1": 43
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 13.5,
+     "y0": 44,
+     "y1": 52,
+     "colour": "#d9ceb2",
+     "windows": {
+      "kind": "arched",
+      "floor": 8,
+      "pitch": 6,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 14.5,
+     "y0": 52,
+     "y1": 53,
+     "colour": "#d4c9ad"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 12.5,
+     "y0": 53,
+     "height": 17,
+     "material": "metal",
+     "colour": "#8f969c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 3.6,
+     "y0": 70,
+     "y1": 77,
+     "colour": "#d9ceb2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 4.2,
+     "y0": 77,
+     "y1": 78,
+     "colour": "#d4c9ad"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 3.4,
+     "y0": 78,
+     "height": 3.5,
+     "material": "metal",
+     "colour": "#8f969c"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 0.2,
+     "radiusTop": 0.1,
+     "y0": 81.5,
+     "y1": 83,
+     "material": "metal",
+     "colour": "#555555"
+    }
+   ]
+  },
+  "notes": "Greek-cross plan in pale cream limestone. A deep Corinthian portico (6 columns across the front, 3 deep) with a pediment stands on the front (-z) and leads into the nave. Four cross arms are blank-walled, with low pediments at the arm ends. A tall colonnaded drum carries a grey lead dome, and a small lantern with a cross tops it at 83 m. Mostly blank walls, with a few arched windows on the flanks.",
+  "triangles": 4640,
+  "parts": 56
+ },
+ "totals": {
+  "input": 3574,
+  "output": 1643,
+  "cost": 0.0251012,
+  "ms": 10153
+ }
+}

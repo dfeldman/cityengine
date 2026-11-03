@@ -1,0 +1,275 @@
+{
+ "building": "palace-of-fine-arts",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:48.982Z",
+ "userText": "Building: Palace of Fine Arts (rotunda and colonnades), San Francisco (exhibition rotunda).\nThe front (−z) is the lagoon side of the rotunda.\nFootprint: 72.9 m along x by 68.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[30.8,4.7],[36.4,8.8],[19.8,10.8],[14.5,17.2],[16.1,34],[6.5,21.7],[-7.9,28.4],[-17.1,14.7],[-20,19],[-25.2,15.2],[-22.6,-1.8],[-36.4,-8.7],[-25.7,-8.4],[-14.7,-17.2],[-16.1,-33.9],[-6.2,-21.8],[1.7,-22.5],[4.8,-34],[16.7,-14.7],[27.8,-17],[32.4,-11.4],[21.7,-6.1],[22.3,2.2]]\nHeight: the highest point is 49 m above the ground.\nModel the rotunda only: the long curving colonnades that run off on either side are outside this footprint.\n\n3 photographs attached, in order:\n  1. front view across the lagoon of the domed rotunda and flanking curved colonnades, daylight\n  2. three-quarter from the lawn across the lagoon showing the rotunda, colonnade at left and trees, daylight\n  3. view from the Marina side showing the rotunda dome and the long hall behind it, houses in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   72.9,
+   68.1
+  ],
+  "outline": [
+   [
+    30.8,
+    4.7
+   ],
+   [
+    36.4,
+    8.8
+   ],
+   [
+    19.8,
+    10.8
+   ],
+   [
+    14.5,
+    17.2
+   ],
+   [
+    16.1,
+    34
+   ],
+   [
+    6.5,
+    21.7
+   ],
+   [
+    -7.9,
+    28.4
+   ],
+   [
+    -17.1,
+    14.7
+   ],
+   [
+    -20,
+    19
+   ],
+   [
+    -25.2,
+    15.2
+   ],
+   [
+    -22.6,
+    -1.8
+   ],
+   [
+    -36.4,
+    -8.7
+   ],
+   [
+    -25.7,
+    -8.4
+   ],
+   [
+    -14.7,
+    -17.2
+   ],
+   [
+    -16.1,
+    -33.9
+   ],
+   [
+    -6.2,
+    -21.8
+   ],
+   [
+    1.7,
+    -22.5
+   ],
+   [
+    4.8,
+    -34
+   ],
+   [
+    16.7,
+    -14.7
+   ],
+   [
+    27.8,
+    -17
+   ],
+   [
+    32.4,
+    -11.4
+   ],
+   [
+    21.7,
+    -6.1
+   ],
+   [
+    22.3,
+    2.2
+   ]
+  ],
+  "height": 49,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Palace of Fine Arts is a classical rotunda: a ring of great round-headed arches between piers, with pink-red inner columns and a sculpted frieze drum carrying a pale dome. A long plain hall sits behind it on the Marina side. The rotunda is the signature feature, so it is modelled first, sized so the dome top reaches 49 m.\",\n  \"parts\": [\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 0],\n      \"radius\": 20,\n      \"y0\": 0,\n      \"base\": 1,\n      \"height\": 22,\n      \"count\": 16,\n      \"arches\": 8,\n      \"open\": true,\n      \"drum\": 7,\n      \"dome\": {\"height\": 19, \"colour\": \"#e8e0cc\", \"material\": \"metal\"},\n      \"lantern\": false,\n      \"colour\": \"#d8c7a6\",\n      \"trim\": \"#b9655a\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 26],\n      \"size\": [46, 14],\n      \"y0\": 0,\n      \"storeys\": [\n        {\"height\": 11, \"kind\": \"blank\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"flat\"},\n      \"colour\": \"#d8c7a6\",\n      \"material\": \"stone\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4254,
+   "output": 1242,
+   "cacheRead": 8401,
+   "cost": 0.00113041,
+   "ms": 6410,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Palace of Fine Arts is a classical rotunda: a ring of great round-headed arches between piers, with pink-red inner columns and a sculpted frieze drum carrying a pale dome. A long plain hall sits behind it on the Marina side. The rotunda is the signature feature, so it is modelled first, sized so the dome top reaches 49 m.",
+   "parts": [
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 20,
+     "y0": 0,
+     "base": 1,
+     "height": 22,
+     "count": 16,
+     "arches": 8,
+     "open": true,
+     "drum": 7,
+     "dome": {
+      "height": 19,
+      "colour": "#e8e0cc",
+      "material": "metal"
+     },
+     "lantern": false,
+     "colour": "#d8c7a6",
+     "trim": "#b9655a",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      26
+     ],
+     "size": [
+      46,
+      14
+     ],
+     "y0": 0,
+     "storeys": [
+      {
+       "height": 11,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "colour": "#d8c7a6",
+     "material": "stone"
+    }
+   ]
+  },
+  "notes": "The Palace of Fine Arts is a classical rotunda: a ring of great round-headed arches between piers, with pink-red inner columns and a sculpted frieze drum carrying a pale dome. A long plain hall sits behind it on the Marina side. The rotunda is the signature feature, so it is modelled first, sized so the dome top reaches 49 m.",
+  "triangles": 2300,
+  "parts": 30
+ },
+ "totals": {
+  "input": 7681,
+  "output": 2829,
+  "cost": 0.00228744,
+  "ms": 14632
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the lagoon side, showing the domed rotunda with its open great arches between piers, pink-red inner columns, a sculpted frieze drum and a pale dome, with curved colonnades running off on both sides\",\n    \"photo 2: three-quarter view from the lawn, showing the rotunda's arched ring with columns and the pale domed top, with the colonnade at left and trees in front\",\n    \"photo 3: view from the Marina side, showing the rotunda's dome and drum with relief panels, the arches on the lagoon side, and a long blank hall behind it at the right\"\n  ],\n  \"components\": [\n    {\"name\": \"rotunda with great arches\", \"part\": \"rotunda\", \"where\": \"centre of the footprint\", \"center\": [0, 0], \"size\": [40, 40], \"height\": 49,\n     \"settings\": {\"radius\": 20, \"arches\": 8, \"open\": true, \"column_height\": 22, \"column_count\": 16, \"drum\": {\"height\": 8, \"kind\": \"solid\", \"relief\": true}, \"dome\": {\"height\": 19, \"colour\": \"#e8e0cc\"}, \"lantern\": false, \"colour\": \"#d8c7a6\", \"column_colour\": \"#b9655a\"},\n     \"why\": \"photos 1 and 2 show a ring of great open arches between piers, so you see sky through it, with a sculpted drum and a pale dome above\"},\n    {\"name\": \"rear exhibition hall\", \"part\": \"block\", \"where\": \"behind the rotunda, at the back\", \"center\": [0, 26], \"size\": [46, 14], \"height\": 11,\n     \"settings\": {\"storeys\": [{\"height\": 11, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8c7a6\"},\n     \"why\": \"photo 3 shows a long plain blank hall behind the rotunda, closing the court-like space\"}\n  ]\n}\n```",
+  "input": 3427,
+  "output": 1587,
+  "cost": 0.00115703,
+  "ms": 8222,
+  "json": {
+   "photos": [
+    "photo 1: the front from the lagoon side, showing the domed rotunda with its open great arches between piers, pink-red inner columns, a sculpted frieze drum and a pale dome, with curved colonnades running off on both sides",
+    "photo 2: three-quarter view from the lawn, showing the rotunda's arched ring with columns and the pale domed top, with the colonnade at left and trees in front",
+    "photo 3: view from the Marina side, showing the rotunda's dome and drum with relief panels, the arches on the lagoon side, and a long blank hall behind it at the right"
+   ],
+   "components": [
+    {
+     "name": "rotunda with great arches",
+     "part": "rotunda",
+     "where": "centre of the footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "height": 49,
+     "settings": {
+      "radius": 20,
+      "arches": 8,
+      "open": true,
+      "column_height": 22,
+      "column_count": 16,
+      "drum": {
+       "height": 8,
+       "kind": "solid",
+       "relief": true
+      },
+      "dome": {
+       "height": 19,
+       "colour": "#e8e0cc"
+      },
+      "lantern": false,
+      "colour": "#d8c7a6",
+      "column_colour": "#b9655a"
+     },
+     "why": "photos 1 and 2 show a ring of great open arches between piers, so you see sky through it, with a sculpted drum and a pale dome above"
+    },
+    {
+     "name": "rear exhibition hall",
+     "part": "block",
+     "where": "behind the rotunda, at the back",
+     "center": [
+      0,
+      26
+     ],
+     "size": [
+      46,
+      14
+     ],
+     "height": 11,
+     "settings": {
+      "storeys": [
+       {
+        "height": 11,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8c7a6"
+     },
+     "why": "photo 3 shows a long plain blank hall behind the rotunda, closing the court-like space"
+    }
+   ]
+  }
+ }
+}

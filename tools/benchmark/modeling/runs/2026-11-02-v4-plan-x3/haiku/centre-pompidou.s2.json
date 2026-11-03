@@ -1,0 +1,435 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:23.093Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"A long, low glazed box about 168 m by 62 m, with a flat roof crowded with coloured ducts, vents and pipes (white, blue, red). The signature features are the exposed steel frame across the front and the external glazed escalator tube climbing the facade in a zigzag, modelled here as stepped beams. The tallest roof element is a red box at about 42 m.\",\"parts\":[{\"type\":\"box\",\"center\":[0,0],\"size\":[168,62],\"y0\":0,\"y1\":36,\"material\":\"glass\",\"colour\":\"#c9d1d6\",\"windows\":{\"kind\":\"curtain\",\"glass\":\"#c9d1d6\"}},{\"type\":\"repeat\",\"count\":13,\"offset\":[14,0,0],\"part\":{\"type\":\"beam\",\"from\":[-84,0,-31],\"to\":[-84,36,-31],\"width\":0.8,\"material\":\"metal\",\"colour\":\"#9aa3a8\"}},{\"type\":\"repeat\",\"count\":6,\"offset\":[0,6,0],\"part\":{\"type\":\"beam\",\"from\":[-84,6,-31],\"to\":[84,6,-31],\"width\":0.5,\"material\":\"metal\",\"colour\":\"#9aa3a8\"}},{\"type\":\"beam\",\"from\":[-72,0,-35],\"to\":[-24,14,-35],\"width\":2.5,\"material\":\"glass\",\"colour\":\"#e6ecef\"},{\"type\":\"beam\",\"from\":[-24,14,-35],\"to\":[12,14,-35],\"width\":2.5,\"material\":\"glass\",\"colour\":\"#e6ecef\"},{\"type\":\"beam\",\"from\":[12,14,-35],\"to\":[60,30,-35],\"width\":2.5,\"material\":\"glass\",\"colour\":\"#e6ecef\"},{\"type\":\"beam\",\"from\":[60,30,-35],\"to\":[84,36,-35],\"width\":2.5,\"material\":\"glass\",\"colour\":\"#e6ecef\"},{\"type\":\"repeat\",\"count\":15,\"offset\":[10,0,0],\"part\":{\"type\":\"cylinder\",\"center\":[-70,-14],\"radius\":1.8,\"y0\":36,\"y1\":40,\"colour\":\"#f4f6f8\"}},{\"type\":\"repeat\",\"count\":15,\"offset\":[10,0,0],\"part\":{\"type\":\"cylinder\",\"center\":[-70,12],\"radius\":1.8,\"y0\":36,\"y1\":40,\"colour\":\"#4a90c2\"}},{\"type\":\"box\",\"center\":[-50,-4],\"size\":[10,8],\"y0\":36,\"y1\":42,\"material\":\"metal\",\"colour\":\"#d7262e\"}]}",
+   "stop": "end_turn",
+   "input": 4722,
+   "output": 2070,
+   "cacheRead": 8401,
+   "cost": 0.00159121,
+   "ms": 9350,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long, low glazed box about 168 m by 62 m, with a flat roof crowded with coloured ducts, vents and pipes (white, blue, red). The signature features are the exposed steel frame across the front and the external glazed escalator tube climbing the facade in a zigzag, modelled here as stepped beams. The tallest roof element is a red box at about 42 m.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      62
+     ],
+     "y0": 0,
+     "y1": 36,
+     "material": "glass",
+     "colour": "#c9d1d6",
+     "windows": {
+      "kind": "curtain",
+      "glass": "#c9d1d6"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 13,
+     "offset": [
+      14,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -31
+      ],
+      "to": [
+       -84,
+       36,
+       -31
+      ],
+      "width": 0.8,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      6,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       6,
+       -31
+      ],
+      "to": [
+       84,
+       6,
+       -31
+      ],
+      "width": 0.5,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      -72,
+      0,
+      -35
+     ],
+     "to": [
+      -24,
+      14,
+      -35
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e6ecef"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -24,
+      14,
+      -35
+     ],
+     "to": [
+      12,
+      14,
+      -35
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e6ecef"
+    },
+    {
+     "type": "beam",
+     "from": [
+      12,
+      14,
+      -35
+     ],
+     "to": [
+      60,
+      30,
+      -35
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e6ecef"
+    },
+    {
+     "type": "beam",
+     "from": [
+      60,
+      30,
+      -35
+     ],
+     "to": [
+      84,
+      36,
+      -35
+     ],
+     "width": 2.5,
+     "material": "glass",
+     "colour": "#e6ecef"
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      10,
+      0,
+      0
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -70,
+       -14
+      ],
+      "radius": 1.8,
+      "y0": 36,
+      "y1": 40,
+      "colour": "#f4f6f8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      10,
+      0,
+      0
+     ],
+     "part": {
+      "type": "cylinder",
+      "center": [
+       -70,
+       12
+      ],
+      "radius": 1.8,
+      "y0": 36,
+      "y1": 40,
+      "colour": "#4a90c2"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -50,
+      -4
+     ],
+     "size": [
+      10,
+      8
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d7262e"
+    }
+   ]
+  },
+  "notes": "A long, low glazed box about 168 m by 62 m, with a flat roof crowded with coloured ducts, vents and pipes (white, blue, red). The signature features are the exposed steel frame across the front and the external glazed escalator tube climbing the facade in a zigzag, modelled here as stepped beams. The tallest roof element is a red box at about 42 m.",
+  "triangles": 3132,
+  "parts": 55
+ },
+ "totals": {
+  "input": 8097,
+  "output": 4200,
+  "cost": 0.00301454,
+  "ms": 20273
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the piazza (west), showing a glazed facade with a steel frame and colored ducts, and a diagonal glass escalator tube climbing across the front.\",\n    \"photo 2: a side three-quarter view from below, showing the stepped zigzag escalator tube and the exposed steel bracing frame over several storeys, with a red-brown box on the roof.\",\n    \"photo 3: an elevated distant view showing the long rectangular box with its roof covered in colored vents, pipes and ducts (blue, white, red) above a glass and steel body.\"\n  ],\n  \"components\": [\n    {\"name\": \"main glazed body\", \"part\": \"block\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [168, 62], \"height\": 36,\n     \"settings\": {\"storeys\": [{\"height\": 6, \"kind\": \"curtain\"}, {\"height\": 6, \"kind\": \"curtain\", \"floors\": 1}, {\"height\": 6, \"kind\": \"curtain\", \"floors\": 1}, {\"height\": 6, \"kind\": \"curtain\", \"floors\": 1}, {\"height\": 6, \"kind\": \"curtain\", \"floors\": 1}, {\"height\": 6, \"kind\": \"curtain\", \"floors\": 1}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#c9d1d6\"},\n     \"why\": \"photo 3 shows a long rectangular box of about six glazed storeys with a flat roof; photo 1 shows the glazed curtain wall\"},\n    {\"name\": \"exposed steel frame on front\", \"part\": \"beam\", \"where\": \"front face, over the glazing\", \"center\": [0, -31], \"size\": [168, 3], \"height\": 36,\n     \"settings\": {\"kind\": \"frame\", \"bays\": 12, \"members\": \"steel\", \"colour\": \"#9aa3a8\"},\n     \"why\": \"photos 1 and 2 show the exposed steel truss and bracing frame across the whole front\"},\n    {\"name\": \"diagonal escalator tube\", \"part\": \"beam\", \"where\": \"outside the front, climbing diagonally\", \"center\": [0, -33], \"size\": [150, 5], \"height\": 36,\n     \"settings\": {\"from\": [-70, 0, -33], \"to\": [70, 36, -33], \"steps\": 3, \"zigzag\": true, \"radius\": 2.5, \"glazed\": true, \"colour\": \"#e6ecef\", \"trim\": \"#c8102e\"},\n     \"why\": \"photos 1 and 2 show the external glazed escalator tube climbing in a zigzag across the front\"},\n    {\"name\": \"roof ducts and vents\", \"part\": \"repeat\", \"where\": \"roof of the main body\", \"center\": [0, 0], \"size\": [150, 46], \"height\": 42,\n     \"settings\": {\"part\": \"cylinder\", \"rows\": 2, \"count_per_row\": 14, \"base_height\": 36, \"radius\": 1.8, \"height\": 4, \"colours\": [\"#f4f6f8\", \"#4a90c2\", \"#d7262e\"]},\n     \"why\": \"photo 3 shows the roof covered in colored vents and ducts reaching the highest point\"}\n  ]\n}\n```",
+  "input": 3375,
+  "output": 2130,
+  "cost": 0.00142333,
+  "ms": 10923,
+  "json": {
+   "photos": [
+    "photo 1: the front from the piazza (west), showing a glazed facade with a steel frame and colored ducts, and a diagonal glass escalator tube climbing across the front.",
+    "photo 2: a side three-quarter view from below, showing the stepped zigzag escalator tube and the exposed steel bracing frame over several storeys, with a red-brown box on the roof.",
+    "photo 3: an elevated distant view showing the long rectangular box with its roof covered in colored vents, pipes and ducts (blue, white, red) above a glass and steel body."
+   ],
+   "components": [
+    {
+     "name": "main glazed body",
+     "part": "block",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      62
+     ],
+     "height": 36,
+     "settings": {
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "curtain"
+       },
+       {
+        "height": 6,
+        "kind": "curtain",
+        "floors": 1
+       },
+       {
+        "height": 6,
+        "kind": "curtain",
+        "floors": 1
+       },
+       {
+        "height": 6,
+        "kind": "curtain",
+        "floors": 1
+       },
+       {
+        "height": 6,
+        "kind": "curtain",
+        "floors": 1
+       },
+       {
+        "height": 6,
+        "kind": "curtain",
+        "floors": 1
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#c9d1d6"
+     },
+     "why": "photo 3 shows a long rectangular box of about six glazed storeys with a flat roof; photo 1 shows the glazed curtain wall"
+    },
+    {
+     "name": "exposed steel frame on front",
+     "part": "beam",
+     "where": "front face, over the glazing",
+     "center": [
+      0,
+      -31
+     ],
+     "size": [
+      168,
+      3
+     ],
+     "height": 36,
+     "settings": {
+      "kind": "frame",
+      "bays": 12,
+      "members": "steel",
+      "colour": "#9aa3a8"
+     },
+     "why": "photos 1 and 2 show the exposed steel truss and bracing frame across the whole front"
+    },
+    {
+     "name": "diagonal escalator tube",
+     "part": "beam",
+     "where": "outside the front, climbing diagonally",
+     "center": [
+      0,
+      -33
+     ],
+     "size": [
+      150,
+      5
+     ],
+     "height": 36,
+     "settings": {
+      "from": [
+       -70,
+       0,
+       -33
+      ],
+      "to": [
+       70,
+       36,
+       -33
+      ],
+      "steps": 3,
+      "zigzag": true,
+      "radius": 2.5,
+      "glazed": true,
+      "colour": "#e6ecef",
+      "trim": "#c8102e"
+     },
+     "why": "photos 1 and 2 show the external glazed escalator tube climbing in a zigzag across the front"
+    },
+    {
+     "name": "roof ducts and vents",
+     "part": "repeat",
+     "where": "roof of the main body",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      150,
+      46
+     ],
+     "height": 42,
+     "settings": {
+      "part": "cylinder",
+      "rows": 2,
+      "count_per_row": 14,
+      "base_height": 36,
+      "radius": 1.8,
+      "height": 4,
+      "colours": [
+       "#f4f6f8",
+       "#4a90c2",
+       "#d7262e"
+      ]
+     },
+     "why": "photo 3 shows the roof covered in colored vents and ducts reaching the highest point"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,425 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:04.460Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long low grey stone museum: a court of colonnaded wings open to the front, with a triumphal arch with a balustrade in the middle of the front. A green copper dome on a drum rises behind the court, the highest point of the building, seen through the arch from the front. The wings are single-storey colonnades under balustrades, so the court colonnades and the arch are modelled as the signature features.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [60.4, 88],\n      \"wing\": 18,\n      \"open\": \"front\",\n      \"courtColonnade\": true,\n      \"y0\": 0,\n      \"bay\": 5,\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"columns\", \"windows\": false},\n        {\"height\": 5, \"kind\": \"pilasters\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d9d2c0\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -42],\n      \"size\": [14, 6],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"storeys\": [\n        {\"height\": 16, \"kind\": \"arcade\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d9d2c0\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 20],\n      \"radius\": 9,\n      \"y0\": 14,\n      \"base\": 1,\n      \"height\": 4,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 1,\n      \"dome\": {\"height\": 3, \"colour\": \"#6fa58a\", \"material\": \"copper\"},\n      \"lantern\": false,\n      \"colour\": \"#d9d2c0\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4374,
+   "output": 2892,
+   "cacheRead": 8401,
+   "cost": 0.00196741,
+   "ms": 13547,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real building:\n\n1. The colonnades stand on the outside of the long wings. In the photographs the columns face the inner court, and the outer walls are blank stone with pilasters.\n2. The taller end pavilions at the front corners are missing. In the photographs they stand above the low colonnades on each side of the arch, so the front reads as flat.\n3. The dome sits on a low drum and looks squat. The real dome is a more visible copper dome on a clearer drum, and the arch needs to stand a little wider in front of the wings.\n\n```json\n{\n  \"notes\": \"Low grey stone museum: a Court of Honor open to the front, framed by colonnaded wings, with a triumphal arch in the middle of the front and taller end pavilions at the front corners. A green copper dome on a drum rises at the centre rear, the highest point of the building. The outer walls are blank, pilastered stone; the colonnades face the court inside.\",\n  \"parts\": [\n    {\n      \"type\": \"court\",\n      \"center\": [0, 0],\n      \"size\": [60.4, 88],\n      \"wing\": 18,\n      \"open\": \"front\",\n      \"courtColonnade\": true,\n      \"y0\": 0,\n      \"bay\": 5,\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"pilasters\", \"windows\": false},\n        {\"height\": 5, \"kind\": \"pilasters\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d9d2c0\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [-22, -34],\n      \"size\": [16, 24],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\", \"windows\": false},\n        {\"height\": 11, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d9d2c0\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [22, -34],\n      \"size\": [16, 24],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"storeys\": [\n        {\"height\": 6, \"kind\": \"rusticated\", \"windows\": false},\n        {\"height\": 11, \"kind\": \"pilasters\", \"floors\": 2}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d9d2c0\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, -43],\n      \"size\": [16, 6],\n      \"y0\": 0,\n      \"bay\": 4.5,\n      \"storeys\": [\n        {\"height\": 16, \"kind\": \"arcade\", \"windows\": false}\n      ],\n      \"roof\": {\"kind\": \"balustrade\"},\n      \"colour\": \"#d9d2c0\",\n      \"trim\": \"#e8e1d0\",\n      \"material\": \"stone\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 20],\n      \"radius\": 9,\n      \"y0\": 14,\n      \"base\": 1,\n      \"height\": 4,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 2,\n      \"dome\": {\"height\": 2, \"colour\": \"#6fa58a\", \"material\": \"copper\"},\n      \"lantern\": false,\n      \"colour\": \"#d9d2c0\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 8732,
+   "output": 3893,
+   "cacheRead": 8401,
+   "cost": 0.00290371,
+   "ms": 18979,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Low grey stone museum: a Court of Honor open to the front, framed by colonnaded wings, with a triumphal arch in the middle of the front and taller end pavilions at the front corners. A green copper dome on a drum rises at the centre rear, the highest point of the building. The outer walls are blank, pilastered stone; the colonnades face the court inside.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      88
+     ],
+     "wing": 18,
+     "open": "front",
+     "courtColonnade": true,
+     "y0": 0,
+     "bay": 5,
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "pilasters",
+       "windows": false
+      },
+      {
+       "height": 5,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d9d2c0",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      -22,
+      -34
+     ],
+     "size": [
+      16,
+      24
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated",
+       "windows": false
+      },
+      {
+       "height": 11,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d9d2c0",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      22,
+      -34
+     ],
+     "size": [
+      16,
+      24
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 6,
+       "kind": "rusticated",
+       "windows": false
+      },
+      {
+       "height": 11,
+       "kind": "pilasters",
+       "floors": 2
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d9d2c0",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -43
+     ],
+     "size": [
+      16,
+      6
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 16,
+       "kind": "arcade",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d9d2c0",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      20
+     ],
+     "radius": 9,
+     "y0": 14,
+     "base": 1,
+     "height": 4,
+     "count": 12,
+     "open": false,
+     "drum": 2,
+     "dome": {
+      "height": 2,
+      "colour": "#6fa58a",
+      "material": "copper"
+     },
+     "lantern": false,
+     "colour": "#d9d2c0"
+    }
+   ]
+  },
+  "notes": "Low grey stone museum: a Court of Honor open to the front, framed by colonnaded wings, with a triumphal arch in the middle of the front and taller end pavilions at the front corners. A green copper dome on a drum rises at the centre rear, the highest point of the building. The outer walls are blank, pilastered stone; the colonnades face the court inside.",
+  "triangles": 9532,
+  "parts": 350
+ },
+ "totals": {
+  "input": 16383,
+  "output": 10469,
+  "cost": 0.007061650000000001,
+  "ms": 51133
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the head-on view across the forecourt from the front. A central triumphal arch with a round opening and a balustraded top stands in the middle. Low grey stone colonnades run out from it on both sides to taller end pavilions with carved relief panels. The sky is blue.\",\n    \"photo 2: a night view across the reflecting pond. The whole low colonnaded front is lit from below, with the central arch and a green copper dome visible through the arch opening. The wings are low and the roofline is level apart from the centre and ends.\",\n    \"photo 3: a daylight view inside the court, looking along the colonnaded wing. The wing is a single-storey loggia of tall columns with a balustrade above and a plain wall behind. The inner court is open and paved, and the front portico with the 'HONNEUR ET PATRIE' inscription stands at the end.\"\n  ],\n  \"components\": [\n    {\"name\": \"main body\", \"part\": \"court\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [60.4, 88], \"height\": 14,\n     \"settings\": {\"open\": \"front\", \"wing\": 18, \"storeys\": [{\"height\": 9, \"kind\": \"columns\", \"windows\": false}, {\"height\": 5, \"kind\": \"pilasters\", \"windows\": false}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d9d2c0\"},\n     \"why\": \"photo 3 shows wings round an open court facing the front, lined by a colonnade; photo 1 shows the flanking colonnades\"},\n    {\"name\": \"central triumphal arch\", \"part\": \"block\", \"where\": \"centre of the front, in front of the court\", \"center\": [0, -42], \"size\": [14, 6], \"height\": 16,\n     \"settings\": {\"storeys\": [{\"height\": 16, \"kind\": \"arcade\", \"windows\": false}], \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d9d2c0\"},\n     \"why\": \"photo 1: a central arch with a round opening rises above the colonnades at the front\"},\n    {\"name\": \"central domed pavilion\", \"part\": \"rotunda\", \"where\": \"centre of the back, behind the court\", \"center\": [0, 20], \"radius\": 9, \"height\": 23,\n     \"settings\": {\"base\": 14, \"open\": false, \"column_height\": 3, \"columns\": 12, \"drum\": 1, \"dome_height\": 5, \"dome_colour\": \"#6fa58a\", \"lantern\": false, \"colour\": \"#d9d2c0\"},\n     \"why\": \"photo 2 shows a green copper dome rising behind the arch, the highest point of the building\"}\n  ]\n}\n```",
+  "input": 3277,
+  "output": 3684,
+  "cost": 0.00219053,
+  "ms": 18607,
+  "json": {
+   "photos": [
+    "photo 1: the head-on view across the forecourt from the front. A central triumphal arch with a round opening and a balustraded top stands in the middle. Low grey stone colonnades run out from it on both sides to taller end pavilions with carved relief panels. The sky is blue.",
+    "photo 2: a night view across the reflecting pond. The whole low colonnaded front is lit from below, with the central arch and a green copper dome visible through the arch opening. The wings are low and the roofline is level apart from the centre and ends.",
+    "photo 3: a daylight view inside the court, looking along the colonnaded wing. The wing is a single-storey loggia of tall columns with a balustrade above and a plain wall behind. The inner court is open and paved, and the front portico with the 'HONNEUR ET PATRIE' inscription stands at the end."
+   ],
+   "components": [
+    {
+     "name": "main body",
+     "part": "court",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      88
+     ],
+     "height": 14,
+     "settings": {
+      "open": "front",
+      "wing": 18,
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "columns",
+        "windows": false
+       },
+       {
+        "height": 5,
+        "kind": "pilasters",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d9d2c0"
+     },
+     "why": "photo 3 shows wings round an open court facing the front, lined by a colonnade; photo 1 shows the flanking colonnades"
+    },
+    {
+     "name": "central triumphal arch",
+     "part": "block",
+     "where": "centre of the front, in front of the court",
+     "center": [
+      0,
+      -42
+     ],
+     "size": [
+      14,
+      6
+     ],
+     "height": 16,
+     "settings": {
+      "storeys": [
+       {
+        "height": 16,
+        "kind": "arcade",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d9d2c0"
+     },
+     "why": "photo 1: a central arch with a round opening rises above the colonnades at the front"
+    },
+    {
+     "name": "central domed pavilion",
+     "part": "rotunda",
+     "where": "centre of the back, behind the court",
+     "center": [
+      0,
+      20
+     ],
+     "radius": 9,
+     "height": 23,
+     "settings": {
+      "base": 14,
+      "open": false,
+      "column_height": 3,
+      "columns": 12,
+      "drum": 1,
+      "dome_height": 5,
+      "dome_colour": "#6fa58a",
+      "lantern": false,
+      "colour": "#d9d2c0"
+     },
+     "why": "photo 2 shows a green copper dome rising behind the arch, the highest point of the building"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "A long low grey stone museum: a court of colonnaded wings open to the front, with a triumphal arch with a balustrade in the middle of the front. A green copper dome on a drum rises behind the court, the highest point of the building, seen through the arch from the front. The wings are single-storey colonnades under balustrades, so the court colonnades and the arch are modelled as the signature features.",
+   "parts": [
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      60.4,
+      88
+     ],
+     "wing": 18,
+     "open": "front",
+     "courtColonnade": true,
+     "y0": 0,
+     "bay": 5,
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "columns",
+       "windows": false
+      },
+      {
+       "height": 5,
+       "kind": "pilasters",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d9d2c0",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      -42
+     ],
+     "size": [
+      14,
+      6
+     ],
+     "y0": 0,
+     "bay": 4.5,
+     "storeys": [
+      {
+       "height": 16,
+       "kind": "arcade",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "balustrade"
+     },
+     "colour": "#d9d2c0",
+     "trim": "#e8e1d0",
+     "material": "stone"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      20
+     ],
+     "radius": 9,
+     "y0": 14,
+     "base": 1,
+     "height": 4,
+     "count": 12,
+     "open": false,
+     "drum": 1,
+     "dome": {
+      "height": 3,
+      "colour": "#6fa58a",
+      "material": "copper"
+     },
+     "lantern": false,
+     "colour": "#d9d2c0"
+    }
+   ]
+  },
+  "notes": "A long low grey stone museum: a court of colonnaded wings open to the front, with a triumphal arch with a balustrade in the middle of the front. A green copper dome on a drum rises behind the court, the highest point of the building, seen through the arch from the front. The wings are single-storey colonnades under balustrades, so the court colonnades and the arch are modelled as the signature features.",
+  "triangles": 17692,
+  "parts": 184
+ }
+}

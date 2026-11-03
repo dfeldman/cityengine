@@ -1,0 +1,346 @@
+{
+ "building": "coit-tower",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 2,
+ "feedback": true,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:54.703Z",
+ "userText": "Building: Coit Tower, San Francisco (monument tower).\nThe front (−z) is the parking circle side.\nFootprint: 21.9 m along x by 22.2 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-5.9,8.5],[-8.9,8.5],[-8.9,5.8],[-9.8,5.8],[-11,3],[-10.9,-2.9],[-9.8,-5.7],[-8.9,-5.7],[-8.9,-8.6],[-5.9,-8.6],[-5.6,-10],[-1.7,-11.1],[2.6,-10.9],[5.3,-10],[5.4,-8.6],[8.6,-8.6],[8.6,-5.7],[10,-5.7],[10.9,-1.6],[11,2.6],[10,5.8],[8.6,5.8],[8.6,8.5],[5.4,8.5],[5.4,11.1],[-5.9,11.1]]\nHeight: the highest point is 64 m above the ground.\n\n3 photographs attached, in order:\n  1. whole fluted concrete tower on its hilltop with trees below, clear sky\n  2. tower rising behind the Telegraph Hill apartment building, showing the full shaft and the arcaded crown, flag on top\n  3. high oblique aerial of the tower and the circular drive and park on Telegraph Hill\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   21.9,
+   22.2
+  ],
+  "outline": [
+   [
+    -5.9,
+    8.5
+   ],
+   [
+    -8.9,
+    8.5
+   ],
+   [
+    -8.9,
+    5.8
+   ],
+   [
+    -9.8,
+    5.8
+   ],
+   [
+    -11,
+    3
+   ],
+   [
+    -10.9,
+    -2.9
+   ],
+   [
+    -9.8,
+    -5.7
+   ],
+   [
+    -8.9,
+    -5.7
+   ],
+   [
+    -8.9,
+    -8.6
+   ],
+   [
+    -5.9,
+    -8.6
+   ],
+   [
+    -5.6,
+    -10
+   ],
+   [
+    -1.7,
+    -11.1
+   ],
+   [
+    2.6,
+    -10.9
+   ],
+   [
+    5.3,
+    -10
+   ],
+   [
+    5.4,
+    -8.6
+   ],
+   [
+    8.6,
+    -8.6
+   ],
+   [
+    8.6,
+    -5.7
+   ],
+   [
+    10,
+    -5.7
+   ],
+   [
+    10.9,
+    -1.6
+   ],
+   [
+    11,
+    2.6
+   ],
+   [
+    10,
+    5.8
+   ],
+   [
+    8.6,
+    5.8
+   ],
+   [
+    8.6,
+    8.5
+   ],
+   [
+    5.4,
+    8.5
+   ],
+   [
+    5.4,
+    11.1
+   ],
+   [
+    -5.9,
+    11.1
+   ]
+  ],
+  "height": 64,
+  "turn": 14.5
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Coit Tower is a plain, slightly fluted concrete cylinder about 64 m tall, standing on a low square plinth on Telegraph Hill. Its signature feature is the open arcaded crown of tall round-headed openings at the top, which I model as an open stage. The plan is a round shaft with a flat cap, and the plinth is a pale concrete box roughly 22 m square.\",\n  \"parts\": [\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [22, 22],\n      \"y0\": 0,\n      \"y1\": 3,\n      \"material\": \"concrete\",\n      \"colour\": \"#cfcbc0\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [0, 0],\n      \"y0\": 0,\n      \"material\": \"concrete\",\n      \"colour\": \"#d9d6cc\",\n      \"stages\": [\n        {\"shape\": \"round\", \"width\": 17, \"height\": 52, \"kind\": \"blank\"},\n        {\"shape\": \"round\", \"width\": 17, \"height\": 12, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"flat\", \"colour\": \"#d9d6cc\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4308,
+   "output": 1189,
+   "cacheRead": 8401,
+   "cost": 0.0011093099999999999,
+   "ms": 5584,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"Three differences from the real Coit Tower: (1) the shaft is a plain smooth cylinder, while the real one is fluted with vertical grooves and tapers slightly toward the top, so it is now a tapered cylinder with more sides; (2) the crown's openings read as thin dark slots, while the real crown has tall round-headed arches between pale piers, and it is a little taller relative to the shaft, so the crown is now 14 m tall; (3) the plinth is a thin slab, and the real base is a more substantial pale platform, so it is now 3.5 m high.\",\n  \"parts\": [\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [22, 22],\n      \"y0\": 0,\n      \"y1\": 3.5,\n      \"material\": \"concrete\",\n      \"colour\": \"#cfcbc0\"\n    },\n    {\n      \"type\": \"cylinder\",\n      \"center\": [0, 0],\n      \"radius\": 8.6,\n      \"radiusTop\": 8.0,\n      \"y0\": 3.5,\n      \"y1\": 50,\n      \"sides\": 32,\n      \"material\": \"concrete\",\n      \"colour\": \"#d9d6cc\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [0, 0],\n      \"y0\": 50,\n      \"material\": \"concrete\",\n      \"colour\": \"#d9d6cc\",\n      \"stages\": [\n        {\"shape\": \"round\", \"width\": 17, \"height\": 14, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"flat\", \"colour\": \"#d9d6cc\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 6963,
+   "output": 2097,
+   "cacheRead": 8401,
+   "cost": 0.00182881,
+   "ms": 10405,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Three differences from the real Coit Tower: (1) the shaft is a plain smooth cylinder, while the real one is fluted with vertical grooves and tapers slightly toward the top, so it is now a tapered cylinder with more sides; (2) the crown's openings read as thin dark slots, while the real crown has tall round-headed arches between pale piers, and it is a little taller relative to the shaft, so the crown is now 14 m tall; (3) the plinth is a thin slab, and the real base is a more substantial pale platform, so it is now 3.5 m high.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      22,
+      22
+     ],
+     "y0": 0,
+     "y1": 3.5,
+     "material": "concrete",
+     "colour": "#cfcbc0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 8.6,
+     "radiusTop": 8,
+     "y0": 3.5,
+     "y1": 50,
+     "sides": 32,
+     "material": "concrete",
+     "colour": "#d9d6cc"
+    },
+    {
+     "type": "tower",
+     "center": [
+      0,
+      0
+     ],
+     "y0": 50,
+     "material": "concrete",
+     "colour": "#d9d6cc",
+     "stages": [
+      {
+       "shape": "round",
+       "width": 17,
+       "height": 14,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "flat",
+      "colour": "#d9d6cc"
+     }
+    }
+   ]
+  },
+  "notes": "Three differences from the real Coit Tower: (1) the shaft is a plain smooth cylinder, while the real one is fluted with vertical grooves and tapers slightly toward the top, so it is now a tapered cylinder with more sides; (2) the crown's openings read as thin dark slots, while the real crown has tall round-headed arches between pale piers, and it is a little taller relative to the shaft, so the crown is now 14 m tall; (3) the plinth is a thin slab, and the real base is a more substantial pale platform, so it is now 3.5 m high.",
+  "triangles": 396,
+  "parts": 3
+ },
+ "totals": {
+  "input": 14848,
+  "output": 4959,
+  "cost": 0.0041531499999999996,
+  "ms": 25073
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\"photos\": [\"photo 1: the whole fluted concrete tower on its wooded hilltop, a plain shaft topped by a band of tall arched openings, with trees below and clear sky behind.\", \"photo 2: the tower rising behind the Telegraph Hill apartment block, showing the full pale shaft and the arcaded crown with a flag on the roof beside it.\", \"photo 3: high oblique aerial of the tower standing on a square base, with the circular drive and park to the south-west and the tower's shadow-less shaft among trees.\"], \"components\": [{\"name\": \"fluted shaft and arcaded crown\", \"part\": \"tower\", \"where\": \"centre of the hilltop\", \"center\": [0, 0], \"size\": [17, 17], \"height\": 64, \"settings\": {\"stages\": [{\"shape\": \"round\", \"width\": 17, \"height\": 52, \"kind\": \"blank\"}, {\"shape\": \"round\", \"width\": 17, \"height\": 12, \"kind\": \"open\"}], \"top\": {\"kind\": \"flat\"}, \"colour\": \"#d9d6cc\"}, \"why\": \"photos 1 and 2 show a plain fluted concrete cylinder, about 64 m tall, with an open arcaded observation crown at the top; photo 3 shows the round plan\"}, {\"name\": \"square base plinth\", \"part\": \"box\", \"where\": \"the ground under the tower\", \"center\": [0, 0], \"size\": [22, 22], \"height\": 3, \"settings\": {\"colour\": \"#cfcbc0\"}, \"why\": \"photo 3 shows the tower on a low square plinth, matching the roughly 22 m footprint\"}]}",
+  "input": 3577,
+  "output": 1673,
+  "cost": 0.00121503,
+  "ms": 9084,
+  "json": {
+   "photos": [
+    "photo 1: the whole fluted concrete tower on its wooded hilltop, a plain shaft topped by a band of tall arched openings, with trees below and clear sky behind.",
+    "photo 2: the tower rising behind the Telegraph Hill apartment block, showing the full pale shaft and the arcaded crown with a flag on the roof beside it.",
+    "photo 3: high oblique aerial of the tower standing on a square base, with the circular drive and park to the south-west and the tower's shadow-less shaft among trees."
+   ],
+   "components": [
+    {
+     "name": "fluted shaft and arcaded crown",
+     "part": "tower",
+     "where": "centre of the hilltop",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      17,
+      17
+     ],
+     "height": 64,
+     "settings": {
+      "stages": [
+       {
+        "shape": "round",
+        "width": 17,
+        "height": 52,
+        "kind": "blank"
+       },
+       {
+        "shape": "round",
+        "width": 17,
+        "height": 12,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "flat"
+      },
+      "colour": "#d9d6cc"
+     },
+     "why": "photos 1 and 2 show a plain fluted concrete cylinder, about 64 m tall, with an open arcaded observation crown at the top; photo 3 shows the round plan"
+    },
+    {
+     "name": "square base plinth",
+     "part": "box",
+     "where": "the ground under the tower",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      22,
+      22
+     ],
+     "height": 3,
+     "settings": {
+      "colour": "#cfcbc0"
+     },
+     "why": "photo 3 shows the tower on a low square plinth, matching the roughly 22 m footprint"
+    }
+   ]
+  }
+ },
+ "draft": {
+  "json": {
+   "notes": "Coit Tower is a plain, slightly fluted concrete cylinder about 64 m tall, standing on a low square plinth on Telegraph Hill. Its signature feature is the open arcaded crown of tall round-headed openings at the top, which I model as an open stage. The plan is a round shaft with a flat cap, and the plinth is a pale concrete box roughly 22 m square.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      22,
+      22
+     ],
+     "y0": 0,
+     "y1": 3,
+     "material": "concrete",
+     "colour": "#cfcbc0"
+    },
+    {
+     "type": "tower",
+     "center": [
+      0,
+      0
+     ],
+     "y0": 0,
+     "material": "concrete",
+     "colour": "#d9d6cc",
+     "stages": [
+      {
+       "shape": "round",
+       "width": 17,
+       "height": 52,
+       "kind": "blank"
+      },
+      {
+       "shape": "round",
+       "width": 17,
+       "height": 12,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "flat",
+      "colour": "#d9d6cc"
+     }
+    }
+   ]
+  },
+  "notes": "Coit Tower is a plain, slightly fluted concrete cylinder about 64 m tall, standing on a low square plinth on Telegraph Hill. Its signature feature is the open arcaded crown of tall round-headed openings at the top, which I model as an open stage. The plan is a round shaft with a flat cap, and the plinth is a pale concrete box roughly 22 m square.",
+  "triangles": 456,
+  "parts": 4
+ }
+}

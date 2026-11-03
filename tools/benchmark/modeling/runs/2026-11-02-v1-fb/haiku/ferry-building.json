@@ -1,0 +1,398 @@
+{
+ "building": "ferry-building",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:00:13.453Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Ferry Building is a long, two-storey Beaux-Arts arcaded block with a low roof, a central clock tower on the Embarcadero (front, -z) side, and a tall stepped white tower with a small spire rising to about 75 m. The front has a ground-floor arcade of round-headed openings, and the rear is a long shed roof. The plan is a long block with a bulge at the centre front where the tower stands.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]], \"y0\": 0, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#e4e0d4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4, \"solid\": 0.4}},\n    {\"type\": \"arcade\", \"from\": [-90, -28], \"to\": [90, -28], \"y0\": 0, \"height\": 8, \"count\": 20, \"thickness\": 1.5},\n    {\"type\": \"roof\", \"kind\": \"flat\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 18, \"rise\": 3, \"material\": \"tile\", \"colour\": \"#7d8187\"},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [14, 14], \"y0\": 0, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#e4e0d4\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [10.5, 10.5], \"y0\": 52, \"y1\": 64, \"material\": \"stone\", \"colour\": \"#e4e0d4\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 3, \"solid\": 0.5}},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [7.5, 7.5], \"y0\": 64, \"y1\": 70, \"material\": \"stone\", \"colour\": \"#e4e0d4\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 3.6, \"radiusTop\": 0.6, \"y0\": 70, \"y1\": 75, \"sides\": 4, \"material\": \"stone\", \"colour\": \"#e4e0d4\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 1555,
+   "cacheRead": 3474,
+   "cost": 0.00114774,
+   "ms": 7933,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences are:\n\n1. **Tower too slender.** The real clock tower is broader at the base, with a heavier belfry and clock faces, and the render's tower reads as a thin mast.\n2. **Roof too flat.** The real building has a low, shallow-pitched dark slate roof with a visible hip, not a flat slab.\n3. **Facades too busy.** The render's windows are a dense grid on every wall. The real building has a long, arcaded ground floor and a calmer upper storey with wider bays.\n\n```json\n{\n  \"notes\": \"The Ferry Building is a long, low, two-storey cream Beaux-Arts block with a shallow dark slate roof, a ground-floor arcade of round-headed openings along its long front, and a broad central clock tower at the front that rises to about 75 m with a belfry and small spire. The corrections widen the tower and add a lantern, replace the flat slab with a shallow slate roof, and thin out the upper windows to wider bays.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]], \"y0\": 0, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#e4e0d4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 7, \"solid\": 0.6}},\n    {\"type\": \"arcade\", \"from\": [-90, -28], \"to\": [90, -28], \"y0\": 0, \"height\": 8, \"count\": 20, \"thickness\": 1.8},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 18, \"rise\": 4, \"ridge\": \"x\", \"material\": \"tile\", \"colour\": \"#5f646b\"},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [17, 17], \"y0\": 0, \"y1\": 50, \"material\": \"stone\", \"colour\": \"#e4e0d4\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 5, \"solid\": 0.75}},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [14, 14], \"y0\": 50, \"y1\": 62, \"material\": \"stone\", \"colour\": \"#e4e0d4\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [10, 10], \"y0\": 62, \"y1\": 68, \"material\": \"stone\", \"colour\": \"#e4e0d4\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 4.5, \"radiusTop\": 3.5, \"y0\": 68, \"y1\": 71, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#e4e0d4\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 3.5, \"radiusTop\": 0.6, \"y0\": 71, \"y1\": 75, \"sides\": 4, \"material\": \"stone\", \"colour\": \"#e4e0d4\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 6376,
+   "output": 1808,
+   "cacheRead": 3474,
+   "cost": 0.00157634,
+   "ms": 9129,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Ferry Building is a long, low, two-storey cream Beaux-Arts block with a shallow dark slate roof, a ground-floor arcade of round-headed openings along its long front, and a broad central clock tower at the front that rises to about 75 m with a belfry and small spire. The corrections widen the tower and add a lantern, replace the flat slab with a shallow slate roof, and thin out the upper windows to wider bays.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -100.7,
+       -19.2
+      ],
+      [
+       -22.4,
+       -28.1
+      ],
+      [
+       20.9,
+       -28.1
+      ],
+      [
+       100.7,
+       -19.2
+      ],
+      [
+       100.7,
+       28.1
+      ],
+      [
+       -100.7,
+       28.1
+      ]
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#e4e0d4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 7,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -90,
+      -28
+     ],
+     "to": [
+      90,
+      -28
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 20,
+     "thickness": 1.8
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 18,
+     "rise": 4,
+     "ridge": "x",
+     "material": "tile",
+     "colour": "#5f646b"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      17,
+      17
+     ],
+     "y0": 0,
+     "y1": 50,
+     "material": "stone",
+     "colour": "#e4e0d4",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 5,
+      "solid": 0.75
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      14,
+      14
+     ],
+     "y0": 50,
+     "y1": 62,
+     "material": "stone",
+     "colour": "#e4e0d4",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      10,
+      10
+     ],
+     "y0": 62,
+     "y1": 68,
+     "material": "stone",
+     "colour": "#e4e0d4"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 4.5,
+     "radiusTop": 3.5,
+     "y0": 68,
+     "y1": 71,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#e4e0d4"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 3.5,
+     "radiusTop": 0.6,
+     "y0": 71,
+     "y1": 75,
+     "sides": 4,
+     "material": "stone",
+     "colour": "#e4e0d4"
+    }
+   ]
+  },
+  "notes": "The Ferry Building is a long, low, two-storey cream Beaux-Arts block with a shallow dark slate roof, a ground-floor arcade of round-headed openings along its long front, and a broad central clock tower at the front that rises to about 75 m with a belfry and small spire. The corrections widen the tower and add a lantern, replace the flat slab with a shallow slate roof, and thin out the upper windows to wider bays.",
+  "triangles": 2074,
+  "parts": 8
+ },
+ "totals": {
+  "input": 9731,
+  "output": 3363,
+  "cost": 0.0027240800000000003,
+  "ms": 17062
+ },
+ "draft": {
+  "json": {
+   "notes": "The Ferry Building is a long, two-storey Beaux-Arts arcaded block with a low roof, a central clock tower on the Embarcadero (front, -z) side, and a tall stepped white tower with a small spire rising to about 75 m. The front has a ground-floor arcade of round-headed openings, and the rear is a long shed roof. The plan is a long block with a bulge at the centre front where the tower stands.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -100.7,
+       -19.2
+      ],
+      [
+       -22.4,
+       -28.1
+      ],
+      [
+       20.9,
+       -28.1
+      ],
+      [
+       100.7,
+       -19.2
+      ],
+      [
+       100.7,
+       28.1
+      ],
+      [
+       -100.7,
+       28.1
+      ]
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#e4e0d4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -90,
+      -28
+     ],
+     "to": [
+      90,
+      -28
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 20,
+     "thickness": 1.5
+    },
+    {
+     "type": "roof",
+     "kind": "flat",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 18,
+     "rise": 3,
+     "material": "tile",
+     "colour": "#7d8187"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      14,
+      14
+     ],
+     "y0": 0,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#e4e0d4",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      10.5,
+      10.5
+     ],
+     "y0": 52,
+     "y1": 64,
+     "material": "stone",
+     "colour": "#e4e0d4",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 3,
+      "solid": 0.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      7.5,
+      7.5
+     ],
+     "y0": 64,
+     "y1": 70,
+     "material": "stone",
+     "colour": "#e4e0d4"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 3.6,
+     "radiusTop": 0.6,
+     "y0": 70,
+     "y1": 75,
+     "sides": 4,
+     "material": "stone",
+     "colour": "#e4e0d4"
+    }
+   ]
+  },
+  "notes": "The Ferry Building is a long, two-storey Beaux-Arts arcaded block with a low roof, a central clock tower on the Embarcadero (front, -z) side, and a tall stepped white tower with a small spire rising to about 75 m. The front has a ground-floor arcade of round-headed openings, and the rear is a long shed roof. The plan is a long block with a bulge at the centre front where the tower stands.",
+  "triangles": 2472,
+  "parts": 7
+ }
+}

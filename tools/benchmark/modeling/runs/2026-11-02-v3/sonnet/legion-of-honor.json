@@ -1,0 +1,391 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:35.119Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Legion of Honor is a U-shaped court open to the front (-z). A central triumphal arch spans the entrance. Colonnades with Ionic columns run along the two side wings and across the front, between the arch and the end pavilions. Solid flat-roofed pavilions with relief panels close each front corner. Behind the court sits a main gallery block. The stone is pale grey-cream. Peak height is about 23 m at the arch and pavilions.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 18], \"size\": [60, 46], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d0bc\"},\n{\"type\": \"box\", \"center\": [-22, -34], \"size\": [16, 24], \"y0\": 0, \"y1\": 20, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"box\", \"center\": [22, -34], \"size\": [16, 24], \"y0\": 0, \"y1\": 20, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"box\", \"center\": [-22, -34], \"size\": [17, 25], \"y0\": 20, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#c9c2b0\"},\n{\"type\": \"box\", \"center\": [22, -34], \"size\": [17, 25], \"y0\": 20, \"y1\": 21, \"material\": \"stone\", \"colour\": \"#c9c2b0\"},\n{\"type\": \"box\", \"center\": [-12, -45], \"size\": [8, 3], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"box\", \"center\": [12, -45], \"size\": [8, 3], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"box\", \"center\": [0, -45], \"size\": [16, 3], \"y0\": 15, \"y1\": 23, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"box\", \"center\": [-5.5, -45], \"size\": [5, 3], \"y0\": 12, \"y1\": 15, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"box\", \"center\": [5.5, -45], \"size\": [5, 3], \"y0\": 12, \"y1\": 15, \"material\": \"stone\", \"colour\": \"#d6cfbc\"},\n{\"type\": \"arcade\", \"from\": [-3.5, -45], \"to\": [3.5, -45], \"y0\": 8, \"height\": 11, \"count\": 1, \"thickness\": 3},\n{\"type\": \"colonnade\", \"from\": [-27, -45], \"to\": [-14, -45], \"y0\": 0, \"height\": 12, \"count\": 7, \"radius\": 0.5},\n{\"type\": \"colonnade\", \"from\": [14, -45], \"to\": [27, -45], \"y0\": 0, \"height\": 12, \"count\": 7, \"radius\": 0.5},\n{\"type\": \"box\", \"center\": [-20, -45], \"size\": [14, 1], \"y0\": 12, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#cfc8b5\"},\n{\"type\": \"box\", \"center\": [20, -45], \"size\": [14, 1], \"y0\": 12, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#cfc8b5\"},\n{\"type\": \"colonnade\", \"from\": [-27, -26], \"to\": [-27, 4], \"y0\": 0, \"height\": 12, \"count\": 14, \"radius\": 0.5},\n{\"type\": \"colonnade\", \"from\": [27, -26], \"to\": [27, 4], \"y0\": 0, \"height\": 12, \"count\": 14, \"radius\": 0.5},\n{\"type\": \"box\", \"center\": [-28.5, -11], \"size\": [3, 32], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#d8d0bc\"},\n{\"type\": \"box\", \"center\": [28.5, -11], \"size\": [3, 32], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#d8d0bc\"},\n{\"type\": \"colonnade\", \"from\": [-10, -12], \"to\": [10, -12], \"y0\": 0, \"height\": 12, \"count\": 6, \"radius\": 0.5},\n{\"type\": \"box\", \"center\": [0, -23], \"size\": [60, 18], \"y0\": 0, \"y1\": 0.2, \"material\": \"stone\", \"colour\": \"#b5b0a5\"}\n]}",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 1443,
+   "cacheRead": 8168,
+   "cost": 0.022617599999999998,
+   "ms": 9929,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Legion of Honor is a U-shaped court open to the front (-z). A central triumphal arch spans the entrance. Colonnades with Ionic columns run along the two side wings and across the front, between the arch and the end pavilions. Solid flat-roofed pavilions with relief panels close each front corner. Behind the court sits a main gallery block. The stone is pale grey-cream. Peak height is about 23 m at the arch and pavilions.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      18
+     ],
+     "size": [
+      60,
+      46
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d0bc"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -34
+     ],
+     "size": [
+      16,
+      24
+     ],
+     "y0": 0,
+     "y1": 20,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -34
+     ],
+     "size": [
+      16,
+      24
+     ],
+     "y0": 0,
+     "y1": 20,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -34
+     ],
+     "size": [
+      17,
+      25
+     ],
+     "y0": 20,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#c9c2b0"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -34
+     ],
+     "size": [
+      17,
+      25
+     ],
+     "y0": 20,
+     "y1": 21,
+     "material": "stone",
+     "colour": "#c9c2b0"
+    },
+    {
+     "type": "box",
+     "center": [
+      -12,
+      -45
+     ],
+     "size": [
+      8,
+      3
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "box",
+     "center": [
+      12,
+      -45
+     ],
+     "size": [
+      8,
+      3
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -45
+     ],
+     "size": [
+      16,
+      3
+     ],
+     "y0": 15,
+     "y1": 23,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "box",
+     "center": [
+      -5.5,
+      -45
+     ],
+     "size": [
+      5,
+      3
+     ],
+     "y0": 12,
+     "y1": 15,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "box",
+     "center": [
+      5.5,
+      -45
+     ],
+     "size": [
+      5,
+      3
+     ],
+     "y0": 12,
+     "y1": 15,
+     "material": "stone",
+     "colour": "#d6cfbc"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -3.5,
+      -45
+     ],
+     "to": [
+      3.5,
+      -45
+     ],
+     "y0": 8,
+     "height": 11,
+     "count": 1,
+     "thickness": 3
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -27,
+      -45
+     ],
+     "to": [
+      -14,
+      -45
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 7,
+     "radius": 0.5
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      14,
+      -45
+     ],
+     "to": [
+      27,
+      -45
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 7,
+     "radius": 0.5
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      -45
+     ],
+     "size": [
+      14,
+      1
+     ],
+     "y0": 12,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#cfc8b5"
+    },
+    {
+     "type": "box",
+     "center": [
+      20,
+      -45
+     ],
+     "size": [
+      14,
+      1
+     ],
+     "y0": 12,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#cfc8b5"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -27,
+      -26
+     ],
+     "to": [
+      -27,
+      4
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 14,
+     "radius": 0.5
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      27,
+      -26
+     ],
+     "to": [
+      27,
+      4
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 14,
+     "radius": 0.5
+    },
+    {
+     "type": "box",
+     "center": [
+      -28.5,
+      -11
+     ],
+     "size": [
+      3,
+      32
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#d8d0bc"
+    },
+    {
+     "type": "box",
+     "center": [
+      28.5,
+      -11
+     ],
+     "size": [
+      3,
+      32
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#d8d0bc"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -10,
+      -12
+     ],
+     "to": [
+      10,
+      -12
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 6,
+     "radius": 0.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -23
+     ],
+     "size": [
+      60,
+      18
+     ],
+     "y0": 0,
+     "y1": 0.2,
+     "material": "stone",
+     "colour": "#b5b0a5"
+    }
+   ]
+  },
+  "notes": "The Legion of Honor is a U-shaped court open to the front (-z). A central triumphal arch spans the entrance. Colonnades with Ionic columns run along the two side wings and across the front, between the arch and the end pavilions. Solid flat-roofed pavilions with relief panels close each front corner. Behind the court sits a main gallery block. The stone is pale grey-cream. Peak height is about 23 m at the arch and pavilions.",
+  "triangles": 4540,
+  "parts": 21
+ },
+ "totals": {
+  "input": 3277,
+  "output": 1443,
+  "cost": 0.022617599999999998,
+  "ms": 9929
+ }
+}

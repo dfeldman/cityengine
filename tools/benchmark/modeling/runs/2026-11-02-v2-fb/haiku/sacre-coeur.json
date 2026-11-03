@@ -1,0 +1,836 @@
+{
+ "building": "sacre-coeur",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:39.802Z",
+ "userText": "Building: Basilique du Sacré-Cœur, Paris (basilica).\nThe front (−z) is the south front at the top of the steps, looking out over Paris.\nFootprint: 50.1 m along x by 95.9 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-19.8,-35.7],[-19.9,-39.5],[-10.6,-39.2],[-9.3,-47.7],[9.2,-48],[9.2,-44],[10.6,-43.9],[10.5,-39.1],[19.9,-39.2],[21,-34.7],[25,-34.3],[25.1,6.7],[21.6,6.7],[21.6,14.6],[24,18.6],[23.9,21.3],[20.7,24.3],[19.3,30.7],[14.6,32.2],[10.8,37.4],[7,37.6],[7.2,48],[-7.3,47.9],[-7.1,37.3],[-11.5,36.9],[-13.9,32.9],[-19.1,31],[-20.6,28.6],[-20.6,24.3],[-24.4,20.9],[-24.2,17.3],[-21.8,14.5],[-21.7,6.7],[-25,7],[-25.1,-34],[-21.5,-34.1]]\nHeight: the highest point is 84 m above the ground.\n\n3 photographs attached, in order:\n  1. full front from the gardens below the hill, daylight: the white domes over the terraces and steps\n  2. front three-quarter from the left (west), daylight: the arched portico, the main dome and the smaller domes\n  3. the front close up, daylight: the main dome on its drum with the smaller domes around it\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   50.1,
+   95.9
+  ],
+  "outline": [
+   [
+    -19.8,
+    -35.7
+   ],
+   [
+    -19.9,
+    -39.5
+   ],
+   [
+    -10.6,
+    -39.2
+   ],
+   [
+    -9.3,
+    -47.7
+   ],
+   [
+    9.2,
+    -48
+   ],
+   [
+    9.2,
+    -44
+   ],
+   [
+    10.6,
+    -43.9
+   ],
+   [
+    10.5,
+    -39.1
+   ],
+   [
+    19.9,
+    -39.2
+   ],
+   [
+    21,
+    -34.7
+   ],
+   [
+    25,
+    -34.3
+   ],
+   [
+    25.1,
+    6.7
+   ],
+   [
+    21.6,
+    6.7
+   ],
+   [
+    21.6,
+    14.6
+   ],
+   [
+    24,
+    18.6
+   ],
+   [
+    23.9,
+    21.3
+   ],
+   [
+    20.7,
+    24.3
+   ],
+   [
+    19.3,
+    30.7
+   ],
+   [
+    14.6,
+    32.2
+   ],
+   [
+    10.8,
+    37.4
+   ],
+   [
+    7,
+    37.6
+   ],
+   [
+    7.2,
+    48
+   ],
+   [
+    -7.3,
+    47.9
+   ],
+   [
+    -7.1,
+    37.3
+   ],
+   [
+    -11.5,
+    36.9
+   ],
+   [
+    -13.9,
+    32.9
+   ],
+   [
+    -19.1,
+    31
+   ],
+   [
+    -20.6,
+    28.6
+   ],
+   [
+    -20.6,
+    24.3
+   ],
+   [
+    -24.4,
+    20.9
+   ],
+   [
+    -24.2,
+    17.3
+   ],
+   [
+    -21.8,
+    14.5
+   ],
+   [
+    -21.7,
+    6.7
+   ],
+   [
+    -25,
+    7
+   ],
+   [
+    -25.1,
+    -34
+   ],
+   [
+    -21.5,
+    -34.1
+   ]
+  ],
+  "height": 84,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Sacré-Cœur is a white Romanesque-Byzantine basilica. Its signature is a large central dome on a tall drum, with two smaller domes flanking it and corner towers with small conical caps. The front is a three-arched portico with a pediment, flanked by equestrian statues on pedestals. The stone is pale cream-white.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [40, 70], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#e9e4d8\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [0, -40], \"size\": [40, 18], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#e9e4d8\"},\n    {\"type\": \"arcade\", \"from\": [-18, -49.5], \"to\": [18, -49.5], \"y0\": 0, \"height\": 16, \"count\": 3, \"thickness\": 3},\n    {\"type\": \"pediment\", \"from\": [-14, -49.5], \"to\": [14, -49.5], \"y0\": 26, \"height\": 7, \"depth\": 3},\n    {\"type\": \"box\", \"center\": [-16, -50], \"size\": [4, 4], \"y0\": 16, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#e9e4d8\"},\n    {\"type\": \"box\", \"center\": [16, -50], \"size\": [4, 4], \"y0\": 16, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#e9e4d8\"},\n    {\"type\": \"cylinder\", \"center\": [-16, -50], \"radius\": 1.2, \"y0\": 24, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#5f8f7e\"},\n    {\"type\": \"cylinder\", \"center\": [16, -50], \"radius\": 1.2, \"y0\": 24, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#5f8f7e\"},\n    {\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 12, \"y0\": 22, \"y1\": 45, \"material\": \"stone\", \"colour\": \"#e4ded0\", \"windows\": {\"kind\": \"arched\", \"floor\": 5, \"pitch\": 3.5, \"solid\": 0.6}},\n    {\"type\": \"dome\", \"center\": [0, -2], \"radius\": 12, \"y0\": 45, \"height\": 18, \"material\": \"stone\", \"colour\": \"#ddd6c8\"},\n    {\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 3.5, \"y0\": 62, \"y1\": 74, \"material\": \"stone\", \"colour\": \"#e4ded0\"},\n    {\"type\": \"dome\", \"center\": [0, -2], \"radius\": 3.5, \"y0\": 74, \"height\": 6, \"material\": \"stone\", \"colour\": \"#ddd6c8\"},\n    {\"type\": \"beam\", \"from\": [0, 80, -2], \"to\": [0, 84, -2], \"width\": 0.4, \"material\": \"metal\", \"colour\": \"#c9b26a\"},\n    {\"type\": \"beam\", \"from\": [-1.5, 82, -2], \"to\": [1.5, 82, -2], \"width\": 0.4, \"material\": \"metal\", \"colour\": \"#c9b26a\"},\n    {\"type\": \"cylinder\", \"center\": [-18, -2], \"radius\": 8, \"y0\": 22, \"y1\": 34, \"material\": \"stone\", \"colour\": \"#e4ded0\"},\n    {\"type\": \"dome\", \"center\": [-18, -2], \"radius\": 8, \"y0\": 34, \"height\": 10, \"material\": \"stone\", \"colour\": \"#ddd6c8\"},\n    {\"type\": \"cylinder\", \"center\": [18, -2], \"radius\": 8, \"y0\": 22, \"y1\": 34, \"material\": \"stone\", \"colour\": \"#e4ded0\"},\n    {\"type\": \"dome\", \"center\": [18, -2], \"radius\": 8, \"y0\": 34, \"height\": 10, \"material\": \"stone\", \"colour\": \"#ddd6c8\"},\n    {\"type\": \"cylinder\", \"center\": [-18, -45], \"radius\": 3, \"y0\": 0, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#e9e4d8\"},\n    {\"type\": \"cylinder\", \"center\": [-18, -45], \"radius\": 3, \"radiusTop\": 0, \"y0\": 36, \"y1\": 46, \"material\": \"stone\", \"colour\": \"#ddd6c8\"},\n    {\"type\": \"cylinder\", \"center\": [18, -45], \"radius\": 3, \"y0\": 0, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#e9e4d8\"},\n    {\"type\": \"cylinder\", \"center\": [18, -45], \"radius\": 3, \"radiusTop\": 0, \"y0\": 36, \"y1\": 46, \"material\": \"stone\", \"colour\": \"#ddd6c8\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3748,
+   "output": 2998,
+   "cacheRead": 7616,
+   "cost": 0.00194996,
+   "ms": 14303,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the real building:\n\n1. **Body massing is wrong.** My main block ran from z=-35 to z=+35 and filled the footprint, but the real nave sits at the front and the apse narrows toward the back (x≈±7 for z=+7 to +48). The body should be shorter in z, with a separate narrow apse behind it.\n2. **Punched windows cover every wall.** Sacré-Cœur's walls are mostly solid stone with a few tall arched openings. The body should have no punched windows, and the drum should keep only arched openings.\n3. **Colour and side domes.** The stone is brilliant white, not cream, and the side domes sit closer to the main dome and forward toward the portico.\n\n```json\n{\n  \"notes\": \"Sacré-Cœur is a white Romanesque-Byzantine basilica: a long nave at the front with a wide portico, a narrower apse behind, a large central dome on a drum, two smaller flanking domes and corner belfries with conical caps. The main walls are solid white stone with a few tall arched openings, and the stone reads as brilliant white. The corrections are the nave and apse massing, removing punched windows from the walls, brightening the stone, and bringing the side domes forward.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -14], \"size\": [50, 40], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"box\", \"center\": [0, 22], \"size\": [14, 30], \"y0\": 0, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"box\", \"center\": [0, -40], \"size\": [40, 18], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"arcade\", \"from\": [-18, -49.5], \"to\": [18, -49.5], \"y0\": 0, \"height\": 16, \"count\": 3, \"thickness\": 3},\n    {\"type\": \"pediment\", \"from\": [-14, -49.5], \"to\": [14, -49.5], \"y0\": 26, \"height\": 7, \"depth\": 3},\n    {\"type\": \"box\", \"center\": [-16, -50], \"size\": [4, 4], \"y0\": 16, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"box\", \"center\": [16, -50], \"size\": [4, 4], \"y0\": 16, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"cylinder\", \"center\": [-16, -50], \"radius\": 1.2, \"y0\": 24, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#5f8f7e\"},\n    {\"type\": \"cylinder\", \"center\": [16, -50], \"radius\": 1.2, \"y0\": 24, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#5f8f7e\"},\n    {\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 12, \"y0\": 22, \"y1\": 45, \"material\": \"stone\", \"colour\": \"#f2efe6\", \"windows\": {\"kind\": \"arched\", \"floor\": 5, \"pitch\": 3.5, \"solid\": 0.7}},\n    {\"type\": \"dome\", \"center\": [0, -2], \"radius\": 12, \"y0\": 45, \"height\": 18, \"material\": \"stone\", \"colour\": \"#ebe7dc\"},\n    {\"type\": \"cylinder\", \"center\": [0, -2], \"radius\": 3.5, \"y0\": 62, \"y1\": 74, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"dome\", \"center\": [0, -2], \"radius\": 3.5, \"y0\": 74, \"height\": 6, \"material\": \"stone\", \"colour\": \"#ebe7dc\"},\n    {\"type\": \"beam\", \"from\": [0, 80, -2], \"to\": [0, 84, -2], \"width\": 0.4, \"material\": \"metal\", \"colour\": \"#c9b26a\"},\n    {\"type\": \"beam\", \"from\": [-1.5, 82, -2], \"to\": [1.5, 82, -2], \"width\": 0.4, \"material\": \"metal\", \"colour\": \"#c9b26a\"},\n    {\"type\": \"cylinder\", \"center\": [-15, -8], \"radius\": 8, \"y0\": 22, \"y1\": 34, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"dome\", \"center\": [-15, -8], \"radius\": 8, \"y0\": 34, \"height\": 10, \"material\": \"stone\", \"colour\": \"#ebe7dc\"},\n    {\"type\": \"cylinder\", \"center\": [15, -8], \"radius\": 8, \"y0\": 22, \"y1\": 34, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"dome\", \"center\": [15, -8], \"radius\": 8, \"y0\": 34, \"height\": 10, \"material\": \"stone\", \"colour\": \"#ebe7dc\"},\n    {\"type\": \"cylinder\", \"center\": [-18, -45], \"radius\": 3, \"y0\": 0, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"cylinder\", \"center\": [-18, -45], \"radius\": 3, \"radiusTop\": 0, \"y0\": 36, \"y1\": 46, \"material\": \"stone\", \"colour\": \"#ebe7dc\"},\n    {\"type\": \"cylinder\", \"center\": [18, -45], \"radius\": 3, \"y0\": 0, \"y1\": 36, \"material\": \"stone\", \"colour\": \"#f2efe6\"},\n    {\"type\": \"cylinder\", \"center\": [18, -45], \"radius\": 3, \"radiusTop\": 0, \"y0\": 36, \"y1\": 46, \"material\": \"stone\", \"colour\": \"#ebe7dc\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 8212,
+   "output": 3025,
+   "cacheRead": 7616,
+   "cost": 0.00240986,
+   "ms": 13219,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Sacré-Cœur is a white Romanesque-Byzantine basilica: a long nave at the front with a wide portico, a narrower apse behind, a large central dome on a drum, two smaller flanking domes and corner belfries with conical caps. The main walls are solid white stone with a few tall arched openings, and the stone reads as brilliant white. The corrections are the nave and apse massing, removing punched windows from the walls, brightening the stone, and bringing the side domes forward.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -14
+     ],
+     "size": [
+      50,
+      40
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      22
+     ],
+     "size": [
+      14,
+      30
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      40,
+      18
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -18,
+      -49.5
+     ],
+     "to": [
+      18,
+      -49.5
+     ],
+     "y0": 0,
+     "height": 16,
+     "count": 3,
+     "thickness": 3
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -14,
+      -49.5
+     ],
+     "to": [
+      14,
+      -49.5
+     ],
+     "y0": 26,
+     "height": 7,
+     "depth": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      -16,
+      -50
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 16,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "box",
+     "center": [
+      16,
+      -50
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 16,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -16,
+      -50
+     ],
+     "radius": 1.2,
+     "y0": 24,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#5f8f7e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      16,
+      -50
+     ],
+     "radius": 1.2,
+     "y0": 24,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#5f8f7e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 12,
+     "y0": 22,
+     "y1": 45,
+     "material": "stone",
+     "colour": "#f2efe6",
+     "windows": {
+      "kind": "arched",
+      "floor": 5,
+      "pitch": 3.5,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 12,
+     "y0": 45,
+     "height": 18,
+     "material": "stone",
+     "colour": "#ebe7dc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 3.5,
+     "y0": 62,
+     "y1": 74,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 3.5,
+     "y0": 74,
+     "height": 6,
+     "material": "stone",
+     "colour": "#ebe7dc"
+    },
+    {
+     "type": "beam",
+     "from": [
+      0,
+      80,
+      -2
+     ],
+     "to": [
+      0,
+      84,
+      -2
+     ],
+     "width": 0.4,
+     "material": "metal",
+     "colour": "#c9b26a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -1.5,
+      82,
+      -2
+     ],
+     "to": [
+      1.5,
+      82,
+      -2
+     ],
+     "width": 0.4,
+     "material": "metal",
+     "colour": "#c9b26a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -15,
+      -8
+     ],
+     "radius": 8,
+     "y0": 22,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "dome",
+     "center": [
+      -15,
+      -8
+     ],
+     "radius": 8,
+     "y0": 34,
+     "height": 10,
+     "material": "stone",
+     "colour": "#ebe7dc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      15,
+      -8
+     ],
+     "radius": 8,
+     "y0": 22,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "dome",
+     "center": [
+      15,
+      -8
+     ],
+     "radius": 8,
+     "y0": 34,
+     "height": 10,
+     "material": "stone",
+     "colour": "#ebe7dc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -18,
+      -45
+     ],
+     "radius": 3,
+     "y0": 0,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -18,
+      -45
+     ],
+     "radius": 3,
+     "radiusTop": 0,
+     "y0": 36,
+     "y1": 46,
+     "material": "stone",
+     "colour": "#ebe7dc"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      18,
+      -45
+     ],
+     "radius": 3,
+     "y0": 0,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#f2efe6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      18,
+      -45
+     ],
+     "radius": 3,
+     "radiusTop": 0,
+     "y0": 36,
+     "y1": 46,
+     "material": "stone",
+     "colour": "#ebe7dc"
+    }
+   ]
+  },
+  "notes": "Sacré-Cœur is a white Romanesque-Byzantine basilica: a long nave at the front with a wide portico, a narrower apse behind, a large central dome on a drum, two smaller flanking domes and corner belfries with conical caps. The main walls are solid white stone with a few tall arched openings, and the stone reads as brilliant white. The corrections are the nave and apse massing, removing punched windows from the walls, brightening the stone, and bringing the side domes forward.",
+  "triangles": 3116,
+  "parts": 23
+ },
+ "totals": {
+  "input": 11960,
+  "output": 6023,
+  "cost": 0.00435982,
+  "ms": 27522
+ },
+ "draft": {
+  "json": {
+   "notes": "Sacré-Cœur is a white Romanesque-Byzantine basilica. Its signature is a large central dome on a tall drum, with two smaller domes flanking it and corner towers with small conical caps. The front is a three-arched portico with a pediment, flanked by equestrian statues on pedestals. The stone is pale cream-white.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      40,
+      70
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#e9e4d8",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      40,
+      18
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#e9e4d8"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -18,
+      -49.5
+     ],
+     "to": [
+      18,
+      -49.5
+     ],
+     "y0": 0,
+     "height": 16,
+     "count": 3,
+     "thickness": 3
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -14,
+      -49.5
+     ],
+     "to": [
+      14,
+      -49.5
+     ],
+     "y0": 26,
+     "height": 7,
+     "depth": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      -16,
+      -50
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 16,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#e9e4d8"
+    },
+    {
+     "type": "box",
+     "center": [
+      16,
+      -50
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 16,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#e9e4d8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -16,
+      -50
+     ],
+     "radius": 1.2,
+     "y0": 24,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#5f8f7e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      16,
+      -50
+     ],
+     "radius": 1.2,
+     "y0": 24,
+     "y1": 30,
+     "material": "metal",
+     "colour": "#5f8f7e"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 12,
+     "y0": 22,
+     "y1": 45,
+     "material": "stone",
+     "colour": "#e4ded0",
+     "windows": {
+      "kind": "arched",
+      "floor": 5,
+      "pitch": 3.5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 12,
+     "y0": 45,
+     "height": 18,
+     "material": "stone",
+     "colour": "#ddd6c8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 3.5,
+     "y0": 62,
+     "y1": 74,
+     "material": "stone",
+     "colour": "#e4ded0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -2
+     ],
+     "radius": 3.5,
+     "y0": 74,
+     "height": 6,
+     "material": "stone",
+     "colour": "#ddd6c8"
+    },
+    {
+     "type": "beam",
+     "from": [
+      0,
+      80,
+      -2
+     ],
+     "to": [
+      0,
+      84,
+      -2
+     ],
+     "width": 0.4,
+     "material": "metal",
+     "colour": "#c9b26a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -1.5,
+      82,
+      -2
+     ],
+     "to": [
+      1.5,
+      82,
+      -2
+     ],
+     "width": 0.4,
+     "material": "metal",
+     "colour": "#c9b26a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -18,
+      -2
+     ],
+     "radius": 8,
+     "y0": 22,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#e4ded0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      -18,
+      -2
+     ],
+     "radius": 8,
+     "y0": 34,
+     "height": 10,
+     "material": "stone",
+     "colour": "#ddd6c8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      18,
+      -2
+     ],
+     "radius": 8,
+     "y0": 22,
+     "y1": 34,
+     "material": "stone",
+     "colour": "#e4ded0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      18,
+      -2
+     ],
+     "radius": 8,
+     "y0": 34,
+     "height": 10,
+     "material": "stone",
+     "colour": "#ddd6c8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -18,
+      -45
+     ],
+     "radius": 3,
+     "y0": 0,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#e9e4d8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -18,
+      -45
+     ],
+     "radius": 3,
+     "radiusTop": 0,
+     "y0": 36,
+     "y1": 46,
+     "material": "stone",
+     "colour": "#ddd6c8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      18,
+      -45
+     ],
+     "radius": 3,
+     "y0": 0,
+     "y1": 36,
+     "material": "stone",
+     "colour": "#e9e4d8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      18,
+      -45
+     ],
+     "radius": 3,
+     "radiusTop": 0,
+     "y0": 36,
+     "y1": 46,
+     "material": "stone",
+     "colour": "#ddd6c8"
+    }
+   ]
+  },
+  "notes": "Sacré-Cœur is a white Romanesque-Byzantine basilica. Its signature is a large central dome on a tall drum, with two smaller domes flanking it and corner towers with small conical caps. The front is a three-arched portico with a pediment, flanked by equestrian statues on pedestals. The stone is pale cream-white.",
+  "triangles": 4238,
+  "parts": 22
+ }
+}

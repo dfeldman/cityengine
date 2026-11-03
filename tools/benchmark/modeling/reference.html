@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  Builds one of the GAME's own landmark models (the hand- or Opus-made builder named in buildings.json `reference`)
+  and hands back its raw triangles, for tools/benchmark/modeling/reference.ts to draw in the benchmark's renderer.
+  Served by vite like viewer.html; nothing is drawn here.
+-->
+<html><head><meta charset="utf-8"><title>Reference builder</title></head>
+<body>
+<script type="module">
+import { MeshBuilder } from '../../../src/render/buildings.ts'
+import { PROCEDURAL } from '../../../src/render/landmarks/procedural.ts'
+
+/** the model built on `fit` (with the kit's words where an entry carries them): positions, normals, rgb colours, indices */
+window.__build = (model, fit) => {
+  const build = PROCEDURAL[model]
+  if (!build) return { error: `no builder "${model}"` }
+  const mb = new MeshBuilder()
+  build(mb, fit, fit.kit)
+  const vd = mb.toVertexData()
+  const rgb = []
+  for (let i = 0; i < vd.colors.length; i += 4) rgb.push(vd.colors[i], vd.colors[i + 1], vd.colors[i + 2])
+  return { positions: Array.from(vd.positions), normals: Array.from(vd.normals ?? []), colors: rgb, indices: Array.from(vd.indices) }
+}
+window.__ready = true
+</script></body></html>

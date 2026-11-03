@@ -1,0 +1,14 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "game",
+ "model": "gareDeLyon",
+ "fit": {
+  "turn": -1,
+  "mirror": false,
+  "iou": 0.74
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: gareDeLyon, 16846 tris, fit IoU 0.74"
+ }
+}

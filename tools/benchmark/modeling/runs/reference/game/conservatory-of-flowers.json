@@ -1,0 +1,14 @@
+{
+ "building": "conservatory-of-flowers",
+ "modelId": "game",
+ "model": "conservatoryGlasshouse",
+ "fit": {
+  "turn": 180,
+  "mirror": false,
+  "iou": 0.4
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: conservatoryGlasshouse, 4708 tris, fit IoU 0.40"
+ }
+}

@@ -1,0 +1,304 @@
+{
+ "building": "conservatory-of-flowers",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:54.066Z",
+ "userText": "Building: Conservatory of Flowers, San Francisco (glasshouse).\nThe front (−z) is the south front facing the flower beds.\nFootprint: 74.9 m along x by 35 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-4.2,-15.9],[1.3,-17.5],[1.4,-15.9],[3.7,-16],[3.7,-8.9],[8.4,-5.5],[25.5,-5.5],[25.5,-13.4],[27,-15],[34.9,-15.1],[36.4,-13.4],[37.5,4.4],[35.3,6.6],[8.6,5.5],[5.6,8.4],[34.5,8.4],[34.4,11.6],[19.2,12.8],[19.1,17.5],[-25.8,16.7],[-25.9,14.2],[-32.2,14.2],[-32.2,8.3],[-6.5,8.3],[-9.3,5.4],[-37.5,5],[-37.4,-13.2],[-30,-16.2],[-25.9,-13.1],[-26,-5.7],[-9.3,-6.1],[-4.2,-9]]\nHeight: the highest point is 15 m above the ground.\n\n3 photographs attached, in order:\n  1. front view along the garden axis: central domed pavilion with the two long glasshouse wings and steps, blue sky\n  2. side three-quarter showing the long glazed wing and the central domes, white timber frame\n  3. other side three-quarter: long curved glazed wing at left with the central dome and cupola at right\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   74.9,
+   35
+  ],
+  "outline": [
+   [
+    -4.2,
+    -15.9
+   ],
+   [
+    1.3,
+    -17.5
+   ],
+   [
+    1.4,
+    -15.9
+   ],
+   [
+    3.7,
+    -16
+   ],
+   [
+    3.7,
+    -8.9
+   ],
+   [
+    8.4,
+    -5.5
+   ],
+   [
+    25.5,
+    -5.5
+   ],
+   [
+    25.5,
+    -13.4
+   ],
+   [
+    27,
+    -15
+   ],
+   [
+    34.9,
+    -15.1
+   ],
+   [
+    36.4,
+    -13.4
+   ],
+   [
+    37.5,
+    4.4
+   ],
+   [
+    35.3,
+    6.6
+   ],
+   [
+    8.6,
+    5.5
+   ],
+   [
+    5.6,
+    8.4
+   ],
+   [
+    34.5,
+    8.4
+   ],
+   [
+    34.4,
+    11.6
+   ],
+   [
+    19.2,
+    12.8
+   ],
+   [
+    19.1,
+    17.5
+   ],
+   [
+    -25.8,
+    16.7
+   ],
+   [
+    -25.9,
+    14.2
+   ],
+   [
+    -32.2,
+    14.2
+   ],
+   [
+    -32.2,
+    8.3
+   ],
+   [
+    -6.5,
+    8.3
+   ],
+   [
+    -9.3,
+    5.4
+   ],
+   [
+    -37.5,
+    5
+   ],
+   [
+    -37.4,
+    -13.2
+   ],
+   [
+    -30,
+    -16.2
+   ],
+   [
+    -25.9,
+    -13.1
+   ],
+   [
+    -26,
+    -5.7
+   ],
+   [
+    -9.3,
+    -6.1
+   ],
+   [
+    -4.2,
+    -9
+   ]
+  ],
+  "height": 15,
+  "turn": 6
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Conservatory of Flowers is a white painted-timber glasshouse: a central domed pavilion on a drum with a small cupola on top, flanked by long barrel-vaulted glass wings running east and west, each ending in a small domed end pavilion. The signature features are the central dome with its finial and the long curved glazed wings, so I model those as the main masses.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [24, 22], \"y0\": 0, \"y1\": 0.8, \"material\": \"brick\", \"colour\": \"#8a4a3a\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 9, \"y0\": 0.8, \"y1\": 8, \"sides\": 8, \"material\": \"glass\", \"colour\": \"#f2f2ee\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 7, \"y0\": 8, \"y1\": 10, \"material\": \"glass\", \"colour\": \"#f2f2ee\"}, {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 7, \"y0\": 10, \"height\": 5, \"material\": \"glass\", \"colour\": \"#e8eef0\"}, {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 0.4, \"radiusTop\": 0, \"y0\": 15, \"y1\": 17, \"material\": \"metal\", \"colour\": \"#f2f2ee\"}, {\"type\": \"vault\", \"center\": [-24, -2], \"size\": [26, 22], \"y0\": 1, \"rise\": 8, \"axis\": \"x\", \"material\": \"glass\", \"colour\": \"#e8eef0\"}, {\"type\": \"vault\", \"center\": [24, -5], \"size\": [26, 20], \"y0\": 1, \"rise\": 8, \"axis\": \"x\", \"material\": \"glass\", \"colour\": \"#e8eef0\"}, {\"type\": \"dome\", \"center\": [-33, -4], \"radius\": 4, \"y0\": 0, \"height\": 6, \"material\": \"glass\", \"colour\": \"#e8eef0\"}, {\"type\": \"dome\", \"center\": [33, -4], \"radius\": 4, \"y0\": 0, \"height\": 6, \"material\": \"glass\", \"colour\": \"#e8eef0\"}]}",
+   "stop": "end_turn",
+   "input": 3343,
+   "output": 1809,
+   "cacheRead": 7616,
+   "cost": 0.00131496,
+   "ms": 8573,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Conservatory of Flowers is a white painted-timber glasshouse: a central domed pavilion on a drum with a small cupola on top, flanked by long barrel-vaulted glass wings running east and west, each ending in a small domed end pavilion. The signature features are the central dome with its finial and the long curved glazed wings, so I model those as the main masses.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      24,
+      22
+     ],
+     "y0": 0,
+     "y1": 0.8,
+     "material": "brick",
+     "colour": "#8a4a3a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 9,
+     "y0": 0.8,
+     "y1": 8,
+     "sides": 8,
+     "material": "glass",
+     "colour": "#f2f2ee"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 7,
+     "y0": 8,
+     "y1": 10,
+     "material": "glass",
+     "colour": "#f2f2ee"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 7,
+     "y0": 10,
+     "height": 5,
+     "material": "glass",
+     "colour": "#e8eef0"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 0.4,
+     "radiusTop": 0,
+     "y0": 15,
+     "y1": 17,
+     "material": "metal",
+     "colour": "#f2f2ee"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -24,
+      -2
+     ],
+     "size": [
+      26,
+      22
+     ],
+     "y0": 1,
+     "rise": 8,
+     "axis": "x",
+     "material": "glass",
+     "colour": "#e8eef0"
+    },
+    {
+     "type": "vault",
+     "center": [
+      24,
+      -5
+     ],
+     "size": [
+      26,
+      20
+     ],
+     "y0": 1,
+     "rise": 8,
+     "axis": "x",
+     "material": "glass",
+     "colour": "#e8eef0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      -33,
+      -4
+     ],
+     "radius": 4,
+     "y0": 0,
+     "height": 6,
+     "material": "glass",
+     "colour": "#e8eef0"
+    },
+    {
+     "type": "dome",
+     "center": [
+      33,
+      -4
+     ],
+     "radius": 4,
+     "y0": 0,
+     "height": 6,
+     "material": "glass",
+     "colour": "#e8eef0"
+    }
+   ]
+  },
+  "notes": "The Conservatory of Flowers is a white painted-timber glasshouse: a central domed pavilion on a drum with a small cupola on top, flanked by long barrel-vaulted glass wings running east and west, each ending in a small domed end pavilion. The signature features are the central dome with its finial and the long curved glazed wings, so I model those as the main masses.",
+  "triangles": 1326,
+  "parts": 9
+ },
+ "totals": {
+  "input": 3343,
+  "output": 1809,
+  "cost": 0.00131496,
+  "ms": 8573
+ }
+}

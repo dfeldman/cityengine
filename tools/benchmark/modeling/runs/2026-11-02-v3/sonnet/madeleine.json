@@ -1,0 +1,217 @@
+{
+ "building": "madeleine",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:54.854Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"La Madeleine is a Roman peripteral temple on a tall podium. It has 8 Corinthian columns across the front and back and 18 per side (counting the corners twice), all standing free around a cella wall. A pediment with sculpture sits over each end, and a long gable roof of green-grey copper runs front to back. I model the podium, the cella, colonnades on all four sides, the two pediments and the gable roof. Column height is about 20 m on a 7 m podium, with the roof ridge reaching 36 m.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 7, \"material\": \"stone\", \"colour\": \"#cfc4a8\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [26, 108], \"y0\": 7, \"y1\": 27, \"material\": \"stone\", \"colour\": \"#d8cdb0\"}, {\"type\": \"colonnade\", \"from\": [-18, -58], \"to\": [18, -58], \"y0\": 7, \"height\": 22, \"count\": 8, \"radius\": 1.0, \"entablature\": 3.5, \"colour\": \"#d9cdae\"}, {\"type\": \"colonnade\", \"from\": [-18, 58], \"to\": [18, 58], \"y0\": 7, \"height\": 22, \"count\": 8, \"radius\": 1.0, \"entablature\": 3.5, \"colour\": \"#d9cdae\"}, {\"type\": \"colonnade\", \"from\": [-18, -58], \"to\": [-18, 58], \"y0\": 7, \"height\": 22, \"count\": 18, \"radius\": 1.0, \"entablature\": 3.5, \"colour\": \"#d9cdae\"}, {\"type\": \"colonnade\", \"from\": [18, -58], \"to\": [18, 58], \"y0\": 7, \"height\": 22, \"count\": 18, \"radius\": 1.0, \"entablature\": 3.5, \"colour\": \"#d9cdae\"}, {\"type\": \"pediment\", \"from\": [-19.5, -58], \"to\": [19.5, -58], \"y0\": 29, \"height\": 6.5, \"depth\": 5, \"colour\": \"#d4c8aa\"}, {\"type\": \"pediment\", \"from\": [-19.5, 58], \"to\": [19.5, 58], \"y0\": 29, \"height\": 6.5, \"depth\": 5, \"colour\": \"#d4c8aa\"}, {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [39, 120], \"y0\": 29, \"rise\": 7, \"ridge\": \"z\", \"material\": \"copper\", \"colour\": \"#8fa89a\"}]}",
+   "stop": "end_turn",
+   "input": 3200,
+   "output": 847,
+   "cacheRead": 8168,
+   "cost": 0.0165036,
+   "ms": 6159,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "La Madeleine is a Roman peripteral temple on a tall podium. It has 8 Corinthian columns across the front and back and 18 per side (counting the corners twice), all standing free around a cella wall. A pediment with sculpture sits over each end, and a long gable roof of green-grey copper runs front to back. I model the podium, the cella, colonnades on all four sides, the two pediments and the gable roof. Column height is about 20 m on a 7 m podium, with the roof ridge reaching 36 m.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 7,
+     "material": "stone",
+     "colour": "#cfc4a8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      26,
+      108
+     ],
+     "y0": 7,
+     "y1": 27,
+     "material": "stone",
+     "colour": "#d8cdb0"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -58
+     ],
+     "to": [
+      18,
+      -58
+     ],
+     "y0": 7,
+     "height": 22,
+     "count": 8,
+     "radius": 1,
+     "entablature": 3.5,
+     "colour": "#d9cdae"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      58
+     ],
+     "to": [
+      18,
+      58
+     ],
+     "y0": 7,
+     "height": 22,
+     "count": 8,
+     "radius": 1,
+     "entablature": 3.5,
+     "colour": "#d9cdae"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -58
+     ],
+     "to": [
+      -18,
+      58
+     ],
+     "y0": 7,
+     "height": 22,
+     "count": 18,
+     "radius": 1,
+     "entablature": 3.5,
+     "colour": "#d9cdae"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      18,
+      -58
+     ],
+     "to": [
+      18,
+      58
+     ],
+     "y0": 7,
+     "height": 22,
+     "count": 18,
+     "radius": 1,
+     "entablature": 3.5,
+     "colour": "#d9cdae"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -19.5,
+      -58
+     ],
+     "to": [
+      19.5,
+      -58
+     ],
+     "y0": 29,
+     "height": 6.5,
+     "depth": 5,
+     "colour": "#d4c8aa"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -19.5,
+      58
+     ],
+     "to": [
+      19.5,
+      58
+     ],
+     "y0": 29,
+     "height": 6.5,
+     "depth": 5,
+     "colour": "#d4c8aa"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      39,
+      120
+     ],
+     "y0": 29,
+     "rise": 7,
+     "ridge": "z",
+     "material": "copper",
+     "colour": "#8fa89a"
+    }
+   ]
+  },
+  "notes": "La Madeleine is a Roman peripteral temple on a tall podium. It has 8 Corinthian columns across the front and back and 18 per side (counting the corners twice), all standing free around a cella wall. A pediment with sculpture sits over each end, and a long gable roof of green-grey copper runs front to back. I model the podium, the cella, colonnades on all four sides, the two pediments and the gable roof. Column height is about 20 m on a 7 m podium, with the roof ridge reaching 36 m.",
+  "triangles": 4672,
+  "parts": 9
+ },
+ "totals": {
+  "input": 3200,
+  "output": 847,
+  "cost": 0.0165036,
+  "ms": 6159
+ }
+}

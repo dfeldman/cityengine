@@ -1,0 +1,199 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:18:05.797Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Madeleine is a Roman-style peripteral temple: a white stone cella inside a full Corinthian colonnade of 8 columns on the front and back and 18 down each side, standing on a stepped podium. A pitched roof with its ridge running along z rises to about 36 m, with a sculpted triangular pediment on the south (-z) front. The signature features to model are the peristyle colonnade on all four sides and the front pediment over the portico.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 3, \"material\": \"stone\", \"colour\": \"#e2d9c6\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [32, 112], \"y0\": 3, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#ebe3d1\"},\n    {\"type\": \"colonnade\", \"from\": [-17, -58], \"to\": [17, -58], \"y0\": 3, \"height\": 25, \"count\": 8, \"material\": \"stone\", \"colour\": \"#f1ead9\"},\n    {\"type\": \"colonnade\", \"from\": [-17, 58], \"to\": [17, 58], \"y0\": 3, \"height\": 25, \"count\": 8, \"material\": \"stone\", \"colour\": \"#f1ead9\"},\n    {\"type\": \"colonnade\", \"from\": [-17, -58], \"to\": [-17, 58], \"y0\": 3, \"height\": 25, \"count\": 18, \"material\": \"stone\", \"colour\": \"#f1ead9\"},\n    {\"type\": \"colonnade\", \"from\": [17, -58], \"to\": [17, 58], \"y0\": 3, \"height\": 25, \"count\": 18, \"material\": \"stone\", \"colour\": \"#f1ead9\"},\n    {\"type\": \"pediment\", \"from\": [-21.6, -62], \"to\": [21.6, -62], \"y0\": 25, \"height\": 10, \"depth\": 3, \"material\": \"stone\", \"colour\": \"#ebe3d1\"},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 24, \"rise\": 12, \"ridge\": \"z\", \"material\": \"copper\", \"colour\": \"#8fb89a\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3200,
+   "output": 2002,
+   "cacheRead": 8168,
+   "cost": 0.0014026800000000001,
+   "ms": 10351,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Madeleine is a Roman-style peripteral temple: a white stone cella inside a full Corinthian colonnade of 8 columns on the front and back and 18 down each side, standing on a stepped podium. A pitched roof with its ridge running along z rises to about 36 m, with a sculpted triangular pediment on the south (-z) front. The signature features to model are the peristyle colonnade on all four sides and the front pediment over the portico.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 3,
+     "material": "stone",
+     "colour": "#e2d9c6"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      32,
+      112
+     ],
+     "y0": 3,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#ebe3d1"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -58
+     ],
+     "to": [
+      17,
+      -58
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 8,
+     "material": "stone",
+     "colour": "#f1ead9"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      58
+     ],
+     "to": [
+      17,
+      58
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 8,
+     "material": "stone",
+     "colour": "#f1ead9"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -58
+     ],
+     "to": [
+      -17,
+      58
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 18,
+     "material": "stone",
+     "colour": "#f1ead9"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      17,
+      -58
+     ],
+     "to": [
+      17,
+      58
+     ],
+     "y0": 3,
+     "height": 25,
+     "count": 18,
+     "material": "stone",
+     "colour": "#f1ead9"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -62
+     ],
+     "to": [
+      21.6,
+      -62
+     ],
+     "y0": 25,
+     "height": 10,
+     "depth": 3,
+     "material": "stone",
+     "colour": "#ebe3d1"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "z",
+     "material": "copper",
+     "colour": "#8fb89a"
+    }
+   ]
+  },
+  "notes": "The Madeleine is a Roman-style peripteral temple: a white stone cella inside a full Corinthian colonnade of 8 columns on the front and back and 18 down each side, standing on a stepped podium. A pitched roof with its ridge running along z rises to about 36 m, with a sculpted triangular pediment on the south (-z) front. The signature features to model are the peristyle colonnade on all four sides and the front pediment over the portico.",
+  "triangles": 4664,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3200,
+  "output": 2002,
+  "cost": 0.0014026800000000001,
+  "ms": 10351
+ }
+}

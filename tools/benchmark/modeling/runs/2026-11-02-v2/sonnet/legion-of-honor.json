@@ -1,0 +1,436 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:16.209Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Legion of Honor is a U-shaped court open to the front (-z), with a central triumphal arch at the front. Its footprint is 60 m wide, which is narrow for the elevation shown in photos 1 and 2, so I treat the photographed 'front' as the closed side of the U. I read it as a front screen: a central arch block with a round opening, flanked by Ionic colonnades and then end pavilions with blank walls and relief panels. Behind the screen sits the main gallery block, with colonnaded wings enclosing a paved court. The stone is pale grey-cream. I model the arch, the two free-standing colonnades with balustrades, the end pavilions and the court wings.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, -44], \"size\": [14, 5], \"y0\": 0, \"y1\": 23, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [-4.5, -44], \"size\": [5, 5], \"y0\": 0, \"y1\": 14, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [4.5, -44], \"size\": [5, 5], \"y0\": 0, \"y1\": 14, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [0, -44], \"size\": [14, 5.2], \"y0\": 14, \"y1\": 16, \"colour\": \"#d4cebd\"},\n{\"type\": \"arcade\", \"from\": [-4, -46.5], \"to\": [4, -46.5], \"y0\": 14, \"height\": 7, \"count\": 1, \"thickness\": 3},\n{\"type\": \"box\", \"center\": [-23, -42], \"size\": [14, 9], \"y0\": 0, \"y1\": 17, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [23, -42], \"size\": [14, 9], \"y0\": 0, \"y1\": 17, \"colour\": \"#cfc9b8\"},\n{\"type\": \"colonnade\", \"from\": [-29, -46.5], \"to\": [-8, -46.5], \"y0\": 0, \"height\": 12, \"count\": 9, \"radius\": 0.6, \"colour\": \"#cfc9b8\"},\n{\"type\": \"colonnade\", \"from\": [8, -46.5], \"to\": [29, -46.5], \"y0\": 0, \"height\": 12, \"count\": 9, \"radius\": 0.6, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [-14, -44], \"size\": [14, 4], \"y0\": 0, \"y1\": 12, \"colour\": \"#c4bdac\"},\n{\"type\": \"box\", \"center\": [14, -44], \"size\": [14, 4], \"y0\": 0, \"y1\": 12, \"colour\": \"#c4bdac\"},\n{\"type\": \"box\", \"center\": [-18, -44.5], \"size\": [26, 1.2], \"y0\": 12, \"y1\": 14, \"colour\": \"#d4cebd\"},\n{\"type\": \"box\", \"center\": [18, -44.5], \"size\": [26, 1.2], \"y0\": 12, \"y1\": 14, \"colour\": \"#d4cebd\"},\n{\"type\": \"box\", \"center\": [-24, -30], \"size\": [12, 30], \"y0\": 0, \"y1\": 12, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [24, -30], \"size\": [12, 30], \"y0\": 0, \"y1\": 12, \"colour\": \"#cfc9b8\"},\n{\"type\": \"colonnade\", \"from\": [-17, -40], \"to\": [-17, -10], \"y0\": 0, \"height\": 10, \"count\": 12, \"radius\": 0.6, \"colour\": \"#cfc9b8\"},\n{\"type\": \"colonnade\", \"from\": [17, -40], \"to\": [17, -10], \"y0\": 0, \"height\": 10, \"count\": 12, \"radius\": 0.6, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [0, 5], \"size\": [60, 30], \"y0\": 0, \"y1\": 16, \"colour\": \"#cfc9b8\"},\n{\"type\": \"colonnade\", \"from\": [-14, -9], \"to\": [14, -9], \"y0\": 0, \"height\": 14, \"count\": 6, \"radius\": 0.8, \"colour\": \"#d4cebd\"},\n{\"type\": \"box\", \"center\": [0, -9], \"size\": [32, 3], \"y0\": 14, \"y1\": 17, \"colour\": \"#d4cebd\"},\n{\"type\": \"pediment\", \"from\": [-16, -10.5], \"to\": [16, -10.5], \"y0\": 17, \"height\": 3, \"depth\": 2},\n{\"type\": \"box\", \"center\": [0, 33], \"size\": [58, 16], \"y0\": 0, \"y1\": 14, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [-26, 12], \"size\": [8, 40], \"y0\": 0, \"y1\": 12, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [26, 12], \"size\": [8, 40], \"y0\": 0, \"y1\": 12, \"colour\": \"#cfc9b8\"},\n{\"type\": \"box\", \"center\": [0, -20], \"size\": [32, 20], \"y0\": 0, \"y1\": 0.2, \"colour\": \"#a8a8a8\"}\n]}",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 1706,
+   "cacheRead": 7616,
+   "cost": 0.025137200000000002,
+   "ms": 10276,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Legion of Honor is a U-shaped court open to the front (-z), with a central triumphal arch at the front. Its footprint is 60 m wide, which is narrow for the elevation shown in photos 1 and 2, so I treat the photographed 'front' as the closed side of the U. I read it as a front screen: a central arch block with a round opening, flanked by Ionic colonnades and then end pavilions with blank walls and relief panels. Behind the screen sits the main gallery block, with colonnaded wings enclosing a paved court. The stone is pale grey-cream. I model the arch, the two free-standing colonnades with balustrades, the end pavilions and the court wings.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      14,
+      5
+     ],
+     "y0": 0,
+     "y1": 23,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -4.5,
+      -44
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 0,
+     "y1": 14,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      4.5,
+      -44
+     ],
+     "size": [
+      5,
+      5
+     ],
+     "y0": 0,
+     "y1": 14,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      14,
+      5.2
+     ],
+     "y0": 14,
+     "y1": 16,
+     "colour": "#d4cebd"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -4,
+      -46.5
+     ],
+     "to": [
+      4,
+      -46.5
+     ],
+     "y0": 14,
+     "height": 7,
+     "count": 1,
+     "thickness": 3
+    },
+    {
+     "type": "box",
+     "center": [
+      -23,
+      -42
+     ],
+     "size": [
+      14,
+      9
+     ],
+     "y0": 0,
+     "y1": 17,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      23,
+      -42
+     ],
+     "size": [
+      14,
+      9
+     ],
+     "y0": 0,
+     "y1": 17,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -29,
+      -46.5
+     ],
+     "to": [
+      -8,
+      -46.5
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 9,
+     "radius": 0.6,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      8,
+      -46.5
+     ],
+     "to": [
+      29,
+      -46.5
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 9,
+     "radius": 0.6,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -14,
+      -44
+     ],
+     "size": [
+      14,
+      4
+     ],
+     "y0": 0,
+     "y1": 12,
+     "colour": "#c4bdac"
+    },
+    {
+     "type": "box",
+     "center": [
+      14,
+      -44
+     ],
+     "size": [
+      14,
+      4
+     ],
+     "y0": 0,
+     "y1": 12,
+     "colour": "#c4bdac"
+    },
+    {
+     "type": "box",
+     "center": [
+      -18,
+      -44.5
+     ],
+     "size": [
+      26,
+      1.2
+     ],
+     "y0": 12,
+     "y1": 14,
+     "colour": "#d4cebd"
+    },
+    {
+     "type": "box",
+     "center": [
+      18,
+      -44.5
+     ],
+     "size": [
+      26,
+      1.2
+     ],
+     "y0": 12,
+     "y1": 14,
+     "colour": "#d4cebd"
+    },
+    {
+     "type": "box",
+     "center": [
+      -24,
+      -30
+     ],
+     "size": [
+      12,
+      30
+     ],
+     "y0": 0,
+     "y1": 12,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      -30
+     ],
+     "size": [
+      12,
+      30
+     ],
+     "y0": 0,
+     "y1": 12,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -40
+     ],
+     "to": [
+      -17,
+      -10
+     ],
+     "y0": 0,
+     "height": 10,
+     "count": 12,
+     "radius": 0.6,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      17,
+      -40
+     ],
+     "to": [
+      17,
+      -10
+     ],
+     "y0": 0,
+     "height": 10,
+     "count": 12,
+     "radius": 0.6,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      5
+     ],
+     "size": [
+      60,
+      30
+     ],
+     "y0": 0,
+     "y1": 16,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -14,
+      -9
+     ],
+     "to": [
+      14,
+      -9
+     ],
+     "y0": 0,
+     "height": 14,
+     "count": 6,
+     "radius": 0.8,
+     "colour": "#d4cebd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -9
+     ],
+     "size": [
+      32,
+      3
+     ],
+     "y0": 14,
+     "y1": 17,
+     "colour": "#d4cebd"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -16,
+      -10.5
+     ],
+     "to": [
+      16,
+      -10.5
+     ],
+     "y0": 17,
+     "height": 3,
+     "depth": 2
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      33
+     ],
+     "size": [
+      58,
+      16
+     ],
+     "y0": 0,
+     "y1": 14,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -26,
+      12
+     ],
+     "size": [
+      8,
+      40
+     ],
+     "y0": 0,
+     "y1": 12,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      26,
+      12
+     ],
+     "size": [
+      8,
+      40
+     ],
+     "y0": 0,
+     "y1": 12,
+     "colour": "#cfc9b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      32,
+      20
+     ],
+     "y0": 0,
+     "y1": 0.2,
+     "colour": "#a8a8a8"
+    }
+   ]
+  },
+  "notes": "The Legion of Honor is a U-shaped court open to the front (-z), with a central triumphal arch at the front. Its footprint is 60 m wide, which is narrow for the elevation shown in photos 1 and 2, so I treat the photographed 'front' as the closed side of the U. I read it as a front screen: a central arch block with a round opening, flanked by Ionic colonnades and then end pavilions with blank walls and relief panels. Behind the screen sits the main gallery block, with colonnaded wings enclosing a paved court. The stone is pale grey-cream. I model the arch, the two free-standing colonnades with balustrades, the end pavilions and the court wings.",
+  "triangles": 4584,
+  "parts": 25
+ },
+ "totals": {
+  "input": 3277,
+  "output": 1706,
+  "cost": 0.025137200000000002,
+  "ms": 10276
+ }
+}

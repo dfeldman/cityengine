@@ -1,0 +1,230 @@
+{
+ "building": "gare-de-lyon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:36.929Z",
+ "userText": "Building: Gare de Lyon, Paris (railway station).\nThe front (−z) is the station front on the Place Louis-Armand.\nFootprint: 180.9 m along x by 221.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-90.1,106.6],[-90.4,85.6],[-86.6,47],[-25.2,-81.7],[-5.9,-101.9],[1.2,-106],[89.1,-110.5],[90.4,-91.8],[90.4,109.4],[6,110.5]]\nHeight: the highest point is 67 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the forecourt: long Beaux-Arts facade with arches, mansard roofs and the tall clock tower, daylight\n  2. high view looking down along the station's train shed roofs and tracks\n  3. view of the long arcaded facade and mansard roof from the other end, tower out of frame, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   180.9,
+   221.1
+  ],
+  "outline": [
+   [
+    -90.1,
+    106.6
+   ],
+   [
+    -90.4,
+    85.6
+   ],
+   [
+    -86.6,
+    47
+   ],
+   [
+    -25.2,
+    -81.7
+   ],
+   [
+    -5.9,
+    -101.9
+   ],
+   [
+    1.2,
+    -106
+   ],
+   [
+    89.1,
+    -110.5
+   ],
+   [
+    90.4,
+    -91.8
+   ],
+   [
+    90.4,
+    109.4
+   ],
+   [
+    6,
+    110.5
+   ]
+  ],
+  "height": 67,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "reply": "```json\n{\n  \"notes\": \"Beaux-Arts station front in cream stone along the -z side, with a grey slate mansard roof and dormers above. A clock tower with a grey metal dome sits at the front right (+x) corner. Behind the facade, a long glazed train shed runs toward +z under a barrel-like roof, flanked by hotel and office wings.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -97], \"size\": [178, 18], \"y0\": 0, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -97], \"size\": [176, 18], \"y0\": 26, \"rise\": 11, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [72, -96], \"size\": [18, 18], \"y0\": 0, \"y1\": 50, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 4}},\n    {\"type\": \"cylinder\", \"center\": [72, -96], \"radius\": 8, \"y0\": 50, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#d8cdb8\"},\n    {\"type\": \"dome\", \"center\": [72, -96], \"radius\": 8, \"y0\": 52, \"height\": 15, \"material\": \"metal\", \"colour\": \"#7d8a8c\"},\n    {\"type\": \"vault\", \"center\": [0, 8], \"size\": [100, 190], \"y0\": 22, \"rise\": 14, \"axis\": \"z\", \"material\": \"metal\", \"colour\": \"#8a9296\", \"ends\": \"glass\"},\n    {\"type\": \"box\", \"center\": [-78, 40], \"size\": [24, 130], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5}},\n    {\"type\": \"box\", \"center\": [78, 40], \"size\": [24, 130], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3370,
+   "output": 1699,
+   "cacheRead": 3474,
+   "cost": 0.00122124,
+   "ms": 8945,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Beaux-Arts station front in cream stone along the -z side, with a grey slate mansard roof and dormers above. A clock tower with a grey metal dome sits at the front right (+x) corner. Behind the facade, a long glazed train shed runs toward +z under a barrel-like roof, flanked by hotel and office wings.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -97
+     ],
+     "size": [
+      178,
+      18
+     ],
+     "y0": 0,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -97
+     ],
+     "size": [
+      176,
+      18
+     ],
+     "y0": 26,
+     "rise": 11,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      72,
+      -96
+     ],
+     "size": [
+      18,
+      18
+     ],
+     "y0": 0,
+     "y1": 50,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 4
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      72,
+      -96
+     ],
+     "radius": 8,
+     "y0": 50,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#d8cdb8"
+    },
+    {
+     "type": "dome",
+     "center": [
+      72,
+      -96
+     ],
+     "radius": 8,
+     "y0": 52,
+     "height": 15,
+     "material": "metal",
+     "colour": "#7d8a8c"
+    },
+    {
+     "type": "vault",
+     "center": [
+      0,
+      8
+     ],
+     "size": [
+      100,
+      190
+     ],
+     "y0": 22,
+     "rise": 14,
+     "axis": "z",
+     "material": "metal",
+     "colour": "#8a9296",
+     "ends": "glass"
+    },
+    {
+     "type": "box",
+     "center": [
+      -78,
+      40
+     ],
+     "size": [
+      24,
+      130
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      78,
+      40
+     ],
+     "size": [
+      24,
+      130
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5
+     }
+    }
+   ]
+  },
+  "notes": "Beaux-Arts station front in cream stone along the -z side, with a grey slate mansard roof and dormers above. A clock tower with a grey metal dome sits at the front right (+x) corner. Behind the facade, a long glazed train shed runs toward +z under a barrel-like roof, flanked by hotel and office wings.",
+  "triangles": 3730,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3370,
+  "output": 1699,
+  "cost": 0.00122124,
+  "ms": 8945
+ }
+}

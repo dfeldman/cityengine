@@ -1,0 +1,341 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:00:50.828Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Église de la Madeleine is a full peripteral Corinthian temple on a tall stylobate: a long cella of pale stone wrapped by a continuous colonnade, with eight columns across the front portico and a deep triangular pediment carrying sculpture. The long sides have rows of Corinthian columns, and the pitched roof runs along the length, clad in green-grey metal that reads as green from afar. The model uses a podium, cella walls, a front colonnade, side colonnades, a front pediment and a gable roof.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 4, \"material\": \"stone\", \"colour\": \"#d8cfbb\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [36, 118], \"y0\": 4, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#e2d9c6\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -60], \"to\": [18, -60], \"y0\": 4, \"height\": 24, \"count\": 8, \"radius\": 1.1, \"entablature\": 3},\n    {\"type\": \"colonnade\", \"from\": [-19.5, -58], \"to\": [-19.5, 58], \"y0\": 4, \"height\": 24, \"count\": 22, \"radius\": 1.0, \"entablature\": 3},\n    {\"type\": \"colonnade\", \"from\": [19.5, -58], \"to\": [19.5, 58], \"y0\": 4, \"height\": 24, \"count\": 22, \"radius\": 1.0, \"entablature\": 3},\n    {\"type\": \"pediment\", \"from\": [-21.6, -62], \"to\": [21.6, -62], \"y0\": 24, \"height\": 12, \"depth\": 3},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 24, \"rise\": 12, \"ridge\": \"z\", \"material\": \"metal\", \"colour\": \"#8fb08a\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3200,
+   "output": 1909,
+   "cacheRead": 3474,
+   "cost": 0.00130924,
+   "ms": 10406,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "```json\n{\n  \"notes\": \"1. The columns are too thin and read as a grille. The real Corinthian shafts are much heavier and carry a deep entablature, so I thicken them and raise the beam. 2. The front portico is flat and does not project. The real eight-column portico stands forward of the cella with a full-width pediment, so I push the front colonnade out and widen the pediment. 3. The podium is too low and has no front steps. The real stylobate is a high, stepped platform, so I raise it and add a flight of steps. The roof, colour and overall footprint are already right.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 0, \"y1\": 5, \"material\": \"stone\", \"colour\": \"#d8cfbb\"},\n    {\"type\": \"box\", \"center\": [0, -66], \"size\": [30, 8], \"y0\": 0, \"y1\": 2.5, \"material\": \"stone\", \"colour\": \"#d8cfbb\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [36, 118], \"y0\": 5, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#e2d9c6\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -63], \"to\": [18, -63], \"y0\": 5, \"height\": 25, \"count\": 8, \"radius\": 1.6, \"entablature\": 3.5},\n    {\"type\": \"colonnade\", \"from\": [-20, -58], \"to\": [-20, 58], \"y0\": 5, \"height\": 25, \"count\": 22, \"radius\": 1.5, \"entablature\": 3.5},\n    {\"type\": \"colonnade\", \"from\": [20, -58], \"to\": [20, 58], \"y0\": 5, \"height\": 25, \"count\": 22, \"radius\": 1.5, \"entablature\": 3.5},\n    {\"type\": \"box\", \"center\": [0, -63], \"size\": [43.2, 4], \"y0\": 24, \"y1\": 26, \"material\": \"stone\", \"colour\": \"#e2d9c6\"},\n    {\"type\": \"pediment\", \"from\": [-21.6, -63], \"to\": [21.6, -63], \"y0\": 26, \"height\": 10, \"depth\": 4},\n    {\"type\": \"roof\", \"kind\": \"gable\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"y0\": 26, \"rise\": 10, \"ridge\": \"z\", \"material\": \"metal\", \"colour\": \"#8fb08a\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 6575,
+   "output": 1580,
+   "cacheRead": 3474,
+   "cost": 0.00148224,
+   "ms": 8214,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1. The columns are too thin and read as a grille. The real Corinthian shafts are much heavier and carry a deep entablature, so I thicken them and raise the beam. 2. The front portico is flat and does not project. The real eight-column portico stands forward of the cella with a full-width pediment, so I push the front colonnade out and widen the pediment. 3. The podium is too low and has no front steps. The real stylobate is a high, stepped platform, so I raise it and add a flight of steps. The roof, colour and overall footprint are already right.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 5,
+     "material": "stone",
+     "colour": "#d8cfbb"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -66
+     ],
+     "size": [
+      30,
+      8
+     ],
+     "y0": 0,
+     "y1": 2.5,
+     "material": "stone",
+     "colour": "#d8cfbb"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      118
+     ],
+     "y0": 5,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#e2d9c6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -63
+     ],
+     "to": [
+      18,
+      -63
+     ],
+     "y0": 5,
+     "height": 25,
+     "count": 8,
+     "radius": 1.6,
+     "entablature": 3.5
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -20,
+      -58
+     ],
+     "to": [
+      -20,
+      58
+     ],
+     "y0": 5,
+     "height": 25,
+     "count": 22,
+     "radius": 1.5,
+     "entablature": 3.5
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      20,
+      -58
+     ],
+     "to": [
+      20,
+      58
+     ],
+     "y0": 5,
+     "height": 25,
+     "count": 22,
+     "radius": 1.5,
+     "entablature": 3.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -63
+     ],
+     "size": [
+      43.2,
+      4
+     ],
+     "y0": 24,
+     "y1": 26,
+     "material": "stone",
+     "colour": "#e2d9c6"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -63
+     ],
+     "to": [
+      21.6,
+      -63
+     ],
+     "y0": 26,
+     "height": 10,
+     "depth": 4
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 26,
+     "rise": 10,
+     "ridge": "z",
+     "material": "metal",
+     "colour": "#8fb08a"
+    }
+   ]
+  },
+  "notes": "1. The columns are too thin and read as a grille. The real Corinthian shafts are much heavier and carry a deep entablature, so I thicken them and raise the beam. 2. The front portico is flat and does not project. The real eight-column portico stands forward of the cella with a full-width pediment, so I push the front colonnade out and widen the pediment. 3. The podium is too low and has no front steps. The real stylobate is a high, stepped platform, so I raise it and add a flight of steps. The roof, colour and overall footprint are already right.",
+  "triangles": 4676,
+  "parts": 9
+ },
+ "totals": {
+  "input": 9775,
+  "output": 3489,
+  "cost": 0.00279148,
+  "ms": 18620
+ },
+ "draft": {
+  "json": {
+   "notes": "Église de la Madeleine is a full peripteral Corinthian temple on a tall stylobate: a long cella of pale stone wrapped by a continuous colonnade, with eight columns across the front portico and a deep triangular pediment carrying sculpture. The long sides have rows of Corinthian columns, and the pitched roof runs along the length, clad in green-grey metal that reads as green from afar. The model uses a podium, cella walls, a front colonnade, side colonnades, a front pediment and a gable roof.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stone",
+     "colour": "#d8cfbb"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      36,
+      118
+     ],
+     "y0": 4,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#e2d9c6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -60
+     ],
+     "to": [
+      18,
+      -60
+     ],
+     "y0": 4,
+     "height": 24,
+     "count": 8,
+     "radius": 1.1,
+     "entablature": 3
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19.5,
+      -58
+     ],
+     "to": [
+      -19.5,
+      58
+     ],
+     "y0": 4,
+     "height": 24,
+     "count": 22,
+     "radius": 1,
+     "entablature": 3
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      19.5,
+      -58
+     ],
+     "to": [
+      19.5,
+      58
+     ],
+     "y0": 4,
+     "height": 24,
+     "count": 22,
+     "radius": 1,
+     "entablature": 3
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -62
+     ],
+     "to": [
+      21.6,
+      -62
+     ],
+     "y0": 24,
+     "height": 12,
+     "depth": 3
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 24,
+     "rise": 12,
+     "ridge": "z",
+     "material": "metal",
+     "colour": "#8fb08a"
+    }
+   ]
+  },
+  "notes": "Église de la Madeleine is a full peripteral Corinthian temple on a tall stylobate: a long cella of pale stone wrapped by a continuous colonnade, with eight columns across the front portico and a deep triangular pediment carrying sculpture. The long sides have rows of Corinthian columns, and the pitched roof runs along the length, clad in green-grey metal that reads as green from afar. The model uses a podium, cella walls, a front colonnade, side colonnades, a front pediment and a gable roof.",
+  "triangles": 4652,
+  "parts": 7
+ }
+}

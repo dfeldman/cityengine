@@ -1,0 +1,157 @@
+{
+ "building": "de-young",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T01:45:06.488Z",
+ "userText": "Building: de Young Museum, San Francisco (museum).\nThe front (−z) is the entrance court on Music Concourse Drive.\nFootprint: 157.2 m along x by 76.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-78.6,38.1],[-78.5,-38.1],[66,-37.7],[78.6,38.1]]\nHeight: the highest point is 44 m above the ground.\n\n3 photographs attached, in order:\n  1. wide three-quarter from the south-east access road: long low copper-clad box under palms with the twisted observation tower behind, blue sky\n  2. close side view of the angular copper-clad wall and the sheared, twisting tower rising behind it, daylight\n  3. front three-quarter from the street: low copper-clad volume with the tall twisted tower behind, palms in front, blue sky\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   157.2,
+   76.3
+  ],
+  "outline": [
+   [
+    -78.6,
+    38.1
+   ],
+   [
+    -78.5,
+    -38.1
+   ],
+   [
+    66,
+    -37.7
+   ],
+   [
+    78.6,
+    38.1
+   ]
+  ],
+  "height": 44,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "reply": "{\"notes\": \"A long, low, dark copper-clad box (roughly 17 m high) spans most of the footprint, with a shallow front court and palms in front. The signature feature is the sheared, twisting observation tower rising about 44 m at the rear-east corner, built as stacked, offset copper-clad blocks that step out toward the front. Perforated copper cladding in dark reddish-brown throughout.\", \"parts\": [{\"type\": \"box\", \"center\": [0, 0], \"size\": [150, 70], \"y0\": 0, \"y1\": 17, \"material\": \"metal\", \"colour\": \"#5b3f33\", \"windows\": {\"kind\": \"bands\", \"floor\": 4, \"solid\": 0.7}}, {\"type\": \"box\", \"center\": [0, -33], \"size\": [60, 12], \"y0\": 0, \"y1\": 3, \"material\": \"concrete\", \"colour\": \"#8a8072\"}, {\"type\": \"box\", \"center\": [44, 12], \"size\": [24, 22], \"y0\": 17, \"y1\": 28, \"material\": \"metal\", \"colour\": \"#5b3f33\", \"windows\": {\"kind\": \"curtain\", \"glass\": \"#2d3a44\"}}, {\"type\": \"box\", \"center\": [46, 11], \"size\": [26, 24], \"y0\": 28, \"y1\": 36, \"material\": \"metal\", \"colour\": \"#614536\", \"windows\": {\"kind\": \"curtain\", \"glass\": \"#2d3a44\"}}, {\"type\": \"box\", \"center\": [49, 13], \"size\": [28, 26], \"y0\": 36, \"y1\": 44, \"material\": \"metal\", \"colour\": \"#66493a\"}]}",
+   "stop": "end_turn",
+   "input": 3222,
+   "output": 979,
+   "cacheRead": 3474,
+   "cost": 0.0008464400000000001,
+   "ms": 5687,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long, low, dark copper-clad box (roughly 17 m high) spans most of the footprint, with a shallow front court and palms in front. The signature feature is the sheared, twisting observation tower rising about 44 m at the rear-east corner, built as stacked, offset copper-clad blocks that step out toward the front. Perforated copper cladding in dark reddish-brown throughout.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      150,
+      70
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "metal",
+     "colour": "#5b3f33",
+     "windows": {
+      "kind": "bands",
+      "floor": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -33
+     ],
+     "size": [
+      60,
+      12
+     ],
+     "y0": 0,
+     "y1": 3,
+     "material": "concrete",
+     "colour": "#8a8072"
+    },
+    {
+     "type": "box",
+     "center": [
+      44,
+      12
+     ],
+     "size": [
+      24,
+      22
+     ],
+     "y0": 17,
+     "y1": 28,
+     "material": "metal",
+     "colour": "#5b3f33",
+     "windows": {
+      "kind": "curtain",
+      "glass": "#2d3a44"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      46,
+      11
+     ],
+     "size": [
+      26,
+      24
+     ],
+     "y0": 28,
+     "y1": 36,
+     "material": "metal",
+     "colour": "#614536",
+     "windows": {
+      "kind": "curtain",
+      "glass": "#2d3a44"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      49,
+      13
+     ],
+     "size": [
+      28,
+      26
+     ],
+     "y0": 36,
+     "y1": 44,
+     "material": "metal",
+     "colour": "#66493a"
+    }
+   ]
+  },
+  "notes": "A long, low, dark copper-clad box (roughly 17 m high) spans most of the footprint, with a shallow front court and palms in front. The signature feature is the sheared, twisting observation tower rising about 44 m at the rear-east corner, built as stacked, offset copper-clad blocks that step out toward the front. Perforated copper cladding in dark reddish-brown throughout.",
+  "triangles": 124,
+  "parts": 5
+ },
+ "totals": {
+  "input": 3222,
+  "output": 979,
+  "cost": 0.0008464400000000001,
+  "ms": 5687
+ }
+}

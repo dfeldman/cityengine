@@ -1,0 +1,14 @@
+{
+ "building": "pantheon",
+ "modelId": "game",
+ "model": "pantheonFull",
+ "fit": {
+  "turn": 0,
+  "mirror": false,
+  "iou": 0.9
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: pantheonFull, 19370 tris, fit IoU 0.90"
+ }
+}

@@ -1,0 +1,207 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:45.070Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"A low, long Beaux-Arts stone front: a central triumphal arch block projecting toward the forecourt, with colonnades running out on both sides to end pavilions with flat roofs. Behind the centre sits a drum carrying a green copper dome, which sets the highest point at about 23 m. I model the arch with an opening, the free-standing colonnades, the flanking pavilions, and the dome on its drum.\", \"parts\": [{\"type\": \"box\", \"center\": [0, -4], \"size\": [56, 62], \"y0\": 0, \"y1\": 12, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"box\", \"center\": [-22, -30], \"size\": [16, 22], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"box\", \"center\": [22, -30], \"size\": [16, 22], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"colonnade\", \"from\": [-26, -38], \"to\": [-6, -38], \"y0\": 0, \"height\": 12, \"count\": 10, \"radius\": 0.6, \"entablature\": 1.5}, {\"type\": \"colonnade\", \"from\": [6, -38], \"to\": [26, -38], \"y0\": 0, \"height\": 12, \"count\": 10, \"radius\": 0.6, \"entablature\": 1.5}, {\"type\": \"box\", \"center\": [0, -40], \"size\": [14, 6], \"y0\": 0, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#d8d2c4\"}, {\"type\": \"arcade\", \"from\": [-4, -43.2], \"to\": [4, -43.2], \"y0\": 0, \"height\": 10, \"count\": 1, \"thickness\": 3}, {\"type\": \"cylinder\", \"center\": [0, 8], \"radius\": 9, \"y0\": 0, \"y1\": 16, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"sides\": 32}, {\"type\": \"dome\", \"center\": [0, 8], \"radius\": 9, \"y0\": 16, \"height\": 7, \"material\": \"copper\", \"colour\": \"#7fa894\"}]}",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 1401,
+   "cacheRead": 7616,
+   "cost": 0.0011043600000000002,
+   "ms": 7114,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A low, long Beaux-Arts stone front: a central triumphal arch block projecting toward the forecourt, with colonnades running out on both sides to end pavilions with flat roofs. Behind the centre sits a drum carrying a green copper dome, which sets the highest point at about 23 m. I model the arch with an opening, the free-standing colonnades, the flanking pavilions, and the dome on its drum.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -4
+     ],
+     "size": [
+      56,
+      62
+     ],
+     "y0": 0,
+     "y1": 12,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -30
+     ],
+     "size": [
+      16,
+      22
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      22,
+      -30
+     ],
+     "size": [
+      16,
+      22
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -26,
+      -38
+     ],
+     "to": [
+      -6,
+      -38
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 10,
+     "radius": 0.6,
+     "entablature": 1.5
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      6,
+      -38
+     ],
+     "to": [
+      26,
+      -38
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 10,
+     "radius": 0.6,
+     "entablature": 1.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -40
+     ],
+     "size": [
+      14,
+      6
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -4,
+      -43.2
+     ],
+     "to": [
+      4,
+      -43.2
+     ],
+     "y0": 0,
+     "height": 10,
+     "count": 1,
+     "thickness": 3
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      8
+     ],
+     "radius": 9,
+     "y0": 0,
+     "y1": 16,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "sides": 32
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      8
+     ],
+     "radius": 9,
+     "y0": 16,
+     "height": 7,
+     "material": "copper",
+     "colour": "#7fa894"
+    }
+   ]
+  },
+  "notes": "A low, long Beaux-Arts stone front: a central triumphal arch block projecting toward the forecourt, with colonnades running out on both sides to end pavilions with flat roofs. Behind the centre sits a drum carrying a green copper dome, which sets the highest point at about 23 m. I model the arch with an opening, the free-standing colonnades, the flanking pavilions, and the dome on its drum.",
+  "triangles": 2392,
+  "parts": 9
+ },
+ "totals": {
+  "input": 3277,
+  "output": 1401,
+  "cost": 0.0011043600000000002,
+  "ms": 7114
+ }
+}

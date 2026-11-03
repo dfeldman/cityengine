@@ -1,0 +1,207 @@
+{
+ "building": "sfmoma",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v3",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T02:17:38.256Z",
+ "userText": "Building: San Francisco Museum of Modern Art (Botta building), San Francisco (museum).\nThe front (−z) is the Third Street front, across from Yerba Buena Gardens.\nFootprint: 108.7 m along x by 84.8 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-54.3,-42.1],[10.8,-42.4],[10.9,6.5],[54.4,6.4],[54,33.1],[14.6,36.9],[-5.2,37.6],[-5.2,42.4],[-54.4,42.2]]\nHeight: the highest point is 38 m above the ground.\n\n3 photographs attached, in order:\n  1. front elevation of the 1995 Botta building: stepped brick-and-stone masses with the striped cylindrical oculus tower, Snohetta extension rising behind, daylight\n  2. corner three-quarter of the Botta brick facade with the cylinder, the white Snohetta extension at left behind, towers beyond\n  3. view from the Yerba Buena garden side: stepped brick masses and striped cylinder, extension at right, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   108.7,
+   84.8
+  ],
+  "outline": [
+   [
+    -54.3,
+    -42.1
+   ],
+   [
+    10.8,
+    -42.4
+   ],
+   [
+    10.9,
+    6.5
+   ],
+   [
+    54.4,
+    6.4
+   ],
+   [
+    54,
+    33.1
+   ],
+   [
+    14.6,
+    36.9
+   ],
+   [
+    -5.2,
+    37.6
+   ],
+   [
+    -5.2,
+    42.4
+   ],
+   [
+    -54.4,
+    42.2
+   ]
+  ],
+  "height": 38,
+  "turn": -0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"SFMOMA is a brick-and-stone Botta front on Third Street, with a striped cylindrical drum and glass oculus set into its centre, and tall stepped brick flanks on either side. Behind and to the left, the white, sculpted Snohetta extension rises in stepped white volumes to the 38 m height. I model the brick front masses, the striped drum with a glass oculus cap, and the white extension stepping up behind.\",\"parts\":[{\"type\":\"box\",\"center\":[-22,-26],\"size\":[62,30],\"y0\":0,\"y1\":16,\"material\":\"brick\",\"colour\":\"#a4563a\"},{\"type\":\"box\",\"center\":[-40,-26],\"size\":[12,30],\"y0\":16,\"y1\":24,\"material\":\"brick\",\"colour\":\"#a4563a\"},{\"type\":\"box\",\"center\":[-2,-26],\"size\":[12,30],\"y0\":16,\"y1\":24,\"material\":\"brick\",\"colour\":\"#a4563a\"},{\"type\":\"cylinder\",\"center\":[-20,-38],\"radius\":10,\"y0\":0,\"y1\":24,\"material\":\"stone\",\"colour\":\"#d6d4cc\",\"sides\":32},{\"type\":\"dome\",\"center\":[-20,-38],\"radius\":8,\"y0\":24,\"height\":4,\"material\":\"glass\",\"colour\":\"#9fb8b8\"},{\"type\":\"box\",\"center\":[-22,14],\"size\":[64,56],\"y0\":0,\"y1\":30,\"material\":\"concrete\",\"colour\":\"#e6e4de\"},{\"type\":\"box\",\"center\":[-20,20],\"size\":[40,30],\"y0\":30,\"y1\":38,\"material\":\"concrete\",\"colour\":\"#ebe9e3\"},{\"type\":\"box\",\"center\":[32,-18],\"size\":[44,48],\"y0\":0,\"y1\":22,\"material\":\"concrete\",\"colour\":\"#b9bdc2\"}]}",
+   "stop": "end_turn",
+   "input": 3483,
+   "output": 1561,
+   "cacheRead": 0,
+   "cost": 0.0021498000000000003,
+   "ms": 8921,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "SFMOMA is a brick-and-stone Botta front on Third Street, with a striped cylindrical drum and glass oculus set into its centre, and tall stepped brick flanks on either side. Behind and to the left, the white, sculpted Snohetta extension rises in stepped white volumes to the 38 m height. I model the brick front masses, the striped drum with a glass oculus cap, and the white extension stepping up behind.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      -22,
+      -26
+     ],
+     "size": [
+      62,
+      30
+     ],
+     "y0": 0,
+     "y1": 16,
+     "material": "brick",
+     "colour": "#a4563a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -40,
+      -26
+     ],
+     "size": [
+      12,
+      30
+     ],
+     "y0": 16,
+     "y1": 24,
+     "material": "brick",
+     "colour": "#a4563a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -2,
+      -26
+     ],
+     "size": [
+      12,
+      30
+     ],
+     "y0": 16,
+     "y1": 24,
+     "material": "brick",
+     "colour": "#a4563a"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -38
+     ],
+     "radius": 10,
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d6d4cc",
+     "sides": 32
+    },
+    {
+     "type": "dome",
+     "center": [
+      -20,
+      -38
+     ],
+     "radius": 8,
+     "y0": 24,
+     "height": 4,
+     "material": "glass",
+     "colour": "#9fb8b8"
+    },
+    {
+     "type": "box",
+     "center": [
+      -22,
+      14
+     ],
+     "size": [
+      64,
+      56
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "concrete",
+     "colour": "#e6e4de"
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      20
+     ],
+     "size": [
+      40,
+      30
+     ],
+     "y0": 30,
+     "y1": 38,
+     "material": "concrete",
+     "colour": "#ebe9e3"
+    },
+    {
+     "type": "box",
+     "center": [
+      32,
+      -18
+     ],
+     "size": [
+      44,
+      48
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "concrete",
+     "colour": "#b9bdc2"
+    }
+   ]
+  },
+  "notes": "SFMOMA is a brick-and-stone Botta front on Third Street, with a striped cylindrical drum and glass oculus set into its centre, and tall stepped brick flanks on either side. Behind and to the left, the white, sculpted Snohetta extension rises in stepped white volumes to the 38 m height. I model the brick front masses, the striped drum with a glass oculus cap, and the white extension stepping up behind.",
+  "triangles": 556,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3483,
+  "output": 1561,
+  "cost": 0.0021498000000000003,
+  "ms": 8921
+ }
+}

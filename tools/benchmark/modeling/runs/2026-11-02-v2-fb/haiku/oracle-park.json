@@ -1,0 +1,477 @@
+{
+ "building": "oracle-park",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:01:44.702Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"Oracle Park is a rounded-rectangle concrete bowl with a green-painted steel stand structure and a tall steel light-tower frame. The street front (-z) is a three-storey red-brick facade with a clock tower near one end. The field is open and sits low in the middle, with the stands rising in a raked ring. Tall light towers reach the 45 m maximum height.\", \"parts\": [{\"type\": \"bowl\", \"center\": [0, 0], \"size\": [205, 270], \"inner\": [125, 150], \"y0\": 0, \"y1\": 30, \"shape\": \"rect\", \"material\": \"concrete\", \"colour\": \"#8a9a92\"}, {\"type\": \"bowl\", \"center\": [0, 0], \"size\": [200, 262], \"inner\": [125, 150], \"y0\": 30, \"y1\": 33, \"innerHeight\": 30, \"shape\": \"rect\", \"material\": \"metal\", \"colour\": \"#2e5e4e\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [118, 146], \"y0\": 0, \"y1\": 0.3, \"material\": \"grass\", \"colour\": \"#3f7a35\"}, {\"type\": \"box\", \"center\": [-10, -125], \"size\": [120, 20], \"y0\": 0, \"y1\": 20, \"material\": \"brick\", \"colour\": \"#9b4a36\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 6, \"solid\": 0.6, \"glass\": \"#3c4650\"}}, {\"type\": \"box\", \"center\": [-10, -125], \"size\": [122, 22], \"y0\": 20, \"y1\": 21, \"material\": \"concrete\", \"colour\": \"#d8d0c0\"}, {\"type\": \"box\", \"center\": [40, -127], \"size\": [12, 12], \"y0\": 0, \"y1\": 30, \"material\": \"brick\", \"colour\": \"#9b4a36\"}, {\"type\": \"box\", \"center\": [40, -127], \"size\": [13, 13], \"y0\": 28, \"y1\": 30, \"material\": \"concrete\", \"colour\": \"#d8d0c0\"}, {\"type\": \"box\", \"center\": [85, -60], \"size\": [7, 7], \"y0\": 0, \"y1\": 45, \"material\": \"metal\", \"colour\": \"#3a4a4a\"}, {\"type\": \"box\", \"center\": [88, 40], \"size\": [7, 7], \"y0\": 0, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#3a4a4a\"}, {\"type\": \"box\", \"center\": [-92, -100], \"size\": [6, 6], \"y0\": 0, \"y1\": 22, \"material\": \"brick\", \"colour\": \"#9b4a36\"}]}",
+   "stop": "end_turn",
+   "input": 3569,
+   "output": 1738,
+   "cacheRead": 7616,
+   "cost": 0.0013020599999999998,
+   "ms": 8468,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "Three biggest differences from the real building:\n\n1. The two light towers are stubby blocks sitting on the roof. In the photographs they are tall, thin steel frames rising to the 45 m maximum, so they need to read as towers.\n2. The clock tower on the brick street front barely shows. It should stand clearly above the three-storey facade, and the facade should read as a solid brick wall.\n3. The promenade arcade along the bay edge is missing. The real building has a row of arched openings in the wall along the water side, and the stands read as a flat slab rather than a raked bowl.\n\n\n\n{\"notes\": \"Oracle Park is a rounded-rectangle bowl with raked green steel stands and a red-brick street front at -z carrying a clock tower. Tall steel light towers rise to 45 m at the back corners. An arched promenade wall runs along the bay side at -x. The corrected model makes the towers taller and thinner, raises the clock tower above the brick front, and adds the arcade.\", \"parts\": [{\"type\": \"bowl\", \"center\": [0, 0], \"size\": [205, 270], \"inner\": [125, 150], \"y0\": 0, \"y1\": 30, \"shape\": \"rect\", \"material\": \"concrete\", \"colour\": \"#8a9a92\"}, {\"type\": \"bowl\", \"center\": [0, 0], \"size\": [200, 262], \"inner\": [125, 150], \"y0\": 30, \"y1\": 33, \"innerHeight\": 30, \"shape\": \"rect\", \"material\": \"metal\", \"colour\": \"#2e5e4e\"}, {\"type\": \"box\", \"center\": [0, 0], \"size\": [118, 146], \"y0\": 0, \"y1\": 0.3, \"material\": \"grass\", \"colour\": \"#3f7a35\"}, {\"type\": \"box\", \"center\": [-10, -125], \"size\": [120, 20], \"y0\": 0, \"y1\": 22, \"material\": \"brick\", \"colour\": \"#9b4a36\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 6, \"solid\": 0.6, \"glass\": \"#3c4650\"}}, {\"type\": \"box\", \"center\": [-10, -125], \"size\": [122, 22], \"y0\": 22, \"y1\": 23, \"material\": \"concrete\", \"colour\": \"#d8d0c0\"}, {\"type\": \"box\", \"center\": [40, -127], \"size\": [12, 12], \"y0\": 0, \"y1\": 38, \"material\": \"brick\", \"colour\": \"#9b4a36\"}, {\"type\": \"box\", \"center\": [40, -127], \"size\": [13, 13], \"y0\": 36, \"y1\": 38, \"material\": \"concrete\", \"colour\": \"#d8d0c0\"}, {\"type\": \"box\", \"center\": [85, -60], \"size\": [4, 4], \"y0\": 0, \"y1\": 45, \"material\": \"metal\", \"colour\": \"#3a4a4a\"}, {\"type\": \"box\", \"center\": [88, 40], \"size\": [4, 4], \"y0\": 0, \"y1\": 45, \"material\": \"metal\", \"colour\": \"#3a4a4a\"}, {\"type\": \"beam\", \"from\": [85, 33, -60], \"to\": [85, 45, -60], \"width\": 3, \"material\": \"metal\", \"colour\": \"#3a4a4a\"}, {\"type\": \"arcade\", \"from\": [-101, -60], \"to\": [-101, 60], \"y0\": 0, \"height\": 7, \"count\": 12, \"thickness\": 2}]}",
+   "stop": "end_turn",
+   "input": 6773,
+   "output": 1841,
+   "cacheRead": 7616,
+   "cost": 0.00167396,
+   "ms": 8415,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park is a rounded-rectangle bowl with raked green steel stands and a red-brick street front at -z carrying a clock tower. Tall steel light towers rise to 45 m at the back corners. An arched promenade wall runs along the bay side at -x. The corrected model makes the towers taller and thinner, raises the clock tower above the brick front, and adds the arcade.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      205,
+      270
+     ],
+     "inner": [
+      125,
+      150
+     ],
+     "y0": 0,
+     "y1": 30,
+     "shape": "rect",
+     "material": "concrete",
+     "colour": "#8a9a92"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      200,
+      262
+     ],
+     "inner": [
+      125,
+      150
+     ],
+     "y0": 30,
+     "y1": 33,
+     "innerHeight": 30,
+     "shape": "rect",
+     "material": "metal",
+     "colour": "#2e5e4e"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      118,
+      146
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#3f7a35"
+    },
+    {
+     "type": "box",
+     "center": [
+      -10,
+      -125
+     ],
+     "size": [
+      120,
+      20
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#9b4a36",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 6,
+      "solid": 0.6,
+      "glass": "#3c4650"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -10,
+      -125
+     ],
+     "size": [
+      122,
+      22
+     ],
+     "y0": 22,
+     "y1": 23,
+     "material": "concrete",
+     "colour": "#d8d0c0"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      -127
+     ],
+     "size": [
+      12,
+      12
+     ],
+     "y0": 0,
+     "y1": 38,
+     "material": "brick",
+     "colour": "#9b4a36"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      -127
+     ],
+     "size": [
+      13,
+      13
+     ],
+     "y0": 36,
+     "y1": 38,
+     "material": "concrete",
+     "colour": "#d8d0c0"
+    },
+    {
+     "type": "box",
+     "center": [
+      85,
+      -60
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 0,
+     "y1": 45,
+     "material": "metal",
+     "colour": "#3a4a4a"
+    },
+    {
+     "type": "box",
+     "center": [
+      88,
+      40
+     ],
+     "size": [
+      4,
+      4
+     ],
+     "y0": 0,
+     "y1": 45,
+     "material": "metal",
+     "colour": "#3a4a4a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      85,
+      33,
+      -60
+     ],
+     "to": [
+      85,
+      45,
+      -60
+     ],
+     "width": 3,
+     "material": "metal",
+     "colour": "#3a4a4a"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -101,
+      -60
+     ],
+     "to": [
+      -101,
+      60
+     ],
+     "y0": 0,
+     "height": 7,
+     "count": 12,
+     "thickness": 2
+    }
+   ]
+  },
+  "notes": "Oracle Park is a rounded-rectangle bowl with raked green steel stands and a red-brick street front at -z carrying a clock tower. Tall steel light towers rise to 45 m at the back corners. An arched promenade wall runs along the bay side at -x. The corrected model makes the towers taller and thinner, raises the clock tower above the brick front, and adds the arcade.",
+  "triangles": 1752,
+  "parts": 11
+ },
+ "totals": {
+  "input": 10342,
+  "output": 3579,
+  "cost": 0.00297602,
+  "ms": 16883
+ },
+ "draft": {
+  "json": {
+   "notes": "Oracle Park is a rounded-rectangle concrete bowl with a green-painted steel stand structure and a tall steel light-tower frame. The street front (-z) is a three-storey red-brick facade with a clock tower near one end. The field is open and sits low in the middle, with the stands rising in a raked ring. Tall light towers reach the 45 m maximum height.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      205,
+      270
+     ],
+     "inner": [
+      125,
+      150
+     ],
+     "y0": 0,
+     "y1": 30,
+     "shape": "rect",
+     "material": "concrete",
+     "colour": "#8a9a92"
+    },
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      200,
+      262
+     ],
+     "inner": [
+      125,
+      150
+     ],
+     "y0": 30,
+     "y1": 33,
+     "innerHeight": 30,
+     "shape": "rect",
+     "material": "metal",
+     "colour": "#2e5e4e"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      118,
+      146
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#3f7a35"
+    },
+    {
+     "type": "box",
+     "center": [
+      -10,
+      -125
+     ],
+     "size": [
+      120,
+      20
+     ],
+     "y0": 0,
+     "y1": 20,
+     "material": "brick",
+     "colour": "#9b4a36",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 6,
+      "solid": 0.6,
+      "glass": "#3c4650"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -10,
+      -125
+     ],
+     "size": [
+      122,
+      22
+     ],
+     "y0": 20,
+     "y1": 21,
+     "material": "concrete",
+     "colour": "#d8d0c0"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      -127
+     ],
+     "size": [
+      12,
+      12
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "brick",
+     "colour": "#9b4a36"
+    },
+    {
+     "type": "box",
+     "center": [
+      40,
+      -127
+     ],
+     "size": [
+      13,
+      13
+     ],
+     "y0": 28,
+     "y1": 30,
+     "material": "concrete",
+     "colour": "#d8d0c0"
+    },
+    {
+     "type": "box",
+     "center": [
+      85,
+      -60
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 0,
+     "y1": 45,
+     "material": "metal",
+     "colour": "#3a4a4a"
+    },
+    {
+     "type": "box",
+     "center": [
+      88,
+      40
+     ],
+     "size": [
+      7,
+      7
+     ],
+     "y0": 0,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#3a4a4a"
+    },
+    {
+     "type": "box",
+     "center": [
+      -92,
+      -100
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "brick",
+     "colour": "#9b4a36"
+    }
+   ]
+  },
+  "notes": "Oracle Park is a rounded-rectangle concrete bowl with a green-painted steel stand structure and a tall steel light-tower frame. The street front (-z) is a three-storey red-brick facade with a clock tower near one end. The field is open and sits low in the middle, with the stands rising in a raked ring. Tall light towers reach the 45 m maximum height.",
+  "triangles": 1104,
+  "parts": 10
+ }
+}

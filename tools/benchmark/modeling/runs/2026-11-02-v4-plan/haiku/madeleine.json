@@ -1,0 +1,322 @@
+{
+ "building": "madeleine",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:09:24.401Z",
+ "userText": "Building: Église de la Madeleine, Paris (church).\nThe front (−z) is the south portico facing the Rue Royale.\nFootprint: 43.2 m along x by 128.3 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-21.6,64.2],[-21.6,-64.2],[21.6,-64.2],[21.6,64.2]]\nHeight: the highest point is 36 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter: full peripteral Corinthian colonnade with pediment, daylight\n  2. long-side three-quarter along the colonnade with the front pediment at left, daylight\n  3. elevated view over the rooftops of the pedimented front and the green-copper pitched roof (low resolution, processed look)\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   43.2,
+   128.3
+  ],
+  "outline": [
+   [
+    -21.6,
+    64.2
+   ],
+   [
+    -21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    -64.2
+   ],
+   [
+    21.6,
+    64.2
+   ]
+  ],
+  "height": 36,
+  "turn": 0.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Madeleine is a peripteral Corinthian temple: a windowless stone cella wrapped by a full colonnade of 8 columns at each end and about 22 along each flank, standing on a raised stone podium. The front pediment carries a broad sculpted tympanum, and the low gable roof is green copper, running along the length of the building. The main masses are the podium, the colonnade and the cella, with the roof on top.\",\n  \"parts\": [\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [44, 128],\n      \"y0\": 0,\n      \"y1\": 4,\n      \"material\": \"stone\",\n      \"colour\": \"#d8cfbd\"\n    },\n    {\n      \"type\": \"box\",\n      \"center\": [0, 0],\n      \"size\": [32, 116],\n      \"y0\": 4,\n      \"y1\": 20,\n      \"material\": \"stone\",\n      \"colour\": \"#e6dccb\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-19.5, -61],\n      \"to\": [19.5, -61],\n      \"y0\": 4,\n      \"height\": 22,\n      \"count\": 8,\n      \"radius\": 1,\n      \"entablature\": 2.5,\n      \"material\": \"stone\",\n      \"colour\": \"#ece4d2\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-19.5, 61],\n      \"to\": [19.5, 61],\n      \"y0\": 4,\n      \"height\": 22,\n      \"count\": 8,\n      \"radius\": 1,\n      \"entablature\": 2.5,\n      \"material\": \"stone\",\n      \"colour\": \"#ece4d2\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-19.5, -55],\n      \"to\": [-19.5, 55],\n      \"y0\": 4,\n      \"height\": 22,\n      \"count\": 22,\n      \"radius\": 1,\n      \"entablature\": 2.5,\n      \"material\": \"stone\",\n      \"colour\": \"#ece4d2\"\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [19.5, -55],\n      \"to\": [19.5, 55],\n      \"y0\": 4,\n      \"height\": 22,\n      \"count\": 22,\n      \"radius\": 1,\n      \"entablature\": 2.5,\n      \"material\": \"stone\",\n      \"colour\": \"#ece4d2\"\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-21.6, -61],\n      \"to\": [21.6, -61],\n      \"y0\": 22,\n      \"height\": 10,\n      \"depth\": 4,\n      \"material\": \"stone\",\n      \"colour\": \"#ece4d2\"\n    },\n    {\n      \"type\": \"roof\",\n      \"kind\": \"gable\",\n      \"center\": [0, 0],\n      \"size\": [43.2, 128.3],\n      \"y0\": 22,\n      \"rise\": 14,\n      \"ridge\": \"z\",\n      \"material\": \"copper\",\n      \"colour\": \"#7fa98a\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4327,
+   "output": 2430,
+   "cacheRead": 8401,
+   "cost": 0.00173171,
+   "ms": 11461,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Madeleine is a peripteral Corinthian temple: a windowless stone cella wrapped by a full colonnade of 8 columns at each end and about 22 along each flank, standing on a raised stone podium. The front pediment carries a broad sculpted tympanum, and the low gable roof is green copper, running along the length of the building. The main masses are the podium, the colonnade and the cella, with the roof on top.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      44,
+      128
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "stone",
+     "colour": "#d8cfbd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      32,
+      116
+     ],
+     "y0": 4,
+     "y1": 20,
+     "material": "stone",
+     "colour": "#e6dccb"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19.5,
+      -61
+     ],
+     "to": [
+      19.5,
+      -61
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 8,
+     "radius": 1,
+     "entablature": 2.5,
+     "material": "stone",
+     "colour": "#ece4d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19.5,
+      61
+     ],
+     "to": [
+      19.5,
+      61
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 8,
+     "radius": 1,
+     "entablature": 2.5,
+     "material": "stone",
+     "colour": "#ece4d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -19.5,
+      -55
+     ],
+     "to": [
+      -19.5,
+      55
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 22,
+     "radius": 1,
+     "entablature": 2.5,
+     "material": "stone",
+     "colour": "#ece4d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      19.5,
+      -55
+     ],
+     "to": [
+      19.5,
+      55
+     ],
+     "y0": 4,
+     "height": 22,
+     "count": 22,
+     "radius": 1,
+     "entablature": 2.5,
+     "material": "stone",
+     "colour": "#ece4d2"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -21.6,
+      -61
+     ],
+     "to": [
+      21.6,
+      -61
+     ],
+     "y0": 22,
+     "height": 10,
+     "depth": 4,
+     "material": "stone",
+     "colour": "#ece4d2"
+    },
+    {
+     "type": "roof",
+     "kind": "gable",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "y0": 22,
+     "rise": 14,
+     "ridge": "z",
+     "material": "copper",
+     "colour": "#7fa98a"
+    }
+   ]
+  },
+  "notes": "The Madeleine is a peripteral Corinthian temple: a windowless stone cella wrapped by a full colonnade of 8 columns at each end and about 22 along each flank, standing on a raised stone podium. The front pediment carries a broad sculpted tympanum, and the low gable roof is green copper, running along the length of the building. The main masses are the podium, the colonnade and the cella, with the roof on top.",
+  "triangles": 5368,
+  "parts": 8
+ },
+ "totals": {
+  "input": 7527,
+  "output": 4380,
+  "cost": 0.0030475399999999996,
+  "ms": 22398
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade with its deep portico, the richly sculpted pediment and the raised podium.\",\n    \"photo 2: the long flank from the front-left, showing the row of Corinthian columns running the length of the side under the entablature, the blank cella wall behind, and the pedimented front at left.\",\n    \"photo 3: an elevated view over the rooftops, showing the pedimented front with its tall columns and the pitched green copper roof behind, with no windows on the upper body.\"\n  ],\n  \"components\": [\n    {\"name\": \"cella body\", \"part\": \"block\", \"where\": \"the inner temple body inside the colonnade\", \"center\": [0, 0], \"size\": [32, 116], \"height\": 24,\n     \"settings\": {\"storeys\": [{\"height\": 24, \"kind\": \"blank\", \"windows\": false}], \"faces\": \"none\", \"cornice\": true, \"roof\": {\"kind\": \"gable\", \"rise\": 12}, \"colour\": \"#e6dccb\"},\n     \"why\": \"photos 1-3: a windowless stone temple body with a steep gable roof under the colonnade\"},\n    {\"name\": \"peristyle colonnade\", \"part\": \"colonnade\", \"where\": \"the full perimeter of the cella, front, back and both flanks\", \"center\": [0, 0], \"size\": [43.2, 128.3], \"height\": 22,\n     \"settings\": {\"columns\": \"corinthian\", \"count\": {\"front\": 8, \"back\": 8, \"each_flank\": 22}, \"column_height\": 20, \"radius\": 1.0, \"beam\": true, \"colour\": \"#ece4d2\"},\n     \"why\": \"photos 1-2: the peripteral Corinthian colonnade of 8 columns on the ends and about 22 on each flank surrounds the cella\"},\n    {\"name\": \"front pediment\", \"part\": \"pediment\", \"where\": \"over the south portico, front face\", \"center\": [0, -64.2], \"size\": [43.2, 12], \"height\": 12,\n     \"settings\": {\"base_height\": 22, \"width\": 43.2, \"slope_height\": 12, \"sculpted\": true, \"colour\": \"#ece4d2\"},\n     \"why\": \"photos 1 and 3: a broad triangular pediment with sculpted figures crowns the front portico\"},\n    {\"name\": \"podium with steps\", \"part\": \"box\", \"where\": \"the raised base under the whole temple\", \"center\": [0, 0], \"size\": [50, 136], \"height\": 3,\n     \"settings\": {\"colour\": \"#d8cfbd\"},\n     \"why\": \"photos 1-2: the temple stands on a high stone podium with steps at the front\"}\n  ]\n}\n```",
+  "input": 3200,
+  "output": 1950,
+  "cost": 0.0013158299999999998,
+  "ms": 10937,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the south-west, showing the full peripteral Corinthian colonnade with its deep portico, the richly sculpted pediment and the raised podium.",
+    "photo 2: the long flank from the front-left, showing the row of Corinthian columns running the length of the side under the entablature, the blank cella wall behind, and the pedimented front at left.",
+    "photo 3: an elevated view over the rooftops, showing the pedimented front with its tall columns and the pitched green copper roof behind, with no windows on the upper body."
+   ],
+   "components": [
+    {
+     "name": "cella body",
+     "part": "block",
+     "where": "the inner temple body inside the colonnade",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      32,
+      116
+     ],
+     "height": 24,
+     "settings": {
+      "storeys": [
+       {
+        "height": 24,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "faces": "none",
+      "cornice": true,
+      "roof": {
+       "kind": "gable",
+       "rise": 12
+      },
+      "colour": "#e6dccb"
+     },
+     "why": "photos 1-3: a windowless stone temple body with a steep gable roof under the colonnade"
+    },
+    {
+     "name": "peristyle colonnade",
+     "part": "colonnade",
+     "where": "the full perimeter of the cella, front, back and both flanks",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      43.2,
+      128.3
+     ],
+     "height": 22,
+     "settings": {
+      "columns": "corinthian",
+      "count": {
+       "front": 8,
+       "back": 8,
+       "each_flank": 22
+      },
+      "column_height": 20,
+      "radius": 1,
+      "beam": true,
+      "colour": "#ece4d2"
+     },
+     "why": "photos 1-2: the peripteral Corinthian colonnade of 8 columns on the ends and about 22 on each flank surrounds the cella"
+    },
+    {
+     "name": "front pediment",
+     "part": "pediment",
+     "where": "over the south portico, front face",
+     "center": [
+      0,
+      -64.2
+     ],
+     "size": [
+      43.2,
+      12
+     ],
+     "height": 12,
+     "settings": {
+      "base_height": 22,
+      "width": 43.2,
+      "slope_height": 12,
+      "sculpted": true,
+      "colour": "#ece4d2"
+     },
+     "why": "photos 1 and 3: a broad triangular pediment with sculpted figures crowns the front portico"
+    },
+    {
+     "name": "podium with steps",
+     "part": "box",
+     "where": "the raised base under the whole temple",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      50,
+      136
+     ],
+     "height": 3,
+     "settings": {
+      "colour": "#d8cfbd"
+     },
+     "why": "photos 1-2: the temple stands on a high stone podium with steps at the front"
+    }
+   ]
+  }
+ }
+}

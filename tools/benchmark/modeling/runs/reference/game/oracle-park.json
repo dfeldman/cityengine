@@ -1,0 +1,14 @@
+{
+ "building": "oracle-park",
+ "modelId": "game",
+ "model": "oraclePark",
+ "fit": {
+  "turn": 45,
+  "mirror": false,
+  "iou": 0.8
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: oraclePark, 2375 tris, fit IoU 0.80"
+ }
+}

@@ -1,0 +1,472 @@
+{
+ "building": "legion-of-honor",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v1",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T01:59:48.880Z",
+ "userText": "Building: California Palace of the Legion of Honor, San Francisco (museum).\nThe front (−z) is the Court of Honor and its entrance arch.\nFootprint: 60.4 m along x by 93.7 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-30.2,41.3],[-30.2,-46.8],[30.2,-46.8],[30.2,41.3],[0.5,46.8]]\nHeight: the highest point is 23 m above the ground.\n\n3 photographs attached, in order:\n  1. head-on entrance view across the forecourt: central triumphal arch, flanking colonnades and end pavilions, grey stone, blue sky\n  2. night view across the reflecting pond of the whole low colonnaded front with central arch (night, nothing daytime found)\n  3. daylight view inside the court looking along the colonnaded wing with flat-roofed pavilion, stone paving\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   60.4,
+   93.7
+  ],
+  "outline": [
+   [
+    -30.2,
+    41.3
+   ],
+   [
+    -30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    -46.8
+   ],
+   [
+    30.2,
+    41.3
+   ],
+   [
+    0.5,
+    46.8
+   ]
+  ],
+  "height": 23,
+  "turn": 0.1
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Legion of Honor: a long pale-grey stone block with a central triumphal entrance pavilion facing the front, and a copper-green dome rising behind it. Flanking colonnades of free-standing Ionic/Corinthian columns frame the forecourt and the end wings. I model the main block, the central dome on a drum, the front pavilion with its colonnade, the two wings, and the court colonnades.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -3], \"size\": [60, 80], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [-24, -30], \"size\": [12, 34], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"box\", \"center\": [24, -30], \"size\": [12, 34], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"box\", \"center\": [0, -44], \"size\": [12, 6], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"pediment\", \"from\": [-6, -47], \"to\": [6, -47], \"y0\": 17, \"height\": 3, \"depth\": 2, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -48], \"to\": [-7, -48], \"y0\": 0, \"height\": 13, \"count\": 6, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [7, -48], \"to\": [18, -48], \"y0\": 0, \"height\": 13, \"count\": 6, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -16], \"to\": [-18, -44], \"y0\": 0, \"height\": 12, \"count\": 8, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [18, -16], \"to\": [18, -44], \"y0\": 0, \"height\": 12, \"count\": 8, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"cylinder\", \"center\": [0, 0], \"radius\": 10, \"y0\": 13, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"arched\"}},\n    {\"type\": \"dome\", \"center\": [0, 0], \"radius\": 10, \"y0\": 18, \"height\": 5, \"material\": \"copper\", \"colour\": \"#7fa898\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3277,
+   "output": 2178,
+   "cacheRead": 3474,
+   "cost": 0.00145144,
+   "ms": 13305,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The main differences from the real building:\n1. The model fills the forecourt with a solid block. The real Court of Honor is open, bounded by colonnades and the entrance pavilion, so the middle of the front should be left empty.\n2. The model puts a grid of punched windows on the front and sides. The real front is mostly solid stone with recessed panels, so window coverage should be much lower.\n3. The back is a plain rectangle, but the footprint narrows to a point at the rear centre, and the rear block should follow that outline.\n\n```json\n{\n  \"notes\": \"Legion of Honor: a stone block with an open Court of Honor at the front, framed by wings and free-standing Ionic colonnades, with the triumphal arch pavilion in the middle. The main rear block is solid stone with few windows, and a copper-green dome sits on a drum near the centre. The back of the plan tapers to a point at the centre rear.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-30, -15], [30, -15], [30, 41.3], [0.5, 46.8], [-30, 41.3]], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 5, \"solid\": 0.85}},\n    {\"type\": \"box\", \"center\": [0, -20], \"size\": [36, 10], \"y0\": 0, \"y1\": 13, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"box\", \"center\": [-24, -30], \"size\": [12, 34], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"box\", \"center\": [24, -30], \"size\": [12, 34], \"y0\": 0, \"y1\": 14, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"box\", \"center\": [0, -44], \"size\": [12, 6], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"pediment\", \"from\": [-6, -47], \"to\": [6, -47], \"y0\": 17, \"height\": 3, \"depth\": 2, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -48], \"to\": [-7, -48], \"y0\": 0, \"height\": 13, \"count\": 6, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [7, -48], \"to\": [18, -48], \"y0\": 0, \"height\": 13, \"count\": 6, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [-18, -16], \"to\": [-18, -44], \"y0\": 0, \"height\": 12, \"count\": 8, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"colonnade\", \"from\": [18, -16], \"to\": [18, -44], \"y0\": 0, \"height\": 12, \"count\": 8, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"cylinder\", \"center\": [0, 2], \"radius\": 9, \"y0\": 13, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"arched\"}},\n    {\"type\": \"dome\", \"center\": [0, 2], \"radius\": 9, \"y0\": 17, \"height\": 6, \"material\": \"copper\", \"colour\": \"#7fa898\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 6921,
+   "output": 2359,
+   "cacheRead": 3474,
+   "cost": 0.00190634,
+   "ms": 14208,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Legion of Honor: a stone block with an open Court of Honor at the front, framed by wings and free-standing Ionic colonnades, with the triumphal arch pavilion in the middle. The main rear block is solid stone with few windows, and a copper-green dome sits on a drum near the centre. The back of the plan tapers to a point at the centre rear.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -30,
+       -15
+      ],
+      [
+       30,
+       -15
+      ],
+      [
+       30,
+       41.3
+      ],
+      [
+       0.5,
+       46.8
+      ],
+      [
+       -30,
+       41.3
+      ]
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 5,
+      "solid": 0.85
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      36,
+      10
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      -24,
+      -30
+     ],
+     "size": [
+      12,
+      34
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      -30
+     ],
+     "size": [
+      12,
+      34
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      12,
+      6
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -6,
+      -47
+     ],
+     "to": [
+      6,
+      -47
+     ],
+     "y0": 17,
+     "height": 3,
+     "depth": 2,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -48
+     ],
+     "to": [
+      -7,
+      -48
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 6,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      7,
+      -48
+     ],
+     "to": [
+      18,
+      -48
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 6,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -16
+     ],
+     "to": [
+      -18,
+      -44
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 8,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      18,
+      -16
+     ],
+     "to": [
+      18,
+      -44
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 8,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      2
+     ],
+     "radius": 9,
+     "y0": 13,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "arched"
+     }
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      2
+     ],
+     "radius": 9,
+     "y0": 17,
+     "height": 6,
+     "material": "copper",
+     "colour": "#7fa898"
+    }
+   ]
+  },
+  "notes": "Legion of Honor: a stone block with an open Court of Honor at the front, framed by wings and free-standing Ionic colonnades, with the triumphal arch pavilion in the middle. The main rear block is solid stone with few windows, and a copper-green dome sits on a drum near the centre. The back of the plan tapers to a point at the centre rear.",
+  "triangles": 3388,
+  "parts": 12
+ },
+ "totals": {
+  "input": 10198,
+  "output": 4537,
+  "cost": 0.0033577800000000003,
+  "ms": 27513
+ },
+ "draft": {
+  "json": {
+   "notes": "Legion of Honor: a long pale-grey stone block with a central triumphal entrance pavilion facing the front, and a copper-green dome rising behind it. Flanking colonnades of free-standing Ionic/Corinthian columns frame the forecourt and the end wings. I model the main block, the central dome on a drum, the front pavilion with its colonnade, the two wings, and the court colonnades.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -3
+     ],
+     "size": [
+      60,
+      80
+     ],
+     "y0": 0,
+     "y1": 13,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -24,
+      -30
+     ],
+     "size": [
+      12,
+      34
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      24,
+      -30
+     ],
+     "size": [
+      12,
+      34
+     ],
+     "y0": 0,
+     "y1": 14,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      12,
+      6
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -6,
+      -47
+     ],
+     "to": [
+      6,
+      -47
+     ],
+     "y0": 17,
+     "height": 3,
+     "depth": 2,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -48
+     ],
+     "to": [
+      -7,
+      -48
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 6,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      7,
+      -48
+     ],
+     "to": [
+      18,
+      -48
+     ],
+     "y0": 0,
+     "height": 13,
+     "count": 6,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -18,
+      -16
+     ],
+     "to": [
+      -18,
+      -44
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 8,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      18,
+      -16
+     ],
+     "to": [
+      18,
+      -44
+     ],
+     "y0": 0,
+     "height": 12,
+     "count": 8,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 10,
+     "y0": 13,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "arched"
+     }
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 10,
+     "y0": 18,
+     "height": 5,
+     "material": "copper",
+     "colour": "#7fa898"
+    }
+   ]
+  },
+  "notes": "Legion of Honor: a long pale-grey stone block with a central triumphal entrance pavilion facing the front, and a copper-green dome rising behind it. Flanking colonnades of free-standing Ionic/Corinthian columns frame the forecourt and the end wings. I model the main block, the central dome on a drum, the front pavilion with its colonnade, the two wings, and the court colonnades.",
+  "triangles": 3468,
+  "parts": 11
+ }
+}

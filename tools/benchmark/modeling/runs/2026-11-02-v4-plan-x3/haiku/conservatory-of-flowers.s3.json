@@ -1,0 +1,324 @@
+{
+ "building": "conservatory-of-flowers",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:05.118Z",
+ "userText": "Building: Conservatory of Flowers, San Francisco (glasshouse).\nThe front (−z) is the south front facing the flower beds.\nFootprint: 74.9 m along x by 35 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-4.2,-15.9],[1.3,-17.5],[1.4,-15.9],[3.7,-16],[3.7,-8.9],[8.4,-5.5],[25.5,-5.5],[25.5,-13.4],[27,-15],[34.9,-15.1],[36.4,-13.4],[37.5,4.4],[35.3,6.6],[8.6,5.5],[5.6,8.4],[34.5,8.4],[34.4,11.6],[19.2,12.8],[19.1,17.5],[-25.8,16.7],[-25.9,14.2],[-32.2,14.2],[-32.2,8.3],[-6.5,8.3],[-9.3,5.4],[-37.5,5],[-37.4,-13.2],[-30,-16.2],[-25.9,-13.1],[-26,-5.7],[-9.3,-6.1],[-4.2,-9]]\nHeight: the highest point is 15 m above the ground.\n\n3 photographs attached, in order:\n  1. front view along the garden axis: central domed pavilion with the two long glasshouse wings and steps, blue sky\n  2. side three-quarter showing the long glazed wing and the central domes, white timber frame\n  3. other side three-quarter: long curved glazed wing at left with the central dome and cupola at right\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   74.9,
+   35
+  ],
+  "outline": [
+   [
+    -4.2,
+    -15.9
+   ],
+   [
+    1.3,
+    -17.5
+   ],
+   [
+    1.4,
+    -15.9
+   ],
+   [
+    3.7,
+    -16
+   ],
+   [
+    3.7,
+    -8.9
+   ],
+   [
+    8.4,
+    -5.5
+   ],
+   [
+    25.5,
+    -5.5
+   ],
+   [
+    25.5,
+    -13.4
+   ],
+   [
+    27,
+    -15
+   ],
+   [
+    34.9,
+    -15.1
+   ],
+   [
+    36.4,
+    -13.4
+   ],
+   [
+    37.5,
+    4.4
+   ],
+   [
+    35.3,
+    6.6
+   ],
+   [
+    8.6,
+    5.5
+   ],
+   [
+    5.6,
+    8.4
+   ],
+   [
+    34.5,
+    8.4
+   ],
+   [
+    34.4,
+    11.6
+   ],
+   [
+    19.2,
+    12.8
+   ],
+   [
+    19.1,
+    17.5
+   ],
+   [
+    -25.8,
+    16.7
+   ],
+   [
+    -25.9,
+    14.2
+   ],
+   [
+    -32.2,
+    14.2
+   ],
+   [
+    -32.2,
+    8.3
+   ],
+   [
+    -6.5,
+    8.3
+   ],
+   [
+    -9.3,
+    5.4
+   ],
+   [
+    -37.5,
+    5
+   ],
+   [
+    -37.4,
+    -13.2
+   ],
+   [
+    -30,
+    -16.2
+   ],
+   [
+    -25.9,
+    -13.1
+   ],
+   [
+    -26,
+    -5.7
+   ],
+   [
+    -9.3,
+    -6.1
+   ],
+   [
+    -4.2,
+    -9
+   ]
+  ],
+  "height": 15,
+  "turn": 6
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Conservatory of Flowers is a white painted timber-and-glass glasshouse: a central domed pavilion with a glazed dome, a white drum and a finial, flanked by two long low barrel-vaulted glass wings running along x on a low brick base. The signature features are the central glass dome with its cupola and finial, and the long curved glazed wings. The plan's field names do not match the schema, so I have mapped them onto the schema's fields.\",\n  \"parts\": [\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 0],\n      \"radius\": 9,\n      \"y0\": 0,\n      \"base\": 1,\n      \"height\": 7,\n      \"count\": 16,\n      \"open\": false,\n      \"drum\": 2,\n      \"dome\": {\"height\": 5, \"colour\": \"#e8ece8\", \"material\": \"glass\"},\n      \"lantern\": true,\n      \"colour\": \"#f2f2ee\",\n      \"trim\": \"#ffffff\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [-23, -4],\n      \"size\": [28, 12],\n      \"y0\": 2,\n      \"rise\": 7,\n      \"axis\": \"x\",\n      \"ends\": \"closed\",\n      \"material\": \"glass\",\n      \"colour\": \"#f2f2ee\"\n    },\n    {\n      \"type\": \"vault\",\n      \"center\": [23, -3],\n      \"size\": [28, 12],\n      \"y0\": 2,\n      \"rise\": 7,\n      \"axis\": \"x\",\n      \"ends\": \"closed\",\n      \"material\": \"glass\",\n      \"colour\": \"#f2f2ee\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4238,
+   "output": 1302,
+   "cacheRead": 8401,
+   "cost": 0.00115881,
+   "ms": 6980,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Conservatory of Flowers is a white painted timber-and-glass glasshouse: a central domed pavilion with a glazed dome, a white drum and a finial, flanked by two long low barrel-vaulted glass wings running along x on a low brick base. The signature features are the central glass dome with its cupola and finial, and the long curved glazed wings. The plan's field names do not match the schema, so I have mapped them onto the schema's fields.",
+   "parts": [
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 9,
+     "y0": 0,
+     "base": 1,
+     "height": 7,
+     "count": 16,
+     "open": false,
+     "drum": 2,
+     "dome": {
+      "height": 5,
+      "colour": "#e8ece8",
+      "material": "glass"
+     },
+     "lantern": true,
+     "colour": "#f2f2ee",
+     "trim": "#ffffff"
+    },
+    {
+     "type": "vault",
+     "center": [
+      -23,
+      -4
+     ],
+     "size": [
+      28,
+      12
+     ],
+     "y0": 2,
+     "rise": 7,
+     "axis": "x",
+     "ends": "closed",
+     "material": "glass",
+     "colour": "#f2f2ee"
+    },
+    {
+     "type": "vault",
+     "center": [
+      23,
+      -3
+     ],
+     "size": [
+      28,
+      12
+     ],
+     "y0": 2,
+     "rise": 7,
+     "axis": "x",
+     "ends": "closed",
+     "material": "glass",
+     "colour": "#f2f2ee"
+    }
+   ]
+  },
+  "notes": "The Conservatory of Flowers is a white painted timber-and-glass glasshouse: a central domed pavilion with a glazed dome, a white drum and a finial, flanked by two long low barrel-vaulted glass wings running along x on a low brick base. The signature features are the central glass dome with its cupola and finial, and the long curved glazed wings. The plan's field names do not match the schema, so I have mapped them onto the schema's fields.",
+  "triangles": 1992,
+  "parts": 25
+ },
+ "totals": {
+  "input": 7581,
+  "output": 3114,
+  "cost": 0.0024199399999999998,
+  "ms": 16323
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front from the south, showing the central domed pavilion on the garden axis with the long glazed wings to either side, the steps and the flower beds, against blue sky.\",\n    \"photo 2: side three-quarter from the north-east, showing the long low glazed wing with a curved roof at left and the central domed pavilion with a cupola and finial at right, white painted timber frame on a low brick base.\",\n    \"photo 3: other side three-quarter, showing the long curved glazed barrel-vault wing running left to right toward the central dome, with the dome, lantern and finial at right and the lower side wing beyond.\"\n  ],\n  \"components\": [\n    {\"name\": \"central domed pavilion\", \"part\": \"rotunda\", \"where\": \"centre of the footprint, behind the front steps\", \"center\": [0, 0], \"size\": [20, 18], \"height\": 15,\n     \"settings\": {\"radius\": 9, \"columns\": 16, \"column_height\": 8, \"open\": false, \"drum\": 2, \"dome_height\": 5, \"lantern\": true, \"colour\": \"#f2f2ee\"},\n     \"why\": \"photos 1 to 3: the tall glazed dome with its white framed drum and cupola finial is the central signature of the building\"},\n    {\"name\": \"west glazed wing\", \"part\": \"vault\", \"where\": \"west wing, running along x\", \"center\": [-23, -4], \"size\": [28, 12], \"height\": 9,\n     \"settings\": {\"axis\": \"x\", \"eave_height\": 3, \"glazed\": true, \"colour\": \"#f2f2ee\"},\n     \"why\": \"photos 2 and 3: the long curved glass barrel roof wings flank the central dome\"},\n    {\"name\": \"east glazed wing\", \"part\": \"vault\", \"where\": \"east wing, running along x\", \"center\": [23, -3], \"size\": [28, 12], \"height\": 9,\n     \"settings\": {\"axis\": \"x\", \"eave_height\": 3, \"glazed\": true, \"colour\": \"#f2f2ee\"},\n     \"why\": \"photos 1 and 3: the second long curved glasshouse wing on the other side of the dome\"}\n  ]\n}\n```",
+  "input": 3343,
+  "output": 1812,
+  "cost": 0.00126113,
+  "ms": 9343,
+  "json": {
+   "photos": [
+    "photo 1: the front from the south, showing the central domed pavilion on the garden axis with the long glazed wings to either side, the steps and the flower beds, against blue sky.",
+    "photo 2: side three-quarter from the north-east, showing the long low glazed wing with a curved roof at left and the central domed pavilion with a cupola and finial at right, white painted timber frame on a low brick base.",
+    "photo 3: other side three-quarter, showing the long curved glazed barrel-vault wing running left to right toward the central dome, with the dome, lantern and finial at right and the lower side wing beyond."
+   ],
+   "components": [
+    {
+     "name": "central domed pavilion",
+     "part": "rotunda",
+     "where": "centre of the footprint, behind the front steps",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "height": 15,
+     "settings": {
+      "radius": 9,
+      "columns": 16,
+      "column_height": 8,
+      "open": false,
+      "drum": 2,
+      "dome_height": 5,
+      "lantern": true,
+      "colour": "#f2f2ee"
+     },
+     "why": "photos 1 to 3: the tall glazed dome with its white framed drum and cupola finial is the central signature of the building"
+    },
+    {
+     "name": "west glazed wing",
+     "part": "vault",
+     "where": "west wing, running along x",
+     "center": [
+      -23,
+      -4
+     ],
+     "size": [
+      28,
+      12
+     ],
+     "height": 9,
+     "settings": {
+      "axis": "x",
+      "eave_height": 3,
+      "glazed": true,
+      "colour": "#f2f2ee"
+     },
+     "why": "photos 2 and 3: the long curved glass barrel roof wings flank the central dome"
+    },
+    {
+     "name": "east glazed wing",
+     "part": "vault",
+     "where": "east wing, running along x",
+     "center": [
+      23,
+      -3
+     ],
+     "size": [
+      28,
+      12
+     ],
+     "height": 9,
+     "settings": {
+      "axis": "x",
+      "eave_height": 3,
+      "glazed": true,
+      "colour": "#f2f2ee"
+     },
+     "why": "photos 1 and 3: the second long curved glasshouse wing on the other side of the dome"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,91 @@
+[
+ {
+  "building": "oracle-park",
+  "modelId": "hand",
+  "sample": "",
+  "status": "ok",
+  "attempts": 0,
+  "cost": 0,
+  "seconds": 0,
+  "input": 0,
+  "output": 0,
+  "parts": 15,
+  "triangles": 1330,
+  "types": [
+   "arcade",
+   "beam",
+   "bowl",
+   "box",
+   "prism",
+   "roof",
+   "vault"
+  ],
+  "iou": 0.6576784157429318,
+  "spill": 0.17151820237834683,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Seating bowl that is a horseshoe open on the bay side, not a closed ring",
+    "pass": true
+   },
+   {
+    "label": "Red-brick outer walls with tall arched openings along the street sides",
+    "pass": true
+   },
+   {
+    "label": "Grass field inside the bowl",
+    "pass": true
+   },
+   {
+    "label": "Clock tower(s) and tall light towers above the stands",
+    "pass": true
+   }
+  ],
+  "featureRate": 1,
+  "screen": 88
+ },
+ {
+  "building": "pantheon",
+  "modelId": "hand",
+  "sample": "",
+  "status": "ok",
+  "attempts": 0,
+  "cost": 0,
+  "seconds": 0,
+  "input": 0,
+  "output": 0,
+  "parts": 47,
+  "triangles": 3900,
+  "types": [
+   "box",
+   "colonnade",
+   "cylinder",
+   "dome",
+   "pediment",
+   "roof"
+  ],
+  "iou": 0.9345384826075048,
+  "spill": 0.03145305584329974,
+  "heightRatio": 1,
+  "features": [
+   {
+    "label": "Dome on a tall drum ringed with columns",
+    "pass": true
+   },
+   {
+    "label": "Portico of Corinthian columns",
+    "pass": true
+   },
+   {
+    "label": "Triangular pediment over the portico",
+    "pass": true
+   },
+   {
+    "label": "Cross-shaped plan of plain, windowless walls",
+    "pass": null
+   }
+  ],
+  "featureRate": 1,
+  "screen": 98
+ }
+]

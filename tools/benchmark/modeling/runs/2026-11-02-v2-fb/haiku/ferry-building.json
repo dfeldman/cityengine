@@ -1,0 +1,393 @@
+{
+ "building": "ferry-building",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:05.960Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long two-storey Beaux-Arts terminal, pale cream stone, with an arcaded ground floor of round arches along the Embarcadero front and a row of arched upper windows. A slate-grey low roof runs the length of the block. The signature feature is the square clock tower at the centre of the front, rising to about 75 m with stepped stages, clock faces and a small cupola and spire.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"arched\", \"floor\": 8.5, \"pitch\": 5, \"solid\": 0.6}},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 17, \"rise\": 4, \"material\": \"tile\", \"colour\": \"#6b6f74\"},\n    {\"type\": \"arcade\", \"from\": [-98, -29], \"to\": [98, -29], \"y0\": 0, \"height\": 8, \"count\": 30, \"thickness\": 1.5},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [14, 14], \"y0\": 0, \"y1\": 45, \"material\": \"stone\", \"colour\": \"#e2dccd\"},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [11, 11], \"y0\": 45, \"y1\": 57, \"material\": \"stone\", \"colour\": \"#e2dccd\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 5, \"radiusTop\": 3, \"y0\": 57, \"y1\": 70, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#e2dccd\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 1, \"radiusTop\": 0, \"y0\": 70, \"y1\": 75, \"sides\": 8, \"material\": \"metal\", \"colour\": \"#7a8288\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 1800,
+   "cacheRead": 7616,
+   "cost": 0.00131166,
+   "ms": 9598,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The three biggest differences from the photographs:\n1. The clock tower reads as a thin spire. The real tower is a broad square shaft with a wide clock stage and a squat cupola, so its upper stages need to be wider and its top less pointed.\n2. The ground floor is punched with windows all round. In the photographs it is an open arcade of round arches on the front and sides, with only the upper storey windowed.\n3. The roof is too steep and slab-like. The real roof is a shallow, grey, low-pitched roof.\n\nCorrected JSON:\n\n```json\n{\n  \"notes\": \"A long two-storey Beaux-Arts terminal in pale cream stone, with a grey low-pitched roof running its length. The ground floor is an open arcade of round arches on the front and sides, with arched upper windows above. The signature feature is the broad square clock tower at the centre of the front, with a wide clock stage and a squat cupola and small spire.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 0, \"y1\": 17, \"material\": \"stone\", \"colour\": \"#d8d2c4\", \"windows\": {\"kind\": \"arched\", \"floor\": 8.5, \"pitch\": 5, \"solid\": 0.6}},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 17, \"rise\": 2.5, \"material\": \"tile\", \"colour\": \"#6b6f74\"},\n    {\"type\": \"arcade\", \"from\": [-98, -29], \"to\": [98, -29], \"y0\": 0, \"height\": 8, \"count\": 30, \"thickness\": 1.5},\n    {\"type\": \"arcade\", \"from\": [-98, 29], \"to\": [98, 29], \"y0\": 0, \"height\": 8, \"count\": 30, \"thickness\": 1.5},\n    {\"type\": \"arcade\", \"from\": [-101, -26], \"to\": [-101, 26], \"y0\": 0, \"height\": 8, \"count\": 12, \"thickness\": 1.5},\n    {\"type\": \"arcade\", \"from\": [101, -26], \"to\": [101, 26], \"y0\": 0, \"height\": 8, \"count\": 12, \"thickness\": 1.5},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [15, 15], \"y0\": 0, \"y1\": 40, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [17, 17], \"y0\": 40, \"y1\": 52, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"box\", \"center\": [0, -22], \"size\": [16, 16], \"y0\": 52, \"y1\": 54, \"material\": \"stone\", \"colour\": \"#d8d2c4\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 6, \"radiusTop\": 4.5, \"y0\": 54, \"y1\": 64, \"sides\": 8, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"dome\", \"center\": [0, -22], \"radius\": 4.5, \"y0\": 64, \"height\": 5, \"material\": \"stone\", \"colour\": \"#e6e0d2\"},\n    {\"type\": \"cylinder\", \"center\": [0, -22], \"radius\": 0.6, \"radiusTop\": 0, \"y0\": 69, \"y1\": 75, \"sides\": 8, \"material\": \"metal\", \"colour\": \"#7a8288\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 6621,
+   "output": 1808,
+   "cacheRead": 7616,
+   "cost": 0.0016422600000000002,
+   "ms": 8259,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long two-storey Beaux-Arts terminal in pale cream stone, with a grey low-pitched roof running its length. The ground floor is an open arcade of round arches on the front and sides, with arched upper windows above. The signature feature is the broad square clock tower at the centre of the front, with a wide clock stage and a squat cupola and small spire.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "arched",
+      "floor": 8.5,
+      "pitch": 5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 17,
+     "rise": 2.5,
+     "material": "tile",
+     "colour": "#6b6f74"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -98,
+      -29
+     ],
+     "to": [
+      98,
+      -29
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 30,
+     "thickness": 1.5
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -98,
+      29
+     ],
+     "to": [
+      98,
+      29
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 30,
+     "thickness": 1.5
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -101,
+      -26
+     ],
+     "to": [
+      -101,
+      26
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 12,
+     "thickness": 1.5
+    },
+    {
+     "type": "arcade",
+     "from": [
+      101,
+      -26
+     ],
+     "to": [
+      101,
+      26
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 12,
+     "thickness": 1.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      15,
+      15
+     ],
+     "y0": 0,
+     "y1": 40,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      17,
+      17
+     ],
+     "y0": 40,
+     "y1": 52,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      16,
+      16
+     ],
+     "y0": 52,
+     "y1": 54,
+     "material": "stone",
+     "colour": "#d8d2c4"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 6,
+     "radiusTop": 4.5,
+     "y0": 54,
+     "y1": 64,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "dome",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 4.5,
+     "y0": 64,
+     "height": 5,
+     "material": "stone",
+     "colour": "#e6e0d2"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 0.6,
+     "radiusTop": 0,
+     "y0": 69,
+     "y1": 75,
+     "sides": 8,
+     "material": "metal",
+     "colour": "#7a8288"
+    }
+   ]
+  },
+  "notes": "A long two-storey Beaux-Arts terminal in pale cream stone, with a grey low-pitched roof running its length. The ground floor is an open arcade of round arches on the front and sides, with arched upper windows above. The signature feature is the broad square clock tower at the centre of the front, with a wide clock stage and a squat cupola and small spire.",
+  "triangles": 6352,
+  "parts": 12
+ },
+ "totals": {
+  "input": 9976,
+  "output": 3608,
+  "cost": 0.0029539200000000005,
+  "ms": 17857
+ },
+ "draft": {
+  "json": {
+   "notes": "A long two-storey Beaux-Arts terminal, pale cream stone, with an arcaded ground floor of round arches along the Embarcadero front and a row of arched upper windows. A slate-grey low roof runs the length of the block. The signature feature is the square clock tower at the centre of the front, rising to about 75 m with stepped stages, clock faces and a small cupola and spire.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 0,
+     "y1": 17,
+     "material": "stone",
+     "colour": "#d8d2c4",
+     "windows": {
+      "kind": "arched",
+      "floor": 8.5,
+      "pitch": 5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 17,
+     "rise": 4,
+     "material": "tile",
+     "colour": "#6b6f74"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -98,
+      -29
+     ],
+     "to": [
+      98,
+      -29
+     ],
+     "y0": 0,
+     "height": 8,
+     "count": 30,
+     "thickness": 1.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      14,
+      14
+     ],
+     "y0": 0,
+     "y1": 45,
+     "material": "stone",
+     "colour": "#e2dccd"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -22
+     ],
+     "size": [
+      11,
+      11
+     ],
+     "y0": 45,
+     "y1": 57,
+     "material": "stone",
+     "colour": "#e2dccd"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 5,
+     "radiusTop": 3,
+     "y0": 57,
+     "y1": 70,
+     "sides": 8,
+     "material": "stone",
+     "colour": "#e2dccd"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -22
+     ],
+     "radius": 1,
+     "radiusTop": 0,
+     "y0": 70,
+     "y1": 75,
+     "sides": 8,
+     "material": "metal",
+     "colour": "#7a8288"
+    }
+   ]
+  },
+  "notes": "A long two-storey Beaux-Arts terminal, pale cream stone, with an arcaded ground floor of round arches along the Embarcadero front and a row of arched upper windows. A slate-grey low roof runs the length of the block. The signature feature is the square clock tower at the centre of the front, rising to about 75 m with stepped stages, clock faces and a small cupola and spire.",
+  "triangles": 3100,
+  "parts": 7
+ }
+}

@@ -1,0 +1,454 @@
+{
+ "building": "hotel-de-ville",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:00:22.929Z",
+ "userText": "Building: Hôtel de Ville, Paris (city hall).\nThe front (−z) is the west front on the Place de l’Hôtel-de-Ville.\nFootprint: 144.1 m along x by 89.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-72.1,-40.9],[-71,-41.7],[-29.9,-44.5],[27.4,-44.6],[71,-41.4],[72,-39.5],[72.1,40.6],[71.3,41.5],[38.4,44.5],[29.1,44.6],[-38.2,44.5],[-71.2,40.6],[-72.1,39.8]]\nHeight: the highest point is 55 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the square: central clock tower, corner pavilions and steep slate roofs, daylight\n  2. three-quarter from a bridge along the river side, showing the long wing, towers and mansard roofs\n  3. view along the long flank facade with its repeated arched bays and mansard roof\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   144.1,
+   89.1
+  ],
+  "outline": [
+   [
+    -72.1,
+    -40.9
+   ],
+   [
+    -71,
+    -41.7
+   ],
+   [
+    -29.9,
+    -44.5
+   ],
+   [
+    27.4,
+    -44.6
+   ],
+   [
+    71,
+    -41.4
+   ],
+   [
+    72,
+    -39.5
+   ],
+   [
+    72.1,
+    40.6
+   ],
+   [
+    71.3,
+    41.5
+   ],
+   [
+    38.4,
+    44.5
+   ],
+   [
+    29.1,
+    44.6
+   ],
+   [
+    -38.2,
+    44.5
+   ],
+   [
+    -71.2,
+    40.6
+   ],
+   [
+    -72.1,
+    39.8
+   ]
+  ],
+  "height": 55,
+  "turn": -19.9
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Hôtel de Ville is a cream-grey Second Empire stone block around a central courtyard, with steep slate mansard roofs and corner pavilions. The dominant feature is the clock tower with its slender spire, set on the west front at the left of centre. I model the four corner pavilions with mansard roofs, the long front and back blocks, the side wings, and the tower.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -37], \"size\": [144, 15], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 4, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, -37], \"size\": [144, 15], \"y0\": 24, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\", \"ridge\": \"x\"},\n    {\"type\": \"box\", \"center\": [0, 37], \"size\": [144, 15], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 4, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, 37], \"size\": [144, 15], \"y0\": 24, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\", \"ridge\": \"x\"},\n    {\"type\": \"box\", \"center\": [-64, 0], \"size\": [16, 74], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 4, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-64, 0], \"size\": [16, 74], \"y0\": 24, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\", \"ridge\": \"z\"},\n    {\"type\": \"box\", \"center\": [64, 0], \"size\": [16, 74], \"y0\": 0, \"y1\": 24, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 4, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [64, 0], \"size\": [16, 74], \"y0\": 24, \"rise\": 12, \"material\": \"tile\", \"colour\": \"#4a5058\", \"ridge\": \"z\"},\n    {\"type\": \"box\", \"center\": [-63, -36], \"size\": [20, 18], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-63, -36], \"size\": [20, 18], \"y0\": 30, \"rise\": 16, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [63, -36], \"size\": [20, 18], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [63, -36], \"size\": [20, 18], \"y0\": 30, \"rise\": 16, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [-63, 36], \"size\": [20, 18], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [-63, 36], \"size\": [20, 18], \"y0\": 30, \"rise\": 16, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [63, 36], \"size\": [20, 18], \"y0\": 0, \"y1\": 30, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 4, \"pitch\": 3.5, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [63, 36], \"size\": [20, 18], \"y0\": 30, \"rise\": 16, \"material\": \"tile\", \"colour\": \"#4a5058\"},\n    {\"type\": \"box\", \"center\": [-20, -37], \"size\": [11, 11], \"y0\": 0, \"y1\": 42, \"material\": \"stone\", \"colour\": \"#d8cdb8\", \"windows\": {\"kind\": \"punched\", \"floor\": 5, \"pitch\": 3, \"solid\": 0.6}},\n    {\"type\": \"cylinder\", \"center\": [-20, -37], \"radius\": 4, \"y0\": 42, \"y1\": 48, \"material\": \"stone\", \"colour\": \"#d8cdb8\"},\n    {\"type\": \"cylinder\", \"center\": [-20, -37], \"radius\": 3.5, \"radiusTop\": 0, \"y0\": 48, \"y1\": 55, \"sides\": 8, \"material\": \"copper\", \"colour\": \"#4a6a60\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3510,
+   "output": 3053,
+   "cacheRead": 7616,
+   "cost": 0.0019536600000000003,
+   "ms": 12112,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Hôtel de Ville is a cream-grey Second Empire stone block around a central courtyard, with steep slate mansard roofs and corner pavilions. The dominant feature is the clock tower with its slender spire, set on the west front at the left of centre. I model the four corner pavilions with mansard roofs, the long front and back blocks, the side wings, and the tower.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -37
+     ],
+     "size": [
+      144,
+      15
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 4,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      -37
+     ],
+     "size": [
+      144,
+      15
+     ],
+     "y0": 24,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058",
+     "ridge": "x"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      37
+     ],
+     "size": [
+      144,
+      15
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 4,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      37
+     ],
+     "size": [
+      144,
+      15
+     ],
+     "y0": 24,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058",
+     "ridge": "x"
+    },
+    {
+     "type": "box",
+     "center": [
+      -64,
+      0
+     ],
+     "size": [
+      16,
+      74
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 4,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -64,
+      0
+     ],
+     "size": [
+      16,
+      74
+     ],
+     "y0": 24,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058",
+     "ridge": "z"
+    },
+    {
+     "type": "box",
+     "center": [
+      64,
+      0
+     ],
+     "size": [
+      16,
+      74
+     ],
+     "y0": 0,
+     "y1": 24,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 4,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      64,
+      0
+     ],
+     "size": [
+      16,
+      74
+     ],
+     "y0": 24,
+     "rise": 12,
+     "material": "tile",
+     "colour": "#4a5058",
+     "ridge": "z"
+    },
+    {
+     "type": "box",
+     "center": [
+      -63,
+      -36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -63,
+      -36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 30,
+     "rise": 16,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      63,
+      -36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      63,
+      -36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 30,
+     "rise": 16,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -63,
+      36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      -63,
+      36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 30,
+     "rise": 16,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      63,
+      36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 4,
+      "pitch": 3.5,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      63,
+      36
+     ],
+     "size": [
+      20,
+      18
+     ],
+     "y0": 30,
+     "rise": 16,
+     "material": "tile",
+     "colour": "#4a5058"
+    },
+    {
+     "type": "box",
+     "center": [
+      -20,
+      -37
+     ],
+     "size": [
+      11,
+      11
+     ],
+     "y0": 0,
+     "y1": 42,
+     "material": "stone",
+     "colour": "#d8cdb8",
+     "windows": {
+      "kind": "punched",
+      "floor": 5,
+      "pitch": 3,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -37
+     ],
+     "radius": 4,
+     "y0": 42,
+     "y1": 48,
+     "material": "stone",
+     "colour": "#d8cdb8"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      -20,
+      -37
+     ],
+     "radius": 3.5,
+     "radiusTop": 0,
+     "y0": 48,
+     "y1": 55,
+     "sides": 8,
+     "material": "copper",
+     "colour": "#4a6a60"
+    }
+   ]
+  },
+  "notes": "The Hôtel de Ville is a cream-grey Second Empire stone block around a central courtyard, with steep slate mansard roofs and corner pavilions. The dominant feature is the clock tower with its slender spire, set on the west front at the left of centre. I model the four corner pavilions with mansard roofs, the long front and back blocks, the side wings, and the tower.",
+  "triangles": 4550,
+  "parts": 19
+ },
+ "totals": {
+  "input": 3510,
+  "output": 3053,
+  "cost": 0.0019536600000000003,
+  "ms": 12112
+ }
+}

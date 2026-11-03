@@ -1,0 +1,418 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:32.570Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\":\"Four tall curtain-wall glass towers with bronze-grey tinted glass stand at the corners of a low raised paved esplanade. The esplanade wraps a sunken garden in the middle, so the podium is modelled as a ring with an open grass centre. The towers are the signature features and are modelled as separate blocks, with the highest on the north-west corner.\",\"parts\":[{\"type\":\"block\",\"center\":[-125,60],\"size\":[30,24],\"y0\":0,\"y1\":79,\"colour\":\"#9a8f7a\",\"material\":\"glass\",\"storeys\":[{\"height\":79,\"kind\":\"curtain\",\"floors\":22}],\"roof\":{\"kind\":\"flat\"}},{\"type\":\"block\",\"center\":[-125,-60],\"size\":[30,24],\"y0\":0,\"y1\":72,\"colour\":\"#9a8f7a\",\"material\":\"glass\",\"storeys\":[{\"height\":72,\"kind\":\"curtain\",\"floors\":20}],\"roof\":{\"kind\":\"flat\"}},{\"type\":\"block\",\"center\":[125,-60],\"size\":[30,24],\"y0\":0,\"y1\":70,\"colour\":\"#9a8f7a\",\"material\":\"glass\",\"storeys\":[{\"height\":70,\"kind\":\"curtain\",\"floors\":20}],\"roof\":{\"kind\":\"flat\"}},{\"type\":\"block\",\"center\":[125,60],\"size\":[30,24],\"y0\":0,\"y1\":74,\"colour\":\"#9a8f7a\",\"material\":\"glass\",\"storeys\":[{\"height\":74,\"kind\":\"curtain\",\"floors\":21}],\"roof\":{\"kind\":\"flat\"}},{\"type\":\"box\",\"center\":[0,-65],\"size\":[330,40],\"y0\":0,\"y1\":6,\"colour\":\"#b0a58f\",\"material\":\"stone\"},{\"type\":\"box\",\"center\":[0,65],\"size\":[330,40],\"y0\":0,\"y1\":6,\"colour\":\"#b0a58f\",\"material\":\"stone\"},{\"type\":\"box\",\"center\":[-145,0],\"size\":[40,90],\"y0\":0,\"y1\":6,\"colour\":\"#b0a58f\",\"material\":\"stone\"},{\"type\":\"box\",\"center\":[145,0],\"size\":[40,90],\"y0\":0,\"y1\":6,\"colour\":\"#b0a58f\",\"material\":\"stone\"},{\"type\":\"box\",\"center\":[0,0],\"size\":[250,90],\"y0\":0,\"y1\":0.2,\"colour\":\"#5f8a4a\",\"material\":\"grass\"}]}",
+   "stop": "end_turn",
+   "input": 4564,
+   "output": 1743,
+   "cacheRead": 8401,
+   "cost": 0.0014119100000000002,
+   "ms": 8531,
+   "errors": [],
+   "warnings": [
+    "parts[0].y1: \"block\" has no field \"y1\"; ignored",
+    "parts[1].y1: \"block\" has no field \"y1\"; ignored",
+    "parts[2].y1: \"block\" has no field \"y1\"; ignored",
+    "parts[3].y1: \"block\" has no field \"y1\"; ignored"
+   ]
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Four tall curtain-wall glass towers with bronze-grey tinted glass stand at the corners of a low raised paved esplanade. The esplanade wraps a sunken garden in the middle, so the podium is modelled as a ring with an open grass centre. The towers are the signature features and are modelled as separate blocks, with the highest on the north-west corner.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -125,
+      60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "y0": 0,
+     "y1": 79,
+     "colour": "#9a8f7a",
+     "material": "glass",
+     "storeys": [
+      {
+       "height": 79,
+       "kind": "curtain",
+       "floors": 22
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -125,
+      -60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "y0": 0,
+     "y1": 72,
+     "colour": "#9a8f7a",
+     "material": "glass",
+     "storeys": [
+      {
+       "height": 72,
+       "kind": "curtain",
+       "floors": 20
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      125,
+      -60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "y0": 0,
+     "y1": 70,
+     "colour": "#9a8f7a",
+     "material": "glass",
+     "storeys": [
+      {
+       "height": 70,
+       "kind": "curtain",
+       "floors": 20
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      125,
+      60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "y0": 0,
+     "y1": 74,
+     "colour": "#9a8f7a",
+     "material": "glass",
+     "storeys": [
+      {
+       "height": 74,
+       "kind": "curtain",
+       "floors": 21
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -65
+     ],
+     "size": [
+      330,
+      40
+     ],
+     "y0": 0,
+     "y1": 6,
+     "colour": "#b0a58f",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      65
+     ],
+     "size": [
+      330,
+      40
+     ],
+     "y0": 0,
+     "y1": 6,
+     "colour": "#b0a58f",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      -145,
+      0
+     ],
+     "size": [
+      40,
+      90
+     ],
+     "y0": 0,
+     "y1": 6,
+     "colour": "#b0a58f",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      145,
+      0
+     ],
+     "size": [
+      40,
+      90
+     ],
+     "y0": 0,
+     "y1": 6,
+     "colour": "#b0a58f",
+     "material": "stone"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      250,
+      90
+     ],
+     "y0": 0,
+     "y1": 0.2,
+     "colour": "#5f8a4a",
+     "material": "grass"
+    }
+   ]
+  },
+  "notes": "Four tall curtain-wall glass towers with bronze-grey tinted glass stand at the corners of a low raised paved esplanade. The esplanade wraps a sunken garden in the middle, so the podium is modelled as a ring with an open grass centre. The towers are the signature features and are modelled as separate blocks, with the highest on the north-west corner.",
+  "triangles": 796,
+  "parts": 13
+ },
+ "totals": {
+  "input": 7759,
+  "output": 3940,
+  "cost": 0.00912192,
+  "ms": 19737
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: river view across the Seine from the north bank, showing two tall glass towers side by side at the left and right of the view, with the bronze-grey curtain walls and a low sunlit deck in front.\", \"photo 2: view from the footbridge side, showing two glass towers on the left and two on the right, each a tall rectangular curtain wall with stepped setbacks, standing on a raised paved deck.\", \"photo 3: street-level view of a wide stepped timber deck rising in terraces to the foot of one tall glass tower, with the tower's grey-glass facade filling the top of the frame.\"],\n  \"components\": [\n    {\"name\": \"north-west tower\", \"part\": \"block\", \"where\": \"back-left corner of the site\", \"center\": [-125, 60], \"size\": [30, 24], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8f969c\"},\n     \"why\": \"photos 1 and 2: the glass towers at the corners rise far above the esplanade\"},\n    {\"name\": \"south-west tower\", \"part\": \"block\", \"where\": \"front-left corner of the site\", \"center\": [-125, -60], \"size\": [30, 24], \"height\": 72,\n     \"settings\": {\"storeys\": [{\"height\": 72, \"kind\": \"curtain\", \"floors\": 20}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8f969c\"},\n     \"why\": \"photo 1: the tall glass tower nearest the Seine on the left\"},\n    {\"name\": \"south-east tower\", \"part\": \"block\", \"where\": \"front-right corner of the site\", \"center\": [125, -60], \"size\": [30, 24], \"height\": 70,\n     \"settings\": {\"storeys\": [{\"height\": 70, \"kind\": \"curtain\", \"floors\": 20}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8f969c\"},\n     \"why\": \"photo 1: the tower on the right of the front, slightly lower than the tallest\"},\n    {\"name\": \"north-east tower\", \"part\": \"block\", \"where\": \"back-right corner of the site\", \"center\": [125, 60], \"size\": [30, 24], \"height\": 74,\n     \"settings\": {\"storeys\": [{\"height\": 74, \"kind\": \"curtain\", \"floors\": 21}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#8f969c\"},\n     \"why\": \"photo 2: the fourth corner tower behind the deck\"},\n    {\"name\": \"raised esplanade with sunken garden\", \"part\": \"court\", \"where\": \"the whole footprint as a low podium\", \"center\": [0, 0], \"size\": [330, 170], \"height\": 6,\n     \"settings\": {\"open\": \"none\", \"wing\": 40, \"storeys\": [{\"height\": 6, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#b8b2a6\"},\n     \"why\": \"the whole site is a raised paved esplanade with the sunken garden enclosed in the middle, seen in photos 2 and 3\"}\n  ]\n}",
+  "input": 3195,
+  "output": 2197,
+  "cost": 0.0014388299999999999,
+  "ms": 11206,
+  "json": {
+   "photos": [
+    "photo 1: river view across the Seine from the north bank, showing two tall glass towers side by side at the left and right of the view, with the bronze-grey curtain walls and a low sunlit deck in front.",
+    "photo 2: view from the footbridge side, showing two glass towers on the left and two on the right, each a tall rectangular curtain wall with stepped setbacks, standing on a raised paved deck.",
+    "photo 3: street-level view of a wide stepped timber deck rising in terraces to the foot of one tall glass tower, with the tower's grey-glass facade filling the top of the frame."
+   ],
+   "components": [
+    {
+     "name": "north-west tower",
+     "part": "block",
+     "where": "back-left corner of the site",
+     "center": [
+      -125,
+      60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain",
+        "floors": 22
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8f969c"
+     },
+     "why": "photos 1 and 2: the glass towers at the corners rise far above the esplanade"
+    },
+    {
+     "name": "south-west tower",
+     "part": "block",
+     "where": "front-left corner of the site",
+     "center": [
+      -125,
+      -60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "height": 72,
+     "settings": {
+      "storeys": [
+       {
+        "height": 72,
+        "kind": "curtain",
+        "floors": 20
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8f969c"
+     },
+     "why": "photo 1: the tall glass tower nearest the Seine on the left"
+    },
+    {
+     "name": "south-east tower",
+     "part": "block",
+     "where": "front-right corner of the site",
+     "center": [
+      125,
+      -60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "height": 70,
+     "settings": {
+      "storeys": [
+       {
+        "height": 70,
+        "kind": "curtain",
+        "floors": 20
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8f969c"
+     },
+     "why": "photo 1: the tower on the right of the front, slightly lower than the tallest"
+    },
+    {
+     "name": "north-east tower",
+     "part": "block",
+     "where": "back-right corner of the site",
+     "center": [
+      125,
+      60
+     ],
+     "size": [
+      30,
+      24
+     ],
+     "height": 74,
+     "settings": {
+      "storeys": [
+       {
+        "height": 74,
+        "kind": "curtain",
+        "floors": 21
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#8f969c"
+     },
+     "why": "photo 2: the fourth corner tower behind the deck"
+    },
+    {
+     "name": "raised esplanade with sunken garden",
+     "part": "court",
+     "where": "the whole footprint as a low podium",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "height": 6,
+     "settings": {
+      "open": "none",
+      "wing": 40,
+      "storeys": [
+       {
+        "height": 6,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#b8b2a6"
+     },
+     "why": "the whole site is a raised paved esplanade with the sunken garden enclosed in the middle, seen in photos 2 and 3"
+    }
+   ]
+  }
+ },
+ "selected": {
+  "from": 3,
+  "valid": 3,
+  "pick": "bnf-mitterrand.s2",
+  "why": "The BnF's four glass towers stand at the corners of a rectangular base enclosing a sunken garden, and only Model 2 has the green central garden that matches the photographs.",
+  "selectorCost": 0.0005406
+ }
+}

@@ -1,0 +1,464 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "sonnet",
+ "model": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:07:45.125Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "{\"notes\": \"The Bibliothèque nationale de France is a raised timber esplanade (about 8 m up, with stepped sides) with four L-shaped glass towers, one at each corner, each about 79 m tall. A sunken garden sits in the middle, ringed by reading-room wings below deck level. I model the plinth as a ring of boxes around an open court, four L-shaped glass-and-timber towers made of two perpendicular slabs each, stepped deck edges on the front and back, and a grass garden in the court.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, -75], \"size\": [330, 20], \"y0\": 0, \"y1\": 8, \"material\": \"wood\", \"colour\": \"#a58a66\"},\n{\"type\": \"box\", \"center\": [0, 75], \"size\": [330, 20], \"y0\": 0, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#a58a66\"},\n{\"type\": \"box\", \"center\": [-155, 0], \"size\": [20, 130], \"y0\": 0, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#a58a66\"},\n{\"type\": \"box\", \"center\": [155, 0], \"size\": [20, 130], \"y0\": 0, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#a58a66\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [290, 130], \"y0\": 0, \"y1\": 0.5, \"material\": \"grass\", \"colour\": \"#4f7a3c\"},\n{\"type\": \"box\", \"center\": [0, -92], \"size\": [330, 14], \"y0\": 0, \"y1\": 4, \"material\": \"concrete\", \"colour\": \"#a58a66\"},\n{\"type\": \"box\", \"center\": [0, -94], \"size\": [330, 8], \"y0\": 0, \"y1\": 2, \"material\": \"concrete\", \"colour\": \"#a58a66\"},\n{\"type\": \"box\", \"center\": [-135, 0], \"size\": [20, 100], \"y0\": 0.5, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#bdb5a4\"},\n{\"type\": \"box\", \"center\": [135, 0], \"size\": [20, 100], \"y0\": 0.5, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#bdb5a4\"},\n{\"type\": \"box\", \"center\": [0, 55], \"size\": [250, 14], \"y0\": 0.5, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#bdb5a4\"},\n{\"type\": \"box\", \"center\": [0, -55], \"size\": [250, 14], \"y0\": 0.5, \"y1\": 8, \"material\": \"concrete\", \"colour\": \"#bdb5a4\"},\n{\"type\": \"box\", \"center\": [-145, -62], \"size\": [40, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5, \"glass\": \"#9a8a62\"}},\n{\"type\": \"box\", \"center\": [-130, -62], \"size\": [40, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [-145, -48], \"size\": [24, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [145, -62], \"size\": [40, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [130, -62], \"size\": [40, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [145, -48], \"size\": [24, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [-145, 62], \"size\": [40, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [-130, 62], \"size\": [40, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [-145, 48], \"size\": [24, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [145, 62], \"size\": [40, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [130, 62], \"size\": [40, 24], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}},\n{\"type\": \"box\", \"center\": [145, 48], \"size\": [24, 40], \"y0\": 8, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#8a7a58\", \"windows\": {\"kind\": \"curtain\", \"floor\": 3.5}}\n]}",
+   "stop": "end_turn",
+   "input": 3195,
+   "output": 1875,
+   "cacheRead": 7616,
+   "cost": 0.0266632,
+   "ms": 10442,
+   "errors": [
+    "parts[0].material: must be one of \"stone\", \"brick\", \"concrete\", \"glass\", \"metal\", \"stucco\", \"copper\", \"tile\", \"terracotta\", \"grass\", got \"wood\""
+   ],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "invalid",
+  "json": {
+   "notes": "The Bibliothèque nationale de France is a raised timber esplanade (about 8 m up, with stepped sides) with four L-shaped glass towers, one at each corner, each about 79 m tall. A sunken garden sits in the middle, ringed by reading-room wings below deck level. I model the plinth as a ring of boxes around an open court, four L-shaped glass-and-timber towers made of two perpendicular slabs each, stepped deck edges on the front and back, and a grass garden in the court.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -75
+     ],
+     "size": [
+      330,
+      20
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "wood",
+     "colour": "#a58a66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      75
+     ],
+     "size": [
+      330,
+      20
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#a58a66"
+    },
+    {
+     "type": "box",
+     "center": [
+      -155,
+      0
+     ],
+     "size": [
+      20,
+      130
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#a58a66"
+    },
+    {
+     "type": "box",
+     "center": [
+      155,
+      0
+     ],
+     "size": [
+      20,
+      130
+     ],
+     "y0": 0,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#a58a66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      290,
+      130
+     ],
+     "y0": 0,
+     "y1": 0.5,
+     "material": "grass",
+     "colour": "#4f7a3c"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -92
+     ],
+     "size": [
+      330,
+      14
+     ],
+     "y0": 0,
+     "y1": 4,
+     "material": "concrete",
+     "colour": "#a58a66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -94
+     ],
+     "size": [
+      330,
+      8
+     ],
+     "y0": 0,
+     "y1": 2,
+     "material": "concrete",
+     "colour": "#a58a66"
+    },
+    {
+     "type": "box",
+     "center": [
+      -135,
+      0
+     ],
+     "size": [
+      20,
+      100
+     ],
+     "y0": 0.5,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#bdb5a4"
+    },
+    {
+     "type": "box",
+     "center": [
+      135,
+      0
+     ],
+     "size": [
+      20,
+      100
+     ],
+     "y0": 0.5,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#bdb5a4"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      55
+     ],
+     "size": [
+      250,
+      14
+     ],
+     "y0": 0.5,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#bdb5a4"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -55
+     ],
+     "size": [
+      250,
+      14
+     ],
+     "y0": 0.5,
+     "y1": 8,
+     "material": "concrete",
+     "colour": "#bdb5a4"
+    },
+    {
+     "type": "box",
+     "center": [
+      -145,
+      -62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5,
+      "glass": "#9a8a62"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -130,
+      -62
+     ],
+     "size": [
+      40,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -145,
+      -48
+     ],
+     "size": [
+      24,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      145,
+      -62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      130,
+      -62
+     ],
+     "size": [
+      40,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      145,
+      -48
+     ],
+     "size": [
+      24,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -145,
+      62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -130,
+      62
+     ],
+     "size": [
+      40,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -145,
+      48
+     ],
+     "size": [
+      24,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      145,
+      62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      130,
+      62
+     ],
+     "size": [
+      40,
+      24
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      145,
+      48
+     ],
+     "size": [
+      24,
+      40
+     ],
+     "y0": 8,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#8a7a58",
+     "windows": {
+      "kind": "curtain",
+      "floor": 3.5
+     }
+    }
+   ]
+  }
+ },
+ "totals": {
+  "input": 3195,
+  "output": 1875,
+  "cost": 0.0266632,
+  "ms": 10442
+ }
+}

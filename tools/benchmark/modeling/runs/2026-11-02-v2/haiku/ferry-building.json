@@ -1,0 +1,223 @@
+{
+ "building": "ferry-building",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:45.782Z",
+ "userText": "Building: San Francisco Ferry Building, San Francisco (ferry terminal).\nThe front (−z) is the Embarcadero front at the foot of Market Street.\nFootprint: 201.4 m along x by 56.1 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-100.7,-19.2],[-22.4,-28.1],[20.9,-28.1],[100.7,-19.2],[100.7,28.1],[-100.7,28.1]]\nHeight: the highest point is 75 m above the ground.\n\n3 photographs attached, in order:\n  1. elevated view of the whole long arcaded building with its central clock tower, palms in the plaza, bay behind, daylight\n  2. aerial three-quarter from the north showing the tower and the long roof of the shed, pier side and street, daylight\n  3. high oblique aerial over the piers: the tower and long building with plaza and the bay-side piers\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   201.4,
+   56.1
+  ],
+  "outline": [
+   [
+    -100.7,
+    -19.2
+   ],
+   [
+    -22.4,
+    -28.1
+   ],
+   [
+    20.9,
+    -28.1
+   ],
+   [
+    100.7,
+    -19.2
+   ],
+   [
+    100.7,
+    28.1
+   ],
+   [
+    -100.7,
+    28.1
+   ]
+  ],
+  "height": 75,
+  "turn": -8.8
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long, low, two-storey arcaded Beaux-Arts block about 200 m wide, with a grey hipped or mansard roof and a row of arched openings on the Embarcadero front. A tall square clock tower rises from the centre of the front (−z) to about 75 m, with a clock stage, an open belfry and a pointed spire. The tower and the front arcade are the signature features.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 0, \"y1\": 18, \"material\": \"stone\", \"colour\": \"#d8d0bc\", \"windows\": {\"kind\": \"arched\", \"floor\": 9, \"pitch\": 6, \"solid\": 0.4}},\n    {\"type\": \"roof\", \"kind\": \"mansard\", \"center\": [0, 0], \"size\": [201, 56], \"y0\": 18, \"rise\": 3.5, \"material\": \"tile\", \"colour\": \"#5a5f63\"},\n    {\"type\": \"arcade\", \"from\": [-95, -28.6], \"to\": [95, -28.6], \"y0\": 0, \"height\": 6, \"count\": 30, \"thickness\": 1.5},\n    {\"type\": \"box\", \"center\": [0, -20], \"size\": [40, 16], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#e0d8c4\", \"windows\": {\"kind\": \"arched\", \"floor\": 9, \"pitch\": 6, \"solid\": 0.4}},\n    {\"type\": \"box\", \"center\": [0, -20], \"size\": [11, 11], \"y0\": 22, \"y1\": 50, \"material\": \"stone\", \"colour\": \"#e6e2d6\", \"windows\": {\"kind\": \"punched\", \"floor\": 6, \"pitch\": 4, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [0, -20], \"size\": [9, 9], \"y0\": 50, \"y1\": 62, \"material\": \"stone\", \"colour\": \"#e6e2d6\", \"windows\": {\"kind\": \"arched\", \"floor\": 6, \"pitch\": 3, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [0, -20], \"size\": [6, 6], \"y0\": 62, \"y1\": 68, \"material\": \"stone\", \"colour\": \"#e6e2d6\"},\n    {\"type\": \"cylinder\", \"center\": [0, -20], \"radius\": 4.2, \"radiusTop\": 0, \"y0\": 68, \"y1\": 75, \"sides\": 4, \"material\": \"stone\", \"colour\": \"#d8d4c8\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3355,
+   "output": 1851,
+   "cacheRead": 7616,
+   "cost": 0.00133716,
+   "ms": 9095,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long, low, two-storey arcaded Beaux-Arts block about 200 m wide, with a grey hipped or mansard roof and a row of arched openings on the Embarcadero front. A tall square clock tower rises from the centre of the front (−z) to about 75 m, with a clock stage, an open belfry and a pointed spire. The tower and the front arcade are the signature features.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "stone",
+     "colour": "#d8d0bc",
+     "windows": {
+      "kind": "arched",
+      "floor": 9,
+      "pitch": 6,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "mansard",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      201,
+      56
+     ],
+     "y0": 18,
+     "rise": 3.5,
+     "material": "tile",
+     "colour": "#5a5f63"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -95,
+      -28.6
+     ],
+     "to": [
+      95,
+      -28.6
+     ],
+     "y0": 0,
+     "height": 6,
+     "count": 30,
+     "thickness": 1.5
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      40,
+      16
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#e0d8c4",
+     "windows": {
+      "kind": "arched",
+      "floor": 9,
+      "pitch": 6,
+      "solid": 0.4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      11,
+      11
+     ],
+     "y0": 22,
+     "y1": 50,
+     "material": "stone",
+     "colour": "#e6e2d6",
+     "windows": {
+      "kind": "punched",
+      "floor": 6,
+      "pitch": 4,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      9,
+      9
+     ],
+     "y0": 50,
+     "y1": 62,
+     "material": "stone",
+     "colour": "#e6e2d6",
+     "windows": {
+      "kind": "arched",
+      "floor": 6,
+      "pitch": 3,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -20
+     ],
+     "size": [
+      6,
+      6
+     ],
+     "y0": 62,
+     "y1": 68,
+     "material": "stone",
+     "colour": "#e6e2d6"
+    },
+    {
+     "type": "cylinder",
+     "center": [
+      0,
+      -20
+     ],
+     "radius": 4.2,
+     "radiusTop": 0,
+     "y0": 68,
+     "y1": 75,
+     "sides": 4,
+     "material": "stone",
+     "colour": "#d8d4c8"
+    }
+   ]
+  },
+  "notes": "A long, low, two-storey arcaded Beaux-Arts block about 200 m wide, with a grey hipped or mansard roof and a row of arched openings on the Embarcadero front. A tall square clock tower rises from the centre of the front (−z) to about 75 m, with a clock stage, an open belfry and a pointed spire. The tower and the front arcade are the signature features.",
+  "triangles": 3294,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3355,
+  "output": 1851,
+  "cost": 0.00133716,
+  "ms": 9095
+ }
+}

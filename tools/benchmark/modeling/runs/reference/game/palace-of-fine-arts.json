@@ -1,0 +1,14 @@
+{
+ "building": "palace-of-fine-arts",
+ "modelId": "game",
+ "model": "palaceOfFineArts_3301_lyon",
+ "fit": {
+  "turn": 200,
+  "mirror": false,
+  "iou": 0.69
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: palaceOfFineArts_3301_lyon, 7680 tris, fit IoU 0.69"
+ }
+}

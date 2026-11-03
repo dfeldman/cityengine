@@ -1,0 +1,522 @@
+{
+ "building": "sacre-coeur",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:09.042Z",
+ "userText": "Building: Basilique du Sacré-Cœur, Paris (basilica).\nThe front (−z) is the south front at the top of the steps, looking out over Paris.\nFootprint: 50.1 m along x by 95.9 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-19.8,-35.7],[-19.9,-39.5],[-10.6,-39.2],[-9.3,-47.7],[9.2,-48],[9.2,-44],[10.6,-43.9],[10.5,-39.1],[19.9,-39.2],[21,-34.7],[25,-34.3],[25.1,6.7],[21.6,6.7],[21.6,14.6],[24,18.6],[23.9,21.3],[20.7,24.3],[19.3,30.7],[14.6,32.2],[10.8,37.4],[7,37.6],[7.2,48],[-7.3,47.9],[-7.1,37.3],[-11.5,36.9],[-13.9,32.9],[-19.1,31],[-20.6,28.6],[-20.6,24.3],[-24.4,20.9],[-24.2,17.3],[-21.8,14.5],[-21.7,6.7],[-25,7],[-25.1,-34],[-21.5,-34.1]]\nHeight: the highest point is 84 m above the ground.\n\n3 photographs attached, in order:\n  1. full front from the gardens below the hill, daylight: the white domes over the terraces and steps\n  2. front three-quarter from the left (west), daylight: the arched portico, the main dome and the smaller domes\n  3. the front close up, daylight: the main dome on its drum with the smaller domes around it\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   50.1,
+   95.9
+  ],
+  "outline": [
+   [
+    -19.8,
+    -35.7
+   ],
+   [
+    -19.9,
+    -39.5
+   ],
+   [
+    -10.6,
+    -39.2
+   ],
+   [
+    -9.3,
+    -47.7
+   ],
+   [
+    9.2,
+    -48
+   ],
+   [
+    9.2,
+    -44
+   ],
+   [
+    10.6,
+    -43.9
+   ],
+   [
+    10.5,
+    -39.1
+   ],
+   [
+    19.9,
+    -39.2
+   ],
+   [
+    21,
+    -34.7
+   ],
+   [
+    25,
+    -34.3
+   ],
+   [
+    25.1,
+    6.7
+   ],
+   [
+    21.6,
+    6.7
+   ],
+   [
+    21.6,
+    14.6
+   ],
+   [
+    24,
+    18.6
+   ],
+   [
+    23.9,
+    21.3
+   ],
+   [
+    20.7,
+    24.3
+   ],
+   [
+    19.3,
+    30.7
+   ],
+   [
+    14.6,
+    32.2
+   ],
+   [
+    10.8,
+    37.4
+   ],
+   [
+    7,
+    37.6
+   ],
+   [
+    7.2,
+    48
+   ],
+   [
+    -7.3,
+    47.9
+   ],
+   [
+    -7.1,
+    37.3
+   ],
+   [
+    -11.5,
+    36.9
+   ],
+   [
+    -13.9,
+    32.9
+   ],
+   [
+    -19.1,
+    31
+   ],
+   [
+    -20.6,
+    28.6
+   ],
+   [
+    -20.6,
+    24.3
+   ],
+   [
+    -24.4,
+    20.9
+   ],
+   [
+    -24.2,
+    17.3
+   ],
+   [
+    -21.8,
+    14.5
+   ],
+   [
+    -21.7,
+    6.7
+   ],
+   [
+    -25,
+    7
+   ],
+   [
+    -25.1,
+    -34
+   ],
+   [
+    -21.5,
+    -34.1
+   ]
+  ],
+  "height": 84,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Sacré-Cœur is a white Romano-Byzantine basilica on a hilltop: a long body with a dominant central dome on a windowed drum, two smaller domes with lanterns flanking it, and a front with three deep round-headed arches and twin turreted corner towers. The signature features are the central dome with its lantern, the two flanking domes, and the three-arched front portico.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 4],\n      \"size\": [40, 84],\n      \"y0\": 0,\n      \"material\": \"stone\",\n      \"colour\": \"#efebe3\",\n      \"storeys\": [{\"height\": 30, \"kind\": \"arched\", \"floors\": 2}],\n      \"roof\": {\"kind\": \"flat\"},\n      \"cornice\": 0.8\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, -6],\n      \"radius\": 11,\n      \"y0\": 30,\n      \"base\": 2,\n      \"height\": 12,\n      \"count\": 12,\n      \"open\": false,\n      \"drum\": 8,\n      \"dome\": {\"height\": 30, \"colour\": \"#e6e1d6\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#efebe3\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [-14, -10],\n      \"radius\": 8,\n      \"y0\": 30,\n      \"base\": 0,\n      \"height\": 4,\n      \"count\": 10,\n      \"open\": false,\n      \"drum\": 4,\n      \"dome\": {\"height\": 16, \"colour\": \"#e6e1d6\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#efebe3\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [14, -10],\n      \"radius\": 8,\n      \"y0\": 30,\n      \"base\": 0,\n      \"height\": 4,\n      \"count\": 10,\n      \"open\": false,\n      \"drum\": 4,\n      \"dome\": {\"height\": 16, \"colour\": \"#e6e1d6\", \"material\": \"stone\"},\n      \"lantern\": true,\n      \"colour\": \"#efebe3\"\n    },\n    {\n      \"type\": \"arcade\",\n      \"from\": [-12, -44],\n      \"to\": [12, -44],\n      \"y0\": 0,\n      \"height\": 18,\n      \"count\": 3,\n      \"colour\": \"#efebe3\"\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [-15, -40],\n      \"y0\": 0,\n      \"colour\": \"#efebe3\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 7, \"height\": 40, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 5, \"height\": 14, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 8, \"colour\": \"#e6e1d6\"}\n    },\n    {\n      \"type\": \"tower\",\n      \"center\": [15, -40],\n      \"y0\": 0,\n      \"colour\": \"#efebe3\",\n      \"stages\": [\n        {\"shape\": \"square\", \"width\": 7, \"height\": 40, \"kind\": \"arched\"},\n        {\"shape\": \"square\", \"width\": 5, \"height\": 14, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"spire\", \"height\": 8, \"colour\": \"#e6e1d6\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5278,
+   "output": 2057,
+   "cacheRead": 8401,
+   "cost": 0.0016403099999999999,
+   "ms": 8851,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Sacré-Cœur is a white Romano-Byzantine basilica on a hilltop: a long body with a dominant central dome on a windowed drum, two smaller domes with lanterns flanking it, and a front with three deep round-headed arches and twin turreted corner towers. The signature features are the central dome with its lantern, the two flanking domes, and the three-arched front portico.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      40,
+      84
+     ],
+     "y0": 0,
+     "material": "stone",
+     "colour": "#efebe3",
+     "storeys": [
+      {
+       "height": 30,
+       "kind": "arched",
+       "floors": 2
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     },
+     "cornice": 0.8
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      -6
+     ],
+     "radius": 11,
+     "y0": 30,
+     "base": 2,
+     "height": 12,
+     "count": 12,
+     "open": false,
+     "drum": 8,
+     "dome": {
+      "height": 30,
+      "colour": "#e6e1d6",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#efebe3"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      -14,
+      -10
+     ],
+     "radius": 8,
+     "y0": 30,
+     "base": 0,
+     "height": 4,
+     "count": 10,
+     "open": false,
+     "drum": 4,
+     "dome": {
+      "height": 16,
+      "colour": "#e6e1d6",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#efebe3"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      14,
+      -10
+     ],
+     "radius": 8,
+     "y0": 30,
+     "base": 0,
+     "height": 4,
+     "count": 10,
+     "open": false,
+     "drum": 4,
+     "dome": {
+      "height": 16,
+      "colour": "#e6e1d6",
+      "material": "stone"
+     },
+     "lantern": true,
+     "colour": "#efebe3"
+    },
+    {
+     "type": "arcade",
+     "from": [
+      -12,
+      -44
+     ],
+     "to": [
+      12,
+      -44
+     ],
+     "y0": 0,
+     "height": 18,
+     "count": 3,
+     "colour": "#efebe3"
+    },
+    {
+     "type": "tower",
+     "center": [
+      -15,
+      -40
+     ],
+     "y0": 0,
+     "colour": "#efebe3",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 40,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 5,
+       "height": 14,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 8,
+      "colour": "#e6e1d6"
+     }
+    },
+    {
+     "type": "tower",
+     "center": [
+      15,
+      -40
+     ],
+     "y0": 0,
+     "colour": "#efebe3",
+     "stages": [
+      {
+       "shape": "square",
+       "width": 7,
+       "height": 40,
+       "kind": "arched"
+      },
+      {
+       "shape": "square",
+       "width": 5,
+       "height": 14,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "spire",
+      "height": 8,
+      "colour": "#e6e1d6"
+     }
+    }
+   ]
+  },
+  "notes": "The Sacré-Cœur is a white Romano-Byzantine basilica on a hilltop: a long body with a dominant central dome on a windowed drum, two smaller domes with lanterns flanking it, and a front with three deep round-headed arches and twin turreted corner towers. The signature features are the central dome with its lantern, the two flanking domes, and the three-arched front portico.",
+  "triangles": 7004,
+  "parts": 62
+ },
+ "totals": {
+  "input": 9026,
+  "output": 4730,
+  "cost": 0.00337244,
+  "ms": 22695
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the full south front from the gardens below, showing the white basilica on its terrace, the wide steps, the tall central dome on a drum, and the smaller domes on either side.\",\n    \"photo 2: the front three-quarter view from the west, showing the arched portico with three deep arches, the equestrian statues flanking the front, the main dome, and two smaller domes with turrets beside it.\",\n    \"photo 3: the close front view, showing the main dome on its drum with arched windows, the central arched portico with a tall gable, and the twin domed towers at the front corners.\"\n  ],\n  \"components\": [\n    {\"name\": \"main body\", \"part\": \"block\", \"where\": \"the whole nave and apse mass\", \"center\": [0, 4], \"size\": [40, 84], \"height\": 30,\n     \"settings\": {\"storeys\": [{\"height\": 30, \"kind\": \"arched\", \"floors\": 2}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#efebe3\"},\n     \"why\": \"photos 1 and 2 show a long white church body with tall arched windows under the domes\"},\n    {\"name\": \"central dome on drum\", \"part\": \"rotunda\", \"where\": \"centre of the church over the crossing\", \"center\": [0, -6], \"height\": 84,\n     \"settings\": {\"open\": false, \"radius\": 11, \"columns\": 12, \"column_height\": 14, \"drum\": 6, \"dome_height\": 22, \"lantern\": true, \"colour\": \"#efebe3\", \"base_height\": 30},\n     \"why\": \"photo 3: the main dome sits on a solid drum with windows, rising above the body to the cross\"},\n    {\"name\": \"north-west side dome\", \"part\": \"rotunda\", \"where\": \"over the body, west of the main dome\", \"center\": [-14, -10], \"height\": 60,\n     \"settings\": {\"open\": false, \"radius\": 8, \"columns\": 10, \"column_height\": 6, \"drum\": 4, \"dome_height\": 16, \"lantern\": true, \"colour\": \"#efebe3\", \"base_height\": 30},\n     \"why\": \"photos 2 and 3: smaller domes with lanterns flank the main dome\"},\n    {\"name\": \"south-east side dome\", \"part\": \"rotunda\", \"where\": \"over the body, east of the main dome\", \"center\": [14, -10], \"height\": 60,\n     \"settings\": {\"open\": false, \"radius\": 8, \"columns\": 10, \"column_height\": 6, \"drum\": 4, \"dome_height\": 16, \"lantern\": true, \"colour\": \"#efebe3\", \"base_height\": 30},\n     \"why\": \"photos 2 and 3: a matching smaller dome with a lantern stands on the other side of the main dome\"},\n    {\"name\": \"front portico arcade\", \"part\": \"arcade\", \"where\": \"the three-arched entrance across the front\", \"center\": [0, -44], \"size\": [30, 6], \"height\": 18,\n     \"settings\": {\"arches\": 3, \"height\": 18, \"colour\": \"#efebe3\"},\n     \"why\": \"photos 1 and 3: the front has three deep round-headed arches under the equestrian statues\"},\n    {\"name\": \"front corner towers\", \"part\": \"tower\", \"where\": \"left and right of the front\", \"center\": [-15, -40], \"height\": 62,\n     \"settings\": {\"stages\": [{\"shape\": \"square\", \"width\": 7, \"height\": 40, \"kind\": \"arched\"}, {\"shape\": \"square\", \"width\": 5, \"height\": 14, \"kind\": \"open\"}], \"top\": {\"kind\": \"spire\", \"height\": 8}, \"colour\": \"#efebe3\"},\n     \"why\": \"photos 2 and 3: tall turreted towers with arched openings rise at the front corners\"}\n  ]\n}\n```",
+  "input": 3748,
+  "output": 2673,
+  "cost": 0.0017321300000000001,
+  "ms": 13844,
+  "json": {
+   "photos": [
+    "photo 1: the full south front from the gardens below, showing the white basilica on its terrace, the wide steps, the tall central dome on a drum, and the smaller domes on either side.",
+    "photo 2: the front three-quarter view from the west, showing the arched portico with three deep arches, the equestrian statues flanking the front, the main dome, and two smaller domes with turrets beside it.",
+    "photo 3: the close front view, showing the main dome on its drum with arched windows, the central arched portico with a tall gable, and the twin domed towers at the front corners."
+   ],
+   "components": [
+    {
+     "name": "main body",
+     "part": "block",
+     "where": "the whole nave and apse mass",
+     "center": [
+      0,
+      4
+     ],
+     "size": [
+      40,
+      84
+     ],
+     "height": 30,
+     "settings": {
+      "storeys": [
+       {
+        "height": 30,
+        "kind": "arched",
+        "floors": 2
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#efebe3"
+     },
+     "why": "photos 1 and 2 show a long white church body with tall arched windows under the domes"
+    },
+    {
+     "name": "central dome on drum",
+     "part": "rotunda",
+     "where": "centre of the church over the crossing",
+     "center": [
+      0,
+      -6
+     ],
+     "height": 84,
+     "settings": {
+      "open": false,
+      "radius": 11,
+      "columns": 12,
+      "column_height": 14,
+      "drum": 6,
+      "dome_height": 22,
+      "lantern": true,
+      "colour": "#efebe3",
+      "base_height": 30
+     },
+     "why": "photo 3: the main dome sits on a solid drum with windows, rising above the body to the cross"
+    },
+    {
+     "name": "north-west side dome",
+     "part": "rotunda",
+     "where": "over the body, west of the main dome",
+     "center": [
+      -14,
+      -10
+     ],
+     "height": 60,
+     "settings": {
+      "open": false,
+      "radius": 8,
+      "columns": 10,
+      "column_height": 6,
+      "drum": 4,
+      "dome_height": 16,
+      "lantern": true,
+      "colour": "#efebe3",
+      "base_height": 30
+     },
+     "why": "photos 2 and 3: smaller domes with lanterns flank the main dome"
+    },
+    {
+     "name": "south-east side dome",
+     "part": "rotunda",
+     "where": "over the body, east of the main dome",
+     "center": [
+      14,
+      -10
+     ],
+     "height": 60,
+     "settings": {
+      "open": false,
+      "radius": 8,
+      "columns": 10,
+      "column_height": 6,
+      "drum": 4,
+      "dome_height": 16,
+      "lantern": true,
+      "colour": "#efebe3",
+      "base_height": 30
+     },
+     "why": "photos 2 and 3: a matching smaller dome with a lantern stands on the other side of the main dome"
+    },
+    {
+     "name": "front portico arcade",
+     "part": "arcade",
+     "where": "the three-arched entrance across the front",
+     "center": [
+      0,
+      -44
+     ],
+     "size": [
+      30,
+      6
+     ],
+     "height": 18,
+     "settings": {
+      "arches": 3,
+      "height": 18,
+      "colour": "#efebe3"
+     },
+     "why": "photos 1 and 3: the front has three deep round-headed arches under the equestrian statues"
+    },
+    {
+     "name": "front corner towers",
+     "part": "tower",
+     "where": "left and right of the front",
+     "center": [
+      -15,
+      -40
+     ],
+     "height": 62,
+     "settings": {
+      "stages": [
+       {
+        "shape": "square",
+        "width": 7,
+        "height": 40,
+        "kind": "arched"
+       },
+       {
+        "shape": "square",
+        "width": 5,
+        "height": 14,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "spire",
+       "height": 8
+      },
+      "colour": "#efebe3"
+     },
+     "why": "photos 2 and 3: tall turreted towers with arched openings rise at the front corners"
+    }
+   ]
+  }
+ }
+}

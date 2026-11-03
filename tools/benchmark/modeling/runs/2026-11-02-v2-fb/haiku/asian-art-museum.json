@@ -1,0 +1,388 @@
+{
+ "building": "asian-art-museum",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:03.424Z",
+ "userText": "Building: Asian Art Museum (former Main Library), San Francisco (museum).\nThe front (−z) is the Larkin Street front, facing west across Civic Center Plaza to City Hall.\nFootprint: 55 m along x by 106.5 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]]\nHeight: the highest point is 29 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter across the plaza: whole neoclassical facade with colonnade over a rusticated base and hipped roof, daylight\n  2. corner three-quarter showing the front and long side elevation with arched windows and the hipped slate roof, daylight\n  3. aerial from above looking down on the roof of the whole building and Civic Center plaza in front, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   55,
+   106.5
+  ],
+  "outline": [
+   [
+    -27.5,
+    -53.2
+   ],
+   [
+    2.6,
+    -53.1
+   ],
+   [
+    27.5,
+    -52.1
+   ],
+   [
+    27.5,
+    40.1
+   ],
+   [
+    14.5,
+    40.2
+   ],
+   [
+    14.5,
+    53
+   ],
+   [
+    -11.6,
+    53.2
+   ],
+   [
+    -11.7,
+    16.6
+   ],
+   [
+    -15.9,
+    16.6
+   ],
+   [
+    -15.9,
+    9.3
+   ],
+   [
+    -25.7,
+    9.2
+   ],
+   [
+    -25.5,
+    -36.8
+   ],
+   [
+    -27.5,
+    -36.8
+   ]
+  ],
+  "height": 29,
+  "turn": 8.4
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A Beaux-Arts stone palace: a large light-grey limestone block with a rusticated ground storey, a tall Corinthian colonnade across the central front (-z) under an inscribed attic, and arched windows along the long sides. The stepped outline on the -x side follows the plan, and a dark hipped slate roof rises to the 29 m top.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]], \"y0\": 0, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8d4c8\", \"windows\": {\"kind\": \"arched\", \"floor\": 5.5, \"pitch\": 4.5, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [0, -46], \"size\": [55, 14], \"y0\": 0, \"y1\": 5, \"material\": \"stone\", \"colour\": \"#c9c4b6\"},\n    {\"type\": \"colonnade\", \"from\": [-17, -50], \"to\": [17, -50], \"y0\": 5, \"height\": 19, \"count\": 10, \"radius\": 0.9, \"entablature\": 2.2},\n    {\"type\": \"box\", \"center\": [0, -50], \"size\": [40, 3], \"y0\": 19, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8d4c8\"},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, 0], \"size\": [53, 104], \"y0\": 22, \"rise\": 7, \"material\": \"tile\", \"colour\": \"#4a4f55\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3315,
+   "output": 1891,
+   "cacheRead": 7616,
+   "cost": 0.0013531600000000002,
+   "ms": 9412,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The render is a plain block: the front colonnade is missing, the windows are arched on every floor, and the roof reads as a flat dark slab with no hip.\n\n```json\n{\n  \"notes\": \"1. The front portico of tall Corinthian columns is lost; the render shows only a plain wall at the front, so the colonnade needs to be taller and stand clear of the facade. 2. The windows are too many and too uniform: the real building has about three storeys with large arched windows on the upper storey, not arched windows on every row. 3. The hipped roof is too flat and dark; it needs a steeper, more visible slope with a light attic band below the eaves.\",\n  \"parts\": [\n    {\"type\": \"prism\", \"points\": [[-27.5,-53.2],[2.6,-53.1],[27.5,-52.1],[27.5,40.1],[14.5,40.2],[14.5,53],[-11.6,53.2],[-11.7,16.6],[-15.9,16.6],[-15.9,9.3],[-25.7,9.2],[-25.5,-36.8],[-27.5,-36.8]], \"y0\": 0, \"y1\": 20, \"material\": \"stone\", \"colour\": \"#d8d4c8\", \"windows\": {\"kind\": \"arched\", \"floor\": 6.5, \"pitch\": 5.5, \"solid\": 0.7}},\n    {\"type\": \"box\", \"center\": [0, -46], \"size\": [55, 14], \"y0\": 0, \"y1\": 4.5, \"material\": \"stone\", \"colour\": \"#c9c4b6\"},\n    {\"type\": \"colonnade\", \"from\": [-17, -51], \"to\": [17, -51], \"y0\": 4.5, \"height\": 18, \"count\": 10, \"radius\": 1.0, \"entablature\": 2.4, \"colour\": \"#e6e2d8\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [55, 106], \"y0\": 20, \"y1\": 22, \"material\": \"stone\", \"colour\": \"#d8d4c8\"},\n    {\"type\": \"roof\", \"kind\": \"hip\", \"center\": [0, 0], \"size\": [53, 104], \"y0\": 22, \"rise\": 7, \"material\": \"tile\", \"colour\": \"#5a5f66\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 6672,
+   "output": 1181,
+   "cacheRead": 7616,
+   "cost": 0.00133386,
+   "ms": 5853,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "1. The front portico of tall Corinthian columns is lost; the render shows only a plain wall at the front, so the colonnade needs to be taller and stand clear of the facade. 2. The windows are too many and too uniform: the real building has about three storeys with large arched windows on the upper storey, not arched windows on every row. 3. The hipped roof is too flat and dark; it needs a steeper, more visible slope with a light attic band below the eaves.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -27.5,
+       -53.2
+      ],
+      [
+       2.6,
+       -53.1
+      ],
+      [
+       27.5,
+       -52.1
+      ],
+      [
+       27.5,
+       40.1
+      ],
+      [
+       14.5,
+       40.2
+      ],
+      [
+       14.5,
+       53
+      ],
+      [
+       -11.6,
+       53.2
+      ],
+      [
+       -11.7,
+       16.6
+      ],
+      [
+       -15.9,
+       16.6
+      ],
+      [
+       -15.9,
+       9.3
+      ],
+      [
+       -25.7,
+       9.2
+      ],
+      [
+       -25.5,
+       -36.8
+      ],
+      [
+       -27.5,
+       -36.8
+      ]
+     ],
+     "y0": 0,
+     "y1": 20,
+     "material": "stone",
+     "colour": "#d8d4c8",
+     "windows": {
+      "kind": "arched",
+      "floor": 6.5,
+      "pitch": 5.5,
+      "solid": 0.7
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -46
+     ],
+     "size": [
+      55,
+      14
+     ],
+     "y0": 0,
+     "y1": 4.5,
+     "material": "stone",
+     "colour": "#c9c4b6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -51
+     ],
+     "to": [
+      17,
+      -51
+     ],
+     "y0": 4.5,
+     "height": 18,
+     "count": 10,
+     "radius": 1,
+     "entablature": 2.4,
+     "colour": "#e6e2d8"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      55,
+      106
+     ],
+     "y0": 20,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8d4c8"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      53,
+      104
+     ],
+     "y0": 22,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#5a5f66"
+    }
+   ]
+  },
+  "notes": "1. The front portico of tall Corinthian columns is lost; the render shows only a plain wall at the front, so the colonnade needs to be taller and stand clear of the facade. 2. The windows are too many and too uniform: the real building has about three storeys with large arched windows on the upper storey, not arched windows on every row. 3. The hipped roof is too flat and dark; it needs a steeper, more visible slope with a light attic band below the eaves.",
+  "triangles": 2087,
+  "parts": 5
+ },
+ "totals": {
+  "input": 9987,
+  "output": 3072,
+  "cost": 0.00268702,
+  "ms": 15265
+ },
+ "draft": {
+  "json": {
+   "notes": "A Beaux-Arts stone palace: a large light-grey limestone block with a rusticated ground storey, a tall Corinthian colonnade across the central front (-z) under an inscribed attic, and arched windows along the long sides. The stepped outline on the -x side follows the plan, and a dark hipped slate roof rises to the 29 m top.",
+   "parts": [
+    {
+     "type": "prism",
+     "points": [
+      [
+       -27.5,
+       -53.2
+      ],
+      [
+       2.6,
+       -53.1
+      ],
+      [
+       27.5,
+       -52.1
+      ],
+      [
+       27.5,
+       40.1
+      ],
+      [
+       14.5,
+       40.2
+      ],
+      [
+       14.5,
+       53
+      ],
+      [
+       -11.6,
+       53.2
+      ],
+      [
+       -11.7,
+       16.6
+      ],
+      [
+       -15.9,
+       16.6
+      ],
+      [
+       -15.9,
+       9.3
+      ],
+      [
+       -25.7,
+       9.2
+      ],
+      [
+       -25.5,
+       -36.8
+      ],
+      [
+       -27.5,
+       -36.8
+      ]
+     ],
+     "y0": 0,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8d4c8",
+     "windows": {
+      "kind": "arched",
+      "floor": 5.5,
+      "pitch": 4.5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -46
+     ],
+     "size": [
+      55,
+      14
+     ],
+     "y0": 0,
+     "y1": 5,
+     "material": "stone",
+     "colour": "#c9c4b6"
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -17,
+      -50
+     ],
+     "to": [
+      17,
+      -50
+     ],
+     "y0": 5,
+     "height": 19,
+     "count": 10,
+     "radius": 0.9,
+     "entablature": 2.2
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -50
+     ],
+     "size": [
+      40,
+      3
+     ],
+     "y0": 19,
+     "y1": 22,
+     "material": "stone",
+     "colour": "#d8d4c8"
+    },
+    {
+     "type": "roof",
+     "kind": "hip",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      53,
+      104
+     ],
+     "y0": 22,
+     "rise": 7,
+     "material": "tile",
+     "colour": "#4a4f55"
+    }
+   ]
+  },
+  "notes": "A Beaux-Arts stone palace: a large light-grey limestone block with a rusticated ground storey, a tall Corinthian colonnade across the central front (-z) under an inscribed attic, and arched windows along the long sides. The stepped outline on the -x side follows the plan, and a dark hipped slate roof rises to the 29 m top.",
+  "triangles": 2822,
+  "parts": 5
+ }
+}

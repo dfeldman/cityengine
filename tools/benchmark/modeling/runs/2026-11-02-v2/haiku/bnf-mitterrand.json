@@ -1,0 +1,247 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T02:00:14.719Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Bibliothèque nationale de France is a raised esplanade with a sunken central garden, carrying four bronze-tinted glass towers, one at each corner, that reach the 79 m height. The towers are the signature features, so each is modelled as a glass block with a curtain wall. The esplanade is a stone podium ring around a grass garden, with a stepped timber deck on the Seine (front) side.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, -67], \"size\": [330, 36], \"y0\": 0, \"y1\": 6, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n    {\"type\": \"box\", \"center\": [0, 67], \"size\": [330, 36], \"y0\": 0, \"y1\": 6, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n    {\"type\": \"box\", \"center\": [-131, 0], \"size\": [68, 98], \"y0\": 0, \"y1\": 6, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n    {\"type\": \"box\", \"center\": [131, 0], \"size\": [68, 98], \"y0\": 0, \"y1\": 6, \"material\": \"stone\", \"colour\": \"#c9c2b2\"},\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [194, 98], \"y0\": 0, \"y1\": 0.3, \"material\": \"grass\", \"colour\": \"#5f8a3c\"},\n    {\"type\": \"prism\", \"points\": [[40, -85], [165, -85], [165, -50], [40, -50]], \"y0\": 0, \"y1\": 6, \"material\": \"stone\", \"colour\": \"#b5a58a\"},\n    {\"type\": \"box\", \"center\": [125, -62], \"size\": [40, 40], \"y0\": 0, \"y1\": 62, \"material\": \"glass\", \"colour\": \"#a89a78\", \"windows\": {\"kind\": \"curtain\", \"floor\": 4}},\n    {\"type\": \"box\", \"center\": [-125, -62], \"size\": [40, 40], \"y0\": 0, \"y1\": 62, \"material\": \"glass\", \"colour\": \"#a89a78\", \"windows\": {\"kind\": \"curtain\", \"floor\": 4}},\n    {\"type\": \"box\", \"center\": [125, 62], \"size\": [40, 40], \"y0\": 0, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#9c8e6e\", \"windows\": {\"kind\": \"curtain\", \"floor\": 4}},\n    {\"type\": \"box\", \"center\": [-125, 62], \"size\": [40, 40], \"y0\": 0, \"y1\": 79, \"material\": \"glass\", \"colour\": \"#9c8e6e\", \"windows\": {\"kind\": \"curtain\", \"floor\": 4}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3195,
+   "output": 2017,
+   "cacheRead": 7616,
+   "cost": 0.00140416,
+   "ms": 10095,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Bibliothèque nationale de France is a raised esplanade with a sunken central garden, carrying four bronze-tinted glass towers, one at each corner, that reach the 79 m height. The towers are the signature features, so each is modelled as a glass block with a curtain wall. The esplanade is a stone podium ring around a grass garden, with a stepped timber deck on the Seine (front) side.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      -67
+     ],
+     "size": [
+      330,
+      36
+     ],
+     "y0": 0,
+     "y1": 6,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      67
+     ],
+     "size": [
+      330,
+      36
+     ],
+     "y0": 0,
+     "y1": 6,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      -131,
+      0
+     ],
+     "size": [
+      68,
+      98
+     ],
+     "y0": 0,
+     "y1": 6,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      131,
+      0
+     ],
+     "size": [
+      68,
+      98
+     ],
+     "y0": 0,
+     "y1": 6,
+     "material": "stone",
+     "colour": "#c9c2b2"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      194,
+      98
+     ],
+     "y0": 0,
+     "y1": 0.3,
+     "material": "grass",
+     "colour": "#5f8a3c"
+    },
+    {
+     "type": "prism",
+     "points": [
+      [
+       40,
+       -85
+      ],
+      [
+       165,
+       -85
+      ],
+      [
+       165,
+       -50
+      ],
+      [
+       40,
+       -50
+      ]
+     ],
+     "y0": 0,
+     "y1": 6,
+     "material": "stone",
+     "colour": "#b5a58a"
+    },
+    {
+     "type": "box",
+     "center": [
+      125,
+      -62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 0,
+     "y1": 62,
+     "material": "glass",
+     "colour": "#a89a78",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -125,
+      -62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 0,
+     "y1": 62,
+     "material": "glass",
+     "colour": "#a89a78",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      125,
+      62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 0,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#9c8e6e",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -125,
+      62
+     ],
+     "size": [
+      40,
+      40
+     ],
+     "y0": 0,
+     "y1": 79,
+     "material": "glass",
+     "colour": "#9c8e6e",
+     "windows": {
+      "kind": "curtain",
+      "floor": 4
+     }
+    }
+   ]
+  },
+  "notes": "The Bibliothèque nationale de France is a raised esplanade with a sunken central garden, carrying four bronze-tinted glass towers, one at each corner, that reach the 79 m height. The towers are the signature features, so each is modelled as a glass block with a curtain wall. The esplanade is a stone podium ring around a grass garden, with a stepped timber deck on the Seine (front) side.",
+  "triangles": 664,
+  "parts": 10
+ },
+ "totals": {
+  "input": 3195,
+  "output": 2017,
+  "cost": 0.00140416,
+  "ms": 10095
+ }
+}

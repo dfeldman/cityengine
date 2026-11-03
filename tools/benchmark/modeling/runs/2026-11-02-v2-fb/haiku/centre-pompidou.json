@@ -1,0 +1,663 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": true,
+ "startedAt": "2026-11-03T02:02:24.052Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\"notes\": \"Centre Pompidou: a long, low rectangular glass-and-steel box with its structure exposed on the outside, a steel frame of posts and horizontal bands in front of the glazing. The front (-z) carries the diagonal glass escalator tube, and the roof has colourful blue ducts, white cowls and red end boxes. The body is about 36 m tall with the roof plant reaching about 42 m.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 0, \"y1\": 36, \"material\": \"glass\", \"colour\": \"#c9d6dc\", \"windows\": {\"kind\": \"curtain\", \"floor\": 7}},\n{\"type\": \"repeat\", \"count\": 15, \"offset\": [11.2, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, -35], \"to\": [-84, 36, -35], \"width\": 1.2, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"repeat\", \"count\": 6, \"offset\": [0, 6, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 6, -35], \"to\": [84, 6, -35], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"repeat\", \"count\": 15, \"offset\": [11.2, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, 34], \"to\": [-84, 36, 34], \"width\": 1.0, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"repeat\", \"count\": 6, \"offset\": [0, 6, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 6, 34], \"to\": [84, 6, 34], \"width\": 0.6, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"beam\", \"from\": [-84, 0, -37], \"to\": [-20, 36, -37], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#dfe8ec\"},\n{\"type\": \"beam\", \"from\": [-84, 0, -37], \"to\": [-20, 36, -37], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [120, 26], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#3d7fc4\"},\n{\"type\": \"repeat\", \"count\": 6, \"offset\": [22, 0, 0], \"part\": {\"type\": \"dome\", \"center\": [-55, 0], \"radius\": 5, \"y0\": 40, \"height\": 2, \"material\": \"metal\", \"colour\": \"#e8eef0\"}},\n{\"type\": \"box\", \"center\": [-80, 0], \"size\": [7, 9], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"box\", \"center\": [78, 0], \"size\": [7, 9], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d8282a\"}\n]}\n```",
+   "stop": "end_turn",
+   "input": 3375,
+   "output": 2123,
+   "cacheRead": 7616,
+   "cost": 0.00147516,
+   "ms": 10169,
+   "errors": [],
+   "warnings": []
+  },
+  {
+   "kind": "feedback",
+   "reply": "The renders differ from the photographs in three ways:\n\n1. The escalator is a thin grey stick. In the photographs it is a wide glass tube with red edges that zigzags up the front (−z) face.\n2. The glazing reads as dark grey. The photographs show lighter, reflective glass.\n3. The coloured ducts on the front and sides, which are part of the look, are missing.\n\nHere is the corrected object:\n\n```json\n{\"notes\": \"Centre Pompidou: a long, low glass box with its steel frame exposed outside, and a wide glass escalator tube zigzagging up the front (-z) face. The roof carries a blue duct band with white cowls and red end boxes, reaching about 42 m. The previous escalator was too thin and too straight, the glass was too dark, and the coloured ducts on the front were missing.\", \"parts\": [\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 0, \"y1\": 36, \"material\": \"glass\", \"colour\": \"#aebfc8\", \"windows\": {\"kind\": \"curtain\", \"floor\": 7}},\n{\"type\": \"repeat\", \"count\": 15, \"offset\": [11.2, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, -35], \"to\": [-84, 36, -35], \"width\": 1.2, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"repeat\", \"count\": 6, \"offset\": [0, 6, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 6, -35], \"to\": [84, 6, -35], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"repeat\", \"count\": 15, \"offset\": [11.2, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, 34], \"to\": [-84, 36, 34], \"width\": 1.0, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"repeat\", \"count\": 6, \"offset\": [0, 6, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 6, 34], \"to\": [84, 6, 34], \"width\": 0.6, \"material\": \"metal\", \"colour\": \"#9aa3a8\"}},\n{\"type\": \"beam\", \"from\": [-84, 0, -38], \"to\": [-50, 18, -38], \"width\": 4.5, \"material\": \"glass\", \"colour\": \"#dfe8ec\"},\n{\"type\": \"beam\", \"from\": [-50, 18, -38], \"to\": [-20, 18, -38], \"width\": 4.5, \"material\": \"glass\", \"colour\": \"#dfe8ec\"},\n{\"type\": \"beam\", \"from\": [-20, 18, -38], \"to\": [30, 36, -38], \"width\": 4.5, \"material\": \"glass\", \"colour\": \"#dfe8ec\"},\n{\"type\": \"beam\", \"from\": [-84, 0, -40], \"to\": [-50, 18, -40], \"width\": 0.9, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"beam\", \"from\": [-50, 18, -40], \"to\": [-20, 18, -40], \"width\": 0.9, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"beam\", \"from\": [-20, 18, -40], \"to\": [30, 36, -40], \"width\": 0.9, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"box\", \"center\": [0, 0], \"size\": [120, 26], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#3d7fc4\"},\n{\"type\": \"repeat\", \"count\": 6, \"offset\": [22, 0, 0], \"part\": {\"type\": \"dome\", \"center\": [-55, 0], \"radius\": 5, \"y0\": 40, \"height\": 2, \"material\": \"metal\", \"colour\": \"#e8eef0\"}},\n{\"type\": \"box\", \"center\": [-80, 0], \"size\": [7, 9], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"box\", \"center\": [78, 0], \"size\": [7, 9], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#d8282a\"},\n{\"type\": \"repeat\", \"count\": 5, \"offset\": [30, 0, 0], \"part\": {\"type\": \"box\", \"center\": [-60, -36], \"size\": [6, 2.5], \"y0\": 26, \"y1\": 30, \"material\": \"metal\", \"colour\": \"#d8282a\"}},\n{\"type\": \"repeat\", \"count\": 5, \"offset\": [30, 0, 0], \"part\": {\"type\": \"box\", \"center\": [-45, -36], \"size\": [6, 2.5], \"y0\": 6, \"y1\": 10, \"material\": \"metal\", \"colour\": \"#3d7fc4\"}}\n]}\n```",
+   "stop": "end_turn",
+   "input": 6964,
+   "output": 2665,
+   "cacheRead": 7616,
+   "cost": 0.0021050599999999997,
+   "ms": 11185,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Centre Pompidou: a long, low glass box with its steel frame exposed outside, and a wide glass escalator tube zigzagging up the front (-z) face. The roof carries a blue duct band with white cowls and red end boxes, reaching about 42 m. The previous escalator was too thin and too straight, the glass was too dark, and the coloured ducts on the front were missing.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 0,
+     "y1": 36,
+     "material": "glass",
+     "colour": "#aebfc8",
+     "windows": {
+      "kind": "curtain",
+      "floor": 7
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      11.2,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -35
+      ],
+      "to": [
+       -84,
+       36,
+       -35
+      ],
+      "width": 1.2,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      6,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       6,
+       -35
+      ],
+      "to": [
+       84,
+       6,
+       -35
+      ],
+      "width": 0.8,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      11.2,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       34
+      ],
+      "to": [
+       -84,
+       36,
+       34
+      ],
+      "width": 1,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      6,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       6,
+       34
+      ],
+      "to": [
+       84,
+       6,
+       34
+      ],
+      "width": 0.6,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -38
+     ],
+     "to": [
+      -50,
+      18,
+      -38
+     ],
+     "width": 4.5,
+     "material": "glass",
+     "colour": "#dfe8ec"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -50,
+      18,
+      -38
+     ],
+     "to": [
+      -20,
+      18,
+      -38
+     ],
+     "width": 4.5,
+     "material": "glass",
+     "colour": "#dfe8ec"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -20,
+      18,
+      -38
+     ],
+     "to": [
+      30,
+      36,
+      -38
+     ],
+     "width": 4.5,
+     "material": "glass",
+     "colour": "#dfe8ec"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -40
+     ],
+     "to": [
+      -50,
+      18,
+      -40
+     ],
+     "width": 0.9,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -50,
+      18,
+      -40
+     ],
+     "to": [
+      -20,
+      18,
+      -40
+     ],
+     "width": 0.9,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -20,
+      18,
+      -40
+     ],
+     "to": [
+      30,
+      36,
+      -40
+     ],
+     "width": 0.9,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      120,
+      26
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#3d7fc4"
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      22,
+      0,
+      0
+     ],
+     "part": {
+      "type": "dome",
+      "center": [
+       -55,
+       0
+      ],
+      "radius": 5,
+      "y0": 40,
+      "height": 2,
+      "material": "metal",
+      "colour": "#e8eef0"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -80,
+      0
+     ],
+     "size": [
+      7,
+      9
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "box",
+     "center": [
+      78,
+      0
+     ],
+     "size": [
+      7,
+      9
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "repeat",
+     "count": 5,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "box",
+      "center": [
+       -60,
+       -36
+      ],
+      "size": [
+       6,
+       2.5
+      ],
+      "y0": 26,
+      "y1": 30,
+      "material": "metal",
+      "colour": "#d8282a"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 5,
+     "offset": [
+      30,
+      0,
+      0
+     ],
+     "part": {
+      "type": "box",
+      "center": [
+       -45,
+       -36
+      ],
+      "size": [
+       6,
+       2.5
+      ],
+      "y0": 6,
+      "y1": 10,
+      "material": "metal",
+      "colour": "#3d7fc4"
+     }
+    }
+   ]
+  },
+  "notes": "Centre Pompidou: a long, low glass box with its steel frame exposed outside, and a wide glass escalator tube zigzagging up the front (-z) face. The roof carries a blue duct band with white cowls and red end boxes, reaching about 42 m. The previous escalator was too thin and too straight, the glass was too dark, and the coloured ducts on the front were missing.",
+  "triangles": 2944,
+  "parts": 68
+ },
+ "totals": {
+  "input": 10339,
+  "output": 4788,
+  "cost": 0.00358022,
+  "ms": 21354
+ },
+ "draft": {
+  "json": {
+   "notes": "Centre Pompidou: a long, low rectangular glass-and-steel box with its structure exposed on the outside, a steel frame of posts and horizontal bands in front of the glazing. The front (-z) carries the diagonal glass escalator tube, and the roof has colourful blue ducts, white cowls and red end boxes. The body is about 36 m tall with the roof plant reaching about 42 m.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 0,
+     "y1": 36,
+     "material": "glass",
+     "colour": "#c9d6dc",
+     "windows": {
+      "kind": "curtain",
+      "floor": 7
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      11.2,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -35
+      ],
+      "to": [
+       -84,
+       36,
+       -35
+      ],
+      "width": 1.2,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      6,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       6,
+       -35
+      ],
+      "to": [
+       84,
+       6,
+       -35
+      ],
+      "width": 0.8,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 15,
+     "offset": [
+      11.2,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       34
+      ],
+      "to": [
+       -84,
+       36,
+       34
+      ],
+      "width": 1,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      6,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       6,
+       34
+      ],
+      "to": [
+       84,
+       6,
+       34
+      ],
+      "width": 0.6,
+      "material": "metal",
+      "colour": "#9aa3a8"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -37
+     ],
+     "to": [
+      -20,
+      36,
+      -37
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#dfe8ec"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -84,
+      0,
+      -37
+     ],
+     "to": [
+      -20,
+      36,
+      -37
+     ],
+     "width": 0.8,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      120,
+      26
+     ],
+     "y0": 36,
+     "y1": 40,
+     "material": "metal",
+     "colour": "#3d7fc4"
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      22,
+      0,
+      0
+     ],
+     "part": {
+      "type": "dome",
+      "center": [
+       -55,
+       0
+      ],
+      "radius": 5,
+      "y0": 40,
+      "height": 2,
+      "material": "metal",
+      "colour": "#e8eef0"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -80,
+      0
+     ],
+     "size": [
+      7,
+      9
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d8282a"
+    },
+    {
+     "type": "box",
+     "center": [
+      78,
+      0
+     ],
+     "size": [
+      7,
+      9
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#d8282a"
+    }
+   ]
+  },
+  "notes": "Centre Pompidou: a long, low rectangular glass-and-steel box with its structure exposed on the outside, a steel frame of posts and horizontal bands in front of the glazing. The front (-z) carries the diagonal glass escalator tube, and the roof has colourful blue ducts, white cowls and red end boxes. The body is about 36 m tall with the roof plant reaching about 42 m.",
+  "triangles": 2776,
+  "parts": 54
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "building": "madeleine",
+ "modelId": "game",
+ "model": "madeleine",
+ "fit": {
+  "turn": 185,
+  "mirror": false,
+  "iou": 0.68
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: madeleine, 10466 tris, fit IoU 0.68"
+ }
+}

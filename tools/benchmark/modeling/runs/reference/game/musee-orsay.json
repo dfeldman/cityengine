@@ -1,0 +1,14 @@
+{
+ "building": "musee-orsay",
+ "modelId": "game",
+ "model": "museeOrsay",
+ "fit": {
+  "turn": 1,
+  "mirror": false,
+  "iou": 0.88
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: museeOrsay, 6222 tris, fit IoU 0.88"
+ }
+}

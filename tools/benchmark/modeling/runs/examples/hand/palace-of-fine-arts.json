@@ -1,0 +1,178 @@
+{
+ "building": "palace-of-fine-arts",
+ "modelId": "hand",
+ "model": "hand",
+ "provider": "none",
+ "promptVersion": "v1",
+ "photos": 0,
+ "px": 0,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "startedAt": "2026-11-03T03:07:18.803Z",
+ "userText": "",
+ "plan": {
+  "size": [
+   72.9,
+   68.1
+  ],
+  "outline": [
+   [
+    30.8,
+    4.7
+   ],
+   [
+    36.4,
+    8.8
+   ],
+   [
+    19.8,
+    10.8
+   ],
+   [
+    14.5,
+    17.2
+   ],
+   [
+    16.1,
+    34
+   ],
+   [
+    6.5,
+    21.7
+   ],
+   [
+    -7.9,
+    28.4
+   ],
+   [
+    -17.1,
+    14.7
+   ],
+   [
+    -20,
+    19
+   ],
+   [
+    -25.2,
+    15.2
+   ],
+   [
+    -22.6,
+    -1.8
+   ],
+   [
+    -36.4,
+    -8.7
+   ],
+   [
+    -25.7,
+    -8.4
+   ],
+   [
+    -14.7,
+    -17.2
+   ],
+   [
+    -16.1,
+    -33.9
+   ],
+   [
+    -6.2,
+    -21.8
+   ],
+   [
+    1.7,
+    -22.5
+   ],
+   [
+    4.8,
+    -34
+   ],
+   [
+    16.7,
+    -14.7
+   ],
+   [
+    27.8,
+    -17
+   ],
+   [
+    32.4,
+    -11.4
+   ],
+   [
+    21.7,
+    -6.1
+   ],
+   [
+    22.3,
+    2.2
+   ]
+  ],
+  "height": 49,
+  "turn": 0
+ },
+ "attempts": [],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Macro test (rotunda with open arches): an octagon of great open arches between piers, paired columns at each pier, a drum with relief panels and a shallow dome; planters at the corners.",
+   "parts": [
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 20,
+     "y0": 0,
+     "base": 2,
+     "height": 24,
+     "arches": 8,
+     "entablature": 4,
+     "drum": 7,
+     "dome": {
+      "height": 13,
+      "colour": "#d8c39a"
+     },
+     "colour": "#c99a76",
+     "trim": "#b5644f"
+    },
+    {
+     "type": "repeat",
+     "count": 8,
+     "around": {
+      "center": [
+       0,
+       0
+      ],
+      "step": 45
+     },
+     "part": {
+      "type": "box",
+      "center": [
+       25.5,
+       10.5
+      ],
+      "size": [
+       4,
+       4
+      ],
+      "y0": 26,
+      "y1": 30,
+      "colour": "#c99a76"
+     }
+    }
+   ]
+  },
+  "notes": "Macro test (rotunda with open arches): an octagon of great open arches between piers, paired columns at each pier, a drum with relief panels and a shallow dome; planters at the corners.",
+  "triangles": 2372,
+  "parts": 36
+ },
+ "totals": {
+  "input": 0,
+  "output": 0,
+  "cost": 0,
+  "ms": 0
+ }
+}

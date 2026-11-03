@@ -1,0 +1,14 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "game",
+ "model": "pompidou",
+ "fit": {
+  "turn": 347,
+  "mirror": false,
+  "iou": 0.54
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: pompidou, 11316 tris, fit IoU 0.54"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "building": "sacre-coeur",
+ "modelId": "game",
+ "model": "sacreCoeurFull",
+ "fit": {
+  "turn": 0,
+  "mirror": false,
+  "iou": 0.97
+ },
+ "final": {
+  "status": "ok",
+  "caption": "game: sacreCoeurFull, 17992 tris, fit IoU 0.97"
+ }
+}

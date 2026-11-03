@@ -1,0 +1,243 @@
+{
+ "building": "oracle-park",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v2",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "startedAt": "2026-11-03T01:59:34.331Z",
+ "userText": "Building: Oracle Park, San Francisco (baseball stadium).\nThe front (−z) is the brick main entrance at Third and King (Willie Mays Plaza); the open outfield faces the bay behind.\nFootprint: 205.6 m along x by 270.4 m along z, centred on the origin.\nOutline (approximate: the hull of its OpenStreetMap parts), [x, z] in metres, going round:\n[[-102.8,134.2],[-102.8,-6.1],[-101.9,-77.2],[-70.2,-135.1],[-22.3,-135.2],[3.6,-124.3],[29.1,-111.9],[62.8,-25.8],[102.8,91.5],[79.1,133.9],[77,135.1],[-52.9,135.2]]\nHeight: the highest point is 45 m above the ground.\n\n3 photographs attached, in order:\n  1. ground-level three-quarter of the brick street-side facade, clock tower and light standards, overcast daylight (older AT&T Park signage)\n  2. vertical aerial of the whole ballpark: asymmetric field, horseshoe grandstand, open outfield, waterfront edge, daylight\n  3. oblique aerial from the bay side along the right-field edge, showing the open bowl, grandstand tiers and arched promenade wall\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   205.6,
+   270.4
+  ],
+  "outline": [
+   [
+    -102.8,
+    134.2
+   ],
+   [
+    -102.8,
+    -6.1
+   ],
+   [
+    -101.9,
+    -77.2
+   ],
+   [
+    -70.2,
+    -135.1
+   ],
+   [
+    -22.3,
+    -135.2
+   ],
+   [
+    3.6,
+    -124.3
+   ],
+   [
+    29.1,
+    -111.9
+   ],
+   [
+    62.8,
+    -25.8
+   ],
+   [
+    102.8,
+    91.5
+   ],
+   [
+    79.1,
+    133.9
+   ],
+   [
+    77,
+    135.1
+   ],
+   [
+    -52.9,
+    135.2
+   ]
+  ],
+  "height": 45,
+  "turn": 0.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Oracle Park is a horseshoe grandstand of tiered green-grey seating wrapped around an open outfield that faces the bay. The street front (-z) is a red-brick facade with punched windows and a clock tower, with the stadium's top rim and light towers rising behind. The outfield opening is modelled at the -x side, toward the water.\",\n  \"parts\": [\n    {\"type\": \"bowl\", \"center\": [0, 0], \"size\": [200, 255], \"inner\": [118, 130], \"y0\": 0, \"y1\": 30, \"innerHeight\": 2, \"shape\": \"oval\", \"arc\": [-150, 150], \"material\": \"concrete\", \"colour\": \"#5f6b66\"},\n    {\"type\": \"box\", \"center\": [0, -118], \"size\": [170, 30], \"y0\": 0, \"y1\": 18, \"material\": \"brick\", \"colour\": \"#a8553f\", \"windows\": {\"kind\": \"punched\", \"floor\": 4.5, \"pitch\": 5, \"solid\": 0.6}},\n    {\"type\": \"box\", \"center\": [35, -128], \"size\": [10, 10], \"y0\": 0, \"y1\": 30, \"material\": \"brick\", \"colour\": \"#a8553f\"},\n    {\"type\": \"box\", \"center\": [35, -128], \"size\": [11.5, 11.5], \"y0\": 30, \"y1\": 32, \"material\": \"stone\", \"colour\": \"#d9d1c0\"},\n    {\"type\": \"beam\", \"from\": [90, 30, 110], \"to\": [90, 45, 110], \"width\": 2.5, \"material\": \"metal\", \"colour\": \"#3d4a4f\"},\n    {\"type\": \"beam\", \"from\": [-90, 30, 110], \"to\": [-90, 45, 110], \"width\": 2.5, \"material\": \"metal\", \"colour\": \"#3d4a4f\"},\n    {\"type\": \"beam\", \"from\": [90, 30, -60], \"to\": [90, 45, -60], \"width\": 2.5, \"material\": \"metal\", \"colour\": \"#3d4a4f\"},\n    {\"type\": \"beam\", \"from\": [-90, 30, -60], \"to\": [-90, 45, -60], \"width\": 2.5, \"material\": \"metal\", \"colour\": \"#3d4a4f\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 3569,
+   "output": 2073,
+   "cacheRead": 7616,
+   "cost": 0.00146956,
+   "ms": 10989,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Oracle Park is a horseshoe grandstand of tiered green-grey seating wrapped around an open outfield that faces the bay. The street front (-z) is a red-brick facade with punched windows and a clock tower, with the stadium's top rim and light towers rising behind. The outfield opening is modelled at the -x side, toward the water.",
+   "parts": [
+    {
+     "type": "bowl",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      200,
+      255
+     ],
+     "inner": [
+      118,
+      130
+     ],
+     "y0": 0,
+     "y1": 30,
+     "innerHeight": 2,
+     "shape": "oval",
+     "arc": [
+      -150,
+      150
+     ],
+     "material": "concrete",
+     "colour": "#5f6b66"
+    },
+    {
+     "type": "box",
+     "center": [
+      0,
+      -118
+     ],
+     "size": [
+      170,
+      30
+     ],
+     "y0": 0,
+     "y1": 18,
+     "material": "brick",
+     "colour": "#a8553f",
+     "windows": {
+      "kind": "punched",
+      "floor": 4.5,
+      "pitch": 5,
+      "solid": 0.6
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      35,
+      -128
+     ],
+     "size": [
+      10,
+      10
+     ],
+     "y0": 0,
+     "y1": 30,
+     "material": "brick",
+     "colour": "#a8553f"
+    },
+    {
+     "type": "box",
+     "center": [
+      35,
+      -128
+     ],
+     "size": [
+      11.5,
+      11.5
+     ],
+     "y0": 30,
+     "y1": 32,
+     "material": "stone",
+     "colour": "#d9d1c0"
+    },
+    {
+     "type": "beam",
+     "from": [
+      90,
+      30,
+      110
+     ],
+     "to": [
+      90,
+      45,
+      110
+     ],
+     "width": 2.5,
+     "material": "metal",
+     "colour": "#3d4a4f"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -90,
+      30,
+      110
+     ],
+     "to": [
+      -90,
+      45,
+      110
+     ],
+     "width": 2.5,
+     "material": "metal",
+     "colour": "#3d4a4f"
+    },
+    {
+     "type": "beam",
+     "from": [
+      90,
+      30,
+      -60
+     ],
+     "to": [
+      90,
+      45,
+      -60
+     ],
+     "width": 2.5,
+     "material": "metal",
+     "colour": "#3d4a4f"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -90,
+      30,
+      -60
+     ],
+     "to": [
+      -90,
+      45,
+      -60
+     ],
+     "width": 2.5,
+     "material": "metal",
+     "colour": "#3d4a4f"
+    }
+   ]
+  },
+  "notes": "Oracle Park is a horseshoe grandstand of tiered green-grey seating wrapped around an open outfield that faces the bay. The street front (-z) is a red-brick facade with punched windows and a clock tower, with the stadium's top rim and light towers rising behind. The outfield opening is modelled at the -x side, toward the water.",
+  "triangles": 1046,
+  "parts": 8
+ },
+ "totals": {
+  "input": 3569,
+  "output": 2073,
+  "cost": 0.00146956,
+  "ms": 10989
+ }
+}

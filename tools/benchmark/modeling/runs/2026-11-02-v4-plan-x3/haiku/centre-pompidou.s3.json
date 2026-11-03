@@ -1,0 +1,524 @@
+{
+ "building": "centre-pompidou",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:23.501Z",
+ "userText": "Building: Centre Pompidou, Paris (museum).\nThe front (−z) is the west face on the sloping piazza.\nFootprint: 168.1 m along x by 66 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-84,33],[-83.1,-26.2],[-65.3,-26.6],[-65.4,-28.3],[-68.6,-28.3],[-68.6,-33],[-56.5,-32.9],[-56.5,-28.5],[83.8,-28.6],[84,33]]\nHeight: the highest point is 42 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the piazza: glazed facade with external escalator tube, structural frame and colored ducts, daylight\n  2. side three-quarter from below showing the stepped escalator tube and the exposed steel scaffold-like frame, blue sky\n  3. elevated view from a distance showing the whole long rectangular building and its roof with colored vents, Paris rooftops around\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   168.1,
+   66
+  ],
+  "outline": [
+   [
+    -84,
+    33
+   ],
+   [
+    -83.1,
+    -26.2
+   ],
+   [
+    -65.3,
+    -26.6
+   ],
+   [
+    -65.4,
+    -28.3
+   ],
+   [
+    -68.6,
+    -28.3
+   ],
+   [
+    -68.6,
+    -33
+   ],
+   [
+    -56.5,
+    -32.9
+   ],
+   [
+    -56.5,
+    -28.5
+   ],
+   [
+    83.8,
+    -28.6
+   ],
+   [
+    84,
+    33
+   ]
+  ],
+  "height": 42,
+  "turn": 1.3
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"A long rectangular glass box, 168 m by 66 m, about 36 m high, with a flat roof carrying coloured ducts and a red service box. The signature features are the exposed steel bracing grid on the front and sides, and the glazed escalator tube zig-zagging diagonally up the west (front) face in red and white.\",\n  \"parts\": [\n    {\"type\": \"box\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 0, \"y1\": 36, \"material\": \"glass\", \"colour\": \"#d8dde0\", \"windows\": {\"kind\": \"curtain\", \"glass\": \"#b9c8d0\"}},\n    {\"type\": \"roof\", \"kind\": \"flat\", \"center\": [0, 0], \"size\": [168, 66], \"y0\": 36, \"rise\": 0.5, \"material\": \"metal\", \"colour\": \"#9aa0a6\"},\n    {\"type\": \"repeat\", \"count\": 13, \"offset\": [14, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, -35], \"to\": [-84, 36, -35], \"width\": 0.8, \"material\": \"metal\", \"colour\": \"#b8bcc0\"}},\n    {\"type\": \"repeat\", \"count\": 5, \"offset\": [0, 9, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, -35], \"to\": [84, 0, -35], \"width\": 0.6, \"material\": \"metal\", \"colour\": \"#b8bcc0\"}},\n    {\"type\": \"repeat\", \"count\": 6, \"offset\": [0, 0, 0], \"part\": {\"type\": \"beam\", \"from\": [-84, 0, -35], \"to\": [-70, 36, -35], \"width\": 0.3, \"material\": \"metal\", \"colour\": \"#b8bcc0\"}},\n    {\"type\": \"beam\", \"from\": [-80, 0, -38], \"to\": [-40, 12, -38], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#c9d3d8\"},\n    {\"type\": \"beam\", \"from\": [-40, 12, -38], \"to\": [-10, 24, -38], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#c9d3d8\"},\n    {\"type\": \"beam\", \"from\": [-10, 24, -38], \"to\": [30, 6, -38], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#c9d3d8\"},\n    {\"type\": \"beam\", \"from\": [30, 6, -38], \"to\": [60, 36, -38], \"width\": 3.5, \"material\": \"glass\", \"colour\": \"#c9d3d8\"},\n    {\"type\": \"repeat\", \"count\": 12, \"offset\": [13, 0, 0], \"part\": {\"type\": \"box\", \"center\": [-75, -15], \"size\": [6, 5], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#2f6fb5\"}},\n    {\"type\": \"repeat\", \"count\": 12, \"offset\": [13, 0, 0], \"part\": {\"type\": \"box\", \"center\": [-75, 15], \"size\": [6, 5], \"y0\": 36, \"y1\": 40, \"material\": \"metal\", \"colour\": \"#e8e8e8\"}},\n    {\"type\": \"box\", \"center\": [-40, -10], \"size\": [8, 6], \"y0\": 36, \"y1\": 42, \"material\": \"metal\", \"colour\": \"#c0392b\"}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4947,
+   "output": 1963,
+   "cacheRead": 8401,
+   "cost": 0.00156021,
+   "ms": 8268,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "A long rectangular glass box, 168 m by 66 m, about 36 m high, with a flat roof carrying coloured ducts and a red service box. The signature features are the exposed steel bracing grid on the front and sides, and the glazed escalator tube zig-zagging diagonally up the west (front) face in red and white.",
+   "parts": [
+    {
+     "type": "box",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 0,
+     "y1": 36,
+     "material": "glass",
+     "colour": "#d8dde0",
+     "windows": {
+      "kind": "curtain",
+      "glass": "#b9c8d0"
+     }
+    },
+    {
+     "type": "roof",
+     "kind": "flat",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "y0": 36,
+     "rise": 0.5,
+     "material": "metal",
+     "colour": "#9aa0a6"
+    },
+    {
+     "type": "repeat",
+     "count": 13,
+     "offset": [
+      14,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -35
+      ],
+      "to": [
+       -84,
+       36,
+       -35
+      ],
+      "width": 0.8,
+      "material": "metal",
+      "colour": "#b8bcc0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 5,
+     "offset": [
+      0,
+      9,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -35
+      ],
+      "to": [
+       84,
+       0,
+       -35
+      ],
+      "width": 0.6,
+      "material": "metal",
+      "colour": "#b8bcc0"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 6,
+     "offset": [
+      0,
+      0,
+      0
+     ],
+     "part": {
+      "type": "beam",
+      "from": [
+       -84,
+       0,
+       -35
+      ],
+      "to": [
+       -70,
+       36,
+       -35
+      ],
+      "width": 0.3,
+      "material": "metal",
+      "colour": "#b8bcc0"
+     }
+    },
+    {
+     "type": "beam",
+     "from": [
+      -80,
+      0,
+      -38
+     ],
+     "to": [
+      -40,
+      12,
+      -38
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#c9d3d8"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -40,
+      12,
+      -38
+     ],
+     "to": [
+      -10,
+      24,
+      -38
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#c9d3d8"
+    },
+    {
+     "type": "beam",
+     "from": [
+      -10,
+      24,
+      -38
+     ],
+     "to": [
+      30,
+      6,
+      -38
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#c9d3d8"
+    },
+    {
+     "type": "beam",
+     "from": [
+      30,
+      6,
+      -38
+     ],
+     "to": [
+      60,
+      36,
+      -38
+     ],
+     "width": 3.5,
+     "material": "glass",
+     "colour": "#c9d3d8"
+    },
+    {
+     "type": "repeat",
+     "count": 12,
+     "offset": [
+      13,
+      0,
+      0
+     ],
+     "part": {
+      "type": "box",
+      "center": [
+       -75,
+       -15
+      ],
+      "size": [
+       6,
+       5
+      ],
+      "y0": 36,
+      "y1": 40,
+      "material": "metal",
+      "colour": "#2f6fb5"
+     }
+    },
+    {
+     "type": "repeat",
+     "count": 12,
+     "offset": [
+      13,
+      0,
+      0
+     ],
+     "part": {
+      "type": "box",
+      "center": [
+       -75,
+       15
+      ],
+      "size": [
+       6,
+       5
+      ],
+      "y0": 36,
+      "y1": 40,
+      "material": "metal",
+      "colour": "#e8e8e8"
+     }
+    },
+    {
+     "type": "box",
+     "center": [
+      -40,
+      -10
+     ],
+     "size": [
+      8,
+      6
+     ],
+     "y0": 36,
+     "y1": 42,
+     "material": "metal",
+     "colour": "#c0392b"
+    }
+   ]
+  },
+  "notes": "A long rectangular glass box, 168 m by 66 m, about 36 m high, with a flat roof carrying coloured ducts and a red service box. The signature features are the exposed steel bracing grid on the front and sides, and the glazed escalator tube zig-zagging diagonally up the west (front) face in red and white.",
+  "triangles": 732,
+  "parts": 55
+ },
+ "totals": {
+  "input": 8322,
+  "output": 4188,
+  "cost": 0.00303104,
+  "ms": 19321
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter from the piazza, showing the long glazed facade with the exposed structural steel frame, the external escalator tube running diagonally up the front, and colored ducts.\",\n    \"photo 2: a side three-quarter from below, showing the stepped zigzag escalator tube on the front, the exposed steel bracing grid over the whole facade, and a red-brown service box on the roof.\",\n    \"photo 3: an elevated distant view of the long rectangular building, showing its flat roof covered with colored pipes and vents (blue, white and red) and the Paris rooftops around it.\"\n  ],\n  \"components\": [\n    {\"name\": \"glazed main body\", \"part\": \"block\", \"where\": \"the whole footprint\", \"center\": [0, 0], \"size\": [168, 66], \"height\": 36,\n     \"settings\": {\"storeys\": [{\"height\": 9, \"kind\": \"curtain\", \"windows\": false}, {\"height\": 9, \"kind\": \"curtain\", \"windows\": false}, {\"height\": 9, \"kind\": \"curtain\", \"windows\": false}, {\"height\": 9, \"kind\": \"curtain\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#d8dde0\"},\n     \"why\": \"photos 1 to 3: the building is a long rectangular glass box, 168 m by 66 m, with four glazed storeys and a flat roof\"},\n    {\"name\": \"exposed steel frame on front\", \"part\": \"beam\", \"where\": \"front face and sides, over the glazing\", \"center\": [0, -33.5], \"size\": [168, 42, 1.5], \"height\": 42,\n     \"settings\": {\"kind\": \"frame\", \"bracing\": \"diagonal\", \"grid\": [12, 4], \"colour\": \"#b8bcc0\"},\n     \"why\": \"photos 1 and 2: a visible diagonal steel bracing grid covers the whole facade, outside the glass\"},\n    {\"name\": \"external escalator tube\", \"part\": \"beam\", \"where\": \"diagonal across the front face, from the lower left to the upper right\", \"center\": [0, -38], \"size\": [150, 4, 4], \"height\": 36,\n     \"settings\": {\"kind\": \"tube\", \"path\": [[-80, 0, -38], [-40, 12, -38], [-10, 24, -38], [30, 6, -38], [60, 36, -38]], \"diameter\": 4, \"glazed\": true, \"colour\": \"#c9d3d8\", \"accent\": \"#c0392b\"},\n     \"why\": \"photos 1 and 2: the glazed escalator tube zig-zags diagonally up the front, a signature feature\"},\n    {\"name\": \"roof ducts and vents\", \"part\": \"repeat\", \"where\": \"along the flat roof, in two rows\", \"center\": [0, 0], \"size\": [150, 20], \"height\": 42,\n     \"settings\": {\"item\": {\"part\": \"box\", \"size\": [6, 5, 4], \"colours\": [\"#2f6fb5\", \"#e8e8e8\", \"#c0392b\"]}, \"rows\": 2, \"spacing\": [12, 8], \"base_height\": 36},\n     \"why\": \"photos 1 and 3: the roof carries a row of colored pipes, vents and ducts, blue, white and red\"},\n    {\"name\": \"red service tower on roof\", \"part\": \"box\", \"where\": \"north-west part of the roof\", \"center\": [-40, -10], \"size\": [8, 6, 6], \"height\": 42,\n     \"settings\": {\"base_height\": 36, \"colour\": \"#c0392b\"},\n     \"why\": \"photo 2: a red-brown service box sits on the roof edge\"}\n  ]\n}\n```",
+  "input": 3375,
+  "output": 2225,
+  "cost": 0.00147083,
+  "ms": 11053,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter from the piazza, showing the long glazed facade with the exposed structural steel frame, the external escalator tube running diagonally up the front, and colored ducts.",
+    "photo 2: a side three-quarter from below, showing the stepped zigzag escalator tube on the front, the exposed steel bracing grid over the whole facade, and a red-brown service box on the roof.",
+    "photo 3: an elevated distant view of the long rectangular building, showing its flat roof covered with colored pipes and vents (blue, white and red) and the Paris rooftops around it."
+   ],
+   "components": [
+    {
+     "name": "glazed main body",
+     "part": "block",
+     "where": "the whole footprint",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      168,
+      66
+     ],
+     "height": 36,
+     "settings": {
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "curtain",
+        "windows": false
+       },
+       {
+        "height": 9,
+        "kind": "curtain",
+        "windows": false
+       },
+       {
+        "height": 9,
+        "kind": "curtain",
+        "windows": false
+       },
+       {
+        "height": 9,
+        "kind": "curtain",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#d8dde0"
+     },
+     "why": "photos 1 to 3: the building is a long rectangular glass box, 168 m by 66 m, with four glazed storeys and a flat roof"
+    },
+    {
+     "name": "exposed steel frame on front",
+     "part": "beam",
+     "where": "front face and sides, over the glazing",
+     "center": [
+      0,
+      -33.5
+     ],
+     "size": [
+      168,
+      42,
+      1.5
+     ],
+     "height": 42,
+     "settings": {
+      "kind": "frame",
+      "bracing": "diagonal",
+      "grid": [
+       12,
+       4
+      ],
+      "colour": "#b8bcc0"
+     },
+     "why": "photos 1 and 2: a visible diagonal steel bracing grid covers the whole facade, outside the glass"
+    },
+    {
+     "name": "external escalator tube",
+     "part": "beam",
+     "where": "diagonal across the front face, from the lower left to the upper right",
+     "center": [
+      0,
+      -38
+     ],
+     "size": [
+      150,
+      4,
+      4
+     ],
+     "height": 36,
+     "settings": {
+      "kind": "tube",
+      "path": [
+       [
+        -80,
+        0,
+        -38
+       ],
+       [
+        -40,
+        12,
+        -38
+       ],
+       [
+        -10,
+        24,
+        -38
+       ],
+       [
+        30,
+        6,
+        -38
+       ],
+       [
+        60,
+        36,
+        -38
+       ]
+      ],
+      "diameter": 4,
+      "glazed": true,
+      "colour": "#c9d3d8",
+      "accent": "#c0392b"
+     },
+     "why": "photos 1 and 2: the glazed escalator tube zig-zags diagonally up the front, a signature feature"
+    },
+    {
+     "name": "roof ducts and vents",
+     "part": "repeat",
+     "where": "along the flat roof, in two rows",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      150,
+      20
+     ],
+     "height": 42,
+     "settings": {
+      "item": {
+       "part": "box",
+       "size": [
+        6,
+        5,
+        4
+       ],
+       "colours": [
+        "#2f6fb5",
+        "#e8e8e8",
+        "#c0392b"
+       ]
+      },
+      "rows": 2,
+      "spacing": [
+       12,
+       8
+      ],
+      "base_height": 36
+     },
+     "why": "photos 1 and 3: the roof carries a row of colored pipes, vents and ducts, blue, white and red"
+    },
+    {
+     "name": "red service tower on roof",
+     "part": "box",
+     "where": "north-west part of the roof",
+     "center": [
+      -40,
+      -10
+     ],
+     "size": [
+      8,
+      6,
+      6
+     ],
+     "height": 42,
+     "settings": {
+      "base_height": 36,
+      "colour": "#c0392b"
+     },
+     "why": "photo 2: a red-brown service box sits on the roof edge"
+    }
+   ]
+  }
+ }
+}

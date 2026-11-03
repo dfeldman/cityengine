@@ -1,0 +1,353 @@
+{
+ "building": "bnf-mitterrand",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:17:29.949Z",
+ "userText": "Building: Bibliothèque nationale de France (François-Mitterrand), Paris (library).\nThe front (−z) is the side facing the Seine.\nFootprint: 330 m along x by 170 m along z, centred on the origin.\nOutline (a measured rectangle), [x, z] in metres, going round:\n[[-165,-85],[165,-85],[165,85],[-165,85]]\nHeight: the highest point is 79 m above the ground.\nThe footprint is the whole site, measured from aerial photographs: a raised esplanade with one tower at each corner and a sunken garden in the middle.\n\n3 photographs attached, in order:\n  1. river view across the Seine of the four glass corner towers, daylight\n  2. daylight view of the four towers from the footbridge side with the raised deck\n  3. street-level view of the stepped timber deck rising to one tower, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   330,
+   170
+  ],
+  "outline": [
+   [
+    -165,
+    -85
+   ],
+   [
+    165,
+    -85
+   ],
+   [
+    165,
+    85
+   ],
+   [
+    -165,
+    85
+   ]
+  ],
+  "height": 79,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Bibliothèque nationale de France is a raised podium ring enclosing a sunken garden, with four tall glass towers standing on its corners. The towers are the signature feature, so each gets a full-height curtain-wall block; the esplanade is a closed court at podium height. Colours are pale grey-glass for the towers and warm stone for the podium.\",\n  \"parts\": [\n    {\"type\": \"block\", \"center\": [-130, 62], \"size\": [30, 28], \"y0\": 0, \"material\": \"glass\", \"colour\": \"#a7b4b8\", \"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}},\n    {\"type\": \"block\", \"center\": [130, 62], \"size\": [30, 28], \"y0\": 0, \"material\": \"glass\", \"colour\": \"#a7b4b8\", \"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}},\n    {\"type\": \"block\", \"center\": [-130, -62], \"size\": [30, 28], \"y0\": 0, \"material\": \"glass\", \"colour\": \"#a7b4b8\", \"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}},\n    {\"type\": \"block\", \"center\": [130, -62], \"size\": [30, 28], \"y0\": 0, \"material\": \"glass\", \"colour\": \"#a7b4b8\", \"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}},\n    {\"type\": \"court\", \"center\": [0, 0], \"size\": [330, 170], \"wing\": 35, \"open\": \"none\", \"y0\": 0, \"material\": \"concrete\", \"colour\": \"#c9c2b0\", \"storeys\": [{\"height\": 10, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}}\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4546,
+   "output": 1293,
+   "cacheRead": 8401,
+   "cost": 0.00118511,
+   "ms": 5809,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Bibliothèque nationale de France is a raised podium ring enclosing a sunken garden, with four tall glass towers standing on its corners. The towers are the signature feature, so each gets a full-height curtain-wall block; the esplanade is a closed court at podium height. Colours are pale grey-glass for the towers and warm stone for the podium.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      -130,
+      62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "y0": 0,
+     "material": "glass",
+     "colour": "#a7b4b8",
+     "storeys": [
+      {
+       "height": 79,
+       "kind": "curtain",
+       "floors": 22
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      130,
+      62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "y0": 0,
+     "material": "glass",
+     "colour": "#a7b4b8",
+     "storeys": [
+      {
+       "height": 79,
+       "kind": "curtain",
+       "floors": 22
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      -130,
+      -62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "y0": 0,
+     "material": "glass",
+     "colour": "#a7b4b8",
+     "storeys": [
+      {
+       "height": 79,
+       "kind": "curtain",
+       "floors": 22
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      130,
+      -62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "y0": 0,
+     "material": "glass",
+     "colour": "#a7b4b8",
+     "storeys": [
+      {
+       "height": 79,
+       "kind": "curtain",
+       "floors": 22
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    },
+    {
+     "type": "court",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "wing": 35,
+     "open": "none",
+     "y0": 0,
+     "material": "concrete",
+     "colour": "#c9c2b0",
+     "storeys": [
+      {
+       "height": 10,
+       "kind": "blank",
+       "windows": false
+      }
+     ],
+     "roof": {
+      "kind": "flat"
+     }
+    }
+   ]
+  },
+  "notes": "The Bibliothèque nationale de France is a raised podium ring enclosing a sunken garden, with four tall glass towers standing on its corners. The towers are the signature feature, so each gets a full-height curtain-wall block; the esplanade is a closed court at podium height. Colours are pale grey-glass for the towers and warm stone for the podium.",
+  "triangles": 832,
+  "parts": 16
+ },
+ "totals": {
+  "input": 7741,
+  "output": 3702,
+  "cost": 0.00272994,
+  "ms": 17766
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\n  \"photos\": [\"photo 1: river view from the Seine, showing two glass towers side by side at the left and right of the skyline, with the tall slim tower in the centre, all clad in pale glass.\", \"photo 2: view from the footbridge side, showing four tall glass towers, two large at left and two at right, set on a raised paved esplanade.\", \"photo 3: street-level view of the stepped timber deck rising in terraces toward one glass tower at the corner, with a bright glass curtain wall.\"],\n  \"components\": [\n    {\"name\": \"north-west tower\", \"part\": \"block\", \"where\": \"back-left corner of the esplanade\", \"center\": [-130, 62], \"size\": [30, 28], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a7b4b8\"},\n     \"why\": \"photo 2: glass corner tower; the four towers are the defining feature\"},\n    {\"name\": \"north-east tower\", \"part\": \"block\", \"where\": \"back-right corner of the esplanade\", \"center\": [130, 62], \"size\": [30, 28], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a7b4b8\"},\n     \"why\": \"photo 2: glass tower at the right corner\"},\n    {\"name\": \"south-west tower\", \"part\": \"block\", \"where\": \"front-left corner of the esplanade\", \"center\": [-130, -62], \"size\": [30, 28], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a7b4b8\"},\n     \"why\": \"photo 1: glass tower at the front-left corner, seen from the Seine\"},\n    {\"name\": \"south-east tower\", \"part\": \"block\", \"where\": \"front-right corner of the esplanade\", \"center\": [130, -62], \"size\": [30, 28], \"height\": 79,\n     \"settings\": {\"storeys\": [{\"height\": 79, \"kind\": \"curtain\", \"floors\": 22}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#a7b4b8\"},\n     \"why\": \"photo 1: glass tower at the front-right corner, seen from the Seine\"},\n    {\"name\": \"raised esplanade with sunken garden\", \"part\": \"court\", \"where\": \"the whole footprint, as a raised ring round the sunken garden\", \"center\": [0, 0], \"size\": [330, 170], \"height\": 10,\n     \"settings\": {\"open\": \"none\", \"wing\": 35, \"storeys\": [{\"height\": 10, \"kind\": \"blank\", \"windows\": false}], \"roof\": {\"kind\": \"flat\"}, \"colour\": \"#c9c2b0\"},\n     \"why\": \"photo 3: the raised stepped esplanade; the middle is a sunken garden, so the ring is a closed court at podium height\"}\n  ]\n}",
+  "input": 3195,
+  "output": 2409,
+  "cost": 0.0015448299999999999,
+  "ms": 11957,
+  "json": {
+   "photos": [
+    "photo 1: river view from the Seine, showing two glass towers side by side at the left and right of the skyline, with the tall slim tower in the centre, all clad in pale glass.",
+    "photo 2: view from the footbridge side, showing four tall glass towers, two large at left and two at right, set on a raised paved esplanade.",
+    "photo 3: street-level view of the stepped timber deck rising in terraces toward one glass tower at the corner, with a bright glass curtain wall."
+   ],
+   "components": [
+    {
+     "name": "north-west tower",
+     "part": "block",
+     "where": "back-left corner of the esplanade",
+     "center": [
+      -130,
+      62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain",
+        "floors": 22
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a7b4b8"
+     },
+     "why": "photo 2: glass corner tower; the four towers are the defining feature"
+    },
+    {
+     "name": "north-east tower",
+     "part": "block",
+     "where": "back-right corner of the esplanade",
+     "center": [
+      130,
+      62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain",
+        "floors": 22
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a7b4b8"
+     },
+     "why": "photo 2: glass tower at the right corner"
+    },
+    {
+     "name": "south-west tower",
+     "part": "block",
+     "where": "front-left corner of the esplanade",
+     "center": [
+      -130,
+      -62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain",
+        "floors": 22
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a7b4b8"
+     },
+     "why": "photo 1: glass tower at the front-left corner, seen from the Seine"
+    },
+    {
+     "name": "south-east tower",
+     "part": "block",
+     "where": "front-right corner of the esplanade",
+     "center": [
+      130,
+      -62
+     ],
+     "size": [
+      30,
+      28
+     ],
+     "height": 79,
+     "settings": {
+      "storeys": [
+       {
+        "height": 79,
+        "kind": "curtain",
+        "floors": 22
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#a7b4b8"
+     },
+     "why": "photo 1: glass tower at the front-right corner, seen from the Seine"
+    },
+    {
+     "name": "raised esplanade with sunken garden",
+     "part": "court",
+     "where": "the whole footprint, as a raised ring round the sunken garden",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      330,
+      170
+     ],
+     "height": 10,
+     "settings": {
+      "open": "none",
+      "wing": 35,
+      "storeys": [
+       {
+        "height": 10,
+        "kind": "blank",
+        "windows": false
+       }
+      ],
+      "roof": {
+       "kind": "flat"
+      },
+      "colour": "#c9c2b0"
+     },
+     "why": "photo 3: the raised stepped esplanade; the middle is a sunken garden, so the ring is a closed court at podium height"
+    }
+   ]
+  }
+ }
+}

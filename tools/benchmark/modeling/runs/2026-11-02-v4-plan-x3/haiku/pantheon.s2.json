@@ -1,0 +1,479 @@
+{
+ "building": "pantheon",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:16:45.919Z",
+ "userText": "Building: Panthéon, Paris (mausoleum (former church)).\nThe front (−z) is the portico, facing down the Rue Soufflot.\nFootprint: 84.9 m along x by 112.1 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-18.5,-56.1],[20.8,-56.1],[20.8,-40.6],[17.2,-40.6],[17.9,-15.7],[20.8,-13],[39.4,-14],[39.5,-5.2],[42.3,-5.2],[42.4,15],[39.6,15],[39.5,23.9],[20.6,22.7],[18,25.5],[17.9,38.6],[25.8,38.7],[25.7,48.4],[16.3,48.4],[16.2,56.1],[-16.3,55.9],[-16.3,48.3],[-25.6,48.3],[-25.6,38.5],[-18,38.5],[-18,25.4],[-20.9,22.6],[-39.6,23.6],[-39.7,14.8],[-42.4,14.8],[-42.3,-5.4],[-39.5,-5.4],[-39.5,-14.2],[-20.9,-13.1],[-18,-15.8],[-17.5,-40.1],[-21.2,-40.1],[-21.2,-56]]\nHeight: the highest point is 83 m above the ground.\n\n3 photographs attached, in order:\n  1. front three-quarter from the corner: Corinthian portico with pediment and the tall drum and dome, daylight\n  2. view of the rear and side of the cross-shaped body with the drum and dome above, trees in front\n  3. elevated view of the whole portico front and flank across the square, daylight\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   84.9,
+   112.1
+  ],
+  "outline": [
+   [
+    -18.5,
+    -56.1
+   ],
+   [
+    20.8,
+    -56.1
+   ],
+   [
+    20.8,
+    -40.6
+   ],
+   [
+    17.2,
+    -40.6
+   ],
+   [
+    17.9,
+    -15.7
+   ],
+   [
+    20.8,
+    -13
+   ],
+   [
+    39.4,
+    -14
+   ],
+   [
+    39.5,
+    -5.2
+   ],
+   [
+    42.3,
+    -5.2
+   ],
+   [
+    42.4,
+    15
+   ],
+   [
+    39.6,
+    15
+   ],
+   [
+    39.5,
+    23.9
+   ],
+   [
+    20.6,
+    22.7
+   ],
+   [
+    18,
+    25.5
+   ],
+   [
+    17.9,
+    38.6
+   ],
+   [
+    25.8,
+    38.7
+   ],
+   [
+    25.7,
+    48.4
+   ],
+   [
+    16.3,
+    48.4
+   ],
+   [
+    16.2,
+    56.1
+   ],
+   [
+    -16.3,
+    55.9
+   ],
+   [
+    -16.3,
+    48.3
+   ],
+   [
+    -25.6,
+    48.3
+   ],
+   [
+    -25.6,
+    38.5
+   ],
+   [
+    -18,
+    38.5
+   ],
+   [
+    -18,
+    25.4
+   ],
+   [
+    -20.9,
+    22.6
+   ],
+   [
+    -39.6,
+    23.6
+   ],
+   [
+    -39.7,
+    14.8
+   ],
+   [
+    -42.4,
+    14.8
+   ],
+   [
+    -42.3,
+    -5.4
+   ],
+   [
+    -39.5,
+    -5.4
+   ],
+   [
+    -39.5,
+    -14.2
+   ],
+   [
+    -20.9,
+    -13.1
+   ],
+   [
+    -18,
+    -15.8
+   ],
+   [
+    -17.5,
+    -40.1
+   ],
+   [
+    -21.2,
+    -40.1
+   ],
+   [
+    -21.2,
+    -56
+   ]
+  ],
+  "height": 83,
+  "turn": 0
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"The Panthéon is a Greek-cross church of pale stone: a long nave running front to back, transept arms spreading about 42 m either side, and a Corinthian hexastyle portico under a deep sculpted pediment at the front. The signature feature is the dome on a tall colonnaded drum over the crossing, with a grey dome and lantern. The walls are solid, with tall arched windows above a blank lower storey and a balustrade on the roofline.\",\n  \"parts\": [\n    {\n      \"type\": \"block\",\n      \"center\": [0, 0],\n      \"size\": [42, 112],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#d8cbb0\",\n      \"trim\": \"#e6dcc4\",\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 13, \"kind\": \"arched\"}\n      ],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"balustrade\", \"rise\": 1, \"colour\": \"#d8cbb0\"}\n    },\n    {\n      \"type\": \"block\",\n      \"center\": [0, 9.5],\n      \"size\": [85, 30],\n      \"y0\": 0,\n      \"bay\": 5,\n      \"colour\": \"#d8cbb0\",\n      \"trim\": \"#e6dcc4\",\n      \"storeys\": [\n        {\"height\": 9, \"kind\": \"blank\", \"windows\": false},\n        {\"height\": 13, \"kind\": \"arched\"}\n      ],\n      \"cornice\": 1,\n      \"roof\": {\"kind\": \"balustrade\", \"rise\": 1, \"colour\": \"#d8cbb0\"}\n    },\n    {\n      \"type\": \"colonnade\",\n      \"from\": [-16, -52],\n      \"to\": [16, -52],\n      \"y0\": 2,\n      \"height\": 20,\n      \"count\": 6,\n      \"radius\": 1.1,\n      \"entablature\": 2.4,\n      \"colour\": \"#e6dcc4\"\n    },\n    {\n      \"type\": \"pediment\",\n      \"from\": [-20, -52],\n      \"to\": [20, -52],\n      \"y0\": 22,\n      \"height\": 9,\n      \"depth\": 4,\n      \"colour\": \"#e6dcc4\"\n    },\n    {\n      \"type\": \"rotunda\",\n      \"center\": [0, 0],\n      \"radius\": 16,\n      \"y0\": 22,\n      \"base\": 1,\n      \"height\": 14,\n      \"count\": 32,\n      \"open\": false,\n      \"drum\": 6,\n      \"entablature\": 2,\n      \"dome\": {\"height\": 30, \"colour\": \"#8f9598\", \"material\": \"metal\"},\n      \"lantern\": true,\n      \"colour\": \"#e6dcc4\",\n      \"trim\": \"#e6dcc4\"\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 5111,
+   "output": 2049,
+   "cacheRead": 8401,
+   "cost": 0.00161961,
+   "ms": 9126,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "The Panthéon is a Greek-cross church of pale stone: a long nave running front to back, transept arms spreading about 42 m either side, and a Corinthian hexastyle portico under a deep sculpted pediment at the front. The signature feature is the dome on a tall colonnaded drum over the crossing, with a grey dome and lantern. The walls are solid, with tall arched windows above a blank lower storey and a balustrade on the roofline.",
+   "parts": [
+    {
+     "type": "block",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      112
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8cbb0",
+     "trim": "#e6dcc4",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 13,
+       "kind": "arched"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade",
+      "rise": 1,
+      "colour": "#d8cbb0"
+     }
+    },
+    {
+     "type": "block",
+     "center": [
+      0,
+      9.5
+     ],
+     "size": [
+      85,
+      30
+     ],
+     "y0": 0,
+     "bay": 5,
+     "colour": "#d8cbb0",
+     "trim": "#e6dcc4",
+     "storeys": [
+      {
+       "height": 9,
+       "kind": "blank",
+       "windows": false
+      },
+      {
+       "height": 13,
+       "kind": "arched"
+      }
+     ],
+     "cornice": 1,
+     "roof": {
+      "kind": "balustrade",
+      "rise": 1,
+      "colour": "#d8cbb0"
+     }
+    },
+    {
+     "type": "colonnade",
+     "from": [
+      -16,
+      -52
+     ],
+     "to": [
+      16,
+      -52
+     ],
+     "y0": 2,
+     "height": 20,
+     "count": 6,
+     "radius": 1.1,
+     "entablature": 2.4,
+     "colour": "#e6dcc4"
+    },
+    {
+     "type": "pediment",
+     "from": [
+      -20,
+      -52
+     ],
+     "to": [
+      20,
+      -52
+     ],
+     "y0": 22,
+     "height": 9,
+     "depth": 4,
+     "colour": "#e6dcc4"
+    },
+    {
+     "type": "rotunda",
+     "center": [
+      0,
+      0
+     ],
+     "radius": 16,
+     "y0": 22,
+     "base": 1,
+     "height": 14,
+     "count": 32,
+     "open": false,
+     "drum": 6,
+     "entablature": 2,
+     "dome": {
+      "height": 30,
+      "colour": "#8f9598",
+      "material": "metal"
+     },
+     "lantern": true,
+     "colour": "#e6dcc4",
+     "trim": "#e6dcc4"
+    }
+   ]
+  },
+  "notes": "The Panthéon is a Greek-cross church of pale stone: a long nave running front to back, transept arms spreading about 42 m either side, and a Corinthian hexastyle portico under a deep sculpted pediment at the front. The signature feature is the dome on a tall colonnaded drum over the crossing, with a grey dome and lantern. The walls are solid, with tall arched windows above a blank lower storey and a balustrade on the roofline.",
+  "triangles": 5618,
+  "parts": 57
+ },
+ "totals": {
+  "input": 8685,
+  "output": 4723,
+  "cost": 0.0033348400000000004,
+  "ms": 22464
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "```json\n{\n  \"photos\": [\n    \"photo 1: the front three-quarter view from the south-west corner, showing the Corinthian portico with its pediment and sculpted tympanum, the solid cross-shaped walls with pilasters and garlands, and the tall drum with a peristyle of columns carrying the grey dome and lantern.\",\n    \"photo 2: the rear and side of the cross-shaped body, with the transept arms, plain tall arched windows set in blank stone walls, a balustrade on the roofline, and the drum and dome rising above the crossing. Trees stand in front.\",\n    \"photo 3: an elevated view across the square showing the full portico front with its deep pediment and columns, the flank of the transept, and the dome above the crossing with its drum colonnade and lantern.\"\n  ],\n  \"components\": [\n    {\"name\": \"nave body\", \"part\": \"block\", \"where\": \"central nave of the Greek cross, running front to back\", \"center\": [0, 0], \"size\": [42, 112], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 9, \"kind\": \"blank\", \"windows\": false}, {\"height\": 13, \"kind\": \"arched\", \"windows\": true}], \"faces\": \"\", \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8cbb0\"},\n     \"why\": \"photos 1 and 2 show a solid stone nave with blank lower walls and tall arched windows above, topped by a balustrade\"},\n    {\"name\": \"transept arms\", \"part\": \"block\", \"where\": \"the cross arms east and west of the crossing\", \"center\": [0, 9.5], \"size\": [85, 30], \"height\": 22,\n     \"settings\": {\"storeys\": [{\"height\": 9, \"kind\": \"blank\", \"windows\": false}, {\"height\": 13, \"kind\": \"arched\", \"windows\": true}], \"faces\": \"\", \"roof\": {\"kind\": \"balustrade\"}, \"colour\": \"#d8cbb0\"},\n     \"why\": \"the transept arms reach about 42 m either side of the nave (photos 2 and 3), with the same stone walls and high arched windows\"},\n    {\"name\": \"portico colonnade\", \"part\": \"colonnade\", \"where\": \"front portico facing the Rue Soufflot\", \"center\": [0, -49], \"size\": [40, 8], \"height\": 22,\n     \"settings\": {\"count\": 6, \"columns\": 6, \"order\": \"corinthian\", \"height\": 20, \"radius\": 1.1, \"spacing\": 6.5, \"colour\": \"#e6dcc4\"},\n     \"why\": \"photos 1 and 3 show a hexastyle Corinthian portico of tall free-standing columns across the front\"},\n    {\"name\": \"front pediment\", \"part\": \"pediment\", \"where\": \"triangular gable above the portico\", \"center\": [0, -49], \"size\": [42, 9], \"height\": 9,\n     \"settings\": {\"base_height\": 22, \"relief\": true, \"colour\": \"#e6dcc4\"},\n     \"why\": \"photos 1 and 3: a deep triangular pediment with a sculpted tympanum crowns the portico\"},\n    {\"name\": \"drum and dome\", \"part\": \"rotunda\", \"where\": \"over the crossing at the centre\", \"center\": [0, 0], \"height\": 83,\n     \"settings\": {\"base_height\": 22, \"radius\": 16, \"open\": false, \"column_height\": 14, \"columns\": 32, \"drum\": {\"height\": 6}, \"dome\": {\"height\": 30, \"colour\": \"#8f9598\"}, \"lantern\": true, \"colour\": \"#e6dcc4\"},\n     \"why\": \"photos 1 to 3 show a tall drum with a peristyle of columns in front of a solid wall, carrying a grey dome and a lantern with a cross\"}\n  ]\n}\n```",
+  "input": 3574,
+  "output": 2674,
+  "cost": 0.00171523,
+  "ms": 13338,
+  "json": {
+   "photos": [
+    "photo 1: the front three-quarter view from the south-west corner, showing the Corinthian portico with its pediment and sculpted tympanum, the solid cross-shaped walls with pilasters and garlands, and the tall drum with a peristyle of columns carrying the grey dome and lantern.",
+    "photo 2: the rear and side of the cross-shaped body, with the transept arms, plain tall arched windows set in blank stone walls, a balustrade on the roofline, and the drum and dome rising above the crossing. Trees stand in front.",
+    "photo 3: an elevated view across the square showing the full portico front with its deep pediment and columns, the flank of the transept, and the dome above the crossing with its drum colonnade and lantern."
+   ],
+   "components": [
+    {
+     "name": "nave body",
+     "part": "block",
+     "where": "central nave of the Greek cross, running front to back",
+     "center": [
+      0,
+      0
+     ],
+     "size": [
+      42,
+      112
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 13,
+        "kind": "arched",
+        "windows": true
+       }
+      ],
+      "faces": "",
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8cbb0"
+     },
+     "why": "photos 1 and 2 show a solid stone nave with blank lower walls and tall arched windows above, topped by a balustrade"
+    },
+    {
+     "name": "transept arms",
+     "part": "block",
+     "where": "the cross arms east and west of the crossing",
+     "center": [
+      0,
+      9.5
+     ],
+     "size": [
+      85,
+      30
+     ],
+     "height": 22,
+     "settings": {
+      "storeys": [
+       {
+        "height": 9,
+        "kind": "blank",
+        "windows": false
+       },
+       {
+        "height": 13,
+        "kind": "arched",
+        "windows": true
+       }
+      ],
+      "faces": "",
+      "roof": {
+       "kind": "balustrade"
+      },
+      "colour": "#d8cbb0"
+     },
+     "why": "the transept arms reach about 42 m either side of the nave (photos 2 and 3), with the same stone walls and high arched windows"
+    },
+    {
+     "name": "portico colonnade",
+     "part": "colonnade",
+     "where": "front portico facing the Rue Soufflot",
+     "center": [
+      0,
+      -49
+     ],
+     "size": [
+      40,
+      8
+     ],
+     "height": 22,
+     "settings": {
+      "count": 6,
+      "columns": 6,
+      "order": "corinthian",
+      "height": 20,
+      "radius": 1.1,
+      "spacing": 6.5,
+      "colour": "#e6dcc4"
+     },
+     "why": "photos 1 and 3 show a hexastyle Corinthian portico of tall free-standing columns across the front"
+    },
+    {
+     "name": "front pediment",
+     "part": "pediment",
+     "where": "triangular gable above the portico",
+     "center": [
+      0,
+      -49
+     ],
+     "size": [
+      42,
+      9
+     ],
+     "height": 9,
+     "settings": {
+      "base_height": 22,
+      "relief": true,
+      "colour": "#e6dcc4"
+     },
+     "why": "photos 1 and 3: a deep triangular pediment with a sculpted tympanum crowns the portico"
+    },
+    {
+     "name": "drum and dome",
+     "part": "rotunda",
+     "where": "over the crossing at the centre",
+     "center": [
+      0,
+      0
+     ],
+     "height": 83,
+     "settings": {
+      "base_height": 22,
+      "radius": 16,
+      "open": false,
+      "column_height": 14,
+      "columns": 32,
+      "drum": {
+       "height": 6
+      },
+      "dome": {
+       "height": 30,
+       "colour": "#8f9598"
+      },
+      "lantern": true,
+      "colour": "#e6dcc4"
+     },
+     "why": "photos 1 to 3 show a tall drum with a peristyle of columns in front of a solid wall, carrying a grey dome and a lantern with a cross"
+    }
+   ]
+  }
+ }
+}

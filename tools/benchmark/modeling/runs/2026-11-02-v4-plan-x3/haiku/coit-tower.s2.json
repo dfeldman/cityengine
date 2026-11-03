@@ -1,0 +1,249 @@
+{
+ "building": "coit-tower",
+ "modelId": "haiku",
+ "model": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "promptVersion": "v4",
+ "photos": 3,
+ "px": 1024,
+ "textOnly": false,
+ "maxAttempts": 1,
+ "feedback": false,
+ "lenient": true,
+ "startedAt": "2026-11-03T03:15:59.789Z",
+ "userText": "Building: Coit Tower, San Francisco (monument tower).\nThe front (−z) is the parking circle side.\nFootprint: 21.9 m along x by 22.2 m along z, centred on the origin.\nOutline (from OpenStreetMap), [x, z] in metres, going round:\n[[-5.9,8.5],[-8.9,8.5],[-8.9,5.8],[-9.8,5.8],[-11,3],[-10.9,-2.9],[-9.8,-5.7],[-8.9,-5.7],[-8.9,-8.6],[-5.9,-8.6],[-5.6,-10],[-1.7,-11.1],[2.6,-10.9],[5.3,-10],[5.4,-8.6],[8.6,-8.6],[8.6,-5.7],[10,-5.7],[10.9,-1.6],[11,2.6],[10,5.8],[8.6,5.8],[8.6,8.5],[5.4,8.5],[5.4,11.1],[-5.9,11.1]]\nHeight: the highest point is 64 m above the ground.\n\n3 photographs attached, in order:\n  1. whole fluted concrete tower on its hilltop with trees below, clear sky\n  2. tower rising behind the Telegraph Hill apartment building, showing the full shaft and the arcaded crown, flag on top\n  3. high oblique aerial of the tower and the circular drive and park on Telegraph Hill\n\nReply with the JSON object only.",
+ "plan": {
+  "size": [
+   21.9,
+   22.2
+  ],
+  "outline": [
+   [
+    -5.9,
+    8.5
+   ],
+   [
+    -8.9,
+    8.5
+   ],
+   [
+    -8.9,
+    5.8
+   ],
+   [
+    -9.8,
+    5.8
+   ],
+   [
+    -11,
+    3
+   ],
+   [
+    -10.9,
+    -2.9
+   ],
+   [
+    -9.8,
+    -5.7
+   ],
+   [
+    -8.9,
+    -5.7
+   ],
+   [
+    -8.9,
+    -8.6
+   ],
+   [
+    -5.9,
+    -8.6
+   ],
+   [
+    -5.6,
+    -10
+   ],
+   [
+    -1.7,
+    -11.1
+   ],
+   [
+    2.6,
+    -10.9
+   ],
+   [
+    5.3,
+    -10
+   ],
+   [
+    5.4,
+    -8.6
+   ],
+   [
+    8.6,
+    -8.6
+   ],
+   [
+    8.6,
+    -5.7
+   ],
+   [
+    10,
+    -5.7
+   ],
+   [
+    10.9,
+    -1.6
+   ],
+   [
+    11,
+    2.6
+   ],
+   [
+    10,
+    5.8
+   ],
+   [
+    8.6,
+    5.8
+   ],
+   [
+    8.6,
+    8.5
+   ],
+   [
+    5.4,
+    8.5
+   ],
+   [
+    5.4,
+    11.1
+   ],
+   [
+    -5.9,
+    11.1
+   ]
+  ],
+  "height": 64,
+  "turn": 14.5
+ },
+ "attempts": [
+  {
+   "kind": "answer",
+   "reply": "```json\n{\n  \"notes\": \"Coit Tower is a single round reinforced-concrete tower on a hilltop, about 64 m high. Its plain fluted shaft rises from a wider base and ends in an open arcaded crown of tall arched openings. The main signature is the round shaft with the arcaded belfry at the top; the surrounding park and drive are not modelled.\",\n  \"parts\": [\n    {\n      \"type\": \"tower\",\n      \"center\": [0, 0],\n      \"y0\": 0,\n      \"material\": \"concrete\",\n      \"colour\": \"#d8d4c8\",\n      \"stages\": [\n        {\"shape\": \"round\", \"width\": 22, \"height\": 6, \"kind\": \"blank\"},\n        {\"shape\": \"round\", \"width\": 17, \"height\": 44, \"kind\": \"blank\"},\n        {\"shape\": \"round\", \"width\": 17, \"height\": 14, \"kind\": \"open\"}\n      ],\n      \"top\": {\"kind\": \"flat\", \"height\": 0.5, \"colour\": \"#d8d4c8\"}\n    }\n  ]\n}\n```",
+   "stop": "end_turn",
+   "input": 4156,
+   "output": 776,
+   "cacheRead": 8401,
+   "cost": 0.0008876100000000002,
+   "ms": 4192,
+   "errors": [],
+   "warnings": []
+  }
+ ],
+ "final": {
+  "status": "ok",
+  "json": {
+   "notes": "Coit Tower is a single round reinforced-concrete tower on a hilltop, about 64 m high. Its plain fluted shaft rises from a wider base and ends in an open arcaded crown of tall arched openings. The main signature is the round shaft with the arcaded belfry at the top; the surrounding park and drive are not modelled.",
+   "parts": [
+    {
+     "type": "tower",
+     "center": [
+      0,
+      0
+     ],
+     "y0": 0,
+     "material": "concrete",
+     "colour": "#d8d4c8",
+     "stages": [
+      {
+       "shape": "round",
+       "width": 22,
+       "height": 6,
+       "kind": "blank"
+      },
+      {
+       "shape": "round",
+       "width": 17,
+       "height": 44,
+       "kind": "blank"
+      },
+      {
+       "shape": "round",
+       "width": 17,
+       "height": 14,
+       "kind": "open"
+      }
+     ],
+     "top": {
+      "kind": "flat",
+      "height": 0.5,
+      "colour": "#d8d4c8"
+     }
+    }
+   ]
+  },
+  "notes": "Coit Tower is a single round reinforced-concrete tower on a hilltop, about 64 m high. Its plain fluted shaft rises from a wider base and ends in an open arcaded crown of tall arched openings. The main signature is the round shaft with the arcaded belfry at the top; the surrounding park and drive are not modelled.",
+  "triangles": 628,
+  "parts": 5
+ },
+ "totals": {
+  "input": 7733,
+  "output": 1903,
+  "cost": 0.00182964,
+  "ms": 10401
+ },
+ "planner": {
+  "prompt": "plan-v2",
+  "reply": "{\"photos\": [\"photo 1: the whole fluted concrete tower on its hilltop, a smooth round shaft with a crown of arched openings near the top, trees below, clear sky\", \"photo 2: the tower rising behind the Telegraph Hill apartment building, showing the full shaft, the arcaded crown and a flag on a pole beside it\", \"photo 3: high oblique aerial of the tower on its green hilltop, the circular drive and park to the front, a plain round plan\"], \"components\": [{\"name\": \"fluted tower\", \"part\": \"tower\", \"where\": \"centre of the hilltop\", \"center\": [0, 0], \"height\": 64, \"settings\": {\"stages\": [{\"shape\": \"round\", \"width\": 22, \"height\": 6, \"kind\": \"blank\"}, {\"shape\": \"round\", \"width\": 17, \"height\": 44, \"kind\": \"blank\"}, {\"shape\": \"round\", \"width\": 17, \"height\": 14, \"kind\": \"open\"}], \"top\": {\"kind\": \"flat\"}, \"colour\": \"#d8d4c8\"}, \"why\": \"photos 1 and 2 show a single round concrete tower with a plain fluted shaft and an arcaded crown; photo 3 shows its round plan on the hilltop\"}]}",
+  "input": 3577,
+  "output": 1127,
+  "cost": 0.00094203,
+  "ms": 6209,
+  "json": {
+   "photos": [
+    "photo 1: the whole fluted concrete tower on its hilltop, a smooth round shaft with a crown of arched openings near the top, trees below, clear sky",
+    "photo 2: the tower rising behind the Telegraph Hill apartment building, showing the full shaft, the arcaded crown and a flag on a pole beside it",
+    "photo 3: high oblique aerial of the tower on its green hilltop, the circular drive and park to the front, a plain round plan"
+   ],
+   "components": [
+    {
+     "name": "fluted tower",
+     "part": "tower",
+     "where": "centre of the hilltop",
+     "center": [
+      0,
+      0
+     ],
+     "height": 64,
+     "settings": {
+      "stages": [
+       {
+        "shape": "round",
+        "width": 22,
+        "height": 6,
+        "kind": "blank"
+       },
+       {
+        "shape": "round",
+        "width": 17,
+        "height": 44,
+        "kind": "blank"
+       },
+       {
+        "shape": "round",
+        "width": 17,
+        "height": 14,
+        "kind": "open"
+       }
+      ],
+      "top": {
+       "kind": "flat"
+      },
+      "colour": "#d8d4c8"
+     },
+     "why": "photos 1 and 2 show a single round concrete tower with a plain fluted shaft and an arcaded crown; photo 3 shows its round plan on the hilltop"
+    }
+   ]
+  }
+ }
+}
