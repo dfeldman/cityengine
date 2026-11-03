@@ -45,6 +45,7 @@ import { rotondeVillette } from './rotonde-villette.ts'
 import { salpetriere } from './salpetriere.ts'
 import { sainteGenevieve } from './sainte-genevieve.ts'
 import { sorbonne } from './sorbonne.ts'
+import { philharmonie } from './philharmonie.ts'
 
 export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   orangerie, jeuDePaume, fondationLouisVuitton, quaiBranly, institutMondeArabe, clunyThermes, guimetRotunda, bourseCommerce,
@@ -52,4 +53,5 @@ export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void>
   sorbonne, chapelleSorbonne, hotelDieu, sainteGenevieve, beauxArts, hopitalSaintLouis, salpetriere, citeDeLaMode, rotondeVillette, pavillonArsenal, collegeDeFrance,
   tourZamansky, pagode, mairie5e, mairie1er, piscineJosephineBaker, zenith, jacquemartAndre,
   mairie13e, tribunal, hexagoneBalard, mobilierNational, reservoirMontsouris, facultePharmacie, faculteMedecine, ensam, prefecturePolice, bnfRichelieu, creditMunicipal, valDeGraceHopital,
+  philharmonie,
 }

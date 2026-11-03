@@ -226,15 +226,15 @@
   },
   {
     "name": "Philharmonie de Paris",
-    "file": "models/paris/philharmonie.glb",
+    "procedural": "philharmonie",
     "osm": [
       "way/21502894"
     ],
     "front": 260,
     "height": 52,
     "stone": false,
-    "note": "As the owner divides it: a flat podium with two ramps from one start on the south plaza, the upper turning left along the eye's lower lip, the lower to a glazed entrance; the inner building at the park side; the eye and its metal wave sheet facing south under the slab; the X on the street side; the leaning slab along the south edge, cantilevered past the street end at 52 m; the folded canopy over the rest, down to the ground at the park side's south corner. Podium lowered to 9 m from the section's 13. Blender: tools/blender/philharmonie.py.",
-    "madeBy": "claude-opus-5-5"
+    "note": "Rebuilt as a TS builder from IGN's LiDAR HD surface model, its orthophoto and the owner's annotated photographs (2026-11-02), in place of the Blender GLB (tools/blender/philharmonie.py): the faceted hill with its summit at 37 m and sawtooth north slope, the 9 m wide blade rising 47 → 52 m along the south edge, the eye's visor and 12.5 m lip with the chrome waves between, the wedge and the X east of it, the 10/21/19 m terraces, the ramps. See src/render/landmarks/paris/museums/philharmonie.ts.",
+    "madeBy": "claude-fable-5-1"
   },
   {
     "name": "Bibliothèque nationale de France — Tour des Lettres",

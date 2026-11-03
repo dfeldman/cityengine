@@ -157,9 +157,60 @@ vec3 skyReflect(vec3 n) {
   float g = pow(max(dot(r, -normalize(sunDir)), 0.0), 60.0);
   return col + sunColour * g * 1.4;
 }
+// one mirror tile of the MIRROR surface (18): its own tilt about the face, polished or matt
+vec3 mirrorTile(vec2 cell, vec3 n, vec3 tt, vec3 bt, vec3 c) {
+  float r1 = hash2(cell);
+  float r2 = hash2(cell + 7.0);
+  float r3 = hash2(cell + 23.0);
+  vec3 nb = normalize(n + tt * (r1 - 0.5) * 0.8 + bt * (r2 - 0.5) * 0.8);
+  float polished = step(0.64, r3);
+  vec3 matt = c * (0.5 + 0.6 * r1);
+  return mix(matt, skyReflect(nb) * 0.8, polished * 0.92);
+}
 vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   vec2 p = faceCoords(n);
   float vert = abs(n.y) < 0.7 ? 1.0 : 0.0;
+  if (sid > 19.5) {
+    // 20 TESSERA: the Philharmonie's forecourt and ramps (owner, 2026-11-03: "NOT metal, a unique multishade tessellation of
+    // tiles ... similar colours"). Irregular stone tiles about 0.55 m across, most of them the pale colour given, one in
+    // four a mid grey and one in ten a dark grey, with a thin joint between. Past 40-110 m the joints go and the tiles
+    // soften toward the mean.
+    vec2 q = p / 0.55;
+    vec2 cell = floor(q);
+    float best = 9.0;
+    float second = 9.0;
+    vec2 pick = vec2(0.0);
+    for (float dx = -1.0; dx < 1.5; dx += 1.0) {
+      for (float dz = -1.0; dz < 1.5; dz += 1.0) {
+        vec2 o = cell + vec2(dx, dz);
+        vec2 at = o + vec2(hash2(o), hash2(o + 17.0));
+        float d = length(q - at);
+        if (d < best) { second = best; best = d; pick = o; } else if (d < second) { second = d; }
+      }
+    }
+    float r = hash2(pick + 41.0);
+    float tone = r < 0.65 ? 0.96 + 0.08 * hash2(pick + 3.0) : r < 0.9 ? 0.72 + 0.1 * hash2(pick + 5.0) : 0.5;
+    float joint = 1.0 - smoothstep(0.04, 0.1, second - best);
+    float near = nearFade(40.0, 110.0);
+    vec3 tile = c * tone * (1.0 - 0.28 * joint);
+    return mix(c * 0.9, tile, near);
+  }
+  if (sid > 17.5) {
+    // 18 MIRROR TILES: the Philharmonie's cladding (owner, 2026-11-03: "small mirror-like tiles. because of the angles,
+    // for any viewer, some are bright and some are dark"). Tiles of about 0.45 m, each hung at its own tilt, a third of
+    // them polished and the rest matt: for any eye the polished ones that happen to face the sky or the sun flash pale
+    // while their neighbours stay dark, and the pattern moves with the eye. Far off, where a tile is a pixel, the same
+    // game is played with 1.4 m patches, blended in as the fine ones fade, and beyond that the face settles to a sheen.
+    vec3 tt = abs(n.y) > 0.7 ? vec3(1.0, 0.0, 0.0) : normalize(vec3(-n.z, 0.0, n.x));
+    vec3 bt = cross(n, tt);
+    float near = nearFade(70.0, 180.0);
+    float mid = nearFade(260.0, 700.0);
+    vec3 fine = mirrorTile(floor(p / 0.45), n, tt, bt, c);
+    vec3 coarse = mirrorTile(floor(p / 1.4) + 101.0, n, tt, bt, c);
+    float facing = max(dot(n, -normalize(vView)), 0.0);
+    vec3 mean = mix(c * 0.9, skyReflect(n) * 0.6, 0.3 + 0.3 * pow(1.0 - facing, 2.0));
+    return mix(mean, mix(coarse, fine, near), max(near, mid * 0.85));
+  }
   if (sid > 16.5) {
     // 17 BLOSSOM: a bed of flowers, its colour the bloom's, in a cell of about 22 cm: a plant to a cell, most with a bloom on the leaf.
     // Far off, the mix of the two. (After the museum's parterre carpet, courtyard_visualizer/garden.js)
@@ -405,8 +456,9 @@ void main(void) {
   vColour = vec4(color.rgb, step(0.4, color.a) * (1.0 - step(0.9, color.a)));
   vView = normalize(wp.xyz - eye);
   vDepth = gl_Position.w;
-  // a surface from the landmark library (SURFACES below), carried as a small alpha: id / 64
-  vSurface = color.a < 0.3 ? floor(color.a * 64.0 + 0.5) : 0.0;
+  // a surface from the landmark library (SURFACES below), carried as a small alpha: id / 64, ids up to 23 (0.36
+  // stays clear of the 0.4 that marks a light, models.ts EMIT)
+  vSurface = color.a < 0.36 ? floor(color.a * 64.0 + 0.5) : 0.0;
 }
 `
 
@@ -417,7 +469,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, tessera: 20 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 
