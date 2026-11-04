@@ -36168,40 +36168,6 @@
  },
  {
   "osm": [
-   "way/449077940"
-  ],
-  "name": "Centre Culturel",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 12,
-   "word": "CENTRE CULTUREL",
-   "seed": 3723
-  },
-  "height": 17.9,
-  "front": -6,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 12."
- },
- {
-  "osm": [
-   "way/449077942"
-  ],
-  "name": "École Primaire Franco-Russe",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "ecole",
-   "p": 12,
-   "word": "ÉCOLE PRIMAIRE FRANCO-RUSSE",
-   "seed": 3725
-  },
-  "height": 18.4,
-  "front": 163,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: ecole, APUR period 12."
- },
- {
-  "osm": [
    "way/457217398"
   ],
   "name": "equipement 457217398",
