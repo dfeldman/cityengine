@@ -266,26 +266,93 @@ function courCarree(y0: number): Face {
     }
   }
 }
-/** The giant order on the outside of the Cour Carrée's Seine and Rivoli sides: a high plain base, tall windows, the balustrade and no roof. */
+/** A medallion on the wall: a round frame proud of it and its dark field (the oculi over the giant order's windows). */
+function medallion(q: MeshBuilder, x: number, y: number, r: number): void {
+  const n = 12
+  for (let i = 0; i < n; i++) {
+    const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2
+    const P = (a: number, rr: number, d: number): [number, number, number] => [x + Math.cos(a) * rr, y + Math.sin(a) * rr, -d]
+    q.quad([P(a0, r * 0.72, 0.14), P(a1, r * 0.72, 0.14), P(a1, r, 0.14), P(a0, r, 0.14)], [0, 0, -1], UV, TRIM, FIXED)
+    q.quad([P(a0, 0, 0.06), P(a1, 0, 0.06), P(a1, r * 0.72, 0.06), P(a0, r * 0.72, 0.06)], [0, 0, -1], UV, shade(STONE, 0.86), FIXED)
+  }
+}
+/**
+ * The outside of the Cour Carrée to the Seine and to the Rivoli (Perrault and Le Vau, 1668), off the owner's view from the Pont des Arts:
+ * a rusticated ground storey of pedimented windows; a giant order of COUPLED pilasters through the two floors over it, a tall window in each
+ * bay under alternating pediments and an oculus or a little attic window above; the entablature, the balustrade, no roof. In the middle a
+ * frontispiece a step out: coupled columns, the great arched window over the gate, the pediment with its relief.
+ */
 const perrault: Face = (q, L, g, D) => {
-  const n = Math.max(1, Math.round(L / 6.8))
+  const n = Math.max(1, Math.round(L / 7.4))
   const b = L / n
+  const m = L / 2
+  const FW = 14
   ground(q, L, 27, g, D, [])
-  cornice(q, 0, L, 9.2, 10, 0.5, TRIM)
+  // the ground storey's rustication: shadowed joints every 0.7 m, and its cornice
+  for (let y = 0.7; y < 9; y += 0.7) rectOn(q, '-z', 0, 0, L, y, y + 0.07, shade(STONE, 0.8), 0.02)
+  cornice(q, 0, L, 9, 10, 0.55, TRIM)
+  fin(q, 0, L, 10, 10.6, 0.12, TRIM)
   for (let i = 0; i < n; i++) {
     const x = (i + 0.5) * b
-    if (!g.some((h) => Math.abs(h.x - x) < h.w / 2 + 1.6)) rectOn(q, '-z', 0, x - 0.9, x + 0.9, 3.4, 7.2, GLASS, 0.06)
-    win(q, x, 11.6, 2.5, 7.8)
-    if (i % 2) pedimentOn(q, '-z', 0, x - 1.8, x + 1.8, 19.8, 1, 0.3, TRIM)
-    else segmentOn(q, '-z', 0, x, 19.8, 3.6, 0.9, TRIM, 0.3)
-    fin(q, x - b / 2 - 0.42, x - b / 2 + 0.42, 10, 24, 0.3, TRIM)
+    const inFront = Math.abs(x - m) < FW + 1
+    const gate = g.some((h) => Math.abs(h.x - x) < h.w / 2 + 1.6)
+    if (!gate) {
+      win(q, x, 2.4, 1.9, 4.6)
+      if (i % 2) pedimentOn(q, '-z', 0, x - 1.5, x + 1.5, 7.3, 0.7, 0.22, TRIM)
+      else segmentOn(q, '-z', 0, x, 7.3, 3, 0.6, TRIM, 0.22)
+    }
+    if (inFront) continue
+    // the tall window and its pediment, then an oculus over the pedimented ones and a little attic window over the others
+    win(q, x, 11.6, 2.4, 6.2)
+    fin(q, x - 1.55, x + 1.55, 11.1, 11.35, 0.25, TRIM)
+    if (i % 2) pedimentOn(q, '-z', 0, x - 1.8, x + 1.8, 18.2, 1, 0.3, TRIM)
+    else segmentOn(q, '-z', 0, x, 18.2, 3.6, 0.85, TRIM, 0.3)
+    if (i % 2) medallion(q, x, 21.4, 1.05)
+    else win(q, x, 20.4, 1.5, 1.8, false)
   }
-  cornice(q, 0, L, 24, 25.6, 1, TRIM)
-  balus(q, 0, L, 25.6, b * 2)
-  // the middle: a pavilion a step out and a pediment
-  const m = L / 2
-  fin(q, m - 11, m + 11, 10, 24, 0.5, COURT)
-  q.quad([[m - 12, 25.6, -1.05], [m + 12, 25.6, -1.05], [m, 29.5, -1.05], [m, 29.5, -1.05]], [0, 0, -1], UV, TRIM, FIXED)
+  // the coupled pilasters at every bay's end, with their capitals
+  for (let i = 0; i <= n; i++) {
+    const xp = i * b
+    if (Math.abs(xp - m) < FW - 0.5) continue
+    for (const s of xp <= 0.1 ? [0.55] : xp >= L - 0.1 ? [-0.55] : [-0.55, 0.55]) {
+      fin(q, xp + s - 0.36, xp + s + 0.36, 10.6, 23.2, 0.32, TRIM)
+      fin(q, xp + s - 0.48, xp + s + 0.48, 23.2, 24, 0.42, shade(TRIM, 1.03))
+    }
+  }
+  // the entablature: architrave, frieze, the cornice, the balustrade
+  fin(q, 0, L, 24, 24.6, 0.45, TRIM)
+  cornice(q, 0, L, 25, 25.8, 1, TRIM)
+  balus(q, 0, L, 25.8, b * 2)
+  // ---- the frontispiece
+  const P = 1.3
+  block(q, m - FW, m + FW, -P, 0, 10.6, 25, COURT)
+  q.quad([[m - FW, 10.6, -P], [m + FW, 10.6, -P], [m + FW, 10.6, 0], [m - FW, 10.6, 0]], [0, -1, 0], UV, BAND, FIXED)
+  const F = new MeshBuilder()
+  // (drawn on the frontispiece's face, then pushed out to it)
+  archOn(F, '-z', 0, m, 11.4, 4.2, 9.6, GLASS, 0.06)
+  rectOn(F, '-z', 0, m - 0.05, m + 0.05, 11.4, 21, PANE, 0.09)
+  for (const s of [-1, 1]) {
+    win(F, m + s * 7.2, 11.8, 2.2, 6)
+    medallion(F, m + s * 7.2, 21.2, 1)
+  }
+  shift(q, F, -P)
+  for (const s of [-12.6, -11, -3.8, -2.2, 2.2, 3.8, 11, 12.6]) classicalColumn(q, m + s, -P - 0.5, 10.6, 24, 0.55, shade(STONE, 1.08), { order: 'corinthian', tier: 'mid', tag: plain, trim: TRIM })
+  block(q, m - FW - 0.6, m + FW + 0.6, -P - 1.2, 0, 24, 25.8, TRIM)
+  // the pediment: the tympanum, its relief, the raking cornices
+  const Y = 25.8, H = 4.6, z = -P - 1.2
+  q.quad([[m - FW - 0.6, Y, z], [m + FW + 0.6, Y, z], [m, Y + H, z], [m, Y + H, z]], [0, 0, -1], UV, TRIM, FIXED)
+  prism(q, m, z + 0.15, Y + 0.3, Y + 3, 1.1, 6, BAND, plain, 0.5)
+  for (const s of [-1, 1]) {
+    q.quad([[m + s * 1.8, Y + 0.3, z - 0.05], [m + s * 9.5, Y + 0.3, z - 0.05], [m + s * 1.8, Y + 2.6, z - 0.05], [m + s * 1.8, Y + 2.6, z - 0.05]], [0, 0, -1], UV, BAND, FIXED)
+    const a: [number, number, number] = [m + s * (FW + 1), Y - 0.1, z - 0.3], c: [number, number, number] = [m, Y + H + 0.2, z - 0.3]
+    q.quad([a, c, [c[0], c[1] + 0.6, c[2]], [a[0], a[1] + 0.6, a[2]]], [0, 0, -1], UV, shade(TRIM, 1.03), FIXED)
+    q.quad([[a[0], a[1] + 0.6, z - 0.3], [c[0], c[1] + 0.6, z - 0.3], [c[0], c[1] + 0.6, 0], [a[0], a[1] + 0.6, 0]], [s * 0.4, 0.92, 0], UV, TRIM, FIXED)
+  }
+}
+/** Copy `F` into `q` pushed `dz` along z (onto a face standing proud of the wall). */
+function shift(q: MeshBuilder, F: MeshBuilder, dz: number): void {
+  for (let i = 2; i < F.positions.length; i += 3) F.positions[i] += dz
+  into(q, F, [0, 0], 1, 0)
 }
 /** Perrault's Colonnade: a high base, the paired columns standing clear of a recessed wall, the end and middle pavilions, the balustrade. */
 const colonnade: Face = (q, L, g, D) => {

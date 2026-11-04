@@ -170,6 +170,28 @@ vec3 mirrorTile(vec2 cell, vec3 n, vec3 tt, vec3 bt, vec3 c) {
 vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   vec2 p = faceCoords(n);
   float vert = abs(n.y) < 0.7 ? 1.0 : 0.0;
+  if (sid > 20.5) {
+    // 21 LOCKS: the Pont des Arts's railings hung with love padlocks (owner, 2026-11-03: "they're really tiny"). Locks about
+    // 5 cm across in staggered rows, overlapping, mostly brass, steel and rust and one in six a bright colour, with the dark
+    // of the mesh between. The colour given is the mean, which is all that is left past 25-70 m.
+    vec2 q = vec2(p.x / 0.05, p.y / 0.042);
+    q.x += 0.5 * mod(floor(q.y), 2.0);
+    vec2 cell = floor(q);
+    vec2 f = fract(q) - 0.5;
+    vec2 jit = vec2(hash2(cell + 7.0), hash2(cell + 13.0)) - 0.5;
+    f -= jit * 0.25;
+    float body = 1.0 - smoothstep(0.36, 0.46, max(abs(f.x) * 1.05, abs(f.y + 0.06) * 1.25));
+    float r = hash2(cell + 29.0);
+    float k = hash2(cell + 53.0);
+    vec3 brass = mix(vec3(0.74, 0.6, 0.32), vec3(0.85, 0.74, 0.46), k);
+    vec3 steel = vec3(0.64, 0.65, 0.66) * (0.8 + 0.3 * k);
+    vec3 rust = mix(vec3(0.42, 0.3, 0.2), vec3(0.55, 0.42, 0.3), k);
+    vec3 bright = k < 0.2 ? vec3(0.78, 0.18, 0.16) : k < 0.4 ? vec3(0.9, 0.5, 0.62) : k < 0.6 ? vec3(0.22, 0.38, 0.72) : k < 0.8 ? vec3(0.26, 0.56, 0.3) : vec3(0.92, 0.88, 0.8);
+    vec3 lock = r < 0.45 ? brass : r < 0.7 ? steel : r < 0.84 ? rust : bright;
+    lock *= 0.85 + 0.3 * (0.5 - f.y);
+    vec3 col = mix(c * 0.35, lock, body);
+    return mix(c, col, nearFade(25.0, 70.0));
+  }
   if (sid > 19.5) {
     // 20 TESSERA: the Philharmonie's forecourt and ramps (owner, 2026-11-03: "NOT metal, a unique multishade tessellation of
     // tiles ... similar colours"). Irregular stone tiles about 0.55 m across, most of them the pale colour given, one in
@@ -469,7 +491,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, tessera: 20 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, tessera: 20, locks: 21 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

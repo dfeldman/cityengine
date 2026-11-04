@@ -24,7 +24,7 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
-import { cartoonMaterial } from './cartoon-material.ts'
+import { cartoonMaterial, surfaceTag } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge, type PackedRail } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
@@ -52,7 +52,7 @@ export interface StructureStyle {
   /** the pier's thickness along the bridge, as a share of the span */
   pier?: number
   cutwater?: 'pointed' | 'round' | 'none'
-  parapet?: 'balustrade' | 'stone' | 'iron'
+  parapet?: 'balustrade' | 'stone' | 'iron' | 'locks'
   lamps?: 'lantern' | 'candelabra' | 'modern' | 'none'
   stone?: Rgb
   iron?: Rgb
@@ -135,7 +135,8 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
   'Pont de Bir-Hakeim': { kind: 'iron', span: 50, rise: 0.25, shape: 'segment', parapet: 'iron', lamps: 'lantern', ribs: 6, cutwater: 'round', metroDeck: { height: 7.5, width: 7.5 } },
   'Pont du Carrousel': { kind: 'stone', arches: 3, rise: 0.45, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern' },
   'Passerelle Léopold-Sédar-Senghor': { kind: 'iron', arches: 1, rise: 0.18, shape: 'segment', parapet: 'iron', lamps: 'none', ribs: 2, iron: [0.45, 0.43, 0.4], timber: true },
-  'Pont des Arts': { kind: 'iron', arches: 7, rise: 0.35, shape: 'segment', cutwater: 'pointed', parapet: 'iron', lamps: 'lantern', ribs: 4, timber: true },
+  // (owner, 2026-11-03, off Street View: a wooden deck, no lamps, and its railings thick with padlocks the length of it)
+  'Pont des Arts': { kind: 'iron', arches: 7, rise: 0.35, shape: 'segment', cutwater: 'pointed', parapet: 'locks', lamps: 'none', ribs: 4, timber: true },
   'Passerelle Debilly': { kind: 'iron', arches: 1, rise: 0.22, shape: 'segment', parapet: 'iron', lamps: 'none', ribs: 2, timber: true },
   'Pont Notre-Dame': { kind: 'stone', arches: 3, rise: 0.6, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
   'Pont au Change': { kind: 'stone', arches: 3, rise: 0.65, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern', medallions: true },
@@ -780,7 +781,13 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   }
   for (let s = 0; s < L - 1e-6; s += 1) {
     const s1 = Math.min(L, s + 1)
-    quad([at(s, -hw, low(s) - 0.08), at(s1, -hw, low(s1) - 0.08), at(s1, hw, low(s1) - 0.08), at(s, hw, low(s) - 0.08)], [0, 1, 0], style.timber ? [0.5, 0.38, 0.26] : [0.5, 0.49, 0.46])
+    quad([at(s, -hw, low(s) - 0.08), at(s1, -hw, low(s1) - 0.08), at(s1, hw, low(s1) - 0.08), at(s, hw, low(s) - 0.08)], [0, 1, 0], style.timber ? [0.5, 0.47, 0.42] : [0.5, 0.49, 0.46])
+  }
+  // the timber deck's planks: a dark seam across it every 0.3 m
+  if (style.timber) {
+    for (let s = 0.3; s < L - 0.05; s += 0.3) {
+      quad([at(s, -hw, low(s) - 0.07), at(s + 0.035, -hw, low(s) - 0.07), at(s + 0.035, hw, low(s) - 0.07), at(s, hw, low(s) - 0.07)], [0, 1, 0], [0.3, 0.26, 0.21])
+    }
   }
 
   // ---- the cornice, the parapets, the mascarons
@@ -807,7 +814,25 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     }
     // the parapet itself, standing on the deck's edge
     const inner = o - side * 0.35
-    if (para === 'iron') {
+    if (para === 'locks') {
+      // the Pont des Arts: its iron railing hung with padlocks, brass and steel mostly, the rest every colour, on both faces of the mesh
+      // (the locks themselves are the shader's: render/cartoon-material.ts surface 21, 5 cm each, the mean colour here)
+      const tag = surfaceTag('locks')
+      for (let s = 0; s < L - 1e-6; s += 1) {
+        const s1 = Math.min(L, s + 1)
+        for (const f of [1, -1]) {
+          const off = o - side * 0.05 + f * side * 0.03
+          quad([at(s, off, top(s) + 0.12), at(s1, off, top(s1) + 0.12), at(s1, off, top(s1) + 0.98), at(s, off, top(s) + 0.98)], n0(f * side), [0.64, 0.54, 0.38], tag)
+        }
+      }
+      // the handrail and the posts
+      for (let s = 0; s < L - 1e-6; s += 1) {
+        const s1 = Math.min(L, s + 1)
+        quad([at(s, o - side * 0.12, top(s) + 1.02), at(s1, o - side * 0.12, top(s1) + 1.02), at(s1, o + side * 0.02, top(s1) + 1.02), at(s, o + side * 0.02, top(s) + 1.02)], [0, 1, 0], iron)
+        quad([at(s, o + side * 0.02, top(s) + 0.96), at(s1, o + side * 0.02, top(s1) + 0.96), at(s1, o + side * 0.02, top(s1) + 1.02), at(s, o + side * 0.02, top(s) + 1.02)], n0(side), iron)
+      }
+      for (let s = 0; s <= L; s += 2.4) blockAt(out, W(s, o - side * 0.05), top(s), top(s) + 1.04, 0.05, 0.06, ux, uz, iron)
+    } else if (para === 'iron') {
       for (let s = 0; s < L - 1e-6; s += 1) {
         const s1 = Math.min(L, s + 1)
         for (const y of [0.1, 1.0]) {

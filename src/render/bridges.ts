@@ -176,6 +176,14 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
     // the kerb faces
     wall(out, f, -road, 0.02, 0.15, PAVING, 1)
     wall(out, f, road, 0.02, 0.15, PAVING, -1)
+  } else if (e.surface === 'wood') {
+    // a timber footbridge (the Pont des Arts, owner 2026-11-03): weathered planks, the seams across them every 0.3 m
+    strip(out, f, -outer, outer, 0.05, [0.5, 0.47, 0.42])
+    const total = f[f.length - 1].s
+    for (let s = 0.3; s < total - 0.05; s += 0.3) {
+      const a = frameAt(f, s), b = frameAt(f, s + 0.035)
+      out.quad([[a.x - a.nx * outer, a.y + 0.06, a.z - a.nz * outer], [a.x + a.nx * outer, a.y + 0.06, a.z + a.nz * outer], [b.x + b.nx * outer, b.y + 0.06, b.z + b.nz * outer], [b.x - b.nx * outer, b.y + 0.06, b.z - b.nz * outer]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.3, 0.26, 0.21], FIXED)
+    }
   } else {
     strip(out, f, -outer, outer, 0.05, PAVING)
   }
