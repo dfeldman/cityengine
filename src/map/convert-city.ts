@@ -40,6 +40,7 @@ export function convertIndex(v2: CityIndex, zFloor: number, dict: MapDict, tiles
     tiles,
   }
   if (v2.box) m.box = v2.box
+  if (v2.detail) m.detail = v2.detail
   if (v2.region) m.region = v2.region
   if (v2.skyline) m.skyline = v2.skyline
   // the coarse grid keeps its v2 shape; the writer (tools/v3-writer.ts) puts its numbers in v3/terrain.bin

@@ -109,6 +109,8 @@ export class Minimap {
    * Drawn from `index.json`'s `box`, which is the real extent of the bake.
    */
   box: { x0: number; x1: number; z0: number; z1: number } | null = null
+  /** where the city is modelled, when that is not the whole box (CityPackage `detail`: Paris's regions to Versailles) */
+  detail: { name: string; margin: number; rings?: number[][]; line?: number[] }[] | null = null
   /** a click on the large map: the world point clicked; `jump` with shift held (the game goes there),
    *  else the game sets it as the GPS destination */
   onPick: ((p: Point, jump: boolean) => void) | null = null
@@ -287,6 +289,42 @@ export class Minimap {
       ctx.lineWidth = 2
       ctx.setLineDash([9, 7])
       ctx.strokeRect(b.x0 * scale, -b.z1 * scale, (b.x1 - b.x0) * scale, (b.z1 - b.z0) * scale)
+      ctx.restore()
+    }
+    // …and inside it, what is MODELLED: the detail box and the regions, the rest of the box being ground and massing
+    if (this.large && this.detail) {
+      ctx.save()
+      ctx.strokeStyle = 'rgba(70,200,230,0.8)'
+      ctx.fillStyle = 'rgba(70,200,230,0.10)'
+      ctx.lineJoin = 'round'
+      ctx.lineCap = 'round'
+      const trace = (f: number[], close: boolean): void => {
+        ctx.beginPath()
+        for (let i = 0; i + 1 < f.length; i += 2) (i === 0 ? ctx.moveTo : ctx.lineTo).call(ctx, f[i] * scale, -f[i + 1] * scale)
+        if (close) ctx.closePath()
+      }
+      for (const d of this.detail) {
+        for (const r of d.rings ?? []) {
+          trace(r, true)
+          ctx.fill()
+          // the margin as a pale band either side of the edge, the edge itself as a thin line
+          if (d.margin * scale > 1) {
+            ctx.lineWidth = 2 * d.margin * scale
+            ctx.strokeStyle = 'rgba(70,200,230,0.18)'
+            ctx.stroke()
+            ctx.strokeStyle = 'rgba(70,200,230,0.8)'
+          }
+          ctx.lineWidth = 1.5
+          ctx.stroke()
+        }
+        if (d.line) {
+          trace(d.line, false)
+          ctx.lineWidth = Math.max(2, 2 * d.margin * scale)
+          ctx.strokeStyle = 'rgba(70,200,230,0.35)'
+          ctx.stroke()
+          ctx.strokeStyle = 'rgba(70,200,230,0.8)'
+        }
+      }
       ctx.restore()
     }
     const cells: number[] = []

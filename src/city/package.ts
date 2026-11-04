@@ -366,6 +366,9 @@ export interface PackedRail {
   disused?: true
 }
 
+/** a modelled area for the map: rings, or a line drawn `margin` metres either side (tools/detail.ts) */
+export interface DetailOutline { name: string; margin: number; rings?: number[][]; line?: number[] }
+
 export interface CityPackage {
   /** the roundabouts OSM maps (junction=roundabout rings, tools/bake.ts), for the ride graph beside the hand-made ones */
   roundabouts?: { lat: number; lon: number; r: number; R: number; name?: string }[]
@@ -375,6 +378,11 @@ export interface CityPackage {
   radius: number
   /** the rideable box in local metres (x east, z north); absent on an older package, which is ±radius */
   box?: { x0: number; x1: number; z0: number; z1: number }
+  /**
+   * Where the city is MODELLED, when that is not the whole box (tools/detail.ts, docs/VERSAILLES.md): the detail box as
+   * a ring, then each detail region's rings or line (+ margin), local metres flat [x, z, …]. For the map; absent = the box.
+   */
+  detail?: DetailOutline[]
   /** what the ground is where nothing is mapped */
   ground: 'grass' | 'sand' | 'dirt'
   /** regional character (src/city/regions.json) */

@@ -149,6 +149,8 @@ export interface MapIndex {
   datumMsl?: number
   radius: number
   box?: CityIndex['box']
+  /** where the city is modelled, local metres (CityPackage `detail`) */
+  detail?: CityIndex['detail']
   ground: CityIndex['ground']
   region?: string
   start: CityIndex['start']

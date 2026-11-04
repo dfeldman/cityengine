@@ -12,6 +12,22 @@
  */
 import type { StyleId } from '../src/city/facade.ts'
 import type { RingFormThresholds } from '../src/city/ring-forms.ts'
+import { VERSAILLES_REGIONS } from './regions/versailles.ts'
+
+/**
+ * A DETAIL REGION beyond the detail box (docs/VERSAILLES.md): modelled like the city inside its rings, or along its
+ * line, plus `margin` metres. Nothing between regions is fetched but the ground and the fringe's massing, which is
+ * how Paris reaches Versailles without baking the suburbs on the way.
+ */
+export interface DetailRegion {
+  name: string
+  /** metres beyond the rings' edges (or either side of the line) that still count as inside */
+  margin: number
+  /** [lat, lon] rings, each closed implicitly; inside ANY of them is inside the region */
+  rings?: [number, number][][]
+  /** a [lat, lon] polyline: a corridor `margin` metres either side */
+  line?: [number, number][]
+}
 
 export interface CitySpec {
   id: string
@@ -32,6 +48,16 @@ export interface CitySpec {
    * Bridge's far end is in the box). Absent sides fall back to the box's.
    */
   detail?: { west?: number; east?: number; south?: number; north?: number }
+  /**
+   * More detail beyond the detail box: rings and corridors (tools/detail.ts). The box must hold them; the coarse and
+   * fine ground cover the whole box, the city data only the detail box and these.
+   */
+  regions?: DetailRegion[]
+  /**
+   * The WIDE fetch (roads, rails, water over the whole box outside the detail): San Francisco's bridges need it.
+   * False where the box is grown only to hold regions, or the wide query would bake every suburban street between.
+   */
+  wide?: boolean
   /**
    * Whether the city is offered to the player. The work has gone into San Francisco and Central Paris, and a
    * half-built city in the menu is worse than no city: the others keep their specs (the boxes, the style
@@ -135,7 +161,17 @@ export const CITIES: CitySpec[] = [
      * statue and view keeps its place. Was 6.7 × 3.5 km (lon 2.286–2.378, lat 48.845–48.876). The custom landmarks stay
      * in the core.
      */
-    box: { west: 8355, east: 5715, north: 4175, south: 4510 },
+    /*
+     * TO VERSAILLES (owner, 2026-11-04: "we want the player to be able to visit Versailles … without the hundreds of
+     * thousands of generic buildings and roads from surrounding suburbs"): the box reaches west to the Parc de Versailles
+     * (lon 2.0775) and south past the Pièce d'eau des Suisses (48.7927), but the city is modelled only in the DETAIL box —
+     * the box of before, unchanged to the metre so every cached fetch of central Paris still answers — and the regions
+     * along the ride (docs/VERSAILLES.md). Was box: { west: 8355, east: 5715, north: 4175, south: 4510 }.
+     */
+    box: { west: 19000, east: 5715, north: 4175, south: 7900 },
+    detail: { west: 8355, east: 5715, north: 4175, south: 4510 },
+    regions: VERSAILLES_REGIONS,
+    wide: false,
     ground: 'grass',
     styles: [
       // Haussmann's Paris: the boulevards and the west are his; the older centre keeps the Marais's mix
@@ -348,6 +384,27 @@ export const CITIES: CitySpec[] = [
       { id: 'stucco', weight: 2 },
     ],
     note: 'A test area: the Japanese Tea Garden, for its landscape (tea-garden-landscape.ts, docs/TEA-GARDEN.md).',
+  },
+  /*
+   * A test of DETAIL REGIONS (docs/VERSAILLES.md): a 300 m detail box on the Place d'Armes, and Paris's own Versailles
+   * regions — the park and the old town — in a box grown to hold them, with no wide fetch. Bakes the multi-region code
+   * end to end in minutes, where Paris takes hours.
+   */
+  {
+    id: 'versailles-mini',
+    live: false,
+    test: true,
+    region: 'paris',
+    name: 'Versailles test area (detail regions)',
+    centre: { lat: 48.8044, lon: 2.1269 },
+    radius: 300,
+    box: { west: 3800, east: 1500, north: 2700, south: 1600 },
+    detail: { west: 300, east: 300, north: 300, south: 300 },
+    regions: VERSAILLES_REGIONS.filter((r) => r.name === 'Parc de Versailles' || r.name === 'Versailles, the old town'),
+    wide: false,
+    ground: 'grass',
+    styles: [{ id: 'classical', weight: 3 }, { id: 'haussmann', weight: 2 }],
+    note: 'A test area: detail regions beyond the detail box (tools/detail.ts).',
   },
 ]
 

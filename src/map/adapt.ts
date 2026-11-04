@@ -26,7 +26,7 @@ const FURNITURE_KIND = new Map(Object.entries(FURNITURE_TYPE).map(([k, v]) => [v
 export function adaptIndex(m: MapIndex): CityIndex {
   return {
     id: m.id, name: m.name, origin: m.origin, radius: m.radius, ground: m.ground, start: m.start,
-    ...(m.box ? { box: m.box } : {}), ...(m.region ? { region: m.region } : {}),
+    ...(m.box ? { box: m.box } : {}), ...(m.detail ? { detail: m.detail } : {}), ...(m.region ? { region: m.region } : {}),
     ...(m.terrain ? { terrain: m.terrain } : {}), ...(m.skyline ? { skyline: m.skyline } : {}),
     // the sea's surface in the code frame: the bake writes `datumMsl` only for a city with a sea (convert-city.ts)
     ...(typeof m.datumMsl === 'number' ? { sea: -m.datumMsl } : {}),

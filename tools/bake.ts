@@ -34,10 +34,11 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
-import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
+import { CITIES, bboxOf, city, detailBboxOf, detailOf, extentOf, type CitySpec } from './cities.ts'
+import { detailKm2, detailOutlines, detailTest, filterToRegion, mergeResults, regionBbox, regionsOf } from './detail.ts'
 import { joinNearMisses } from './gaps.ts'
 import { bakeGardens, rowPoints } from './gardens/index.ts'
-import { bridgesQuery, campusQuery, fencesQuery, gardenPartsQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
+import { bridgesQuery, campusQuery, fencesQuery, gardenPartsQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon, type OverpassResult } from './overpass.ts'
 
 /** the trees a city plants by hand (data/trees/<city>.json: the Japanese Tea Garden's lanes), local metres */
 function handTreesOf(id: string, toLocal: (lat: number, lon: number) => { x: number; z: number }): Planting[] {
@@ -124,6 +125,14 @@ const OUT = SHIPPED
 const DOCS = resolve(import.meta.dirname, '..', 'docs')
 /** how far beyond the box the fringe of plain massing reaches, metres */
 const FRINGE = 700
+/** …and beyond each detail region (docs/VERSAILLES.md: 300 m is ~10k buildings round the ride to Versailles) */
+const REGION_FRINGE = 300
+/**
+ * The coarse ground's reach beyond the box, metres, at most: the box's largest half-width, capped. Paris's box grew to
+ * 19 km west to hold Versailles, which uncapped would have made its coarse grid four times the size. 9800 is San
+ * Francisco's own, so it is unchanged.
+ */
+const COARSE_PAD_MAX = 9800
 /*
  * How big a `park`/`wood` polygon has to be before the bake treats it as open country: four hectares, a
  * 200 m square. Deliberately far above the per-TILE threshold the renderer uses (10 000 m², `default.park.
@@ -135,6 +144,23 @@ const FRINGE = 700
 const PARK_RING_M2 = 40000
 
 const bbox = (c: CitySpec, pad = 0): Bbox => bboxOf(c, pad)
+
+/**
+ * A DETAIL-ONLY query: over the detail box exactly as before (the same query text, so its cache answers), and over
+ * each detail region's bbox, cut down to the region (tools/detail.ts `filterToRegion`; docs/VERSAILLES.md).
+ */
+async function overpassDetail(query: (b: Bbox) => string, spec: CitySpec, step?: number, single?: number): Promise<OverpassResult> {
+  const main = await overpassTiled(query, detailBboxOf(spec), step, single)
+  const regs = regionsOf(spec)
+  if (regs.length === 0) return main
+  const parts = [main]
+  for (const r of regs) parts.push(filterToRegion(await overpassTiled(query, regionBbox(r), step, single), r))
+  return mergeResults(parts)
+}
+
+/** a query over the WHOLE box — or the detail only, where the box has no wide layer (`wide: false`: grown for regions) */
+const overpassBox = (query: (b: Bbox) => string, spec: CitySpec, step?: number, single?: number): Promise<OverpassResult> =>
+  spec.wide === false ? overpassDetail(query, spec, step, single) : overpassTiled(query, bbox(spec), step, single)
 
 /** Where a region's landmark entries stand by point (lat, lon and a size): each one's centre and the half of its larger side. */
 function landmarkSpots(region: string): { lat: number; lon: number; r: number }[] {
@@ -357,8 +383,9 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   const detailBox = detailBboxOf(spec)
   const wholeBox = bbox(spec)
-  const near = await overpassTiled(cityQuery, detailBox)
-  const wider = sameBox(detailBox, wholeBox) ? { ways: [], nodes: [], relations: [] } : await overpassTiled(wideQuery, wholeBox)
+  const near = await overpassDetail(cityQuery, spec)
+  // (none where the box was grown only to hold detail regions: it would bake every suburban street between them)
+  const wider = spec.wide === false || sameBox(detailBox, wholeBox) ? { ways: [], nodes: [], relations: [] } : await overpassTiled(wideQuery, wholeBox)
   const seenWay = new Set(near.ways.map((w) => w.id))
   const seenNode = new Set(near.nodes.map((n) => n.id))
   const seenRel = new Set(near.relations.map((r) => r.id))
@@ -372,7 +399,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // has not mapped them — each a polyline, its ends joined to the paths beside them (joinNearMisses below)
   {
     // (a light query: big chunks, so a busy Overpass is asked four times rather than twenty)
-    const got = await overpassTiled(stepsQuery, bbox(spec), 3200).catch((e) => {
+    const got = await overpassBox(stepsQuery, spec, 3200).catch((e) => {
       console.warn(`  steps: not fetched (${String(e).slice(0, 120)})`)
       return { ways: [] as OsmWay[] }
     })
@@ -390,7 +417,7 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   // the hospital, university and college grounds (tools/overpass.ts campusQuery), for dressing the buildings on them
   // (a multipolygon's grounds too — Galileo High's are a relation — as one way per outer ring)
-  const campusWays = await overpassTiled(campusQuery, bbox(spec), 3200).then((g) => [...g.ways,
+  const campusWays = await overpassBox(campusQuery, spec, 3200).then((g) => [...g.ways,
     ...(g.relations ?? []).flatMap((r) => outerRings(r).filter((q) => q.length >= 4).map((q) => ({ type: 'way' as const, id: r.id, nodes: [], geometry: q, tags: r.tags }) as unknown as OsmWay))]).catch((e) => {
     console.warn(`  campuses: not fetched (${String(e).slice(0, 120)})`)
     return [] as OsmWay[]
@@ -564,7 +591,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * the id space every relation building uses), so the coverage, `partOf` and dressing below treat them exactly as
    * part ways. Own query (overpass.ts `partRelationsQuery`); none fetched only costs those buildings.
    */
-  const partRels = await overpassTiled(partRelationsQuery, detailBboxOf(spec)).catch((e) => {
+  const partRels = await overpassDetail(partRelationsQuery, spec).catch((e) => {
     console.warn(`  part relations: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
     return { ways: [] as OsmWay[], relations: [] as typeof relations }
   })
@@ -1103,12 +1130,12 @@ async function bake(spec: CitySpec): Promise<void> {
   if (streetRegion.roadPaint === 'paris') parisParkingLanes(kept, buildings)
 
   // ---- the green and the wet, and the paved squares (their own query: only as areas, never as streets)
-  const squares = await overpassTiled(squaresQuery, detailBboxOf(spec)).catch((e) => {
+  const squares = await overpassDetail(squaresQuery, spec).catch((e) => {
     console.warn(`  squares: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
     return { ways: [] as OsmWay[], relations: [] as typeof relations }
   })
   // the bare ground — sand and dirt — on its own query, so the street query's cache is untouched (#200)
-  const bare = await overpassTiled(sandQuery, detailBboxOf(spec)).catch((e) => {
+  const bare = await overpassDetail(sandQuery, spec).catch((e) => {
     console.warn(`  sand: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
     return { ways: [] as OsmWay[], relations: [] as typeof relations }
   })
@@ -1406,6 +1433,7 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   if (spec.region === 'paris') {
     const rings = await import('./paris-apur.ts').then((m) => m.fetchApurRings()).catch((e: unknown) => { console.warn(`  apur rings: not fetched (${String(e).slice(0, 120)})`); return [] })
+    const apurIn = detailTest(spec)
     const CELL = 40
     const cellsOf = new Map<string, { x: number; z: number }[][]>()
     const file = (r: { x: number; z: number }[]): void => {
@@ -1433,6 +1461,9 @@ async function bake(spec: CitySpec): Promise<void> {
       for (let k = 0; k < flat.length; k += 2) pts.push(proj.toLocal({ lon: flat[k], lat: flat[k + 1] }))
       if (pts.length < 3 || area(pts) < 15) return
       const c = centroid(pts)
+      // (only where the city is modelled: APUR covers all of Paris, and a city whose detail is elsewhere — the Versailles
+      //  test area — took 106,000 of them. Paris's detail box holds the whole survey, so there it drops nothing)
+      { const g = proj.toLatLon(c); if (!apurIn(g.lat, g.lon)) return }
       if (covered(c.x, c.z)) return
       if (spots.some((s) => Math.hypot(s.x - c.x, s.z - c.z) < s.r + 4)) return
       if (pts.some((q) => covered(q.x + (c.x - q.x) * 0.15, q.z + (c.z - q.z) * 0.15))) return
@@ -1582,7 +1613,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * world gets a grid, which is what the renderer drapes everything else over.
    */
   // the whole grid, which reaches a box's largest half-width beyond it (below)
-  const box = bbox(spec, Math.max(...Object.values(extentOf(spec))))
+  const box = bbox(spec, Math.min(COARSE_PAD_MAX, Math.max(...Object.values(extentOf(spec)))))
   /*
    * TWO grids, from TWO zooms, and the pairing is the whole of BUGS.md #206.
    *
@@ -1633,7 +1664,7 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   // (a box that is not square: its own extent each side, padded by its largest half-width)
   const ext = extentOf(spec)
-  const tpad = Math.max(ext.west, ext.east, ext.south, ext.north)
+  const tpad = Math.min(COARSE_PAD_MAX, Math.max(ext.west, ext.east, ext.south, ext.north))
   const tx0 = Math.floor((-ext.west - tpad) / STEP) * STEP
   const tz0 = Math.floor((-ext.south - tpad) / STEP) * STEP
   const cols = Math.ceil((ext.east + tpad - tx0) / STEP) + 1
@@ -3330,6 +3361,29 @@ async function bake(spec: CitySpec): Promise<void> {
       })
       for (const w of f.ways) if (!seen.has(w.id)) { seen.add(w.id); fringeWays.push(w) }
     }
+    /*
+     * …and round each DETAIL REGION, `REGION_FRINGE` deep (owner, 2026-11-04: "we'll need low-detail or fringe massing
+     * around the new sections"): the towns beside the parks as massing, so the forest does not end in a field. Only
+     * outside every region and the detail box — inside them the city's own buildings stand.
+     */
+    const inDetail = detailTest(spec)
+    const regionFringe = new Set<number>()
+    for (const r of regionsOf(spec)) {
+      const f = await overpassTiled(fringeQuery, regionBbox(r, REGION_FRINGE), 1500, 4000).catch((e) => {
+        console.warn(`  fringe round ${r.name}: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+        return { ways: [] as OsmWay[] }
+      })
+      for (const w of f.ways) {
+        if (seen.has(w.id) || !w.geometry || w.geometry.length < 4) continue
+        const g = w.geometry.slice(0, -1)
+        const lat = g.reduce((a, q) => a + q.lat, 0) / g.length, lon = g.reduce((a, q) => a + q.lon, 0) / g.length
+        if (inDetail(lat, lon) || !inDetail(lat, lon, REGION_FRINGE)) continue
+        seen.add(w.id); fringeWays.push(w); regionFringe.add(w.id)
+      }
+    }
+    // the box the strips' buildings must lie outside: the DETAIL box where the box was grown for regions (Paris's grew
+    // over its own west strip), the box itself elsewhere (San Francisco's east strip is inside its box, and stays out)
+    const shut = regionsOf(spec).length ? detailOf(spec) : ext
     for (const w of fringeWays) {
       if (!w.geometry || w.geometry.length < 4 || w.tags['building:part']) continue
       // not one the city already has: a building straddling the box's edge came back from both queries
@@ -3338,7 +3392,7 @@ async function bake(spec: CitySpec): Promise<void> {
       if (ring.length < 3 || area(ring) < 20) continue
       const c = centroidOf(ring)
       // only outside the box: inside it the city's own buildings stand
-      if (c.x >= -ext.west && c.x <= ext.east && c.z >= -ext.south && c.z <= ext.north) continue
+      if (!regionFringe.has(w.id) && c.x >= -shut.west && c.x <= shut.east && c.z >= -shut.south && c.z <= shut.north) continue
       const ccwRing = ccw(ring)
       const own = withLevels(w.tags, ring)
       const p = getBuildingParamsFromOSMTags(own.tags) as {
@@ -3352,14 +3406,15 @@ async function bake(spec: CitySpec): Promise<void> {
       fringe.push({ id: w.id, ring: packPoints(ccwRing), height: Math.round(height * 10) / 10, style: styleId,
         roof: roof.roof, roofHeight: roof.roofHeight, roofColour: roof.roofColour })
     }
-    console.log(`  fringe: ${fringe.length} buildings in the ${FRINGE} m round the box`)
+    console.log(`  fringe: ${fringe.length} buildings in the ${FRINGE} m round the box`
+      + (regionFringe.size ? `, ${regionFringe.size} fetched round the detail regions` : ''))
   }
 
   // ---- street furniture, from its own small query
   const furniture: PackedFurniture[] = []
   {
     // optional: a busy Overpass must not stop a bake, it only leaves the street furniture out
-    const f = await overpassTiled(furnitureQuery, detailBboxOf(spec)).catch((e) => {
+    const f = await overpassDetail(furnitureQuery, spec).catch((e) => {
       console.warn(`  furniture: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return { nodes: [] as { lat: number; lon: number; tags: Record<string, string> }[] }
     })
@@ -3770,6 +3825,7 @@ async function bake(spec: CitySpec): Promise<void> {
     id: spec.id, name: spec.name, origin: spec.centre, radius: spec.radius, ground: spec.ground, region: spec.region,
     seaLevel,
     box: { x0: -ext.west, x1: ext.east, z0: -ext.south, z1: ext.north },
+    ...(regionsOf(spec).length ? { detail: detailOutlines(spec, (g) => proj.toLocal(g)) } : {}),
     start: { edgeId: start.e.id, s: 0 },
     edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, fringe, roundabouts,
     ...(sportsCourts.length ? { courts: sportsCourts } : {}),
@@ -3796,7 +3852,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * untouched; `barrier` is a kept key in the local extract, so it costs no network.
    */
   {
-    const got = await overpassTiled(wallsQuery, detailBboxOf(spec)).catch((e) => {
+    const got = await overpassDetail(wallsQuery, spec).catch((e) => {
       console.warn(`  walls: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return null
     })
@@ -3813,7 +3869,7 @@ async function bake(spec: CitySpec): Promise<void> {
      * as bars — or stone where OSM says a wall — and drawn by the city (render/city.ts `railings`).
      */
     if (spec.region === 'paris') {
-      const fences = await overpassTiled(fencesQuery, detailBboxOf(spec)).catch((e) => {
+      const fences = await overpassDetail(fencesQuery, spec).catch((e) => {
         console.warn(`  fences: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
         return null
       })
@@ -3868,21 +3924,24 @@ async function bake(spec: CitySpec): Promise<void> {
   let gardenRows: Planting[] = []
   let gardenClears: { x: number; z: number }[][] = []
   if (spec.region === 'paris') {
-    const got = await overpassTiled(gardenPartsQuery, detailBboxOf(spec)).catch((e) => {
+    const got = await overpassDetail(gardenPartsQuery, spec).catch((e) => {
       console.warn(`  garden parts: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return null
     })
     const g = bakeGardens(got?.ways ?? [], (q) => proj.toLocal(q))
     pkg.garden = g.garden
     gardenClears = g.clearMapped
-    gardenRows = g.rows.flatMap((r, ri) => rowPoints(r).filter((p) => !r.osm || !g.clearMapped.some((c) => inside(c, p.x, p.z))).map((p, i) => ({
+    // (the hand-traced plans are Paris-wide: only those where the city is modelled, so a test area elsewhere has none)
+    const planIn = detailTest(spec)
+    const modelled = (p: { x: number; z: number }): boolean => { const q = proj.toLatLon(p); return planIn(q.lat, q.lon, 50) }
+    gardenRows = g.rows.flatMap((r, ri) => rowPoints(r).filter((p) => modelled(p) && (!r.osm || !g.clearMapped.some((c) => inside(c, p.x, p.z)))).map((p, i) => ({
       ...p, height: r.h ?? 11 + ((ri * 7 + i * 3) % 5), spin: (i * 2.399) % 6.28, park: true, ...(r.form ? { form: formCode(r.form) } : {}),
     })))
     console.log(`  gardens: ${g.counts.hedges} hedges, ${g.counts.beds} beds and ${g.counts.rows} tree rows from OSM, ${g.counts.plans} plans traced; ${gardenRows.length} trees in rows`)
   }
   // the bridges' outlines, what each bridge's structure is built from (render/bridges.ts)
   {
-    const got = await overpassTiled(bridgesQuery, bbox(spec)).catch((e) => {
+    const got = await overpassBox(bridgesQuery, spec).catch((e) => {
       console.warn(`  bridges: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return null
     })
@@ -3928,7 +3987,8 @@ async function bake(spec: CitySpec): Promise<void> {
   // a ceiling by AREA, not per city: 1,900 over the Marais's box is ~680 a square kilometre, and a city-wide
   // 1,900 would have left twenty square kilometres of central Paris almost bare
   const ex = extentOf(spec)
-  const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
+  // (the area MODELLED where there are detail regions: Paris's box grew by the empty country on the way to Versailles)
+  const km2 = regionsOf(spec).length ? detailKm2(spec) : ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
   // (Paris twice over: OSM maps 166 000 of its trees — the city's own register — before the Bois's forest is planted)
   const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2 * (spec.region === 'paris' ? 2 : 1)))
   // the city's own record of its street trees, where the region has one (SF: tools/sf-trees.ts), in place of the
@@ -4646,7 +4706,7 @@ async function main(): Promise<void> {
       if (pkg.areas.length < before) console.log(`  ${before - pkg.areas.length} reserve-sized green areas dropped`)
       const proj = new Projection(pkg.origin)
       const ex = extentOf(spec)
-      const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
+      const km2 = regionsOf(spec).length ? detailKm2(spec) : ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
       const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2 * (spec.region === 'paris' ? 2 : 1)))
       const street = spec.streetTrees === 'datasf'
         ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])

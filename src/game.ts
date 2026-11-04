@@ -1875,6 +1875,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   minimap.setRide([...rides.edges.values()].map((e) => e.points))
   // the baked box, so the map shows where the world actually ends (BUGS.md #163)
   minimap.box = index.box ?? null
+  minimap.detail = index.detail ?? null
   /*
    * The GPS (PARIS_EXPAND §6 item 11): a click on the large map sets the destination, shift-click goes there.
    * The route is re-planned from the rider every second (so a wrong turn is simply a new route), shown on the

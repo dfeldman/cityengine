@@ -91,6 +91,7 @@ export interface CityIndex {
   origin: { lat: number; lon: number }
   radius: number
   box?: CityPackage['box']
+  detail?: CityPackage['detail']
   ground: CityPackage['ground']
   region?: string
   start: CityPackage['start']
@@ -322,7 +323,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
   }
 
   const index: Omit<CityIndex, 'tiles'> = {
-    id: pkg.id, name: pkg.name, origin: pkg.origin, radius: pkg.radius, box: pkg.box, ground: pkg.ground,
+    id: pkg.id, name: pkg.name, origin: pkg.origin, radius: pkg.radius, box: pkg.box, ...(pkg.detail ? { detail: pkg.detail } : {}), ground: pkg.ground,
     region: pkg.region, start: pkg.start, terrain: pkg.terrain, sea: pkg.seaLevel ?? null, skyline: pkg.skyline, landmarks: pkg.landmarks ?? [],
     water: pkg.areas.filter((a) => a.kind === 'water'),
     ...(pkg.walls && pkg.walls.length > 0 ? { walls: pkg.walls } : {}),
