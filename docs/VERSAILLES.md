@@ -85,5 +85,6 @@ ground, not a hole.
   stall valve (game.ts STALL_LIMIT → `traffic.squeezeAround`) only parts moving traffic. Hence `without=solid` above.
 - **The park interior is not rideable by bike**: its allées are footway/track, outside the bike graph (the Grand
   Canal's west end is 948 m from a bike node). A `trails: bike` zone for the park would open them.
-- `tests/gardens.test.ts` pins the gardens inside the old box (lon > 2.19); the Versailles garden plans need it
-  widened to the box.
+- The stall is only on the long route: the same streets to Quai Carnot (48.8403, 2.2214) ride clean on the old bake
+  and the new alike, so the bake did not move a bay into that lane; the long GPS route steers into it.
+- `tests/gardens.test.ts` now takes its bounds from the box, so the Versailles garden plans stand in it.

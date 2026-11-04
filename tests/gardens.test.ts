@@ -5,6 +5,10 @@
 import { describe, expect, it } from 'vitest'
 import { bakeGardens, rowPoints } from '../tools/gardens/index.ts'
 import { GARDENS } from '../tools/gardens/paris.ts'
+import { bboxOf, city } from '../tools/cities.ts'
+
+/** the Paris box, which grows with the detail regions (docs/VERSAILLES.md) */
+const BOX = bboxOf(city('paris-centre'))
 
 const local = (q: { lat: number; lon: number }): { x: number; z: number } => ({ x: (q.lon - 2.332) * 73270, z: (q.lat - 48.8605) * 111320 })
 
@@ -13,10 +17,10 @@ describe('the traced gardens', () => {
     expect(new Set(GARDENS.map((g) => g.name)).size).toBe(GARDENS.length)
     for (const g of GARDENS) {
       for (const [lat, lon] of g.ring) {
-        expect(lat, g.name).toBeGreaterThan(48.78)
-        expect(lat, g.name).toBeLessThan(48.95)
-        expect(lon, g.name).toBeGreaterThan(2.19)
-        expect(lon, g.name).toBeLessThan(2.48)
+        expect(lat, g.name).toBeGreaterThan(BOX.south)
+        expect(lat, g.name).toBeLessThan(BOX.north)
+        expect(lon, g.name).toBeGreaterThan(BOX.west)
+        expect(lon, g.name).toBeLessThan(BOX.east)
       }
     }
   })
