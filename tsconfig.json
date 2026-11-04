@@ -11,7 +11,8 @@
     "noImplicitOverride": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "paths": { "@dandyhorse/gamekit": ["../dandyhorse/libs/gamekit/src/index.ts"] }
   },
   "include": ["src", "tools", "tests"]
 }

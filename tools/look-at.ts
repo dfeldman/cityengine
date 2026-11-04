@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Freeze, then point the camera at the first thin instance of a named mesh and screenshot it — for
  * checking a model that is somewhere in the city but not in any spot's view.
@@ -28,7 +29,7 @@ if (at) {
   place = `&at=${(origin.lat + at[1] / k).toFixed(7)},${(origin.lon + at[0] / (k * Math.cos((origin.lat * Math.PI) / 180))).toFixed(7)}&freeze=1`
 }
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 await page.goto(`${process.env.SHOTS_BASE ?? 'http://localhost:5200'}/?city=${city}${place}&dev=1${arg('without') ? `&without=${arg('without')}` : ''}${arg('extra') ? `&${arg('extra')}` : ''}`)
 await page.waitForFunction('window.riderReady === true', null, { timeout: 90_000 })
 // the tiles round the rider, and the landmarks on them, arrive after the rider does

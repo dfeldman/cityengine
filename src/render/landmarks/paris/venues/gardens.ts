@@ -226,13 +226,120 @@ export function tuileriesBassinRond(out: MeshBuilder, fit: Fit): void {
 export function tuileriesOctogone(out: MeshBuilder, fit: Fit): void {
   const G = (x: number, z: number): number => fit.groundAt?.(x, z) ?? 0.5
   // the octagon's sides square to the garden's axis (local x, bearing 116): vertices at 22.5° + k·45°
-  const ring = poly(8, 34.1, Math.PI / 8)
+  const R = 34.1
+  const ring = poly(8, R, Math.PI / 8)
   const g0 = Math.min(...ring.map((p) => G(p.x, p.z)))
-  coping(out, ring, () => g0, 0.7, 0.4)
-  out.water.push({ kind: 'pool', ring, y: g0 + 0.12, colour: WATER })
-  prism(out, 0, 0, g0 - 0.4, g0 + 0.5, 1.8, 16, STONE, surfaceTag('ashlar'))
-  jet(out, 0, g0 + 0.55, 0, 7.5, 0.4)
-  chairs(out, 0, 0, 33.5, 120, G, 11)
+  // the coping (photos: a broad, low band of pale limestone, a rounded nosing on the water side, the water a hand
+  // below it; the inner wall shows dark and wet between the nosing and the waterline)
+  octCoping(out, ring, g0)
+  out.water.push({ kind: 'pool', ring, y: g0 + 0.16, colour: WATER })
+  // the centre: no sculpture, only a low round stone drum just breaking the surface with the bronze nozzle on it;
+  // the jet itself is moving water (public/landmarks/paris-fountains.json)
+  prism(out, 0, 0, g0 - 0.4, g0 + 0.24, 1.5, 20, STONE_DK, surfaceTag('ashlar'))
+  prism(out, 0, 0, g0 + 0.24, g0 + 0.27, 1.6, 20, STONE, surfaceTag('ashlar'))
+  prism(out, 0, 0, g0 + 0.27, g0 + 0.42, 0.22, 10, [0.32, 0.27, 0.18], surfaceTag('metal'), 0.12)
+  chairGroups(out, ring, 1.15, G, 11)
+}
+
+/** The octagon's coping: a broad top, a rounded nosing over the water, the wet inner wall below. */
+function octCoping(out: MeshBuilder, ring: P2[], g0: number): void {
+  const ash = surfaceTag('ashlar')
+  const WET: Rgb = [0.46, 0.45, 0.4]
+  const W = 1.15, H = 0.38, rn = 0.12
+  const n = ring.length
+  // the profile, (out from the ring, y) from the outer foot over the top and round the nosing down the inner wall
+  const prof: [number, number][] = [[W, -0.3], [W, H - 0.04], [W - 0.04, H]]
+  for (let k = 0; k <= 4; k++) {
+    const t = (k / 4) * (Math.PI / 2)
+    prof.push([rn - Math.sin(t) * rn, H - rn + Math.cos(t) * rn])
+  }
+  prof.push([0, 0.12], [0, -0.7])
+  for (let i = 0; i < n; i++) {
+    const a = ring[i], b = ring[(i + 1) % n]
+    const la = Math.hypot(a.x, a.z), lb = Math.hypot(b.x, b.z)
+    // the octagon's corners: offset along the bisector by d / cos(22.5°) so the bands stay parallel to the sides
+    const k = 1 / Math.cos(Math.PI / n)
+    const at = (p: P2, l: number, d: number): [number, number] => [p.x + (p.x / l) * d * k, p.z + (p.z / l) * d * k]
+    for (let j = 0; j + 1 < prof.length; j++) {
+      const [d0, y0] = prof[j], [d1, y1] = prof[j + 1]
+      const A0 = at(a, la, d0), B0 = at(b, lb, d0), A1 = at(a, la, d1), B1 = at(b, lb, d1)
+      const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2, ml = Math.hypot(mx, mz)
+      // the normal in the profile plane: perpendicular to the step (dd, dy), pointing up/outward from the stone
+      const dd = d1 - d0, dy = y1 - y0
+      const nr = dy, ny = -dd
+      const want: V3 = [(mx / ml) * nr, ny, (mz / ml) * nr]
+      const col = j >= prof.length - 2 ? WET : j === 0 ? STONE_DK : STONE
+      quadN(out, [[A1[0], g0 + y1, A1[1]], [B1[0], g0 + y1, B1[1]], [B0[0], g0 + y0, B0[1]], [A0[0], g0 + y0, A0[1]]], want, col, ash)
+    }
+  }
+}
+
+/**
+ * The Tuileries' green metal chairs (Fermob's "Luxembourg" ones, upright and reclining) round a basin, as people
+ * leave them: in clumps of two to seven, turned to the water, to each other or to the sun, gaps between, a few
+ * stragglers out on the gravel. `ring` is the basin's edge, `w` the coping's width beyond it.
+ */
+function chairGroups(out: MeshBuilder, ring: P2[], w: number, g: (x: number, z: number) => number, seed: number): void {
+  let st = seed * 9973 + 17
+  const rnd = (): number => { st = (st * 16807) % 2147483647; return st / 2147483647 }
+  const n = ring.length
+  const per: number[] = []
+  let L = 0
+  for (let i = 0; i < n; i++) { per.push(L); const a = ring[i], b = ring[(i + 1) % n]; L += Math.hypot(b.x - a.x, b.z - a.z) }
+  const onRing = (s: number): { x: number; z: number; nx: number; nz: number } => {
+    s = ((s % L) + L) % L
+    let i = n - 1
+    while (per[i] > s) i--
+    const a = ring[i], b = ring[(i + 1) % n]
+    const len = Math.hypot(b.x - a.x, b.z - a.z), t = (s - per[i]) / len
+    const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2, ml = Math.hypot(mx, mz)
+    return { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t, nx: mx / ml, nz: mz / ml }
+  }
+  let s = rnd() * 10
+  while (s < L - 4) {
+    const size = 2 + Math.floor(rnd() * 6)
+    const kind = rnd()       // < 0.35: a row facing the water; < 0.6: a circle of friends; else a loose scatter
+    const c = onRing(s)
+    const off = w + 0.9 + rnd() * 2.2
+    const gx = c.x + c.nx * off, gz = c.z + c.nz * off
+    const face = Math.atan2(-c.nx, -c.nz)     // yaw that looks at the water
+    for (let k = 0; k < size; k++) {
+      let x: number, z: number, yaw: number
+      if (kind < 0.35) {
+        const along = (k - (size - 1) / 2) * (0.75 + rnd() * 0.4)
+        x = gx - c.nz * along + c.nx * (rnd() - 0.5) * 0.5
+        z = gz + c.nx * along + c.nz * (rnd() - 0.5) * 0.5
+        yaw = face + (rnd() - 0.5) * 0.7
+      } else if (kind < 0.6) {
+        const a = (k / size) * Math.PI * 2 + rnd() * 0.5, rr = 0.7 + size * 0.12
+        x = gx + Math.sin(a) * rr + c.nx * 0.8; z = gz + Math.cos(a) * rr + c.nz * 0.8
+        yaw = Math.atan2(gx + c.nx * 0.8 - x, gz + c.nz * 0.8 - z) + (rnd() - 0.5) * 0.6
+      } else {
+        x = gx + (rnd() - 0.5) * 3.5; z = gz + (rnd() - 0.5) * 3.5
+        yaw = face + (rnd() - 0.5) * 2.4
+      }
+      tuileriesChair(out, x, g(x, z), z, yaw, rnd() < 0.3)
+    }
+    s += 3 + size * 0.9 + rnd() * 9
+  }
+}
+
+/** One green chair at (x, y, z) facing `yaw` (0 = +z); `lounge`: the low reclining one with its long sloped back. */
+function tuileriesChair(out: MeshBuilder, x: number, y: number, z: number, yaw: number, lounge: boolean): void {
+  const met = surfaceTag('metal')
+  const LEG: Rgb = [0.17, 0.3, 0.22]
+  const fx = Math.sin(yaw), fz = Math.cos(yaw)                  // forward
+  const P = (f: number, up: number, side = 0): V3 => [x + fx * f + fz * side, y + up, z + fz * f - fx * side]
+  const sh = lounge ? 0.3 : 0.45
+  const sd = lounge ? 0.5 : 0.42
+  // the slatted seat, its back (the upright leans back a little, the lounger a lot), the legs as two side frames
+  strut(out, P(-sd / 2, sh), P(sd / 2, sh - (lounge ? 0.05 : 0)), 0.44, 0.04, CHAIR, met)
+  const back = lounge ? P(-sd / 2 - 0.42, sh + 0.55) : P(-sd / 2 - 0.08, sh + 0.42)
+  strut(out, P(-sd / 2, sh + 0.02), back, 0.44, 0.03, CHAIR, met)
+  for (const sd2 of [-0.2, 0.2]) {
+    strut(out, P(sd / 2 - 0.03, 0, sd2), P(-sd / 2 + 0.03, sh, sd2), 0.025, 0.025, LEG, met, false)
+    strut(out, P(-sd / 2 + 0.03, 0, sd2), P(sd / 2 - 0.03, sh, sd2), 0.025, 0.025, LEG, met, false)
+  }
 }
 
 /* ------------------------------------------------------------------------------------------ the Tuileries' kiosks */

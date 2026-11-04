@@ -5,15 +5,18 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { bataclan } from './bataclan.ts'
+import { palaisAlma, russianCentreBlock } from './alma.ts'
 import { bercyMinistry } from './bercy.ts'
 import { bonMarche } from './bon-marche.ts'
 import { bourbonGate } from './bourbon-gate.ts'
+import { bourbonCourts } from './bourbon-courts.ts'
 import { bourseTravail } from './bourse-travail.ts'
 import { brongniart } from './brongniart.ts'
 import { canopee } from './canopee.ts'
 import { chateletTheatre, theatreDeLaVille } from './chatelet.ts'
 import { cigale } from './cigale.ts'
 import { elysee } from './elysee.ts'
+import { institutWings } from './institut-wings.ts'
 import { foliesBergere } from './folies-bergere.ts'
 import { grandRex } from './grand-rex.ts'
 import { iena } from './iena.ts'
@@ -21,6 +24,8 @@ import { invalides } from './invalides.ts'
 import { lapinAgile } from './lapin-agile.ts'
 import { legionHonneur } from './legion-honneur.ts'
 import { luxembourgPalace } from './luxembourg.ts'
+import { galliera, gallieraSquare } from './galliera.ts'
+import { luxembourgMuseum, luxembourgOrangerie } from './luxembourg-museum.ts'
 import { louxor } from './louxor.ts'
 import { lutetia } from './lutetia.ts'
 import { maisonRadio } from './maison-radio.ts'
@@ -51,15 +56,19 @@ import { grandsMoulins } from './grands-moulins.ts'
 
 export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   bataclan,
+  palaisAlma,
+  russianCentreBlock,
   bercyMinistry,
   bonMarche,
   bourbonGate,
+  bourbonCourts,
   bourseTravail,
   brongniart,
   canopee,
   chateletTheatre,
   cigale,
   elysee,
+  institutWings,
   foliesBergere,
   grandRex,
   iena,
@@ -67,6 +76,10 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   lapinAgile,
   legionHonneur,
   luxembourgPalace,
+  luxembourgMuseum,
+  galliera,
+  gallieraSquare,
+  luxembourgOrangerie,
   louxor,
   lutetia,
   maisonRadio,

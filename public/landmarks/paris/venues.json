@@ -870,15 +870,16 @@
     "note": "venues/gardens.ts: the round bandstand in the garden's east side (OSM way/62848443, 12.5 m, leisure=bandstand): a stone base and steps, sixteen slender iron columns with brackets, a railing, the concave zinc roof, lantern and finial. Fitted to its way."
   },
   {
+    "name": "Orangerie du Luxembourg",
+    "procedural": "luxembourgOrangerie",
     "osm": [
       "way/62848404"
     ],
-    "name": "Orangerie du Luxembourg",
-    "restyle": "classical",
-    "roof": "hipped",
-    "levels": 1,
-    "height": 9,
-    "note": "The Orangerie du Sénat (1839, Gisors) on the garden's west side: one tall storey of round-headed windows to the south under a slate roof, where the orange trees winter - a restyle, its silhouette is OSM's (way/62848404, 74 x 18 m)."
+    "height": 10,
+    "sign": false,
+    "note": "Gisors's orangerie (1839): brick on a stone base, round-headed windows in stone surrounds toward the garden, busts in roundels, balustrade sections; the palms and orange trees in Versailles planters along its front, on that stretch only (owner's Street View, 2026-11-03): palaces/luxembourg-museum.ts. Front (−z) south, bearing ~182.",
+    "madeBy": "claude-opus-5-5",
+    "front": 182
   },
   {
     "name": "Buttes-Chaumont: the suspension bridge",

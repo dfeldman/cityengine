@@ -75,5 +75,199 @@
     "sign": false,
     "note": "The platform Henri IV stands on, level with the bridge, its stone walls down to the Vert-Galant and its stairs (owner, 2026-10-31; aerial). The bake levels the ground and clears OSM's steps: regions.json levelGrounds and flatStreets.",
     "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hommage à Charlie Parker",
+    "osm": [
+      "node/2378280508"
+    ],
+    "procedural": "charlieParker",
+    "lat": 48.8287794,
+    "lon": 2.3788436,
+    "size": [
+      8,
+      8
+    ],
+    "height": 2.5,
+    "sign": false,
+    "note": "Kirili's five pink-stone blocks in a ring (2006), each 2.5 m, a rough lower half and a cut geometric top (owner, 2026-11-03; fr.wikipedia): bugs/artworks.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Vasque Paris 2024",
+    "osm": [
+      "node/13056867987"
+    ],
+    "procedural": "vasque",
+    "lat": 48.862889,
+    "lon": 2.3292925,
+    "size": [
+      22,
+      22
+    ],
+    "height": 30,
+    "sign": false,
+    "note": "The 7 m flame ring under its 22 m balloon on the Grand Bassin Rond of the Tuileries, drawn grounded as by day (owner, 2026-11-03; fr.wikipedia): bugs/artworks.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Monument commémoratif de la campagne de Tunisie 1942-1943",
+    "osm": [
+      "way/427592604"
+    ],
+    "procedural": "tunisieBooks",
+    "lat": 48.8626694,
+    "lon": 2.3065038,
+    "size": [5.3, 3.2],
+    "height": 1.3,
+    "sign": false,
+    "note": "Three closed granite books, gilt-edged, stacked on a stepped plinth, the map plaque on the great book's top (owner's Commons photograph, 2015-12-13; 2026-11-03): bugs/artworks.ts. Long axis east–west; lat/lon/size from OSM way 427592604's box (historic=memorial, not a building, so never in the bake).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Chronos 10",
+    "osm": [
+      "node/5548108421"
+    ],
+    "procedural": "chronos10",
+    "lat": 48.8471526,
+    "lon": 2.3617098,
+    "size": [
+      7,
+      7
+    ],
+    "height": 12,
+    "sign": false,
+    "note": "Schöffer's kinetic tower (1978) in the Jardin Tino-Rossi: white drum, polished band, a steel cage with arms carrying mirror discs (owner's photograph, 2026-11-03): bugs/artworks.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Mind Accumulation",
+    "osm": [
+      "node/5548108422"
+    ],
+    "procedural": "mindAccumulation",
+    "lat": 48.8470966,
+    "lon": 2.3614912,
+    "size": [
+      21,
+      11
+    ],
+    "height": 2,
+    "sign": false,
+    "note": "Micha Laury's piece (1988) in the Jardin Tino-Rossi: the polished oval drum on its side, a pipe snaking across the lawn, raised pipe loops on sawhorses ending at a steel cone (owner's photograph, 2026-11-03): bugs/artworks.ts. Layout by eye.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Tierra de México en tierra de Francia",
+    "procedural": "tierraDeMexico",
+    "lat": 48.86549,
+    "lon": 2.2833,
+    "size": [
+      5,
+      5
+    ],
+    "height": 9,
+    "sign": false,
+    "note": "Águeda Lozano's two polished steel sheets (given by Mexico, 2006) on the island of the Place de Mexico: the gashed inner cylinder and the outer sheet wrapping it (owner's photograph, 2026-11-03): bugs/artworks.ts. Not in OSM; placed at the centre of the place's ring.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Interpénétration des deux espaces",
+    "osm": [
+      "node/11813823746"
+    ],
+    "procedural": "rougemontEspaces",
+    "lat": 48.8482195,
+    "lon": 2.359485,
+    "size": [
+      9.2,
+      1.6
+    ],
+    "height": 4.7,
+    "sign": false,
+    "note": "Rougemont's painted columns and drums (1975) on their slab in the Jardin Tino-Rossi (owner's photograph, 2026-11-03): bugs/artworks.ts. Bands by eye; the slab's long axis east–west is a guess.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Globe symbolique",
+    "osm": [
+      "node/4680186199"
+    ],
+    "procedural": "globeSymbolique",
+    "lat": 48.8493656,
+    "lon": 2.3048281,
+    "size": [
+      11,
+      11
+    ],
+    "height": 10,
+    "sign": false,
+    "note": "Erik Reitzel's lattice sphere (1995) on the lawn before UNESCO, ~10 m of meridians and parallels in thin tube (owner's photograph, 2026-11-03): bugs/artworks.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Les Sphérades (ouest)",
+    "procedural": "spheradesWest",
+    "height": 1.6,
+    "sign": false,
+    "note": "Pol Bury's twelve polished steel spheres (1985), one size, on stems on an octagonal table that spills into the basin, in the Galerie d'Orléans' court, Palais-Royal (owner's photograph, 2026-11-03): bugs/artworks.ts; the falling sheet is in paris-fountains.json. Placed on OSM ways 440281436 / 440281437 (centre, size, turn measured with osmium).",
+    "madeBy": "claude-opus-5-5",
+    "lat": 48.8639688,
+    "lon": 2.336986,
+    "size": [
+      5.85,
+      5.2
+    ],
+    "rotateDeg": 198.4
+  },
+  {
+    "name": "Les Sphérades (est)",
+    "procedural": "spheradesEast",
+    "height": 1.6,
+    "sign": false,
+    "note": "Pol Bury's twelve polished steel spheres (1985), one size, on stems on an octagonal table that spills into the basin, in the Galerie d'Orléans' court, Palais-Royal (owner's photograph, 2026-11-03): bugs/artworks.ts; the falling sheet is in paris-fountains.json. Placed on OSM ways 440281436 / 440281437 (centre, size, turn measured with osmium).",
+    "madeBy": "claude-opus-5-5",
+    "lat": 48.863858,
+    "lon": 2.3374754,
+    "size": [
+      5.85,
+      5.2
+    ],
+    "rotateDeg": 198.4
+  },
+  {
+    "name": "Place Igor-Stravinsky: pipes, glass roof and murals",
+    "procedural": "stravinskySquare",
+    "lat": 48.8594,
+    "lon": 2.3512,
+    "size": [
+      60,
+      70
+    ],
+    "rotateDeg": 0,
+    "height": 22,
+    "shadow": false,
+    "sign": false,
+    "note": "The IRCAM's eight white ventilation pipes (OSM 202498507…514, dropped by the bake as unnamed chimneys), the glass roof over its studios with its railing (OSM 227834262, dropped as a canopy), and the murals on the blind walls on the square's west side: Jef Aérosol's Chuuuttt!, Shepard Fairey's Knowledge+Action=Power, Invader (owner's Street View, 2026-11-03): bugs/stravinsky-square.ts. North-up frame from 48.8594 2.3512.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Immeuble Fulton",
+    "osm": [
+      "way/553589502"
+    ],
+    "procedural": "immeubleFulton",
+    "lat": 48.8381,
+    "lon": 2.372,
+    "size": [
+      50,
+      50
+    ],
+    "rotateDeg": 0,
+    "height": 46,
+    "sign": false,
+    "note": "Bernard Bühler's social housing at 11 quai d'Austerlitz / 2 rue Fulton (2017): a four-storey concrete base on OSM's outline and two eleven-floor towers hung with staggered yellow-to-green glass balcony boxes (owner's Street View, 2026-11-03; ArchDaily): bugs/fulton.ts. North-up frame from 48.8381 2.3720; the box placement is a fixed scatter, not surveyed.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

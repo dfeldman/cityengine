@@ -17,6 +17,8 @@ import { setTimeOfDay, setWeather, type TimeOfDay, type Weather } from './render
 import { Rain } from './render/rain.ts'
 import { DebugPanel, LookPad, OrbitLook, copyText } from './ui/debug.ts'
 import { Projection } from './city/geo.ts'
+import { guimardTest } from './render/paris/guimard-sites.ts'
+import { RED_WALLACE } from './render/paris/wallace.ts'
 import { loadLooks } from './city/appearance.ts'
 import { parseLatLon } from './ui/goto.ts'
 import { asMassing, fringeLayer, massing, midRoads } from './render/fringe.ts'
@@ -496,6 +498,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   })()
   const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain, sea: index.sea,
     water: pkg.water, box: index.box, walls: index.walls, garden: index.garden, contentBox }, atlas, ASSETS).omit(off)
+  // which Paris métro entrances are Guimard's own (render/paris/guimard-sites.ts), before any tile places its furniture
+  if (region(pkg.region).pointFurniture.metro === 'guimard') {
+    const gp = new Projection(pkg.origin)
+    city.guimardAt = guimardTest((lat, lon) => gp.toLocal({ lat, lon }))
+    city.redWallace = gp.toLocal({ lat: RED_WALLACE[0], lon: RED_WALLACE[1] })
+  }
   /*
    * The sandy beaches' coastline (render/beach-surf.ts), and the beach face it gives the ground: the elevation data has
    * the sand 3 m over the sea at the waterline. Set before any tile drapes its ground.
@@ -861,7 +869,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('passages')
   // the MÉTROPOLITAIN lettering on the Guimard entrances (render/metrosigns.ts)
   if (region(pkg.region).pointFurniture.metro === 'guimard') {
-    city.addLayer(metroSignsLayer(scene, city.terrain, (x, z) => city.streetBearing(x, z)))
+    city.addLayer(metroSignsLayer(scene, city.terrain, (x, z) => city.streetBearing(x, z), city.guimardAt ?? (() => true)))
   }
   const sky = off.has('sky') ? null : new Sky(scene)
   // ground landmarks pave, as trees clearings (render/vegetation.ts `clear`)

@@ -752,23 +752,95 @@ const PARIS_GREEN: Rgb = [0.16, 0.27, 0.21]
  * pavement; the stairs go down towards −z.
  */
 export function guimardEntrance(out: MeshBuilder): void {
-  const iron = PARIS_GREEN
-  box(out, 0, 0.17, 0, 0.8, 0.01, 2.0, [0.05, 0.05, 0.06], FIXED)             // the dark stairwell
-  for (const s of [-1, 1]) {
-    box(out, s * 0.85, 0.55, 0, 0.04, 0.02, 2.05, iron, FIXED)               // the top rail
-    for (let z = -1.9; z <= 1.95; z += 0.35) box(out, s * 0.85, 0.36, z, 0.02, 0.2, 0.02, iron, FIXED)
-    box(out, s * 0.85, 0.18, 0, 0.05, 0.02, 2.05, iron, FIXED)
+  const iron: Rgb = [0.24, 0.38, 0.32]                                           // verdigris cast iron
+  const stone: Rgb = [0.84, 0.76, 0.64]
+  const W = 0.95, L = 2.05
+  box(out, 0, 0.17, 0, 0.75, 0.01, L, [0.05, 0.05, 0.06], FIXED)               // the dark stairwell
+  // the stone parapet round three sides, the iron standing on it
+  for (const s of [-1, 1]) box(out, s * W, 0.38, -0.02, 0.11, 0.23, L + 0.06, stone, FIXED)
+  box(out, 0, 0.38, -L - 0.02, W + 0.11, 0.23, 0.11, stone, FIXED)
+  const top = 0.61
+  // one railing panel from a to b (along a side): flared posts, an arched top rail, the shield and its two buds
+  const panel = (ax: number, az: number, bx: number, bz: number, post: boolean): void => {
+    const P = (t: number, y: number): [number, number, number] => [ax + (bx - ax) * t, y, az + (bz - az) * t]
+    if (post) prism(out, ax, az, top, top + 0.95, 0.075, 6, iron, FIXED, 0.035)
+    strut(out, P(0, top + 0.12), P(1, top + 0.12), 0.03, 0.03, iron)            // the bottom rail
+    strut(out, P(0, top + 0.6), P(1, top + 0.6), 0.025, 0.025, iron)            // the rail under the arch
+    const n = 6
+    for (let i = 0; i < n; i++) {                                               // the arch, springing from the posts
+      const t0 = i / n, t1 = (i + 1) / n
+      const y0 = top + 0.68 + 0.2 * Math.sin(t0 * Math.PI), y1 = top + 0.68 + 0.2 * Math.sin(t1 * Math.PI)
+      strut(out, P(t0, y0), P(t1, y1), 0.035, 0.035, iron)
+    }
+    for (let i = 0; i < 10; i++) {                                              // the oval shield
+      const a0 = (i / 10) * Math.PI * 2, a1 = ((i + 1) / 10) * Math.PI * 2
+      strut(out, P(0.5 + Math.cos(a0) * 0.2, top + 0.36 + Math.sin(a0) * 0.13), P(0.5 + Math.cos(a1) * 0.2, top + 0.36 + Math.sin(a1) * 0.13), 0.025, 0.025, iron)
+    }
+    for (const t of [0.2, 0.8]) {                                               // the two buds, and their stalks curling up
+      const [x, y, z] = P(t, top + 0.42)
+      prism(out, x, z, y - 0.08, y + 0.07, 0.05, 6, iron, FIXED, 0.02)
+      strut(out, P(t, top + 0.12), P(t + (t < 0.5 ? 0.06 : -0.06), top + 0.36), 0.02, 0.02, iron)
+    }
   }
-  box(out, 0, 0.55, -2.05, 0.85, 0.02, 0.04, iron, FIXED)                     // the closed end
-  for (let x = -0.7; x <= 0.71; x += 0.35) box(out, x, 0.36, -2.05, 0.02, 0.2, 0.02, iron, FIXED)
-  // the two stems at the open end, leaning in, lamps at the top
-  for (const s of [-1, 1]) {
-    box(out, s * 0.85, 1.3, 2.05, 0.05, 1.15, 0.05, iron, FIXED)
-    box(out, s * 0.62, 2.62, 2.05, 0.28, 0.05, 0.05, iron, FIXED)
-    box(out, s * 0.42, 2.45, 2.05, 0.09, 0.16, 0.09, [1.0, 0.55, 0.16], EMIT)   // the orange lamp
+  const seg = 4
+  for (const s of [-1, 1]) for (let i = 0; i < seg; i++) {
+    const z0 = -L + (i / seg) * 2 * L, z1 = -L + ((i + 1) / seg) * 2 * L
+    panel(s * W, z0, s * W, z1, true)
   }
-  box(out, 0, 2.2, 2.05, 0.55, 0.13, 0.03, [0.86, 0.72, 0.30], FIXED)          // METROPOLITAIN
-  box(out, 0, 2.2, 2.09, 0.46, 0.05, 0.01, [0.18, 0.16, 0.12], FIXED)          // its lettering, as a band
+  panel(-W, -L, 0, -L, false)
+  panel(0, -L, W, -L, true)
+  // the two stems at the open end: a stone footing, the stalk rising, curving in over the sign and hooking to hold the lamp
+  const path: [number, number][] = [[W, 0.62], [W, 1.3], [W - 0.02, 2.0], [W - 0.06, 2.6], [W - 0.14, 3.1], [W - 0.28, 3.45], [W - 0.45, 3.55], [W - 0.56, 3.45]]
+  for (const s of [-1, 1]) {
+    prism(out, s * W, L, 0.15, 0.62, 0.24, 8, stone, FIXED, 0.17)
+    prism(out, s * W, L, 0.62, 1.05, 0.13, 8, iron, FIXED, 0.06)                // the stalk's flared foot
+    for (let i = 0; i + 1 < path.length; i++) {
+      const [x0, y0] = path[i], [x1, y1] = path[i + 1]
+      const w = 0.075 - i * 0.006
+      strut(out, [s * x0, y0, L], [s * x1, y1, L], w, w, iron)
+    }
+    // the lamp: a red bud hanging from the hook, in its iron cup
+    const lx = s * (W - 0.56)
+    prism(out, lx, L, 3.12, 3.42, 0.06, 6, iron, FIXED, 0.1)
+    prism(out, lx, L, 3.0, 3.3, 0.06, 8, [0.95, 0.12, 0.08], EMIT, 0.1)
+  }
+  // the crossbar: springing from the stems, rising gently to the middle, the sign's frame hung under it
+  const cb = (t: number): [number, number, number] => [(t * 2 - 1) * (W - 0.03), 2.62 + 0.12 * Math.sin(t * Math.PI), L]
+  for (let i = 0; i < 8; i++) strut(out, cb(i / 8), cb((i + 1) / 8), 0.06, 0.06, iron)
+  // the sign: an amber oval in an iron rim (render/metrosigns.ts letters it)
+  const n = 16
+  for (let i = 0; i < n; i++) {
+    const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2
+    const R = (a: number): [number, number, number] => [Math.cos(a) * 0.74, 2.32 + Math.sin(a) * 0.2, L]
+    strut(out, R(a0), R(a1), 0.04, 0.05, iron)
+  }
+  // the amber oval under the lettering, both faces
+  const amber: Rgb = [0.86, 0.79, 0.5]
+  for (let i = 0; i < n; i++) {
+    const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2
+    for (const f of [-1, 1]) {
+      const z = L + f * 0.02
+      const c: [number, number, number] = [0, 2.32, z]
+      const A: [number, number, number] = [Math.cos(a0) * 0.73, 2.32 + Math.sin(a0) * 0.19, z]
+      const B: [number, number, number] = [Math.cos(a1) * 0.73, 2.32 + Math.sin(a1) * 0.19, z]
+      out.quad(f > 0 ? [c, A, B, c] : [c, B, A, c], [0, 0, f], [[0, 0], [1, 0], [1, 1], [0, 1]], amber, FIXED)
+    }
+  }
+}
+
+/** A Paris entrance that is not one of Guimard's: the stone parapet and a plain green railing; the totem stands beside it. */
+export function parisEntrance(out: MeshBuilder): void {
+  const iron: Rgb = [0.2, 0.3, 0.26]
+  const stone: Rgb = [0.8, 0.74, 0.64]
+  box(out, 0, 0.17, 0, 0.75, 0.01, 2.0, [0.05, 0.05, 0.06], FIXED)
+  for (const s of [-1, 1]) {
+    box(out, s * 0.92, 0.38, 0, 0.1, 0.23, 2.05, stone, FIXED)
+    box(out, s * 0.92, 1.5, 0, 0.03, 0.02, 2.05, iron, FIXED)
+    for (let z = -1.95; z <= 2.0; z += 0.15) box(out, s * 0.92, 1.05, z, 0.012, 0.45, 0.012, iron, FIXED)
+  }
+  box(out, 0, 0.38, -2.05, 1.02, 0.23, 0.1, stone, FIXED)
+  box(out, 0, 1.5, -2.05, 0.92, 0.02, 0.03, iron, FIXED)
+  for (let x = -0.85; x <= 0.86; x += 0.15) box(out, x, 1.05, -2.05, 0.012, 0.45, 0.012, iron, FIXED)
 }
 
 /** A New York subway entrance: railings round the stair and a pair of green globe lamps at the top. */

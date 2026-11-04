@@ -35,7 +35,7 @@ import { groundLayerMaterial, roadMaterial } from './road-material.ts'
 import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
-  bench, bikeDocks, bollard, box, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
+  bench, bikeDocks, bollard, box, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, parisEntrance, kiosk, lampPost,
   morrisColumn, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
@@ -1101,6 +1101,13 @@ export interface GroundOccluder {
   update(ms: number): void
 }
 
+/** the ground occluder's depth below the drawn ground (see groundOccluder) */
+const OCC_SINK = 0.6
+/** at a crest the sink shrinks by convexity x gain, never below the minimum */
+const OCC_CREST_PROBE = 8
+const OCC_CREST_GAIN = 4
+const OCC_CREST_MIN_SINK = 0.05
+
 function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain): GroundOccluder | null {
   const t = groundGrid(pkg.terrain)
   if (!t) return null
@@ -1157,7 +1164,19 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
    */
   let heightOf = (x: number, z: number): number => terrain.heightAt(x, z)
   const occ = (x: number, z: number, lv: number | null): number => {
-    const g = heightOf(x, z) - 0.6
+    const h = heightOf(x, z)
+    /*
+     * A crest gives the sink back. Sunk 0.6 m everywhere, the occluder's crest sat 0.6 m under the drawn crest,
+     * and a sightline grazing up a steep SF street passed between the two — the road, markings and buildings
+     * beyond showed in a band through the hill (start of the SF world). Convexity is how far the point stands
+     * above the mean of its neighbours OCC_CREST_PROBE away; at a crest the sink shrinks by that much (scaled),
+     * down to OCC_CREST_MIN_SINK. Flat ground and slopes (zero convexity) keep the full sink.
+     */
+    const d = OCC_CREST_PROBE
+    const mean = (heightOf(x + d, z) + heightOf(x - d, z) + heightOf(x, z + d) + heightOf(x, z - d)) / 4
+    const convex = Math.max(0, h - mean)
+    const sink = Math.max(OCC_CREST_MIN_SINK, OCC_SINK - convex * OCC_CREST_GAIN)
+    const g = h - sink
     return lv === null ? g : Math.min(g, lv - 0.4)
   }
   /*
@@ -1511,6 +1530,10 @@ export class City {
   private readonly plantingsIn = new Map<string, number[]>()
   /** the Wallace fountains, one model instanced at every point (render/paris/wallace.ts); made at the first one */
   private wallace: WallaceFountains | null = null
+  /** which Paris métro entrances are Guimard's (render/paris/guimard-sites.ts); set by game.ts, the rest are `parisEntrance` */
+  guimardAt: ((x: number, z: number) => boolean) | null = null
+  /** the red Wallace fountain (render/paris/wallace.ts RED_WALLACE), in local metres; set by game.ts */
+  redWallace: { x: number; z: number } | null = null
   /** edges that are structures (bridges, ramps) rather than painted ground; see render/bridges.ts */
   readonly raisedIds = new Set<number>()
   /** raised footways that are a road bridge's own sidewalks, drawn by the road's deck — and (BUGS.md #136)
@@ -4839,11 +4862,13 @@ export class City {
       // kinds of fountain and keep the tap (owner, 2026-11-03: "stick with the 119 wallace fountains")
       if (f.kind === 'fountain' && f.wallace && pf.fountain === 'wallace' && !this.off.has('furniture')) {
         this.wallace ??= new WallaceFountains(this.scene)
-        this.wallace.add(k, f.x, this.terrain.heightAt(f.x, f.z) + 0.15, f.z, heading)
+        const red = this.redWallace !== null && Math.hypot(this.redWallace.x - f.x, this.redWallace.z - f.z) < 6
+        this.wallace.add(k, f.x, this.terrain.heightAt(f.x, f.z) + 0.15, f.z, heading, red)
         continue
       }
       const model = f.kind === 'metro'
-        ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
+        ? (pf.metro === 'guimard' && this.guimardAt && !this.guimardAt(f.x, f.z) ? parisEntrance
+          : ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro])
         : f.kind === 'fountain' ? drinkingTap
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
@@ -4963,7 +4988,8 @@ export class City {
       }
       placeModel(furniture, model, px, 0.15, pz, heading + turn)
       // and beside a Paris entrance, its totem: the yellow M in its ring on a post, what a rider sees from down the street
-      if (f.kind === 'metro' && pf.metro === 'guimard') {
+      // (not beside one of Guimard's own, which carries its METROPOLITAIN board instead)
+      if (f.kind === 'metro' && pf.metro === 'guimard' && !this.guimardAt?.(f.x, f.z)) {
         const tx = px + Math.sin(heading) * 2.5, tz = pz + Math.cos(heading) * 2.5
         if (!pointKerb.inside(tx, tz, 0.3)) placeModel(furniture, metroTotem, tx, 0.15, tz, heading + Math.PI / 2)
       }

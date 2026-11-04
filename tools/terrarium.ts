@@ -33,6 +33,9 @@ import type { LatLon } from '../src/city/geo.ts'
 const BASE = process.env.TERRAIN_TILES_URL ?? 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium'
 const CACHE = resolve(import.meta.dirname, 'cache', 'tiles')
 const SIZE = 256
+/** tries per tile, and the wait before the nth retry (n × this) */
+const FETCH_TRIES = 5
+const FETCH_BACKOFF_MS = 2000
 
 export const ATTRIBUTION =
   'Elevation from the AWS Terrain Tiles open dataset (terrarium): SRTM and NASADEM (NASA/USGS, public domain), ' +
@@ -115,9 +118,19 @@ export class Elevation {
       buf = readFileSync(file)
       this.cached++
     } else {
-      const res = await fetch(`${BASE}/${key}.png`)
-      if (!res.ok) throw new Error(`terrain tile ${key}: ${res.status} ${res.statusText}`)
-      buf = Buffer.from(await res.arrayBuffer())
+      // a dropped socket or a 5xx is retried: one bad tile should not end an hour-long bake
+      for (let attempt = 1; ; attempt++) {
+        try {
+          const res = await fetch(`${BASE}/${key}.png`)
+          if (!res.ok) throw new Error(`terrain tile ${key}: ${res.status} ${res.statusText}`)
+          buf = Buffer.from(await res.arrayBuffer())
+          break
+        } catch (e) {
+          if (attempt >= FETCH_TRIES) throw e
+          process.stderr.write(`  elevation: ${key} failed (${(e as Error).message}), retry ${attempt}/${FETCH_TRIES - 1}\n`)
+          await new Promise((r) => setTimeout(r, FETCH_BACKOFF_MS * attempt))
+        }
+      }
       mkdirSync(dir, { recursive: true })
       writeFileSync(file, buf)
       this.fetched++

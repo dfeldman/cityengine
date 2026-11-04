@@ -1088,5 +1088,18 @@
     "front": 206,
     "sign": false,
     "note": "César's bronze thumb, height 12 and 4.4 × 4.5 m from OSM way 186981693, which is replaced. No usable photograph was fetched: the shape is simply a thumb's, and the bearing, nail side toward 206, is a guess."
+  },
+  {
+    "name": "Fers",
+    "procedural": "fers",
+    "kind": "statue",
+    "osm": ["node/7952476083"],
+    "lat": 48.8828275,
+    "lon": 2.310593,
+    "size": [9, 4.4],
+    "height": 4.6,
+    "front": 0,
+    "sign": false,
+    "note": "Driss Sans-Arcidet's monument to General Dumas (2009), OSM node 7952476083. Shape and sizes by eye from Commons 'Unchained (64188317).jpeg': tall ring with broken chain, cuff with hanging chain; bearing a guess."
   }
 ]

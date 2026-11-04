@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Photographs one procedural landmark on its own (src/model-showcase.ts) from named views, for comparing with
  * its reference photographs.
@@ -323,7 +324,7 @@ if (process.argv[1]?.endsWith('model-shots.ts')) {
     spin = got.spin
   }
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-  const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+  const page = await browser.newPage({ viewport: VIEWPORT })
   page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
   await page.goto(`${BASE}/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}${arg('time') ? `&time=${arg('time')}` : ''}`)
   await page.waitForFunction('window.modelReady === true', null, { timeout: 60_000 })

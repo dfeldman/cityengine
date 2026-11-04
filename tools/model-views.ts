@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Views of a placed landmark computed from where the model actually stands (its fitted centre, half-sizes and
  * turn, from `window.__placed`): FRONT (on the model's −z axis), each SIDE, BACK, a three-quarter view and one
@@ -15,7 +16,7 @@ const arg = (n: string, f = ''): string => {
 const city = arg('city', 'paris-centre')
 const name = arg('name')
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 await page.goto(`http://localhost:${arg('port', '5200')}/?city=${city}&freeze=1&without=life`)
 await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })
 const origin = await page.evaluate('window.__pkg.origin') as { lat: number; lon: number }

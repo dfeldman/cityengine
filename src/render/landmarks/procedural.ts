@@ -60,7 +60,6 @@ import { saintPaul } from './paris/saint-paul.ts'
 import { hotelDeSens } from './paris/hotel-de-sens.ts'
 import { tourSaintJacques } from './paris/tour-saint-jacques.ts'
 import { hotelDeVille } from './paris/hotel-de-ville.ts'
-import { operaArch } from './paris/opera-arch.ts'
 import { synagogueGuimard } from './paris/synagogue-guimard.ts'
 import { synagogueTournelles } from './paris/synagogue-tournelles.ts'
 import { vosgesGarden } from './paris/vosges-garden.ts'
@@ -78,6 +77,7 @@ import { trocaderoParvis } from './paris/trocadero-parvis.ts'
 import { grandPalais } from './paris/grand-palais.ts'
 import { colonneVendome } from './paris/colonne-vendome.ts'
 import { sainteChapelle } from './paris/sainte-chapelle.ts'
+import { palaisJusticeHarlay, palaisJusticeMai } from './paris/palais-justice.ts'
 import { madeleine, assembleePortico, ecoleMilitairePortico } from './paris/temple-front.ts'
 import { institutDome } from './paris/institut-dome.ts'
 import { fontaineInnocents, fontaineSaintMichel, flammeLiberte } from './paris/fountains.ts'
@@ -95,5 +95,5 @@ export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitAr
   // (the exceptions, said by kind and date: paris/kit/)
   parisCivic, parisRecipe,
   barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal, roadPortal,
-  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, louvrePalace, gabrielPalaces, conciergerie, palaisChaillot, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, louisXIV, fochTrocadero,
+  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, louvrePalace, gabrielPalaces, conciergerie, palaisJusticeMai, palaisJusticeHarlay, palaisChaillot, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, louisXIV, fochTrocadero,
 }

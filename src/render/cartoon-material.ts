@@ -217,6 +217,51 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
     vec3 tile = c * tone * (1.0 - 0.28 * joint);
     return mix(c * 0.9, tile, near);
   }
+  if (sid > 18.5) {
+    // 19 MOUCHARABIEH: the Institut du monde arabe's south front (Nouvel, 1987). One quad is one square aluminium
+    // panel, its uv the panel's own 0..1 (floor(vUV) says which panel). A central iris in a square frame; round it, on
+    // a grid of seven cells, eight middling diaphragms (the corners and the axes of the second ring) and a border of
+    // small ones; thin bars between the cells; dark glass behind every aperture. Each panel's irises stand at their own
+    // opening (the real ones follow the light). The small ones and the bars go first with distance, so from afar a panel
+    // is a pale square with one dark dot, which is what the photographs show.
+    vec2 id = floor(vUV + 0.001);
+    vec2 q = fract(vUV);
+    vec2 d = abs(q - 0.5);
+    float sq = max(d.x, d.y);
+    float open = 0.8 + 0.4 * hash2(id);
+    float near = nearFade(45.0, 150.0);
+    float mid = nearFade(110.0, 320.0);
+    vec3 dark = vec3(0.1, 0.14, 0.19);
+    float big = 1.0 - smoothstep(0.15 * open, 0.165 * open, length(q - 0.5));
+    float frameSq = step(abs(sq - 0.214), 0.016) * mid;
+    vec2 g = q * 7.0;
+    vec2 cell = floor(g);
+    vec2 f = fract(g) - 0.5;
+    vec2 cd = abs(cell - 3.0);
+    float ring = max(cd.x, cd.y);
+    float centre = step(ring, 1.5);
+    float medium = step(1.5, ring) * step(ring, 2.5) * max(step(1.5, min(cd.x, cd.y)), step(min(cd.x, cd.y), 0.5));
+    float rad = min(mix(0.22, 0.34, medium) * open, 0.35);
+    float rr = length(f);
+    float show = (1.0 - centre) * mix(near, mid, medium);
+    float hole = (1.0 - smoothstep(rad - 0.05, rad + 0.05, rr)) * show;
+    float lip = (1.0 - smoothstep(rad + 0.04, rad + 0.1, rr)) * show;
+    float bars = step(0.45, max(abs(f.x), abs(f.y))) * (1.0 - centre) * near;
+    float frame = step(0.47, sq);
+    vec3 m = c * (0.96 + 0.08 * hash2(id + 3.0));
+    m = mix(m, c * 1.12, lip);
+    m = mix(m, c * 0.82, bars);
+    m = mix(m, c * 1.2, frameSq);
+    m = mix(m, c * 0.88, frame);
+    float aperture = max(hole, big);
+    m = mix(m, dark, aperture);
+    // the glass skin in front of the panels: a little of the sky at a glance
+    float facing = max(dot(n, -normalize(vView)), 0.0);
+    m = mix(m, skyReflect(n), (0.1 + 0.35 * pow(1.0 - facing, 3.0)) * 0.35);
+    // the rooms lit behind the irises after dark
+    gEmit = aperture * night * 0.6;
+    return m;
+  }
   if (sid > 17.5) {
     // 18 MIRROR TILES: the Philharmonie's cladding (owner, 2026-11-03: "small mirror-like tiles. because of the angles,
     // for any viewer, some are bright and some are dark"). Tiles of about 0.45 m, each hung at its own tilt, a third of
@@ -491,7 +536,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, tessera: 20, locks: 21 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, moucharabieh: 19, tessera: 20, locks: 21 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

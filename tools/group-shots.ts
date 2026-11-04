@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Photographs SEVERAL manifest entries TOGETHER, at their true relative offsets, with nothing else in the
  * scene — the check `model-shots.ts --entry=` cannot do (one entry only) and `views.ts` cannot do either
@@ -89,7 +90,7 @@ for (const name of entryNames) {
 }
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
 // the model= param just needs SOME valid builder to boot the scene; __rebuildGroup replaces its geometry entirely
 await page.goto(`${BASE}/?model=${resolved[0].model}`)

@@ -171,182 +171,16 @@
     "dropParts": true
   },
   {
-    "name": "Opéra Bastille — the curved foyers",
-    "osm": [
-      "way/255657724",
-      "way/255657720"
-    ],
-    "restyle": "operaGlass",
-    "roof": "flat",
-    "note": "The colossal curved wall of glass round the foyers, facing the Place: the two parts of the curve (aerial), glazed whole, ahead of the restyle below, which dresses the rest in white granite."
-  },
-  {
     "name": "Opéra Bastille",
-    "wall": "#e2e0d8",
-    "trim": "#eeece6",
-    "restyle": "opera",
-    "take": "inside",
-    "roof": "flat",
-    "within": [
-      [
-        48.8525981,
-        2.3706846
-      ],
-      [
-        48.8526617,
-        2.3706376
-      ],
-      [
-        48.8527261,
-        2.3704384
-      ],
-      [
-        48.852712,
-        2.3700942
-      ],
-      [
-        48.8528936,
-        2.3699796
-      ],
-      [
-        48.8527572,
-        2.3698409
-      ],
-      [
-        48.8526573,
-        2.3699557
-      ],
-      [
-        48.8525185,
-        2.3697927
-      ],
-      [
-        48.8523639,
-        2.3697453
-      ],
-      [
-        48.8514246,
-        2.3701527
-      ],
-      [
-        48.8515395,
-        2.3701437
-      ],
-      [
-        48.851585,
-        2.3703224
-      ],
-      [
-        48.8515497,
-        2.3703526
-      ],
-      [
-        48.8515175,
-        2.3702662
-      ],
-      [
-        48.8514639,
-        2.3703123
-      ],
-      [
-        48.8513503,
-        2.3702186
-      ],
-      [
-        48.8511897,
-        2.3702501
-      ],
-      [
-        48.851057,
-        2.3704418
-      ],
-      [
-        48.8510019,
-        2.3708231
-      ],
-      [
-        48.8508381,
-        2.3704069
-      ],
-      [
-        48.8508406,
-        2.3704495
-      ],
-      [
-        48.8502092,
-        2.3707229
-      ],
-      [
-        48.8502658,
-        2.3710168
-      ],
-      [
-        48.8506434,
-        2.3708605
-      ],
-      [
-        48.8508863,
-        2.3710746
-      ],
-      [
-        48.8510406,
-        2.371009
-      ],
-      [
-        48.8517375,
-        2.3715432
-      ],
-      [
-        48.8518547,
-        2.3715627
-      ],
-      [
-        48.8519433,
-        2.3715058
-      ],
-      [
-        48.8519759,
-        2.3713431
-      ],
-      [
-        48.8520413,
-        2.3712886
-      ],
-      [
-        48.852066,
-        2.3713549
-      ],
-      [
-        48.8525981,
-        2.3706846
-      ]
-    ],
-    "note": "OSM maps the Opéra as 61 parts with real heights — the 50 m stage house, the stepped terraces of the curved front — so the massing is kept and only the dress changes: every part whose centre is inside the outline (way/78149064, simplified to 3 m) takes the granite-and-glass grid style with a flat roof. The parts that start above the ground — the stepped tiers of the curved front — take the pale glass curtain instead, and the blocks that stand on the ground the white granite: the building's black-and-white look (Street View, May 2018).",
-    "restyleAloft": "operaGlass"
-  },
-  {
-    "name": "Opéra Bastille — the arch",
-    "procedural": "operaArch",
-    "lat": 48.852735,
-    "lon": 2.369997,
-    "front": 300,
-    "size": [
-      20,
-      8
-    ],
-    "height": 19,
-    "sign": false,
-    "note": "Standalone, where OSM maps it (the 15 m parts 255526605/606 and the 2.5 m steps 255526607/608, removed by the placeholder below), facing north-west to the Place. The building itself is the restyle entry above."
-  },
-  {
-    "name": "Opéra Bastille — arch parts",
+    "procedural": "operaBastille",
     "osm": [
-      "way/255526605",
-      "way/255526606",
-      "way/255526607",
-      "way/255526608"
+      "way/78149064"
     ],
-    "note": "Placeholder: removes OSM's arch and steps, which the procedural arch replaces."
+    "front": 300,
+    "height": 47,
+    "stone": false,
+    "note": "Carlos Ott, 1989. A TS builder measured off IGN's LiDAR HD surface model, its orthophoto, OSM's outline (superseded in the bake by its 87 parts, which naming it claims) and the owner's photograph from the Place (2026-11-03), in place of the restyle of OSM's parts and the standalone arch: the 41 m radius drum with its colonnade, pale panel wall and square-paned glass band to 31 m, the 37 m crown and the glass boxes on it, the 47 m fly tower with its stepped shoulder, the terraces stepping down to the Rue de Lyon and the Rue de Charenton, the granite arch on its broad stair, and the rear halls and the annex as plain prisms. See docs/landmarks/MODEL-OPERA-BASTILLE.md and src/render/landmarks/paris/museums/opera-bastille.ts.",
+    "madeBy": "claude-fable-5-1"
   },
   {
     "osm": [
@@ -739,10 +573,11 @@
   {
     "name": "Parvis du Trocadéro",
     "procedural": "trocaderoParvis",
-    "lat": 48.86215,
-    "lon": 2.28845,
+    "lat": 48.862366,
+    "lon": 2.288098,
     "rotateDeg": 134.3,
-    "note": "The eight gilded figures and the balustrade over the gardens; the axis points at the Eiffel Tower."
+    "baseY": 28,
+    "note": "On Chaillot's centre and datum (it had stood 35 m out toward the Tower): the eight gilded figures between the head pavilions, the parvis's paving and steps, the Place, the theatre's garden front under it, the side stairs, retaining walls and the lower terrace, at IGN lidar heights. The axis points at the Eiffel Tower."
   },
   {
     "name": "Grand Palais",
@@ -887,13 +722,17 @@
     "osm": [
       "relation/967665"
     ],
-    "restyle": "classical",
-    "roof": "mansard",
     "height": 17,
-    "levels": 3,
-    "note": "Le Vau's hemicycle on the Quai de Conti: OSM's 30 m massing brought down to its real 17 m in the classical stone dress; the chapel front and dome are `institutDome`. Slate on it (Batch 1, 2026-10-31: tan flat roofs from the Pont des Arts, where the aerial has slate).",
-    "roofHeight": 4,
-    "roofColour": "#4b5359"
+    "note": "Le Vau's hemicycle on the Quai de Conti: OSM relation 967665's plan turned 18.5° (−z faces the quai, bearing 18.5, as the Élysée's rotateDeg), extruded with its courts; the curved wings dressed (rusticated arches, piano nobile between pilasters, balustrade) and the end pavilions raised under square slate roofs. The chapel front and dome are `institutDome` (2026-11-04).",
+    "procedural": "institutWings",
+    "lat": 48.856817,
+    "lon": 2.337053,
+    "rotateDeg": 198.5,
+    "size": [
+      174.4,
+      171.2
+    ],
+    "stone": true
   },
   {
     "name": "Institut de France — dome",
@@ -1154,6 +993,97 @@
     "note": "The front on the Quai de l'Horloge: the Horloge, César and Argent, the Bonbec, the ranges between; the Palais de Justice's OSM parts along the quay give way to it."
   },
   {
+    "name": "Palais de Justice — the Cour de Mai",
+    "procedural": "palaisJusticeMai",
+    "osm": [
+      "way/248485960",
+      "way/248485961",
+      "way/248853209",
+      "way/248853212",
+      "way/248853215",
+      "way/248853217",
+      "way/248853221",
+      "way/248853223",
+      "way/248853226",
+      "way/248853229",
+      "way/248485956",
+      "way/248485957",
+      "way/248485958",
+      "way/248485959",
+      "way/248977845",
+      "way/248977855",
+      "way/248858304",
+      "way/248858308",
+      "way/245531386",
+      "way/248983480",
+      "way/248983481",
+      "way/248983484",
+      "way/248983482",
+      "way/248983483",
+      "way/248983485",
+      "way/248983486",
+      "way/248983487",
+      "way/248983488",
+      "way/248983489",
+      "way/248983490",
+      "way/248983491",
+      "way/248983492",
+      "way/248977840",
+      "way/248977841",
+      "way/248977842",
+      "way/248977843",
+      "way/248977844",
+      "way/248977845",
+      "way/248977846",
+      "way/248977847",
+      "way/248977848",
+      "way/248977849",
+      "way/248977850",
+      "way/248977851",
+      "way/248977852",
+      "way/248977853",
+      "way/248977854",
+      "way/248977855",
+      "way/248977856",
+      "way/248977857",
+      "way/248977858",
+      "way/248977859",
+      "way/248977860",
+      "way/248977861",
+      "way/248977862",
+      "way/248977863",
+      "way/248977864",
+      "way/248977865",
+      "way/248977866",
+      "way/248977867",
+      "way/248977868"
+    ],
+    "lat": 48.855537,
+    "lon": 2.345799,
+    "size": [
+      60,
+      72
+    ],
+    "front": 115.5,
+    "height": 40,
+    "stone": false,
+    "note": "Bigonnet's gilded railing and gates, the court between Antoine's north wing and the low south gallery, Desmaisons' front with its steps, four Doric columns and square dome; measured from IGN's lidar (src/render/landmarks/paris/palais-justice.ts). It also holds the Harlay front's OSM parts (its stair, colonnade and hall): the bake keeps the palace as one building, which two entries cannot both claim, so the Harlay entry below stands on its own."
+  },
+  {
+    "name": "Palais de Justice — the Harlay front",
+    "procedural": "palaisJusticeHarlay",
+    "lat": 48.856296,
+    "lon": 2.34343,
+    "size": [
+      64,
+      30
+    ],
+    "front": 297,
+    "height": 32,
+    "stone": false,
+    "note": "Duc's west front on the Rue de Harlay (1857–68): the stair, the colossal Doric order on its podium, the high hipped roof; measured from IGN's lidar."
+  },
+  {
     "name": "Palais de Justice — the tall parts",
     "osm": [
       "way/245531356",
@@ -1172,11 +1102,9 @@
       "way/248480552",
       "way/248480553",
       "way/248480554",
-      "way/248485960",
       "way/248809490",
       "way/248863468",
       "way/248863474",
-      "way/248983480",
       "way/249002518",
       "way/249002519",
       "way/249007544",
@@ -1197,7 +1125,8 @@
     "eaves": 21,
     "wall": "#cfc6af",
     "trim": "#ded6c2",
-    "note": "The Palais stands four tall storeys, not a seven-storey hotel on the Quai de l'Horloge west of the Bonbec: OSM's parts (24-30 m to their ridges, storeys guessed) named one by one, as the massing of a restyle by relation does not reach them (render/landmarks.ts `styleOnly`). PARIS_BUGS: the top 25's Palais de Justice."
+    "note": "The Palais stands four tall storeys, not a seven-storey hotel on the Quai de l'Horloge west of the Bonbec: OSM's parts (24-30 m to their ridges, storeys guessed) named one by one, as the massing of a restyle by relation does not reach them (render/landmarks.ts `styleOnly`). PARIS_BUGS: the top 25's Palais de Justice.",
+    "roofColour": "#4b5359"
   },
   {
     "name": "Palais de Justice and the Conciergerie",
@@ -1210,7 +1139,8 @@
     "eaves": 21,
     "wall": "#cfc6af",
     "trim": "#ded6c2",
-    "note": "The Palais de Justice on the Île de la Cité, OSM's parts in pale stone; the Conciergerie's quay front is its own model, above, and takes the parts it stands on first."
+    "note": "The Palais de Justice on the Île de la Cité, OSM's parts in pale stone; the Conciergerie's quay front is its own model, above, and takes the parts it stands on first.",
+    "roofColour": "#4b5359"
   },
   {
     "name": "Hôtel de la Monnaie",

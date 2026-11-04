@@ -53,9 +53,13 @@ export function plenitudeArena(out: MeshBuilder, fit: Fit): void {
   const metal = surfaceTag('metal')
   const glass = surfaceTag('glass')
   const conc = surfaceTag('concrete')
-  const g = groundMid(fit)
   const sx = fit.hx / HX
   const sz = fit.hz / HZ
+  // the lowest ground under the footprint, not its centre: the site falls toward the Seine and the centre stood the block in the air
+  let g = groundMid(fit)
+  if (fit.groundAt) for (let i = 0; i <= 8; i++) for (let j = 0; j <= 8; j++) {
+    g = Math.min(g, fit.groundAt(-HX * sx + ((50 * sx + HX * sx) * i) / 8, -HZ * sz + (2 * HZ * sz * j) / 8))
+  }
   const H = g + Math.min(fit.height || 49, 49)
   const cornice = H - 14                  // OSM: 49 m, with a roof of 14
   const body = ccw(rounded(-HX * sx, 50 * sx, -HZ * sz, HZ * sz, 26 * Math.min(sx, sz), 5))

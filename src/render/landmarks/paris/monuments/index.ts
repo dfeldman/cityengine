@@ -25,6 +25,7 @@ import { saintFrancoisXavier } from './saint-francois-xavier.ts'
 import { chapelleExpiatoire } from './chapelle-expiatoire.ts'
 import { synagogueVictoire } from './synagogue-victoire.ts'
 import { sainteTrinite } from './sainte-trinite.ts'
+import { fers } from './fers.ts'
 import { fontaineVarsovie } from './fontaine-varsovie.ts'
 import { saintAmbroise } from './saint-ambroise.ts'
 import { saintLaurent } from './saint-laurent.ts'
@@ -53,6 +54,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   chapelleSalpetriere,
   cnitVault,
   domeImax,
+  fers,
   fontaineChateauEau,
   fontaineDuPalmier,
   fontaineQuatreSaisons,

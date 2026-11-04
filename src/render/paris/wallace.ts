@@ -11,6 +11,9 @@
  *
  * A tile hands over its fountains as it is built (`add`) and takes them back as it is dropped (`release`); the
  * instance buffer is rebuilt on each change, which for a hundred-odd matrices costs nothing.
+ *
+ * ONE IS RED: the fountain on the Avenue d'Ivry (13e; OSM node 1306563646, colour=red; the owner, 2026-11-03), the
+ * same casting painted red. It goes in a second instance group, the same geometry under a red finish.
  */
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
@@ -27,7 +30,11 @@ import { wallaceFountain } from './furniture.ts'
 export const WALLACE_HEIGHT = 2.71
 export const WALLACE_MODEL = 'paris/wallace.glb'
 
-interface Placement { x: number; y: number; z: number; heading: number }
+interface Placement { x: number; y: number; z: number; heading: number; red?: boolean }
+
+/** the red one (OSM node 1306563646) */
+export const RED_WALLACE: [number, number] = [48.8242965, 2.3639241]
+const RED: [number, number, number] = [0.62, 0.07, 0.06]
 
 export class WallaceFountains {
   private readonly byTile = new Map<string, Placement[]>()
@@ -35,6 +42,8 @@ export class WallaceFountains {
   private standIn: Mesh | null
   /** the model's mesh, with the matrix that takes its own frame (as loaded, upright, foot near y 0) to a placement */
   private model: { mesh: Mesh; frame: Matrix; inverse: Matrix; minY: number; scale: number } | null = null
+  /** the red group: a clone of whichever mesh is live, red */
+  private redMesh: Mesh | null = null
 
   /** (`base` is the page's root, where `models/` is asked for — not the city's facades folder, which is what City.assets is) */
   constructor(private readonly scene: Scene, base = typeof document === 'undefined' ? '/' : new URL('./', document.baseURI).href) {
@@ -50,9 +59,9 @@ export class WallaceFountains {
     void this.load(base)
   }
 
-  add(tile: string, x: number, y: number, z: number, heading: number): void {
+  add(tile: string, x: number, y: number, z: number, heading: number, red = false): void {
     const list = this.byTile.get(tile) ?? []
-    list.push({ x, y, z, heading })
+    list.push({ x, y, z, heading, red })
     this.byTile.set(tile, list)
     this.refresh()
   }
@@ -80,17 +89,54 @@ export class WallaceFountains {
       this.model = { mesh, frame, inverse: frame.clone().invert(), minY: min.y, scale }
       this.standIn?.dispose()
       this.standIn = null
+      this.redMesh?.dispose()
+      this.redMesh = null
       this.refresh()
     } catch (err) {
       console.warn(`wallace fountain: ${WALLACE_MODEL} did not load; the stand-in stays`, err)
     }
   }
 
-  /** every placement into the live mesh's instance buffer */
+  /** the red twin of the live mesh, made the first time a red fountain is placed */
+  private red(): Mesh | null {
+    if (this.redMesh) return this.redMesh
+    if (this.model) {
+      const m = this.model.mesh.clone('wallace:red', null, true, false) as Mesh
+      const mat = this.model.mesh.material?.clone('wallace:red') as unknown as { albedoTexture?: unknown; albedoColor?: { set(r: number, g: number, b: number): void }; diffuseTexture?: unknown; diffuseColor?: { set(r: number, g: number, b: number): void } } | null
+      if (mat) {
+        // the casting's own texture is its green paint: dropped, so the colour is the paint; normals and occlusion stay
+        if ('albedoColor' in mat) { mat.albedoTexture = null; mat.albedoColor?.set(...RED) }
+        else if ('diffuseColor' in mat) { mat.diffuseTexture = null; mat.diffuseColor?.set(...RED) }
+        m.material = mat as unknown as Mesh['material']
+      }
+      m.renderingGroupId = 3
+      m.isPickable = false
+      this.redMesh = m
+    } else {
+      const b = new MeshBuilder()
+      wallaceFountain(b)
+      for (let i = 0; i < b.colors.length; i += 4) { b.colors[i] = RED[0]; b.colors[i + 1] = RED[1]; b.colors[i + 2] = RED[2] }
+      const m = new Mesh('wallace:red', this.scene)
+      b.toVertexData().applyToMesh(m)
+      m.material = cartoonMaterial(this.scene, 'cartoon')
+      m.renderingGroupId = 3
+      m.isPickable = false
+      this.redMesh = m
+    }
+    return this.redMesh
+  }
+
+  /** every placement into the live meshes' instance buffers: the green ones, and the red one */
   private refresh(): void {
     const all = [...this.byTile.values()].flat()
-    const mesh = this.model?.mesh ?? this.standIn
-    if (!mesh) return
+    const live = this.model?.mesh ?? this.standIn
+    if (!live) return
+    this.fill(live, all.filter((p) => !p.red))
+    const reds = all.filter((p) => p.red)
+    if (reds.length || this.redMesh) { const r = this.red(); if (r) this.fill(r, reds) }
+  }
+
+  private fill(mesh: Mesh, all: Placement[]): void {
     if (all.length === 0) { mesh.thinInstanceCount = 0; mesh.setEnabled(false); return }
     const buf = new Float32Array(all.length * 16)
     const m = new Matrix()
@@ -115,6 +161,7 @@ export class WallaceFountains {
   dispose(): void {
     this.standIn?.dispose()
     this.model?.mesh.dispose(false, true)
+    this.redMesh?.dispose()
     this.byTile.clear()
   }
 }

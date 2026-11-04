@@ -177,7 +177,7 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   wharfSign: 'sign', ghirardelliSign: 'sign',
   // monuments, columns, arches: solid, no interior a rider can read
   colonneDeJuillet: 'monument', colonneVendome: 'monument', monumentRepublique: 'monument',
-  arcDeTriomphe: 'monument', operaArch: 'monument', saintDenysPortico: 'monument',
+  arcDeTriomphe: 'monument', saintDenysPortico: 'monument',
   burenColumns: 'monument',
   // San Francisco's figure monuments (sf/monuments.ts, 2026-10-04)
   pioneerMonument: 'monument', mckinleyMonument: 'monument', goetheSchiller: 'monument', figureOnPedestal: 'monument', emptyPedestal: 'monument',

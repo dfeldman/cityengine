@@ -4,6 +4,7 @@ import { beam, block, shade } from '../../kit.ts'
 import { edgeAt } from '../../parts.ts'
 import type { Fit } from '../../fit.ts'
 import { fitted } from '../palaces/common.ts'
+import { surfaceTag } from '../../../cartoon-material.ts'
 import { ccw, FIXED, ring, UV, walls } from './common.ts'
 
 /*
@@ -18,7 +19,7 @@ import { ccw, FIXED, ring, UV, walls } from './common.ts'
  * offices. What everyone knows of it:
  *
  * - the FRAME: the outer faces in white Carrara marble on a square grid of grey windows, the faces inside the opening
- *   in glass, the roof's soffit stepping down toward the middle (OSM's parts: 108 m at the faces to 100 m inside);
+ *   in glass (drawn plain: the owner, 2026-11-03, sees no windows), the roof's soffit stepping down toward the middle (OSM's parts: 108 m at the faces to 100 m inside);
  * - the great STEPS up from the parvis to the platform under it, 8.3 m in thirteen 63 cm treads (OSM's parts
  *   225694296…225694337), on both faces;
  * - the CLOUD (le Nuage, Peter Rice), the white tensile canopy hung in the opening over the platform;
@@ -34,9 +35,6 @@ export function grandeArche(out: MeshBuilder, fit: Fit): void {
 
 function arche(out: MeshBuilder): void {
   const marble: Rgb = [0.93, 0.93, 0.92]
-  const grey: Rgb = [0.4, 0.45, 0.5]
-  const glass: Rgb = [0.36, 0.43, 0.5]
-  const mullion: Rgb = [0.78, 0.8, 0.82]
   const xi = 34.7
   const top = 110
   // the steps on both faces, and the platform between the legs
@@ -53,31 +51,22 @@ function arche(out: MeshBuilder): void {
     const z1 = z0 + 2.17
     for (const s of [-1, 1]) block(out, -AX, AX, s > 0 ? z0 : -z1, s > 0 ? z1 : -z0, 100 + k, top, marble)
   }
-  // the outer faces: white marble on a square grid of grey windows — drawn as the grey, with the marble's grid over it
-  const grid = (f: 'x' | 'z', plane: number, s: number, t0: number, t1: number, y0: number, y1: number, pane: Rgb, bar: Rgb, pitch: number, w: number): void => {
-    const d = s * 0.06
-    const Q = (a: number, b: number, ya: number, yb: number, dd: number, c: Rgb): void => {
-      const P = (t: number, y: number): [number, number, number] => (f === 'z' ? [t, y, plane + dd] : [plane + dd, y, t])
-      out.quad([P(a, ya), P(b, ya), P(b, yb), P(a, yb)], f === 'z' ? [0, 0, s] : [s, 0, 0], UV, c, FIXED)
-    }
-    Q(t0, t1, y0, y1, d, pane)
-    for (let t = t0; t <= t1 + 0.01; t += pitch) Q(Math.max(t0, t - w / 2), Math.min(t1, t + w / 2), y0, y1, d * 2, bar)
-    for (let y = y0; y <= y1 + 0.01; y += pitch) Q(t0, t1, Math.max(y0, y - w / 2), Math.min(y1, y + w / 2), d * 2, bar)
+  // every face plain: the owner (2026-11-03) — no windows read on it, outside or in the opening. A smooth marble skin
+  // just proud of the blocks, tagged stucco so the landmark material does not draw ashlar courses on it.
+  const skin = surfaceTag('stucco')
+  const face = (f: 'x' | 'z', plane: number, s: number, t0: number, t1: number, y0: number, y1: number, c: Rgb): void => {
+    const P = (t: number, y: number): [number, number, number] => (f === 'z' ? [t, y, plane + s * 0.06] : [plane + s * 0.06, y, t])
+    out.quad([P(t0, y0), P(t1, y0), P(t1, y1), P(t0, y1)], f === 'z' ? [0, 0, s] : [s, 0, 0], UV, c, skin)
   }
   for (const s of [-1, 1]) {
-    // each leg's outer side, the whole 112 m by 110
-    grid('x', s * AX, s, -AZ + 1, AZ - 1, 8.3, top - 1, grey, marble, 3.05, 2.1)
-    for (const f of [-1, 1]) {
-      // the frame's face toward Paris and away: the legs' ends and the roof's edge
-      grid('z', f * AZ, f, s > 0 ? xi + 0.8 : -AX + 1, s > 0 ? AX - 1 : -xi - 0.8, 8.3, top - 1, grey, marble, 3.05, 2.1)
-    }
+    face('x', s * AX, s, -AZ, AZ, 0, top, marble)
+    for (const f of [-1, 1]) face('z', f * AZ, f, s > 0 ? xi : -AX, s > 0 ? AX : -xi, 0, top, marble)
+    face('x', s * xi, -s, -AZ, AZ, 0, 100, shade(marble, 0.96))
   }
-  for (const f of [-1, 1]) grid('z', f * AZ, f, -xi, xi, 101.5, top - 1, grey, marble, 3.05, 2.1)
-  // inside the opening: the legs' inner faces and the soffit, in glass with fine mullions
-  for (const s of [-1, 1]) grid('x', s * xi, -s, -AZ + 0.5, AZ - 0.5, 8.3, 99.5, glass, mullion, 1.8, 0.18)
+  for (const f of [-1, 1]) face('z', f * AZ, f, -xi, xi, 100, top, marble)
   {
     const y = 99.98
-    out.quad([[-xi, y, -36.6], [xi, y, -36.6], [xi, y, 36.6], [-xi, y, 36.6]], [0, -1, 0], UV, glass, FIXED)
+    out.quad([[-xi, y, -36.6], [xi, y, -36.6], [xi, y, 36.6], [-xi, y, 36.6]], [0, -1, 0], UV, shade(marble, 0.94), skin)
   }
   // the parapet round the roof
   for (const [x0, x1, z0, z1] of [[-AX, AX, -AZ, -AZ + 0.6], [-AX, AX, AZ - 0.6, AZ], [-AX, -AX + 0.6, -AZ, AZ], [AX - 0.6, AX, -AZ, AZ]]) block(out, x0, x1, z0, z1, top, top + 1.2, marble)

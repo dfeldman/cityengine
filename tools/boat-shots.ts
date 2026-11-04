@@ -1,8 +1,9 @@
+import { VIEWPORT } from './shot-size.ts'
 /** Photographs the moving boats (render/river-traffic.ts), each from the quai side as it passes: node --experimental-strip-types tools/boat-shots.ts [0,3,5] */
 import { chromium } from 'playwright'
 const out = new URL('../docs/shots/', import.meta.url).pathname
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 200)))
 await page.goto('http://localhost:5200/?city=paris-centre&freeze=1')
 await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })

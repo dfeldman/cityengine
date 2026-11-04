@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Photographs ONE manifest entry's procedural model on its own real footprint, from cameras that are NOT
  * spun by the entry's `front` bearing.
@@ -55,7 +56,7 @@ const front = frontOf()
 
 const got = await fitForEntry(entry, city, front)
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
 await page.goto(`${BASE}/?model=${got.model}`)
 await page.waitForFunction('window.modelReady === true', null, { timeout: 60_000 })

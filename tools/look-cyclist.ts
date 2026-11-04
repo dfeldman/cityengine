@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Photograph the nearest stranger cyclist (BUGS.md #1): waits for the crowd's kit bodies, freezes, and stands
  * the camera beside the first instanced crowd bike.
@@ -9,7 +10,7 @@ const arg = (n: string, f = ''): string => {
   return h ? h.slice(n.length + 3) : f
 }
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.log('console:', m.text().slice(0, 200)) })
 await page.goto(`http://localhost:5200/?city=${arg('city', 'paris-marais')}&crowd=crowded${arg('q') ? `&q=${arg('q')}` : ''}`)
 await page.waitForFunction('window.crowdReady === true', null, { timeout: 180_000 })

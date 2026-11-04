@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Shoot the named best views of a city, many per page load, and put them on contact sheets.
  *
@@ -74,7 +75,7 @@ if (arg('list')) {
 }
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 200)))
 
 async function open(query: string): Promise<void> {

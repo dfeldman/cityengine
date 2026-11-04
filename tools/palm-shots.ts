@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Photographs the palms (src/palm-showcase.ts): the row from street distance, a close look up into a crown of
  * each species, and the far levels of detail.
@@ -9,7 +10,7 @@ const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWit
 const out = arg('out', 'docs/shots/palms')
 mkdirSync(out, { recursive: true })
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
 const shots: [string, number, [number, number, number, number, number?, number?]][] = [
   ['row', 0, [Math.PI / 2, 1.32, 62, 8]],

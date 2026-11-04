@@ -784,23 +784,6 @@
     "madeBy": "claude-opus-5-5"
   },
   {
-    "name": "Palais Galliera",
-    "osm": [
-      "relation/1191057"
-    ],
-    "restyle": "classical",
-    "levels": 2,
-    "eaves": 13,
-    "roof": "hipped",
-    "roofHeight": 5,
-    "wall": "#b1a78f",
-    "trim": "#c6bda7",
-    "roofColour": "#4b5359",
-    "noShops": true,
-    "note": "Ginain's Renaissance palace for the Duchess (1878–94), a museum of fashion: the next candidate. Massing OSM's; its arches and the garden's groups want Batch 4's model.",
-    "madeBy": "claude-opus-5-5"
-  },
-  {
     "name": "Parc Kellermann: Les Rochers dans le ciel",
     "procedural": "rochersDansLeCiel",
     "lat": 48.81917,

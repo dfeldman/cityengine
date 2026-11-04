@@ -31,14 +31,15 @@
   },
   {
     "name": "Musée du Luxembourg",
+    "procedural": "luxembourgMuseum",
     "osm": [
       "way/170226810"
     ],
-    "restyle": "classical",
-    "roof": "hipped",
-    "levels": 2,
-    "height": 13,
-    "note": "The old orangery of the palace on the Rue de Vaugirard: two storeys of tall windows in stone under a slate roof."
+    "height": 20,
+    "sign": false,
+    "note": "The 1886 stone front on the Rue de Vaugirard (pilasters, brick centre, the door's segmental pediment, the sculpted pediment) and the trellised gallery behind it (owner's photographs, 2026-11-03): palaces/luxembourg-museum.ts. Placed on OSM way 170226810's box, front (−z) at bearing ~3.",
+    "madeBy": "claude-opus-5-5",
+    "front": 3
   },
   {
     "name": "Hôtel des Invalides",
@@ -76,6 +77,36 @@
     ],
     "height": 20,
     "note": "The entrance on the Place du Palais-Bourbon: the Corinthian colonnade on its steps between the two pavilions. Placed on the box of the five OSM building:parts it replaces (measured with osmium, 2026-10-29), front (−z) to the place, bearing 188.5."
+  },
+  {
+    "name": "Palais Bourbon — ranges and cour d'honneur",
+    "procedural": "bourbonCourts",
+    "osm": [
+      "relation/19981961",
+      "way/1459919808",
+      "way/1460019025",
+      "way/1459866034",
+      "way/1459866035",
+      "way/1459866036",
+      "way/1459866037",
+      "way/1460019024",
+      "way/1459919803",
+      "way/1460019026",
+      "way/1460019027",
+      "way/1460019028",
+      "way/1460019029",
+      "way/1460019030",
+      "way/1460019032"
+    ],
+    "lat": 48.861371,
+    "lon": 2.318255,
+    "rotateDeg": 8.5,
+    "size": [
+      147,
+      140
+    ],
+    "height": 20,
+    "note": "The Assemblée's wings round the Cour d'honneur and the western block's ranges round their courts (relation 19981961 and building:parts of relation 1019368, outlines from osmium on the Île-de-France extract, 2026-11-03; heights from IGN's lidar MNS: ranges 15–16.5 m to the copper leads, the SW pavilion 19 m). Drawn as three storeys of bays, balustrade, slate mansard with dormers and green copper on top; the court holds the cobbles, the round lawn with the granite sphere, the curved plaque wall, the two flower-bordered lawns with pyramid yews, and the lamps. The palace core, hemicycle, portico (`assembleePortico`) and gate (`bourbonGate`) stay as they were."
   },
   {
     "name": "Palais Bourbon",
@@ -919,5 +950,87 @@
     ],
     "height": 41,
     "note": "Placed on OSM relation 973246's box turned to its long front (osmium, 2026-10-30), −z to the Esplanade Pierre-Vidal-Naquet, bearing 147. The relation also carries the Cour des Grands Moulins, its court, which stays open. The grid of mill windows, the name band and the square tower with its slate dome from one Mapillary view (1098224344799431) from the Rue Marguerite-Duras: the other walls are drawn as that one's rhythm, unchecked, and which face is the front was chosen by length, not by a photograph."
+  },
+  {
+    "name": "Palais de l'Alma",
+    "procedural": "palaisAlma",
+    "osm": [
+      "relation/1084225",
+      "way/69045411"
+    ],
+    "height": 20,
+    "note": "Tétaz's Écuries impériales (1861), now the Élysée's annexes, on the Quai Branly. OSM relation 1084225 (the U of annex ranges round the Cour d'honneur and its hemicycle, the west block round the Cour de la Poste, the riding hall's spur) and way 69045411 (the old palace front on the quai) drawn in east/north metres and registered by enframe.ts (osmium, 2026-11-03); the plan matches the owner's 1930s first-floor plan. IGN's lidar and orthophoto are blurred over the site, so heights are the photographs': annexes 3 storeys to 13 m under low zinc, the quai front two storeys and an attic to 13.5 m, slate mansard to 18, chimneys to 20.5; the manège to a 19 m ridge. Annex fronts after the owner's Street View (brick-arched ground-floor windows, white shutters, banded piers, quoins); quai front after the owner's photograph (pediment, carriage gate, flag). See src/render/landmarks/paris/palaces/alma.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Russian spiritual centre — Centre Culturel",
+    "procedural": "russianCentreBlock",
+    "osm": [
+      "way/449077940"
+    ],
+    "height": 15,
+    "stone": false,
+    "note": "Wilmotte's pale banded blocks beside the Sainte-Trinité cathedral (2016): a white band at each floor, recessed glass between, a planted roof. Fitted to the OSM way; height from its levels/height tag. Builder in src/render/landmarks/paris/palaces/alma.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Russian spiritual centre — Centre Paroissial et Auditorium",
+    "procedural": "russianCentreBlock",
+    "osm": [
+      "way/449077941"
+    ],
+    "height": 24,
+    "stone": false,
+    "note": "Wilmotte's pale banded blocks beside the Sainte-Trinité cathedral (2016): a white band at each floor, recessed glass between, a planted roof. Fitted to the OSM way; height from its levels/height tag. Builder in src/render/landmarks/paris/palaces/alma.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Russian spiritual centre — École Primaire Franco-Russe",
+    "procedural": "russianCentreBlock",
+    "osm": [
+      "way/449077942"
+    ],
+    "height": 15,
+    "stone": false,
+    "note": "Wilmotte's pale banded blocks beside the Sainte-Trinité cathedral (2016): a white band at each floor, recessed glass between, a planted roof. Fitted to the OSM way; height from its levels/height tag. Builder in src/render/landmarks/paris/palaces/alma.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Palais Galliera",
+    "procedural": "galliera",
+    "osm": [
+      "relation/1191057",
+      "way/262367189",
+      "way/262367203"
+    ],
+    "lat": 48.86572,
+    "lon": 2.29666,
+    "rotateDeg": 0,
+    "size": [
+      76,
+      62
+    ],
+    "height": 21,
+    "sign": false,
+    "note": "Ginain's palace (1878–94), the Musée de la Mode: the garden front (−z, south) with three glazed arches between Corinthian columns, paired at the end bays, the balustrade and vases, empty statue pedestals; the hemicycle colonnade round the court to the north with its gate pavilion, and the straight colonnade wings to x ±38. Plain east/north metres from OSM relation 1191057 and its parts (osmium), heights from IGN lidar MNS (cornice 17, hall ridge 21, colonnades 10–11): palaces/galliera.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Square Brignole-Galliera",
+    "procedural": "gallieraSquare",
+    "osm": [
+      "way/79232732"
+    ],
+    "lat": 48.86572,
+    "lon": 2.29666,
+    "rotateDeg": 0,
+    "size": [
+      118,
+      100
+    ],
+    "height": 5,
+    "sign": false,
+    "note": "The palace's garden: railings round OSM way 79232732's ring, the gravel oval and axis walk, clipped trees, empty pedestals for the statues' builder. Same frame as the Palais Galliera: palaces/galliera.ts.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

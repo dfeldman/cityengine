@@ -12,17 +12,19 @@ import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import type { Terrain } from '../city/terrain.ts'
 import type { TileLayer } from './city.ts'
+import { drawGuimardWord } from './paris/guimard-lettering.ts'
 
 /**
  * The lettering as a per-tile layer (render/city.ts `TileLayer`): the entrances in the tile, turned to their
  * street by `bearing` (the city's own streets, which are there for any tile being built).
  */
-export function metroSignsLayer(scene: Scene, terrain: Terrain, bearing: (x: number, z: number) => number): TileLayer {
+export function metroSignsLayer(scene: Scene, terrain: Terrain, bearing: (x: number, z: number) => number,
+  isGuimard: (x: number, z: number) => boolean = () => true): TileLayer {
   let mat: StandardMaterial | null = null
   return {
     name: 'metrosigns',
     build(near) {
-      const at = near.tile.furniture.filter((f) => f.kind === 'metro').map((f) => ({ x: f.x, z: f.z, heading: bearing(f.x, f.z) }))
+      const at = near.tile.furniture.filter((f) => f.kind === 'metro' && isGuimard(f.x, f.z)).map((f) => ({ x: f.x, z: f.z, heading: bearing(f.x, f.z) }))
       if (at.length === 0) return []
       mat ??= signMaterial(scene)
       return [buildMetroSigns(scene, at, terrain, mat, `metrosigns:${near.key}`)]
@@ -30,30 +32,35 @@ export function metroSignsLayer(scene: Scene, terrain: Terrain, bearing: (x: num
   }
 }
 
+/**
+ * The lettering: drawn letter by letter as paths in Guimard's manner (render/paris/guimard-lettering.ts) — no font file.
+ * Dark green on pale amber, in a pill with transparent corners so the oval rim of the model shows round it.
+ */
+function drawSign(ctx: CanvasRenderingContext2D, W: number, H: number): void {
+  ctx.clearRect(0, 0, W, H)
+  const r = H / 2 - 3
+  ctx.beginPath()
+  ctx.moveTo(r + 3, 3); ctx.lineTo(W - r - 3, 3); ctx.arc(W - r - 3, H / 2, r, -Math.PI / 2, Math.PI / 2)
+  ctx.lineTo(r + 3, H - 3); ctx.arc(r + 3, H / 2, r, Math.PI / 2, Math.PI * 1.5); ctx.closePath()
+  ctx.fillStyle = '#e6d48a'
+  ctx.fill()
+  drawGuimardWord(ctx, 'METROPOLITAIN', r * 0.7, H * 0.12, W - r * 1.4, H * 0.76, '#1f4a3a')
+}
+
 function signMaterial(scene: Scene): StandardMaterial {
-  const W = 512
-  const H = 72
+  const W = 1024
+  const H = 200
   const tex = new DynamicTexture('metrosign', { width: W, height: H }, scene, true)
+  tex.hasAlpha = true
   const ctx = tex.getContext() as unknown as CanvasRenderingContext2D
-  ctx.fillStyle = '#dcb64c'
-  ctx.fillRect(0, 0, W, H)
-  ctx.strokeStyle = '#3a2f1a'
-  ctx.lineWidth = 4
-  ctx.strokeRect(4, 4, W - 8, H - 8)
-  ctx.fillStyle = '#2a2416'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  // Guimard's lettering is a soft, swelling capital; a condensed serif at weight is the nearest system face
-  ctx.font = `700 46px "Didot", "Bodoni 72", Georgia, serif`
-  let size = 46
-  while (ctx.measureText('METROPOLITAIN').width > W - 30 && size > 20) ctx.font = `700 ${--size}px "Didot", "Bodoni 72", Georgia, serif`
-  ctx.fillText('METROPOLITAIN', W / 2, H / 2 + 2)
+  drawSign(ctx, W, H)
   tex.update(false)
   const mat = new StandardMaterial('metrosign', scene)
   mat.diffuseTexture = tex
+  mat.useAlphaFromDiffuseTexture = true
   mat.emissiveColor = new Color3(0.35, 0.33, 0.3)
   mat.specularColor = new Color3(0, 0, 0)
-  // both faces drawn; the nearer of the two quads (9 cm apart) is always the one facing the viewer
+  // both faces drawn; the nearer of the two quads is always the one facing the viewer
   mat.backFaceCulling = false
   return mat
 }
@@ -67,13 +74,13 @@ function buildMetroSigns(scene: Scene, at: { x: number; z: number; heading: numb
     // the model's local frame: +z along the heading (the open end), +x to its side
     const p = (lx: number, ly: number, lz: number): [number, number, number] =>
       [m.x + lx * c + lz * s, ly, m.z - lx * s + lz * c]
-    const y = terrain.heightAt(m.x, m.z) + 0.15 + 2.2
-    const w = 0.52
-    const h = 0.115
+    const y = terrain.heightAt(m.x, m.z) + 0.15 + 2.32
+    const w = 0.72
+    const h = 0.158
     // front (+z) face, and the back face read the right way round from behind
-    out.quad([p(-w, y - h, 2.095), p(w, y - h, 2.095), p(w, y + h, 2.095), p(-w, y + h, 2.095)].reverse() as [number, number, number][],
+    out.quad([p(-w, y - h, 2.08), p(w, y - h, 2.08), p(w, y + h, 2.08), p(-w, y + h, 2.08)].reverse() as [number, number, number][],
       [s, 0, c], [[1, 0], [0, 0], [0, 1], [1, 1]], [1, 1, 1], 1)
-    out.quad([p(w, y - h, 2.005), p(-w, y - h, 2.005), p(-w, y + h, 2.005), p(w, y + h, 2.005)].reverse() as [number, number, number][],
+    out.quad([p(w, y - h, 2.02), p(-w, y - h, 2.02), p(-w, y + h, 2.02), p(w, y + h, 2.02)].reverse() as [number, number, number][],
       [-s, 0, -c], [[1, 0], [0, 0], [0, 1], [1, 1]], [1, 1, 1], 1)
   }
   const mesh = new Mesh(name, scene)

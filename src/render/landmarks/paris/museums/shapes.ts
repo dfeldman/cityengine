@@ -58,10 +58,11 @@ export const ellipse = (cx: number, cz: number, rx: number, rz: number, n = 20):
 /**
  * A curved sheet: `at(u, v)` for u, v in [0, 1], `nu × nv` quads, each normalled by its own corners. Landmarks are
  * drawn double-sided in the city (render/landmarks.ts) but not in the showcase, and a back face is lit by the
- * front's normal; `back` (metres) draws the other side too, that far behind, normalled its own way.
+ * front's normal; `back` (metres) draws the other side too, that far behind, normalled its own way. `tag` is the
+ * surface (cartoon-material.ts `surfaceTag`): a pale untagged sheet goes dressed stone in the landmark material.
  */
 export function sheet(out: MeshBuilder, at: (u: number, v: number) => V3, nu: number, nv: number, colour: Rgb | ((u: number, v: number) => Rgb),
-                      back = 0): void {
+                      back = 0, tag = FIXED): void {
   for (let i = 0; i < nu; i++) {
     for (let j = 0; j < nv; j++) {
       const p00 = at(i / nu, j / nv)
@@ -74,10 +75,10 @@ export function sheet(out: MeshBuilder, at: (u: number, v: number) => V3, nu: nu
       const l = Math.hypot(n[0], n[1], n[2]) || 1
       const c = typeof colour === 'function' ? colour((i + 0.5) / nu, (j + 0.5) / nv) : colour
       const nn: V3 = [n[0] / l, n[1] / l, n[2] / l]
-      out.quad([p00, p10, p11, p01], nn, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+      out.quad([p00, p10, p11, p01], nn, [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
       if (back > 0) {
         const m = (p: V3): V3 => [p[0] - nn[0] * back, p[1] - nn[1] * back, p[2] - nn[2] * back]
-        out.quad([m(p00), m(p10), m(p11), m(p01)], [-nn[0], -nn[1], -nn[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+        out.quad([m(p00), m(p10), m(p11), m(p01)], [-nn[0], -nn[1], -nn[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
       }
     }
   }

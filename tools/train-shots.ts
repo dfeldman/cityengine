@@ -1,3 +1,4 @@
+import { VIEWPORT } from './shot-size.ts'
 /**
  * Photographs the trains (render/life.ts, the region's rolling stock): each métro train standing at a viaduct
  * station, and one of each other kind running, from the side.
@@ -7,7 +8,7 @@ import { chromium } from 'playwright'
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 const city = arg('city', 'paris-centre')
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
-const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
+const page = await browser.newPage({ viewport: VIEWPORT })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 200)))
 await page.goto(`http://localhost:5200/?city=${city}&freeze=1${arg('time') ? `&time=${arg('time')}` : ''}`)
 await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })

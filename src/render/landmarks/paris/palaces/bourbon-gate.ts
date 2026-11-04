@@ -2,7 +2,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import { box } from '../../../models.ts'
 import { block, classicalColumn, roof } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
-import { archOn, balustrade, fitted, palette, pedimentOn, range, rectOn, statue } from './common.ts'
+import { archOn, balustrade, clockOn, fitted, palette, pedimentOn, range, rectOn, statue } from './common.ts'
 
 const FIXED = 0
 const HX = 27
@@ -40,17 +40,26 @@ function draw(out: MeshBuilder): void {
   const cols = 8
   for (let i = 0; i < cols; i++) {
     const x = xa + 1.4 + ((xb - xa - 2.8) * i) / (cols - 1)
-    for (const z of [-3.1, 2.6]) {
+    for (const z of [-3.1, 4.3]) {
       classicalColumn(out, x, z, 2.0, 10.3, 0.42, p.stone, { order: 'corinthian', tier: z < 0 ? 'near' : 'mid', tag: FIXED, flutes: z < 0, trim: p.trim })
     }
   }
-  block(out, xa, xb, -3.8, 3.3, 10.3, 11.0, p.trim)                                              // architrave
-  block(out, xa, xb, -3.9, 3.4, 11.0, 11.6, p.stone)                                             // frieze
-  block(out, xa - 0.2, xb + 0.2, -4.3, 3.6, 11.6, 12.2, p.trim)                                  // cornice
+  block(out, xa, xb, -3.8, 5.0, 10.3, 11.0, p.trim)                                              // architrave
+  block(out, xa, xb, -3.9, 5.1, 11.0, 11.6, p.stone)                                             // frieze
+  block(out, xa - 0.2, xb + 0.2, -4.3, 5.5, 11.6, 12.2, p.trim)                                  // cornice
   balustrade(out, xa, xb, -4.3, 3.6, 12.2, p, { sides: ['-z'], h: 1.0 })
   // the court seen through it: the shadowed gate and the far side of the colonnade
   rectOn(out, '-z', 3.5, xa, xb, 2.0, 10.3, [0.3, 0.3, 0.29], 0)
   archOn(out, '-z', 3.45, (xa + xb) / 2, 2.0, 4.0, 7.4, [0.16, 0.16, 0.17], 0.02)
+  // the screen's COURT face, as the cour d'honneur sees it from the palace's steps (owner's photograph, 2026-11-03): the
+  // stone wall behind the court row of columns, the arched carriage gate in its middle, and the clock over the cornice
+  const xm = (xa + xb) / 2
+  rectOn(out, '+z', 3.5, xa, xb, 0, 10.3, p.stone, 0.04)
+  archOn(out, '+z', 3.5, xm, 2.0, 4.0, 7.4, [0.16, 0.16, 0.17], 0.08)
+  for (const x of [xm - 6, xm + 6]) archOn(out, '+z', 3.5, x, 2.0, 1.8, 5.0, p.glass, 0.08)
+  block(out, xm - 2.2, xm + 2.2, 3.2, 5.0, 12.2, 14.8, p.stone)
+  block(out, xm - 2.4, xm + 2.4, 3.1, 5.2, 14.8, 15.1, p.trim)
+  clockOn(out, '+z', 5.0, xm, 13.5, 0.8, p)
   // a trophy group over the middle, and statues on the pavilions' fronts
   pedimentOn(out, '-z', -4.3, (xa + xb) / 2 - 3.5, (xa + xb) / 2 + 3.5, 12.2, 1.6, 0.4, p.trim)
   box(out, (xa + xb) / 2, 14.0, -3.9, 0.9, 0.5, 0.3, p.trim, FIXED)

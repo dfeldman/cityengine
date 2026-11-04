@@ -560,6 +560,33 @@
      2.378373
     ]
    ]
+  },
+  {
+   "ref": "trocadero-terraces",
+   "name": "Trocadéro: the parvis, the Place, the theatre terrace and the lower terrace",
+   "note": "owner, 2026-11-03: sand showed through the terraces. The 20 m ground smeared the 12 m drop under the Place (lidar: parvis 61, Place 59.5, theatre terrace 47, lower terrace 46) into a slope over the trocaderoParvis model. Fine ground (IGN lidar at 4 m) here.",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     48.863068,
+     2.288471
+    ],
+    [
+     48.862103,
+     2.287041
+    ],
+    [
+     48.861037,
+     2.288702
+    ],
+    [
+     48.862001,
+     2.290133
+    ]
+   ]
   }
  ]
 }

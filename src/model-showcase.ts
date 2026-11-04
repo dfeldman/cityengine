@@ -25,7 +25,7 @@ import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
 import { bartEntrance } from './render/sf/furniture.ts'
 import { sfFireAlarmBox, nycFireAlarmBox } from './render/us-furniture.ts'
-import { bench, bikeParking, parisNewsstand } from './render/models.ts'
+import { bench, bikeParking, guimardEntrance, parisEntrance, parisNewsstand } from './render/models.ts'
 import { parisStreetModel } from './render/paris/street.ts'
 import { cafeBoard, stoneBench, laPosteBox, parisPanel, boxwoodPot, horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit, wallaceFountain } from './render/paris/furniture.ts'
 import { court } from './render/sports.ts'
@@ -50,7 +50,7 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
   // (and street furniture, drawn in the game's own static material: `?model=bartEntrance`)
   const FURNITURE: Record<string, (o: MeshBuilder) => void> = {
-    bartEntrance, bench, sfFireAlarmBox, nycFireAlarmBox,
+    bartEntrance, bench, sfFireAlarmBox, nycFireAlarmBox, guimardEntrance, parisEntrance,
     // Paris's pavement (render/paris/furniture.ts): `?model=parisBench`
     parisBench, parisLamp, parisLampConsole, wallaceFountain, parisNewsstand, horodateur, treePit: treePit(true),
     parisBusStop: (o) => parisBusStop(o, true, 3), parisStopPost: (o) => parisBusStop(o, false, 5),

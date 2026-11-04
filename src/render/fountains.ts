@@ -31,7 +31,8 @@ export type Piece =
   | { kind: 'foam'; at: V3; r: number }
 
 /** A fountain: at a landmark (by the manifest name) or at a lat/lon, facing `bearing` (degrees) */
-export interface FountainSpec { landmark?: string; lat?: number; lon?: number; bearing?: number; onWater?: boolean; pieces: Piece[] }
+/** `drape`: each piece's y is over the ground under it, not over the landmark's centre (a garden on a slope, the Trocadéro) */
+export interface FountainSpec { landmark?: string; lat?: number; lon?: number; bearing?: number; onWater?: boolean; drape?: boolean; pieces: Piece[] }
 
 const VERTEX = `
 precision highp float;
@@ -237,7 +238,15 @@ export class Fountains {
       const c = Math.cos(rot)
       const s = Math.sin(rot)
       const out = new MeshBuilder()
-      buildPieces(out, f.pieces, ([lx, ly, lz]) => [x + lx * c + lz * s, y + ly, z - lx * s + lz * c])
+      if (f.drape) {
+        // each piece over the ground at its own foot (its first point), so a jet stands on the slope and an arc keeps its shape
+        for (const piece of f.pieces) {
+          const foot = piece.kind === 'arc' ? piece.from : piece.kind === 'lip' ? piece.a : piece.at
+          const fx = x + foot[0] * c + foot[2] * s, fz = z - foot[0] * s + foot[2] * c
+          const g = this.terrain.heightAt(fx, fz)
+          buildPieces(out, [piece], ([lx, ly, lz]) => [x + lx * c + lz * s, g + ly, z - lx * s + lz * c])
+        }
+      } else buildPieces(out, f.pieces, ([lx, ly, lz]) => [x + lx * c + lz * s, y + ly, z - lx * s + lz * c])
       const m = new Mesh(`fountain:${f.landmark ?? i}`, this.scene)
       out.toVertexData().applyToMesh(m)
       m.material = this.mat

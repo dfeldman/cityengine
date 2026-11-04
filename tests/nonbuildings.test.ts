@@ -45,7 +45,6 @@ const KNOWN: Record<string, string[]> = {
     // whose OSM square overlaps the buildings round it, and are probably fine; they need the contact sheet.
     'intersects | Musée Carnavalet — the court',
     'intersects | Tour Saint-Jacques',
-    'intersects | Opéra Bastille — the arch',
     'intersects | Tour Eiffel',
     // (the check takes a turned rectangle north-up. Really turned, its 506 × 120 m between the allées touches six buildings at its
     // west end, the Grandes Serres among them: the rectangle only clears scattered trees; the beds are OSM's and stand clear of them)
