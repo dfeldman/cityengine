@@ -262,7 +262,12 @@ async function main(): Promise<void> {
     if (at.s > maxMinutes * 60) { ended = `--max=${maxMinutes} min reached`; break }
     // stalled: no ground covered for 45 s of riding
     if (at.km > stallKm + 0.005) { stallKm = at.km; stallAt = at.s }
-    else if (at.s - stallAt > 45) { ended = 'STALLED — the rider stopped covering ground'; break }
+    else if (at.s - stallAt > 45) {
+      // what the game says is holding the rider (game.ts `__ride`), so a stall can be read without a rerun
+      const why = await page.evaluate('JSON.stringify({ ride: window.__ride ? window.__ride() : null, solid: window.__solid ?? null })').catch(() => 'null')
+      ended = `STALLED — the rider stopped covering ground\n  __ride(): ${why}`
+      break
+    }
   }
   const last = rows[rows.length - 1]
   const wall = (Date.now() - wallStart) / 1000

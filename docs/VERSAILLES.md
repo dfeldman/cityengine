@@ -66,3 +66,24 @@ ground, not a hole.
 
 - Per-region styles: Versailles is not Haussmann (`styles` per region).
 - The château and its landmarks as builders (LANDMARKS_PARIS.md).
+
+## Verified (2026-11-04, the full Paris bake)
+
+- Bake: ~30 min, all three audit stages passed. 11 379 tiles (was 6 549), v3 278 MB. Fringe: 9 011 buildings round
+  the regions (41 846 round the box, as before). Fine ground sampled over the whole box (26.2 M samples); tiles ship it
+  where the terrain model wants it, as before.
+- Ride graph (`tools/versailles/route-check.ts`, `MODE=run` for the run graph), from the Boulogne end of the Pont de
+  Saint-Cloud: Place d'Armes 11.0 km by bike (9.8 km running); Saint-Louis, Trianon, Hameau all reachable.
+- In the game (`npm run movie -- --city=paris-centre --at=48.8430,2.2290 --to=48.8044,2.1269 --extra=&cars=0&without=solid`):
+  the GPS rode 11.29 km to the Place d'Armes in 23 min 44 s; tiles streamed all the way. The large map shows the
+  dashed box and the regions.
+
+### Found on the way, not this change
+
+- **A parked car stops the GPS rider for good** on Avenue du Maréchal de Lattre de Tassigny (48.84109, 2.22631):
+  the rider stands against a kerb bay's car (render/city.ts `kerbBays`, `__solid.last.why = 'parked'`), and the
+  stall valve (game.ts STALL_LIMIT → `traffic.squeezeAround`) only parts moving traffic. Hence `without=solid` above.
+- **The park interior is not rideable by bike**: its allées are footway/track, outside the bike graph (the Grand
+  Canal's west end is 948 m from a bike node). A `trails: bike` zone for the park would open them.
+- `tests/gardens.test.ts` pins the gardens inside the old box (lon > 2.19); the Versailles garden plans need it
+  widened to the box.

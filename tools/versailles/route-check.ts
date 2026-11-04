@@ -10,7 +10,7 @@ import { Projection } from '../../src/city/geo.ts'
 import { city } from '../cities.ts'
 
 const dir = process.argv[2] ?? 'public/cities/paris-centre/v3'
-const g = unpackRide(JSON.parse(readFileSync(resolve(dir, 'ride-bike.json'), 'utf8')) as RideFile)
+const g = unpackRide(JSON.parse(readFileSync(resolve(dir, `ride-${process.env.MODE ?? 'bike'}.json`), 'utf8')) as RideFile)
 const proj = new Projection(city('paris-centre').centre)
 
 // node positions from edge ends
