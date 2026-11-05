@@ -378,6 +378,10 @@ export function acclimRocher(out: MeshBuilder, fit: Fit): void {
 /**
  * The viaduct itself, where OSM has its long low buildings (8 m generic blocks in the bake): the street crossings fall between the lengths. One entry to a length, in that length's own frame (x along it, front = its bearing + 90): an entry's `size` is what the overhead poles keep clear of, as a circle round its point (Landmarks.standalone), and a single entry for the whole viaduct made that a circle 460 m across the 12th. [east, north] from 48.8468 2.3765.
  */
+/** the deck's garden, tunable: walk width between the beds' kerbs, bed and gap lengths along it, a clump every `clump` m up to 0.35 + clumpH tall, the share in flower, a lamp every `lamp` m */
+const COULEE_STREET = [11, 17]
+const COULEE = { hedge: 0.55, canopy: 0.18, path: 3, bed: 22, bedGap: 4, clump: 0.8, clumpH: 0.35, flowers: 0.3, lamp: 24 }
+const FLOWERS: Rgb[] = [hex('#b04a6e'), hex('#d9c25a'), hex('#8a6fb8'), hex('#e3e0d6'), hex('#c8613f')]
 const COULEE_LENGTHS: [number, number][][] = [[[-318, 253], [-284, 228]], [[-262, 211], [-191, 158]], [[-183, 153], [-87, 82]], [[-74, 73], [-14, 30]], [[26, 1], [81, -40], [117, -66]], [[117, -66], [205, -130]], [[205, -130], [294, -195]], [[294, -195], [382, -259]]]
 function couleeLength(out: MeshBuilder, fit: Fit, pts: [number, number][]): void {
   const [ax0, an0] = pts[0], [bx0, bn0] = pts[pts.length - 1], cE = (ax0 + bx0) / 2, cN = (an0 + bn0) / 2
@@ -386,7 +390,18 @@ function couleeLength(out: MeshBuilder, fit: Fit, pts: [number, number][]): void
 }
 export const COULEE_VIADUCT: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(COULEE_LENGTHS.map((p, i) => [`couleeViaduct${i + 1}`, (out: MeshBuilder, fit: Fit) => couleeLength(out, fit, p)]))
 function coulee(out: MeshBuilder, fit: Fit, VIADUCT: [number, number][][]): void {
-  const g = groundOf(fit), H = 8.5, P = hex('#7f7869'), LEAF = hex('#2f4426'), ROSE = hex('#b2546a'), tag = surfaceTag('clipped'), W = 3.2
+  /*
+   * The street beside the viaduct, not the ground under it: the game's heightAt follows the lifted walk on its top (the ride's own surface, ~8.5 m
+   * up), and the lidar has the viaduct's back in it; a model built on either stood a second viaduct's height over the rider (probe 2026-11-05: its
+   * top at 19-23 m, the ride at 11). The lowest of a ring of samples COULEE_STREET m round finds the Avenue Daumesnil or the street behind.
+   */
+  const g0 = groundOf(fit)
+  const g = (x: number, z: number): number => {
+    let m = g0(x, z)
+    for (const r of COULEE_STREET) for (let k = 0; k < 8; k++) m = Math.min(m, g0(x + r * Math.cos(k * Math.PI / 4), z + r * Math.sin(k * Math.PI / 4)))
+    return m
+  }
+  const H = 8.5, P = hex('#7f7869'), LEAF = hex('#2f4426'), ROSE = hex('#b2546a'), tag = surfaceTag('clipped'), W = 3.2
   // the arches: Paris's Viaduc des Arts, 64 of them in brick and pink stone, the craftsmen's glass in each
   const VS = hex('#a58b74'), VB = hex('#7a4c3a'), HW = 6.1, ash = surfaceTag('ashlar')
   for (const run of VIADUCT) for (let i = 0; i + 1 < run.length; i++) {
@@ -422,8 +437,38 @@ function coulee(out: MeshBuilder, fit: Fit, VIADUCT: [number, number][][]): void
         if (gap && s > 0) continue
         const y0 = y(t, 0), y1 = y(t + STEP, 0)
         strut(out, [ax + ux * t + nx * s * W, y0 + 0.28, az + uz * t + nz * s * W], [ax + ux * (t + STEP) + nx * s * W, y1 + 0.28, az + uz * (t + STEP) + nz * s * W], 1.2, 0.55, P, surfaceTag('ashlar'))
-        strut(out, [ax + ux * t + nx * s * W, y0 + 0.95, az + uz * t + nz * s * W], [ax + ux * (t + STEP) + nx * s * W, y1 + 0.95, az + uz * (t + STEP) + nz * s * W], 1, 0.85 + j * 0.3, shade(LEAF, 0.85 + j * 0.3), tag)
+        strut(out, [ax + ux * t + nx * s * W, y0 + 0.55 + COULEE.hedge / 2, az + uz * t + nz * s * W], [ax + ux * (t + STEP) + nx * s * W, y1 + 0.55 + COULEE.hedge / 2, az + uz * (t + STEP) + nz * s * W], 0.9, COULEE.hedge + j * 0.25, shade(LEAF, 1.05 + j * 0.35), tag)
       }
+    }
+    // the beds between the walk and the hedges: low shrubs, perennials and flowers in drifts, a stone kerb on the path
+    // side, leaving the walk itself COULEE.path wide (the ride stays on it); gaps for the benches
+    for (let t = 2; t + COULEE.bed + 2 <= L; t += COULEE.bed + COULEE.bedGap) {
+      const t1 = t + COULEE.bed, ya = y(t, 0), yb = y(t1, 0), hp = COULEE.path / 2, o = W - 0.6
+      for (const s of [-1, 1]) {
+        const at = (u: number, d: number, h: number): [number, number, number] => [ax + ux * u + nx * s * d, h, az + uz * u + nz * s * d]
+        strut(out, at(t, hp + 0.1, ya + 0.12), at(t1, hp + 0.1, yb + 0.12), 0.2, 0.24, hex('#9c958a'), surfaceTag('ashlar'))
+        strut(out, at(t, (hp + 0.2 + o) / 2, ya + 0.2), at(t1, (hp + 0.2 + o) / 2, yb + 0.2), o - hp - 0.2, 0.3, hex('#3b2f25'))
+        for (let u = t + 0.8; u < t1 - 0.6; u += COULEE.clump) {
+          const j = hash(Math.round(u * 7), s + 9), d = hp + 0.5 + j * (o - hp - 0.9), h = 0.35 + j * COULEE.clumpH, yy = y(u, 0) + 0.3
+          const flower = j > 1 - COULEE.flowers, col = flower ? FLOWERS[Math.floor(j * 97) % FLOWERS.length] : shade(LEAF, 0.9 + j * 0.6)
+          strut(out, at(u, d, yy + h / 2), at(u + 0.5 + j * 0.4, d, yy + h / 2), 0.45 + j * 0.3, h, col, surfaceTag(flower ? 'blossom' : 'foliage'))
+        }
+      }
+    }
+    // lampposts, Paris's own pattern, on alternate sides; and a bench in each gap between the beds
+    for (let t = 6, k = 0; t < L - 2; t += COULEE.lamp, k++) {
+      const s = k % 2 ? 1 : -1, d = COULEE.path / 2 + 0.25, cx = ax + ux * t + nx * s * d, cz = az + uz * t + nz * s * d, yy = y(t, 0)
+      block(out, cx - 0.09, cx + 0.09, cz - 0.09, cz + 0.09, yy, yy + 0.5, IRON)
+      block(out, cx - 0.05, cx + 0.05, cz - 0.05, cz + 0.05, yy + 0.5, yy + 3.3, IRON)
+      block(out, cx - 0.2, cx + 0.2, cz - 0.2, cz + 0.2, yy + 3.3, yy + 3.85, hex('#f3e2b0'), surfaceTag('glass'))
+      block(out, cx - 0.26, cx + 0.26, cz - 0.26, cz + 0.26, yy + 3.85, yy + 3.97, IRON)
+    }
+    for (let t = 2 + COULEE.bed, k = 0; t + COULEE.bedGap < L; t += COULEE.bed + COULEE.bedGap, k++) {
+      const s = k % 2 ? 1 : -1, d = COULEE.path / 2 + 0.75, u = t + COULEE.bedGap / 2, yy = y(u, 0)
+      const at = (v: number, e: number, h: number): [number, number, number] => [ax + ux * v + nx * s * e, h, az + uz * v + nz * s * e]
+      strut(out, at(u - 0.9, d, yy + 0.45), at(u + 0.9, d, yy + 0.45), 0.45, 0.06, hex('#6b4a2e'))
+      strut(out, at(u - 0.9, d + 0.22, yy + 0.7), at(u + 0.9, d + 0.22, yy + 0.7), 0.05, 0.45, hex('#6b4a2e'))
+      for (const v of [-0.8, 0.8]) strut(out, at(u + v, d, yy + 0.22), at(u + v + 0.05, d, yy + 0.22), 0.45, 0.44, IRON)
     }
     // the arbours: steel hoops carrying roses, thirty metres in every hundred or so
     for (let t = 30; t + 30 < L; t += 180) {
@@ -434,7 +479,7 @@ function coulee(out: MeshBuilder, fit: Fit, VIADUCT: [number, number][][]): void
         strut(out, [cx + nx * 2.3, yy + 2.8, cz + nz * 2.3], [cx, yy + 3.5, cz], 0.1, 0.1, IRON)
         if (k < 7) for (const s of [-1, 0, 1]) {
           const q = hash(k, s + 4)
-          strut(out, [cx + nx * s * 1.3, yy + 3.1 + (s ? 0 : 0.35), cz + nz * s * 1.3], [cx + ux * 4 + nx * s * 1.3, yy + 3.1 + (s ? 0 : 0.35), cz + uz * 4 + nz * s * 1.3], 0.9, 0.35, q < 0.55 ? ROSE : shade(LEAF, 1.1), surfaceTag(q < 0.55 ? 'blossom' : 'foliage'))
+          strut(out, [cx + nx * s * 1.3, yy + 3.1 + (s ? 0 : 0.35), cz + nz * s * 1.3], [cx + ux * 4 + nx * s * 1.3, yy + 3.1 + (s ? 0 : 0.35), cz + uz * 4 + nz * s * 1.3], 0.9, COULEE.canopy, q < 0.55 ? ROSE : shade(LEAF, 1.1), surfaceTag(q < 0.55 ? 'blossom' : 'foliage'))
         }
       }
     }

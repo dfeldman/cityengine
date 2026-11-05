@@ -208,6 +208,19 @@ export function hipRoof(out: MeshBuilder, x0: number, x1: number, z0: number, z1
 }
 
 /**
+ * The ridge of `hipRoof(x0,x1,z0,z1,…,eave)`: its hips run in at 45 degrees, so the ridge is the long side less the short
+ * (both with the eave). Returns the ridge's axis ('x' or 'z'), its fixed coordinate and its ends, shortened `trim` each end.
+ */
+export function hipRidge(x0: number, x1: number, z0: number, z1: number, eave = 0.4, trim = 0): { alongX: boolean; c: number; t0: number; t1: number } {
+  const w = x1 - x0 + 2 * eave, d = z1 - z0 + 2 * eave
+  const alongX = w >= d
+  const half = Math.abs(w - d) / 2
+  const m = alongX ? (x0 + x1) / 2 : (z0 + z1) / 2
+  const h = Math.max(half - trim, 0)
+  return { alongX, c: alongX ? (z0 + z1) / 2 : (x0 + x1) / 2, t0: m - h, t1: m + h }
+}
+
+/**
  * A steep French pavilion roof: four steep slopes to a small flat top `top` across, crested; `cap` a small pyramid on it
  * (the Luxembourg's) and a finial.
  */

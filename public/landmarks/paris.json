@@ -1468,6 +1468,9 @@
     "include": "paris/commercial1.json"
   },
   {
+    "include": "paris/ceinture.json"
+  },
+  {
     "include": "paris/carousels.json"
   },
   {

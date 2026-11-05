@@ -110,7 +110,7 @@ export interface Region {
   riverLevel?: number
   /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
    *  des Arts, BUGS.md #32): OSM puts them at street level, where they ran hidden inside the viaduct */
-  elevatedWalks?: { name: string; height: number; /** east of this it has come down: a walk's name runs on past its viaduct */ eastTo?: number }[]
+  elevatedWalks?: { name: string; height: number; /** east of this it has come down: a walk's name runs on past its viaduct */ eastTo?: number; /** the bike rides it: its ways are trails and its flights lead up (tools/elevated-walks.ts) */ ride?: boolean }[]
   /**
    * Foot bridges whose OSM `layer` is not a height: within `radius` metres of the point their layer counts as at
    * most `layer` (tools/bridges.ts). OSM numbers a spiral ramp's turns 3, 4, 5 so that they can cross themselves,
@@ -150,7 +150,7 @@ export interface Region {
   /** a pit in the lidar that is no pit (`ring` [lat, lon]: the Cour Napoléon, seen through the Pyramid's glass into the hall under it): level, at the height of its edge (tools/bake.ts) */
   /** a street level with the bridge it joins (the Pont Neuf over the Cité): tools/bake.ts. `clearWalks`, a platform a model draws: OSM's walks and steps on it go */
   flatStreets?: { name: string; deck: string; ring: [number, number][]; clearWalks?: [number, number][]; fade?: number }[]
-  levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number }[]
+  levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number; /** [lat, lon]: level at the ground's height there, not its edge's median */ at?: [number, number] }[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of

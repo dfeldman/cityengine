@@ -2,7 +2,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import { block, hex, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import { prism } from '../../../models.ts'
-import { extrude, fitted, hipRoof, mansard, pairOn, palette, pedimentOn, rectOn, statue, type F, type Pal } from '../palaces/common.ts'
+import { extrude, fitted, hipRidge, hipRoof, mansard, pairOn, palette, pedimentOn, rectOn, statue, type F, type Pal } from '../palaces/common.ts'
 import { COURTS, HX, HZ, OUTLINE } from './plan.ts'
 
 /*
@@ -29,6 +29,10 @@ const COLUMN_R = 0.55
 /** the chapel's apse at its town (−z) end, a half-round of this radius */
 const APSE_SIDES = 14
 const TROPHY_STEP = 7.2
+/** a gilt ridge-bar stops this far short of each end of the roof's ridge (m), and is this wide and tall */
+/** the chapel's windows keep this far from the apse's join and the nave's end (m); an apse window fills this share of its facet */
+const WIN_MARGIN = 3, APSE_WIN_FILL = 0.55
+const GILT_TRIM = 0.3, GILT_HALF = 0.2, GILT_H = 0.7
 
 /**
  * The Château de Versailles (Le Vau's envelope, 1668; Hardouin-Mansart's garden front and the Galerie des Glaces, 1678,
@@ -67,9 +71,10 @@ function marbre(out: MeshBuilder, p: Pal): void {
     [m.x0 - m.wing, m.x0, m.z0 - 25, m.z1 + m.back], [m.x1, m.x1 + m.wing, m.z0 - 25, m.z1 + m.back], [m.x0, m.x1, m.z1, m.z1 + m.back + 2]]
   for (const [x0, x1, z0, z1] of ranges) {
     mansard(out, x0, x1, z0, z1, EAVES, MANSARD.h1, MANSARD.h2, p.slate)
-    const mx = (x0 + x1) / 2, mz = (z0 + z1) / 2, alongX = x1 - x0 > z1 - z0
-    block(out, alongX ? x0 + 2 : mx - 0.2, alongX ? x1 - 2 : mx + 0.2, alongX ? mz - 0.2 : z0 + 2, alongX ? mz + 0.2 : z1 - 2,
-      EAVES + MANSARD.h1 + MANSARD.h2 - 0.2, EAVES + MANSARD.h1 + MANSARD.h2 + 0.5, gold)
+    const top = EAVES + MANSARD.h1 + MANSARD.h2
+    const r = hipRidge(x0 + 1.6, x1 - 1.6, z0 + 1.6, z1 - 1.6, 0, GILT_TRIM)
+    if (r.t1 > r.t0) block(out, r.alongX ? r.t0 : r.c - GILT_HALF, r.alongX ? r.t1 : r.c + GILT_HALF, r.alongX ? r.c - GILT_HALF : r.t0, r.alongX ? r.c + GILT_HALF : r.t1,
+      top - 0.2, top + GILT_H - 0.2, gold)
   }
   // brick between stone piers on the three court fronts
   const faces: [F, number, number, number][] = [['+x', m.x0, m.z0, m.z1], ['-x', m.x1, m.z0, m.z1], ['-z', m.z1, m.x0, m.x1]]
@@ -146,10 +151,21 @@ function chapel(out: MeshBuilder, p: Pal): void {
   prism(out, mx0, za, c.eaves - 0.8, c.eaves, r + 0.3, APSE_SIDES * 2, p.trim)
   prism(out, mx0, za, c.eaves, c.ridge, r + 0.4, APSE_SIDES * 2, p.slate, undefined, 0.3)
   const glass = shade(p.glass, 0.9)
-  for (let z = c.z0 + 4; z < c.z1 - 3; z += 6) {
+  // the tribune windows stand on the straight nave only: below za the wall is the apse, which curves in
+  for (let z = za + WIN_MARGIN + 1; z < c.z1 - WIN_MARGIN; z += 6) {
     block(out, c.x0 - 0.1, c.x0, z - 1.2, z + 1.2, EAVES + 0.6, c.eaves - 1.4, glass)
     block(out, c.x1, c.x1 + 0.1, z - 1.2, z + 1.2, EAVES + 0.6, c.eaves - 1.4, glass)
   }
-  const mx = (c.x0 + c.x1) / 2
-  block(out, mx - 0.25, mx + 0.25, c.z0 + 2, c.z1 - 2, c.ridge - 0.2, c.ridge + 0.6, p.gold)
+  // and on the apse: one in every other facet, inside the facet's own width, in its plane
+  const n = APSE_SIDES * 2, rf = r * Math.cos(Math.PI / n) + 0.05, FIXED = 0
+  for (let i = 0; i < n; i += 2) {
+    const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2, am = (a0 + a1) / 2
+    if (Math.cos(am) > -0.05 || Math.abs(Math.sin(am)) > 0.98) continue
+    const k = (1 - APSE_WIN_FILL) / 2
+    const pt = (a: number, y: number): [number, number, number] => [mx0 + Math.sin(a) * rf / Math.cos(a - am), y, za + Math.cos(a) * rf / Math.cos(a - am)]
+    const aa = a0 + (a1 - a0) * k, ab = a1 - (a1 - a0) * k
+    out.quad([pt(aa, EAVES + 0.6), pt(ab, EAVES + 0.6), pt(ab, c.eaves - 1.4), pt(aa, c.eaves - 1.4)], [Math.sin(am), 0, Math.cos(am)], [[0, 0], [1, 0], [1, 1], [0, 1]], glass, FIXED)
+  }
+  const g = hipRidge(c.x0, c.x1, za, c.z1, 0.4, GILT_TRIM)
+  if (g.t1 > g.t0) block(out, g.c - GILT_HALF, g.c + GILT_HALF, g.t0, g.t1, c.ridge - 0.2, c.ridge + GILT_H - 0.2, p.gold)
 }

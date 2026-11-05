@@ -1,0 +1,42 @@
+[
+  {
+    "osm": [
+      "way/48976803"
+    ],
+    "name": "La Recyclerie (Gare d'Ornano, Petite Ceinture)",
+    "procedural": "ceintureStation",
+    "height": 8,
+    "note": "ceinture/stations.ts: the Petite Ceinture's Second Empire station type, from memory of photographs.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/53671345"
+    ],
+    "name": "Ancienne gare de Vaugirard-Ceinture",
+    "procedural": "ceintureStationBrick",
+    "height": 11,
+    "note": "ceinture/stations.ts: the Petite Ceinture's Second Empire station type, from memory of photographs.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/79084348"
+    ],
+    "name": "Gare du boulevard Masséna (Petite Ceinture)",
+    "procedural": "ceintureStation",
+    "height": 11,
+    "note": "ceinture/stations.ts: the Petite Ceinture's Second Empire station type, from memory of photographs.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/78052334"
+    ],
+    "name": "Ancienne gare de la Petite Ceinture (12e)",
+    "procedural": "ceintureStationPlain",
+    "height": 8,
+    "note": "ceinture/stations.ts: the Petite Ceinture's Second Empire station type, from memory of photographs.",
+    "madeBy": "claude-opus-5-5"
+  }
+]

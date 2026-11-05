@@ -153,7 +153,7 @@ export const CITIES: CitySpec[] = [
        * The far landmarks a rider should see from anywhere in the box (owner, 2026-11-05: "from the Grande Arche you
        * are supposed to be able to see the Arc de Triomphe"). Names are the manifests' own, so each stand-in gives way to
        * its real model within 1.3 km (render/landmarks.ts `update`). The La Défense towers are the 150 m+ ones with a
-       * bespoke builder (Tour Coupole has none yet); hx/hz/bearing are each OSM outline's minimum-area rectangle
+       * bespoke builder (Tour Coupole's far one is its own, tourCoupoleFar); hx/hz/bearing are each OSM outline's minimum-area rectangle
        * (local pbf, 2026-11-05), bearing clockwise from north along the hz axis.
        */
       { name: 'Arc de Triomphe', lat: 48.87378, lon: 2.29504, procedural: 'arcDeTriomphe', heightM: 50 },
@@ -169,6 +169,7 @@ export const CITIES: CitySpec[] = [
       { name: 'La Défense: Tour CB21', lat: 48.88890, lon: 2.24986, procedural: 'defenseGreen', heightM: 179, bearing: 26, hx: 24, hz: 24 },
       { name: 'La Défense: Tour D2', lat: 48.89050, lon: 2.24796, procedural: 'tourD2', heightM: 175, bearing: 21, hx: 31, hz: 13 },
       { name: 'La Défense: Tour Saint-Gobain', lat: 48.88972, lon: 2.24929, procedural: 'saintGobain', heightM: 168, bearing: 116, hx: 28, hz: 26 },
+      { name: 'La Défense: Tour Coupole', lat: 48.89276, lon: 2.24346, procedural: 'tourCoupoleFar', heightM: 187 },
       { name: 'La Défense: Tour Carpe Diem', lat: 48.89145, lon: 2.24563, procedural: 'carpeDiem', heightM: 166, bearing: 26, hx: 18, hz: 31 },
     ],
     name: 'Central Paris',
@@ -428,6 +429,20 @@ export const CITIES: CitySpec[] = [
     ground: 'grass',
     styles: [{ id: 'classical', weight: 3 }, { id: 'haussmann', weight: 2 }],
     note: 'A test area: detail regions beyond the detail box (tools/detail.ts).',
+  },
+  /* A test of the Parc de Saint-Cloud's gardens (tools/gardens/paris-batch6.ts): the Grande Perspective to the Cascade. */
+  {
+    id: 'saint-cloud-mini',
+    live: false,
+    test: true,
+    region: 'paris',
+    name: 'Saint-Cloud test area (park gardens)',
+    centre: { lat: 48.8372, lon: 2.2135 },
+    radius: 450,
+    wide: false,
+    ground: 'grass',
+    styles: [{ id: 'classical', weight: 3 }, { id: 'haussmann', weight: 2 }],
+    note: 'A test area: the Parc de Saint-Cloud from the Grande Gerbe to the Cascade.',
   },
 ]
 

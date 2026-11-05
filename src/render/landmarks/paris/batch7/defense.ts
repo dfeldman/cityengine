@@ -284,3 +284,126 @@ export function tourTriangle(out: MeshBuilder, fit: Fit): void {
   loft(out, at, 0, H, 7.2, hex('#4a6371'), hex('#5f7683'), hex('#5c686e'))
   lattice(out, at, 0, H, 14, 14.4, 1, hex('#8e9a9f'), 0.3)
 }
+
+/**
+ * TOUR COUPOLE, ex-TOTAL (Roche, Dinkeloo, 1985; 187 m): sky-mirror glass in silver frames on a sawtooth plan
+ * (OSM's ring), cut along its length into prisms that stop at different heights, the middle ones tallest (owner's
+ * photograph, 2026-11-05). Glass renders opaque, so the reflection is painted: each pane mottled between sky blue and
+ * cloud white, a silver mullion up every sawtooth corner.
+ * NEAR (`tourCoupole`): OSM's ring. FAR (`tourCoupoleFar`, the skyline): the same strips on the outline's rectangle,
+ * flat-toned faces, a few hundred triangles.
+ */
+// Coupole tunables. The plan is a chain of elongated hexagonal prisms (owner's satellite view, 2026-11-05): three
+// tall ones end to end, the middle tallest, and two low glass-roofed lobes on the west flank. Laid out in the
+// screenshot's pixels (north up), scaled so the chain is COUPOLE_LEN long; the near model turns the layout to fit
+// OSM's ring best, the far one stands north-up (skyline bearing 0).
+const COUPOLE_H = 187
+const COUPOLE_LEN = 105                         // metres, the chain's tip to tip
+const COUPOLE_PX = { len: 830, cx: 450, cy: 965 } // the chain's length and middle in the screenshot
+/** cx, cy, length, width (px), the long axis's angle from screen-down (deg, clockwise), top as a fraction of H */
+const COUPOLE_LOBES: [number, number, number, number, number, number][] = [
+  [365, 690, 260, 130, 15, 0.84],  // north
+  [480, 860, 330, 260, 15, 1],     // middle, the plant on its roof
+  [520, 1180, 380, 220, 15, 0.92], // south
+  [275, 960, 200, 170, 15, 0.22],  // west lobes: glass lattice roofs
+  [350, 1170, 190, 180, 15, 0.22],
+]
+const COUPOLE_SKY = '#7fa6cf', COUPOLE_CLOUD = '#dfe8f0', COUPOLE_DEEP = '#3f5f86'
+const COUPOLE_FRAME = '#c9d0d6', COUPOLE_ROOF = '#b8b2a2', COUPOLE_ATRIUM = '#8fa3a4'
+const COUPOLE_PANE = 3.6, COUPOLE_ROW = 3.9
+/** each lobe's hexagon, anticlockwise, in metres about the chain's middle (x east, z north), with its top */
+function coupoleLobes(): { ring: P[]; top: number; low: boolean }[] {
+  const k = COUPOLE_LEN / COUPOLE_PX.len
+  return COUPOLE_LOBES.map(([px, py, L, W, ang, top]) => {
+    const cx = (px - COUPOLE_PX.cx) * k, cz = -(py - COUPOLE_PX.cy) * k, h = (L * k) / 2, w = (W * k) / 2
+    const t = (ang * Math.PI) / 180, ux = Math.sin(t), uz = -Math.cos(t)
+    const vx = -uz, vz = ux, a = Math.max(0.2 * h, h - w * 0.6)
+    const loc: [number, number][] = [[h, 0], [a, w], [-a, w], [-h, 0], [-a, -w], [a, -w]]
+    const ring = loc.map(([s, r]) => ({ x: cx + ux * s + vx * r, z: cz + uz * s + vz * r }))
+    return { ring: signedArea(ring) >= 0 ? ring : ring.reverse(), top, low: top < 0.5 }
+  })
+}
+const inPoly = (x: number, z: number, r: P[]): boolean => {
+  let c = false
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) c = !c
+  return c
+}
+/** the layout turned about its middle onto the ring's centroid, at the angle whose lobes cover the ring best */
+function coupoleOnRing(lobes: ReturnType<typeof coupoleLobes>, ring: P[]): ReturnType<typeof coupoleLobes> {
+  let cx = 0, cz = 0
+  for (const p of ring) { cx += p.x / ring.length; cz += p.z / ring.length }
+  const xs = ring.map((p) => p.x), zs = ring.map((p) => p.z), pts: P[] = []
+  for (let x = Math.min(...xs); x < Math.max(...xs); x += 3) for (let z = Math.min(...zs); z < Math.max(...zs); z += 3) if (inPoly(x, z, ring)) pts.push({ x: x - cx, z: z - cz })
+  let best = 0, score = -1
+  for (let d = 0; d < 360; d += 2) {
+    const c = Math.cos((d * Math.PI) / 180), s = Math.sin((d * Math.PI) / 180)
+    let n = 0
+    for (const p of pts) { const x = p.x * c + p.z * s, z = -p.x * s + p.z * c; if (lobes.some((l) => inPoly(x, z, l.ring))) n++ }
+    if (n > score) { score = n; best = d }
+  }
+  const c = Math.cos((best * Math.PI) / 180), s = Math.sin((best * Math.PI) / 180)
+  return lobes.map((l) => ({ ...l, ring: l.ring.map((p) => ({ x: cx + p.x * c - p.z * s, z: cz + p.x * s + p.z * c })) }))
+}
+function coupoleSkin(out: MeshBuilder, ring: P[], y1: number, far: boolean): void {
+  const sky = hex(COUPOLE_SKY), cloud = hex(COUPOLE_CLOUD), deep = hex(COUPOLE_DEEP), frame = hex(COUPOLE_FRAME)
+  const mix = (a: Rgb, b: Rgb, t: number): Rgb => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t] as Rgb
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.3) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, n: [number, number, number] = [nx, 0, nz]
+    const P3 = (s: number, y: number, o: number): [number, number, number] => [a.x + tx * s + nx * o, y, a.z + tz * s + nz * o]
+    // faces turned one way catch more sky, the other more of the dark city: what makes the sawtooth read
+    const facing = 0.5 + 0.5 * (nx * 0.6 - nz * 0.8)
+    if (far) { out.quad([P3(0, 0, 0), P3(L, 0, 0), P3(L, y1, 0), P3(0, y1, 0)], n, UV, mix(deep, sky, 0.4 + 0.5 * facing), GLASS); continue }
+    const cols = Math.max(1, Math.round(L / COUPOLE_PANE)), w = L / cols, rows = Math.max(1, Math.round(y1 / COUPOLE_ROW)), h = y1 / rows
+    for (let c = 0; c < cols; c++) for (let k = 0; k < rows; k++) {
+      // cloud: a smooth blob field across the face, so the white comes in patches, not salt
+      const s = (c + 0.5) * w, y = k * h
+      const blob = 0.5 + 0.5 * Math.sin(s * 0.11 + a.x * 0.07 + y * 0.045) * Math.sin(y * 0.07 - s * 0.05 + a.z * 0.09)
+      const t = Math.min(1, Math.max(0, blob * 1.4 - 0.25 + (hash(a.x + c, a.z + k) - 0.5) * 0.25))
+      const base = mix(deep, sky, 0.35 + 0.6 * facing)
+      out.quad([P3(c * w, y, 0.05), P3((c + 1) * w, y, 0.05), P3((c + 1) * w, y + h, 0.05), P3(c * w, y + h, 0.05)], n, UV, mix(base, cloud, t * t), GLASS)
+    }
+    // silver mullion up the corner, and a thin silver head
+    out.quad([P3(0, 0, 0.15), P3(0.5, 0, 0.15), P3(0.5, y1, 0.15), P3(0, y1, 0.15)], n, UV, frame, METAL)
+    out.quad([P3(0, y1 - 0.8, 0.15), P3(L, y1 - 0.8, 0.15), P3(L, y1, 0.15), P3(0, y1, 0.15)], n, UV, frame, METAL)
+  }
+}
+/** the subject ring clipped to a convex anticlockwise ring (Sutherland–Hodgman) */
+function clipConvex(subject: P[], clip: P[]): P[] {
+  let out = subject
+  for (let i = 0; i < clip.length && out.length; i++) {
+    const a = clip[i], b = clip[(i + 1) % clip.length], inside = (p: P): number => (b.x - a.x) * (p.z - a.z) - (b.z - a.z) * (p.x - a.x)
+    const src = out; out = []
+    for (let j = 0; j < src.length; j++) {
+      const p = src[j], q = src[(j + 1) % src.length], dp = inside(p), dq = inside(q)
+      if (dp >= 0) out.push(p)
+      if ((dp >= 0) !== (dq >= 0)) { const t = dp / (dp - dq); out.push({ x: p.x + (q.x - p.x) * t, z: p.z + (q.z - p.z) * t }) }
+    }
+  }
+  return out
+}
+function coupole(out: MeshBuilder, fit: Fit, far: boolean): void {
+  const H = fit.height > 0.6 * COUPOLE_H && fit.height < 1.6 * COUPOLE_H ? fit.height : COUPOLE_H
+  const all = coupoleLobes()
+  if (far || !fit.ring) {
+    for (const l of all) { coupoleSkin(out, l.ring, H * l.top, true); capPolygon(out, l.ring, H * l.top, hex(l.low ? COUPOLE_ATRIUM : COUPOLE_ROOF), 0) }
+    return
+  }
+  // near: OSM's ring is the true outline. All of it rises to the low lobes' top under glass; each tall lobe is the
+  // part of the ring inside its hexagon, carried on up.
+  const ring = towerRing(fit), placed = coupoleOnRing(all, ring)
+  const base = H * Math.max(...all.filter((l) => l.low).map((l) => l.top), 0.1)
+  coupoleSkin(out, ring, base, false)
+  capPolygon(out, ring, base, hex(COUPOLE_ATRIUM), 0)
+  for (const l of placed) {
+    if (l.low) continue
+    const part = clipConvex(ring, l.ring)
+    if (part.length < 3) continue
+    coupoleSkin(out, part, H * l.top, false)
+    capPolygon(out, part, H * l.top, hex(COUPOLE_ROOF), 0)
+  }
+}
+export const tourCoupole = (out: MeshBuilder, fit: Fit): void => coupole(out, fit, false)
+export const tourCoupoleFar = (out: MeshBuilder, fit: Fit): void => coupole(out, fit, true)

@@ -96,6 +96,15 @@ if (arg('probe')) {
   // and whatever mesh at all is drawn there
   console.log('any', JSON.stringify(await page.evaluate(`(() => { const s = window.__scene; for (const m of s.meshes) m.isPickable = true; const h = s.pick(${px2}, ${py2}); return h && h.hit ? { mesh: h.pickedMesh.name, at: h.pickedPoint.asArray().map((v) => Math.round(v * 10) / 10) } : null })()`)))
 }
+// --ray=x,z lists every mesh a vertical ray hits there, top down, with its height: what is stacked on what
+if (arg('ray')) {
+  for (const q of arg('ray')!.split(';')) {
+  const [rx, rz] = q.split(',').map(Number)
+  console.log('ray', rx, rz, JSON.stringify(await page.evaluate(`(() => { const s = window.__scene, P = s.activeCamera.position.constructor; for (const m of s.meshes) m.isPickable = true
+    const r = new (s.createPickingRay(1, 1, null, s.activeCamera).constructor)(new P(${rx}, 120, ${rz}), new P(0, -1, 0), 200)
+    return (s.multiPickWithRay(r) ?? []).map((h) => [h.pickedMesh.name.slice(0, 40), Math.round(h.pickedPoint.y * 100) / 100]).sort((a, b) => b[1] - a[1]) })()`)))
+  }
+}
 console.log('camera', JSON.stringify(await page.evaluate('window.__scene.activeCamera.position.asArray().map((v) => Math.round(v * 10) / 10)')))
 console.log('instance at', found)
 await browser.close()

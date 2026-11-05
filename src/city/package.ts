@@ -533,6 +533,9 @@ const ringArea = (r: number[]): number => {
  * point: one leaking vertex must not drag the bay down, and all three components must agree, because they are
  * one body of water.
  */
+/** the step in bank height that separates two touching water pieces into reaches (locks) */
+export const WATER_JOIN_STEP = 2
+
 export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number) => number, drop: number,
   seaLevel: number | null = null): number[] {
   const own = water.map((a) => {
@@ -543,13 +546,20 @@ export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number
   const parent = water.map((_, i) => i)
   const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])))
   const CELL = 3
+  /*
+   * A canal climbs through its locks (the Canal Saint-Martin: 25 m from the Arsenal to the Villette). Touching
+   * pieces whose own banks differ by WATER_JOIN_STEP or more are separate reaches, each at its own level; joined,
+   * they all took the lowest, a 15 m trench at the Quai de Jemmapes. A known level or the sea still joins.
+   */
+  const joins = (a: number, b: number): boolean => water[a].level !== undefined || water[b].level !== undefined
+    || !!water[a].sea || !!water[b].sea || Math.abs(own[a] - own[b]) < WATER_JOIN_STEP
   const grid = new Map<string, number[]>()
   water.forEach((a, k) => {
     for (let i = 0; i < a.ring.length; i += 2) {
       const gx = Math.floor(a.ring[i] / CELL)
       const gz = Math.floor(a.ring[i + 1] / CELL)
       for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
-        for (const o of grid.get(`${gx + dx},${gz + dz}`) ?? []) if (o !== k) parent[find(o)] = find(k)
+        for (const o of grid.get(`${gx + dx},${gz + dz}`) ?? []) if (o !== k && joins(o, k)) parent[find(o)] = find(k)
       }
       const key = `${gx},${gz}`
       const list = grid.get(key)

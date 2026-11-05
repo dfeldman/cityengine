@@ -35,6 +35,7 @@ const CLAY_PITCHES = new Set<number>([24732817])
  * rest from the city's own character. Baking it in rather than deciding at runtime means the same building is
  * the same every session, which is what makes two rides down the same street comparable.
  */
+import { openElevatedWalks } from './elevated-walks.ts'
 import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, recordBake, shippedDir, workDir } from './bake-files.ts'
 import { applyStreetPaint, applyStreetWidths, markBrickSquares } from './street-paint.ts'
 import { Carriageways } from '../src/city/carriageways.ts'
@@ -2024,7 +2025,10 @@ async function bake(spec: CitySpec): Promise<void> {
       for (let d = 0; d < L; d += FINE_STEP) edge.push(sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, r[i] + ((r[j] - r[i]) * d) / L, r[i + 1] + ((r[j + 1] - r[i + 1]) * d) / L))
     }
     edge.sort((a, b) => a - b)
-    const y = lv.y ?? edge[edge.length >> 1]
+    // (`at`: the level is the ground's height at that point, for a platform whose rim is lower than its middle — the
+    // Château de Versailles' courts, whose edge median sat 9 m under the cour royale: the datum-free way to say "as high as there")
+    const atP = lv.at ? proj.toLocal({ lat: lv.at[0], lon: lv.at[1] }) : null
+    const y = lv.y ?? (atP ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, atP.x, atP.z) : edge[edge.length >> 1])
     const FADE = lv.fade ?? 12
     let n = 0
     for (let rr = Math.max(0, Math.floor((z0 - FADE - fz0) / FINE_STEP)); rr <= Math.min(frows - 1, Math.ceil((z1 + FADE - fz0) / FINE_STEP)); rr++) {
@@ -3300,6 +3304,10 @@ async function bake(spec: CitySpec): Promise<void> {
     }
   }
   if (lifted) console.log(`  ${lifted} walks lifted onto their viaduct`)
+  {
+    const o = openElevatedWalks(kept, streetRegion.elevatedWalks ?? [], (lon) => proj.toLocal({ lat: spec.centre.lat, lon }).x)
+    if (o.opened) console.log(`  elevated walks ridden: ${o.opened} ways, ${o.flights} flights up, ${o.ramped} ways ramped down`)
+  }
 
   // ---- named places, for the signs
   const FOOD = new Set(['cafe', 'restaurant', 'bar', 'pub', 'bakery'])
@@ -4041,7 +4049,31 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   const mappedNear = new Set<string>()
   for (let i = 0; i < pkg.trees.length; i += 2) mappedNear.add(`${Math.floor(pkg.trees[i] / 5)},${Math.floor(pkg.trees[i + 1] / 5)}`)
+  // …and no row tree stands in the water or within GARDEN_TREE_WATER_MARGIN of it (the Grand Canal's allées are drawn on a straight
+  // axis, the water is OSM's: where the two part, the tree goes — Versailles, owner 2026-11-05)
+  const GARDEN_TREE_WATER_MARGIN = 2.5
+  const treeWater = pkg.areas.filter((a) => a.kind === 'water').map((a) => {
+    const ring = unpackPoints(a.ring)
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    return { ring, holes: (a.holes ?? []).map((h) => unpackPoints(h)), x0, x1, z0, z1 }
+  })
+  const inWater = (x: number, z: number): boolean => treeWater.some((w) => {
+    const m = GARDEN_TREE_WATER_MARGIN
+    if (x < w.x0 - m || x > w.x1 + m || z < w.z0 - m || z > w.z1 + m) return false
+    const near = (r: { x: number; z: number }[]): boolean => {
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        const a = r[j], b = r[i], dx = b.x - a.x, dz = b.z - a.z
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+        if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < m) return true
+      }
+      return false
+    }
+    if (near(w.ring)) return true
+    return inside(w.ring, x, z) && !w.holes.some((h) => inside(h, x, z))
+  })
   const rowed = gardenRows.filter((p) => {
+    if (inWater(p.x, p.z)) return false
     const gx = Math.floor(p.x / 5), gz = Math.floor(p.z / 5)
     for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) if (mappedNear.has(`${gx + dx},${gz + dz}`)) return false
     return true
@@ -4666,6 +4698,10 @@ async function main(): Promise<void> {
       if (region(spec.region).rideFootBridges) {
         const ids = footBridgeLinks(pkg.edges as unknown as Parameters<typeof footBridgeLinks>[0])
         for (const e of pkg.edges) if (ids.has(e.id) && !e.trail) { e.trail = true; opened++ }
+      }
+      {
+        const o = openElevatedWalks(pkg.edges, region(spec.region).elevatedWalks ?? [], (lon) => proj.toLocal({ lat: pkg.origin.lat, lon }).x)
+        if (o.opened) { console.log(`  elevated walks ridden: ${o.opened} ways, ${o.flights} flights up, ${o.ramped} ways ramped down`); opened += o.opened }
       }
       if (opened) { console.log(`  ${opened} more trails opened to bikes`); await writeFile(packageFile(spec.id), JSON.stringify(pkg)) }
       await writeRides(pkg)

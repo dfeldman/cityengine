@@ -217,6 +217,43 @@ const saintCloud = (): GardenPlan[] => {
       hedges: [wall([610, 60], [900, 110]), wall([620, 180], [640, 440]), wall([660, 240], [890, 240]), wall([670, 300], [880, 330]), wall([655, 400], [855, 425])],
     },
     ringOnly('Parc de Saint-Cloud: le terrain de manœuvres', P.ll([[900, 460], [1000, 450], [1000, 720], [890, 680]])),
+    ...grandePerspective(),
+  ]
+}
+
+/** Tunables for the Grande Perspective: the allées' trees, the terrace yews, the Tapis Vert's clipped walls. */
+const GP = { rowSpacing: 8, rowH: 18, yewH: 3.2, yewStep: 12 /* px */, tapisH: 9, tapisY0: 1.5, tapisW: 4 }
+
+/**
+ * THE GRANDE PERSPECTIVE (Le Nôtre; IGN aerial 48.8372 2.2135, 300 m half-width, 0.60 m/px, tools/ortho.ts): from the
+ * Parterre des 24 Jets east along the long gravel parterre to the Terrasse du Château, where the palace stood till 1871.
+ * The scatter stood its woods on the gravel and on the terrace; the photograph has them open, a double row of tall limes
+ * along the parterre's north edge and one along its south, two rows of clipped yews on the terrace, and the Tapis Vert
+ * running SSW from the 24 Jets between clipped walls of trees. OSM keeps the basins and the lawns.
+ */
+const grandePerspective = (): GardenPlan[] => {
+  const P = pix(48.8372, 2.2135, 0.6)
+  const yews = (y: number) => Array.from({ length: 7 }, (_, k) => ({ at: P.ll([[848 + k * GP.yewStep, y]])[0], shape: 'cone' as const, h: GP.yewH }))
+  return [
+    {
+      name: 'Parc de Saint-Cloud: le parterre des 24 Jets à la terrasse',
+      ring: P.ll([[352, 352], [770, 340], [990, 318], [996, 482], [770, 474], [620, 478], [352, 505]]),
+      rows: [
+        { line: P.ll([[372, 368], [765, 356]]), spacing: GP.rowSpacing, h: GP.rowH },
+        { line: P.ll([[372, 388], [765, 378]]), spacing: GP.rowSpacing, h: GP.rowH },
+        { line: P.ll([[372, 490], [620, 482], [765, 470]]), spacing: GP.rowSpacing, h: GP.rowH },
+      ],
+      topiary: [...yews(374), ...yews(438)],
+    },
+    {
+      name: 'Parc de Saint-Cloud: le Tapis Vert',
+      ring: P.ll([[296, 578], [356, 578], [362, 990], [318, 990]]),
+      lawn: [P.ll([[305, 582], [346, 582], [352, 988], [326, 988]])],
+      pleached: [
+        { line: P.ll([[300, 580], [322, 988]]), y0: GP.tapisY0, h: GP.tapisH, w: GP.tapisW },
+        { line: P.ll([[352, 580], [358, 988]]), y0: GP.tapisY0, h: GP.tapisH, w: GP.tapisW },
+      ],
+    },
   ]
 }
 

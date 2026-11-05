@@ -225,8 +225,25 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
     else {
       // a multipolygon: its largest outer way
       const outers = (el.members ?? []).filter((m) => m.role === 'outer' && m.geometry && m.geometry.length > 3).map((m) => m.geometry!)
-      outers.sort((a, b) => b.length - a.length)
-      geom = outers[0] ?? null
+      // an outer ring split over several ways (Tour Coupole's seven): join them end to end first
+      const same = (p: G, q: G): boolean => Math.abs(p.lat - q.lat) < 1e-7 && Math.abs(p.lon - q.lon) < 1e-7
+      const rings: G[][] = [], left = outers.map((w) => [...w])
+      while (left.length) {
+        let r = left.shift()!
+        for (let grew = true; grew && !same(r[0], r[r.length - 1]);) {
+          grew = false
+          for (let i = 0; i < left.length; i++) {
+            const w = left[i], end = r[r.length - 1]
+            if (same(w[0], end)) r = [...r, ...w.slice(1)]
+            else if (same(w[w.length - 1], end)) r = [...r, ...[...w].reverse().slice(1)]
+            else continue
+            left.splice(i, 1); grew = true; break
+          }
+        }
+        rings.push(r)
+      }
+      rings.sort((a, b) => b.length - a.length)
+      geom = rings[0] ?? null
     }
   }
   /*

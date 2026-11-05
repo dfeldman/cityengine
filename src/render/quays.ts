@@ -22,9 +22,49 @@ const FIXED = 0
 const STONE: Rgb = [0.74, 0.7, 0.62]
 const CAP: Rgb = [0.8, 0.77, 0.7]
 const GREEN: Rgb = [0.13, 0.29, 0.2]
+const BERGE_WALL: Rgb = [0.8, 0.77, 0.7]
+const SETTS: Rgb = [0.56, 0.55, 0.53]
+const ASHLAR = 1
+const SETT = 22
+const PAVE: Rgb = [0.4, 0.38, 0.35]
+/*
+ * The lower quays (the "ports", 4–6 m down by the water). The terrain gives a grass slope between the two levels where
+ * Paris has a vertical dressed-stone wall, with the parapet and the booksellers on top of it. Stepping out from the quay
+ * street: the slope's top is where the ground first falls BERGE_TOP_FALL below the street, its foot where it stops
+ * falling (less than BERGE_FOOT_FLAT per metre) or reaches the water. A fall of BERGE_MIN_DROP or more becomes a wall at
+ * the foot (less BERGE_WALL_INSET) under a paved cap at the street's level that covers the slope.
+ */
+const BERGE_TOP_FALL = 0.8
+const BERGE_FOOT_FLAT = 0.12
+const BERGE_MIN_DROP = 2
+const BERGE_WALL_INSET = 0.3
+const BERGE_MAX_SLOPE = 15
+// lower quays shorter than this along the street are dropped; gaps in one shorter than BERGE_MIN_GAP are filled
+const BERGE_MIN_RUN = 60
+const BERGE_MIN_GAP = 80
+// stairs up from the lower quay, against the wall: one every BERGE_STAIR_PITCH metres of run, BERGE_STAIR_W wide
+const BERGE_STAIR_PITCH = 90
+const BERGE_STAIR_W = 1.8
+const BERGE_STAIR_RISE = 0.17
+const BERGE_STAIR_TREAD = 0.32
+/*
+ * PARIS PLAGES (every summer since 2002): sand, parasols and deckchairs on the right bank's lower quay, the Voie
+ * Georges-Pompidou from the Pont Neuf to the Pont de Sully. Local x from PLAGES_X0 to PLAGES_X1 (paris-centre frame).
+ */
+const PLAGES = true
+const PLAGES_NAMES = /^Voie Georges[- ]Pompidou$/
+const PLAGES_X0 = 650
+const PLAGES_X1 = 1950
+const PLAGES_W = 4.5
+const PARASOL_PITCH = 7
+const SAND: Rgb = [0.86, 0.76, 0.55]
+const PARASOLS: Rgb[] = [[0.95, 0.95, 0.92], [0.2, 0.45, 0.8], [0.95, 0.75, 0.2], [0.9, 0.35, 0.3]]
+
+/** the lower quay's paving out from the wall's foot (never into the water) */
+const BERGE_APRON = 14
 /** quays whose parapets carry bouquinistes */
 const BOOKSELLERS = new Set(["Quai de l'Hôtel de Ville", 'Quai des Célestins', 'Quai de Gesvres', 'Quai de la Mégisserie',
-  'Quai de Montebello', 'Quai Saint-Michel', 'Quai des Grands Augustins', 'Quai de Conti', 'Quai Malaquais', 'Quai Voltaire'])
+  'Quai du Louvre', 'Quai de la Tournelle', 'Quai de Montebello', 'Quai Saint-Michel', 'Quai des Grands Augustins', 'Quai de Conti', 'Quai Malaquais', 'Quai Voltaire'])
 
 type P = { x: number; z: number }
 
@@ -37,7 +77,7 @@ function inside(ring: P[], x: number, z: number): boolean {
 }
 
 /** An upright box of half-extents (hl along the direction u, hw across it, full height h) at p, on the ground y. */
-function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: number, hw: number, h: number, c: Rgb): void {
+function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: number, hw: number, h: number, c: Rgb, sid = FIXED): void {
   const vx = -uz
   const vz = ux
   const corner = (a: number, b: number, yy: number): [number, number, number] => [p.x + ux * a * hl + vx * b * hw, yy, p.z + uz * a * hl + vz * b * hw]
@@ -45,8 +85,8 @@ function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: nu
   const sides: [number, number, number, number, [number, number, number]][] = [
     [1, -1, 1, 1, [ux, 0, uz]], [-1, 1, -1, -1, [-ux, 0, -uz]], [1, 1, -1, 1, [vx, 0, vz]], [-1, -1, 1, -1, [-vx, 0, -vz]],
   ]
-  for (const [a0, b0, a1, b1, n] of sides) out.quad([corner(a0, b0, y), corner(a1, b1, y), corner(a1, b1, y + h), corner(a0, b0, y + h)], n, uv, c, FIXED)
-  out.quad([corner(-1, -1, y + h), corner(1, -1, y + h), corner(1, 1, y + h), corner(-1, 1, y + h)].reverse() as [number, number, number][], [0, 1, 0], uv, c, FIXED)
+  for (const [a0, b0, a1, b1, n] of sides) out.quad([corner(a0, b0, y), corner(a1, b1, y), corner(a1, b1, y + h), corner(a0, b0, y + h)], n, uv, c, sid)
+  out.quad([corner(-1, -1, y + h), corner(1, -1, y + h), corner(1, 1, y + h), corner(-1, 1, y + h)].reverse() as [number, number, number][], [0, 1, 0], uv, c, sid)
 }
 
 /**
@@ -114,6 +154,9 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
     const pts = unpackPoints(e.points)
     const d = e.width / 2 + e.walk + 0.15
     const books = BOOKSELLERS.has(e.name)
+    // pass 1: every 2 m step, which side the river is, and whether a lower quay (berge) fits there
+    type Step = { mx: number; mz: number; ux: number; uz: number; l: number; run: number; side: number; edge: number; top: number; foot: number; drop: number; berge: boolean }
+    const steps: Step[] = []
     let run = 0
     for (let i = 1; i < pts.length; i++) {
       const a = pts[i - 1]
@@ -127,8 +170,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
         const l = Math.min(step, seg - s)
         const mx = a.x + ux * (s + l / 2)
         const mz = a.z + uz * (s + l / 2)
-        // another tile's piece: counted along the quay (the booksellers' rhythm), not drawn here
-        if (!mine(mx, mz)) { run += l; continue }
+        run += l
         // which side is the river, and where its edge is: stepping out from the pavement up to 40 m each
         // way, the first point in water. The parapet stands a metre short of it — on the bank, which on the
         // Quai des Célestins is past a strip of lawn, not at the kerb
@@ -139,21 +181,144 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
             if (wet(mx - uz * sd * o, mz + ux * sd * o)) { if (o < edge) { edge = o; side = sd } break }
           }
         }
+        let top = -1, foot = -1, drop = 0, berge = false
+        if (side !== 0) {
+          const at = (o: number): number => terrain.heightAt(mx - uz * side * o, mz + ux * side * o)
+          const street = at(d)
+          for (let o = d; o < Math.min(edge, d + 40); o += 1) if (at(o) < street - BERGE_TOP_FALL) { top = o; break }
+          if (top > 0) {
+            foot = top
+            while (foot + 1 < edge && foot - top < BERGE_MAX_SLOPE && at(foot) - at(foot + 1) > BERGE_FOOT_FLAT) foot += 1
+            drop = street - at(foot)
+            berge = drop >= BERGE_MIN_DROP
+          }
+        }
+        steps.push({ mx, mz, ux, uz, l, run, side, edge, top, foot, drop, berge })
+      }
+    }
+    // pass 2: a lower quay shorter than BERGE_MIN_RUN (or a gap in one shorter than BERGE_MIN_GAP) is patchy
+    // wall-and-hill: fill short gaps, then drop short runs
+    const flip = (want: boolean, min: number): void => {
+      for (let i = 0; i < steps.length;) {
+        if (steps[i].berge === want) { i++; continue }
+        let j = i, len = 0
+        while (j < steps.length && steps[j].berge !== want) { len += steps[j].l; j++ }
+        const inner = i > 0 && j < steps.length
+        if (len < min && (want || inner)) for (let k = i; k < j; k++) {
+          const st = steps[k]
+          if (st.side === 0) continue
+          if (want) {
+            // a gap in a lower quay: the bank there is a hump in the terrain, not a real break. Borrow the
+            // nearer side's wall line and drop
+            const nb = k - i < j - k ? steps[i - 1] : steps[j]
+            if (st.top <= 0 || st.drop < BERGE_MIN_DROP) { st.top = nb.top; st.foot = Math.min(nb.foot, st.edge - 1.5); st.drop = nb.drop }
+            if (st.foot <= st.top) continue
+          }
+          st.berge = want
+        }
+        i = j
+      }
+    }
+    flip(true, BERGE_MIN_GAP)
+    flip(false, BERGE_MIN_RUN)
+    for (const st of steps) {
+      const { mx, mz, ux, uz, l, side, edge, top, foot } = st
+      run = st.run
+      // another tile's piece: counted along the quay (the booksellers' rhythm), not drawn here
+      if (!mine(mx, mz)) continue
+      if (side === 0) continue
+      let off = Math.max(d, edge - 1)
+      // a lower quay between the street and the water: the slope becomes a wall under a paved cap
+      const at = (o: number): number => terrain.heightAt(mx - uz * side * o, mz + ux * side * o)
+      const street = at(d)
+      let capY = NaN
+      if (st.berge) {
+        const footY = street - st.drop
+        const wall = foot - BERGE_WALL_INSET
+        const c0 = top - 1.5
+        capY = street + 0.12
+        const mid = (c0 + wall) / 2
+        const hc = { x: mx - uz * side * mid, z: mz + ux * side * mid }
+        if (!inMouth(hc.x, hc.z)) {
+          // the cap over the slope, the wall's face down to the lower quay
+          const v = { x: -uz * side, z: ux * side }
+          const lx = v.z, lz = -v.x
+          boxAt(out, hc, capY - 0.25, lx, lz, l / 2 + 0.02, (wall - c0) / 2, 0.25, PAVE)
+          const wp = { x: mx - uz * side * (wall - 0.3), z: mz + ux * side * (wall - 0.3) }
+          boxAt(out, wp, footY - 0.3, ux, uz, l / 2 + 0.02, 0.3, capY - footY + 0.3, BERGE_WALL, ASHLAR)
+          // a flight of stairs down the wall's face, along it, every BERGE_STAIR_PITCH metres
+          if (Math.floor(st.run / BERGE_STAIR_PITCH) !== Math.floor((st.run - l) / BERGE_STAIR_PITCH)) {
+            const n = Math.ceil((capY - footY) / BERGE_STAIR_RISE)
+            const so = wall + BERGE_STAIR_W / 2
+            for (let k = 0; k < n; k++) {
+              const along = (k - n) * BERGE_STAIR_TREAD
+              const sp = { x: mx - uz * side * so + ux * along, z: mz + ux * side * so + uz * along }
+              boxAt(out, sp, footY - 0.1, ux, uz, BERGE_STAIR_TREAD / 2, BERGE_STAIR_W / 2, (k + 1) * (capY - footY) / n + 0.1, BERGE_WALL, ASHLAR)
+            }
+          }
+          const ap = Math.min(BERGE_APRON, edge - foot - 0.6)
+          if (ap > 0.5) {
+            const am = wall + ap / 2
+            boxAt(out, { x: mx - uz * side * am, z: mz + ux * side * am }, footY - 0.2, ux, uz, l / 2 + 0.02, ap / 2, 0.27, SETTS, SETT)
+            // the stone kerb at the water's edge
+            const km = wall + ap - 0.25
+            boxAt(out, { x: mx - uz * side * km, z: mz + ux * side * km }, footY - 0.2, ux, uz, l / 2 + 0.02, 0.3, 0.6, CAP, ASHLAR)
+          }
+        }
+        off = wall - 0.25
+      }
+      const cx = mx - uz * side * off
+      const cz = mz + ux * side * off
+      if (inMouth(cx, cz)) continue
+      const y = Number.isNaN(capY) ? terrain.heightAt(cx, cz) + 0.15 : capY + 0.03
+      // the parapet: a stone wall 0.45 m thick and 1 m high, with a paler coping
+      boxAt(out, { x: cx, z: cz }, y - 0.3, ux, uz, l / 2 + 0.02, 0.22, 1.2, STONE)
+      boxAt(out, { x: cx, z: cz }, y + 0.9, ux, uz, l / 2 + 0.02, 0.27, 0.1, CAP)
+      metres += l
+      // the booksellers' boxes: two metres long, in fours with a gap, lids a little sloped (drawn as boxes)
+      if (books && Math.floor(run / 2) % 5 !== 4) {
+        boxAt(out, { x: cx - uz * side * 0.05, z: cz + ux * side * 0.05 }, y + 1.0, ux, uz, 0.95, 0.42, 0.62, GREEN)
+        boxAt(out, { x: cx - uz * side * 0.05, z: cz + ux * side * 0.05 }, y + 1.62, ux, uz, 0.98, 0.45, 0.06, [0.1, 0.22, 0.15])
+      }
+    }
+  }
+  if (PLAGES) for (const e of edges) {
+    if (!e.name || !PLAGES_NAMES.test(e.name) || e.bridge || e.tunnel) continue
+    const pts = unpackPoints(e.points)
+    let run = 0
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i]
+      const seg = Math.hypot(b.x - a.x, b.z - a.z)
+      if (seg < 0.1) continue
+      const ux = (b.x - a.x) / seg, uz = (b.z - a.z) / seg
+      for (let s = 0; s < seg - 1e-6; s += 2) {
+        const l = Math.min(2, seg - s)
+        const mx = a.x + ux * (s + l / 2), mz = a.z + uz * (s + l / 2)
         run += l
+        if (mx < PLAGES_X0 || mx > PLAGES_X1 || !mine(mx, mz) || inMouth(mx, mz)) continue
+        let side = 0, edge = Infinity
+        for (const sd of [-1, 1]) for (let o = e.width / 2; o <= 15; o += 0.5) {
+          if (wet(mx - uz * sd * o, mz + ux * sd * o)) { if (o < edge) { edge = o; side = sd } break }
+        }
         if (side === 0) continue
-        const off = Math.max(d, edge - 1)
-        const cx = mx - uz * side * off
-        const cz = mz + ux * side * off
-        if (inMouth(cx, cz)) continue
-        const y = terrain.heightAt(cx, cz) + 0.15
-        // the parapet: a stone wall 0.45 m thick and 1 m high, with a paler coping
-        boxAt(out, { x: cx, z: cz }, y - 0.3, ux, uz, l / 2 + 0.02, 0.22, 1.2, STONE)
-        boxAt(out, { x: cx, z: cz }, y + 0.9, ux, uz, l / 2 + 0.02, 0.27, 0.1, CAP)
-        metres += l
-        // the booksellers' boxes: two metres long, in fours with a gap, lids a little sloped (drawn as boxes)
-        if (books && Math.floor(run / 2) % 5 !== 4) {
-          boxAt(out, { x: cx - uz * side * 0.05, z: cz + ux * side * 0.05 }, y + 1.0, ux, uz, 0.95, 0.42, 0.62, GREEN)
-          boxAt(out, { x: cx - uz * side * 0.05, z: cz + ux * side * 0.05 }, y + 1.62, ux, uz, 0.98, 0.45, 0.06, [0.1, 0.22, 0.15])
+        const o0 = e.width / 2 + 0.2, o1 = Math.min(edge - 0.4, o0 + PLAGES_W)
+        if (o1 - o0 < 1) continue
+        const om = (o0 + o1) / 2
+        const at = (o: number): P => ({ x: mx - uz * side * o, z: mz + ux * side * o })
+        const y = terrain.heightAt(at(om).x, at(om).z)
+        boxAt(out, at(om), y - 0.1, ux, uz, l / 2 + 0.02, (o1 - o0) / 2, 0.16, SAND)
+        // a parasol and two deckchairs under it, every PARASOL_PITCH metres
+        if (Math.floor(run / PARASOL_PITCH) !== Math.floor((run - l) / PARASOL_PITCH)) {
+          const k = Math.floor(run / PARASOL_PITCH)
+          const c = at(om)
+          boxAt(out, c, y, ux, uz, 0.03, 0.03, 2.3, [0.85, 0.85, 0.82])
+          const col = PARASOLS[k % PARASOLS.length]
+          boxAt(out, c, y + 2.2, ux, uz, 1.1, 1.1, 0.1, col)
+          boxAt(out, c, y + 2.3, ux, uz, 0.6, 0.6, 0.1, col)
+          for (const d of [-0.7, 0.7]) {
+            const q = { x: c.x + ux * d, z: c.z + uz * d }
+            boxAt(out, q, y + 0.06, -uz * side, ux * side, 0.8, 0.28, 0.22, k % 2 ? [0.2, 0.4, 0.75] : [0.95, 0.95, 0.92])
+          }
         }
       }
     }
@@ -170,7 +335,8 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
       if (w.x1 < rect.x0 || w.x0 > rect.x1 || w.z1 < rect.z0 || w.z0 > rect.z1) continue
       const level = w.level
       // the banks: the river's outline, and every island's
-      for (const ring of [w.ring, ...w.holes]) for (let i = 0; i < ring.length; i++) {
+      for (const ring of [w.ring, ...w.holes]) {
+      for (let i = 0; i < ring.length; i++) {
         const a = ring[i]
         const b = ring[(i + 1) % ring.length]
         const len = Math.hypot(b.x - a.x, b.z - a.z)
@@ -202,6 +368,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
           out.quad([[p0.x, level - 0.4, p0.z], [p1.x, level - 0.4, p1.z], [p1.x, t1 + 0.1, p1.z], [p0.x, t0 + 0.1, p0.z]],
             [(p1.z - p0.z) / (len / n), 0, -(p1.x - p0.x) / (len / n)], [[0, 0], [1, 0], [1, 1], [0, 1]], wallStone, FIXED)
         }
+      }
       }
     }
   }

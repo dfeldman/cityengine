@@ -334,8 +334,14 @@ function pointOn(points: { x: number; z: number }[], s: number): { x: number; z:
  * Street furniture does not move, so it is baked into the tile's own mesh rather than instanced: a lamp post
  * is forty triangles and merging them costs less than a second draw call per tile would.
  */
+/** how far either side of a viaduct-top walk the streets beside it keep their furniture off (the Viaduc des Arts is 12.2 m wide) */
+const VIADUCT_CLEAR = 6.5
+/** set while a tile's furniture is placed: points on a viaduct-top walk, where nothing of the streets' may stand */
+let offDeck: ((x: number, z: number) => boolean) | null = null
+
 function placeModel(out: MeshBuilder, model: (b: MeshBuilder) => void, x: number, y: number, z: number,
                     heading: number): void {
+  if (offDeck?.(x, z)) return
   const tmp = new MeshBuilder()
   model(tmp)
   const base = out.positions.length / 3
@@ -3619,11 +3625,16 @@ export class City {
      * half-width and a metre, from this tile's flights and the neighbours' (a flight crosses tile edges).
      */
     const flights: { a: { x: number; z: number }; b: { x: number; z: number }; clear: number }[] = []
+    const elevated = new Set((this.region.elevatedWalks ?? []).map((w) => w.name))
+    const deckSegs: typeof flights = []
     for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
       for (const e of this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []) {
-        if (e.kind !== 'steps') continue
+        // (and a walk on a viaduct's roof, its whole width: the street beside it put its jardinières and lamps on the Coulée
+        // Verte's path, 8 m up, as the ground there is the deck — 2026-11-05)
+        const raised = e.name !== undefined && elevated.has(e.name)
+        if (e.kind !== 'steps' && !raised) continue
         const q = unpackPoints(e.points)
-        for (let i = 1; i < q.length; i++) flights.push({ a: q[i - 1], b: q[i], clear: (e.width || 2) / 2 + 1 })
+        for (let i = 1; i < q.length; i++) (raised ? deckSegs : flights).push({ a: q[i - 1], b: q[i], clear: raised ? VIADUCT_CLEAR : (e.width || 2) / 2 + 1 })
       }
     }
     const onFlight = (x: number, z: number): boolean => flights.some(({ a, b, clear }) => {
@@ -3631,6 +3642,12 @@ export class City {
       const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
       return Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < clear
     })
+    // (every placeModel below refuses a point on a viaduct-top walk: the street's lamps, jardinières, the shops' café sets in the arches beneath)
+    offDeck = deckSegs.length ? (x, z) => deckSegs.some(({ a, b, clear }) => {
+      const dx = b.x - a.x, dz = b.z - a.z
+      const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+      return Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < clear
+    }) : null
     const nearStairMouth = (x: number, z: number): boolean =>
       stairMouths.some((m) => Math.abs(m.x - x) < 6 && Math.abs(m.z - z) < 6) || onFlight(x, z)
 
@@ -4267,7 +4284,10 @@ export class City {
     // (the lawns of a square, inside a park: a lawn mapped on its own in a housing estate or on a verge has no gardener's edge)
     {
       const g = this.gardenTiles()
-      const parks = areasHere.filter((a) => a.kind === 'park').map((a) => unpackPoints(a.ring))
+      // (not a park on a viaduct's roof: the Coulée Verte's box and hoops stood across its path, draped onto the deck — its planting is its landmark's)
+      const onDeck = (r: { x: number; z: number }[]): boolean => deckSegs.some((q) => inGardenRing(r, q.a.x, q.a.z))
+      const parkAreas = areasHere.filter((a) => a.kind === 'park' && !onDeck(unpackPoints(a.ring)))
+      const parks = parkAreas.map((a) => unpackPoints(a.ring))
       if (g && parks.length) {
         // (…and not in a great park's inside, where it fenced every meadow of the Bois de Boulogne in hoops and box: Batch 7, 2026-10-31)
         const greatPark = parks.some((r) => { let m = 0; for (let i = 0, j = r.length - 1; i < r.length; j = i++) m += r[j].x * r[i].z - r[i].x * r[j].z; return Math.abs(m) / 2 > TILE * TILE * 0.75 })
@@ -4279,7 +4299,7 @@ export class City {
         // (the square's walks and edges: render/garden.ts. Paris's gardeners, Paris's only)
         if (this.pkg.region === 'paris') {
           g.squarePlanting(furniture, {
-            parks: areasHere.filter((a) => a.kind === 'park').map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })),
+            parks: parkAreas.map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })),
             closed: [
               ...areasHere.filter((a) => a.kind !== 'park' && a.kind !== 'grass').map((a) => ({ ring: unpackPoints(a.ring) })),
               ...(this.buildingsIn.get(k) ?? []).map((b) => ({ ring: unpackPoints(b.ring) })),
@@ -5028,6 +5048,7 @@ export class City {
       }
     }
 
+    offDeck = null
     if (furniture.triangles > 0 && !this.off.has('furniture')) {
       const m = new Mesh(`street:${k}`, this.scene)
       drapeRigid(furniture, this.terrain)

@@ -216,14 +216,11 @@
     "osm": [
       "relation/3071549"
     ],
-    "restyle": "skyscraper",
     "noShops": true,
-    "note": "Total's (Roche, Dinkeloo, 1985): dark smoked glass. A relation of stepped parts, so a restyle, keeping them. From memory.",
-    "roof": "flat",
-    "wall": "#30363b",
-    "trim": "#454c52",
-    "roofColour": "#40454a",
-    "madeBy": "claude-opus-5-5"
+    "note": "batch7/defense.ts tourCoupole: dark smoked glass on OSM's sawtooth ring, two setbacks at the top; the skyline draws tourCoupoleFar. From memory.",
+    "madeBy": "claude-opus-5-5",
+    "procedural": "tourCoupole",
+    "height": 187
   },
   {
     "name": "La Défense: Tour Eqho",

@@ -3,11 +3,11 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { areva, carpeDiem, defenseBlue, defenseBronze, defenseGreen, defenseSteel, defenseStone, engieT1, granite, hekla, majunga, saintGobain, theLink, tourAlto, tourD2, tourTriangle, trinity } from './defense.ts'
+import { areva, carpeDiem, defenseBlue, defenseBronze, defenseGreen, defenseSteel, defenseStone, engieT1, granite, hekla, majunga, saintGobain, theLink, tourAlto, tourCoupole, tourCoupoleFar, tourD2, tourTriangle, trinity } from './defense.ts'
 import { institutArt, institutOceano, ircamTower } from './institutes.ts'
 
 export const PARIS_BATCH7: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  hekla, theLink, majunga, areva, granite, engieT1, saintGobain, trinity, tourD2, carpeDiem, tourAlto, tourTriangle,
+  hekla, theLink, majunga, areva, granite, engieT1, saintGobain, trinity, tourD2, carpeDiem, tourAlto, tourTriangle, tourCoupole, tourCoupoleFar,
   defenseGreen, defenseBlue, defenseBronze, defenseStone, defenseSteel,
   institutArt, institutOceano, ircamTower,
 }
