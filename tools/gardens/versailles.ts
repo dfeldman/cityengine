@@ -4,7 +4,7 @@
  * u metres down the garden from the château's centre (bearing 292.75), v to its right (bearing 22.75, north): the builder frame's
  * z and x (docs/landmarks/MODEL-VERSAILLES.md). Bosquets and parterres stand on OSM's outlines (versailles-outlines.ts).
  */
-import { frame, rect, type Frame, type GardenPlan, type LL } from './plan.ts'
+import { circle, frame, rect, type Frame, type GardenPlan, type LL } from './plan.ts'
 import { OUTLINES } from './versailles-outlines.ts'
 
 const F: Frame = frame(48.804578, 2.121154, 292.75)
@@ -65,21 +65,58 @@ function parterre(name: string, ringLL: LL[], [u0, u1, v0, v1]: [number, number,
   return { name, ring: ringLL, clearMapped: true, gravel: [ringLL], lawn, beds, hedges, topiary }
 }
 
-/** a bosquet: the charmille round OSM's outline, the trees massed inside it, a clearing (its room, where a GLB fountain goes) */
-function bosquet(id: string, name: string): GardenPlan {
+/** a bosquet's room: its shape (round, octagon, or square), its size as a fraction of the bosquet's box, a lawn in it or all gravel,
+ * and its walks out to the charmille (4 to the mid-sides, 8 adds the diagonals: the star bosquets) */
+interface Room { shape?: 'round' | 'oct' | 'square'; frac?: number; lawn?: boolean; spokes?: 0 | 4 | 8 }
+/** the walks: width, the charmille walls along them (lower than the bosquet's own), the gravel ring round a room's lawn */
+const WALK = { w: 5, wall: { h: 3.2, w: 1 }, ring: 6, treeClear: 3 }
+
+/** a bosquet: the charmille round OSM's outline, walks in from it to a room in the middle (where a GLB fountain goes), trees
+ * massed between the walks */
+function bosquet(id: string, name: string, room: Room = {}): GardenPlan {
   const [u0, u1, v0, v1] = box(id), m = BOSQUET_TREES.margin
-  const ru = (u1 - u0) * BOSQUET_TREES.room / 2, rv = (v1 - v0) * BOSQUET_TREES.room / 2
+  const frac = room.frac ?? BOSQUET_TREES.room, shape = room.shape ?? 'round', ns = room.spokes ?? 4
   const cu = (u0 + u1) / 2, cv = (v0 + v1) / 2
+  const R = (Math.min(u1 - u0, v1 - v0) * frac) / 2
+  const roomRing = shape === 'square' ? rect(F, cu - R, cv - R, cu + R, cv + R)
+    : circle(F, cu, cv, R, shape === 'oct' ? 8 : 32)
+  // the walks: from the room's edge to the box's side (or corner), as [du, dv] unit directions
+  const dirs: [number, number][] = ns === 0 ? [] : [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  if (ns === 8) for (const [a, b] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+    const du = (a * (u1 - u0)) / 2, dv = (b * (v1 - v0)) / 2, l = Math.hypot(du, dv)
+    dirs.push([du / l, dv / l])
+  }
+  const reach = (d: [number, number]): number => Math.min(d[0] ? ((d[0] > 0 ? u1 : u0) - cu) / d[0] : 1e9, d[1] ? ((d[1] > 0 ? v1 : v0) - cv) / d[1] : 1e9)
+  const gravel: LL[][] = [roomRing], hedges: NonNullable<GardenPlan['hedges']> = [], h = WALK.w / 2
+  for (const d of dirs) {
+    const L = reach(d), [pu, pv] = [-d[1], d[0]]
+    const at = (t: number, s: number): LL => F(cu + d[0] * t + pu * s, cv + d[1] * t + pv * s)
+    gravel.push([at(R * 0.8, -h), at(L, -h), at(L, h), at(R * 0.8, h)])
+    for (const s of [-1, 1]) hedges.push({ line: [at(R + 2, s * (h + 0.6)), at(L - 1, s * (h + 0.6))], ...WALK.wall })
+  }
+  const lawn = room.lawn ? [shape === 'square' ? rect(F, cu - R + WALK.ring, cv - R + WALK.ring, cu + R - WALK.ring, cv + R - WALK.ring)
+    : circle(F, cu, cv, R - WALK.ring, shape === 'oct' ? 8 : 32)] : undefined
+  // the trees: rows across the box, each broken where it would stand in the room or on a walk
+  const clear = (u: number, v: number): boolean => {
+    const du = u - cu, dv = v - cv, c = WALK.treeClear
+    if ((shape === 'square' ? Math.max(Math.abs(du), Math.abs(dv)) : Math.hypot(du, dv)) < R + c) return false
+    for (const d of dirs) { const t = du * d[0] + dv * d[1]; if (t > 0 && Math.abs(-du * d[1] + dv * d[0]) < h + c) return false }
+    return true
+  }
   const rows: Row[] = []
   for (const u of steps(u0 + m, u1 - m, BOSQUET_TREES.spacing)) {
-    const segs = Math.abs(u - cu) < ru ? [[v0 + m, cv - rv], [cv + rv, v1 - m]] : [[v0 + m, v1 - m]]
-    for (const [a, b] of segs) if (b - a > 2) rows.push({ line: [F(u, a), F(u, b)], spacing: BOSQUET_TREES.spacing, h: BOSQUET_TREES.h })
+    let start: number | null = null
+    for (let v = v0 + m; v <= v1 - m + 0.01; v += 1) {
+      const ok = clear(u, v) && v < v1 - m + 0.01
+      if (ok && start === null) start = v
+      const end = !ok || v + 1 > v1 - m + 0.01
+      if (end && start !== null) { const e = ok ? v : v - 1; if (e - start > 2) rows.push({ line: [F(u, start), F(u, e)], spacing: BOSQUET_TREES.spacing, h: BOSQUET_TREES.h }); start = null }
+    }
   }
   const r = ring(id)
   return {
-    name: `Versailles: ${name}`, ring: r, clearMapped: true,
-    gravel: [rect(F, cu - ru, cv - rv, cu + ru, cv + rv)],
-    hedges: [{ line: [...r, r[0]], h: CHARMILLE.h, w: CHARMILLE.w }],
+    name: `Versailles: ${name}`, ring: r, clearMapped: true, gravel, lawn,
+    hedges: [{ line: [...r, r[0]], h: CHARMILLE.h, w: CHARMILLE.w }, ...hedges],
     rows,
   }
 }
@@ -140,12 +177,22 @@ function suisses(): GardenPlan {
   return { name: "Versailles: the Pièce d'eau des Suisses", ring: rect(F, p.u0 - o, p.v0 - o, p.u1 + o, p.v1 + o), rows }
 }
 
-const BOSQUETS: [string, string][] = [
-  ['r11724445', 'Bosquet de la Girandole'], ['r11724450', 'Jardin de la Reine'], ['r11724456', 'Bosquet des Rocailles'],
-  ['r11724463', 'Bosquet de la Colonnade'], ['r11724485', 'Bosquet des Dômes'], ['r11724487', "Bosquet de l'Encelade"],
-  ['r11724493', 'Bosquet du Dauphin'], ['r11724503', "Bosquet de l'Étoile"], ['r11724511', 'Bosquet des Trois Fontaines'],
-  ['r11724515', "Bosquet du Théâtre d'Eau"], ['r11724521', "Bosquet des Bains d'Apollon"], ['r11724524', "Bosquet de l'Obélisque"],
-  ['r12446404', "Bosquet de l'Arc de Triomphe"],
+/** the bosquets and their rooms, after the plans of the gardens: the Colonnade's ring of arches, the Dômes' octagon, the stars of
+ * the Girandole, the Dauphin and the Étoile, the Encelade's round basin, the Reine's open lawn */
+const BOSQUETS: [string, string, Room][] = [
+  ['r11724445', 'Bosquet de la Girandole', { spokes: 8, frac: 0.3, lawn: true }],
+  ['r11724450', 'Jardin de la Reine', { shape: 'square', frac: 0.6, lawn: true }],
+  ['r11724456', 'Bosquet des Rocailles', { frac: 0.55, spokes: 0 }],
+  ['r11724463', 'Bosquet de la Colonnade', { frac: 0.5 }],
+  ['r11724485', 'Bosquet des Dômes', { shape: 'oct', frac: 0.45 }],
+  ['r11724487', "Bosquet de l'Encelade", { frac: 0.45 }],
+  ['r11724493', 'Bosquet du Dauphin', { spokes: 8, frac: 0.3, lawn: true }],
+  ['r11724503', "Bosquet de l'Étoile", { spokes: 8, frac: 0.25, lawn: true }],
+  ['r11724511', 'Bosquet des Trois Fontaines', { shape: 'square', frac: 0.4, spokes: 0 }],
+  ['r11724515', "Bosquet du Théâtre d'Eau", { frac: 0.45, lawn: true }],
+  ['r11724521', "Bosquet des Bains d'Apollon", { frac: 0.4, lawn: true, spokes: 0 }],
+  ['r11724524', "Bosquet de l'Obélisque", { frac: 0.45 }],
+  ['r12446404', "Bosquet de l'Arc de Triomphe", { shape: 'square', frac: 0.4 }],
 ]
 
 export const VERSAILLES_GARDENS: GardenPlan[] = [
@@ -158,5 +205,5 @@ export const VERSAILLES_GARDENS: GardenPlan[] = [
   tapisVert(),
   canalAllees(),
   suisses(),
-  ...BOSQUETS.map(([id, n]) => bosquet(id, n)),
+  ...BOSQUETS.map(([id, n, r]) => bosquet(id, n, r)),
 ]
