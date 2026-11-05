@@ -139,15 +139,20 @@ function parterreEau(): GardenPlan {
   return { name: "Versailles: the Parterre d'Eau", ring: r, clearMapped: true, gravel: [r] }
 }
 
-/** Latone's parterre, below the terrace: two lawns either side of the walk down to the basin, cones and balls round them */
+/** Latone's parterre: the horseshoe of ramps round the basin, open toward the Tapis Vert; two lawns either side of the middle walk,
+ * their château-side edge the horseshoe's arc, cones along the arc and balls along the outer walks */
+const LATONE = { u0: 230, u1: 400, half: 58, cu: 336, R: 66, walk: 16, outer: 6, step: 10, arcN: 10 }
 function latone(): GardenPlan {
-  const u0 = 230, u1 = 400, half = 58
-  const r = rect(F, u0, AXIS - half, u1, AXIS + half)
+  const L = LATONE
+  const r = rect(F, L.u0, AXIS - L.half, L.u1, AXIS + L.half)
+  const arcU = (v: number): number => L.cu - Math.sqrt(Math.max(0, L.R * L.R - v * v))
   const lawn: LL[][] = [], topiary: Yew[] = []
   for (const s of [-1, 1]) {
-    const v0 = AXIS + s * 16, v1 = AXIS + s * (half - 6)
-    lawn.push(rect(F, u0 + 40, Math.min(v0, v1), u1 - 6, Math.max(v0, v1)))
-    for (const u of steps(u0 + 40, u1 - 6, 10)) topiary.push({ at: F(u, v0), shape: 'cone', h: PARTERRE.cone }, { at: F(u, v1), shape: 'ball', h: PARTERRE.ball })
+    const va = L.walk, vb = L.half - L.outer
+    const arc = steps(va, vb, (vb - va) / L.arcN).map((v) => F(arcU(v), AXIS + s * v))
+    lawn.push([...arc, F(L.u1 - 6, AXIS + s * vb), F(L.u1 - 6, AXIS + s * va)])
+    for (const v of steps(va, vb, (vb - va) / 4)) topiary.push({ at: F(arcU(v) - 2, AXIS + s * v), shape: 'cone', h: PARTERRE.cone })
+    for (const u of steps(arcU(vb), L.u1 - 6, L.step)) topiary.push({ at: F(u, AXIS + s * va), shape: 'cone', h: PARTERRE.cone }, { at: F(u, AXIS + s * vb), shape: 'ball', h: PARTERRE.ball })
   }
   return { name: 'Versailles: the Parterre de Latone', ring: r, clearMapped: true, gravel: [r], lawn, topiary }
 }
