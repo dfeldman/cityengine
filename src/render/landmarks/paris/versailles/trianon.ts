@@ -15,7 +15,7 @@ import { extrude, palette, type Storey } from '../palaces/common.ts'
 type P2 = { x: number; z: number }
 
 /** the Grand Trianon: wall height, bay spacing, window width, the pilasters' width and how proud, the balustrade */
-const GT = { stone: '#ebe1cc', marble: '#b8656b', eaves: 8.2, bay: 4.4, win: 2.5, pil: { w: 0.42, d: 0.22 },
+const GT = { stone: '#ebe1cc', marble: '#b8656b', eaves: 8.2, bay: 4.4, win: 2.5, pil: { w: 0.7, d: 0.25 },
   storey: { y: 0, h: 5.2, sill: 0.5, arched: true } as Storey, bal: { h: 1.1, post: 3.2 } }
 
 function ringsOf(fit: Fit): P2[][] {
@@ -25,14 +25,14 @@ function ringsOf(fit: Fit): P2[][] {
 }
 
 /** pilasters between the bays along every face, the same spacing extrude gives its windows */
-function pilasters(out: MeshBuilder, rings: P2[][], bay: number, y0: number, y1: number, c: Rgb): void {
+function pilasters(out: MeshBuilder, rings: P2[][], bay: number, y0: number, y1: number, c: Rgb, pil = GT.pil): void {
   for (const r of rings) for (let i = 0; i < r.length; i++) {
     const e = edgeAt(r, i)
     if (e.L < 3) continue
     const nb = Math.max(1, Math.round((e.L - 1.2) / bay)), step = (e.L - 1.2) / nb
     for (let k = 0; k <= nb; k++) {
       const u = 0.6 + k * step
-      boxAlong(out, e.a.x + e.tx * u + e.nx * GT.pil.d / 2, (y0 + y1) / 2, e.a.z + e.tz * u + e.nz * GT.pil.d / 2, GT.pil.w / 2, (y1 - y0) / 2, GT.pil.d / 2, e.heading, c)
+      boxAlong(out, e.a.x + e.tx * u + e.nx * pil.d / 2, (y0 + y1) / 2, e.a.z + e.tz * u + e.nz * pil.d / 2, pil.w / 2, (y1 - y0) / 2, pil.d / 2, e.heading, c)
     }
   }
 }
@@ -62,6 +62,24 @@ export function versaillesGrandTrianon(out: MeshBuilder, fit: Fit): void {
   ringBalustrade(out, rings, GT.eaves + 0.15, shade(hex(GT.stone), 1.06))
 }
 
+/** the Petit Trianon (Gabriel, 1762–68): a cube of pale stone, a rusticated ground floor, the piano nobile's tall windows and
+ * an attic's square ones under a flat roof and balustrade; Corinthian pilasters (columns on the west front) across the upper two */
+const PT = { stone: '#e9dfc9', eaves: 14.2, bay: 4.6, win: 1.7, pil: { w: 0.9, d: 0.45 }, order: [4.4, 13.4] as [number, number],
+  storeys: [{ y: 0, h: 2.6, sill: 0.9, arched: true }, { y: 5, h: 3.6, sill: 0.4 }, { y: 10.6, h: 1.5, sill: 0.3 }] as Storey[] }
+
+export function versaillesPetitTrianon(out: MeshBuilder, fit: Fit): void {
+  const rings = ringsOf(fit), p = palette(PT.stone, '#7d7f7c')
+  extrude(out, rings, p, { eaves: PT.eaves, storeys: PT.storeys, bay: PT.bay, win: PT.win, rise: 0.15, inset: 0.3, dormers: false })
+  const light = shade(hex(PT.stone), 1.07)
+  pilasters(out, rings, PT.bay, PT.order[0], PT.order[1], light, PT.pil)
+  // the band over the rusticated ground floor
+  for (const r of rings) for (let i = 0; i < r.length; i++) {
+    const e = edgeAt(r, i)
+    boxAlong(out, e.mid.x + e.nx * 0.2, PT.order[0] - 0.2, e.mid.z + e.nz * 0.2, e.L / 2 + 0.2, 0.2, 0.3, e.heading, light)
+  }
+  ringBalustrade(out, rings, PT.eaves + 0.15, light)
+}
+
 /** a Hameau building: its storeys, wall colour, roof colour and pitch (rise over the inset); thatch is a deep, soft rise */
 interface Cottage { walls: string; roof: string; storeys: number; rise: number; inset: number; eaves?: number }
 const THATCH = '#8b7550', TILE = '#9a5a3f'
@@ -87,6 +105,6 @@ export const hameauBuilder = (c: Cottage) => (out: MeshBuilder, fit: Fit): void 
 }
 
 export const TRIANON_BUILDERS = {
-  versaillesGrandTrianon,
+  versaillesGrandTrianon, versaillesPetitTrianon,
   ...Object.fromEntries(Object.entries(HAMEAU).map(([k, c]) => [`hameau${k[0].toUpperCase()}${k.slice(1)}`, hameauBuilder(c)])),
 } as Record<string, (out: MeshBuilder, fit: Fit) => void>

@@ -12,7 +12,7 @@ import { extrude, palette } from '../palaces/common.ts'
 type P2 = { x: number; z: number }
 
 /** the nave's share of the ring's long axis, and which end it is at (−1 low, +1 high, in the fit's frame); the wing's house */
-const NAVE = { share: 0.62, end: -1 as -1 | 1 }
+const NAVE = { share: 0.62, end: 1 as -1 | 1 }
 const WING = { stone: '#e2d6bd', slate: '#5a5e60', eaves: 7, rise: 2.6, inset: 2 }
 
 /** Sutherland–Hodgman: the part of ring r where k(p) ≥ 0, for k linear */

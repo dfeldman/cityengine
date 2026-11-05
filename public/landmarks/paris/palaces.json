@@ -1515,5 +1515,15 @@
     "height": 9.5,
     "note": "The Grand Trianon's one-storey range to the south, drawn like the main building (versailles/trianon.ts).",
     "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Petit Trianon",
+    "procedural": "versaillesPetitTrianon",
+    "osm": [
+      "relation/11724480"
+    ],
+    "height": 15.5,
+    "note": "Gabriel's cube (1762–68): rusticated ground floor, piano nobile and attic under a flat roof and balustrade, Corinthian pilasters across the upper two (versailles/trianon.ts, tunables in PT).",
+    "madeBy": "claude-opus-5-5"
   }
 ]
