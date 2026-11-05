@@ -127,19 +127,13 @@
   },
   {
     "name": "Église Saint-Nicolas-Saint-Marc (Ville-d'Avray)",
-    "procedural": "parisCivic",
-    "kit": {
-      "kind": "eglise",
-      "p": 2,
-      "seed": 1
-    },
+    "procedural": "avrayEglise",
     "osm": [
       "way/129455533"
     ],
-    "front": "street",
     "height": 13,
     "sign": false,
-    "note": "Louis XVI, consecrated 1791: the kit's classical front (pediment). Corot's paintings inside. Its low flank tower not drawn.",
+    "note": "Louis XVI, consecrated 1791. OSM's ring is the church and its presbytery wing in one: versailles/avray-eglise.ts cuts it, the church (pediment, porch, apse) on the nave's part, a plain house on the wing (NAVE, WING tunables).",
     "madeBy": "claude-opus-5-5"
   },
   {

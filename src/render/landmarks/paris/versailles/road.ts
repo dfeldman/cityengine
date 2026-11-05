@@ -15,6 +15,7 @@ import { dome, hex, placed, roof, shade, type Rgb } from '../../kit.ts'
 import { civic, frontEdge, type CivicSpec } from '../kit/civic.ts'
 import { edgeAt } from '../../parts.ts'
 import { towerRing } from '../../tower.ts'
+import { avrayEglise } from './avray-eglise.ts'
 
 const ash = surfaceTag('ashlar'), metal = surfaceTag('metal'), clipped = surfaceTag('clipped'), setts = surfaceTag('setts')
 const STONE = hex('#c9bfa8'), STONE_DK = shade(STONE, 0.8), IRON = hex('#1d2224'), GILT: Rgb = [0.74, 0.58, 0.22]
@@ -258,6 +259,6 @@ export function avrayFontaine(out: MeshBuilder, fit: Fit): void {
 }
 
 export const VERSAILLES_ROAD: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  cloudStatues, cloudReservoir, cloudRond, cloudGate, avrayFontaine, breteuil, cloudFronton,
+  cloudStatues, cloudReservoir, cloudRond, cloudGate, avrayFontaine, breteuil, cloudFronton, avrayEglise,
   sevresMusee: civicOf('sevresMusee'), sevresMairie: civicOf('sevresMairie'), chavilleMairie: civicOf('chavilleMairie'), avrayMairie: civicOf('avrayMairie'),
 }
