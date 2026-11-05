@@ -41,18 +41,6 @@
   },
   {
     "osm": [
-      "way/52072807",
-      "way/860140474",
-      "way/860407555"
-    ],
-    "name": "Fondation des États-Unis",
-    "procedural": "fondationEtatsUnis",
-    "height": 19,
-    "note": "batch11/buildings.ts: brick, white bays, hipped roof; photo Commons",
-    "madeBy": "claude-sonnet-5-5"
-  },
-  {
-    "osm": [
       "way/79687026"
     ],
     "name": "Heron Building",

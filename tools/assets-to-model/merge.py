@@ -29,7 +29,7 @@ PLACED = {'placeConcorde': (48.86561, 2.32121, 190, r'^(Lyon|Marseille|Bordeaux|
 FIGURE_STANDINS = {'ajaccioBust', 'ajaccioGroup', 'ajaccioStele', 'boucicautMonument', 'fochTrocadero', 'louisXIV',
                    'triompheRepublique', 'statueLiberte', 'washingtonIena', 'monumentPasteur', 'lionDeBelfort', 'chapeauEve',
                    'fontaineSaintSulpice', 'medicisFountain', 'observatoireFountain', 'batignollesRocks',
-                   'vosgesGarden', 'placeConcorde', 'fontaineChateauEau', 'lePouce', 'flammeLiberte', 'institutWings'}
+                   'vosgesGarden', 'placeConcorde', 'fontaineChateauEau', 'lePouce', 'flammeLiberte', 'institutWings', 'concordeGatePier', 'marlyPedestal'}
 STOP = {'statue', 'statues', 'buste', 'bust', 'monument', 'fontaine', 'fountain', 'paris', 'place', 'square', 'jardin',
         'saint', 'sainte', 'grand', 'grande', 'petit', 'petite', 'avec', 'dans', 'pour', 'memoire', 'the', 'and'}
 

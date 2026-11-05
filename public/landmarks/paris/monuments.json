@@ -1093,10 +1093,15 @@
     "name": "Fers",
     "procedural": "fers",
     "kind": "statue",
-    "osm": ["node/7952476083"],
+    "osm": [
+      "node/7952476083"
+    ],
     "lat": 48.8828275,
     "lon": 2.310593,
-    "size": [9, 4.4],
+    "size": [
+      9,
+      4.4
+    ],
     "height": 4.6,
     "front": 0,
     "sign": false,

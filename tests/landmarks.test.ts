@@ -101,9 +101,16 @@ const BIG: Record<string, number> = {
   // (the same) the facade is what Paris knows: eight pairs of monoliths, seven arches, its groups in the round
   palaisGarnier: 36_000,
   // (the same audit) not a building but thirty: 2.5 km of front, the Colonnade's fifty columns, three pavilions of the Sully kind
-  louvrePalace: 65_000,
+  louvrePalace: 75_000,
+  // (owner, 2026-11-05: exceptional buildings may exceed the budget)
+  palaisAlma: 50_000,
+  bourbonCourts: 65_000,
+  maisonLoo: 32_000,
   // 2.7 km of deck, towers and cables, and a surface the rider crosses at eye level, so its long spans must
   // be finely subdivided or the depth buffer cannot sort the deck against the water beneath it
+  // the Place Vendôme: not a building but nineteen, 460 m of one rusticated, pilastered, dormered front round an octagonal square
+  placeVendome: 30_000,
+  placeVosges: 34_000,
   goldenGateBridge: 40_000,
   /*
    * And its NEAR level (BUGS.md #211) is the same builder with every box subdivided to 4 m, because the

@@ -73,6 +73,9 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     courtBasketballFull: ['basketball', 29.0, 16.0],
     courtFourSquare: ['four_square', 5.1, 4.9],
     courtVolleyball: ['volleyball', 18.6, 9.4],
+    courtSoccer: ['soccer', 92, 62],
+    courtRugby: ['rugby', 102, 71],
+    courtHandball: ['handball', 41, 21],
   }
   const courtBuild = (spec: [CourtSport, number, number]): ((o: MeshBuilder) => void) => (o) => {
     const [sport, len, wid] = spec

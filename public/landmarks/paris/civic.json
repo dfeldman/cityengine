@@ -601,23 +601,6 @@
  },
  {
   "osm": [
-   "way/41506069"
-  ],
-  "name": "Synagogue de la rue Sainte-Isaure",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 5,
-   "word": "synagogue",
-   "seed": 8416
-  },
-  "height": 11.4,
-  "front": -62,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 5."
- },
- {
-  "osm": [
    "way/41513927"
   ],
   "name": "ecole 41513927",
@@ -1483,6 +1466,22 @@
  },
  {
   "osm": [
+   "way/47273118"
+  ],
+  "name": "Hôtel de Nesmond",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1098
+  },
+  "height": 16.6,
+  "front": -65,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/48433146"
   ],
   "name": "Chapelle de la compassion",
@@ -1684,20 +1683,19 @@
  },
  {
   "osm": [
-   "way/49734641"
+   "relation/403146"
   ],
-  "name": "Hôtel Lafont",
+  "name": "Hôtel de Sully",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "ecole",
+   "kind": "hotel",
    "p": 1,
-   "word": "HÔTEL LAFONT",
-   "seed": 9263
+   "seed": 8453
   },
-  "height": 17.4,
-  "front": -76,
+  "height": 15.4,
+  "front": -154,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: ecole, APUR period 1."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -1984,6 +1982,22 @@
  },
  {
   "osm": [
+   "way/53401276"
+  ],
+  "name": "Hôtel Lacordaire",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 9,
+   "seed": 5834
+  },
+  "height": 4.5,
+  "front": 120,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 9."
+ },
+ {
+  "osm": [
    "way/53557919"
   ],
   "name": "ecole 53557919",
@@ -2165,6 +2179,22 @@
   "front": 49,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: police, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/53657335"
+  ],
+  "name": "Hôtel Roger de Gaillon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2595
+  },
+  "height": 14.4,
+  "front": 117,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -2400,6 +2430,22 @@
  },
  {
   "osm": [
+   "relation/538976"
+  ],
+  "name": "Hôtel de Trudon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 869
+  },
+  "height": 20.9,
+  "front": -87,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/53770519"
   ],
   "name": "Centre Eugène Millon",
@@ -2550,6 +2596,118 @@
  },
  {
   "osm": [
+   "relation/540980"
+  ],
+  "name": "Hôtel Bullion",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4877
+  },
+  "height": 19.6,
+  "front": 109,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/541057"
+  ],
+  "name": "Hôtel de Soyecourt",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5031
+  },
+  "height": 26.4,
+  "front": -67,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54044641"
+  ],
+  "name": "Hôtel Portalis",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 954
+  },
+  "height": 21.5,
+  "front": -120,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54044643"
+  ],
+  "name": "Hôtel Charlemagne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 956
+  },
+  "height": 21.3,
+  "front": -30,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54044644"
+  ],
+  "name": "Hôtel de Montplanque",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 957
+  },
+  "height": 20.3,
+  "front": 121,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54045114"
+  ],
+  "name": "Hôtel Bergeret de Talmont",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1427
+  },
+  "height": 21.1,
+  "front": 19,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54045116"
+  ],
+  "name": "Hôtel Bergeret de Grancourt",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1429
+  },
+  "height": 22,
+  "front": 150,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/54046934"
   ],
   "name": "Ministère de la Culture et de la Communication",
@@ -2616,6 +2774,22 @@
  },
  {
   "osm": [
+   "way/54110527"
+  ],
+  "name": "Hôtel Lulli",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7002
+  },
+  "height": 20.7,
+  "front": 108,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/54111268"
   ],
   "name": "Autorité de la concurrence",
@@ -2630,23 +2804,6 @@
   "front": 116,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 99."
- },
- {
-  "osm": [
-   "way/54117312"
-  ],
-  "name": "Synagogue Chasseloup-Laubat",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "synagogue",
-   "seed": 3814
-  },
-  "height": 13.9,
-  "front": 62,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -2714,6 +2871,38 @@
   "front": 116,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 2."
+ },
+ {
+  "osm": [
+   "way/54170984"
+  ],
+  "name": "Hôtel Gaillard de la Bouëxière",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7621
+  },
+  "height": 22.2,
+  "front": -56,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54173706"
+  ],
+  "name": "Hôtel de France et de Choiseul",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 370
+  },
+  "height": 20.5,
+  "front": 116,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -2785,6 +2974,22 @@
  },
  {
   "osm": [
+   "way/54645671"
+  ],
+  "name": "Hôtel Magon de La Balue",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3604
+  },
+  "height": 23.1,
+  "front": -172,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/54653652"
   ],
   "name": "Chambre de Commerce",
@@ -2799,6 +3004,38 @@
   "front": 106,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/546793"
+  ],
+  "name": "Hôtel Desmarets",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6530
+  },
+  "height": 21.1,
+  "front": -71,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/546788"
+  ],
+  "name": "Hôtel Bautru ou Colbert",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6520
+  },
+  "height": 10.1,
+  "front": -70,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -2835,6 +3072,102 @@
  },
  {
   "osm": [
+   "way/54734674"
+  ],
+  "name": "Hôtel Cornette",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2850
+  },
+  "height": 22.6,
+  "front": -10,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/547814"
+  ],
+  "name": "Hôtel de La Feuillade",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8572
+  },
+  "height": 21.3,
+  "front": -9,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54734684"
+  ],
+  "name": "Hôtel Gigault de La Salle",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2860
+  },
+  "height": 21.8,
+  "front": -9,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54734689"
+  ],
+  "name": "Hôtel Pellé de Montaleau",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2865
+  },
+  "height": 21.5,
+  "front": -9,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54734692"
+  ],
+  "name": "Hôtel de Metz de Rosnay",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 5,
+   "seed": 2868
+  },
+  "height": 22.5,
+  "front": -161,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/54734696"
+  ],
+  "name": "Hôtel de Prévenchères",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2872
+  },
+  "height": 19.2,
+  "front": -150,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/54740892"
   ],
   "name": "Direction Régionale des Finances Publiques d'Île-de-France et de Paris - Site Notre-Dame des Victoires",
@@ -2848,6 +3181,54 @@
   "front": -7,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/54740903"
+  ],
+  "name": "Hôtel Rambouillet de la Sablière",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9079
+  },
+  "height": 6.8,
+  "front": 62,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/547801"
+  ],
+  "name": "Hôtel de L'Hospital",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8546
+  },
+  "height": 6.2,
+  "front": -30,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54748299"
+  ],
+  "name": "Hôtel du Barry",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6502
+  },
+  "height": 20.7,
+  "front": -126,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -2867,6 +3248,54 @@
  },
  {
   "osm": [
+   "way/54756951"
+  ],
+  "name": "Hôtel du Vigan",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5181
+  },
+  "height": 22,
+  "front": -21,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/54895808"
+  ],
+  "name": "Hôtel de Montholon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4416
+  },
+  "height": 25.5,
+  "front": 14,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/549743"
+  ],
+  "name": "Hôtel Rivié",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2457
+  },
+  "height": 14.1,
+  "front": 95,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/54964100"
   ],
   "name": "fac 54964100",
@@ -2880,6 +3309,22 @@
   "front": -67,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/3370911"
+  ],
+  "name": "Hôtel Boisgelin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 75
+  },
+  "height": 12.3,
+  "front": 138,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -2915,6 +3360,54 @@
  },
  {
   "osm": [
+   "way/55178169"
+  ],
+  "name": "Hôtel de Noisy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7533
+  },
+  "height": 21.6,
+  "front": -86,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/554046"
+  ],
+  "name": "Hôtel de Gillier",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1090
+  },
+  "height": 17.5,
+  "front": 29,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/554060"
+  ],
+  "name": "Hôtel Lambert",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1118
+  },
+  "height": 18.5,
+  "front": -151,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/55292127"
   ],
   "name": "Hôtel Meiland",
@@ -2929,6 +3422,70 @@
   "front": 29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/55302112"
+  ],
+  "name": "Hôtel de Comans d'Astry",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1827
+  },
+  "height": 24.4,
+  "front": 116,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/55302127"
+  ],
+  "name": "Hôtel Lefebure de la Malmaison",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1842
+  },
+  "height": 23.6,
+  "front": -61,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/55302135"
+  ],
+  "name": "Hôtel de Bretonvilliers",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1850
+  },
+  "height": 18,
+  "front": 28,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/554310"
+  ],
+  "name": "Hôtel d'Hesselin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1618
+  },
+  "height": 24.2,
+  "front": 119,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3080,19 +3637,35 @@
  },
  {
   "osm": [
-   "way/55366403"
+   "relation/555259"
   ],
-  "name": "Église orthodoxe roumaine des saints archanges",
+  "name": "Hôtel de Chenizot",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "seed": 6280
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3516
   },
-  "height": 16.5,
-  "front": -63,
+  "height": 20.2,
+  "front": 28,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/555257"
+  ],
+  "name": "Hôtel d'Arvers",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3512
+  },
+  "height": 20.9,
+  "front": 119,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3129,6 +3702,22 @@
  },
  {
   "osm": [
+   "relation/555834"
+  ],
+  "name": "Hôtel de Jassaud",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4666
+  },
+  "height": 19.9,
+  "front": 26,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/55465645"
   ],
   "name": "hopital 55465645",
@@ -3160,6 +3749,22 @@
   "front": 115,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 12."
+ },
+ {
+  "osm": [
+   "way/55496586"
+  ],
+  "name": "Hôtel Colbert",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 5,
+   "seed": 6814
+  },
+  "height": 17.1,
+  "front": 144,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 5."
  },
  {
   "osm": [
@@ -3211,6 +3816,38 @@
   "front": 29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/55620201"
+  ],
+  "name": "Hôtel d'Ourscamp",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 780
+  },
+  "height": 14.4,
+  "front": 30,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/557981"
+  ],
+  "name": "Hôtel d'Aumont",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8960
+  },
+  "height": 15.6,
+  "front": 47,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3280,6 +3917,38 @@
  },
  {
   "osm": [
+   "way/55886350"
+  ],
+  "name": "Hôtel de Luynes",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7631
+  },
+  "height": 18.4,
+  "front": -57,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/568709"
+  ],
+  "name": "Hôtel Montmien",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 497
+  },
+  "height": 18.7,
+  "front": -57,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/55889144"
   ],
   "name": "equipement 55889144",
@@ -3293,6 +3962,38 @@
   "front": -1,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/55893102"
+  ],
+  "name": "Hôtel Feydeau de Montholon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 4410
+  },
+  "height": 15.4,
+  "front": 123,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/55893107"
+  ],
+  "name": "Hôtel d'Hercule",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4415
+  },
+  "height": 17.3,
+  "front": -146,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3346,23 +4047,6 @@
  },
  {
   "osm": [
-   "way/55942658"
-  ],
-  "name": "Église Luthérienne des Billettes",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 1,
-   "word": "temple",
-   "seed": 4101
-  },
-  "height": 18.6,
-  "front": -63,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 1."
- },
- {
-  "osm": [
    "way/55942660"
   ],
   "name": "ecole 55942660",
@@ -3377,6 +4061,86 @@
   "front": -67,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/55984130"
+  ],
+  "name": "Hôtel Amelot de Bisseuil",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5681
+  },
+  "height": 14,
+  "front": -55,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/570241"
+  ],
+  "name": "Hôtel Raoul de la Faye",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 3561
+  },
+  "height": 12.3,
+  "front": -58,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/570246"
+  ],
+  "name": "Hôtel de Vibraye",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3571
+  },
+  "height": 17.4,
+  "front": -158,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/55997006"
+  ],
+  "name": "Hôtel Brulart",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 8584
+  },
+  "height": 15.8,
+  "front": 120,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
+   "way/56003306"
+  ],
+  "name": "Hôtel de Coulanges",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4911
+  },
+  "height": 13.5,
+  "front": 36,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3460,6 +4224,22 @@
   "front": -8,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/56040595"
+  ],
+  "name": "Hôtel de Chavigny",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2308
+  },
+  "height": 16.9,
+  "front": 111,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3564,6 +4344,22 @@
  },
  {
   "osm": [
+   "way/56092465"
+  ],
+  "name": "Hôtel Mansart",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4313
+  },
+  "height": 18.5,
+  "front": -89,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/56131472"
   ],
   "name": "ecole 56131472",
@@ -3627,6 +4423,54 @@
   "front": 140,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 5."
+ },
+ {
+  "osm": [
+   "relation/572453"
+  ],
+  "name": "Hôtel de Saint-Cyr",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7985
+  },
+  "height": 14.5,
+  "front": 24,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/572449"
+  ],
+  "name": "Hôtel dit Séguier",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7977
+  },
+  "height": 11,
+  "front": 116,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/56140796"
+  ],
+  "name": "Hôtel d'Aguesseau",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 2779
+  },
+  "height": 19.1,
+  "front": 114,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -3732,6 +4576,22 @@
  },
  {
   "osm": [
+   "relation/574749"
+  ],
+  "name": "Hôtel Nicolai",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2604
+  },
+  "height": 14.1,
+  "front": -136,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/56200020"
   ],
   "name": "École élémentaire privée Massillon",
@@ -3746,6 +4606,22 @@
   "front": -141,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/56203236"
+  ],
+  "name": "Hôtel d'Aubray",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5381
+  },
+  "height": 15.4,
+  "front": -144,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3882,20 +4758,19 @@
  },
  {
   "osm": [
-   "way/56435813"
+   "relation/610938"
   ],
-  "name": "Synagogue Nazareth",
+  "name": "Hôtel des abbés de Fécamp",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "synagogue",
-   "seed": 8579
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5171
   },
-  "height": 17.8,
-  "front": -162,
+  "height": 16.7,
+  "front": 117,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -3932,6 +4807,38 @@
  },
  {
   "osm": [
+   "way/56659891"
+  ],
+  "name": "Hôtel de Foretz",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3278
+  },
+  "height": 15.5,
+  "front": -149,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/550874"
+  ],
+  "name": "Hôtel Passart",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4719
+  },
+  "height": 17.5,
+  "front": -155,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/56671696"
   ],
   "name": "ecole 56671696",
@@ -3946,6 +4853,86 @@
   "front": 25,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/550865"
+  ],
+  "name": "Hôtel d'Hallwyll",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4701
+  },
+  "height": 17.1,
+  "front": -157,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/56684507"
+  ],
+  "name": "Hôtel Thiroux de Lailly",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7948
+  },
+  "height": 16.8,
+  "front": 35,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/56687769"
+  ],
+  "name": "Hôtel de Saint-Aignan",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1237
+  },
+  "height": 16.9,
+  "front": 132,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/550856"
+  ],
+  "name": "Hôtel de Montmor",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4683
+  },
+  "height": 18,
+  "front": 124,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/56687784"
+  ],
+  "name": "Hôtel Beaubrun",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1252
+  },
+  "height": 18.1,
+  "front": 21,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -4119,6 +5106,22 @@
  },
  {
   "osm": [
+   "way/57016622"
+  ],
+  "name": "Hôtel Lepas-Dubuisson",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 981
+  },
+  "height": 24.2,
+  "front": 34,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/57035431"
   ],
   "name": "ecole 57035431",
@@ -4269,6 +5272,86 @@
  },
  {
   "osm": [
+   "relation/551541"
+  ],
+  "name": "Hôtel de Boulainvilliers",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6053
+  },
+  "height": 8,
+  "front": 37,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
+   "relation/551427"
+  ],
+  "name": "Hôtel de Sauroy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5825
+  },
+  "height": 16.2,
+  "front": 37,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551443"
+  ],
+  "name": "Hôtel de Bragelogne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5857
+  },
+  "height": 18.5,
+  "front": 77,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57390671"
+  ],
+  "name": "Hôtel de Tallard",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6029
+  },
+  "height": 19.9,
+  "front": 127,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
+   "relation/551584"
+  ],
+  "name": "Hôtel de Bérancourt",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6139
+  },
+  "height": 19.1,
+  "front": -53,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/57395486"
   ],
   "name": "ecole 57395486",
@@ -4283,6 +5366,86 @@
   "front": -66,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/550905"
+  ],
+  "name": "Hôtel de Guénégaud",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4781
+  },
+  "height": 16,
+  "front": -141,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551412"
+  ],
+  "name": "Hôtel Gégault de Crisenoy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 5,
+   "seed": 5795
+  },
+  "height": 18.3,
+  "front": 128,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/57401931"
+  ],
+  "name": "Hôtel de Michel Simon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 7316
+  },
+  "height": 4.5,
+  "front": -50,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/57401936"
+  ],
+  "name": "Hôtel Cornuel",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7321
+  },
+  "height": 20.6,
+  "front": 127,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57402635"
+  ],
+  "name": "Hôtel de Brossier",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 8020
+  },
+  "height": 5,
+  "front": 37,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -4319,6 +5482,54 @@
  },
  {
   "osm": [
+   "way/57720415"
+  ],
+  "name": "Hôtel d'Assy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6664
+  },
+  "height": 16.6,
+  "front": -133,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551405"
+  ],
+  "name": "Hôtel de Jaucourt",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5781
+  },
+  "height": 13.8,
+  "front": -131,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57727925"
+  ],
+  "name": "Hôtel Libéral Bruant",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4201
+  },
+  "height": 14.5,
+  "front": 38,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/57744509"
   ],
   "name": "ecole 57744509",
@@ -4336,6 +5547,38 @@
  },
  {
   "osm": [
+   "relation/551495"
+  ],
+  "name": "Hôtel Mégret de Sérilly",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5961
+  },
+  "height": 15,
+  "front": -39,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551479"
+  ],
+  "name": "Hôtel d'Hozier",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5929
+  },
+  "height": 18.2,
+  "front": 52,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/57748688"
   ],
   "name": "Institut Supérieur Européen de Gestion",
@@ -4350,6 +5593,230 @@
   "front": -142,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/551434"
+  ],
+  "name": "Hôtel d'Almeyras",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5839
+  },
+  "height": 16.4,
+  "front": -145,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57778728"
+  ],
+  "name": "Hôtel de Pologne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5139
+  },
+  "height": 9.8,
+  "front": 92,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57778731"
+  ],
+  "name": "Hôtel de Bonneval",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5142
+  },
+  "height": 11.9,
+  "front": 118,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551511"
+  ],
+  "name": "Hôtel de Croisilles",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5993
+  },
+  "height": 13.3,
+  "front": -152,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551549"
+  ],
+  "name": "Hôtel de Camillac",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6069
+  },
+  "height": 23.8,
+  "front": -152,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57778756"
+  ],
+  "name": "Hôtel de Vigny",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5167
+  },
+  "height": 16.7,
+  "front": -64,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551528"
+  ],
+  "name": "Hôtel Duret de Chevry",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6027
+  },
+  "height": 17.5,
+  "front": -151,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57781646"
+  ],
+  "name": "Hôtel de Marle",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8057
+  },
+  "height": 13.2,
+  "front": 116,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551407"
+  ],
+  "name": "Hôtel Donon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5785
+  },
+  "height": 12.8,
+  "front": -51,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/57781662"
+  ],
+  "name": "Hôtel du Lude",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8073
+  },
+  "height": 16.9,
+  "front": -61,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551465"
+  ],
+  "name": "Hôtel Le Peletier de Saint-Fargeau",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5901
+  },
+  "height": 6,
+  "front": 115,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551566"
+  ],
+  "name": "Hôtel d'Ecquevilly",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 6103
+  },
+  "height": 15.8,
+  "front": -179,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/551488"
+  ],
+  "name": "Hôtel de Gourgues",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5947
+  },
+  "height": 18.3,
+  "front": 98,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/551426"
+  ],
+  "name": "Hôtel de Vitry",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 5823
+  },
+  "height": 14,
+  "front": -166,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -4569,23 +6036,6 @@
   "front": 94,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 5."
- },
- {
-  "osm": [
-   "way/60209197"
-  ],
-  "name": "Église Luthérienne Saint-Marcel",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 2196
-  },
-  "height": 11.6,
-  "front": 117,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -4840,6 +6290,38 @@
  },
  {
   "osm": [
+   "relation/967633"
+  ],
+  "name": "Hôtel de Mouy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 505
+  },
+  "height": 18.8,
+  "front": -153,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62235597"
+  ],
+  "name": "Hôtel de Beligny",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4077
+  },
+  "height": 19.8,
+  "front": 140,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/62250835"
   ],
   "name": "Université PSL",
@@ -4870,6 +6352,22 @@
   "front": 1,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/62251554"
+  ],
+  "name": "Hôtel des Comédiens Ordinaires du Roi",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 88
+  },
+  "height": 20.8,
+  "front": 72,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -4920,6 +6418,54 @@
   "front": -74,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62296411"
+  ],
+  "name": "Hôtel de l'Industrie",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 5053
+  },
+  "height": 16.7,
+  "front": -64,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/62297666"
+  ],
+  "name": "Hôtel de Garsaulan",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6308
+  },
+  "height": 19,
+  "front": 13,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62298397"
+  ],
+  "name": "Hôtel de Transylvanie",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7039
+  },
+  "height": 20.7,
+  "front": 110,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -5023,6 +6569,22 @@
  },
  {
   "osm": [
+   "way/62377754"
+  ],
+  "name": "Hôtel Industriel Berlier",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 10,
+   "seed": 6612
+  },
+  "height": 35.6,
+  "front": -141,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 10."
+ },
+ {
+  "osm": [
    "way/62377968"
   ],
   "name": "Bâtiment Buffon",
@@ -5108,6 +6670,70 @@
  },
  {
   "osm": [
+   "way/62468952"
+  ],
+  "name": "Hôtel de Claude-Trutat",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8053
+  },
+  "height": 19.3,
+  "front": 96,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62469182"
+  ],
+  "name": "Hôtel Charles-Testu",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8283
+  },
+  "height": 15.1,
+  "front": 96,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62505864"
+  ],
+  "name": "Hôtel Darlons",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5073
+  },
+  "height": 21.5,
+  "front": 62,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62522557"
+  ],
+  "name": "Hôtel de Montmorency-Fosseux",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1820
+  },
+  "height": 6.9,
+  "front": 87,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/62522564"
   ],
   "name": "equipement 62522564",
@@ -5138,6 +6764,38 @@
   "front": 178,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/62671220"
+  ],
+  "name": "Hôtel de Tessé",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 888
+  },
+  "height": 19.8,
+  "front": 118,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/62693293"
+  ],
+  "name": "Hôtel d'Auterive",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3015
+  },
+  "height": 19,
+  "front": -65,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -5173,6 +6831,22 @@
  },
  {
   "osm": [
+   "way/63022873"
+  ],
+  "name": "Hôtel de Luzy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3486
+  },
+  "height": 18.4,
+  "front": 85,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/63072183"
   ],
   "name": "Maison de l'Évangile",
@@ -5190,20 +6864,19 @@
  },
  {
   "osm": [
-   "way/63149138"
+   "way/63130908"
   ],
-  "name": "Église évangélique baptiste",
+  "name": "Hôtel de Sénecterre",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 102
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1818
   },
-  "height": 17.8,
-  "front": -156,
+  "height": 19.8,
+  "front": 26,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -5238,6 +6911,22 @@
   "front": -140,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: police, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/63195535"
+  ],
+  "name": "Hôtel de Sechtré",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6607
+  },
+  "height": 24.4,
+  "front": 107,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -5864,6 +7553,38 @@
  },
  {
   "osm": [
+   "way/63201652"
+  ],
+  "name": "Hôtel Bertin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 2751
+  },
+  "height": 11.9,
+  "front": -80,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
+   "way/63201742"
+  ],
+  "name": "Hôtel Botterel de Quintin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2841
+  },
+  "height": 13.3,
+  "front": -171,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/63201998"
   ],
   "name": "ecole 63201998",
@@ -5881,6 +7602,22 @@
  },
  {
   "osm": [
+   "relation/983299"
+  ],
+  "name": "Hôtel Titon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1918
+  },
+  "height": 15.8,
+  "front": -83,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/63202104"
   ],
   "name": "Conseil de prud'hommes de Paris",
@@ -5895,6 +7632,38 @@
   "front": 40,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: tribunal, APUR period 10."
+ },
+ {
+  "osm": [
+   "way/63202689"
+  ],
+  "name": "Hôtel de Rosambo",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3788
+  },
+  "height": 22.7,
+  "front": 107,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/63202751"
+  ],
+  "name": "Hôtel Leblanc-Barbedienne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 3850
+  },
+  "height": 20.5,
+  "front": 127,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -6134,6 +7903,22 @@
  },
  {
   "osm": [
+   "relation/983743"
+  ],
+  "name": "Hôtel de Raguse",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 2806
+  },
+  "height": 23.8,
+  "front": 15,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/63203552"
   ],
   "name": "Château d'Eau",
@@ -6199,23 +7984,6 @@
   "front": -139,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/63203792"
-  ],
-  "name": "Temple de la Rencontre",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 6,
-   "word": "temple",
-   "seed": 4891
-  },
-  "height": 6.3,
-  "front": 10,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 6."
  },
  {
   "osm": [
@@ -6300,23 +8068,6 @@
   "front": 29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 10."
- },
- {
-  "osm": [
-   "way/63212274"
-  ],
-  "name": "Synagogue Michkenot Israël",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 10,
-   "word": "synagogue",
-   "seed": 3400
-  },
-  "height": 7.2,
-  "front": 135,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 10."
  },
  {
   "osm": [
@@ -6620,23 +8371,6 @@
   "front": -37,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 5."
- },
- {
-  "osm": [
-   "way/63224657"
-  ],
-  "name": "Église luthérienne Saint-Pierre",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 5810
-  },
-  "height": 9.7,
-  "front": -15,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -7040,22 +8774,6 @@
   "front": -143,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 10."
- },
- {
-  "osm": [
-   "way/63234870"
-  ],
-  "name": "Temple Antoiniste",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 5,
-   "seed": 6050
-  },
-  "height": 8.8,
-  "front": 147,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 5."
  },
  {
   "osm": [
@@ -7700,6 +9418,22 @@
  },
  {
   "osm": [
+   "way/63371121"
+  ],
+  "name": "Hôtel de Cossé-Brissac",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 2679
+  },
+  "height": 17.9,
+  "front": -94,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/63371221"
   ],
   "name": "ecole 63371221",
@@ -7768,6 +9502,70 @@
  },
  {
   "osm": [
+   "relation/1001356"
+  ],
+  "name": "Hôtel de Marsilly",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8113
+  },
+  "height": 6.5,
+  "front": 136,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/1002088"
+  ],
+  "name": "Hôtel de Fleury",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9577
+  },
+  "height": 17.1,
+  "front": -76,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/63536468"
+  ],
+  "name": "Hôtel de Cambacérès",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8458
+  },
+  "height": 18.8,
+  "front": 119,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/63536535"
+  ],
+  "name": "Hôtel de Laigue",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8525
+  },
+  "height": 18.9,
+  "front": 121,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/63536544"
   ],
   "name": "fac 63536544",
@@ -7784,6 +9582,38 @@
  },
  {
   "osm": [
+   "relation/1002122"
+  ],
+  "name": "Hôtel d'Aligre",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9645
+  },
+  "height": 17.1,
+  "front": 30,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/63564021"
+  ],
+  "name": "Hôtel de Laubespin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6092
+  },
+  "height": 16.5,
+  "front": -150,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/63564026"
   ],
   "name": "equipement 63564026",
@@ -7797,6 +9627,22 @@
   "front": 24,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/63564031"
+  ],
+  "name": "Hôtel de Pomereu",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 6102
+  },
+  "height": 17.2,
+  "front": 24,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -7817,18 +9663,17 @@
  },
  {
   "osm": [
-   "way/63564122"
+   "relation/1002198"
   ],
-  "name": "Hôtel de Roquelaure",
+  "name": "Hôtel de Maisons",
   "procedural": "parisCivic",
   "kit": {
    "kind": "hotel",
    "p": 1,
-   "word": "HÔTEL DE ROQUELAURE",
-   "seed": 6193
+   "seed": 9797
   },
-  "height": 7.6,
-  "front": -122,
+  "height": 14,
+  "front": 29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
@@ -7841,13 +9686,28 @@
   "kit": {
    "kind": "hotel",
    "p": 1,
-   "word": "HÔTEL DE BEAUHARNAIS",
    "seed": 6231
   },
   "height": 3.8,
   "front": -156,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/63564188"
+  ],
+  "name": "Hôtel de Seignelay",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6259
+  },
+  "height": 13.8,
+  "front": -156,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -8271,6 +10131,22 @@
   "front": 77,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/63640810"
+  ],
+  "name": "Hôtel de Mortagne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 8,
+   "seed": 3097
+  },
+  "height": 16.2,
+  "front": 71,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 8."
  },
  {
   "osm": [
@@ -8746,20 +10622,19 @@
  },
  {
   "osm": [
-   "way/63648393"
+   "way/63648615"
   ],
-  "name": "Temple protestant du Foyer de l'Âme",
+  "name": "Hôtel industriel Bouvier",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 707
+   "kind": "hotel",
+   "p": 10,
+   "seed": 929
   },
-  "height": 11.9,
-  "front": -131,
+  "height": 19.2,
+  "front": -107,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 10."
  },
  {
   "osm": [
@@ -8961,23 +10836,6 @@
   "front": 156,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 7."
- },
- {
-  "osm": [
-   "way/63681841"
-  ],
-  "name": "Église Réformée du Luxembourg",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 4236
-  },
-  "height": 16.4,
-  "front": 92,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -9851,6 +11709,38 @@
  },
  {
   "osm": [
+   "way/64311943"
+  ],
+  "name": "Hôtel de Beaune",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6039
+  },
+  "height": 9.8,
+  "front": -95,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/64314850"
+  ],
+  "name": "Hôtel de Chambon",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 8946
+  },
+  "height": 11.6,
+  "front": -26,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/64315031"
   ],
   "name": "Centre Quaker International",
@@ -9975,23 +11865,6 @@
    "p": 99,
    "word": "chapelle",
    "seed": 8124
-  },
-  "height": 20,
-  "front": 59,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
- },
- {
-  "osm": [
-   "way/64623212"
-  ],
-  "name": "Église réformée La Petite Étoile",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "temple",
-   "seed": 8145
   },
   "height": 20,
   "front": 59,
@@ -10372,6 +12245,22 @@
  },
  {
   "osm": [
+   "relation/1019245"
+  ],
+  "name": "Hôtel de Vaudreuil",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3999
+  },
+  "height": 18.9,
+  "front": -79,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/64944110"
   ],
   "name": "fac 64944110",
@@ -10385,6 +12274,22 @@
   "front": -121,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
+ },
+ {
+  "osm": [
+   "relation/1019335"
+  ],
+  "name": "Hôtel de Bérulle",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4179
+  },
+  "height": 18.6,
+  "front": 100,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -10402,6 +12307,22 @@
   "front": 153,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 7."
+ },
+ {
+  "osm": [
+   "way/64952151"
+  ],
+  "name": "Hôtel de la Feuillade",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 7975
+  },
+  "height": 22.3,
+  "front": -84,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -10437,18 +12358,17 @@
  },
  {
   "osm": [
-   "way/65090118"
+   "way/65090089"
   ],
-  "name": "Hôtel de Brienne",
+  "name": "Hôtel de Broglie",
   "procedural": "parisCivic",
   "kit": {
    "kind": "hotel",
    "p": 1,
-   "word": "HÔTEL DE BRIENNE",
-   "seed": 6320
+   "seed": 6291
   },
-  "height": 13.7,
-  "front": -151,
+  "height": 15,
+  "front": -79,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
@@ -10461,13 +12381,28 @@
   "kit": {
    "kind": "hotel",
    "p": 3,
-   "word": "HÔTEL DU PETIT MONACO",
    "seed": 6350
   },
   "height": 20.7,
   "front": 0,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/65100124"
+  ],
+  "name": "Hôtel Chanac de Pompadour",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6353
+  },
+  "height": 20.7,
+  "front": -167,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -10484,6 +12419,22 @@
   "front": -86,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ministere, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/65100143"
+  ],
+  "name": "Hôtel de Ravannes",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 8,
+   "seed": 6372
+  },
+  "height": 19.2,
+  "front": 8,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 8."
  },
  {
   "osm": [
@@ -10537,6 +12488,38 @@
  },
  {
   "osm": [
+   "way/65100173"
+  ],
+  "name": "Hôtel de Noirmoutiers",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6402
+  },
+  "height": 12.9,
+  "front": 97,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/1020040"
+  ],
+  "name": "Hôtel Kinski",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 5589
+  },
+  "height": 14.3,
+  "front": 1,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/65100199"
   ],
   "name": "Cour de Justice de la République",
@@ -10587,6 +12570,22 @@
  },
  {
   "osm": [
+   "way/65104229"
+  ],
+  "name": "Hôtel de Parieu",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 485
+  },
+  "height": 15.6,
+  "front": -151,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/65104255"
   ],
   "name": "Chapelle des Catéchismes",
@@ -10611,13 +12610,44 @@
   "kit": {
    "kind": "hotel",
    "p": 99,
-   "word": "HÔTEL DES IMPÔTS DE BOULOGNE NORD",
    "seed": 2731
   },
   "height": 16.5,
   "front": -110,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/65752505"
+  ],
+  "name": "Hôtel de Rochambeau",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 516
+  },
+  "height": 18.4,
+  "front": 137,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/65756922"
+  ],
+  "name": "Hôtel de Choiseul-Praslin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4933
+  },
+  "height": 15.8,
+  "front": 58,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -10635,6 +12665,38 @@
   "front": 26,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/67106925"
+  ],
+  "name": "Hôtel Perrinet de Jars",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8581
+  },
+  "height": 22.4,
+  "front": -62,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67106966"
+  ],
+  "name": "Hôtel de Hirsch",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 8622
+  },
+  "height": 17.3,
+  "front": -63,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -11025,20 +13087,35 @@
  },
  {
   "osm": [
-   "way/67350058"
+   "relation/1066860"
   ],
-  "name": "Église protestante unie du Saint-Esprit",
+  "name": "Hôtel Amelot de Gournay",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
-   "p": 2,
-   "word": "temple",
-   "seed": 2389
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9472
   },
-  "height": 18.7,
-  "front": -8,
+  "height": 15.9,
+  "front": 41,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 2."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67353374"
+  ],
+  "name": "Hôtel de Tavannes",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 5705
+  },
+  "height": 20.6,
+  "front": 41,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -11059,20 +13136,131 @@
  },
  {
   "osm": [
-   "way/67353449"
+   "way/67353468"
   ],
-  "name": "Temple de Pentemont",
+  "name": "Hôtel de Périgord",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
+   "kind": "hotel",
    "p": 1,
-   "word": "temple",
-   "seed": 5780
+   "seed": 5799
   },
-  "height": 18.6,
-  "front": -148,
+  "height": 20.8,
+  "front": 41,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 1."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67356259"
+  ],
+  "name": "Hôtel de Marigny",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 8590
+  },
+  "height": 21.3,
+  "front": -51,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/67356483"
+  ],
+  "name": "Hôtel Talhouët",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 8814
+  },
+  "height": 19.6,
+  "front": 116,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/67356796"
+  ],
+  "name": "Hôtel Gouffier de Thoix",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9127
+  },
+  "height": 13.1,
+  "front": -160,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67356828"
+  ],
+  "name": "Hôtel de Montalivet",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9159
+  },
+  "height": 19.1,
+  "front": -159,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67356860"
+  ],
+  "name": "Hôtel Duprat",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9191
+  },
+  "height": 17.1,
+  "front": -159,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67356863"
+  ],
+  "name": "Hôtel d'Avaray",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9194
+  },
+  "height": 16.5,
+  "front": 25,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/67356892"
+  ],
+  "name": "Hôtel de Beauffremont",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9223
+  },
+  "height": 17.6,
+  "front": 26,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -11109,6 +13297,22 @@
  },
  {
   "osm": [
+   "way/67502955"
+  ],
+  "name": "Hôtel de Marcel Nahmias",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 5691
+  },
+  "height": 28,
+  "front": -158,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
    "way/67502989"
   ],
   "name": "Clinique Montevideo",
@@ -11126,20 +13330,35 @@
  },
  {
   "osm": [
-   "way/67544237"
+   "way/67503057"
   ],
-  "name": "Synagogue de Neuilly",
+  "name": "Hôtel Godfray",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
+   "kind": "hotel",
    "p": 99,
-   "word": "synagogue",
-   "seed": 7081
+   "seed": 5793
   },
-  "height": 16,
-  "front": -169,
+  "height": 13.4,
+  "front": 85,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/67503063"
+  ],
+  "name": "Hôtel du Compte de Lamarre de Monchaux",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 5799
+  },
+  "height": 16.5,
+  "front": -95,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
  },
  {
   "osm": [
@@ -11157,6 +13376,22 @@
   "front": -169,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/67557317"
+  ],
+  "name": "Hôtel Sédille",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 215
+  },
+  "height": 21.5,
+  "front": -168,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -11427,6 +13662,22 @@
  },
  {
   "osm": [
+   "relation/1075803"
+  ],
+  "name": "Hôtel de Camondo",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 7412
+  },
+  "height": 17.6,
+  "front": 144,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/68519389"
   ],
   "name": "ecole 68519389",
@@ -11441,6 +13692,69 @@
   "front": 89,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/68556400"
+  ],
+  "name": "Hôtel de Sommery",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 1998
+  },
+  "height": 17,
+  "front": -77,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ }, {
+  "osm": [
+   "way/68565783"
+  ],
+  "name": "Hôtel de Madame Gabrielle Voisin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 1408
+  },
+  "height": 12,
+  "front": -127,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/68566374"
+  ],
+  "name": "Hôtel du Châtelet",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 1999
+  },
+  "height": 12.8,
+  "front": 13,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/68566404"
+  ],
+  "name": "Hôtel de Praslin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 2029
+  },
+  "height": 15.7,
+  "front": 102,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -11476,6 +13790,22 @@
  },
  {
   "osm": [
+   "way/68568739"
+  ],
+  "name": "Hôtel de Chanaleilles",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4364
+  },
+  "height": 9.9,
+  "front": 100,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/68568751"
   ],
   "name": "Hôtel de Clermont",
@@ -11483,7 +13813,6 @@
   "kit": {
    "kind": "hotel",
    "p": 1,
-   "word": "HÔTEL DE CLERMONT",
    "seed": 4376
   },
   "height": 14.7,
@@ -11510,6 +13839,54 @@
  },
  {
   "osm": [
+   "way/68569640"
+  ],
+  "name": "Hôtel de La Tour du Pin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 5265
+  },
+  "height": 17.4,
+  "front": -80,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/68569653"
+  ],
+  "name": "Hôtel Barbet-de-Jouy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 5278
+  },
+  "height": 16.8,
+  "front": -178,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/68571038"
+  ],
+  "name": "Hôtel Delaforest dit hôtel Lebel",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6663
+  },
+  "height": 16.5,
+  "front": -76,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/68571101"
   ],
   "name": "equipement 68571101",
@@ -11523,6 +13900,22 @@
   "front": -173,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/1076882"
+  ],
+  "name": "Hôtel de Narbonne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 9570
+  },
+  "height": 13.8,
+  "front": 21,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -11558,6 +13951,38 @@
  },
  {
   "osm": [
+   "way/68571250"
+  ],
+  "name": "Hôtel de Boisgelin",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 6875
+  },
+  "height": 16.8,
+  "front": 20,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/68571293"
+  ],
+  "name": "Hôtel de Clermont-Tonnerre",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6918
+  },
+  "height": 18.2,
+  "front": 96,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/68571376"
   ],
   "name": "Hôtel de Cassini",
@@ -11565,7 +13990,6 @@
   "kit": {
    "kind": "hotel",
    "p": 1,
-   "word": "HÔTEL DE CASSINI",
    "seed": 7001
   },
   "height": 15.4,
@@ -11660,23 +14084,6 @@
  },
  {
   "osm": [
-   "way/68723367"
-  ],
-  "name": "Église Réformée de Boulogne",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "temple",
-   "seed": 9397
-  },
-  "height": 7.2,
-  "front": -100,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
- },
- {
-  "osm": [
    "way/68732107"
   ],
   "name": "Église Évangélique Baptiste de Paris-Centre",
@@ -11691,6 +14098,22 @@
   "front": 70,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 2."
+ },
+ {
+  "osm": [
+   "way/68739479"
+  ],
+  "name": "Hôtel de Montesquiou",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 6,
+   "seed": 5563
+  },
+  "height": 19,
+  "front": 79,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 6."
  },
  {
   "osm": [
@@ -11711,6 +14134,22 @@
  },
  {
   "osm": [
+   "relation/1079088"
+  ],
+  "name": "Hôtel de Bourbon-Condé",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4009
+  },
+  "height": 12.8,
+  "front": 79,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/68739546"
   ],
   "name": "ecole 68739546",
@@ -11725,6 +14164,22 @@
   "front": 77,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/68808142"
+  ],
+  "name": "Hôtel de la Princesse Mathillde",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4415
+  },
+  "height": 10.7,
+  "front": -127,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -12195,6 +14650,22 @@
  },
  {
   "osm": [
+   "way/68896833"
+  ],
+  "name": "Hôtel de Richepanse",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3349
+  },
+  "height": 14,
+  "front": -110,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/68896841"
   ],
   "name": "ecole 68896841",
@@ -12209,6 +14680,22 @@
   "front": 44,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/68896932"
+  ],
+  "name": "Hôtel de Masseran",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 5,
+   "seed": 3448
+  },
+  "height": 12.5,
+  "front": -110,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 5."
  },
  {
   "osm": [
@@ -12351,11 +14838,26 @@
   "kit": {
    "kind": "hotel",
    "p": 3,
-   "word": "HÔTEL DE RIGNY",
    "seed": 3070
   },
   "height": 16.1,
   "front": 43,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/68996307"
+  ],
+  "name": "Hôtel Schneider",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 3093
+  },
+  "height": 14.7,
+  "front": 31,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
@@ -12392,23 +14894,6 @@
   "front": -92,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 5."
- },
- {
-  "osm": [
-   "way/69049385"
-  ],
-  "name": "Église Américaine",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 5,
-   "word": "temple",
-   "seed": 6306
-  },
-  "height": 22.2,
-  "front": -2,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 5."
  },
  {
   "osm": [
@@ -12510,22 +14995,6 @@
  },
  {
   "osm": [
-   "way/69073401"
-  ],
-  "name": "Immeuble de la Société théosophique",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "seed": 403
-  },
-  "height": 23.5,
-  "front": -22,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/69073429"
   ],
   "name": "Leonardo da Vinci",
@@ -12559,6 +15028,22 @@
  },
  {
   "osm": [
+   "way/69220705"
+  ],
+  "name": "Hôtel des Maréchaux",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 8085
+  },
+  "height": 21.4,
+  "front": 90,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/69220895"
   ],
   "name": "fac 69220895",
@@ -12572,23 +15057,6 @@
   "front": -84,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 2."
- },
- {
-  "osm": [
-   "way/69220900"
-  ],
-  "name": "Temple de la Rédemption",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 2,
-   "word": "temple",
-   "seed": 8280
-  },
-  "height": 13,
-  "front": 2,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 2."
  },
  {
   "osm": [
@@ -12606,23 +15074,6 @@
   "front": 13,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 7."
- },
- {
-  "osm": [
-   "way/69221039"
-  ],
-  "name": "Synagogue Rashi",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "synagogue",
-   "seed": 8419
-  },
-  "height": 11.5,
-  "front": -83,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -12660,6 +15111,22 @@
  },
  {
   "osm": [
+   "way/69224114"
+  ],
+  "name": "Hôtel d'Aumont",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 1521
+  },
+  "height": 22.9,
+  "front": -86,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
    "way/69226411"
   ],
   "name": "Paris Story",
@@ -12690,6 +15157,22 @@
   "front": 178,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/69226581"
+  ],
+  "name": "Hôtel du Triangle d'Or",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 3988
+  },
+  "height": 22.8,
+  "front": -154,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -12761,23 +15244,6 @@
  },
  {
   "osm": [
-   "way/69257726"
-  ],
-  "name": "Église évangélique allemande de Paris « Christuskirche »",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 5214
-  },
-  "height": 15.6,
-  "front": 90,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/69257833"
   ],
   "name": "ecole 69257833",
@@ -12809,6 +15275,22 @@
   "front": 161,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 7."
+ },
+ {
+  "osm": [
+   "way/69257927"
+  ],
+  "name": "Hôtel de Choudens",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 5415
+  },
+  "height": 19.4,
+  "front": 90,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -12846,6 +15328,38 @@
  },
  {
   "osm": [
+   "way/69325377"
+  ],
+  "name": "Hôtel du comte Walewski",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 3054
+  },
+  "height": 26.5,
+  "front": -136,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/69329899"
+  ],
+  "name": "Hôtel d’Essling",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 7576
+  },
+  "height": 17.5,
+  "front": 158,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/69329965"
   ],
   "name": "Église écossaise de Paris",
@@ -12862,19 +15376,35 @@
  },
  {
   "osm": [
-   "way/69332080"
+   "relation/1086118"
   ],
-  "name": "Cathédrale arménienne Saint-Jean-Baptiste",
+  "name": "Hôtel de la Païva",
   "procedural": "parisCivic",
   "kit": {
-   "kind": "eglise",
+   "kind": "hotel",
    "p": 3,
-   "seed": 9757
+   "seed": 8096
   },
-  "height": 15.1,
-  "front": -22,
+  "height": 19.4,
+  "front": 26,
   "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/1086153"
+  ],
+  "name": "Hôtel Lalique",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 8166
+  },
+  "height": 21.3,
+  "front": 178,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -12892,6 +15422,38 @@
   "front": 89,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/69363814"
+  ],
+  "name": "Hôtel Bélanger",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 1599
+  },
+  "height": 22.8,
+  "front": 89,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/1086476"
+  ],
+  "name": "Hôtel du Cardinal Fesch",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 8812
+  },
+  "height": 19.2,
+  "front": -106,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -12943,23 +15505,6 @@
   "front": 91,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/69417432"
-  ],
-  "name": "Synagogue Buffault",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "synagogue",
-   "seed": 5352
-  },
-  "height": 16.4,
-  "front": -158,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -13064,6 +15609,22 @@
  },
  {
   "osm": [
+   "way/69418312"
+  ],
+  "name": "Hôtel Palm Opera",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 6232
+  },
+  "height": 21.1,
+  "front": -36,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/69485327"
   ],
   "name": "Hôtel de Rouvre",
@@ -13071,13 +15632,44 @@
   "kit": {
    "kind": "hotel",
    "p": 3,
-   "word": "HÔTEL DE ROUVRE",
    "seed": 3436
   },
   "height": 28.6,
   "front": 87,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/69485345"
+  ],
+  "name": "Hôtel Berthier Wagram",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 3454
+  },
+  "height": 18.8,
+  "front": 86,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/69549003"
+  ],
+  "name": "Hôtel Rousseau",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 11,
+   "seed": 7274
+  },
+  "height": 13,
+  "front": -71,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 11."
  },
  {
   "osm": [
@@ -13112,6 +15704,22 @@
   "front": 14,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/1099685"
+  ],
+  "name": "Hôtel de la Païva",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 5311
+  },
+  "height": 20.5,
+  "front": 159,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -13163,6 +15771,70 @@
   "front": 100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/69562776"
+  ],
+  "name": "Hôtel Talma",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 1101
+  },
+  "height": 13.7,
+  "front": 2,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
+   "way/69562855"
+  ],
+  "name": "Hôtel Thiers",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 1180
+  },
+  "height": 16.4,
+  "front": 99,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/69562895"
+  ],
+  "name": "Hôtel de Mademoiselle Duchesnois",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 1220
+  },
+  "height": 14.1,
+  "front": 89,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
+ },
+ {
+  "osm": [
+   "way/69562980"
+  ],
+  "name": "Hôtel de Mademoiselle Mars",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 1305
+  },
+  "height": 11.3,
+  "front": 94,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -13535,23 +16207,6 @@
   "front": 72,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: salle, APUR period 9."
- },
- {
-  "osm": [
-   "way/69999948"
-  ],
-  "name": "Église protestante unie de Paris-Belleville",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 9434
-  },
-  "height": 16.2,
-  "front": 69,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -14226,23 +16881,6 @@
   "front": -115,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/70003350"
-  ],
-  "name": "Synagogue de Belleville",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 6,
-   "word": "synagogue",
-   "seed": 2863
-  },
-  "height": 11.3,
-  "front": -39,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 6."
  },
  {
   "osm": [
@@ -15036,6 +17674,22 @@
  },
  {
   "osm": [
+   "way/70151040"
+  ],
+  "name": "Hôtel d'entreprises",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 10,
+   "seed": 958
+  },
+  "height": 8.8,
+  "front": -155,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 10."
+ },
+ {
+  "osm": [
    "way/70151082"
   ],
   "name": "Théâtre de la Colline",
@@ -15100,23 +17754,6 @@
   "front": -108,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 5."
- },
- {
-  "osm": [
-   "way/70151576"
-  ],
-  "name": "Temple de Béthanie",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 1494
-  },
-  "height": 9.9,
-  "front": 63,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -15267,23 +17904,6 @@
   "front": -10,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
-   "way/70187665"
-  ],
-  "name": "Église Protestante Danoise",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 5,
-   "word": "temple",
-   "seed": 7664
-  },
-  "height": 11.7,
-  "front": 27,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 5."
  },
  {
   "osm": [
@@ -15958,6 +18578,38 @@
  },
  {
   "osm": [
+   "way/71894104"
+  ],
+  "name": "Hôtel Jean Niermans",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 8720
+  },
+  "height": 12,
+  "front": 53,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/71894148"
+  ],
+  "name": "Hôtel Gilbert des Crances",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 8764
+  },
+  "height": 13.4,
+  "front": -88,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
    "way/72055687"
   ],
   "name": "Conseil de Prud'hommes de Boulogne-Billancourt",
@@ -15989,23 +18641,6 @@
   "front": 100,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
- },
- {
-  "osm": [
-   "way/72055705"
-  ],
-  "name": "Synagogue de Boulogne",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "synagogue",
-   "seed": 780
-  },
-  "height": 13.4,
-  "front": 6,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
  },
  {
   "osm": [
@@ -16108,6 +18743,22 @@
   "front": 107,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/72231917"
+  ],
+  "name": "Hôtel Walewska",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 7451
+  },
+  "height": 13.4,
+  "front": -179,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
  },
  {
   "osm": [
@@ -17056,22 +19707,6 @@
  },
  {
   "osm": [
-   "way/74333366"
-  ],
-  "name": "Église Orthodoxe Russe Saint-Nicolas",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "seed": 4597
-  },
-  "height": 12,
-  "front": 149,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
- },
- {
-  "osm": [
    "way/74493486"
   ],
   "name": "ecole 74493486",
@@ -17490,23 +20125,6 @@
  },
  {
   "osm": [
-   "way/75748174"
-  ],
-  "name": "Temple des Batignolles",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 3239
-  },
-  "height": 12.9,
-  "front": 163,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/75748247"
   ],
   "name": "ecole 75748247",
@@ -17688,6 +20306,22 @@
   "front": 58,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: caserne, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/75749870"
+  ],
+  "name": "Hôtel de la Grande Loge de France",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 4935
+  },
+  "height": 16.7,
+  "front": -107,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -18281,23 +20915,6 @@
  },
  {
   "osm": [
-   "way/77739478"
-  ],
-  "name": "Chapelle Orthodoxe",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "chapelle",
-   "seed": 9916
-  },
-  "height": 17.2,
-  "front": -27,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/77743146"
   ],
   "name": "Église Sainte-Rita",
@@ -18377,6 +20994,22 @@
   "front": 67,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/77780672"
+  ],
+  "name": "Hôtel Lejeune",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 5,
+   "seed": 1245
+  },
+  "height": 9.9,
+  "front": -171,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 5."
  },
  {
   "osm": [
@@ -19198,22 +21831,6 @@
   "front": 13,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/78020644"
-  ],
-  "name": "Église Saint-Sava",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "seed": 1865
-  },
-  "height": 6.3,
-  "front": 22,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -20390,23 +23007,6 @@
  },
  {
   "osm": [
-   "way/78470555"
-  ],
-  "name": "Temple Antoiniste",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 2991
-  },
-  "height": 4.3,
-  "front": -61,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/78470558"
   ],
   "name": "Théâtre 13",
@@ -20761,23 +23361,6 @@
   "front": 64,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 7."
- },
- {
-  "osm": [
-   "way/78534147"
-  ],
-  "name": "Église Luthérienne de la Trinité",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 6745
-  },
-  "height": 7.3,
-  "front": -16,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -21487,6 +24070,22 @@
  },
  {
   "osm": [
+   "way/79083240"
+  ],
+  "name": "Hôtel industriel Le Chevaleret",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 10,
+   "seed": 7323
+  },
+  "height": 26.5,
+  "front": 59,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 10."
+ },
+ {
+  "osm": [
    "way/79083253"
   ],
   "name": "caserne 79083253",
@@ -22110,6 +24709,22 @@
   "front": -71,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
+ },
+ {
+  "osm": [
+   "relation/1528869"
+  ],
+  "name": "Hôtel Halévy",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6001
+  },
+  "height": 19.6,
+  "front": 108,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -22787,22 +25402,6 @@
  },
  {
   "osm": [
-   "way/79232285"
-  ],
-  "name": "Cathédrale Saint-Étienne",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "seed": 6773
-  },
-  "height": 18.3,
-  "front": 46,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/79276832"
   ],
   "name": "Église Saint-Pierre de Chaillot",
@@ -22816,6 +25415,22 @@
   "front": 79,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: eglise, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/79611188"
+  ],
+  "name": "Hôtel de Massa",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6702
+  },
+  "height": 13.2,
+  "front": 113,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -24063,23 +26678,6 @@
  },
  {
   "osm": [
-   "way/79688125"
-  ],
-  "name": "Paroisse de Plaisance",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 3855
-  },
-  "height": 16.8,
-  "front": -40,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/79688665"
   ],
   "name": "equipement 79688665",
@@ -25287,6 +27885,54 @@
  },
  {
   "osm": [
+   "relation/1206082"
+  ],
+  "name": "Hôtel Pauilhac",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 8672
+  },
+  "height": 18.1,
+  "front": 80,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/80303935"
+  ],
+  "name": "Hôtel de Monpelas",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 1339
+  },
+  "height": 18.1,
+  "front": -9,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
+   "way/80368633"
+  ],
+  "name": "Hôtel de Breteuil",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 6199
+  },
+  "height": 23.9,
+  "front": -67,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/80848721"
   ],
   "name": "ecole 80848721",
@@ -25807,6 +28453,22 @@
  },
  {
   "osm": [
+   "way/81152994"
+  ],
+  "name": "Hôtel Thouret",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 2693
+  },
+  "height": 28,
+  "front": -35,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
    "way/81156785"
   ],
   "name": "Bâtiment Sainte-Foy",
@@ -25855,22 +28517,6 @@
   "front": 158,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
- },
- {
-  "osm": [
-   "way/81203918"
-  ],
-  "name": "Église Adventiste du Septième Jour",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "seed": 3752
-  },
-  "height": 20,
-  "front": -118,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
  },
  {
   "osm": [
@@ -25971,23 +28617,6 @@
   "front": -29,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: lycee, APUR period 99."
- },
- {
-  "osm": [
-   "way/81248340"
-  ],
-  "name": "Temple",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "temple",
-   "seed": 8282
-  },
-  "height": 20,
-  "front": -165,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
  },
  {
   "osm": [
@@ -26143,23 +28772,6 @@
  },
  {
   "osm": [
-   "way/81792421"
-  ],
-  "name": "Église protestante unie de l'Annonciation",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 3848
-  },
-  "height": 7.7,
-  "front": -57,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/81792518"
   ],
   "name": "ecole 81792518",
@@ -26225,6 +28837,22 @@
   "front": 147,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/82322677"
+  ],
+  "name": "Hôtel de Guines",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 5535
+  },
+  "height": 8,
+  "front": 41,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
  },
  {
   "osm": [
@@ -26795,6 +29423,22 @@
   "front": -76,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/83233820"
+  ],
+  "name": "Hôtel Victor Hugo",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 9135
+  },
+  "height": 10.3,
+  "front": -164,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
  },
  {
   "osm": [
@@ -28076,6 +30720,22 @@
  },
  {
   "osm": [
+   "way/83863746"
+  ],
+  "name": "Hôtel de Lamballe",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 789
+  },
+  "height": 11.3,
+  "front": -37,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/83865005"
   ],
   "name": "Lycée Saint Jean de Passy",
@@ -28498,6 +31158,22 @@
  },
  {
   "osm": [
+   "way/84316260"
+  ],
+  "name": "Hôtel Gourron",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 4518
+  },
+  "height": 18.2,
+  "front": -36,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/84316399"
   ],
   "name": "ecole 84316399",
@@ -28548,39 +31224,6 @@
  },
  {
   "osm": [
-   "way/84317601"
-  ],
-  "name": "Temple Antoiniste",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 6,
-   "seed": 5859
-  },
-  "height": 8.5,
-  "front": 147,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 6."
- },
- {
-  "osm": [
-   "way/84320043"
-  ],
-  "name": "Église Luthérienne de l'Ascension",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 8301
-  },
-  "height": 4.1,
-  "front": 51,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/84320128"
   ],
   "name": "Collège André Malraux",
@@ -28612,23 +31255,6 @@
   "front": 51,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/84322974"
-  ],
-  "name": "Temple Réformé de l'Etoile",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 1259
-  },
-  "height": 15.2,
-  "front": 108,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -29098,6 +31724,38 @@
  },
  {
   "osm": [
+   "way/85323927"
+  ],
+  "name": "Hôtel de Noailles",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 5,
+   "seed": 4912
+  },
+  "height": 16.2,
+  "front": -175,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/85334505"
+  ],
+  "name": "Hôtel Guimard",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 5517
+  },
+  "height": 21.8,
+  "front": 110,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/85449626"
   ],
   "name": "ecole 85449626",
@@ -29232,6 +31890,22 @@
  },
  {
   "osm": [
+   "way/86350629"
+  ],
+  "name": "Hôtel de Verrières",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 4395
+  },
+  "height": 15.4,
+  "front": 25,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/86350635"
   ],
   "name": "hopital 86350635",
@@ -29330,6 +32004,22 @@
   "front": -148,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 8."
+ },
+ {
+  "osm": [
+   "way/87096208"
+  ],
+  "name": "Hôtel Jassédé",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 6,
+   "seed": 1999
+  },
+  "height": 11,
+  "front": 123,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 6."
  },
  {
   "osm": [
@@ -29434,6 +32124,22 @@
  },
  {
   "osm": [
+   "way/87420164"
+  ],
+  "name": "Hôtel Roszé",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 6819
+  },
+  "height": 9.7,
+  "front": -152,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/87555231"
   ],
   "name": "École maternelle publique Le Parc",
@@ -29499,6 +32205,22 @@
   "front": 69,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 5."
+ },
+ {
+  "osm": [
+   "way/87954440"
+  ],
+  "name": "Hôtel Guadet",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 2553
+  },
+  "height": 13.4,
+  "front": 117,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -29853,23 +32575,6 @@
   "front": -41,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
- },
- {
-  "osm": [
-   "way/94743989"
-  ],
-  "name": "Les portes de la paix",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "synagogue",
-   "seed": 489
-  },
-  "height": 28,
-  "front": 86,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
  },
  {
   "osm": [
@@ -30374,56 +33079,6 @@
   "front": 161,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 3."
- },
- {
-  "osm": [
-   "way/107530891"
-  ],
-  "name": "Église apostolique arménienne Sainte-Marie-Mère-de-Dieu",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "temple",
-   "seed": 2005
-  },
-  "height": 20,
-  "front": -18,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
- },
- {
-  "osm": [
-   "way/107530896"
-  ],
-  "name": "Église Apostolique Arménienne",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "seed": 2010
-  },
-  "height": 28,
-  "front": 133,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
- },
- {
-  "osm": [
-   "way/107997690"
-  ],
-  "name": "Centre Culturel et Cultuel Musulman",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "mosque",
-   "seed": 73
-  },
-  "height": 13.4,
-  "front": -29,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
  },
  {
   "osm": [
@@ -31000,23 +33655,6 @@
  },
  {
   "osm": [
-   "way/115878693"
-  ],
-  "name": "MJLF",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 8,
-   "word": "synagogue",
-   "seed": 2406
-  },
-  "height": 16.8,
-  "front": -51,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 8."
- },
- {
-  "osm": [
    "way/115878697"
   ],
   "name": "École supérieure des professions immobilières",
@@ -31080,23 +33718,6 @@
   "front": 157,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: poste, APUR period 99."
- },
- {
-  "osm": [
-   "way/118650031"
-  ],
-  "name": "Église du Bon Secours",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 1250
-  },
-  "height": 13.5,
-  "front": 73,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -32055,23 +34676,6 @@
  },
  {
   "osm": [
-   "way/137884622"
-  ],
-  "name": "Église Protestante Suédoise",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 7897
-  },
-  "height": 16,
-  "front": 52,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/137884646"
   ],
   "name": "Chapelle de la clinique Blomet",
@@ -32204,23 +34808,6 @@
   "front": 25,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
- },
- {
-  "osm": [
-   "way/146283515"
-  ],
-  "name": "Hôtel de Ville",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "mairie",
-   "p": 99,
-   "word": "HÔTEL DE VILLE",
-   "seed": 9524
-  },
-  "height": 3.5,
-  "front": 156,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: mairie, APUR period 99."
  },
  {
   "osm": [
@@ -32375,6 +34962,38 @@
  },
  {
   "osm": [
+   "relation/570449"
+  ],
+  "name": "Hôtel d’Albret",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 3977
+  },
+  "height": 16,
+  "front": 33,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/148340069"
+  ],
+  "name": "Hôtel Julienne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 1667
+  },
+  "height": 6.4,
+  "front": 62,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/148482718"
   ],
   "name": "Hôtel de la Questure",
@@ -32382,30 +35001,12 @@
   "kit": {
    "kind": "hotel",
    "p": 99,
-   "word": "HÔTEL DE LA QUESTURE",
    "seed": 4694
   },
   "height": 13.4,
   "front": -174,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
- },
- {
-  "osm": [
-   "way/148524233"
-  ],
-  "name": "Église luthérienne Saint-Paul",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "temple",
-   "seed": 6317
-  },
-  "height": 9.8,
-  "front": -180,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
  },
  {
   "osm": [
@@ -32814,6 +35415,22 @@
  },
  {
   "osm": [
+   "relation/538026"
+  ],
+  "name": "Hôtel de la Motte Montgoubert",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 8942
+  },
+  "height": 20.3,
+  "front": 141,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/155071057"
   ],
   "name": "Chapelle Saint-Yves",
@@ -32879,6 +35496,22 @@
   "front": 15,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: ecole, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/157706429"
+  ],
+  "name": "Hôtel Bourrienne",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 3380
+  },
+  "height": 13.3,
+  "front": -80,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
  },
  {
   "osm": [
@@ -33772,6 +36405,22 @@
  },
  {
   "osm": [
+   "way/236081724"
+  ],
+  "name": "Hôtel Machelet de Velye",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 868
+  },
+  "height": 17.5,
+  "front": 104,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/236137679"
   ],
   "name": "ecole 236137679",
@@ -33888,6 +36537,22 @@
   "front": -51,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 99."
+ },
+ {
+  "osm": [
+   "relation/1085186"
+  ],
+  "name": "Hôtel de Mercy-Argenteau",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 6232
+  },
+  "height": 25.8,
+  "front": -166,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [
@@ -34278,6 +36943,22 @@
  },
  {
   "osm": [
+   "relation/1100897"
+  ],
+  "name": "Hôtel Élysée Palace",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 7735
+  },
+  "height": 29.1,
+  "front": -154,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/263069797"
   ],
   "name": "Mairie d'Ivry-sur-Seine",
@@ -34360,6 +37041,22 @@
   "front": -43,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
+ },
+ {
+  "osm": [
+   "way/280004603"
+  ],
+  "name": "Hôtel des Parlementaires de la Fronde",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 2655
+  },
+  "height": 19.5,
+  "front": 41,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
  },
  {
   "osm": [
@@ -35039,23 +37736,6 @@
  },
  {
   "osm": [
-   "way/329195478"
-  ],
-  "name": "Michkenot Yaacov",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 3,
-   "word": "synagogue",
-   "seed": 6694
-  },
-  "height": 10.7,
-  "front": -127,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 3."
- },
- {
-  "osm": [
    "way/329272852"
   ],
   "name": "ecole 329272852",
@@ -35390,23 +38070,6 @@
   "front": 140,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: fac, APUR period 10."
- },
- {
-  "osm": [
-   "way/356914669"
-  ],
-  "name": "Centre européen du judaïsme",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 12,
-   "word": "synagogue",
-   "seed": 945
-  },
-  "height": 9.7,
-  "front": 137,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 12."
  },
  {
   "osm": [
@@ -36302,6 +38965,22 @@
  },
  {
   "osm": [
+   "way/490470224"
+  ],
+  "name": "Hôtel Logistique Sogaris",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 99,
+   "seed": 8057
+  },
+  "height": 9.9,
+  "front": -105,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 99."
+ },
+ {
+  "osm": [
    "way/490476871"
   ],
   "name": "ecole 490476871",
@@ -37140,23 +39819,6 @@
   "front": -178,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 7."
- },
- {
-  "osm": [
-   "way/677002800"
-  ],
-  "name": "Grande Synagogue de Levallois (ACCIL & CCL)",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 99,
-   "word": "synagogue",
-   "seed": 5641
-  },
-  "height": 28,
-  "front": -117,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 99."
  },
  {
   "osm": [
@@ -38289,6 +40951,22 @@
  },
  {
   "osm": [
+   "way/854344057"
+  ],
+  "name": "Hôtel industriel Victor Segalen",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 9,
+   "seed": 7012
+  },
+  "height": 5.1,
+  "front": 166,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 9."
+ },
+ {
+  "osm": [
    "way/861356663"
   ],
   "name": "ISEP",
@@ -39042,6 +41720,22 @@
  },
  {
   "osm": [
+   "relation/1108009"
+  ],
+  "name": "Hôtel de Beauharnais",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 3,
+   "seed": 2013
+  },
+  "height": 19.2,
+  "front": -174,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 3."
+ },
+ {
+  "osm": [
    "way/1081625240"
   ],
   "name": "ecole 1081625240",
@@ -39735,6 +42429,22 @@
  },
  {
   "osm": [
+   "relation/18812504"
+  ],
+  "name": "Hôtel du Cardinal de Richelieu",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 6853
+  },
+  "height": 13.9,
+  "front": -166,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
    "way/1375830174"
   ],
   "name": "Centre Technique Municipal",
@@ -39867,6 +42577,54 @@
   "front": 34,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
+ },
+ {
+  "osm": [
+   "relation/3370912"
+  ],
+  "name": "Hôtel de Breteuil",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 77
+  },
+  "height": 16.6,
+  "front": -133,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "relation/19919581"
+  ],
+  "name": "Hôtel de Fontenay",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 1,
+   "seed": 7001
+  },
+  "height": 16.6,
+  "front": -132,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 1."
+ },
+ {
+  "osm": [
+   "way/1459909250"
+  ],
+  "name": "Hôtel de Retz",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "hotel",
+   "p": 2,
+   "seed": 1672
+  },
+  "height": 23,
+  "front": 128,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
  },
  {
   "osm": [

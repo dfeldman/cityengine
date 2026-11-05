@@ -81,7 +81,8 @@ import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
 import { BakedCrowd, cityClothes, peopleLights, wardrobeFor } from './render/crowd-baked.ts'
 import { CableRiders } from './render/cable-riders.ts'
-import { FerrisWheel, SKYSTAR } from './render/sf/ferris.ts'
+import { FerrisWheel, ROUE_DE_PARIS, SKYSTAR } from './render/sf/ferris.ts'
+import { Balloon, BALLON_DE_PARIS, Rides, VASQUE, type Ride as BoardRide } from './render/paris/balloons.ts'
 import { PLAYER_SPOT } from './render/sf/trains.ts'
 import { normalizeSpec, randomSpec } from 'avatarkit'
 import { Rider } from './render/rider.ts'
@@ -1280,6 +1281,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   /** the parked cars now standing (the car parks' and the kerb bays'): solid, as the standing traffic is */
   let parkedSolid: { x: number; z: number; heading: number }[] = []
   /*
+   * …and the parked cars the stall valve has let the rider through (owner, 2026-11-04: "if a parked car blocks your
+   * route you are stuck forever"): keyed by position, as the list is rebuilt each refresh. A car is solid again once
+   * the rider is PARKED_FORGET metres clear of it.
+   */
+  const parkedPassed = new Map<string, { x: number; z: number }>()
+  const PARKED_PASS_R = 10
+  const PARKED_FORGET = 25
+  const parkedKey = (s: { x: number; z: number }): string => `${s.x.toFixed(1)},${s.z.toFixed(1)}`
+  const parkedInside = (b: ReturnType<typeof boxOf>): boolean => parkedSolid.some((s) =>
+    parkedPassed.has(parkedKey(s)) && Math.hypot(s.x - b.x, s.z - b.z) < 4 && overlap(b, boxOf(s.x, s.z, s.heading, SIZE.car)))
+  /*
    * SALESFORCE PARK'S GONDOLA (docs/SALESFORCE-PARK.md; the owner, 2026-10-02: "the gondola should be like a cable car
    * or streetcar"): a transit line of one cabin, shuttling between Salesforce Plaza and the park, boarded like the
    * cable cars. Not in OSM's railways, so its track is laid here, where the Transit Center model is placed.
@@ -1397,9 +1409,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let strangers: BakedCrowd | null = null
   let cableRiders: CableRiders | null = null
   /** the SkyStar wheel at Fisherman's Wharf (render/sf/ferris.ts): turning, and boarded with B */
-  const skystar = pkg.region === 'san-francisco' && !off.has('life') ? (() => {
-    const p = new Projection(pkg.origin).toLocal({ lat: SKYSTAR.lat, lon: SKYSTAR.lon })
-    return new FerrisWheel(scene, p.x, p.z, city.terrain.heightAt(p.x, p.z))
+  // and La Grande Roue de Paris at the Concorde, the same ride with its own legs
+  const wheelSpec = pkg.region === 'san-francisco' ? SKYSTAR : pkg.region === 'paris' ? ROUE_DE_PARIS : null
+  // (and in Paris the two tethered balloons, up and down every few minutes: render/paris/balloons.ts)
+  const skystar = wheelSpec && !off.has('life') ? (() => {
+    const proj = new Projection(pkg.origin)
+    const p = proj.toLocal({ lat: wheelSpec.lat, lon: wheelSpec.lon })
+    const all: BoardRide[] = [new FerrisWheel(scene, p.x, p.z, city.terrain.heightAt(p.x, p.z), wheelSpec)]
+    if (pkg.region === 'paris') for (const b of [BALLON_DE_PARIS, VASQUE]) {
+      const q = proj.toLocal({ lat: b.lat, lon: b.lon })
+      all.push(new Balloon(scene, q.x, q.z, city.terrain.heightAt(q.x, q.z), b))
+    }
+    return new Rides(all)
   })() : null
   void (rider?.ready ?? Promise.resolve()).then(() => {
     ;(window as unknown as { riderReady?: boolean }).riderReady = true
@@ -2238,7 +2259,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   function transitAction(): void {
     if (transit.aboard) {
       // (the wheel lets you off at the bottom, which is the only place there is to get off)
-      if (transit.aboard.kind === 'wheel' && skystar && !skystar.askOff()) { hud.note('off at the bottom, when the gondola comes round'); return }
+      if (transit.aboard.kind === 'wheel' && skystar && !skystar.askOff()) { hud.note(skystar.words?.wait ?? 'off at the bottom, when the gondola comes round'); return }
       const wasWheel = transit.aboard.kind === 'wheel'
       const r = transit.alight(placeOnGraph)
       if (r.status === 'ok' && wasWheel) skystar?.alighted()
@@ -2259,7 +2280,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       clearRoute()
       if (v.kind === 'wheel') {
         skystar?.boarded(v.id)
-        hud.banner('Aboard the SkyStar wheel', `once round, over the Wharf · ${keyed('B', 'get off at the bottom')}`)
+        const w = skystar?.words
+        hud.banner(`Aboard the ${skystar?.spec.name ?? 'wheel'}`, w ? `${w.sub} · ${w.wait}` : `once round, over the city · ${keyed('B', 'get off at the bottom')}`)
       } else if (v.kind === 'gondola') {
         // boarded with B rather than by waiting at the station: it still puts the rider off at the other end
         const a = transit.aboard!
@@ -3020,7 +3042,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       skystar?.update(dt)
       if (skystar?.dueOff() && transit.aboard?.kind === 'wheel') {
         const r = transit.alight(placeOnGraph)
-        if (r.status === 'ok') { skystar.alighted(); backOnStreet(r.pos); hud.banner('Back on the Wharf', placeName(nav.at())) }
+        if (r.status === 'ok') { skystar.alighted(); backOnStreet(r.pos); hud.banner(skystar.spec.offBanner ?? 'Back on the ground', placeName(nav.at())) }
       }
       const prompt = transit.prompt()
       // (on a touch screen the line is the button: it says so instead of naming a key)
@@ -3222,7 +3244,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         stallFrom = lastRider ? { ...lastRider.at } : null
       } else stalled += dt
       if (stalled > STALL_LIMIT && lastRider) {
-        if (traffic.squeezeAround(lastRider) > 0) hud.note('squeezing through…')
+        let n = traffic.squeezeAround(lastRider)
+        for (const p of parkedSolid) {
+          const k = parkedKey(p)
+          if (parkedPassed.has(k) || Math.hypot(p.x - lastRider.at.x, p.z - lastRider.at.z) > PARKED_PASS_R) continue
+          parkedPassed.set(k, { x: p.x, z: p.z })
+          n++
+        }
+        if (n > 0) hud.note('squeezing through…')
         stalled = 0
       }
       heldStill = !hold && state.speed < 0.3 && (controls.measured().power ?? 0) > 10 && lastRider && (againstCar || traffic.leaderFor(lastRider, weaveShift ?? 0, true)) ? heldStill + dt : 0
@@ -3242,7 +3271,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // stopped (held behind a car, or against one): edge sideways round it, slowly (Navigator.sidestep)
       if (!opts.freeze && !hold && lastRider && state.speed < 0.3) nav.sidestep(dt)
       // inside a vehicle the rider was let through: very slowly (the last resort above)
-      if (lastRider && traffic.creeping(lastRider.box)) ride.cap(1.5)
+      if (lastRider && (traffic.creeping(lastRider.box) || parkedInside(lastRider.box))) ride.cap(1.5)
       if (before && lastRider && crossed.length === 0) {
         const riderBox = (): ReturnType<typeof boxOf> => {
           const p = nav.smoothed()
@@ -3254,7 +3283,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
            * …and the PARKED cars (owner, 2026-10-30: "being able to go through parked cars, but not moving cars, is very odd
            * since it is not usually obvious which is which"): the kerb bays' and the car parks' cars are solid too.
            */
-          const parked = parkedSolid.find((s) => Math.hypot(s.x - b.x, s.z - b.z) < 4 && overlap(b, boxOf(s.x, s.z, s.heading, SIZE.car)))
+          const parked = parkedSolid.find((s) => !parkedPassed.has(parkedKey(s)) && Math.hypot(s.x - b.x, s.z - b.z) < 4 && overlap(b, boxOf(s.x, s.z, s.heading, SIZE.car)))
           if (parked) return { kind: 'car', speed: 0, heading: parked.heading, why: 'parked', inBox: false } as unknown as ReturnType<typeof traffic.solidAt>
           return traffic.solidAt(lastRider!, b) ?? (cyclistInside(b, lastRider!.box) ? 'cyclist' : null)
         }
@@ -3539,7 +3568,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const focus = frozen ? (held ? held.to : orbit.look) : at
         // the car parks' parked cars, refreshed once a second round the rider (city/parking.ts)
         parkClock -= dt
-        if (parkClock <= 0) { parkClock = 1; const st = city.parkedNear(focus.x, focus.z, 260); life.park(st, city.terrain); parkedSolid = st }
+        if (parkClock <= 0) { parkClock = 1; const st = city.parkedNear(focus.x, focus.z, 260); life.park(st, city.terrain); parkedSolid = st
+          for (const [k, p] of parkedPassed) if (Math.hypot(p.x - focus.x, p.z - focus.z) > PARKED_FORGET) parkedPassed.delete(k) }
         life.balls = courtPlayers.balls
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
         cableRiders?.update(dt, life.transitBodies, focus)
@@ -3951,7 +3981,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const out: { id: string; label: string }[] = []
         const v = transit.boardable
         if (transit.aboard) out.push({ id: 'transit', label: transit.aboard.kind === 'wheel' ? '🎡 Get off at the bottom' : '🚋 Get off' })
-        else if (v) out.push({ id: 'transit', label: v.kind === 'wheel' ? '🎡 Ride the SkyStar wheel' : v.kind === 'gondola' ? (pkg.region === 'paris' ? '🚡 Take the funicular' : '🚡 Take the gondola')
+        else if (v) out.push({ id: 'transit', label: v.kind === 'wheel' ? (() => { const r = skystar?.of(v.id); return `${r?.words?.menu ?? '🎡 Ride the'} ${r?.spec.name ?? 'wheel'}` })() : v.kind === 'gondola' ? (pkg.region === 'paris' ? '🚡 Take the funicular' : '🚡 Take the gondola')
           : `🚋 Board the ${v.name ?? (v.kind === 'cable' ? 'cable car' : pkg.region === 'paris' ? 'tram' : 'streetcar')}` })
         const top = !frozen && !transit.aboard ? nearTop(lastAt) : null
         if (observing && frozen) out.push({ id: 'observe', label: '🔭 Come down' })

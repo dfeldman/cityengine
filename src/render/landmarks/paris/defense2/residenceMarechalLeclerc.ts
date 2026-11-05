@@ -1,0 +1,21 @@
+/**
+ * Résidence Maréchal Leclerc (Courbevoie, ref CH1, 18 levels, 55 m; OSM way/82486286, no parts, cadastre outline): a flat-roofed
+ * 1970s flats block on OSM's ring. Pale concrete with continuous balcony bands and dark window strips, a dark recessed
+ * ground floor and a low parapet. From tags and footprint; the tone is the thing to check against a street view.
+ */
+import type { MeshBuilder } from '../../../buildings.ts'
+import type { Fit } from '../../fit.ts'
+import { hex } from '../../kit.ts'
+import { tower } from '../../tower.ts'
+
+const HEIGHT = 55
+const LOBBY_H = 4.5
+const WALL = '#d6d0c4', GLASS = '#4f5963', ROOF = '#85827d', LOBBY = '#3a3f44', PARAPET = '#bdb7ab'
+const FLOOR = 2.95, SOLID = 0.55, PARAPET_H = 1.1
+
+export const residenceMarechalLeclerc = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
+  height: HEIGHT, roof: hex(ROOF),
+  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, solid: SOLID, depth: 0.5, material: 'concrete' } }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+})

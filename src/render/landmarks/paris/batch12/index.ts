@@ -3,6 +3,10 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { perretFranklin, maisonCambodge, palatino, malakoffSlab } from './buildings.ts'
+import { perretFranklin, palatino, malakoffSlab } from './buildings.ts'
+import { castelBeranger, hotelMezzara } from './guimard.ts'
+import { villaAllatini, villaDreyfus, hotelMartel, villaReifenberg, hotelMalletStevens } from './malletstevens.ts'
+import { immeubleLavirotte, ceramicHotel } from './lavirotte.ts'
+import { eauxMinerales, sgraffiti } from './decorated.ts'
 
-export const PARIS_BATCH12: Record<string, (out: MeshBuilder, fit: Fit) => void> = { perretFranklin, maisonCambodge, palatino, malakoffSlab }
+export const PARIS_BATCH12: Record<string, (out: MeshBuilder, fit: Fit) => void> = { perretFranklin, palatino, malakoffSlab, castelBeranger, hotelMezzara, immeubleLavirotte, ceramicHotel, eauxMinerales, sgraffiti, villaAllatini, villaDreyfus, hotelMartel, villaReifenberg, hotelMalletStevens }

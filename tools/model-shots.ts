@@ -36,6 +36,8 @@ const SETS: Record<string, V[]> = {
     ['deck-near-tower', -0.4, 1.52, 40, 0, 74, -383],
   ],
   tall: [['front', -1.57, 1.35, 520, 0, 160, 0], ['street', -1.2, 1.75, 180, 0, 160, 0]],
+  // flat work on the ground, a few metres up: an allée, a round, a gate (the auto views frame its box from too far)
+  ground: [['low', -1.1, 1.3, 40, 0, 1.5, 0], ['along', 0.15, 1.38, 55, 0, 1.5, 0], ['above', -1.3, 0.7, 70, 0, 0, 0]],
   small: [['front', -1.57, 1.45, 120, 0, 32, 0], ['three-quarter', -0.9, 1.35, 110, 0, 32, 0], ['top', -1.3, 1.25, 40, 0, 56, 0]],
   long: [['city-front', -1.57, 1.45, 260, 0, 25, 0], ['back', 1.57, 1.45, 260, 0, 25, 0], ['three-quarter', -0.9, 1.35, 240, 0, 25, 0], ['tower', -1.4, 1.4, 90, 0, 45, -20]],
   // a 30 m round tower: the elevation of the long-lens photograph, three-quarter from the plaza, and from under the eaves

@@ -1058,6 +1058,19 @@
     "note": "venues/dome-paris.ts: Dufau and de Larivière on Buckminster Fuller's geodesic process, 1959-60; about 70 m across, 1,100 aluminium panels (Wikipedia fr). A shallow geodesic cap of dished triangular panels over low corrugated annexes on OSM's outline, the blue boards to the Place de la Porte de Versailles (Commons, DÔME de Paris; Dôme de Paris (Palais des Sports) façade). Height and roof height OSM's. Placed by point so the dome stands on its own centre, not the middle of its parts' hull."
   },
   {
+    "osm": [
+      "way/62373992"
+    ],
+    "name": "European Business School",
+    "procedural": "europeanBusinessSchool",
+    "height": 31,
+    "note": "venues/ebs.ts: the long skinny block on the west side of the Stade Charléty (OSM way/62373992, building=stadium, 8 levels). Glass curtain wall in floor bands with metal spandrels, mullions and fins, a dark recessed ground floor, metal parapet. Height from OSM's levels."
+  },
+  {
+    "osm": [
+      "way/248591293",
+      "way/248591292"
+    ],
     "name": "Stade Sébastien-Charléty",
     "lat": 48.818522,
     "lon": 2.346654,

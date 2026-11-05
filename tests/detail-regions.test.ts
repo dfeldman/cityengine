@@ -46,12 +46,18 @@ describe('Paris detail', () => {
     ['the Hameau', 48.8172, 2.1100],
     ['the Grand Canal\'s west end', 48.8130, 2.0880],
     ['Cathédrale Saint-Louis', 48.7998, 2.1259],
+    // the old N10 (2026-11-04): its corridor and the squares it passes
+    ['the Musée de Céramique', 48.82869, 2.22303],
+    ['Sèvres, the Hôtel de ville', 48.82468, 2.21271],
+    ['Chaville, the mairie', 48.80995, 2.18828],
+    ['Viroflay, the Avenue du Général Leclerc', 48.80408, 2.1685],
+    ['Ville-d\'Avray, the mairie', 48.82839, 2.18957],
   ])('models %s', (_n, lat, lon) => {
     expect(inDetail(lat, lon)).toBe(true)
   })
 
   it.each([
-    ['Sèvres, the town centre', 48.8235, 2.2110],
+    ['Sèvres, the hill behind the Grande Rue', 48.8200, 2.2150],
     ['Chaville', 48.8080, 2.1880],
     ['La Celle-Saint-Cloud', 48.8490, 2.1360],
     ['Viroflay', 48.7990, 2.1700],
@@ -63,7 +69,7 @@ describe('Paris detail', () => {
   it('models about what was measured: the old box and ~15 km² of regions', () => {
     const km2 = detailKm2(paris)
     expect(km2).toBeGreaterThan(125)
-    expect(km2).toBeLessThan(150)
+    expect(km2).toBeLessThan(165)
   })
 
   it('outlines the detail box and each region for the map, in local metres', () => {

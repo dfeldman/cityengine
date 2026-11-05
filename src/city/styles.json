@@ -386,6 +386,24 @@
       ]
     },
     {
+      "id": "parismodern",
+      "name": "Paris post-war block",
+      "note": "Paris after 1945: five to nine storeys of cream render or pale stone cladding, tall French windows with a rail at each, slab balconies on some fronts, one or two top storeys set back behind terraces (the gabarit), a darker stone plinth, shops or a lobby door at the pavement. Drawn on the apartment tower's paintings; its dressing is PostwarDress (facade.ts).",
+      "levels": [4, 10],
+      "levelHeight": [2.75, 3.0],
+      "groundHeight": [3.6, 4.4],
+      "bayWidth": [2.3, 3.2],
+      "pier": [0.35, 0.7],
+      "window": { "kind": "punched", "widthFrac": [0.52, 0.68], "heightFrac": [0.74, 0.86], "sill": 0.08 },
+      "ground": "recessed",
+      "top": "parapet",
+      "cornice": { "depth": 0.12, "height": 0.3 },
+      "stringCourse": false,
+      "palettes": [{ "wall": "#ece8de", "trim": "#dcd6c9", "roof": "#6f777d", "accent": "#2a2c2e" }, { "wall": "#f3f1ec", "trim": "#e2e0da", "roof": "#6a7278", "accent": "#3a3f44" }],
+      "art": "towerblock",
+      "groundArt": "towerblock"
+    },
+    {
       "id": "brutalist",
       "name": "Brutalist",
       "note": "Board-marked concrete, deep-set windows in a thick wall, floor slabs left showing as horizontal bands, and a module repeated without apology.",
@@ -450,6 +468,60 @@
           "accent": "#4a4844"
         }
       ]
+    },
+    {
+      "id": "skyscraper-banded",
+      "name": "Skyscraper, banded",
+      "note": "The skyscraper curtain wall with the floor slabs showing as a band in the trim colour at every storey: a grey tower striped in gold (Tour Eqho). Needs the entry to give wall and trim.",
+      "levels": [
+        12,
+        45
+      ],
+      "levelHeight": [
+        3.6,
+        4.1
+      ],
+      "groundHeight": [
+        5.5,
+        8.0
+      ],
+      "bayWidth": [
+        1.5,
+        2.2
+      ],
+      "pier": [
+        0.12,
+        0.28
+      ],
+      "window": {
+        "kind": "curtain",
+        "widthFrac": [
+          0.86,
+          0.96
+        ],
+        "heightFrac": [
+          0.62,
+          0.76
+        ],
+        "sill": 0.0
+      },
+      "ground": "glazed",
+      "top": "crown",
+      "cornice": {
+        "depth": 0.3,
+        "height": 0.9
+      },
+      "stringCourse": false,
+      "setbacks": true,
+      "palettes": [
+        {
+          "wall": "#6b7378",
+          "trim": "#b89a45",
+          "roof": "#4b5155",
+          "accent": "#3a4247"
+        }
+      ],
+      "slabBands": true
     },
     {
       "id": "skyscraper",

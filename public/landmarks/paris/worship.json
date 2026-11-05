@@ -1,0 +1,370 @@
+[
+  {
+    "name": "Centre européen du judaïsme",
+    "procedural": "centreEuropeenJudaisme",
+    "osm": [
+      "way/356914669"
+    ],
+    "front": 137,
+    "height": 14.5,
+    "sign": false,
+    "note": "worship.ts: white concrete block with gilded-brass slit ranks, corner brass door under a canopy, lower rear annex; Google Images/Arsenal photos 2026-11-04. Front bearing from the civic kit's guess.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Cathédrale Saint-Étienne",
+    "procedural": "cathedraleSaintEtienne",
+    "osm": [
+      "way/79232285"
+    ],
+    "front": 46,
+    "height": 18.3,
+    "sign": false,
+    "note": "worship.ts: Greek Orthodox cathedral, buff-stone gabled street front banded with brick, three arched ground windows, three-light stained-glass window, wings; owner's street photo docs/landmarks/refs/worship/saint-etienne-street-front.webp. Front 46 = outward normal of the footprint's long NE street edge (way ends (24.8,1.6)->(7.2,19.6) m).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue Nazareth",
+    "procedural": "synagogueNazareth",
+    "osm": [
+      "way/56435813"
+    ],
+    "front": -162,
+    "height": 17.8,
+    "sign": false,
+    "note": "worship.ts: 1852 Romanesque synagogue; low buff-stone crenellated street screen with arched blue portal and flank bays, rendered nave gable behind with rose window and clock; Commons photos 2026-11-04. Front -162 = outward normal of the 12.8 m SW street edge.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue Buffault",
+    "procedural": "synagogueBuffault",
+    "osm": [
+      "way/69417432"
+    ],
+    "front": 293,
+    "height": 19.8,
+    "sign": false,
+    "note": "worship.ts: 1877 Romanesque-Byzantine pale-stone front; three-arch loggia, frieze, great blind arch with oculi and a petal rose, pediment with Tables of the Law, zinc nave; Commons photos 2026-11-04 (docs/landmarks/refs/worship/buffault/), heights from IGN lidar MNS. Front 293 = outward normal of the WNW street edges.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Centre Culturel et Cultuel Musulman",
+    "procedural": "centreCulturelMusulman",
+    "osm": [
+      "way/107997690"
+    ],
+    "front": 25,
+    "height": 13.4,
+    "sign": false,
+    "note": "worship.ts: Mosquée L'Olivier (2011, 191 rue du Vieux-Pont-de-Sèvres): stacked white ribbed boxes, tall 4-level block set back, low corner block, glazed slot, ground glazing; Google Images 2026-11-04 (no Commons photos). Front 25 = outward normal of the 20.6 m NNE street-side edge.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Grande Synagogue de Levallois (ACCIL & CCL)",
+    "procedural": "synagogueLevallois",
+    "osm": [
+      "way/677002800"
+    ],
+    "front": -63,
+    "height": 25,
+    "sign": false,
+    "note": "worship.ts: Centre culturel israélite Anna et Simon Drahi, pale panelled ~6-storey block, chamfered corner, proud central bay with dot-perforated panel, star oculus, dark door wall, paired tall windows; one Commons photo 2026-11-04 (Centre culturel israélite de Levallois Anna et Simon Drahi.jpg). Front -63 = outward normal of the 6 m chamfer edge (way ends (-6.9,20.2)->(-9.7,14.7) m E/N); the footprint is a pentagon, built as a fitted rectangle.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue de la rue Sainte-Isaure",
+    "procedural": "synagogueSainteIsaure",
+    "osm": [
+      "way/41506069"
+    ],
+    "front": 103,
+    "height": 14.5,
+    "sign": false,
+    "note": "worship.ts: 1939 cream Art Deco front: tall centre with Star-of-David rose and Tables of the Law, recessed porch with two red columns behind a black grille, rounded-end low left wing and taller right wing with garage door; Commons photos 2026-11-04. Front 103 = outward normal of the 24 m east footprint edge, which lies on rue Sainte-Isaure (axis 13 deg off north); the ring's stepped south end faces a courtyard.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue Michkenot Israël",
+    "procedural": "synagogueMichkenot",
+    "osm": ["way/63212274"],
+    "front": 4,
+    "height": 10,
+    "sign": false,
+    "note": "worship.ts: 6 rue Jean Nohain; grey/white striped half-cylinder barrel vault gable with oculus and slit window at the lane's dead end, two smaller rear barrels, ribbed drum, low grey annex along the ring; Google Images (Wikipedia/PSS-archi/Mappy) 2026-11-04. Front 4 = the loader's fitSnug result for this footprint (the 10.7 m barrel edge's true outward normal is bearing 41.6, facing the lane end; the builder yaws the barrel 37.6 deg off local -z) (ring pts (-1.3,-16.0)->(-9.3,-8.9) m about 48.8827,2.3735).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue de Belleville",
+    "procedural": "synagogueBelleville",
+    "osm": ["way/70003350"],
+    "front": 123,
+    "height": 11.3,
+    "sign": false,
+    "note": "worship.ts: ochre/grey rendered block with parapet, recessed door + roll-down shutter + canopy and stone Tables of the Law on the street edge, barred window ranks, raised ochre box on the roof; one Commons photo (Synagogue Belleville (Paris ) 02.jpg) 2026-11-04. Front 123 = outward normal of the 19 m SE edge facing rue de Pali-Kao (ring E/N about 48.8713,2.3828: (3.8,-29.9)->(14.0,-13.9) m); the builder re-finds the longest edge itself.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue de Neuilly",
+    "procedural": "synagogueNeuilly",
+    "osm": ["way/67544237"],
+    "front": 108,
+    "height": 12.4,
+    "sign": false,
+    "note": "worship.ts: cream render synagogue; 10 m portal front on rue Ancelle (red arched door under archivolt, flanking arched windows, belt, arched lights, star roundel, raised attic), round tower at the rue Jacques Dulud corner, arched flank windows, iron railings; Commons photos 2026-11-04. Front 108 = outward normal of the short east edge ((0.5,-1.1)->(-2.7,9) m); the builder re-derives portal (shorter neighbour of the longest edge) from the ring.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église orthodoxe roumaine des saints archanges",
+    "procedural": "eglisesSaintsArchanges",
+    "osm": ["way/55366403"],
+    "front": -63,
+    "height": 17.2,
+    "sign": false,
+    "note": "worship.ts: ex-chapel of the Collège de Beauvais; stone gable on rue Jean-de-Beauvais with pointed traceried window, pointed portal, oculus, corner buttresses, lead spire over the ridge, lower wings; Commons photos (Médiathèque du patrimoine, Durand) + IGN MNS 2026-11-04. Front -63 = outward normal of the west edge ((-0.5,4.7)->(8.5,22.4) m); fitSnug turns local -z to it.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Synagogue Chasseloup-Laubat",
+    "procedural": "synagogueChasseloup",
+    "osm": ["way/54117312"],
+    "front": -27,
+    "height": 13.9,
+    "sign": false,
+    "note": "worship.ts: Byzantine-Romanesque temple; stepped yellow-brick gable with stone pilasters and raking band, tall stone arch with eight-petal rose window over three arched portals, lower aisles with slit windows, round-headed flank windows, slate roofs; Commons photos 2026-11-04. Front -27 = outward normal of the 17 m NNW edge ((-1998,1442)->(-1983,1434) paris-centre m) facing rue Chasseloup-Laubat; the builder re-derives the front as the longer neighbour of the longest (flank) edge.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Saint-Sava",
+    "procedural": "eglisesSaintSava",
+    "osm": ["way/78020644"],
+    "front": 22,
+    "height": 20.5,
+    "sign": false,
+    "note": "worship.ts: Serbian Orthodox church, 23 rue du Simplon; narrow buff-stone gable with pointed door, round recess of three lancets, oculus and bell turret, attached presbytery with barred ground floor, porch hood and slate mansard with dormers; Commons photos (Church of Saint Sava, Paris.jpg; Eglise Saint-Sava -1.JPG) + IGN MNS 2026-11-04. Front 22 = outward normal of the 9.6 m NNE edge ((2.5,3.3)->(11.4,-0.3) m E/N of 48.8938,2.3499) facing rue du Simplon; the builder re-finds it as the 9+ m edge farthest from the longest (back) edge.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Cathédrale arménienne Saint-Jean-Baptiste",
+    "procedural": "cathedraleArmenienne",
+    "osm": ["way/69332080"],
+    "front": -22,
+    "height": 20,
+    "sign": false,
+    "note": "worship.ts: Guilbert 1904 Armenian-revival, sand limestone; gate pier with urn, carved low wings with railings, gable front with granite-columned porch, bell loggia, medallions, green-coned drum tower behind. Photos: Commons 'Cathédrale arménienne Saint-Jean-Baptiste, 15 rue Jean-Goujon, Paris 8e' (2026-11-04). Street = NW edge (rue Jean-Goujon bears ~-22 deg); the builder re-derives axes/front/pier from the ring. Heights photo-scaled (OSM 15.1; MNS confused by tall neighbours).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Temple Antoiniste",
+    "procedural": "templeAntoiniste",
+    "osm": ["way/78470555"],
+    "front": -61,
+    "height": 10.2,
+    "sign": false,
+    "note": "worship.ts: pale-stucco gabled church under red tile, slate flèche over the ridge, archivolt portal with wooden door on the gable end, paired arched flank windows. Photos: Commons 'Temple Antoiniste Rue Vergniaud' (2026-11-04). Builder finds the portal edge (longest edge across the long axis) itself; height is photo-scaled (OSM 4.3).",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Temple Antoiniste (Passage Roux)",
+    "procedural": "templeAntoiniste17",
+    "osm": ["way/84317601"],
+    "front": 147,
+    "height": 9.2,
+    "sign": false,
+    "note": "worship.ts: 1955 red-brick hall, gable end on Passage Roux with a pointed pale-lattice arch over dark glass, recessed door, slate roof, iron railing. Photo: Commons 'Temple antoiniste Passage Roux.png' (2026-11-04). Front end chosen in-builder by ATN17_FRONT_X/Z (fitSnug ignores front).",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Temple Antoiniste (rue du Pré-Saint-Gervais)",
+    "procedural": "templeAntoiniste19",
+    "osm": ["way/63234870"],
+    "front": 147,
+    "height": 9,
+    "sign": false,
+    "note": "worship.ts: two-storey buff-brick hall front, 5 bays with cream pilasters/string course/cornice, central arched door under a CULTE ANTOINISTE panel and triple window, raised cream attic, slate roof. Photos: Commons 'Temple Antoiniste Rue Pré Saint Gervais - Paris XIX (FR75) - 2022-01-01 - 2.jpg' (docs/landmarks/refs/worship/antoiniste19-*.jpg). Street = SE edge (rue du Pré Saint-Gervais, found via the local pbf); front picked in-builder by ATN19_STREET_X/Z (fitSnug ignores front).",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Église orthodoxe russe Saint-Nicolas (Boulogne)",
+    "procedural": "egliseSaintNicolasBoulogne",
+    "osm": ["way/74333366"],
+    "front": 150,
+    "height": 7,
+    "sign": false,
+    "note": "worship.ts: tiny cream-stucco gabled chapel in a courtyard, carved timber kokoshnik arch round the gable window over a brown double door, teal onion dome on the ridge. Photos: Google Images (Wikipedia / Le Village de Billancourt) docs/landmarks/refs/worship/saint-nicolas-boulogne.png. Street (rue du Point-du-Jour) ~37 m SE; end facing it chosen in-builder via SNB_STREET_X/Z.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Église Saint-Serge-de-Radonège",
+    "procedural": "egliseSaintSerge",
+    "osm": ["way/63237639"],
+    "front": 270,
+    "height": 13,
+    "sign": false,
+    "note": "worship.ts: brick hall church, red/green Russian timber porch with double stair at one end, yellow bell tower with teal onion dome, slate needle spire. Photos: Commons 'Façade de l'Église Saint-Serge', 'clocher coté sud' (2026-11-04). Cadastre ring is a saw-tooth: builder uses its min-area rectangle; porch end set by SS_FRONT_SIGN.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "MJLF",
+    "procedural": "synagogueMjlf",
+    "osm": ["way/115878693"],
+    "front": -51,
+    "height": 15.4,
+    "sign": false,
+    "note": "worship.ts: pale limestone block under the Beaugrenelle towers; stepped street wall with small staggered windows, blue glazing ribbon, tall blank block with mjlf lettering over a dark glazed band; white-tile end wall with menorah and red pier (rue Robert-de-Flers). Two Commons photos 2026-11-04 (Oren Giorno; MJLF 11 rue Gaston-de-Caillavet). Builder re-finds the longest edge as the street wall; which short end carries the tile wall is a guess.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Les portes de la paix",
+    "procedural": "synagogueLesPortesDeLaPaix",
+    "osm": ["way/94743989"],
+    "front": 86,
+    "height": 15.2,
+    "sign": false,
+    "note": "worship.ts: pale panel-clad 1994 synagogue/community centre, stepped street wall with blue menorah door, rounded panelled corner drum at the far end. Google Images street shots 2026-11-04 (docs/landmarks/refs/worship/portes-de-la-paix.png). Street = longest ring edge; which end carries the drum is a guess.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Synagogue Rashi",
+    "procedural": "synagogueRashi",
+    "osm": ["way/69221039"],
+    "front": -83,
+    "height": 15.8,
+    "sign": false,
+    "note": "worship.ts: 1950s concrete synagogue, limestone base with dark double door, vertical olive-green / pale concrete bands, barred slit windows, wood-framed window, white shuttered pair, star panel under the parapet. Photos: Commons Paris Synagogue Rachi 32/33.JPG (docs/landmarks/refs/worship/rashi/). Street = short W edge (rue Ambroise-Thomas); front picked in-builder by RSH_STREET_X/Z.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Synagogue Michkenot Yaacov",
+    "procedural": "synagogueMichkenotYaacov",
+    "osm": ["way/329195478"],
+    "front": 234,
+    "height": 9.6,
+    "sign": false,
+    "note": "worship.ts: 118 boulevard de Belleville; house front, ochre rusticated ground floor, cream upper wall, 3 white windows, pale wood double door with iron grilles, star and name letters. Photos: Commons Paris 20e Synagogue Michkenot Yaacov 629/630 (docs/landmarks/refs/worship/michkenot-yaacov/). Street = SW chamfered edges; chain picked in-builder via MKY_STREET.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Église arménienne Sainte-Marie-Mère-de-Dieu",
+    "procedural": "egliseArmenienneIssy",
+    "osm": [
+      "way/107530891"
+    ],
+    "front": -19,
+    "height": 12.8,
+    "sign": false,
+    "note": "worship.ts: Kandjian 1975, slate-clad truncated block with leaning end walls and slit windows, beige stone pier with cross, stair and door, two stone lanterns behind; Commons photo docs/landmarks/refs/worship/sainte-marie-issy.jpg. Street side = the three-edge collinear chain of the footprint (outward bearing ~161, toward avenue Bourgain ~38 m S-SE); model-shots shows that face with front -19 (= bearing+180 convention, as the old generic entry's -18).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église orthodoxe Saint-Séraphin-de-Sarov",
+    "procedural": "egliseSaintSeraphinSarov",
+    "osm": ["way/80237345"],
+    "front": 155,
+    "height": 7,
+    "sign": false,
+    "note": "worship.ts: 1930s White-Russian timber shed-chapel in a courtyard behind 91 rue Lecourbe: dark-brown boarded walls, grey zinc gable over the hall, low zinc pyramid over the apse, pale-blue onion dome on a white drum with gold cross. Photos: Commons 'Église Saint-Séraphin-de-Sarov (Paris) - 1/2.jpg' (docs/landmarks/refs/worship/seraphin-sarov-*.jpg). Street (rue Lecourbe) ~60 m NNW; end facing it chosen in-builder via SSS_STREET_X/Z. The tree through the roof is not modelled.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Amicale des Teo Chew en France (temple bouddhique)",
+    "procedural": "templeTeoChew",
+    "lat": 48.8246455,
+    "lon": 2.3669429,
+    "size": [8, 5],
+    "front": 163,
+    "height": 7.5,
+    "sign": false,
+    "note": "worship.ts: frontage only (double green-tile eaves, gold hanzi band, glazed doors, two bronze incense burners) on the Galerie Oslo block (way/625919256 is the whole mall, not modelled). Commons 'Paris 13e - Olympiades - temple bouddhique 1'. Position/front guessed from OSM node 533756945 and the ortho: door assumed to face the passage SSE.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Chapelle de l'Humanité (positiviste)",
+    "procedural": "chapelleHumanite",
+    "osm": ["way/57781663"],
+    "front": 210,
+    "height": 10.2,
+    "sign": false,
+    "note": "worship.ts: street front of the 17th-c. house at 5 rue Payenne: rusticated buff ground floor with three arches, white upper storey with two iron-balconied windows, gothic niche with Comte's bronze bust, incised inscription lines. Commons 'Payenne-chapelle-humanite.jpg'. Front bearing computed from the ring edge; check with model-shots.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Synagogue Copernic (ULIF)",
+    "procedural": "synagogueCopernic",
+    "osm": ["way/80263653"],
+    "front": 190,
+    "height": 19.5,
+    "sign": false,
+    "note": "worship.ts: Union libérale israélite de France, 24 rue Copernic: limestone front with quoins, tall navy double door under a hood cornice with red-granite name plate, grey-shuttered windows, cream attic storeys. Commons 'Union libérale israélite de France, 24 rue Copernic, Paris 16.jpg' (docs/landmarks/refs/worship/copernic-*.jpg). Street = south edge chain, found in-builder.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Crématorium du Père-Lachaise",
+    "procedural": "cremationPereLachaise",
+    "osm": ["way/24781731"],
+    "front": 330,
+    "height": 25,
+    "sign": false,
+    "note": "worship.ts: Formigé 1889 neo-Byzantine hall: banded limestone/grey stone, recessed two-column loggia with three black doors on steps, gabled front arm, ribbed tan dome on an eight-sided drum, tall banded chimney behind. Commons 'Crématorium du Père-Lachaise.jpg' (docs/landmarks/refs/worship/crematorium-*.jpg). Front = ring edge whose outward normal faces NNW (CRE_FRONT), guessed from the cemetery paths; check with model-shots.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Temple de l'Amitié",
+    "procedural": "templeAmitie",
+    "osm": ["way/62288099"],
+    "front": 285,
+    "height": 7.6,
+    "sign": false,
+    "note": "worship.ts: Barney's garden temple, 20 rue Jacob: tetrastyle Doric portico on a podium with steps, pediment with medallion, double door between bust niches. Commons D.1356 watercolour (docs/landmarks/refs/worship/amitie-1.jpg). Portico on the short side facing WNW toward the house (guessed from garden layout); check with model-shots.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Temple de l'Amour",
+    "procedural": "templeAmour",
+    "osm": ["way/98045280"],
+    "front": 0,
+    "height": 12.5,
+    "sign": false,
+    "note": "worship.ts: round garden rotunda (MH 1913), ten fluted Corinthian columns, ribbed lead dome, stepped base, statue pedestal. Commons 'Temple de l'Amour Neuilly 003' (docs/landmarks/refs/worship/amour-1.jpg). Round, no front.",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Hôtel du Grand Orient de France",
+    "procedural": "hotelGrandOrient",
+    "osm": ["way/69220186"],
+    "front": 299,
+    "height": 24,
+    "sign": false,
+    "note": "worship.ts: Masonic HQ, 16 rue Cadet: glazed shopfront under a bowed screen of silver fluted fins with dark glazed slots, flanking Haussmann party walls. Commons 'P1280244 Paris IX rue Cadet N16 rwk' (docs/landmarks/refs/worship/godf-1.jpg). Front = WNW street edge (GOF_FRONT).",
+    "madeBy": "claude-sonnet"
+  },
+  {
+    "name": "Immeuble de la Société théosophique",
+    "procedural": "immeubleTheosophique",
+    "osm": ["way/69073401"],
+    "front": -22,
+    "height": 23.5,
+    "sign": false,
+    "note": "worship.ts: 4 square Rapp (not Lavirotte's no. 3): ochre brick with lozenge pattern over cream stone base, tall pointed-arch window with tracery, corbelled corner turret with conical slate cap, balconied windows, slate mansard with dormers. Commons 'Immeuble de la Société théosophique, Paris 7e 001' and 'Immeuble Société Théosophique 2026-03-20 2' (docs/landmarks/refs/worship/theosophique-*). Street = straight ~22 m chain of NNW-facing edges, picked in-builder via THS_STREET_X/Z.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Théâtre de la Tour Eiffel",
+    "procedural": "theatreTourEiffel",
+    "osm": ["way/69073411"],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "worship.ts: 3 square Rapp (west neighbour of the Société théosophique, not Lavirotte's): cream ashlar ground+first floor with dark show-banner, wooden diamond-glazed doors under a black sign, lozenge-brick upper storeys with segmental-arched windows and iron balconies, big arched window at the west end, stone oriel column on corbels at the east end, slate mansard with dormers. Owner's Street View photo (Jul 2022). Front = north edge on square Rapp.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Pagode asiatique rouge",
+    "procedural": "pagodeAsiatiqueRouge",
+    "osm": ["way/1333317934"],
+    "front": 0,
+    "height": 8.5,
+    "sign": false,
+    "note": "worship.ts: open red-lacquer Chinese pavilion in Parc des Cinq Continents (Levallois): stone plinth, red columns, rails, two-tier hip roof with curled eaves, gilt finial. Photos: Adobe Stock 'Parc de la Planchette' (docs/landmarks/refs/worship/pagode-asiatique-rouge.png). Open pavilion, symmetrical, so front is arbitrary.",
+    "madeBy": "claude-sonnet-5-5"
+  }
+]

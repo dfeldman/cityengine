@@ -35,7 +35,17 @@ function kindOf(t: Tags): string | null {
   if (t.office === 'diplomatic' || a === 'embassy') return /^h[ôo]tel/i.test(n) ? 'hotel' : null
   if (t.office === 'government') return /^h[ôo]tel/i.test(n) ? 'hotel' : 'ministere'
   if (b === 'government' || b === 'civic' || b === 'public') return /^h[ôo]tel/i.test(n) ? 'hotel' : 'equipement'
+  // any other building named Hôtel …: the hôtel particulier (not a hotel to sleep in, a town hall, a hospital or a shop)
+  if (isHotelParticulier(t)) return 'hotel'
   return null
+}
+/** NOT hôtels particuliers: the civic Hôtels (de Ville, des Ventes…) and the chains */
+const NOT_PARTICULIER = /ville|ventes|imp[ôo]ts|police|dieu|invalides|monnaie|^h[ôo]tel (ibis|novotel|mercure|best|holiday|le |la |les |campanile|formule|kyriad|mama|b&b|f1|première|premiere|sofitel|pullman|ritz|crillon|meurice|lutetia|plaza|de crillon)/i
+function isHotelParticulier(t: Tags): boolean {
+  const n = t.name ?? ''
+  if (!/^h[ôo]tel\b/i.test(n) || NOT_PARTICULIER.test(n)) return false
+  if (t.tourism || t.shop || t.amenity === 'townhall' || t.amenity === 'hospital' || t.building === 'hotel' || t.building === 'hospital') return false
+  return !/^(restaurant|cafe|bar|pub|fast_food|bank|parking)$/.test(t.amenity ?? '')
 }
 const WORD: Record<string, string> = { ecole: 'ÉCOLE', lycee: 'LYCÉE', mairie: 'MAIRIE', hopital: 'HÔPITAL', hospice: 'HOSPICE', caserne: 'SAPEURS-POMPIERS', police: 'POLICE',
   poste: 'POSTE', bibliotheque: 'BIBLIOTHÈQUE', tribunal: 'PALAIS DE JUSTICE' }
@@ -46,7 +56,7 @@ const dir = mkdtempSync(resolve(tmpdir(), 'paris-civic-'))
 const box = '2.21,48.81,2.42,48.91'
 const pbf = resolve(ROOT, 'tools/cache/osm/ile-de-france-latest.osm.pbf')
 execFileSync('osmium', ['extract', '-b', box, pbf, '-o', `${dir}/box.pbf`, '--overwrite'], { stdio: 'ignore' })
-execFileSync('osmium', ['tags-filter', `${dir}/box.pbf`, 'w/building', '-o', `${dir}/b.pbf`, '--overwrite'], { stdio: 'ignore' })
+execFileSync('osmium', ['tags-filter', `${dir}/box.pbf`, 'w/building', 'r/building', '-o', `${dir}/b.pbf`, '--overwrite'], { stdio: 'ignore' })
 execFileSync('osmium', ['export', `${dir}/b.pbf`, '-f', 'geojsonseq', '-o', `${dir}/b.geojsonseq`, '--overwrite', '--add-unique-id=type_id', '--geometry-types=polygon'], { stdio: 'ignore' })
 const lines = readFileSync(`${dir}/b.geojsonseq`, 'utf8').split('\n')
 rmSync(dir, { recursive: true })
@@ -148,15 +158,16 @@ for (const l of lines) {
   const kind = kindOf(t)
   // (osmium numbers its areas twice the way's id; an odd one is a relation's, which a kit building does not take)
   const area = Number(f.id.slice(1))
-  if (!kind || area % 2) continue
-  const wayId = area / 2
-  const ref = `way/${wayId}`
+  // (an hôtel particulier may be a relation, whose courtyards the bake keeps as holes; any other kind takes ways only)
+  if (!kind || (area % 2 && kind !== 'hotel')) continue
+  const wayId = area % 2 ? area : area / 2
+  const ref = area % 2 ? `relation/${(area - 1) / 2}` : `way/${wayId}`
   if (claimed.has(ref) || !inPackage.has(wayId)) continue
   const r = f.geometry.coordinates[0][0]
   const ring = r.map(([lo, la]) => [X(lo), Z(la)])
   let a = 0
   for (let i = 0; i + 1 < ring.length; i++) a += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1]
-  if (Math.abs(a) / 2 < MIN_AREA) continue
+  if (Math.abs(a) / 2 < (kind === 'hotel' ? 50 : MIN_AREA)) continue
   const lon = r.reduce((s, p) => s + p[0], 0) / r.length, lat = r.reduce((s, p) => s + p[1], 0) / r.length
   const ap = apurAt(lon, lat)
   // (outside Paris proper APUR says nothing: undated, as the bake's default is)
@@ -165,7 +176,7 @@ for (const l of lines) {
   const front = frontBearing(ring, kind === 'eglise') ?? (kind === 'eglise' ? frontBearing(ring) : null)
   if (front === null) continue
   const name = t.name
-  const word = kind === 'eglise' ? faith(t) : name && name.length <= 34 ? name.toUpperCase() : WORD[kind]
+  const word = kind === 'eglise' ? faith(t) : kind === 'hotel' ? undefined : name && name.length <= 34 ? name.toUpperCase() : WORD[kind]
   counts[kind] = (counts[kind] ?? 0) + 1
   out.push({
     osm: [ref], name: name ?? `${kind} ${wayId}`, procedural: 'parisCivic',

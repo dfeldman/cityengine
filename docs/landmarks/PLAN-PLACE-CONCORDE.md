@@ -52,6 +52,14 @@ These shots are the before images, and they show the Gabriel palaces, the lamps 
 
 ## Step 1: fix the procedural layout (no GLBs needed)
 
+**Done 2026-11-04**, except item 5:
+- `place-concorde.ts` now has `CITIES`, `ROSTRAL_OSM` and `BALUSTRADE` from OSM.
+- `INFER_ROSTRAL` adds the west runs' two middle columns. They are inferred from the east side, not surveyed.
+- `BAL` holds the balustrade's section. OSM's fences give the octagon's edges.
+- `concordeGatePier` and `marlyPedestal` are new entries in paris.json, each with a stand-in horseman.
+- Their spots clear the street stand-ins at the next bake. The current bake still has the Renommée and Mercure stand-ins inside the piers.
+- Shot from the north-east corner and the gate. The rostral column count (12 of 20) is still unverified.
+
 1. **Position tables.** Move the positions into top-level tunable tables in `place-concorde.ts`: `CITIES`, `ROSTRAL`, `GATES`.
    - `CITIES` gets the OSM positions above, each with its name.
    - `ROSTRAL` gets the 10 OSM nodes plus the 10 missing ones.

@@ -28,7 +28,6 @@ export function fondationSuisse(out: MeshBuilder, fit: Fit): void {
   }
   // the slab: its underside, two ends blank, the north side stone in panels with its small windows
   block(out, -HX, HX, -HZ, HZ, Y0, Y2, CONC, conc)
-  block(out, -HX - 0.05, HX + 0.05, -HZ - 0.05, HZ + 0.05, Y2, Y2 + 0.45, shade(CONC, 1.06), conc)
   // the glass south: four floors, room by room, each a tall bay in thin white frame with a slight setback for spandrel
   const rooms = 15, BAY = (2 * HX) / rooms, FL = 3.15
   for (let f = 0; f < 4; f++) {
@@ -83,7 +82,6 @@ export function maisonBresil(out: MeshBuilder, fit: Fit): void {
   // the body behind the loggias
   block(out, -HX, HX, -HZ + 1.6, HZ, Y0, Y1, CONC, conc)
   block(out, -HX, HX, -HZ, HZ, Y0, Y0 + 0.3, CONC_DK, conc)
-  block(out, -HX, HX, -HZ - 0.05, HZ + 0.05, Y1, Y1 + 0.5, shade(CONC, 1.08), conc)
   const BAYS = 30, B = (2 * HX) / BAYS, COL: Rgb[] = [hex('#c43a2d'), hex('#e8b93b'), hex('#2f62a6'), hex('#4a8a56'), hex('#e7e2d6'), hex('#e7e2d6')]
   const pick = (i: number, f: number): Rgb => COL[Math.abs(Math.floor(Math.sin(i * 12.9898 + f * 78.233) * 43758.5453)) % COL.length]
   for (let f = 0; f < N; f++) {

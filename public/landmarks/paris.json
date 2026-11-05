@@ -217,6 +217,85 @@
     "note": "The garden inside the Place des Vosges, at the centre of the park rectangle, turned 13.8° with it (the rectangle's sides run at 13.8°). Size is only the shadow's footprint: the statue's, not the garden's."
   },
   {
+    "name": "Place des Vosges — the 36 pavilions",
+    "procedural": "placeVosges",
+    "osm": [
+      "way/49734495",
+      "way/49734496",
+      "way/49734498",
+      "way/49734499",
+      "way/49734501",
+      "relation/403147",
+      "way/49734549",
+      "way/49734550",
+      "way/49734554",
+      "way/49734566",
+      "way/49734570",
+      "way/49734571",
+      "way/49734634",
+      "way/49734636",
+      "way/49734640",
+      "way/49734641",
+      "way/49734644",
+      "way/49734646",
+      "way/49734651",
+      "way/50591615",
+      "way/50591660",
+      "way/50591670",
+      "relation/411405",
+      "relation/411404",
+      "relation/571726",
+      "relation/571727",
+      "way/56077594",
+      "way/1164755199",
+      "way/1164755200",
+      "way/1164755201",
+      "way/1164755202",
+      "way/1164755203",
+      "way/1164755204",
+      "way/1164755205",
+      "way/1164755206",
+      "way/1164755207",
+      "way/1164755208",
+      "way/1164755209",
+      "way/1164755211",
+      "way/1164755212",
+      "way/1164755213",
+      "way/1164755214",
+      "way/1164755215",
+      "way/1164755216",
+      "way/1164755217",
+      "way/1164755218",
+      "way/1164755219",
+      "way/1164755220",
+      "way/1164755221",
+      "way/1164755222",
+      "way/1164755223",
+      "way/1164755224",
+      "way/1164755225",
+      "way/1164755226",
+      "way/1164755227",
+      "way/1164755243",
+      "way/1197828206",
+      "way/1208830614",
+      "way/1208830615",
+      "relation/18812505"
+    ],
+    "lat": 48.8556179,
+    "lon": 2.3655421,
+    "rotateDeg": 0,
+    "size": [
+      160,
+      160
+    ],
+    "height": 26.5,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Henri IV's square: the 36 uniform houses (nine to a side, 140 m across, the fronts turned 13.8°) — a stone arcade, two brick storeys with stone-framed windows, chains and cornice, a very steep slate roof per house with two rows of dormers and tall stacks, the Pavillon du Roi (south) and de la Reine (north) taller, hipped, with arched passages. The OSM buildings and the parts over the arcades are drawn whole here, their outlines raised behind. Plan metres about the garden's centre. docs/landmarks/MODEL-PLACE-VOSGES.md.",
+    "shadow": false,
+    "sign": false
+  },
+  {
     "osm": [
       "way/56206112",
       "way/1197828191",
@@ -533,6 +612,62 @@
     "note": "The obelisk at the midpoint of OSM's two pools, the fountains in them (64 m either side, the axis 25.7° east of north), the rostral columns; OSM's 0.3 m obelisk base replaced."
   },
   {
+    "name": "Concorde: the Renommée pier of the Tuileries gate",
+    "procedural": "concordeGatePier",
+    "lat": 48.8649306,
+    "lon": 2.3223639,
+    "rotateDeg": 25.7,
+    "size": [
+      3.2,
+      3.6
+    ],
+    "stone": false,
+    "madeBy": "claude-opus-5-5",
+    "note": "Coysevox's Renommée on Pegasus (copy) on the gate's south pier, OSM node/2165181089; a stand-in horseman until its GLB (PLAN-PLACE-CONCORDE.md). Its spot clears the street stand-in."
+  },
+  {
+    "name": "Concorde: the Mercure pier of the Tuileries gate",
+    "procedural": "concordeGatePier",
+    "lat": 48.8651855,
+    "lon": 2.3225636,
+    "rotateDeg": 25.7,
+    "size": [
+      3.2,
+      3.6
+    ],
+    "stone": false,
+    "madeBy": "claude-opus-5-5",
+    "note": "Coysevox's Mercure on Pegasus (copy) on the gate's north pier, OSM node/5311490411; a stand-in horseman until its GLB."
+  },
+  {
+    "name": "Concorde: Chevaux de Marly, north",
+    "procedural": "marlyPedestal",
+    "lat": 48.8660272,
+    "lon": 2.3198951,
+    "rotateDeg": 25.7,
+    "size": [
+      5,
+      3
+    ],
+    "stone": false,
+    "madeBy": "claude-opus-5-5",
+    "note": "Coustou's horse and groom (copy) at the Champs-Élysées end, OSM way/553416270; a stand-in until its GLB."
+  },
+  {
+    "name": "Concorde: Chevaux de Marly, south",
+    "procedural": "marlyPedestal",
+    "lat": 48.8657738,
+    "lon": 2.3197107,
+    "rotateDeg": 25.7,
+    "size": [
+      5,
+      3
+    ],
+    "stone": false,
+    "madeBy": "claude-opus-5-5",
+    "note": "Coustou's horse and groom (copy), OSM way/553416271; a stand-in until its GLB."
+  },
+  {
     "name": "Monument à la République",
     "procedural": "monumentRepublique",
     "lat": 48.867498,
@@ -614,6 +749,44 @@
     "rotateDeg": 0,
     "stone": false,
     "note": "The bronze Trajan's column: pedestal and eagles, the spiral frieze, gallery, lantern, Napoleon; OSM's three column parts replaced."
+  },
+  {
+    "name": "Place Vendôme",
+    "procedural": "placeVendome",
+    "osm": [
+      "relation/542282",
+      "relation/542283",
+      "relation/542284",
+      "relation/542285",
+      "relation/542286",
+      "relation/542287",
+      "relation/542353",
+      "relation/542356",
+      "way/54170940",
+      "way/54170947",
+      "way/54170948",
+      "way/54170981",
+      "way/54175241",
+      "way/54175248",
+      "way/54175264",
+      "way/54175265",
+      "way/54175266",
+      "way/54175277",
+      "way/54175280"
+    ],
+    "lat": 48.867492,
+    "lon": 2.329414,
+    "rotateDeg": 0,
+    "size": [
+      150,
+      150
+    ],
+    "height": 25,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hardouin-Mansart's octagonal square: the one facade (rusticated arcade, giant Corinthian pilasters, slate mansard with oeil-de-boeuf dormers, pedimented avant-corps at the long sides and cut corners) on the nineteen hôtels' square-facing walls, their outlines raised behind it. Plan metres about the column. docs/landmarks/MODEL-PLACE-VENDOME.md.",
+    "shadow": false,
+    "sign": false
   },
   {
     "name": "Sainte-Chapelle",
@@ -950,8 +1123,7 @@
     "osm": [
       "relation/1060822",
       "relation/1060804",
-      "relation/1060806",
-      "way/67109756"
+      "relation/1060806"
     ],
     "lat": 48.8655,
     "lon": 2.3211,
@@ -1251,6 +1423,12 @@
     "include": "paris/batch1.json"
   },
   {
+    "include": "paris/citeu.json"
+  },
+  {
+    "include": "paris/vincennes.json"
+  },
+  {
     "include": "paris/batch2.json"
   },
   {
@@ -1269,6 +1447,9 @@
     "include": "paris/batch7.json"
   },
   {
+    "include": "paris/defense2.json"
+  },
+  {
     "include": "paris/batch8.json"
   },
   {
@@ -1284,10 +1465,16 @@
     "include": "paris/batch12.json"
   },
   {
+    "include": "paris/commercial1.json"
+  },
+  {
     "include": "paris/carousels.json"
   },
   {
     "include": "paris/bugs.json"
+  },
+  {
+    "include": "paris/versailles-road.json"
   },
   {
     "include": "paris/civic.json"
@@ -1302,6 +1489,18 @@
     "include": "paris/portals.json"
   },
   {
+    "include": "paris/wall-fountains.json"
+  },
+  {
+    "include": "paris/worship.json"
+  },
+  {
+    "include": "paris/protestant.json"
+  },
+  {
+    "include": "paris/catholic.json"
+  },
+  {
     "name": "Beside the Sacré-Cœur: a lodge",
     "osm": [
       "way/67699858"
@@ -1312,5 +1511,285 @@
     "levels": 2,
     "sign": false,
     "note": "A 14 by 4 m lodge east of the basilica, no height in OSM, that took 50 m from the lidar's reading of the basilica over it: from the terraces it stood as a tower with the Sacré-Cœur's own height (top-25 audit, 2026-10-30)."
+  },
+  {
+    "osm": [
+      "relation/1261334"
+    ],
+    "name": "Hôtel Gaillard",
+    "procedural": "hotelGaillard",
+    "lat": 48.8818,
+    "lon": 2.3105,
+    "rotateDeg": 0,
+    "size": [
+      80,
+      80
+    ],
+    "height": 25,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Jules Février's neo-Gothic hôtel (1878–82), now the Banque de France's Citéco: a ring of brick-diaper wings with stone dressings and stone-gabled dormers round a glazed court, steep slate roofs with iron cresting, six pyramid-roofed pavilions (lidar 17–24 m). Plan metres about 48.8818 N, 2.3105 E. docs/landmarks/MODEL-HOTEL-GAILLARD.md.",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/69859760"
+    ],
+    "name": "Hôtel de Béhague",
+    "procedural": "hotelBehague",
+    "lat": 48.85818,
+    "lon": 2.30308,
+    "rotateDeg": 0,
+    "size": [
+      90,
+      110
+    ],
+    "height": 25,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Béhague / de Béarn (Romanian embassy), 123 rue Saint-Dominique: a curved rusticated stone screen with two arched carriage gates and urns on the street, the pedimented pavilion behind it, the garden-side logis under a high slate mansard, wings of lidar 13-19 m. Plan metres about 48.85818 N, 2.30308 E in the street's frame turned 25 degrees. docs/landmarks/MODEL-HOTEL-BEHAGUE.md.",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/54177935"
+    ],
+    "name": "Hôtel de Saint-Florentin",
+    "procedural": "hotelSaintFlorentin",
+    "lat": 48.8665724,
+    "lon": 2.3236766,
+    "rotateDeg": 0,
+    "size": [
+      60,
+      70
+    ],
+    "height": 23,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Saint-Florentin (Talleyrand; US consulate), 2 rue Saint-Florentin: Chalgrin's hôtel on the Concorde corner. South front of ten bays (rusticated ground storey with railings, balcony band, pedimented nobile, attic, cornice and balustrade) on the Rivoli side, the court open west behind a Doric screen with an arched gate, low zinc roofs, brick chimneys. Origin the south-west corner, frame turned 26.08 degrees. docs/landmarks/MODEL-HOTEL-SAINT-FLORENTIN.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "relation/1104615"
+    ],
+    "name": "Hôtel Potocki",
+    "procedural": "hotelPotocki",
+    "lat": 48.87397,
+    "lon": 2.30155,
+    "rotateDeg": 0,
+    "size": [
+      110,
+      100
+    ],
+    "height": 24,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel Potocki (Paris Île-de-France Chamber of Commerce), 27 avenue de Friedland: Reboul's Louis XIV-revival stone front behind an iron railing, a pedimented avant-corps with a rusticated arched door and two orders of free columns, wings with arched ground windows and balconied upper ones under a balustrade and low mansard, a flat court roof with a glazed octagonal lantern, side wings running back. Plan metres about 48.87397 N, 2.30155 E in the avenue's frame turned 11 degrees. docs/landmarks/MODEL-HOTEL-POTOCKI.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/63564122"
+    ],
+    "name": "Hôtel de Roquelaure",
+    "procedural": "hotelRoquelaure",
+    "lat": 48.857378,
+    "lon": 2.324835,
+    "rotateDeg": 0,
+    "size": [
+      95,
+      85
+    ],
+    "height": 16,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Roquelaure (Ministry of Ecology), 246 boulevard Saint-Germain: Lassurance's hôtel entre cour et jardin. A rusticated screen on the boulevard with a pedimented porch block and arched carriage passage, a round-ended court between low arched wings, the nine-bay corps de logis with a pedimented centre, balconied tall windows, a balustrade and a low slate hip, a lawn behind. Origin the OSM outline's centre; boulevard runs south-east.",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "relation/568776"
+    ],
+    "name": "Hôtel de Miramion",
+    "procedural": "hotelMiramion",
+    "lat": 48.850576,
+    "lon": 2.3519,
+    "rotateDeg": 0,
+    "size": [
+      75,
+      70
+    ],
+    "height": 23,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Miramion (former Musée de l'Assistance publique), 47 quai de la Tournelle: a cream stone two-storey range on the quai under a hipped slate roof with pedimented dormers and a central portal with an arched blue gate, a cobbled court behind it, the main house at its far end with a rusticated ground storey, tall windows, and a steep slate roof of pedimented dormers and oeils-de-boeuf, a west wing and a flat-roofed east wing. Placed on the lidar; origin 48.850576 N, 2.35190 E, frame turned -23.4 degrees. docs/landmarks/MODEL-HOTEL-MIRAMION.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/84323015"
+    ],
+    "name": "Hôtel de Günsburg",
+    "procedural": "hotelGunsburg",
+    "lat": 48.87505,
+    "lon": 2.2955,
+    "rotateDeg": 0,
+    "size": [
+      60,
+      60
+    ],
+    "height": 23,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Günzburg, 7 rue de Tilsitt (Hittorff plans, Rohault de Fleury 1868, Second Empire): ashlar street front behind a black iron railing, two corner pavilions with canted oriels under hipped zinc roofs, carriage gates either side of a great arched entry with carved trophies, caryatid-flanked balconied windows and a pediment, modillion cornice, zinc mansard with an oculus dormer; wings back around a glass-lanterned court and a 13-bay garden front with conservatory. Plan metres about 48.87505 N, 2.2955 E, frame turned -21 degrees. docs/landmarks/MODEL-HOTEL-GUNSBURG.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "relation/546795"
+    ],
+    "name": "Hôtel Colbert de Torcy",
+    "procedural": "hotelColbertTorcy",
+    "lat": 48.867846,
+    "lon": 2.33994,
+    "rotateDeg": 0,
+    "size": [
+      60,
+      60
+    ],
+    "height": 20,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel Colbert de Torcy (Hôtel Tubeuf), 16 rue Vivienne (Le Muet, 1640): the street front of two arched-window pavilions with rusticated quoins under hipped slate, five upper windows over smooth panels, a rusticated arched carriage gate with blue leaves on the axis and a long slate mansard; the open court with Marot's arcaded elevations, the three-storey main block with its garden front, and the old garden under a glazed hall. Plan metres about 48.867846 N, 2.33994 E in the street's frame turned 20 degrees. docs/landmarks/MODEL-HOTEL-COLBERT-TORCY.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/251136638"
+    ],
+    "name": "Hôtel de Rohan",
+    "procedural": "hotelRohan",
+    "lat": 48.8596,
+    "lon": 2.3598,
+    "rotateDeg": 0,
+    "size": [
+      100,
+      100
+    ],
+    "height": 18,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Rohan (Rohan-Strasbourg), 87 rue Vieille-du-Temple (Delamair, 1705-08; Archives nationales): the whole OSM way as five massed parts round the Cour de Rohan; the street wing with the great round-headed gate under its pedimented attic, the garden front of thirteen bays with its three-bay avant-corps of columns and oval dormers, the court elevations, and the stable wing with Le Lorrain's Chevaux d'Apollon over the round-headed door. Slate mansards at lidar heights.",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/108200345"
+    ],
+    "name": "Hôtel Landolfo-Carcano",
+    "procedural": "hotelLandolfoCarcano",
+    "lat": 48.8736,
+    "lon": 2.29706,
+    "rotateDeg": 0,
+    "size": [
+      30,
+      36
+    ],
+    "height": 23,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel Landolfo-Carcano, 1 rue de Tilsitt (Hittorff's hôtels des Maréchaux, Rohault de Fleury 1867; Qatari embassy): one wall outline round the cour, ashlar fronts on the Étoile, the Champs-Élysées and rue de Tilsitt, the rounded two-storey oriel on the cour front, black iron railing and gate, a slate mansard (main block peaking 23 m, wings 20 m at lidar heights) with pedimented dormers. docs/landmarks/MODEL-HOTEL-LANDOLFO-CARCANO.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "relation/1076763"
+    ],
+    "name": "Hôtel de Castries",
+    "procedural": "hotelCastries",
+    "lat": 48.85525,
+    "lon": 2.31925,
+    "rotateDeg": 0,
+    "size": [
+      80,
+      70
+    ],
+    "height": 18,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Castries (Broglie), 72 rue de Varenne (c.1700; Ministère de la Cohésion des territoires): the whole OSM relation as six massed parts round the small cour; the street wall with its balustrades and the banded gate pavilion (plum door, plaque, small oculus pediment), the corps de logis with its three-bay pedimented cour front and nine-bay garden front, mansards with dormers at lidar heights, the later annexes as plain flat blocks. docs/landmarks/MODEL-HOTEL-CASTRIES.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/69220658"
+    ],
+    "name": "Hôtel de Mercy-Argenteau",
+    "procedural": "hotelMercyArgenteau",
+    "lat": 48.8718,
+    "lon": 2.3425,
+    "rotateDeg": 0,
+    "size": [
+      50,
+      50
+    ],
+    "height": 24,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Mercy-Argenteau, 16 bis boulevard Montmartre (Perlin 1778, raised 1827-29): the west five of its eleven bays on the way's own front (rusticated shop floor with the carriage door, tall first floor behind an iron balcony, three railed floors, modillion cornice, zinc mansard with dormers), the rest of the lot as lidar-height massing. Plan metres about 48.8718 N, 2.3425 E, front turned -14 degrees. docs/landmarks/MODEL-HOTEL-MERCY-ARGENTEAU.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "way/65090118"
+    ],
+    "name": "Hôtel de Brienne",
+    "procedural": "hotelBrienne",
+    "lat": 48.8598,
+    "lon": 2.3192,
+    "rotateDeg": 0,
+    "size": [
+      130,
+      90
+    ],
+    "height": 17,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Brienne (Ministry of the Armed Forces), 14-16 rue Saint-Dominique: the street front with the Duret block and its great arched gate at no. 16, the low street wing with its carriage gate, the open court with the pedimented main block (nine arched bays), and the garden front. Street frame turned -28.2 degrees. docs/landmarks/MODEL-HOTEL-BRIENNE.md",
+    "shadow": false,
+    "sign": false
+  },
+  {
+    "osm": [
+      "relation/975976"
+    ],
+    "name": "Hôtel de Vendôme (École des Mines)",
+    "procedural": "hotelVendome",
+    "lat": 48.8453,
+    "lon": 2.3392,
+    "rotateDeg": 0,
+    "size": [
+      170,
+      170
+    ],
+    "height": 28,
+    "stone": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hôtel de Vendôme, the École des Mines, 60 boulevard Saint-Michel: a 140 m street front of rusticated stone wings under slate mansards, the great arched gate with its sculpted tympanum and green iron gate, a glazed hall, the carriage door of No. 60, the hôtel with its garden front and pediment behind, the north pavilions and garden wall. Plan metres about 48.8453 N, 2.3392 E in the boulevard's frame turned 70 degrees. docs/landmarks/MODEL-HOTEL-VENDOME.md",
+    "shadow": false,
+    "sign": false
   }
 ]

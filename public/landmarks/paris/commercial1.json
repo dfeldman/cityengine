@@ -1,0 +1,297 @@
+[
+  {
+    "osm": [
+      "relation/3074643"
+    ],
+    "name": "Hyatt Regency Paris Étoile",
+    "procedural": "hyattEtoile",
+    "height": 131,
+    "noShops": true,
+    "note": "commercial1/hyattEtoile.ts: ribbed concrete tower on a 17 m podium; tower outline, 130 m roof and podium height traced from IGN lidar MNS (tower stands SE of the box centre, not centred); 50 m mast per fr.wikipedia 190 m total",
+    "madeBy": "claude-opus-5-5 (draft), claude-opus-5-5 (lidar review)"
+  },
+  {
+    "osm": [
+      "way/1135730430"
+    ],
+    "name": "Tour La Sablière",
+    "procedural": "tourLaSabliere",
+    "height": 77,
+    "noShops": true,
+    "note": "commercial1/tourLaSabliere.ts: OSM outline extruded, 27 storeys of window rows with pale slab edges and corner strips, glazed base, roof plant block and Haier-style sign; 77 m between OSM 76 and fr.wikipedia 78",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/364765319"
+    ],
+    "name": "Home (Hamonic+Masson)",
+    "procedural": "homeHamonicMasson",
+    "height": 51,
+    "noShops": true,
+    "note": "commercial1/homeHamonicMasson.ts: two blocks (43.5 m NW, 51 m SE, heights from IGN lidar MNS, not OSM's 14 levels/47 m) joined by a terraced mass stepping 37 to 15 m, hashed projecting loggia boxes; geometry in E/N metres registered to the fitted ring",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/526413270"
+    ],
+    "name": "Lumière (Bercy)",
+    "procedural": "lumiereBercy",
+    "height": 29,
+    "noShops": true,
+    "note": "commercial1/lumiereBercy.ts: 350 m ship-shaped glass office block, OSM outline; wings 29 m and central solar-roofed atrium +6 m (35 m) from IGN lidar MNS above the avenue; curtain wall with floor bands, mullions and canopy band from Commons 2012 photo; two round skylights from the aerial",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "relation/538267"
+    ],
+    "name": "Tour DGA (Cité de l'Air, Tour A)",
+    "procedural": "tourDGA",
+    "height": 66.5,
+    "noShops": true,
+    "note": "commercial1/tourDGA.ts: the relation is the whole round low block with a north court; Tour A (R+18, 66.5 m, pss-archi) a glazed lens with mullion fins and crown in its south half, south entrance canopy. IGN lidar/ortho are masked over the site, so the low block's 21 m is a guess",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/54730690"
+    ],
+    "name": "Immeuble Lesueur, Place de l'Opéra",
+    "procedural": "lesueurOperaBlock",
+    "height": 25,
+    "noShops": true,
+    "note": "commercial1/lesueurOperaBlock.ts: OSM outline extruded as a Haussmann-register stone block (shopfronts, 2nd/5th-floor iron balconies, cornice) under a zinc mansard with dormers and chimneys; roof 24-26 m from IGN lidar MNS (OSM's 21 m is the eave); no photograph found",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "relation/1086180"
+    ],
+    "name": "Hôtel Plaza Athénée",
+    "procedural": "plazaAthenee",
+    "height": 26,
+    "noShops": true,
+    "note": "commercial1/plazaAthenee.ts: 1911 palace hotel (Charles Lefebvre), OSM outline in cream stone, red awning and geranium box at every window, iron balconies on 1st/4th floors, cornice ~21 m, zinc mansard to 26 m with dormers and chimneys; from the brief and general knowledge, no lidar or photo check",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/1336812893"
+    ],
+    "name": "Keiko",
+    "procedural": "keiko",
+    "height": 69,
+    "noShops": true,
+    "note": "commercial1/keiko.ts: 2025 Loci Anima office tower, OSM plan split by lidar into a 63 m west wing and 69 m east wing, glazing with proud white slab bands, dark lobby, plant boxes; no facade photo found",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/881420349"
+    ],
+    "name": "Crédit Mutuel (Odile Decq)",
+    "procedural": "creditMutuelBerthier",
+    "height": 34,
+    "noShops": true,
+    "note": "commercial1/creditMutuelBerthier.ts: 2019 Odile Decq office, black glass body with floor bands and fins cantilevered over a recessed plinth, sloped roof, red entrance; no facade photo found",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/67560877"
+    ],
+    "name": "Hôtel Fauchon",
+    "procedural": "hotelFauchon",
+    "height": 21,
+    "noShops": true,
+    "note": "commercial1/hotelFauchon.ts: 5-star hotel in a Haussmann-era corner block, OSM outline in cream stone; Fauchon black shopfront with pink fascia and pink awnings per bay, iron balconies on 1st/4th floors, cornice, zinc mansard to 21 m with dormers and chimneys; no photo found, from the brief and brand colours",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/62379740"
+    ],
+    "name": "WeWork (avenue de France)",
+    "procedural": "weworkFrance",
+    "height": 31,
+    "noShops": true,
+    "note": "commercial1/weworkFrance.ts: 2018 glass office, OSM plan cut at its open north tip and split by IGN lidar into a 31 m north-west and 34 m south-east half, glazing with pale slab bands, dark ground floor, plant box; no facade photo could be fetched",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "relation/1528993"
+    ],
+    "name": "Le Pigalle (Bouillon Pigalle)",
+    "procedural": "lePigalle",
+    "height": 21,
+    "noShops": true,
+    "note": "commercial1/lePigalle.ts: listed (MH PA00086738) corner block on Place Pigalle; dark navy ground band with gold-framed arched openings, green planters and terrace rails over wooden shopfronts, cream stone upper floors with a railing at every window, cornice and low zinc attic; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/64306111"
+    ],
+    "name": "Immeuble Félix Potin",
+    "procedural": "felixPotin",
+    "height": 28,
+    "noShops": true,
+    "note": "commercial1/felixPotin.ts: listed (MH PA00088620) Paul Auscher 1904 corner block on rue de Rennes; glazed shopfront under a canopy, arched mezzanine, cream stone floors with rounded iron balconies, cornice and attic, round corner tower with balcony rings, stone dome and lantern; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "relation/610944"
+    ],
+    "name": "Immeuble Hennebique",
+    "procedural": "hennebique",
+    "height": 28,
+    "noShops": true,
+    "note": "commercial1/hennebique.ts: listed (MH PA00088580) Edouard Arnaud 1900, first reinforced-concrete block in Paris, 1 rue Danton at place Saint-Michel; ground arches on flared piers, cream stone floors alternating flat windows with iron rails and stacked three-faced bow windows, cornice and zinc attic, ornate round corner turret with arched lantern and bulb dome; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/67725906"
+    ],
+    "name": "Cercle National des Armées",
+    "procedural": "cercleNationalArmees",
+    "height": 31,
+    "noShops": true,
+    "note": "commercial1/cercleNationalArmees.ts: Lemaresquier 1927 officers' club, 8 place Saint-Augustin; OSM outline with rusticated round-headed ground bays, cream stone floors with iron balcony rails, cornice, slate mansard with round-headed dormers, and an oval slate dome with drum, statue plinths, balustraded crown and flag on the curved bay; no facade photo fetched, dome from the one roof photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/63201609"
+    ],
+    "name": "7 place Franz-Liszt",
+    "procedural": "liszt7",
+    "height": 24,
+    "noShops": true,
+    "note": "commercial1/liszt7.ts: listed (MH PA75100006) Achille Leclère corner block facing Saint-Vincent-de-Paul, 7 place Franz-Liszt / 1 rue d'Abbeville; cream ashlar floors, shopfronts under a red awning, continuous iron balconies on two floors with rails between, pedimented first-floor windows, three-floor glazed corner bay, slate mansard with pedimented dormers; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/54170954"
+    ],
+    "name": "352 rue Saint-Honoré",
+    "procedural": "stHonore352",
+    "height": 19,
+    "front": 218,
+    "noShops": true,
+    "note": "commercial1/stHonore352.ts: listed (MH PA00085954, Wikidata Q20650773) Louis XV house near Place Vendôme; street facade on the edges facing rue Saint-Honoré, honey ashlar, tall arched blue double door with console-borne balcony, wrought-iron scroll balcony, red timber shop left and glazed boutique with red awning right, window bays on the door's axis, cornice, slate mansard with dormers; plain party walls elsewhere; from the Commons photo of the door",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/54175244"
+    ],
+    "name": "368-370 rue Saint-Honoré",
+    "procedural": "stHonore368",
+    "height": 15,
+    "front": 210,
+    "noShops": true,
+    "note": "commercial1/stHonore368.ts: listed (MH PA00133004, Wikidata Q22975831) house near Place Vendôme; street facade on the edge facing rue Saint-Honoré: pale ashlar, arched carriage door with console-borne scroll balcony, small arched ground windows and shopfronts under black awnings, tall arched windows each with an iron rail, string courses, cornice, slate mansard; plain party walls elsewhere; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/63201688"
+    ],
+    "name": "3 place Franz-Liszt / 108 rue La Fayette",
+    "procedural": "liszt3",
+    "height": 21,
+    "front": 17,
+    "noShops": true,
+    "note": "commercial1/liszt3.ts: listed (MH PA75100003, Wikidata Q22980281) Achille Leclère corner block, 3 place Franz-Liszt / 108 rue La Fayette; street facades on the rue La Fayette and place Franz-Liszt edges meeting at a quoined corner: limestone ashlar, shopfronts with signs, an arched shop window and glazed door, shuttered mezzanine, continuous iron balconies at the first and top floors, pedimented first-floor windows, cornice, slate mansard with roof lights and chimneys; party walls on the south; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/54564626"
+    ],
+    "name": "Ancien Siège du Crédit Lyonnais",
+    "procedural": "creditLyonnais",
+    "height": 36,
+    "front": 346,
+    "noShops": true,
+    "note": "commercial1/creditLyonnais.ts: 1883 bank HQ (Bouwens van der Boijen, MH PA00086062), this way only (north block, Choiseul to Gramont): rusticated arcaded ground storey, giant-order pilasters, balustraded windows, cornice ~19 m, slate mansard with dormers to ~25 m; boulevard centre pavilion with portal, caryatids, clock, sculpted segmental pediment and square imperial dome to ~36 m; heights from the IGN lidar MNS, detail from the Commons photo",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/83863766"
+    ],
+    "name": "Le Passy Kennedy",
+    "procedural": "passyKennedy",
+    "height": 37,
+    "front": 165,
+    "noShops": true,
+    "note": "commercial1/passyKennedy.ts: curved 1970s office slab beside the Maison de la Radio (not modelled): 37 m south-west lobe and an arm stepping down 37/32/29/27/24 m (lidar MNS, OSM parts' levels); cream spandrel slabs with ribbon glazing, dark ground storey, cream parapet, roof plant; street front on avenue du Président Kennedy; from Commons photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/934641564"
+    ],
+    "name": "Bridge (Orange headquarters)",
+    "procedural": "orangeBridge",
+    "height": 60,
+    "front": 300,
+    "noShops": true,
+    "note": "commercial1/orangeBridge.ts: Arte Charpentier 2021 Orange HQ, plan and heights from the IGN lidar MNS (55 m west block, 60 m east block, plant crown) rather than OSM's 11 levels; dark glass with bronze floor bands jutting in stacked boxes, the west block's lower storeys recessed under its plaza edge, green roofs with white skylights; from the owner's plaza photos and the ortho",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/53557914"
+    ],
+    "name": "Le Paquebot",
+    "procedural": "paquebot",
+    "height": 24,
+    "front": 204,
+    "noShops": true,
+    "note": "commercial1/paquebot.ts: listed (MH PA00086654) Pierre Patout 1935 ocean-liner block, 3 boulevard Victor; OSM strip with white balcony decks and dark window ribbons on every storey of the street run, dark rough-cast base, iron-barred door between round columns, cream upper blocks stepping down from a prow block with a porthole; heights from the IGN lidar MNS, from the Commons photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/67256472"
+    ],
+    "name": "5 boulevard Malesherbes",
+    "procedural": "malesherbes5",
+    "height": 24,
+    "front": 65,
+    "noShops": true,
+    "note": "commercial1/malesherbes5.ts: Haussmann-era block near the Madeleine (Wikidata Q24815267); street run on the boulevard edges: cream ashlar, nine bays, central arched porte-cochere, arched ground-floor shopfronts, iron balconies (short on the 1st, longer on the 2nd and 3rd, continuous under the top floor), cornice, slate mansard with round oculus dormers; party walls elsewhere; from the Commons photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/54564592"
+    ],
+    "name": "Palais Berlitz",
+    "procedural": "palaisBerlitz",
+    "height": 34,
+    "front": 346,
+    "noShops": true,
+    "note": "commercial1/palaisBerlitz.ts: Lemaresquier 1932 Art Deco block (Palais de Hanovre), whole block of street faces: ground arcade of square piers, six floors of paired windows with string courses, twin fluted full-height piers with rounded caps, two set-back attic storeys with arched windows, chamfered corners with tall glazed entrance and raised lettered block; from the Commons photo",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/30984230"
+    ],
+    "name": "France Télévisions",
+    "procedural": "franceTelevisions",
+    "height": 32,
+    "noShops": true,
+    "note": "commercial1/franceTelevisions.ts: Jean-Paul Viguier 1998 HQ on the OSM ring, west wing 27 m and east wing 32 m (lidar step), ribbon green-grey glazing between white spandrel bands, white fins, dark glazed ground storey, thin white roof canopy; from the Commons photo",
+    "madeBy": "claude-opus-5-5"
+  }
+]

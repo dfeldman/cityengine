@@ -65,9 +65,10 @@ const KNOWN: Record<string, string[]> = {
     // Batch 5 (paris/batch5/, 2026-10-31). One carousel builder at two places, Ranelagh's and the Square Boucicaut's; one dance bay at four places along the Quai Saint-Bernard, as built.
     'duplicate | ranelaghManege',
     'duplicate | tinoBay',
-    // Batch 3 (paris/batch3/, 2026-10-31). Moreux's obelisks: one builder at two places, a pair. The Pagodes stand in the dalle's gap, hard against the bars Rome and Grenoble whose ground floors OSM runs under them; the Temple's kiosk has the square's public toilets by its side.
+    // Batch 3 (paris/batch3/, 2026-10-31). Moreux's obelisks: one builder at two places, a pair. The Olympiades's dalle is the deck every tower and bar of the district rises through (batch3/olympiades.ts, 2026-11-04); the Temple's kiosk has the square's public toilets by its side.
     'duplicate | legallObelisk',
-    'intersects | Les Olympiades: les Pagodes',
+    'intersects | Les Olympiades: la dalle',
+    'coplanar | Les Olympiades: la dalle', // its paving's bands lie on the deck by design
     'intersects | Square du Temple: le kiosque',
     // Batch 2 (paris/batch2/, 2026-10-31). The gates stand at OSM's entrances, up against the wards the entrance belongs to; the Coulée's viaduct has buildings hard against its flanks all along; the kiosk has a shed touching it in the Jardin d'Acclimatation.
     // Coplanar: the rock's flat-topped slabs and the viaduct's stacked decks meet on planes by design, and the belvedere's paving on flat test ground meets its own skirt.

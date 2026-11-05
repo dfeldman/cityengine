@@ -9,6 +9,7 @@ import { VIEWPORT } from './shot-size.ts'
 import { chromium } from 'playwright'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { Projection } from '../src/city/geo.ts'
 const arg = (n: string, f = ''): string => {
   const h = process.argv.slice(2).find((a) => a.startsWith(`--${n}=`))
   return h ? h.slice(n.length + 3) : f
@@ -24,9 +25,10 @@ const at = arg('at') ? arg('at').split(',').map(Number) : null
 let place = arg('start') ? `&start=${arg('start')}&freeze=1` : ''
 if (at) {
   const { origin } = JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'public', 'cities', city, 'v3', 'index.json'), 'utf8')) as { origin: { lat: number; lon: number } }
-  const R = 6371000
-  const k = (Math.PI / 180) * R
-  place = `&at=${(origin.lat + at[1] / k).toFixed(7)},${(origin.lon + at[0] / (k * Math.cos((origin.lat * Math.PI) / 180))).toFixed(7)}&freeze=1`
+  // the city's own projection (src/city/geo.ts, R = 6378137): a private R of 6371000 put the start 0.11 % of the distance
+  // from the origin off — 5 m at the Cité U, more at La Défense or Versailles
+  const { lat, lon } = new Projection(origin).toLatLon({ x: at[0], z: at[1] })
+  place = `&at=${lat.toFixed(7)},${lon.toFixed(7)}&freeze=1`
 }
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: VIEWPORT })

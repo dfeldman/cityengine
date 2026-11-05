@@ -7,6 +7,8 @@ export interface Fit {
   height: number
   /** the footprint itself (or the courtyard, for a `court` entry), in the model's own frame, anticlockwise */
   ring?: { x: number; z: number }[]
+  /** the footprint's courtyards (an OSM multipolygon's inner rings), in the same frame; absent where it has none */
+  holes?: { x: number; z: number }[][]
   /**
    * The ground at the middle of the model's front (local (0, −hz)) above the model's base, metres. The base is the
    * LOWEST ground under the footprint, so on a hillside a builder that puts its entrance at y = 0 buries it under the

@@ -1,0 +1,33 @@
+/**
+ * Commercial batch 1 (2026-11-04): the first 20 of PARIS-COMMERCIAL-PRIORITY.md outside La Défense and worship (owner: "a procedural renderer for each tall building in the area (over 37 meters) and any other interesting or important buildings"). One file per building; each entry's madeBy names its maker.
+ */
+import type { MeshBuilder } from '../../../buildings.ts'
+import type { Fit } from '../../fit.ts'
+import { hyattEtoile } from './hyattEtoile.ts'
+import { homeHamonicMasson } from './homeHamonicMasson.ts'
+import { tourLaSabliere } from './tourLaSabliere.ts'
+import { lumiereBercy } from './lumiereBercy.ts'
+import { tourDGA } from './tourDGA.ts'
+
+import { lesueurOperaBlock } from './lesueurOperaBlock.ts'
+import { plazaAthenee } from './plazaAthenee.ts'
+import { keiko } from './keiko.ts'
+import { creditMutuelBerthier } from './creditMutuelBerthier.ts'
+import { hotelFauchon } from './hotelFauchon.ts'
+import { weworkFrance } from './weworkFrance.ts'
+import { lePigalle } from './lePigalle.ts'
+import { felixPotin } from './felixPotin.ts'
+import { hennebique } from './hennebique.ts'
+import { cercleNationalArmees } from './cercleNationalArmees.ts'
+import { liszt7 } from './liszt7.ts'
+import { liszt3 } from './liszt3.ts'
+import { stHonore352 } from './stHonore352.ts'
+import { stHonore368 } from './stHonore368.ts'
+import { creditLyonnais } from './creditLyonnais.ts'
+import { passyKennedy } from './passyKennedy.ts'
+import { orangeBridge } from './orangeBridge.ts'
+import { paquebot } from './paquebot.ts'
+import { malesherbes5 } from './malesherbes5.ts'
+import { palaisBerlitz } from './palaisBerlitz.ts'
+import { franceTelevisions } from './franceTelevisions.ts'
+export const PARIS_COMMERCIAL1: Record<string, (out: MeshBuilder, fit: Fit) => void> = { hyattEtoile, tourLaSabliere, homeHamonicMasson, lumiereBercy, tourDGA, lesueurOperaBlock, plazaAthenee, keiko, creditMutuelBerthier, hotelFauchon, weworkFrance, lePigalle, felixPotin, hennebique, cercleNationalArmees, liszt7, liszt3, stHonore352, stHonore368, creditLyonnais, passyKennedy, orangeBridge, paquebot, malesherbes5, palaisBerlitz, franceTelevisions }

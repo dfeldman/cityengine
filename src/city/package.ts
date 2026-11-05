@@ -248,7 +248,7 @@ export interface PackedPoi {
  * kit decided it could honestly be. `render/sports.ts` draws it; nothing downstream needs the polygon.
  */
 export interface PackedCourt {
-  sport: 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
+  sport: 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground' | 'soccer' | 'rugby' | 'handball'
   x: number
   z: number
   /** the long axis, radians: the court's length runs along (cos h, sin h) */
@@ -257,6 +257,8 @@ export interface PackedCourt {
   wid: number
   /** a basketball half-court: one hoop, one key, no centre line */
   half?: boolean
+  /** red clay surface */
+  clay?: boolean
 }
 
 /**
@@ -409,7 +411,7 @@ export interface CityPackage {
   /** named buildings, for their name plates and totems */
   landmarks?: PackedLandmark[]
   /** far landmarks on the horizon, in local metres (tools/cities.ts `skyline`) */
-  skyline?: { name: string; x: number; z: number; procedural: string; heightM: number; baseY?: number; bearing?: number; boost?: number }[]
+  skyline?: { name: string; x: number; z: number; procedural: string; heightM: number; baseY?: number; bearing?: number; boost?: number; hx?: number; hz?: number }[]
   /** mapped street furniture (tools/overpass.ts `furnitureQuery`); absent on a package baked before it */
   furniture?: PackedFurniture[]
   /**

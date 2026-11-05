@@ -64,7 +64,7 @@ async function main(): Promise<void> {
         + (arg('view') ? `&view=${arg('view')}` : '') + (arg('time') ? `&time=${arg('time')}` : '')
         + (arg('weather') ? `&weather=${arg('weather')}` : '') + (arg('q') ? `&q=${arg('q')}` : '')
     } else {
-      url = `${BASE}/?showcase=1${style ? `&style=${style}` : ''}`
+      url = `${BASE}/?showcase=1${style ? `&style=${style}` : ''}${arg('query') ? `&${arg('query')}` : ''}`
     }
     await page.goto(url, { waitUntil: 'domcontentloaded' })
     await page.waitForFunction(

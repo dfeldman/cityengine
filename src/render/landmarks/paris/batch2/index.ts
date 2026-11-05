@@ -10,6 +10,7 @@ import { fondationSuisse, maisonBresil } from './cite.ts'
 import { carmesChurch, debreGate, fochGate, rothschildGate, tenonGate, trousseauGate } from './fronts.ts'
 import { acclimRocher, acclimSeoul, acclimVoliere, batignollesKiosk, batignollesRocks, bellevilleBelvedere, bellevilleCascade, bellevilleVines, COULEE_VIADUCT, serresAuteuil } from './parks.ts'
 import { unescoSiege } from './unesco.ts'
+import { unescoJardin } from './unesco-jardin.ts'
 
 export const PARIS_BATCH2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   bellevilleCascade,
@@ -28,6 +29,7 @@ export const PARIS_BATCH2: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   fondationSuisse,
   maisonBresil,
   unescoSiege,
+  unescoJardin,
   carmesChurch,
   tenonGate,
   trousseauGate,

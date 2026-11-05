@@ -1,0 +1,325 @@
+[
+  {
+    "name": "Château de Vincennes: le Donjon, sa chemise et le Châtelet",
+    "procedural": "donjonVincennes",
+    "osm": [
+      "way/83817983",
+      "relation/1559341",
+      "way/1416530512",
+      "way/1416530519",
+      "way/1250045955",
+      "way/1250045956",
+      "way/1416530513"
+    ],
+    "lat": 48.842716,
+    "lon": 2.434678,
+    "size": [
+      66,
+      64
+    ],
+    "height": 52,
+    "front": 187.6,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Château de Vincennes: l'enceinte, ses tours et la Tour du Village",
+    "procedural": "enceinteVincennes",
+    "osm": [
+      "way/110188215",
+      "way/110188217",
+      "way/110188221",
+      "way/110188223",
+      "way/110188224",
+      "way/110188225",
+      "way/110188226",
+      "way/110188230",
+      "way/110188232"
+    ],
+    "lat": 48.842752,
+    "lon": 2.43602,
+    "size": [
+      196,
+      360
+    ],
+    "height": 40,
+    "front": 187.6,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Sainte-Chapelle de Vincennes",
+    "procedural": "chapelleVincennes",
+    "osm": [
+      "way/83819785"
+    ],
+    "lat": 48.842333,
+    "lon": 2.43647,
+    "size": [
+      44,
+      38
+    ],
+    "height": 39,
+    "front": 180,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Château de Vincennes: Pavillons du Roi et de la Reine, Portique Le Vau",
+    "procedural": "pavillonsVincennes",
+    "osm": [
+      "way/83819059",
+      "way/1458069802",
+      "way/1416533435"
+    ],
+    "lat": 48.841774,
+    "lon": 2.435795,
+    "size": [
+      176,
+      112
+    ],
+    "height": 32,
+    "front": 187.6,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Pagode de Vincennes",
+    "procedural": "pagodeVincennes",
+    "osm": [
+      "way/62819091"
+    ],
+    "lat": 48.82848,
+    "lon": 2.41535,
+    "size": [
+      23,
+      30
+    ],
+    "height": 24,
+    "front": 283.5,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Kagyu-Dzong",
+    "procedural": "kagyuDzong",
+    "osm": [
+      "way/180597886"
+    ],
+    "lat": 48.82877,
+    "lon": 2.4143,
+    "size": [
+      30,
+      16
+    ],
+    "height": 12,
+    "front": 140,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Porte Chinoise",
+    "procedural": "porteChinoise",
+    "osm": [
+      "way/318109630"
+    ],
+    "lat": 48.83441,
+    "lon": 2.468674,
+    "size": [
+      7.5,
+      2
+    ],
+    "height": 8,
+    "front": 68,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Temple du souvenir indochinois",
+    "procedural": "templeIndochinois",
+    "osm": [
+      "way/62819535"
+    ],
+    "lat": 48.834582,
+    "lon": 2.467369,
+    "size": [
+      10,
+      10
+    ],
+    "height": 7.6,
+    "front": 334,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Pavillon de l'Indochine",
+    "procedural": "pavillonIndochine",
+    "osm": [
+      "way/108487691"
+    ],
+    "lat": 48.833934,
+    "lon": 2.46635,
+    "size": [
+      30,
+      10
+    ],
+    "height": 14,
+    "front": 93,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: Espace Delta",
+    "procedural": "espaceDelta",
+    "osm": [
+      "way/26007001"
+    ],
+    "lat": 48.838103,
+    "lon": 2.443058,
+    "size": [
+      38,
+      45
+    ],
+    "height": 10,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: pavillon Hortensias",
+    "procedural": "pavillonFloral",
+    "osm": [
+      "way/62819227"
+    ],
+    "lat": 48.83733,
+    "lon": 2.444854,
+    "size": [
+      26,
+      30
+    ],
+    "height": 7,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: pavillon Les Bambous",
+    "procedural": "pavillonFloral",
+    "osm": [
+      "way/62819953"
+    ],
+    "lat": 48.837434,
+    "lon": 2.443879,
+    "size": [
+      30,
+      30
+    ],
+    "height": 7,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: pavillon Les Cèdres",
+    "procedural": "pavillonFloral",
+    "osm": [
+      "way/985145055"
+    ],
+    "lat": 48.837119,
+    "lon": 2.444466,
+    "size": [
+      25,
+      28
+    ],
+    "height": 7,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: pavillon Les Chênes",
+    "procedural": "pavillonFloral",
+    "osm": [
+      "way/985145056"
+    ],
+    "lat": 48.837034,
+    "lon": 2.444742,
+    "size": [
+      25,
+      24
+    ],
+    "height": 7,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: pavillon Les Cyprès",
+    "procedural": "pavillonFloral",
+    "osm": [
+      "way/985145059"
+    ],
+    "lat": 48.837089,
+    "lon": 2.444123,
+    "size": [
+      29,
+      28
+    ],
+    "height": 7,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc Floral: pavillon Les Tilleuls",
+    "procedural": "pavillonFloral",
+    "osm": [
+      "way/985145060"
+    ],
+    "lat": 48.837069,
+    "lon": 2.443741,
+    "size": [
+      28,
+      30
+    ],
+    "height": 7,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc zoologique: Grande serre",
+    "procedural": "grandeSerre",
+    "osm": [
+      "way/261443112",
+      "relation/522886224"
+    ],
+    "lat": 48.833468,
+    "lon": 2.416673,
+    "size": [
+      96,
+      48
+    ],
+    "height": 20,
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Hippodrome de Paris-Vincennes: grandstand",
+    "procedural": "hippodromeVincennes",
+    "osm": [
+      "way/62819893"
+    ],
+    "lat": 48.82125,
+    "lon": 2.4512,
+    "size": [
+      180,
+      55
+    ],
+    "height": 27,
+    "front": 152,
+    "noShops": true,
+    "madeBy": "opus"
+  }
+]

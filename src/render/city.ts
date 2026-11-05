@@ -5104,7 +5104,8 @@ export class City {
       // (…and a fuel canopy, a station shop or a car wash, which the map names outright, from its recipe — city/specials.ts)
       const special = specialFor(b.id)
       const look = special ? specialLook(special, LOOKS_ON ? lookFor(b.id, b.style) : null) : LOOKS_ON ? lookFor(b.id, b.style) : null
-      const styleId = look?.style ?? b.style
+      // (a region with a post-war palette of its own draws its baked modern boxes as that: Paris, facade.ts PostwarDress)
+      const styleId = (look?.style ?? b.style) === 'bauhaus' && !look?.style && this.region.palettes.parismodern ? 'parismodern' : look?.style ?? b.style
       // (a label's storey count wins, and the walls are kept within what that many storeys can be: a one-storey shop the
       //  map calls 12 m — its billboard — was drawn with two rows of windows)
       const lv = look?.levels

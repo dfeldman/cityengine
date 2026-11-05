@@ -6,13 +6,14 @@ import type { Fit } from '../../fit.ts'
 import { galeriesHomme, galeriesLafayette, galeriesMaison, printempsMain, printempsNorth, printempsWest, samaritaine, samaritaineRivoli } from './grands.ts'
 import { beaugrenelleLinois, beaugrenelleMagnetic, beaugrenellePont, bercy2, grandEcran } from './malls.ts'
 import { chapeauEve, eoleCourts, lambertJet, legallObelisk, rochersDansLeCiel, templeKiosk, templeRocher } from './parks.ts'
-import { fdsBalcon, fdsBanded, fdsBronze, fdsChimney, fdsCristal, fdsMirabeau, fdsRibbed, maineMontparnasse, olympiadesBar, olympiadesPagodes, olympiadesPale, olympiadesRust, olympiadesTower, orguesBloc, orguesFugue, orguesPrelude, superItalie, tourTotem, tripode } from './towers.ts'
+import { fdsBalcon, fdsBanded, fdsBronze, fdsChimney, fdsCristal, fdsMirabeau, fdsRibbed, maineMontparnasse, olympiadesBar, olympiadesPale, olympiadesRust, olympiadesTower, orguesBloc, superItalie, tourTotem, tripode } from './towers.ts'
+import { olympiadesDalle } from './olympiades.ts'
 
 export const PARIS_BATCH3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   printempsMain, printempsWest, printempsNorth, galeriesLafayette, galeriesHomme, galeriesMaison, samaritaine, samaritaineRivoli,
   bercy2, grandEcran, beaugrenelleLinois, beaugrenelleMagnetic, beaugrenellePont,
-  orguesPrelude, orguesFugue, orguesBloc, tourTotem, superItalie, tripode, maineMontparnasse,
+  orguesBloc, tourTotem, superItalie, tripode, maineMontparnasse,
   fdsRibbed, fdsBanded, fdsBalcon, fdsBronze, fdsCristal, fdsMirabeau, fdsChimney,
-  olympiadesTower, olympiadesPale, olympiadesRust, olympiadesBar, olympiadesPagodes,
+  olympiadesTower, olympiadesPale, olympiadesRust, olympiadesBar, olympiadesDalle,
   rochersDansLeCiel, templeKiosk, templeRocher, legallObelisk, chapeauEve, eoleCourts, lambertJet,
 }

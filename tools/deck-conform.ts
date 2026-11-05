@@ -14,6 +14,7 @@ import { BridgeDecks, placement, toWorld, type ConformReport, type DeckDecl, typ
 import { SF_BRIDGE_DECKS, BAY_BIKEWAY, BAY_RIDDEN_RAMPS, SALESFORCE_PARK_WAYS, type AuthoredEnd, type AuthoredWay } from '../src/city/sf/bridges.ts'
 import { PIER39_ROUTE, PIER39_ROUTE_MODEL } from '../src/city/sf/pier39-route.ts'
 import { TEA_GARDEN_LOOP, TEA_GARDEN_LOOP_MODEL } from '../src/city/sf/tea-garden-loop.ts'
+import { UNESCO_TRAILS, UNESCO_TRAILS_MODEL } from '../src/city/paris/unesco-trails.ts'
 import type { OsmWay } from './overpass.ts'
 
 /** the decks each region's bridge models declare, by `procedural` */
@@ -47,6 +48,8 @@ export function decksOf(region: string, origin: { lat: number; lon: number }): B
 const REGION_WAYS: Record<string, { models: { model: string; ways: AuthoredWay[] }[]; ridden: [number, number][] }> = {
   'san-francisco': { models: [{ model: 'bayBridgeNear', ways: BAY_BIKEWAY }, { model: 'salesforceTransitCenter', ways: SALESFORCE_PARK_WAYS },
     { model: PIER39_ROUTE_MODEL, ways: PIER39_ROUTE }, { model: TEA_GARDEN_LOOP_MODEL, ways: TEA_GARDEN_LOOP }], ridden: BAY_RIDDEN_RAMPS },
+  // the Garden of Peace's walks at UNESCO (src/city/paris/unesco-trails.ts)
+  paris: { models: [{ model: UNESCO_TRAILS_MODEL, ways: UNESCO_TRAILS }], ridden: [] },
 }
 
 function placementOf(region: string, procedural: string, origin: { lat: number; lon: number }): ReturnType<typeof placement> | null {

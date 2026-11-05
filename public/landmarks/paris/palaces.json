@@ -1032,5 +1032,355 @@
     "sign": false,
     "note": "The palace's garden: railings round OSM way 79232732's ring, the gravel oval and axis walk, clipped trees, empty pedestals for the statues' builder. Same frame as the Palais Galliera: palaces/galliera.ts.",
     "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Château de Versailles",
+    "procedural": "versaillesChateau",
+    "osm": [
+      "relation/1149002",
+      "way/18175173",
+      "way/18175177",
+      "way/2298005",
+      "way/18175171"
+    ],
+    "lat": 48.804578,
+    "lon": 2.121154,
+    "rotateDeg": 292.75,
+    "size": [
+      423,
+      149.4
+    ],
+    "height": 32,
+    "note": "OSM relation 1149002 replaced; its box turned to the garden front's axis (bearing 22.75, osmium 2026-11-04), front (−z) to the Place d'Armes, bearing 112.75. Heights from IGN's MNS (docs/landmarks/MODEL-VERSAILLES.md). First slice: the plan round its courts to one cornice, the chapel, the Opéra."
+  },
+  {
+    "name": "Aile des Ministres sud",
+    "procedural": "versaillesMinistres",
+    "osm": [
+      "way/18175161"
+    ],
+    "height": 15,
+    "note": "Mansart’s south range on the Cour royale: two storeys of stone under a slate mansard. Fitted to the OSM way; builder in src/render/landmarks/paris/versailles/communs.ts (heights from the literature, lidar not yet sampled).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Aile des Ministres nord",
+    "procedural": "versaillesMinistres",
+    "osm": [
+      "way/74623864"
+    ],
+    "height": 15,
+    "note": "The north range on the Cour royale, as the south. Fitted to the OSM way; builder in src/render/landmarks/paris/versailles/communs.ts (heights from the literature, lidar not yet sampled).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Grand Commun",
+    "procedural": "versaillesGrandCommunPlan",
+    "osm": [
+      "relation/1148845",
+      "way/2297691"
+    ],
+    "height": 18,
+    "note": "Mansart’s Grand Commun (1684): brick with stone dressings, three storeys and a mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôtel des Réservoirs",
+    "procedural": "versaillesReservoirs",
+    "osm": [
+      "way/12720463"
+    ],
+    "height": 17,
+    "note": "The Réservoirs de l’Opéra (1752): stone, three storeys and a mansard. Fitted to the OSM way; builder in src/render/landmarks/paris/versailles/communs.ts (heights from the literature, lidar not yet sampled).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orangerie de Versailles",
+    "procedural": "versaillesOrangerie",
+    "osm": [
+      "way/13395421"
+    ],
+    "height": 13,
+    "note": "Mansart’s Orangerie (1686): one vaulted storey of great arched windows under the terrace. Fitted to the OSM way; builder in src/render/landmarks/paris/versailles/communs.ts (heights from the literature, lidar not yet sampled).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Grande Écurie",
+    "procedural": "versaillesGrandeEcurie",
+    "osm": [
+      "relation/1172410"
+    ],
+    "height": 17,
+    "note": "Hardouin-Mansart’s Grande Écurie (1679–82) on the Place d’Armes: two storeys of stone, the ground arched, mansards round its courts. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Petite Écurie",
+    "procedural": "versaillesPetiteEcurie",
+    "osm": [
+      "relation/1148863"
+    ],
+    "height": 17,
+    "note": "Hardouin-Mansart’s Petite Écurie (1679–82), the Grande’s twin across the Avenue de Paris. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Écuries de la Reine",
+    "procedural": "versaillesEcuriesReine",
+    "osm": [
+      "relation/1148826"
+    ],
+    "height": 17,
+    "note": "The old stables of the King, then the Queen (1672), now the Cour d’appel: stone, three storeys and a mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Couvent des Récollets",
+    "procedural": "versaillesRecollets",
+    "osm": [
+      "relation/1149004"
+    ],
+    "height": 16,
+    "note": "The Récollets’ convent (1684, Mansart), later a barracks: stone, three storeys round its cloister. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôtel de la Chancellerie",
+    "procedural": "versaillesChancellerie",
+    "osm": [
+      "way/74622120"
+    ],
+    "height": 13,
+    "note": "The Chancellerie (1670s): stone, two storeys and a mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôtel de la Guerre et de la Marine",
+    "procedural": "versaillesGuerreMarine",
+    "osm": [
+      "way/74625848"
+    ],
+    "height": 17,
+    "note": "Berthier’s Hôtels de la Guerre and de la Marine (1759–62), now the Bibliothèque municipale: stone, three storeys, mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôtel des Affaires étrangères",
+    "procedural": "versaillesAffairesEtrangeres",
+    "osm": [
+      "way/74627190"
+    ],
+    "height": 17,
+    "note": "Berthier’s Hôtel des Affaires étrangères (1761), now the Palais des Congrès: stone, three storeys, mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Chefferie du Génie",
+    "procedural": "versaillesChefferieGenie",
+    "osm": [
+      "way/74633639"
+    ],
+    "height": 21,
+    "note": "The Chefferie du Génie: stone, four storeys and a mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Salle du Jeu de Paume",
+    "procedural": "versaillesJeuDePaume",
+    "osm": [
+      "way/55697735"
+    ],
+    "height": 14,
+    "note": "The Jeu de Paume hall (1686), where the Tennis Court Oath was sworn: plain stone, windows high under the eaves, slate. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôtel de ville de Versailles",
+    "procedural": "versaillesHotelDeVille",
+    "osm": [
+      "way/74630181"
+    ],
+    "height": 19,
+    "note": "Legrand’s Hôtel de ville (1900), Louis XIII revival: brick with stone dressings under tall slate roofs. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Cathédrale Saint-Louis de Versailles",
+    "procedural": "versaillesSaintLouis",
+    "osm": [
+      "way/74627467"
+    ],
+    "front": 29.4,
+    "height": 40,
+    "note": "Hardouin-Mansart de Sagonne’s cathedral (1743–54): pale stone Latin cross, twin towers with lanterns, a dome over the crossing not drawn yet. Builder in versailles/communs.ts (church kit); heights from the literature, not the lidar. Front at bearing 29.4, the outline’s long axis, to the Place Saint-Louis (owner’s photograph, 2026-11-04: it faces the square straight on).",
+    "madeBy": "claude-opus-5-5",
+    "exactFront": true
+  },
+  {
+    "name": "Notre-Dame de Versailles",
+    "procedural": "versaillesNotreDame",
+    "osm": [
+      "way/74624822"
+    ],
+    "front": "street",
+    "height": 35,
+    "note": "Hardouin-Mansart’s parish church of the court (1684–86). Builder in versailles/communs.ts (church kit); heights from the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Théâtre Montansier",
+    "procedural": "versaillesMontansier",
+    "osm": [
+      "way/74625379"
+    ],
+    "front": "street",
+    "height": 15,
+    "note": "Heurtier’s theatre (1777) for Mlle Montansier. Builder in versailles/communs.ts (church kit); heights from the literature, not the lidar.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Café de Flore",
+    "procedural": "cafeDeFlore",
+    "osm": [
+      "way/124592808"
+    ],
+    "lat": 48.854159,
+    "lon": 2.332581,
+    "rotateDeg": 10.8,
+    "size": [
+      15.5,
+      9.8
+    ],
+    "height": 23.2,
+    "note": "Placed on OSM way 124592808's box turned to the Boulevard Saint-Germain (osmium, 2026-11-04), −z bearing 190.8, +x to the Rue Saint-Benoît. Only the café front (green wood, gold lettering, awnings, wicker terrace) is drawn from knowledge of the place; the building above is a generic Haussmann block."
+  },
+  {
+    "name": "Les Deux Magots",
+    "procedural": "lesDeuxMagots",
+    "osm": [
+      "way/124592746"
+    ],
+    "lat": 48.854184,
+    "lon": 2.333011,
+    "rotateDeg": 16.4,
+    "size": [
+      24.9,
+      35.5
+    ],
+    "height": 25.2,
+    "note": "Placed on OSM way 124592746's box turned to the Place Saint-Germain-des-Prés (osmium, 2026-11-04), −z bearing 196.4, +x to the Rue Bonaparte. The way is an irregular block: its box is used. Café front only; the building above is a generic Haussmann block."
+  },
+  {
+    "name": "Fouquet's",
+    "procedural": "fouquets",
+    "osm": [
+      "way/138208766",
+      "way/138208828"
+    ],
+    "lat": 48.871339,
+    "lon": 2.301279,
+    "rotateDeg": 199,
+    "size": [
+      37.6,
+      34
+    ],
+    "height": 24.8,
+    "note": "Placed on OSM ways 138208766 + 138208828 (the hotel block and its 1-storey terrace) turned to the Champs-Élysées (osmium, 2026-11-04), −z bearing 19, −x toward the Avenue George V. OSM's block sits a little back from the George V corner; the red corner awnings are drawn on its two street faces. Building above is generic."
+  },
+  {
+    "name": "La Coupole",
+    "procedural": "laCoupole",
+    "osm": [
+      "way/79621186"
+    ],
+    "lat": 48.842192,
+    "lon": 2.328003,
+    "rotateDeg": 207,
+    "size": [
+      48,
+      28
+    ],
+    "height": 27.2,
+    "note": "Placed on OSM way 79621186 (listed MH) turned to the Boulevard du Montparnasse (osmium, 2026-11-04), −z bearing 27, +x along the boulevard (bearing 117). Café front with Art Deco sign board and red awning drawn from knowledge of the place; the building above is generic."
+  },
+  {
+    "name": "Le Dôme",
+    "procedural": "leDome",
+    "osm": [
+      "way/79621503"
+    ],
+    "lat": 48.841928,
+    "lon": 2.328855,
+    "rotateDeg": 207,
+    "size": [
+      30,
+      24
+    ],
+    "height": 29,
+    "note": "Placed on OSM way 79621503 turned to the Boulevard du Montparnasse (osmium, 2026-11-04), −z bearing 27, +x toward the Boulevard Raspail corner. Café front generic Art Deco; building above generic."
+  },
+  {
+    "name": "La Rotonde",
+    "procedural": "laRotonde",
+    "osm": [
+      "way/64113838"
+    ],
+    "lat": 48.842482,
+    "lon": 2.329103,
+    "rotateDeg": 26,
+    "size": [
+      30,
+      24
+    ],
+    "height": 27,
+    "note": "Placed on OSM way 64113838 at the Boulevard Raspail corner, turned to the Boulevard du Montparnasse (osmium, 2026-11-04), −z bearing 206, +x toward Raspail. Red awnings; building above generic."
+  },
+  {
+    "name": "Maxim's",
+    "procedural": "maxims",
+    "osm": [
+      "way/67109756"
+    ],
+    "lat": 48.86708,
+    "lon": 2.32203,
+    "rotateDeg": 295,
+    "size": [
+      16,
+      12
+    ],
+    "height": 23,
+    "note": "Placed on OSM way 67109756's street frontage on the west side of the Rue Royale (osmium, 2026-11-04), −z bearing 115 toward the street. Only the Art Nouveau front (dark red mahogany, gold lettering, red awning) is drawn from knowledge of the place; building above generic."
+  },
+  {
+    "name": "Bouillon Chartier",
+    "procedural": "bouillonChartier",
+    "osm": [
+      "way/1085278"
+    ],
+    "lat": 48.87192,
+    "lon": 2.342968,
+    "rotateDeg": 270,
+    "size": [
+      11,
+      12
+    ],
+    "height": 19,
+    "note": "Placed on the street end of OSM way 1085278 (a 50 m strip back from the Rue du Faubourg-Montmartre; osmium, 2026-11-04), −z bearing 90. Brown painted front, lettered sign, lamps over the passage entry; building above generic."
+  },
+  {
+    "name": "Ladurée Champs-Élysées",
+    "procedural": "laduree",
+    "osm": [
+      "way/926307484"
+    ],
+    "lat": 48.870909,
+    "lon": 2.302776,
+    "rotateDeg": 205,
+    "size": [
+      11.2,
+      12
+    ],
+    "height": 20,
+    "note": "Placed on the avenue end of OSM way 926307484 (nearest building to the address node 75, osmium, 2026-11-04), −z bearing 25 toward the Champs-Élysées. Pale-green front, gold lettering, green awnings; building above generic."
   }
 ]

@@ -170,6 +170,21 @@ vec3 mirrorTile(vec2 cell, vec3 n, vec3 tt, vec3 bt, vec3 c) {
 vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   vec2 p = faceCoords(n);
   float vert = abs(n.y) < 0.7 ? 1.0 : 0.0;
+  if (sid > 21.5) {
+    // 22 SETTS: granite cobbles, the château terraces of Saint-Cloud (owner, 2026-11-04: "everything in the allées area
+    // seems to be cobblestone"). Stones SETT_W x SETT_D in staggered courses, each its own tone of the colour given, a
+    // dark sandy joint between, the tops domed a little. Past 30-90 m the joints go and only the mean is left.
+    const float SETT_W = 0.2, SETT_D = 0.14;
+    vec2 q = vec2(p.x / SETT_W, p.y / SETT_D);
+    q.x += 0.5 * mod(floor(q.y), 2.0);
+    vec2 cell = floor(q);
+    vec2 f = fract(q) - 0.5;
+    float joint = smoothstep(0.38, 0.47, max(abs(f.x) * 0.93, abs(f.y)));
+    float tone = 0.78 + 0.4 * hash2(cell + 3.0);
+    float dome = 1.0 - 0.18 * dot(f, f);
+    vec3 col = mix(c * tone * dome, c * 0.42, joint);
+    return mix(c, col, nearFade(30.0, 90.0));
+  }
   if (sid > 20.5) {
     // 21 LOCKS: the Pont des Arts's railings hung with love padlocks (owner, 2026-11-03: "they're really tiny"). Locks about
     // 5 cm across in staggered rows, overlapping, mostly brass, steel and rust and one in six a bright colour, with the dark
@@ -536,7 +551,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, moucharabieh: 19, tessera: 20, locks: 21 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, moucharabieh: 19, tessera: 20, locks: 21, setts: 22 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

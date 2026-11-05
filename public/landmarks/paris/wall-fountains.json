@@ -1,0 +1,342 @@
+[
+  {
+    "name": "Fontaine Charlemagne",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "niche",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8540834,
+    "lon": 2.3611705,
+    "size": [
+      3.0,
+      0.7
+    ],
+    "height": 5.0,
+    "front": 200.6,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3075996, snapped 1.6 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine Cuvier",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "niche",
+      "p": 3
+    },
+    "kind": "fountain",
+    "lat": 48.8440382,
+    "lon": 2.3549859,
+    "size": [
+      3.9,
+      2.4
+    ],
+    "height": 8.5,
+    "front": 263.8,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076018, snapped 4.4 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine Maubuée",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "arch",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8610413,
+    "lon": 2.3512794,
+    "size": [
+      2.6,
+      0.6
+    ],
+    "height": 4.2,
+    "front": 23.4,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q2420041, snapped 1.4 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine Palatine",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "mascaron",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8500154,
+    "lon": 2.3359143,
+    "size": [
+      2.8,
+      0.5
+    ],
+    "height": 3.8,
+    "front": 263.4,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076063, snapped 1.7 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine Popincourt",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "mascaron",
+      "p": 2
+    },
+    "kind": "fountain",
+    "lat": 48.8576086,
+    "lon": 2.363399,
+    "size": [
+      2.2,
+      0.5
+    ],
+    "height": 3.4,
+    "front": 294.0,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q18084769, snapped 0.2 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine de Charonne",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "pilaster",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8519832,
+    "lon": 2.3737256,
+    "size": [
+      2.4,
+      0.6
+    ],
+    "height": 4.6,
+    "front": 203.2,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076130, snapped 1.8 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine de Mars",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "portico",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8584055,
+    "lon": 2.302411,
+    "size": [
+      3.7,
+      1.6
+    ],
+    "height": 8.5,
+    "front": 61.0,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076151, snapped 0.2 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine de la Charité",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "niche",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8576293,
+    "lon": 2.3634122,
+    "size": [
+      3.0,
+      0.6
+    ],
+    "height": 5.2,
+    "front": 294.0,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q16636583, snapped 4.8 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine de la Croix-du-Trahoir",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "pilaster",
+      "p": 2
+    },
+    "kind": "fountain",
+    "lat": 48.8614201,
+    "lon": 2.3423375,
+    "size": [
+      3.0,
+      0.6
+    ],
+    "height": 6.0,
+    "front": 14.5,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076193, snapped 3.1 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine de la Roquette",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "niche",
+      "p": 2
+    },
+    "kind": "fountain",
+    "lat": 48.8555837,
+    "lon": 2.374753,
+    "size": [
+      3.0,
+      0.6
+    ],
+    "height": 5.0,
+    "front": 331.0,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076205, snapped 3.3 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine des Guillemites",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "mascaron",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8587305,
+    "lon": 2.3577432,
+    "size": [
+      2.0,
+      0.4
+    ],
+    "height": 3.0,
+    "front": 139.1,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q22921414, snapped 0.4 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine des Haudriettes",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "niche",
+      "p": 1
+    },
+    "kind": "fountain",
+    "lat": 48.8611154,
+    "lon": 2.3579083,
+    "size": [
+      3.2,
+      0.7
+    ],
+    "height": 6.0,
+    "front": 126.5,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q765471, snapped 9.3 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine du Pot-de-Fer",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "arch",
+      "p": 3
+    },
+    "kind": "fountain",
+    "lat": 48.8430456,
+    "lon": 2.3495613,
+    "size": [
+      5.0,
+      0.7
+    ],
+    "height": 4.6,
+    "front": 80.9,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076278, snapped 6.1 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine du Trésor",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "pilaster",
+      "p": 3
+    },
+    "kind": "fountain",
+    "lat": 48.8568892,
+    "lon": 2.3583077,
+    "size": [
+      4.0,
+      0.8
+    ],
+    "height": 5.0,
+    "front": 296.3,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076288, snapped 2.8 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine du marché des Blancs-Manteaux",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "mascaron",
+      "p": 3
+    },
+    "kind": "fountain",
+    "lat": 48.8578885,
+    "lon": 2.358992,
+    "size": [
+      2.6,
+      0.5
+    ],
+    "height": 3.8,
+    "front": 313.7,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from Wikidata Q3076296, snapped 3.6 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine Boucherat",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "pilaster",
+      "p": 2
+    },
+    "kind": "fountain",
+    "lat": 48.8645518,
+    "lon": 2.3645535,
+    "size": [
+      2.6,
+      0.6
+    ],
+    "height": 5.0,
+    "front": 306.6,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from the OSM node of that name, snapped 2.8 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine du Fellah",
+    "procedural": "wallFountain",
+    "kit": {
+      "kind": "niche",
+      "p": 4
+    },
+    "kind": "fountain",
+    "lat": 48.8487924,
+    "lon": 2.3210748,
+    "size": [
+      4.0,
+      0.9
+    ],
+    "height": 6.0,
+    "front": 142.7,
+    "sign": false,
+    "note": "A wall fountain (render/landmarks/paris/wall-fountain.ts). Position from the OSM node of that name, snapped 0.7 m to the nearest OSM building edge whose outer side faces a named street (osmium + shapely, 2026-11-04); the back sits on the house. Form, size and height from memory, not measured.",
+    "madeBy": "claude-opus-5-5"
+  }
+]

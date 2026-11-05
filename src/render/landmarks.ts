@@ -69,6 +69,11 @@ export interface LandmarkEntry {
   /** bearings of faces another model covers (Fit.bare): the builder leaves its awnings and galleries off them */
   bare?: number[]
   osm?: string | string[]
+  /**
+   * Keep a numeric `front` exactly, not snugged to the tightest box within ±40°: a cross plan's tightest box is off its
+   * axis (the Cathédrale Saint-Louis stood turned 30° to its square, owner 2026-11-04).
+   */
+  exactFront?: boolean
   /** false: pale surfaces stay plain paint, not dressed stone (cartoon-material.ts `dressed`) */
   stone?: boolean
   name: string
@@ -891,7 +896,8 @@ export class Landmarks {
       const build = PROCEDURAL[s.procedural]
       if (!build) continue
       const mb = new MeshBuilder()
-      build(mb, { hx: 20, hz: 20, height: s.heightM })
+      // a footprint-fitted tower needs its own half-extents (OSM's), or it is drawn as a 40 m square
+      build(mb, { hx: s.hx ?? 20, hz: s.hz ?? 20, height: s.heightM })
       // (hazed per frame by its distance from the EYE — `update` — not baked from the origin's: baked, the Bay Bridge
       //  was 38 % hazed with the city between it and the rider 90 % hazed, and Yerba Buena hung over the water as a
       //  dark saucer — appearance audit, 2026-10-02)
@@ -1101,7 +1107,7 @@ export class Landmarks {
         if (l) bearing = (Math.atan2(l.frontage.nx, l.frontage.nz) * 180) / Math.PI
       }
       if (bearing !== undefined) {
-        const f = fitSnug(ring!, bearing)
+        const f = e.exactFront ? fitFront(ring!, bearing) : fitSnug(ring!, bearing)
         cx = f.cx; cz = f.cz; rotation = f.rotation
         fit = { hx: f.hx, hz: f.hz, height, ring: inFrame(ring!, f.cx, f.cz, rotation) }
       } else {
@@ -1118,6 +1124,8 @@ export class Landmarks {
       cx = p.x; cz = p.z
       if (typeof e.front === 'number') rotation = ((e.front + 180) * Math.PI) / 180
     } else return
+    // (the courtyards of a footprint that has them, for the builders that draw round one: the Paris hôtels)
+    if (building?.holes?.length && !e.court && !union) fit.holes = building.holes.map((h) => inFrame(unpackPoints(h), cx, cz, rotation))
     const [ox, oy, oz] = e.offset ?? [0, 0, 0]
     const under = ring ?? rectRing(cx, cz, fit.hx, fit.hz, rotation)
     /*

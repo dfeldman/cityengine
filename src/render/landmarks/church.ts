@@ -149,6 +149,11 @@ export interface ChurchSpec {
   tower: Tower | null
   front: Front
   walls: Walls
+  /**
+   * A dome over the crossing as well as the towers — the Cathédrale Saint-Louis has twin front towers AND one, which the
+   * single tower slot cannot say. A drum of `drum` metres above the ridge, then a dome of the nave's width times `r`.
+   */
+  crossingDome?: { drum: number; r: number; colour?: Rgb }
 }
 
 /* ================================================================== the named parts */
@@ -871,6 +876,20 @@ function build(out: MeshBuilder, L: number, W: number, H: number, spec: ChurchSp
     }
   } else if (nave.roof === 'gable') {
     gableEnd(out, { x: 0, z: zBack + 0.3 }, 0, naveHalf + 0.3, eaves, rise, wall, surf, trim)
+  }
+
+  /* ---- the crossing dome: a drum with round windows, a lead dome, a small lantern */
+  if (spec.crossingDome) {
+    const d = spec.crossingDome
+    const cz = transept ? zBack - bodyLen * 0.22 : (zFront + zBack) / 2
+    const r = naveHalf * d.r, y0 = eaves + rise * 0.6, top = y0 + d.drum
+    prism(out, 0, cz, y0, top, r, 16, wall)
+    // a dark window in each of the drum's four faces toward the arms
+    const wy = y0 + d.drum * 0.55, wh = d.drum * 0.28, ww = r * 0.2
+    box(out, r, wy, cz, 0.12, wh, ww, [0.17, 0.19, 0.21]); box(out, -r, wy, cz, 0.12, wh, ww, [0.17, 0.19, 0.21])
+    box(out, 0, wy, cz + r, ww, wh, 0.12, [0.17, 0.19, 0.21]); box(out, 0, wy, cz - r, ww, wh, 0.12, [0.17, 0.19, 0.21])
+    dome(out, 0, cz, top, r * 1.04, r * 0.95, d.colour ?? [0.3, 0.33, 0.34], 16, trim)
+    prism(out, 0, cz, top + r * 0.85, top + r * 1.35, r * 0.18, 8, trim)
   }
 
   /* ---- the tower or towers: their own dimensions, from the counts */

@@ -42,7 +42,7 @@
  */
 
 /** The sports the `court` part draws. Everything else is left as the flat `pitch` area it is today. */
-export type CourtSport = 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
+export type CourtSport = 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground' | 'soccer' | 'rugby' | 'handball'
 
 export interface CourtFit {
   sport: CourtSport
@@ -56,6 +56,8 @@ export interface CourtFit {
   wid: number
   /** a half-court: one hoop, one key, and no centre line (basketball only) */
   half?: boolean
+  /** a red clay (terre battue) surface instead of the hard court's green */
+  clay?: boolean
 }
 
 /** A rung of the ladder: a real, published court. */
@@ -82,6 +84,14 @@ const LADDER: Record<CourtSport, Size[]> = {
   // the painted square is 16 ft on a side
   four_square: [{ len: 4.88, wid: 4.88 }],
   volleyball: [{ len: 18, wid: 9 }],
+  // FIELD SPORTS (Cité universitaire, 2026-11-05): drawn only where a region names the pitch (`courtSports`), never
+  // from OSM's tag alone — a city's worth of turf rectangles was never asked for. FIFA 105 x 68, then the common
+  // 90 x 60 and a youth 64 x 45; a five-a-side 40 x 20 is the smallest rung.
+  soccer: [{ len: 105, wid: 68 }, { len: 90, wid: 60 }, { len: 64, wid: 45 }, { len: 40, wid: 20 }],
+  // World Rugby: 100 x 70 between the try lines (the in-goals beyond are left as the pitch area), then 94 x 68
+  rugby: [{ len: 100, wid: 70 }, { len: 94, wid: 68 }, { len: 60, wid: 40 }],
+  // IHF 40 x 20
+  handball: [{ len: 40, wid: 20 }],
   // a playground is its own box, furnished to fit (render/playground.ts): no rungs, see `fitCourt`
   playground: [],
 }
@@ -92,10 +102,13 @@ const LADDER: Record<CourtSport, Size[]> = {
  * `multi` is deliberately NOT mapped — a multi-use games area is whatever lines its owner painted, and
  * guessing basketball on it would put a hoop on a netball court as often as not.
  */
-export function courtSport(sport: string | undefined): CourtSport | null {
+export function courtSport(sport: string | undefined, told = false): CourtSport | null {
   if (!sport) return null
   for (const raw of sport.split(';')) {
     const s = raw.trim().toLowerCase()
+    // the field sports only on a region's word (see LADDER)
+    if (told && (s === 'soccer' || s === 'rugby' || s === 'handball')) return s
+    if (told && (s === 'rugby_league' || s === 'rugby_union')) return 'rugby'
     if (s === 'tennis' || s === 'pickleball' || s === 'padel' || s === 'american_football' || s === 'basketball' || s === 'four_square' || s === 'volleyball') return s
     // beach volleyball is the same rectangle with the same net; only the sand differs and the area kind
     // already says that
@@ -208,4 +221,39 @@ export function fitCourt(ring: { x: number; z: number }[], sport: CourtSport): C
   const k = Math.min(boxLen / last.len, boxWid / last.wid)
   if (k < 0.3) return null
   return place(last.len * k, last.wid * k, last.half)
+}
+
+/** Gap between neighbouring courts in a bank, and the run-off kept clear at each baseline (m). */
+export const BANK_GAP = 6
+export const BANK_RUNOFF = 4
+
+/**
+ * A BANK of tennis courts traced as one polygon (Boulogne's club by the A13, 48.8479 2.2297: four courts in a
+ * 70 x 34 m pitch, owner 2026-11-04). The courts stand side by side across the box's long axis, each court's
+ * length along its short one. `null` when fewer than two fit — `fitCourt` keeps that polygon.
+ */
+export function tileCourts(ring: { x: number; z: number }[], sport: CourtSport): CourtFit[] | null {
+  const one = fitCourt(ring, sport)
+  if (!one || sport !== 'tennis') return null
+  const L = 23.77, W = 10.97
+  // the box again, in the fitted frame: its long axis along `one.heading`
+  const c = Math.cos(one.heading), s = Math.sin(one.heading)
+  let a0 = Infinity, a1 = -Infinity, b0 = Infinity, b1 = -Infinity
+  for (const p of ring) {
+    const a = (p.x - one.x) * c + (p.z - one.z) * s
+    const b = -(p.x - one.x) * s + (p.z - one.z) * c
+    a0 = Math.min(a0, a); a1 = Math.max(a1, a); b0 = Math.min(b0, b); b1 = Math.max(b1, b)
+  }
+  const boxLen = a1 - a0, boxWid = b1 - b0
+  if (boxWid < L + BANK_RUNOFF) return null
+  const n = Math.floor((boxLen + BANK_GAP) / (W + BANK_GAP))
+  if (n < 2) return null
+  const step = boxLen / n
+  const mb = (b0 + b1) / 2
+  const out: CourtFit[] = []
+  for (let i = 0; i < n; i++) {
+    const a = a0 + step * (i + 0.5)
+    out.push({ sport, x: one.x + a * c - mb * s, z: one.z + a * s + mb * c, heading: one.heading + Math.PI / 2, len: L, wid: W })
+  }
+  return out
 }

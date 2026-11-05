@@ -1,0 +1,213 @@
+[
+  {
+    "name": "Église Notre-Dame-de-la-Croix de Ménilmontant",
+    "procedural": "notreDameDeLaCroix",
+    "osm": [
+      "way/70001850"
+    ],
+    "front": 249.5,
+    "height": 78,
+    "sign": false,
+    "note": "catholic/notre-dame-de-la-croix.ts: Héret's Romano-Byzantine basilica (1863-80); buff west front with rose window under a gable, belfry tower with corner turrets and a 78 m octagonal spire, gabled nave and transept over balustraded aisle terraces, semicircular apse; heights from IGN LiDAR MNS, photos docs/landmarks/refs/nd-croix/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Saint-Joseph-des-Nations",
+    "procedural": "saintJosephDesNations",
+    "osm": [
+      "relation/1589962"
+    ],
+    "front": 55.5,
+    "height": 53,
+    "sign": false,
+    "note": "catholic/saint-joseph-des-nations.ts: neo-Gothic parish church of buff limestone; belfry tower mid west front with three portals, clocks, twin lancets, pinnacles and an octagonal spire (~53 m), slate nave and transept (21 m) over lean-to aisle roofs, polygonal apse; heights from IGN LiDAR MNS, photos docs/landmarks/refs/st-joseph-nations/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Saint-Jean-des-Deux-Moulins",
+    "procedural": "saintJeanDeuxMoulins",
+    "osm": [
+      "way/962298895",
+      "way/79083142"
+    ],
+    "front": 63,
+    "height": 33,
+    "sign": false,
+    "note": "catholic/saint-jean-deux-moulins.ts: 1960s parish church built into a housing slab; low white flat-roofed hall (7 m) with window boxes, Marian mosaic, bell tower with cross; the 11-level slab (33 m) drawn too; heights from IGN LiDAR MNS, photos docs/landmarks/refs/st-jean-deux-moulins/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Notre-Dame-des-Champs",
+    "procedural": "notreDameDesChamps",
+    "osm": [
+      "way/64121803"
+    ],
+    "front": 205,
+    "height": 46,
+    "sign": false,
+    "note": "catholic/notre-dame-des-champs.ts: Ginain's neo-Romanesque parish church (1867-76); buff stone, round-arched nave under a slate gable (24 m) between lean-to aisles, transept, apse, belfry tower beside the choir with clock and louvred arches under a hipped slate roof (~42 m, cross 46 m); heights from IGN LiDAR MNS, photos docs/landmarks/refs/nd-des-champs/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Notre-Dame-du-Travail",
+    "procedural": "notreDameDuTravail",
+    "osm": [
+      "way/79687825"
+    ],
+    "front": 324.8,
+    "height": 25,
+    "sign": false,
+    "note": "catholic/notre-dame-du-travail.ts: Astruc's iron-framed basilica (1899-1902) of cream limestone; ten-bay nave under a shallow zinc gable (21 m) between lean-to aisles, round-arched west front with wide central portal, pinnacle pilasters and corner stair turrets, choir and a taller parish block across the east end; heights from IGN LiDAR MNS, photos docs/landmarks/refs/nd-travail/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Saint-Jacques-du-Haut-Pas",
+    "procedural": "saintJacquesHautPas",
+    "osm": [
+      "way/60279510",
+      "way/1457837352"
+    ],
+    "front": 112,
+    "height": 36,
+    "sign": false,
+    "note": "catholic/saint-jacques-haut-pas.ts: classical parish church (17th-18th c.); slate nave (22 m) between lean-to aisles, pedimented tetrastyle portico with a round window over it on the east front to rue Saint-Jacques, round-windowed aisle bays, four-storey clock and belfry tower at the south corner (hipped slate roof, ~36 m), low choir with ambulatory at the west end; the street building way/1457837352 drawn as a plain block; heights from IGN LiDAR MNS, facade photo from Commons, docs/landmarks/refs/st-jacques-haut-pas/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Sainte-Jeanne-de-Chantal",
+    "procedural": "sainteJeanneDeChantal",
+    "osm": [
+      "way/87959071",
+      "way/87959097"
+    ],
+    "front": 146,
+    "height": 44,
+    "sign": false,
+    "note": "catholic/sainte-jeanne-de-chantal.ts: romano-byzantine parish church of 1933-38 (Barbier), porte de Saint-Cloud; broad low gable front with one huge round recess over wooden doors, crossing drum with zinc ribbed dome (~25 m), transept, nave with half-round apse and side chapels, round green-roofed baptistery, independent slab belfry (~40 m, tall cross) at the left corner (way/87959097); heights from IGN LiDAR MNS and OSM parts, facade photo from Commons, docs/landmarks/refs/ste-jeanne-chantal/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église nouvelle Saint-Honoré d'Eylau",
+    "procedural": "saintHonoreEylauNouvelle",
+    "osm": ["way/112237139"],
+    "front": 260.7,
+    "height": 23,
+    "sign": false,
+    "note": "catholic/saint-honore-eylau-nouvelle.ts: brick Romano-Byzantine parish church; broad low-pitched west gable front with five round-arched doors, gold mosaic saints frieze, three tall arched windows and a three-bell gable; clerestoried nave with lean-to aisles and a lower east end; plan and heights from OSM outline and building:part, photos from Commons, docs/landmarks/refs/st-honore-eylau-nouvelle/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Saint-Jean-Baptiste de Belleville",
+    "procedural": "saintJeanBaptisteBelleville",
+    "osm": [
+      "way/63212231"
+    ],
+    "front": 174.5,
+    "height": 52,
+    "sign": false,
+    "note": "catholic/saint-jean-baptiste-belleville.ts: Lassus's neo-Gothic church (1859) of pale limestone; front with pointed central portal, side portals, arcade and rose window between two towers with louvred belfries and octagonal stone spires (~49.5 m), steep slate nave (25 m) over low aisles, short transept, low chevet and presbytery; heights from IGN LiDAR MNS, photo from Commons, docs/landmarks/refs/belleville-stjean/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+    },
+  {
+    "name": "Église Saint-Thomas-d'Aquin",
+    "procedural": "saintThomasAquin",
+    "osm": [
+      "way/63536576"
+    ],
+    "front": 208.3,
+    "height": 31.5,
+    "sign": false,
+    "note": "catholic/saint-thomas-d-aquin.ts: Jesuit-novitiate Baroque church (1682-1722) of weathered stone; two-storey front with six engaged columns below, paired columns, clock window and pediment above, scroll wings with obelisks; slate nave (28 m) between low aisles (13 m), transept and lower choir; heights from IGN LiDAR MNS, photos from Commons docs/landmarks/refs/st-thomas-aquin/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église de l'Immaculée-Conception",
+    "procedural": "immaculeeConceptionBoulogne",
+    "osm": [
+      "relation/3926538"
+    ],
+    "front": 340,
+    "height": 20,
+    "sign": false,
+    "note": "catholic/immaculee-conception-boulogne.ts: Grandjean's 1965-68 church; trapezoidal concrete hall under a sagging pink-soffit roof (rim 15.7 m, trough 11 m, rear crest 13 m) with ribbed overhang, glazed band, red doors, white forecourt cross, rear annex (7 m) and east wing; heights from IGN LiDAR MNS, photo Commons/frwiki infobox, docs/landmarks/refs/immaculee-boulogne/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Notre-Dame de la Gare",
+    "procedural": "notreDameDeLaGare",
+    "osm": [
+      "way/79084116"
+    ],
+    "front": 318,
+    "height": 38,
+    "sign": false,
+    "note": "catholic/notre-dame-de-la-gare.ts: Naissant's neo-Romanesque basilica (1847-59); pale limestone nave under a low slate gable (ridge 22 m), lean-to aisles, low side chapels, half-octagon apse in an ambulatory, west front with round portal, rose, clock and a belfry tower with a 35 m slate spire; heights from IGN LiDAR MNS, photos Commons (NDG Biais) docs/landmarks/refs/notre-dame-de-la-gare/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Saint-Antoine des Quinze-Vingts",
+    "procedural": "saintAntoineQuinzeVingts",
+    "osm": [
+      "way/94236417"
+    ],
+    "front": 319.3,
+    "height": 19,
+    "sign": false,
+    "note": "catholic/saint-antoine-quinze-vingts.ts: c.1903 church behind a town-house front of cream brick and tan stone (plinth, grilled ground-floor windows under blind arches, upper windows, cornice, slate mansard with five stone dormers), round stone portal with timber porch, plain brick nave under a slate gable; heights from IGN LiDAR MNS (the 27 m mass at the west corner is a neighbour's wall), photos Commons docs/landmarks/refs/quinze-vingts/ 2026-11-04.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Sainte-Marie-des-Batignolles",
+    "procedural": "saintMarieBatignolles",
+    "osm": [
+      "way/75750389"
+    ],
+    "front": 131.4,
+    "height": 19,
+    "sign": false,
+    "note": "catholic/sainte-marie-batignolles.ts: Lusson's Restoration church (1828, MH) of cream limestone; tetrastyle portico with rosette frieze, clock and cross before a blank nave end wall, lower wings, shallow zinc nave roof (17.3 m), full-width choir block, low chevet with a 13 m apse; heights from IGN LiDAR MNS, photos Commons docs/landmarks/refs/sainte-marie-batignolles/ 2026-11-05.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Église Notre-Dame-de-l'Assomption",
+    "procedural": "notreDameDeLAssomption",
+    "osm": [
+      "way/54168792"
+    ],
+    "front": 117,
+    "height": 46,
+    "sign": false,
+    "note": "catholic/notre-dame-de-l-assomption.ts: Errard's domed Visitandines chapel (1670-76, MH) of weathered buff stone; hexastyle Corinthian portico under a pediment, low slate-roofed wings, garlanded lower drum, upper drum of windows and niches, ribbed slate dome (~40 m) with lantern and cross (46 m); heights from IGN LiDAR MNS, photos Commons docs/landmarks/refs/notre-dame-de-l-assomption/ 2026-11-05.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Chapelle Sainte-Jeanne-d'Arc",
+    "procedural": "chapelleSainteJeanneDArc",
+    "osm": [
+      "way/118528607"
+    ],
+    "front": 180,
+    "height": 37,
+    "sign": false,
+    "note": "catholic/chapelle-sainte-jeanne-d-arc.ts: neo-Gothic chapel of weathered buff stone; gabled nave (walls 13 m, steep slate roof ~19 m) with buttresses and lancets, narrow tower mid front with portal, belfry and octagonal spire (~36 m), half-hexagonal apse with roses and slate cone over a low ring of chapels; heights from IGN LiDAR MNS, photos Commons docs/landmarks/refs/chapelle-sainte-jeanne-d-arc/ 2026-11-05.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Chapelle de Conflans",
+    "procedural": "chapelleDeConflans",
+    "osm": [
+      "way/149268044"
+    ],
+    "front": 225,
+    "height": 22,
+    "sign": false,
+    "note": "catholic/chapelle-de-conflans.ts: neo-Gothic chapel of buff limestone in the Conflans seminary park (Charenton); long slate nave (eave 15 m, ridge 18.4 m) with lancets over a plinth and round windows under the eaves, transept with gabled south-west front (pointed portal, oculus, stair, corner buttresses), low chapels flanking a half-decagon apse with slate cone and cross; heights from IGN LiDAR MNS, photos Commons docs/landmarks/refs/chapelle-de-conflans/ 2026-11-05.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {"name": "Église Sainte-Rosalie", "procedural": "sainteRosalie", "osm": ["way/78407279"], "front": 325, "height": 17, "sign": false, "note": "catholic/sainte-rosalie.ts: small 1867 neo-Gothic parish church behind a two-storey cream-rendered street block (arched doors, shuttered windows); buff stone crenellated gable with rose and lozenge over it, slate nave (ridge 16.6 m by IGN LiDAR MNS) with large round flank windows, lower annex; photos Commons docs/landmarks/refs/sainte-rosalie/ 2026-11-05.", "madeBy": "claude-sonnet-5-5"},
+  {"name": "Maison d'accueil Ephrem", "procedural": "maisonEphrem", "osm": ["way/67699838"], "front": 270, "height": 25, "sign": false, "note": "catholic/maison-ephrem.ts: Sacré-Cœur basilica pilgrims' house in the basilica's pale limestone: steep slate gable roofs (ridge 24-25 m by IGN LiDAR MNS), four storeys of round-headed windows, cornice, stone dormers, north gable with arched triple window; main block, north block and long east wing; photos Commons docs/landmarks/refs/maison-ephrem/ 2026-11-05.", "madeBy": "claude-sonnet-5-5"},
+  {"name": "Église Saint-Jacques", "procedural": "saintJacquesNeuilly", "osm": ["relation/1221234"], "front": 56, "height": 13, "sign": false, "note": "catholic/saint-jacques-neuilly.ts: small inter-war dark-brick church; pointed portal under two lancets, belfry with two louvres, stepped corner turrets and an IHS gable with cross between lower wings; slate nave (ridge 12 m by IGN LiDAR MNS), flat annex; photos Commons docs/landmarks/refs/saint-jacques-neuilly/ 2026-11-05.", "madeBy": "claude-sonnet-5-5"},
+  {"name": "Église Sainte-Cécile", "procedural": "sainteCecileBoulogne", "osm": ["relation/1074310"], "front": 340, "height": 20, "sign": false, "note": "catholic/sainte-cecile-boulogne.ts: small neo-classical cream-stucco parish church (44 rue de l'Est, Boulogne-Billancourt) on a raised parvis; pedimented front with rose window, three arched lights, trellised portal and cross, low wings, slate nave (ridge 16.5 m by IGN LiDAR MNS), broader south half and apse; photos Commons docs/landmarks/refs/sainte-cecile-boulogne/ 2026-11-05.", "madeBy": "claude-sonnet-5-5"},
+  {"name": "Église Notre-Dame de l'Arche d'Alliance", "procedural": "notreDameArcheAlliance", "osm": ["way/24303512"], "front": 210, "height": 35, "sign": false, "note": "catholic/notre-dame-arche-alliance.ts: 1998 church, a copper-brown cube with small square windows inside a free-standing steel lattice frame (24 m), grey stair block with a circular lattice bell tower (five bells, cross, ~35 m) and a curved lattice fin; heights from IGN LiDAR MNS, photos Commons docs/landmarks/refs/notre-dame-arche-alliance/ 2026-11-05.", "madeBy": "claude-sonnet-5-5"},
+  {"name": "Chapelle Saint-Sauveur (église maronite Saints-Sauveur-et-Maroun)", "procedural": "chapelleSaintSauveur", "osm": ["way/42268952"], "front": 133, "height": 34, "sign": false, "note": "catholic/chapelle-saint-sauveur.ts: cream-rendered cruciform chapel in the Corentin-Celton hospital garden, Issy; aisled nave with lean-to slate roofs and pilaster bays, gabled transept, three-sided apse, west belfry tower with slate spire; heights from IGN LiDAR MNS (ridge 18.5 m), tower photo-estimated; photos Commons docs/landmarks/refs/chapelle-saint-sauveur/ 2026-11-05.", "madeBy": "claude-sonnet-5-5"}
+]

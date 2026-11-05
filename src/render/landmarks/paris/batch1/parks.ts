@@ -201,15 +201,20 @@ export function mireDuSud(out: MeshBuilder, fit: Fit): void {
  * and every picture has it high or moored: moored here, on its round pad with the ring gondola under it. Its net in lines of latitude and longitude.
  */
 export function citroenBallon(out: MeshBuilder, fit: Fit): void {
+  // only the pad stands still: the balloon and its gondola go up and down on their cable (render/paris/balloons.ts)
   const y = fit.grade ?? 0
-  const R = 11, c = y + 15.5, BAL: Rgb = hex('#efece2'), N = 14
   prism(out, 0, 0, y, y + 0.25, 11, 28, hex('#b7b2a6'), surfaceTag('concrete'))
+}
+
+/** what rises: the balloon, its net and the ring gondola, the gondola's floor at local y = 0 */
+export function citroenBallonFloat(out: MeshBuilder): void {
+  const y = -0.3
+  const R = 11, c = y + 15.5, BAL: Rgb = hex('#efece2'), N = 14
   const prof: [number, number][] = Array.from({ length: N + 1 }, (_, k) => {
     const a = -Math.PI / 2 + (k / N) * Math.PI
     return [Math.max(0.02, Math.cos(a) * R), c + Math.sin(a) * R]
   })
   lathe(out, 0, 0, prof, 22, BAL, 0)
-  // the net: lines of longitude as thin ribs and two rings
   for (let i = 0; i < 12; i++) {
     const a = (i / 12) * Math.PI * 2
     for (let k = 2; k < N - 1; k += 2) {
@@ -217,7 +222,6 @@ export function citroenBallon(out: MeshBuilder, fit: Fit): void {
       beam(out, [Math.sin(a) * (r0 + 0.04), y0, Math.cos(a) * (r0 + 0.04)], [Math.sin(a) * (r1 + 0.04), y1, Math.cos(a) * (r1 + 0.04)], 0.04, hex('#55595c'))
     }
   }
-  // the gondola: a steel ring, its rail and its load lines
   prism(out, 0, 0, y + 0.3, y + 1.1, 3.1, 16, hex('#3a4a55'), surfaceTag('metal'))
   prism(out, 0, 0, y + 1.1, y + 2.1, 3.1, 16, hex('#6f7d86'), surfaceTag('glass'), 3.1, false)
   for (let i = 0; i < 8; i++) {

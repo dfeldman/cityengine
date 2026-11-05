@@ -1,0 +1,352 @@
+[
+ {
+  "name": "Temple de l'Oratoire du Louvre",
+  "procedural": "oratoireDuLouvre",
+  "osm": [
+   "way/30622528"
+  ],
+  "front": 37,
+  "height": 25,
+  "sign": false,
+  "note": "protestant.ts: Lemercier's Oratorian church; two-tier columned portal with pediment on rue Saint-Honoré (front 37 = outward normal of the 12.5 m NE edge), buttressed slate nave, polygonal apse and the balustraded Rivoli arcade with the Coligny monument; Commons photos docs/landmarks/refs/oratoire/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église Américaine",
+  "procedural": "egliseAmericaine",
+  "osm": [
+   "way/69049385"
+  ],
+  "front": -2,
+  "height": 65,
+  "sign": false,
+  "note": "protestant.ts: the American Church in Paris (1931 Gothic revival, quai d'Orsay); brick-and-stone nave with buttresses and pointed windows, quai gable with portal, stone tower with a green copper spire at the west corner; footprint registered via museums/enframe.ts; Commons photos docs/landmarks/refs/eglise-americaine/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant de l'Étoile",
+  "procedural": "templeEtoile",
+  "osm": [
+   "way/84322974"
+  ],
+  "front": 205,
+  "height": 26,
+  "sign": false,
+  "note": "protestant.ts: Église réformée de l'Étoile (Vaudremer 1874, 54 av. de la Grande-Armée); narrow Gothic-revival front in pale limestone: three-bay lower storey (gabled portal, side doors, roundels), stepped blind-arcade aisles, nave gable with the tall pointed window, rose and cross; flat halls on the rest of the OSM plan; registered via museums/enframe.ts; Commons photos docs/landmarks/refs/etoile/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant du Saint-Esprit",
+  "procedural": "templeSaintEsprit",
+  "osm": [
+   "way/67350058"
+  ],
+  "front": 352,
+  "height": 26,
+  "sign": false,
+  "note": "protestant.ts: Église réformée du Saint-Esprit, 5 rue Roquépine; buff ashlar block of three storeys with rounded NW corner on rue d'Astorg, four-column pedimented portico on rue Roquépine, square belfry with lattice screens, pediments and cross behind it; registered via museums/enframe.ts; Commons photos docs/landmarks/refs/saint-esprit/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple de la Rédemption",
+  "procedural": "templeRedemption",
+  "osm": [
+   "way/69220900"
+  ],
+  "front": 272,
+  "height": 15,
+  "sign": false,
+  "note": "protestant.ts: Lutheran Temple de la Rédemption, 16 rue Chauchat; stone front on the west edge under a low pediment, colossal voussoir arch, recessed tympanum, two-column portico, red round-headed door, railing on plinth, ridge lantern, round-headed side windows; plan from OSM; Commons photos docs/landmarks/refs/redemption/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple de Pentemont",
+  "procedural": "templePentemont",
+  "osm": [
+   "way/67353449"
+  ],
+  "front": 210,
+  "height": 24,
+  "sign": false,
+  "note": "protestant.ts: former abbey church of Panthemont (Contant d'Ivry 1756), 106 rue de Grenelle; pale limestone front on the SSW edge under a low pediment, round-arched portal with two free columns and hood, small side doors with triangular hoods and oculi, curved attic with glazed half-round window, slate dome on a drum with a lantern; plan from OSM; Commons photos docs/landmarks/refs/pentemont/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple de l'Annonciation",
+  "procedural": "templeAnnonciation",
+  "osm": [
+   "way/81792421"
+  ],
+  "front": 304,
+  "height": 17,
+  "sign": false,
+  "note": "protestant.ts: Église protestante unie de l'Annonciation (Passy), 19 rue Cortambert, 1891; gabled nave with a meulière front framed in cream ashlar (corner pilasters, two bands, stepped rake), large rose window, round-arched porch with two free columns under a small gable hood, belfry with a cross on the ridge, lower wings from the OSM plan; the user's given coordinates were ~300 m off, OSM way used; Commons photos docs/landmarks/refs/annonciation/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église protestante unie de Paris-Belleville",
+  "procedural": "templeBelleville",
+  "osm": [
+   "way/69999948",
+   "way/917193350"
+  ],
+  "front": 69,
+  "height": 16.2,
+  "sign": false,
+  "note": "protestant.ts: Temple de Belleville, 97 rue Julien-Lacroix; buff ashlar gable facing ENE, three round-arched windows over a string course, arched porch with red door under a small pedimented hood, two small side windows, corner pilasters with dark caps, rake band with tiles, apex pinnacle; lower wings from the OSM plan, clerestory windows on the nave; OSM way ids already right in the civic entry; Commons photos docs/landmarks/refs/belleville/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Christuskirche (Église évangélique allemande de Paris)",
+  "procedural": "christuskirche",
+  "osm": [
+   "way/69257726"
+  ],
+  "front": 90,
+  "height": 19.4,
+  "sign": false,
+  "note": "protestant.ts: German Lutheran church, 25 rue Blanche; pale limestone Romanesque front facing ENE between apartment blocks: great arched oak door under a carved eagle frieze, four small arched ground windows, triple-light round window, arcade of small arches under a cornice, stone attic with slate roof; nave from the OSM plan; Commons photos docs/landmarks/refs/christuskirche/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église évangélique baptiste",
+  "procedural": "baptisteLille",
+  "osm": [
+   "way/63149138"
+  ],
+  "front": 204,
+  "height": 21.3,
+  "sign": false,
+  "note": "protestant.ts: Baptist church 1873, 48 rue de Lille; pale ashlar Gothic-revival front facing SSW in the street wall: crocketed portal with trefoil tympanum, two lancet triplets and two shopfronts, rose window between two traceried windows, carved cornice with balustrades, central gable with three louvred lancets; nave from the OSM plan; Commons photos docs/landmarks/refs/baptiste-lille/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant de Plaisance (Église réformée)",
+  "procedural": "templePlaisance",
+  "osm": [
+   "way/79688125"
+  ],
+  "front": 320,
+  "height": 16.6,
+  "sign": false,
+  "note": "protestant.ts: Reformed church, 95 rue de l'Ouest; buff ashlar gable in the street wall facing NW: three round-arched doors (black, black, blue) under moulded hoods, inscription bands, pilaster strips, three square-headed and three round-headed windows, oculus in a low pediment with raking cornice and cross; nave from the OSM plan; Commons photos docs/landmarks/refs/plaisance/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne Saint-Paul de Montmartre",
+  "procedural": "templeSaintPaulMontmartre",
+  "osm": [
+   "way/148524233"
+  ],
+  "front": 270,
+  "height": 29,
+  "sign": false,
+  "note": "protestant.ts: Lutheran church 1896 (Aug. Rey), 90 boulevard Barbès; pale ashlar front in the boulevard wall facing west behind an iron railing: round-arched door in a moulded arch under a gabled hood with the ÉGLISE S^T PAUL frieze, tall narrow window between twin colonnettes under a stepped gable, red-cross window and twin arched windows in the side bays, slim stone spire; nave from the OSM plan; Commons photos docs/landmarks/refs/saint-paul-montmartre/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne du Bon-Secours",
+  "procedural": "egliseBonSecours",
+  "osm": [
+   "way/118650031",
+   "way/1317112589"
+  ],
+  "front": 270,
+  "height": 13.5,
+  "sign": false,
+  "note": "protestant.ts: Lutheran church (A. Rey), 20 rue Titon, MH inscribed 1995; pale ashlar gable front facing west behind an iron railing: great rose window in a moulded arch over five lancets, two recessed side lancets with colonnettes, projecting gabled porch with inscription ring and oak door, pedimented lower north wing with an arcade of three windows, slate bellcote with spire on the ridge; nave from the OSM plan; Commons photos docs/landmarks/refs/bon-secours/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant de Neuilly-sur-Seine",
+  "procedural": "templeNeuilly",
+  "osm": [
+   "way/81248340"
+  ],
+  "front": 270,
+  "height": 14,
+  "sign": false,
+  "note": "protestant.ts: Reformed temple, 60 rue Perronet; buff ashlar gable facing west onto a walled garden: projecting central bay with a steep gable, rose window over a pointed porch with a red door and colonnettes, narrow arched windows on two levels either side, corner buttress strips, slate bellcote with cross on the ridge; low south hall and north annex from the OSM plan; Commons photos docs/landmarks/refs/neuilly/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église danoise (Frederikskirken)",
+  "procedural": "egliseDanoise",
+  "osm": [
+   "way/70187665"
+  ],
+  "front": 27,
+  "height": 11.9,
+  "sign": false,
+  "note": "protestant.ts: Danish Lutheran church (1955), 17 rue Lord Byron, flush on the street: cream rendered wall in a grid of pilaster strips over a granite plinth, oak door with laurel cross and small window at the west end, five tall leaded dark windows over sunk panels, low dark tile roof falling to the street; plan from the OSM way; Commons photos docs/landmarks/refs/danish/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église réformée de Béthanie (Temple de Béthanie)",
+  "procedural": "egliseBethanie",
+  "osm": [
+   "way/70151576"
+  ],
+  "front": 63,
+  "height": 13.3,
+  "sign": false,
+  "note": "protestant.ts: 185 rue des Pyrénées, flush on the street: cream gabled nave bay with oculus, two tiers of paired round-arched windows, ochre round-arched door and cross on the apex, between two low brick-red and cream striped wings with tiled lean-to roofs and ochre doors; plan from the OSM way; Commons photos docs/landmarks/refs/bethanie/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple de la Petite Étoile (Église réformée)",
+  "procedural": "templePetiteEtoile",
+  "osm": [
+   "way/64623212"
+  ],
+  "front": 59,
+  "height": 22,
+  "sign": false,
+  "note": "protestant.ts: Letrosne 1912, 81 rue Anatole-France; cream stucco over brick bands and meulière rubble, swept slate roof, pointed brick portal with scrolled gate, pointed nave window, oculus cross-gable on the left flank, slate spire; front = the long ENE edge on the street; Commons photos docs/landmarks/refs/petite-etoile/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant de Boulogne-Billancourt (Église réformée de Boulogne)",
+  "procedural": "templeBoulogne",
+  "osm": [
+   "way/68723367"
+  ],
+  "front": -15,
+  "height": 15.8,
+  "sign": false,
+  "note": "protestant.ts: 117 rue du Château; cream limestone gable with red brick pilaster strips, polychrome brick arch over three stepped arched windows, gabled stone hood over the oak door, stone bellcote; ochre stucco pavilion with slate mansard to the west; plan from the OSM way (front = the 10 m edge on the street, facing NNW); Commons photos docs/landmarks/refs/boulogne/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant de La Rencontre (Église protestante unie)",
+  "procedural": "templeRencontre",
+  "osm": [
+   "way/63203792"
+  ],
+  "front": 0,
+  "height": 17.4,
+  "sign": false,
+  "note": "protestant.ts: rue des Petits-Hôtels; 1960s street front, travertine spandrels, sawtooth deep concrete fins over four glazed storeys, black marble ground floor with barred gate and glazed door; plan from the OSM way (front = the 12 m north edge); Commons photos docs/landmarks/refs/rencontre/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église suédoise (Svenska kyrkan)",
+  "procedural": "egliseSuedoise",
+  "osm": [
+   "way/137884622"
+  ],
+  "front": 144,
+  "height": 21,
+  "sign": false,
+  "note": "protestant.ts: 9 rue Médéric, Ivar Tengbom 1911-13; red-brick nave with a steep gabled street front and tall round-headed window, terracotta roof, slender brick tower with copper cap and spire on the south-west flank; plan from the OSM way; Commons photos docs/landmarks/refs/swedish/ 2026-11-04. Ground floor/door of the gable unseen (hidden by a site hut in the photo).",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne de l'Ascension",
+  "procedural": "egliseAscension",
+  "osm": [
+   "way/84320043"
+  ],
+  "front": 51,
+  "height": 19,
+  "sign": false,
+  "note": "protestant.ts: 47 rue Dulong, Gothic-revival street front; cream stucco, ochre plinth, steep central gable with ogival portal, pointed window, flanking pinnacles and a small bellcote with cross, two balustraded wings with pointed windows over paired lancets; plan from the OSM way (front edge drawn 0.18 m inside it); Commons photos docs/landmarks/refs/ascension/ 2026-11-04. Nave/rear are a plain block (no photo).",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne Saint-Marcel",
+  "procedural": "egliseSaintMarcel",
+  "osm": [
+   "way/60209197"
+  ],
+  "front": 117,
+  "height": 14.2,
+  "sign": false,
+  "note": "protestant.ts: 24 rue Pierre-Nicole, Romanesque-revival street front between apartment blocks; cream ashlar, inscribed round-arched portal, shuttered window pairs, string course, big arched window plus pairs above, cornice, slate mansard with two dormers, central gable with blind arcature and bellcote with cross; plan from the OSM way (front edge drawn 0.18 m inside it); Commons photos docs/landmarks/refs/saint-marcel/ 2026-11-04. Rear is a plain block (no photo).",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne des Billettes",
+  "procedural": "egliseBillettes",
+  "osm": [
+   "way/55942658"
+  ],
+  "front": 297,
+  "height": 12.8,
+  "sign": false,
+  "note": "protestant.ts: 24 rue des Archives, 18th-c. classical front (1756-58) facing WNW: limestone, round-arched red door under a string cornice, pilastered central pavilion with a clock over a tall arched window, low pediment, lower wings, domed lantern belfry with a cross behind; slate nave and rounded apse from the OSM plan. The medieval cloister (way/466690493) is not modelled. Commons photos docs/landmarks/refs/billettes/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne de la Trinité",
+  "procedural": "egliseTrinite",
+  "osm": [
+   "way/78534147"
+  ],
+  "front": 165,
+  "height": 11.2,
+  "sign": false,
+  "note": "protestant.ts: 172 bis boulevard Vincent-Auriol, Gothic-revival chapel between apartment blocks; flint gable facing SSE with cream quoins and rake coping, big traceried pointed window over a Tudor-arched porch with a brown door, two lancets, fleuron and cross; rendered rear on rue Godefroy with a pointed traceried window in a gable and barred wing windows; plan from the OSM way (forecourt spur and railing left out); Commons photos docs/landmarks/refs/trinite/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église Réformée du Luxembourg",
+  "procedural": "templeLuxembourg",
+  "osm": [
+   "way/63681841"
+  ],
+  "front": 92,
+  "height": 15.4,
+  "sign": false,
+  "note": "protestant.ts: 58 rue Madame, Gothic-revival limestone front on the street line facing east: rusticated ground floor with a pointed doorway under an ogee hood, three tall pointed leaded windows under a corbel cornice, attic with small windows and pinnacled cresting; plain nave behind; plan from the OSM way; Commons photos docs/landmarks/refs/luxembourg/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église luthérienne Saint-Pierre",
+  "procedural": "egliseSaintPierre",
+  "osm": [
+   "way/63224657"
+  ],
+  "front": -15,
+  "height": 10.3,
+  "sign": false,
+  "note": "protestant.ts: 55 rue Manin, flush on the street between apartment blocks: red-brick chapel, stone ground storey, twin windows either side of a central arched portal with gold mosaic tympanum under a grey timber hood, brick gable with oculus and cross, slate side roofs with dormers; plan from the OSM way; Commons photos docs/landmarks/refs/saint-pierre/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple des Batignolles",
+  "procedural": "templeBatignolles",
+  "osm": [
+   "way/75748174"
+  ],
+  "front": 163,
+  "height": 14.6,
+  "sign": false,
+  "note": "protestant.ts: 44 boulevard des Batignolles, pale-limestone Gothic-Romanesque temple flush on the boulevard facing south: gabled nave front with a round-arched portal, a great arch over three lancets and a cross; square tower with belfry louvres and a slate spire; lower presbytery wing with a blue door and arched windows; plan from the OSM way (20.8 x 30 m, passed in its own metres so the fit cannot flip); Commons photos docs/landmarks/refs/batignolles/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Temple protestant du Foyer de l'Âme",
+  "procedural": "templeFoyerAme",
+  "osm": [
+   "way/63648393"
+  ],
+  "front": -131,
+  "height": 12.2,
+  "sign": false,
+  "note": "protestant.ts: 7bis rue du Pasteur-Wagner, buff-brick street front flush between apartment houses facing south-west: stone ground storey, deep portal with bracketed hood over oak doors, great half-round stone archivolt over three windows, cornice, flat ridged glass roof over the hall; plan from the OSM way (passed in its own metres so the fit cannot flip); Commons photos docs/landmarks/refs/foyer-de-lame/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ },
+ {
+  "name": "Église adventiste du septième jour",
+  "procedural": "egliseAdventisteBineau",
+  "osm": [
+   "way/81203918"
+  ],
+  "front": -115,
+  "height": 14,
+  "sign": false,
+  "note": "protestant.ts: 81 boulevard Bineau; Gothic Revival ashlar church, steep traceried gable front facing west-south-west with a gabled arched porch at its left foot, buttressed nave with lancets, square belfry tower with a slim stone spire at the east end; plan from the OSM way (passed in its own metres); Commons photo docs/landmarks/refs/adventiste-bineau/ 2026-11-04.",
+  "madeBy": "claude-sonnet-5-5"
+ }
+]

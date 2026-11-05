@@ -6,13 +6,14 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { church, type ChurchSpec } from '../../church.ts'
 import type { Material } from '../../facade.ts'
-import { civic, type CivicSpec } from './civic.ts'
+import { civic, type CivicSpec, type Style } from './civic.ts'
+import { hotel } from './hotel.ts'
 
 /**
  * (`word`, on a place of worship, is its faith: temple, synagogue, mosque, chapelle; a church has none. `noTower`: a chapel
  * hemmed in by its block, like Notre-Dame-du-Liban, whose tower would only stand through the neighbours' roofs)
  */
-export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean }
+export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean; style?: Partial<Style> }
 
 /** the building's materials and windows by its date: what the kinds share */
 function byDate(p: number): Pick<CivicSpec, 'wall' | 'windows' | 'roof'> {
@@ -23,6 +24,7 @@ function byDate(p: number): Pick<CivicSpec, 'wall' | 'windows' | 'roof'> {
   if (p === 99) return { wall: 'render', windows: 'balanced', roof: 'terrace' }
   return { wall: 'render', windows: 'wide', roof: 'terrace' }
 }
+
 
 const grand = (p: number): Pick<CivicSpec, 'wall' | 'windows' | 'roof'> =>
   p <= 4 ? { wall: 'stone', windows: p <= 2 ? 'dressed' : 'segmental', roof: p <= 2 ? 'slate' : 'mansard' } : byDate(p)
@@ -102,6 +104,7 @@ export function parisCivic(out: MeshBuilder, fit: Fit, a?: KitArgs): void {
     church(out, fit, a.noTower ? { ...spec, tower: null } : spec)
     return
   }
+  if (a?.kind === 'hotel') { hotel(out, fit, { p: a.p, seed: a.seed }); return }
   const k = KINDS[a?.kind ?? 'equipement'] ?? KINDS.equipement
-  civic(out, fit, { ...k(a?.p ?? 3), word: a?.word, seed: a?.seed })
+  civic(out, fit, { ...k(a?.p ?? 3), word: a?.word, seed: a?.seed, style: a?.style })
 }

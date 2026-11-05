@@ -1,0 +1,499 @@
+[
+  {
+    "name": "Cité universitaire: la Maison Internationale",
+    "procedural": "maisonInternationale",
+    "osm": [
+      "way/28754150"
+    ],
+    "height": 31,
+    "front": 198.5,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation des États-Unis",
+    "procedural": "fondationEtatsUnis",
+    "osm": [
+      "way/52072807"
+    ],
+    "height": 23,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: le Collège Franco-Britannique",
+    "procedural": "collegeFrancoBritannique",
+    "osm": [
+      "way/52090391"
+    ],
+    "height": 28,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Appell",
+    "procedural": "fondationDeutschMeurthe",
+    "osm": [
+      "way/260177831"
+    ],
+    "height": 17,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Poincaré",
+    "procedural": "fondationEmileLouise",
+    "osm": [
+      "way/52090395"
+    ],
+    "height": 33,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Pasteur",
+    "procedural": "pavillonPasteur",
+    "osm": [
+      "way/52090396"
+    ],
+    "height": 19,
+    "front": 109,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison du Japon",
+    "procedural": "maisonJapon",
+    "osm": [
+      "way/28879170"
+    ],
+    "height": 30,
+    "front": 241,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Biermans-Lapôtre",
+    "procedural": "fondationBiermansLapotre",
+    "osm": [
+      "way/28840944"
+    ],
+    "height": 33,
+    "front": 108.5,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des Provinces de France",
+    "procedural": "maisonProvincesFrance",
+    "osm": [
+      "relation/3491659"
+    ],
+    "height": 34,
+    "front": 198.5,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: le Collège d'Espagne",
+    "procedural": "collegeEspagne",
+    "osm": [
+      "way/52090417"
+    ],
+    "height": 27,
+    "front": 305,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison de l'Italie",
+    "procedural": "maisonItalie",
+    "osm": [
+      "way/28754627"
+    ],
+    "height": 23,
+    "front": 240,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Avicenne",
+    "procedural": "fondationAvicenne",
+    "osm": [
+      "way/35282478"
+    ],
+    "height": 36,
+    "front": 108,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison du Mexique",
+    "procedural": "maisonMexique",
+    "osm": [
+      "way/52090404"
+    ],
+    "height": 22,
+    "front": 18,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Danoise",
+    "procedural": "fondationDanoise",
+    "osm": [
+      "way/30898832"
+    ],
+    "height": 22,
+    "front": 240,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des Étudiants Suédois",
+    "procedural": "maisonSuede",
+    "osm": [
+      "way/52090415"
+    ],
+    "height": 19,
+    "front": 24,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison de Norvège",
+    "procedural": "maisonNorvege",
+    "osm": [
+      "way/32530570"
+    ],
+    "height": 20,
+    "front": 289,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Hellénique",
+    "procedural": "fondationHellenique",
+    "osm": [
+      "way/260196621"
+    ],
+    "height": 22,
+    "front": 19,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des étudiants canadiens",
+    "procedural": "maisonCanada",
+    "osm": [
+      "way/52090400"
+    ],
+    "height": 18,
+    "front": 199,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison de l'Inde (+ annexe)",
+    "procedural": "maisonInde",
+    "osm": [
+      "way/32530598",
+      "way/377159256",
+      "way/864351027",
+      "way/864351026"
+    ],
+    "height": 22,
+    "front": 253,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison du Maroc",
+    "procedural": "maisonMaroc",
+    "osm": [
+      "way/29469843"
+    ],
+    "height": 26,
+    "front": 10,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison du Portugal",
+    "procedural": "maisonPortugal",
+    "osm": [
+      "way/37524403"
+    ],
+    "height": 22,
+    "front": 110,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison du Cambodge",
+    "procedural": "maisonCambodge",
+    "osm": [
+      "relation/6926792"
+    ],
+    "height": 24,
+    "front": 18,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison de la Corée",
+    "procedural": "maisonCoree",
+    "osm": [
+      "way/665266830"
+    ],
+    "height": 31,
+    "front": 18,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison de l'Île-de-France",
+    "procedural": "maisonIleDeFrance",
+    "osm": [
+      "way/631658185"
+    ],
+    "height": 28.6,
+    "front": 79,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison d'Égypte",
+    "procedural": "maisonEgypte",
+    "osm": [
+      "way/954179936"
+    ],
+    "height": 30,
+    "front": 74,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation argentine",
+    "procedural": "fondationArgentine",
+    "osm": [
+      "way/52090412"
+    ],
+    "height": 23.2,
+    "front": 199,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison Heinrich Heine",
+    "procedural": "maisonHeine",
+    "osm": [
+      "way/260185584"
+    ],
+    "height": 20.9,
+    "front": 18.8,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison du Liban",
+    "procedural": "maisonLiban",
+    "osm": [
+      "way/260185586"
+    ],
+    "height": 20.9,
+    "front": 4.5,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des Arts et Métiers (ancienne)",
+    "procedural": "maisonArtsMetiers",
+    "osm": [
+      "way/35282633"
+    ],
+    "height": 24.4,
+    "front": 46.5,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des Arts et Métiers (nouvelle)",
+    "procedural": "maisonArtsMetiersNouvelle",
+    "osm": [
+      "way/35282600"
+    ],
+    "height": 24.2,
+    "front": 226.5,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des Industries Agricoles et Alimentaires",
+    "procedural": "maisonIndustriesAgricoles",
+    "osm": [
+      "way/28754151"
+    ],
+    "height": 15.6,
+    "front": 280.6,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison Internationale AgroParisTech",
+    "procedural": "maisonAgroParisTech",
+    "osm": [
+      "way/28754392"
+    ],
+    "height": 19,
+    "front": 322,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Victor Lyon",
+    "procedural": "fondationVictorLyon",
+    "osm": [
+      "way/35282206"
+    ],
+    "height": 20,
+    "front": 19,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: le Pavillon Administratif",
+    "procedural": "pavillonAdministratif",
+    "osm": [
+      "way/28841632"
+    ],
+    "height": 24,
+    "front": 199,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Gréard",
+    "procedural": "pavillonGreard",
+    "osm": [
+      "way/260177832"
+    ],
+    "height": 18,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Liard",
+    "procedural": "pavillonLiard",
+    "osm": [
+      "way/52090397"
+    ],
+    "height": 19,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Pierre et Marie Curie",
+    "procedural": "pavillonCurie",
+    "osm": [
+      "way/260177833"
+    ],
+    "height": 19,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation Deutsch de la Meurthe, Pavillon Appell (east)",
+    "procedural": "pavillonAppell",
+    "osm": [
+      "way/260177830"
+    ],
+    "height": 17,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: main entrance arcade, 17 boulevard Jourdan",
+    "procedural": "citeUEntrance",
+    "lat": 48.8201226,
+    "lon": 2.3357309,
+    "size": [
+      16,
+      7
+    ],
+    "note": "at a point: its OSM way/260177837 is a layer-1 building=roof, which the bake drops as a canopy",
+    "height": 12,
+    "front": 198,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison des étudiants arméniens",
+    "procedural": "maisonArmeniens",
+    "osm": [
+      "way/260196624"
+    ],
+    "height": 21.2,
+    "front": 18.7,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Maison de la Tunisie",
+    "procedural": "maisonTunisie",
+    "osm": [
+      "way/52874391"
+    ],
+    "height": 22.3,
+    "front": 18.5,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: le Pavillon Habib Bourguiba (Maison de Tunisie)",
+    "procedural": "pavillonBourguiba",
+    "osm": [
+      "way/859745357"
+    ],
+    "height": 23.5,
+    "front": 5,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Cité universitaire: la Fondation de Monaco",
+    "procedural": "fondationMonaco",
+    "osm": [
+      "way/165825785"
+    ],
+    "height": 25,
+    "front": 180,
+    "exactFront": true,
+    "noShops": true,
+    "madeBy": "opus"
+  }
+]

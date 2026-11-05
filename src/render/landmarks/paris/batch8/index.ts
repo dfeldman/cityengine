@@ -3,8 +3,9 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { highriseBands, highriseCream, highriseFins, highriseGrey, highriseGrid, highriseSand, highriseWhite } from './highrises.ts'
+import { brutBand, brutGrey, brutWarm, brutWhite, highriseBands, highriseCream, highriseFins, highriseGrey, highriseGrid, highriseSand, highriseWhite } from './highrises.ts'
 
 export const PARIS_BATCH8: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   highriseCream, highriseWhite, highriseGrey, highriseSand, highriseBands, highriseFins, highriseGrid,
+  brutWhite, brutGrey, brutBand, brutWarm,
 }

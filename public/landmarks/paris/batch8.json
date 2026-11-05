@@ -14,7 +14,7 @@
       "way/70151336"
     ],
     "name": "High-rise: Tour Giralda",
-    "procedural": "highriseWhite",
+    "procedural": "brutWhite",
     "height": 105,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -34,7 +34,7 @@
       "way/5722255"
     ],
     "name": "High-rise: Tour Palerme",
-    "procedural": "highriseSand",
+    "procedural": "brutWarm",
     "height": 102,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -44,7 +44,7 @@
       "way/5722244"
     ],
     "name": "High-rise: Tour Bergame",
-    "procedural": "highriseBands",
+    "procedural": "brutBand",
     "height": 89,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -54,7 +54,7 @@
       "way/5722249"
     ],
     "name": "High-rise: Tour Ravenne",
-    "procedural": "highriseFins",
+    "procedural": "brutWhite",
     "height": 102,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -64,7 +64,7 @@
       "way/5722204"
     ],
     "name": "High-rise: Résidence Ferrare",
-    "procedural": "highriseGrid",
+    "procedural": "brutGrey",
     "height": 102,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -74,7 +74,7 @@
       "way/5722183"
     ],
     "name": "High-rise: Tour Ancône",
-    "procedural": "highriseCream",
+    "procedural": "brutBand",
     "height": 102,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -84,7 +84,7 @@
       "way/78493961"
     ],
     "name": "High-rise: Tour Chambord",
-    "procedural": "highriseWhite",
+    "procedural": "brutGrey",
     "height": 96,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -104,7 +104,7 @@
       "way/5722200"
     ],
     "name": "High-rise: Résidence Mantoue",
-    "procedural": "highriseSand",
+    "procedural": "brutWarm",
     "height": 95,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -114,7 +114,7 @@
       "way/5722174"
     ],
     "name": "High-rise: Tour Bologne",
-    "procedural": "highriseBands",
+    "procedural": "brutWhite",
     "height": 102,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -124,7 +124,7 @@
       "way/5722157"
     ],
     "name": "High-rise: Tour Atlas",
-    "procedural": "highriseFins",
+    "procedural": "brutGrey",
     "height": 95,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -134,7 +134,7 @@
       "way/5722212"
     ],
     "name": "High-rise: Tour Rimini",
-    "procedural": "highriseGrid",
+    "procedural": "brutGrey",
     "height": 92,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -144,7 +144,7 @@
       "way/5722242"
     ],
     "name": "High-rise: Tour Verdi",
-    "procedural": "highriseCream",
+    "procedural": "brutBand",
     "height": 95,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -164,7 +164,7 @@
       "way/5722216"
     ],
     "name": "High-rise: Tour Puccini",
-    "procedural": "highriseGrey",
+    "procedural": "brutWarm",
     "height": 95,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -184,7 +184,7 @@
       "way/5722194"
     ],
     "name": "High-rise: Résidence Capri",
-    "procedural": "highriseBands",
+    "procedural": "brutWhite",
     "height": 92,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"
@@ -194,7 +194,7 @@
       "way/5722140"
     ],
     "name": "High-rise: Tour Abeille",
-    "procedural": "highriseFins",
+    "procedural": "brutBand",
     "height": 92,
     "note": "batch8/highrises.ts: OSM outline, APUR height; skin from the aerial and memory, street-view check listed.",
     "madeBy": "claude-sonnet-5-5"

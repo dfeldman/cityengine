@@ -1,0 +1,174 @@
+[
+  {
+    "osm": [
+      "way/68852619"
+    ],
+    "name": "La Défense: Tour Défense 2000",
+    "procedural": "defense2000",
+    "height": 134,
+    "note": "defense2/defense2000.ts: OSM ring and height (no parts in the pbf); bronze-smoked slab from memory of photos",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/64220590"
+    ],
+    "name": "La Défense: Tour France",
+    "procedural": "tourFrance",
+    "height": 126,
+    "note": "defense2/tourFrance.ts: OSM ring and height (no parts); white punched-window shaft from memory of photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/64212582",
+      "way/64212673"
+    ],
+    "name": "La Défense: Tour Franklin",
+    "procedural": "tourFranklin",
+    "height": 120,
+    "note": "defense2/tourFranklin.ts: union of the PB3 and PB4 rings at OSM height (no parts); dark smoked-glass slab from memory of photos",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/68852986"
+    ],
+    "name": "La Défense: Tour Séquoia",
+    "procedural": "tourSequoia",
+    "height": 119,
+    "note": "defense2/tourSequoia.ts: OSM ring at OSM height (no parts); blue-grey glass curtain-wall office shaft from memory of photos",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/50006440"
+    ],
+    "name": "La Défense: Tour W",
+    "procedural": "tourW",
+    "height": 119,
+    "note": "defense2/tourW.ts: OSM ring at OSM height (no parts); dark blue-grey glass curtain-wall slab from memory of photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/82466949"
+    ],
+    "name": "La Défense: Tour CGI",
+    "procedural": "tourCgi",
+    "height": 117,
+    "note": "defense2/tourCgi.ts: OSM ring at OSM height (no parts); smoked grey glass slab with pale spandrel bands from memory of photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": ["way/64227095"],
+    "name": "La Défense: Tour Michelet",
+    "procedural": "tourMichelet",
+    "height": 117,
+    "note": "defense2/tourMichelet.ts: OSM ring at OSM height (no parts); dark bronze ribbon glass between pale gold spandrel bands, from memory of photos",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": ["way/82467058"],
+    "name": "La Défense: Allianz-Neptune",
+    "procedural": "tourNeptune",
+    "height": 113,
+    "note": "defense2/tourNeptune.ts: OSM ring at OSM height (no parts); dark blue-black curtain glass with grey spandrels, from memory of photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/82467065"
+    ],
+    "name": "La Défense: Tour Aurore",
+    "procedural": "tourAurore",
+    "height": 110,
+    "note": "defense2/tourAurore.ts: OSM ring at OSM height (no parts); pale grey-blue curtain-glass slab from memory of photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/82467043"
+    ],
+    "name": "La Défense: Tour Manhattan",
+    "procedural": "tourManhattan",
+    "height": 110,
+    "note": "defense2/tourManhattan.ts: OSM's wavy ring at OSM height (no parts); dark green-blue mirror curtain glass, from memory of photos",
+    "madeBy": "claude-opus-5-5"
+  },
+  {"osm":["way/79864257"],"name":"La Défense: Tour Initiale","procedural":"tourInitiale","height":109,"note":"defense2/tourInitiale.ts: slim 1966 slab, silver mullioned curtain wall, dark lobby, flat crown","madeBy":"claude-opus-5-5"},
+  {"osm":["way/68851623"],"name":"La Défense: Tour Ève","procedural":"tourEve","height":109,"note":"defense2/tourEve.ts: slim 1983 shaft reclad 2022, pale blue-green curtain glass, dark lobby, stepped plant crown","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/19446485"],"name":"La Défense: Tour Atlantique","procedural":"tourAtlantique","height":106,"note":"defense2/tourAtlantique.ts: OSM ring at OSM height (no parts); dark blue-grey curtain glass with pale spandrels, glazed lobby, plant crown, from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/67865482"],"name":"La Défense: Tour Nuages 2","procedural":"tourNuages2","height":105,"note":"defense2/tourNuages2.ts: Aillaud cloud tower on OSM lobed ring, pale blue-tinted render, small punched windows, flat roof","madeBy":"claude-opus-5-5"},
+  {"osm":["way/82486366"],"name":"La Défense: Tour Emblem","procedural":"tourEmblem","height":103,"note":"defense2/tourEmblem.ts: OSM ring at OSM height (no parts); cool blue-grey curtain glass with pale spandrel bands, glazed lobby, plant crown, from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486306"],"name":"La Défense: Tour Gambetta","procedural":"tourGambetta","height":101,"note":"defense2/tourGambetta.ts: 37-storey 1975 flats on OSM ring, warm grey concrete with ribbon windows and solid spandrels, dark lobby, flat parapet","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/67865771"],"name":"La Défense: Tour Nuages 1","procedural":"tourNuages1","height":100,"note":"defense2/tourNuages1.ts: Aillaud cloud tower on OSM lobed ring, pale pink-grey render, small punched windows, flat roof","madeBy":"claude-opus-5-5"},
+  {"osm":["way/64226472"],"name":"La Défense: Tour Allianz One","procedural":"tourAllianzOne","height":100,"note":"defense2/tourAllianzOne.ts: 25-storey office shaft on OSM ring, pale blue-grey curtain glass, dark glazed lobby, recessed metal crown; from memory of photos","madeBy":"claude-opus-5-5"},
+  {"osm":["way/19449852"],"name":"La Défense: Opus 12","procedural":"tourOpus12","height":100,"note":"defense2/tourOpus12.ts: 27-storey office shaft on OSM ring, dark blue-grey curtain glass with pale grid, glazed lobby, low metal parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82468216"],"name":"La Défense: Tour Europe","procedural":"tourEurope","height":99,"note":"defense2/tourEurope.ts: 28-storey brutalist office shaft on OSM ring, bronze-grey curtain glass with pale spandrel bands, dark lobby, flat parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82466967"],"name":"La Défense: Tour Enedis","procedural":"tourEnedis","height":99,"note":"defense2/tourEnedis.ts: 27-storey white office shaft on OSM ring, continuous white precast fins with dark glazing, glazed lobby, flat parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/853268366"],"name":"La Défense: Tour Prisma","procedural":"tourPrisma","height":97,"note":"defense2/tourPrisma.ts: 25-storey office shaft on OSM ring, blue-green curtain glass with pale spandrel bands, glazed lobby, low parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/61118184"],"name":"La Défense: Tour Pascal B","procedural":"tourPascalB","height":95,"note":"defense2/tourPascalB.ts: 28-storey office shaft on OSM ring, blue-grey ribbon glazing with pale spandrels, dark glazed lobby, flat parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/68852287"],"name":"La Défense: La Pacific","procedural":"laPacific","height":90,"note":"defense2/laPacific.ts: 90 m curved Kurokawa office slab on OSM ring, pale grey cladding with punched blue-grey glass, dark lobby, low parapet; gate opening not modelled; from memory of photos","madeBy":"claude-opus-5-5"},
+  {"osm":["way/82322820"],"name":"La Défense: Les Gémeaux","procedural":"lesGemeaux","height":82,"note":"defense2/lesGemeaux.ts: OSM ring cut into two full-height 82 m end towers and a 21 m link (CUT_W/CUT_E/LINK_H), blue-grey glass bands between pale spandrels, dark lobby, parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/68850347"],"name":"La Défense: Tour Voltaire","procedural":"tourVoltaire","height":81,"note":"defense2/tourVoltaire.ts: 22-storey slab on OSM ring, pale concrete grid with punched blue-grey windows, dark lobby, parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/68850753"],"name":"La Défense: Tour Vista","procedural":"tourVista","height":79,"note":"defense2/tourVista.ts: 23-storey 1971 slab on OSM ring, pale concrete spandrels with dark ribbon windows, dark lobby, parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467066"],"name":"La Défense: Damiers du Dauphiné","procedural":"damiersDauphine","height":76,"note":"defense2/damiersDauphine.ts: 23-storey slab on OSM ring, chequerboard of pale concrete panels and dark glass squares, dark lobby, parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/547648868"],"name":"La Défense: Résidence Campuséa","procedural":"campusea","height":75,"note":"defense2/campusea.ts: 20-storey 2018 Nouvel student tower on OSM ring, pale concrete skin with dark punched windows, dark ground floor, parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/639745597"],"name":"La Défense: Archipel","procedural":"archipel","height":73,"note":"defense2/archipel.ts: Vinci HQ tower on OSM ring, pale glass wrapped in white horizontal sunshade bands, glazed lobby, white parapet; from memory of photos","madeBy":"claude-opus-5-5"},
+  {"osm":["way/639745596"],"name":"La Défense: Archipel Pemba","procedural":"archipelLow","height":28,"note":"defense2/archipel.ts: 7-level Vinci campus block on OSM ring, same banded white sunshade skin as the tower; from tags","madeBy":"claude-opus-5-5"},
+  {"osm":["way/639745598"],"name":"La Défense: Archipel Hydra","procedural":"archipelLow","height":28,"note":"defense2/archipel.ts: 7-level Vinci campus block on OSM ring, same banded white sunshade skin as the tower; from tags","madeBy":"claude-opus-5-5"},
+  {"osm":["way/639745554"],"name":"La Défense: Archipel Tonga","procedural":"archipelLow","height":28,"note":"defense2/archipel.ts: 7-level Vinci campus block on OSM ring, same banded white sunshade skin as the tower; from tags","madeBy":"claude-opus-5-5"},
+  {"osm":["way/82468241"],"name":"La Défense: Tour Exaltis Mazars","procedural":"exaltis","height":70,"note":"defense2/exaltis.ts: 16-level Mazars HQ on OSM ring, grey-blue glass with pale spandrel bands, glazed lobby, two-step roof terrace; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486391"],"name":"La Défense: Hôtel Pullman","procedural":"hotelPullman","height":69,"note":"defense2/hotelPullman.ts: 22-level hotel slab on OSM ring, pale cladding with blue ribbon windows, glazed lobby, parapet; from memory of photos","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/552869771"],"name":"La Défense: Liberté","procedural":"liberte","height":69,"note":"defense2/liberte.ts: 20-level residential block on OSM ring, pale warm concrete with punched windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/50027241"],"name":"La Défense: Nest Paris La Défense","procedural":"nestParis","height":32,"note":"defense2/nestParis.ts: curved ex-Sofitel hotel on OSM ring, beige stone with punched windows, dark lobby, parapet; from tags and memory","madeBy":"claude-opus-5-5"},
+  {"osm":["way/67855365"],"name":"La Défense: Central Parc","procedural":"centralParc","height":66,"note":"defense2/centralParc.ts: 20-level Kalisz residential block on OSM ring, pale warm concrete with punched windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/361806048"],"name":"La Défense: Meliá Paris La Défense","procedural":"meliaParis","height":66,"note":"defense2/meliaParis.ts: glazed 20-level hotel slab on OSM ring, blue-grey curtain wall, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82322950"],"name":"La Défense: Le Bélier","procedural":"leBelier","height":63,"note":"defense2/leBelier.ts: 19-level Pottier residential slab on OSM ring, pale concrete with punched ribbon windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82322824"],"name":"La Défense: La Chancellerie","procedural":"laChancellerie","height":63,"note":"defense2/laChancellerie.ts: 19-level residential block on OSM ring, warm beige concrete with punched ribbon windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/68849364"],"name":"La Défense: Tour Eria","procedural":"tourEria","height":60,"note":"defense2/tourEria.ts: 13-level Campus Cyber office tower on OSM ring, blue-grey glazed curtain wall, glazed lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/50008592"],"name":"La Défense: Tour PB5","procedural":"tourPb5","height":60,"note":"defense2/tourPb5.ts: 60 m office slab (ex-Scor) on OSM ring, grey-blue ribbon-glazed curtain wall, glazed lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467024"],"name":"La Défense: Damiers de Champagne","procedural":"damiersChampagne","height":59,"note":"defense2/damiersChampagne.ts: 18-storey flat slab on OSM ring, chequerboard of champagne concrete panels and dark glass squares, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/61118185"],"name":"La Défense: Tour Pascal A","procedural":"tourPascalA","height":59,"note":"defense2/tourPascalA.ts: 18-storey office shaft on OSM ring, ribbon glazing with stone-grey spandrels, dark glazed lobby, parapet; from tags and Pascal B recipe","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/50011897"],"name":"La Défense: Résidence Minerve","procedural":"residenceMinerve","height":59,"note":"defense2/residenceMinerve.ts: 18-level residential slab on OSM ring, pale concrete with balcony bands and dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/50783214"],"name":"La Défense: Égalité","procedural":"egalite","height":57,"note":"defense2/egalite.ts: 18-level Kalisz residential block on OSM ring (~80x135 m), pale concrete with balcony bands and dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["relation/902264"],"name":"La Défense: Fraternité","procedural":"fraternite","height":57,"note":"defense2/fraternite.ts: 17-level Kalisz residential block with inner court on OSM relation ring, pale concrete with balcony bands and dark window strips, dark lobby, parapet; sibling of Égalité","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486015"],"name":"La Défense: Résidence la Sirène","procedural":"residenceLaSirene","height":56,"note":"defense2/residenceLaSirene.ts: 17-level flats block on OSM ring, pale concrete with balcony bands and dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467055"],"name":"La Défense: Quartier Audran B","procedural":"quartierAudranB","height":56,"note":"defense2/quartierAudranB.ts: 17-level flats block on OSM ring, light concrete with balcony bands and dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467009"],"name":"La Défense: Quartier Audran A","procedural":"quartierAudranA","height":56,"note":"defense2/quartierAudranA.ts: 17-level flats block on OSM ring, light concrete with balcony bands and dark window strips, dark lobby, parapet; recipe shared with Audran B, from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486286"],"name":"La Défense: Résidence Maréchal Leclerc","procedural":"residenceMarechalLeclerc","height":55,"note":"defense2/residenceMarechalLeclerc.ts: 18-level flats block (CH1) on OSM ring, light concrete with balcony bands and dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/298132587"],"name":"La Défense: Tour Basalte","procedural":"tourBasalte","height":54,"note":"defense2/tourBasalte.ts: long curving office block on OSM ring, dark basalt-grey glazed skin, recessed dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467079"],"name":"La Défense: Manhattan square","procedural":"manhattanSquare","height":53,"note":"defense2/manhattanSquare.ts: long bent 16-level block on OSM ring, grey precast with dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467053"],"name":"La Défense: Les Miroirs","procedural":"lesMiroirs","height":53,"note":"defense2/lesMiroirs.ts: faceted 16-level block on OSM ring, full silvery mirror-glass curtain wall, dark lobby, metal parapet; from tags and footprint","madeBy":"claude-opus-5-5"},
+  {"osm":["way/82486104"],"name":"La Défense: Résidence Les Dauphins","procedural":"residenceLesDauphins","height":50,"note":"defense2/residenceLesDauphins.ts: 15-level residential slab on OSM ring, pale precast with ribbon windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {
+    "osm": [
+      "way/68851519"
+    ],
+    "name": "La Défense: Kupka A & B",
+    "procedural": "kupkaAB",
+    "height": 50,
+    "note": "defense2/kupkaAB.ts: OSM ring at ~50 m (no parts); blue-green glass curtain-wall block from memory of photos",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {"osm":["way/68849380"],"name":"La Défense: Défense Plaza","procedural":"defensePlaza","height":50,"note":"defense2/defensePlaza.ts: OSM ring at 50 m (12 levels, no parts); pale cladding with ribbon windows, glazed lobby, parapet; from tags","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/67865438"],"name":"La Défense: Tour Nuages 3","procedural":"tourNuages3","height":50,"note":"defense2/tourNuages3.ts: Aillaud cloud tower on OSM lobed ring, pale pink-grey render, small punched windows, flat roof","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/50004059"],"name":"La Défense: Résidence Louis Pouey","procedural":"residenceLouisPouey","height":50,"note":"defense2/residenceLouisPouey.ts: 16-level residential block on OSM ring, pale concrete with balcony bands and dark window strips, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/1311610926"],"name":"La Défense: Atlantique","procedural":"residenceAtlantique","height":50,"note":"defense2/residenceAtlantique.ts: 17-level residential slab on OSM ring (distinct from Tour Atlantique), pale concrete with ribbon windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486094"],"name":"La Défense: Résidence du Parc","procedural":"residenceDuParc","height":46,"note":"defense2/residenceDuParc.ts: 14-level curved apart-hotel block on OSM ring, pale render with balcony bands and dark window strips, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467088"],"name":"La Défense: Résidence Vision 80","procedural":"residenceVision80","height":45,"note":"defense2/residenceVision80.ts: 15-level residential block on OSM ring, pale render with ribbon windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486138"],"name":"La Défense: Résidence Modigliani","procedural":"residenceModigliani","height":43,"note":"defense2/residenceModigliani.ts: 13-level residential block on OSM ring, pale render with balcony bands and dark window strips, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486078"],"name":"La Défense: Tour IDEMIA","procedural":"tourIdemia","height":43,"note":"defense2/tourIdemia.ts: 13-level glass office slab on OSM ring, blue-grey curtain wall, glazed lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/68851427"],"name":"La Défense: Hôtel Renaissance Paris La Defense","procedural":"hotelRenaissance","height":43,"note":"defense2/hotelRenaissance.ts: 10-level hotel slab on OSM ring, pale concrete with dark window bands, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486313"],"name":"La Défense: Le Colisée","procedural":"leColisee","height":40,"note":"defense2/leColisee.ts: 12-level office slab on OSM ring, pale stone spandrels with ribbon glazing, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486240"],"name":"La Défense: Apollonia","procedural":"apollonia","height":40,"note":"defense2/apollonia.ts: 12-level office block on OSM ring, pale stone spandrels with ribbon glazing, dark glazed ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82486102"],"name":"La Défense: La Lutèce","procedural":"laLutece","height":40,"note":"defense2/laLutece.ts: 12-level flats block on OSM ring, cream render with punched windows, dark ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467091"],"name":"La Défense: Damiers de Bretagne","procedural":"damiersBretagne","height":40,"note":"defense2/damiersBretagne.ts: 12-storey brutalist stepped (3-terrace) slab on OSM ring, chequerboard of pale concrete panels and dark glass squares, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467083"],"name":"La Défense: Canopy","procedural":"canopy","height":40,"note":"defense2/canopy.ts: 12-level glass curtain-wall offices (ex-Calyon/CACIB) on OSM ring, glazed recessed ground floor, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/82467023"],"name":"La Défense: Damiers d'Anjou","procedural":"damiersAnjou","height":40,"note":"defense2/damiersAnjou.ts: 12-storey brutalist stepped (3-terrace) slab on OSM ring, chequerboard of pale concrete panels and dark glass squares, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/68850222"],"name":"La Défense: Kupka C","procedural":"kupkaC","height":40,"note":"defense2/kupkaC.ts: 14-level pale stone-banded glass office block on OSM ring, glazed lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/637461248"],"name":"La Défense: Espace 21","procedural":"espace21","height":40,"note":"defense2/espace21.ts: 12-level beige spandrel-banded office block with dark ribbon glazing on OSM ring, dark lobby, parapet; from tags and footprint","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/1311610277"],"name":"La Défense: Le Pacifique","procedural":"lePacifique","height":40,"note":"defense2/lePacifique.ts: 14-level residential block on OSM ring, pale rendered punched walls, dark ground floor, parapet; from OSM tags","madeBy":"claude-sonnet-5-5"},
+  {"osm":["way/226235093"],"name":"La Défense: Société générale","procedural":"societeGenerale","height":37,"note":"defense2/societeGenerale.ts: 37 m pale-glass curtain-wall block on OSM ring, darker glazed lobby, flat roof; from OSM tags","madeBy":"claude-sonnet-5-5"}
+]

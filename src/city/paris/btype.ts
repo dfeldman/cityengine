@@ -16,6 +16,7 @@
 import type { BuildingFacts, Classifier } from '../building-types.ts'
 import type { StyleId } from '../facade.ts'
 import { frontZone } from './arrondissements.ts'
+import { wallKind } from './materials.ts'
 
 export const classifyParis: Classifier = (b: BuildingFacts) => {
   const rec = b.record
@@ -56,6 +57,15 @@ export const classifyParis: Classifier = (b: BuildingFacts) => {
     const late = period >= 9
     return business ? (late ? 20 : 8) : late ? (tall ? 10 : b.area >= 1500 ? 8 : 2) : 0
   }
+  /*
+   * The tax records' wall material (BD TOPO, tools/paris-bdtopo.ts; owner, 2026-11-05: "brick is likely red though, of course you can
+   * paint it, but normally don't"). PURE brick is a brick front wherever it stands; a stone-and-brick mix is a stone front on a brick
+   * back and stays cream. Where the records say anything else the old dice for brick are not rolled. Concrete says nothing about the
+   * look (a 1990s neo-Haussmann block and a 1970s slab are both concrete), so it is left to the period.
+   */
+  const walls = wallKind(rec?.walls)
+  if (walls === 'brick' && !saysGlass && !(tall && known >= 6)) return out('brick', 'brick', `BD TOPO: brick walls (${rec!.walls})`)
+  const noBrickDice = walls !== undefined
   // "every building has a hausmann facade even if it is modern"
   if (zone === 'haussmann') {
     if (dated && known <= 2) return out('old', 'marais', `period ${known}`)
@@ -80,7 +90,7 @@ export const classifyParis: Classifier = (b: BuildingFacts) => {
     const share = zone === 'beyond' ? (period === 3 ? 7 : 50)
       : zone === 'cream' ? 0
       : civic ? 40 : b.area >= 900 ? 1 : period === 3 ? 2 : 6
-    if (hash < share) return out('brick', 'brick', `period ${period}, ${zone}: one of the few in brick`)
+    if (!noBrickDice && hash < share) return out('brick', 'brick', `period ${period}, ${zone}: one of the few in brick`)
     return period === 5 ? out('postwar', 'bauhaus', `period ${period}, cream`) : out('haussmann', 'haussmann', `period ${period}, cream`)
   }
   // (punched windows on a third of the mid-rises, ribbons on the rest: both white or cream)

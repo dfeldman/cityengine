@@ -168,8 +168,8 @@
     ],
     "front": 180,
     "height": 56,
-    "note": "batch3/malls.ts: Kenzo Tange's glass slope and mast, the front of Italie Deux.",
-    "madeBy": "claude-opus-5-5"
+    "note": "batch3/malls.ts: Kenzo Tange's glass slope and mast, the front of Italie Deux, a dark canopy over the entrances.",
+    "madeBy": "claude-sonnet-5-5"
   },
   {
     "name": "Italie Deux: the mall",
@@ -179,11 +179,11 @@
     ],
     "restyle": "bauhaus",
     "roof": "flat",
-    "wall": "#b3b2a7",
-    "trim": "#6d7a80",
+    "wall": "#dad7cc",
+    "trim": "#3b4247",
     "roofColour": "#878a84",
-    "note": "Italie Deux's long body under the slabs: plain panel, glass at the shops. The Grand Écran is the model.",
-    "madeBy": "claude-opus-5-5"
+    "note": "Italie Deux's long body under the slabs: light cladding, long dark glazed frontage along the Avenue d'Italie. The Grand Écran is the model.",
+    "madeBy": "claude-sonnet-5-5"
   },
   {
     "osm": [
@@ -231,7 +231,7 @@
       "way/1479252640"
     ],
     "name": "Les Orgues de Flandre: Tour Prélude",
-    "procedural": "orguesPrelude",
+    "procedural": "orguesDeFlandre",
     "height": 123,
     "plan": "union",
     "note": "batch3/towers.ts",
@@ -243,7 +243,7 @@
       "way/64038795"
     ],
     "name": "Les Orgues de Flandre: Tour Fugue",
-    "procedural": "orguesFugue",
+    "procedural": "orguesDeFlandre",
     "height": 108,
     "plan": "union",
     "note": "batch3/towers.ts",
@@ -255,7 +255,7 @@
       "way/64039753"
     ],
     "name": "Les Orgues de Flandre: Tour Cantate",
-    "procedural": "orguesFugue",
+    "procedural": "orguesDeFlandre",
     "height": 101,
     "plan": "union",
     "note": "batch3/towers.ts",
@@ -267,7 +267,7 @@
       "way/64040152"
     ],
     "name": "Les Orgues de Flandre: Tour Sonate",
-    "procedural": "orguesFugue",
+    "procedural": "orguesDeFlandre",
     "height": 90,
     "plan": "union",
     "note": "batch3/towers.ts. OSM's 81; the towers' list says 90.",
@@ -699,25 +699,29 @@
     "madeBy": "claude-opus-5-5"
   },
   {
-    "name": "Les Olympiades: les Pagodes",
+    "name": "Les Olympiades: la dalle",
     "osm": [
       "way/40690954",
       "way/40690955",
       "way/40690956",
       "way/40690957",
       "way/40690968",
-      "way/40690969"
+      "way/40690969",
+      "way/79084319",
+      "way/79083968",
+      "way/625919256"
     ],
-    "procedural": "olympiadesPagodes",
-    "lat": 48.825657,
-    "lon": 2.36542,
+    "procedural": "olympiadesDalle",
+    "kind": "plaza",
+    "lat": 48.8253,
+    "lon": 2.365,
     "size": [
-      60,
-      150
+      280,
+      320
     ],
     "front": 180,
-    "height": 12,
-    "note": "batch3/towers.ts: the Galerie du Mercure's tented roofs, off the aerial.",
+    "height": 20,
+    "note": "batch3/olympiades.ts: the deck, its banded paving, the Galerie du Mercure's scalloped canopies, beds, planters, lamps; claims the podium parts the towers stood in.",
     "madeBy": "claude-opus-5-5"
   },
   {

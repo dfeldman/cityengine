@@ -67,12 +67,13 @@ export const tourBagnolet = make({
   crown: { kind: 'parapet', height: 1.4, colour: hex('#2e241c') }, penthouse: 1,
 })
 
-/** the 37-level tower of 1977 off the Avenue de Choisy (APUR 97.9 m): no photo; concrete grid, a guess. */
+/** the 37-level tower of 1977 off the Avenue de Choisy (APUR 97.9 m): no photo; the Italie 13 brutalist style: pale precast, strong floor slabs every 4th level, dark ribbons, plant boxes. */
+const ITALIE37 = { slabEvery: 4 * 2.8, podium: 4 }
 export const tourItalie37 = make({
-  height: 104, roof: hex('#7f7b72'), base: plinth(4, '#8c8679'),
-  tiers: [{ to: 1, face: face('punched', '#e8d0a2', '#5a5f63', 2.2, 0.5, 2.8) }],
-  cornices: Array.from({ length: 6 }, (_, k) => ({ at: 16.8 * (k + 1), depth: 0.35, height: 0.5, colour: hex('#c9b78f') })),
-  crown: { kind: 'parapet', height: 1.1, colour: hex('#cdbd98') }, penthouse: 1,
+  height: 104, roof: hex('#7f7b72'), base: plinth(ITALIE37.podium, '#9a978e'),
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex('#dcd9ce'), glass: hex('#2f3437'), pitch: 3, solid: 0.5, floor: 2.8, depth: 0.2, material: 'concrete' } }],
+  cornices: Array.from({ length: 8 }, (_, k) => ({ at: ITALIE37.podium + ITALIE37.slabEvery * (k + 1), depth: 0.35, height: 0.55, colour: hex('#e8e5dc') })),
+  crown: { kind: 'parapet', height: 1.0, colour: hex('#e8e5dc'), material: 'concrete' }, penthouse: 3,
 })
 
 /** Tours Jade and Onyx, Rue Vandrezanne (1976, 31 levels, APUR 90 m): the one Commons street view shows a pale cream tower with a regular small-window grid, perhaps one of them (unconfirmed). */

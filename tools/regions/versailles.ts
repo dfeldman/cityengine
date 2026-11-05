@@ -33,10 +33,10 @@ export const VERSAILLES_REGIONS: DetailRegion[] = [
   },
   {
     name: "Versailles, the old town",
-    // drawn by hand: the Place d'Armes, the Écuries, Notre-Dame, Saint-Louis, the Potager du Roi
+    // drawn by hand: the Place d'Armes, the Écuries, Notre-Dame, Saint-Louis, the Potager du Roi; its west edge out to 2.1205 at the Rue de l'Indépendance-Américaine for the Hôtel de la Guerre et de la Marine
     margin: 0,
     rings: [
-      [[48.81250, 2.12300], [48.81250, 2.13650], [48.80400, 2.13800], [48.79650, 2.13350], [48.79600, 2.12000], [48.80200, 2.12250]],
+      [[48.81250, 2.12300], [48.81250, 2.13650], [48.80400, 2.13800], [48.79650, 2.13350], [48.79600, 2.12000], [48.80200, 2.12050]],
     ],
   },
   {
@@ -44,5 +44,32 @@ export const VERSAILLES_REGIONS: DetailRegion[] = [
     // the bike path from the Pont de Saint-Cloud to the Place d'Armes (tools/versailles/connect.cjs), 120 m either side: through Ville-d'Avray and Montreuil
     margin: 120,
     line: [[48.84372, 2.22146], [48.84394, 2.21963], [48.84404, 2.21839], [48.84260, 2.21803], [48.84080, 2.21751], [48.83968, 2.21635], [48.83992, 2.21376], [48.83986, 2.21153], [48.83872, 2.20935], [48.83739, 2.20763], [48.83705, 2.20517], [48.83690, 2.20306], [48.83664, 2.19940], [48.83648, 2.19708], [48.83622, 2.19339], [48.83605, 2.19103], [48.83589, 2.18878], [48.83509, 2.18715], [48.83408, 2.18583], [48.83365, 2.18373], [48.83286, 2.18205], [48.83181, 2.18074], [48.83102, 2.17885], [48.83018, 2.17704], [48.83007, 2.17481], [48.82839, 2.17487], [48.82710, 2.17476], [48.82584, 2.17514], [48.82427, 2.17377], [48.82308, 2.17276], [48.82171, 2.17160], [48.82048, 2.17051], [48.81954, 2.16918], [48.81888, 2.16730], [48.81818, 2.16531], [48.81741, 2.16302], [48.81659, 2.16100], [48.81569, 2.15935], [48.81477, 2.15772], [48.81336, 2.15516], [48.81232, 2.15327], [48.81142, 2.15159], [48.81054, 2.14995], [48.80941, 2.14795], [48.80836, 2.14603], [48.80742, 2.14445], [48.80592, 2.14173], [48.80560, 2.13957], [48.80539, 2.13736], [48.80523, 2.13518], [48.80508, 2.13304], [48.80496, 2.13087], [48.80474, 2.12839]],
+  },
+  {
+    name: "The old N10: Sèvres, Chaville, Viroflay",
+    // the second road to Versailles (owner, 2026-11-04): the D910 from the Pont de Sèvres (Grande Rue, Avenue de l'Europe,
+    // Avenue Roger Salengro) past the Musée de Céramique, Sèvres' and Chaville's town halls, then the D10 (Avenue du
+    // Général Leclerc, Avenue de Paris) into Versailles. Traced off the pbf at ~150 m steps; it meets the town ring at
+    // the Avenue de Paris, so the two routes make a loop. Narrower than the first route, it runs through towns: 50 m is the frontage
+    // both sides, ~2 000 buildings (100 m was 5 000).
+    margin: 50,
+    line: [[48.82930, 2.22620], [48.82739, 2.22400], [48.82716, 2.22200], [48.82613, 2.21800], [48.82489, 2.21400], [48.82316, 2.21000], [48.82198, 2.20600], [48.82097, 2.20200], [48.81880, 2.19800], [48.81598, 2.19400], [48.81184, 2.19200], [48.80975, 2.19000], [48.80758, 2.18600], [48.80514, 2.18200], [48.80420, 2.17750], [48.80408, 2.16850], [48.80306, 2.16550], [48.80100, 2.16250], [48.79885, 2.15950], [48.79835, 2.15050], [48.79839, 2.14450], [48.80007, 2.13850], [48.80169, 2.13250], [48.80064, 2.12950]],
+  },
+  {
+    name: "Ville-d'Avray, the centre",
+    // the route passes 150 m off: the mairie, Saint-Nicolas (Corot's paintings), the Fontaine du Roi. Corot's ponds are
+    // already in the forest's margin.
+    margin: 0,
+    rings: [[[48.82950, 2.18650], [48.82950, 2.19150], [48.82550, 2.19150], [48.82550, 2.18650]]],
+  },
+  {
+    name: "The N10's squares",
+    // set back a little more than the corridor's 100 m: Chaville's mairie and its square, the old Manufacture de Sèvres, Sèvres' Hôtel de Ville
+    margin: 90,
+    rings: [
+      [[48.81040, 2.18740], [48.81040, 2.18860], [48.80930, 2.18860], [48.80930, 2.18740]],
+      [[48.82450, 2.21500], [48.82450, 2.21620], [48.82360, 2.21620], [48.82360, 2.21500]],
+      [[48.82510, 2.21170], [48.82510, 2.21270], [48.82420, 2.21270], [48.82420, 2.21170]],
+    ],
   },
 ]

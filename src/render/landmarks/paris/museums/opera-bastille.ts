@@ -38,13 +38,16 @@ const RING: P2[] = [[11.4, 87.5], [13.5, 89.3], [8.0, 94.6], [-6.6, 101.8], [-20
 const PALE: Rgb = [0.60, 0.60, 0.59]
 const PALE_DARK: Rgb = [0.50, 0.50, 0.49]
 /** the drum's front panels, which face the afternoon sun over the Place: the city's sun gains ~2.3× there, so 0.6 is pure white */
-const PANEL: Rgb = [0.40, 0.40, 0.40]
+const PANEL: Rgb = [0.66, 0.67, 0.67]
+/** the panel grid (the photograph: ~1.8 m squares with dark joints) and the joints' width */
+const PANEL_CELL = 1.8, JOINT = 0.09
+const JOINT_COL: Rgb = [0.38, 0.39, 0.40]
 const ROOF: Rgb = [0.55, 0.55, 0.53]
-const GLASS: Rgb = [0.25, 0.29, 0.34]          // the band and the boxes: sky in a square grid, pane by pane
+const GLASS: Rgb = [0.38, 0.44, 0.50]          // the band and the boxes: sky in a square grid, pane by pane
 const GLASS_DARK: Rgb = [0.14, 0.17, 0.21]     // the colonnade's recess, the lobby, the arch's screen
-const MULLION: Rgb = [0.22, 0.25, 0.29]
+const MULLION: Rgb = [0.30, 0.33, 0.37]
 const GRANITE: Rgb = [0.36, 0.38, 0.41]        // Lanhélin: dark blue-grey, short of black (owner, 2026-10-31)
-const STEP: Rgb = [0.58, 0.58, 0.57]
+const STEP: Rgb = [0.46, 0.46, 0.45]
 
 // the drum: OSM's arc
 const C: P2 = [-16.2, 62.1]
@@ -52,6 +55,19 @@ const R = 41.1
 const B0 = 269, B1 = 356                       // the glazed rim's bearings; the terraces beyond 356°
 const TAIL: P2 = [-51.6, 41.5]                 // where the straight Rue de Lyon tail of the rim ends and the terraces begin
 // heights (lidar less 1 m)
+/** the panel wall's top by bearing on the arc, the stairstep across the front (the photograph): [from bearing, top] high
+ *  to low — by the arch it runs to the rim, then steps down bay by bay toward the Rue de Lyon. Tune here. */
+const PANEL_STEPS: [number, number][] = [[322, 31], [312, 27], [302, 23], [292, 19], [282, 15.5], [0, 12.5]]
+const panelTop = (b: number): number => PANEL_STEPS.find(([b0]) => b >= b0)![1]
+/** how far the panel wall stands proud of the glass, so the steps read */
+const PROUD = 0.6
+/** the Rue de Lyon side's skin: arcade height, bay, the panelled parapet over the glass, the skin's offset off the prism */
+const SIDE_ARCADE = 8.5, SIDE_BAY = 6.5, SIDE_PARAPET = 2.5, SKIN = 0.05
+/** the side's floor bands across the glass (Street View: pale strips every storey), the roof pergola's beams, the white tower */
+const SIDE_FLOOR = 3.3, PERGOLA_STEP = 3.2, PERGOLA_IN = 7, PERGOLA_OUT = 1.2, TOWER_W = 9, TOWER_D = 7, TOWER_H = 42
+/** the round south-west corner: circle fitted to OSM's ring (0.1 m), bearings, heights */
+const ROUND_C: P2 = [7.5, -56.5], ROUND_R = 30.7, ROUND_B0 = 188, ROUND_B1 = 283
+const ROUND_TOP = 27.5, ROUND_CAP = 3.5, ROUND_GROUND = 6
 const COLONNADE = 9, PANEL_TOP = 19, RIM = 31, CROWN = 37.5, TOWER = 47, BOX = 34.5, ARCH = 19
 
 export function operaBastille(out: MeshBuilder, fit: Fit): void {
@@ -59,7 +75,17 @@ export function operaBastille(out: MeshBuilder, fit: Fit): void {
   const T = tools(out, F)
   const { poly, prism, wall, beam } = T
   const at = (b: number, r = R): P2 => [C[0] + r * Math.sin((b * Math.PI) / 180), C[1] + r * Math.cos((b * Math.PI) / 180)]
-  const bearingOf = (p: P2): number => (Math.atan2(p[0] - C[0], p[1] - C[1]) * 180) / Math.PI
+  // thin dark joints a few cm proud of a panelled face, on the panel grid
+  const joints = (a: P2, b: P2, nrm: P2, l: number, h0: number, h1: number): void => {
+    const o = 0.04, u: P2 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l]
+    const q = (e: number, n: number, h: number): [number, number, number] => [e + nrm[0] * o, n + nrm[1] * o, h]
+    for (let h = h0 + PANEL_CELL; h < h1 - 0.2; h += PANEL_CELL) poly([q(a[0], a[1], h), q(b[0], b[1], h), q(b[0], b[1], h + JOINT), q(a[0], a[1], h + JOINT)], JOINT_COL, [nrm[0], nrm[1], 0])
+    for (let s = PANEL_CELL / 2; s < l; s += PANEL_CELL) {
+      const e = a[0] + u[0] * s, n = a[1] + u[1] * s, w = JOINT / 2
+      poly([q(e - u[0] * w, n - u[1] * w, h0), q(e + u[0] * w, n + u[1] * w, h0), q(e + u[0] * w, n + u[1] * w, h1), q(e - u[0] * w, n - u[1] * w, h1)], JOINT_COL, [nrm[0], nrm[1], 0])
+    }
+  }
+  const bearingOf = (p: P2): number => ((Math.atan2(p[0] - C[0], p[1] - C[1]) * 180) / Math.PI + 360) % 360
 
   // ================================================================ the drum's rim: colonnade, panels, glass band
   // the outer face: the straight tail then the arc in 3° steps, as a run of edges
@@ -73,37 +99,47 @@ export function operaBastille(out: MeshBuilder, fit: Fit): void {
   for (let i = 0; i + 1 < OUTER.length; i++) {
     const a = OUTER[i], b = OUTER[i + 1]
     const l = Math.hypot(b[0] - a[0], b[1] - a[1])
-    const nrm: P2 = [(b[1] - a[1]) / l, -(b[0] - a[0]) / l]     // outward (the run is anticlockwise round the building)
+    // outward: the run goes CLOCKWISE round the building (bearings rising from 269° to 356°), so outward is LEFT of travel
+    const nrm: P2 = [-(b[1] - a[1]) / l, (b[0] - a[0]) / l]
     const a2: P2 = [a[0] - nrm[0] * RECESS, a[1] - nrm[1] * RECESS], b2: P2 = [b[0] - nrm[0] * RECESS, b[1] - nrm[1] * RECESS]
     // the entrance lobby right of the arch (the photograph: a tall dark glazed bay on two great pillars, under the
     // band): the recess runs up to the band there, the panel wall left out
     const bA = bearingOf(a)
     const lobby = a[1] > 60 && bA > 303 && bA < 318
     const recessTop = lobby ? PANEL_TOP : COLONNADE
-    wall(a2, b2, 0, recessTop, GLASS_DARK)
+    wall(b2, a2, 0, recessTop, GLASS_DARK)     // reversed: `wall` takes outward as right of travel
     poly([[a[0], a[1], recessTop], [b[0], b[1], recessTop], [b2[0], b2[1], recessTop], [a2[0], a2[1], recessTop]], PALE_DARK, [0, 0, -1])
     // the mezzanine's pale band across the glazing
     poly([[a2[0], a2[1], 4.4], [b2[0], b2[1], 4.4], [b2[0], b2[1], 5.0], [a2[0], a2[1], 5.0]], PALE, [nrm[0], nrm[1], 0])
-    // the panel wall and the glass band above, on the face, in the building's 1.6 m square grid
-    if (!lobby) T.mottled([[a[0], a[1], COLONNADE], [b[0], b[1], COLONNADE], [b[0], b[1], PANEL_TOP], [a[0], a[1], PANEL_TOP]], PANEL, [nrm[0], nrm[1], 0], 1.6, 0.04)
-    const glassBand = bA < 318 || a[1] < 60
-    if (glassBand) {
-      T.mottled([[a[0], a[1], PANEL_TOP], [b[0], b[1], PANEL_TOP], [b[0], b[1], RIM], [a[0], a[1], RIM]], GLASS, [nrm[0], nrm[1], 0], 1.6, 0.06)
-      // the horizontal mullions, a thin strip proud of the glass at every row
-      for (let h = PANEL_TOP; h < RIM - 0.1; h += (RIM - PANEL_TOP) / 7) {
-        const o = 0.22
-        poly([[a[0] + nrm[0] * o, a[1] + nrm[1] * o, h], [b[0] + nrm[0] * o, b[1] + nrm[1] * o, h], [b[0] + nrm[0] * o, b[1] + nrm[1] * o, h + 0.2], [a[0] + nrm[0] * o, a[1] + nrm[1] * o, h + 0.2]], MULLION, [nrm[0], nrm[1], 0])
+    // the panel wall and the glass band above. The photograph's key line: the panel wall's top STEPS DOWN across the
+    // front, full height by the arch, lower bay by bay toward the Rue de Lyon, the glass filling in above each step.
+    // The panels stand PROUD of the glass, so every step shows its edge.
+    const pt = a[1] < 60 ? PANEL_STEPS[PANEL_STEPS.length - 1][1] : panelTop(bA)
+    const p0 = lobby ? PANEL_TOP : COLONNADE
+    const pa: P2 = [a[0] + nrm[0] * PROUD, a[1] + nrm[1] * PROUD], pb: P2 = [b[0] + nrm[0] * PROUD, b[1] + nrm[1] * PROUD]
+    if (pt > p0) {
+      T.mottled([[pa[0], pa[1], p0], [pb[0], pb[1], p0], [pb[0], pb[1], pt], [pa[0], pa[1], pt]], PANEL, [nrm[0], nrm[1], 0], PANEL_CELL, 0.03)
+      joints(pa, pb, nrm, l, p0, pt)
+      poly([[a[0], a[1], pt], [b[0], b[1], pt], [pb[0], pb[1], pt], [pa[0], pa[1], pt]], PALE, [0, 0, 1])          // the step's top
+      poly([[a[0], a[1], p0], [b[0], b[1], p0], [pb[0], pb[1], p0], [pa[0], pa[1], p0]], PALE_DARK, [0, 0, -1])   // its soffit
+      // the step's ends, where the next bay's panel top differs
+      for (const [c, cp, o] of [[a, pa, i > 0 ? (OUTER[i - 1][1] < 60 ? PANEL_STEPS[PANEL_STEPS.length - 1][1] : panelTop(bearingOf(OUTER[i - 1]))) : p0], [b, pb, i + 2 < OUTER.length ? (b[1] < 60 ? PANEL_STEPS[PANEL_STEPS.length - 1][1] : panelTop(bearingOf(b))) : p0]] as const) {
+        if (o < pt - 0.1) poly([[c[0], c[1], Math.max(o, p0)], [cp[0], cp[1], Math.max(o, p0)], [cp[0], cp[1], pt], [c[0], c[1], pt]], PANEL, [-(b[0] - a[0]), -(b[1] - a[1]), 0].map((v) => (c === a ? v : -v)) as [number, number, number])
       }
-      // the vertical ones
+    }
+    if (pt < RIM - 0.1) {
+      const g0 = pt
+      T.mottled([[a[0], a[1], g0], [b[0], b[1], g0], [b[0], b[1], RIM], [a[0], a[1], RIM]], GLASS, [nrm[0], nrm[1], 0], 1.6, 0.06)
+      for (let h = g0; h < RIM - 0.1; h += 1.6) {
+        const o = 0.22
+        poly([[a[0] + nrm[0] * o, a[1] + nrm[1] * o, h], [b[0] + nrm[0] * o, b[1] + nrm[1] * o, h], [b[0] + nrm[0] * o, b[1] + nrm[1] * o, h + 0.15], [a[0] + nrm[0] * o, a[1] + nrm[1] * o, h + 0.15]], MULLION, [nrm[0], nrm[1], 0])
+      }
       for (let s = 0.8; s < l; s += 1.6) {
         const t = s / l, e = a[0] + (b[0] - a[0]) * t, n = a[1] + (b[1] - a[1]) * t
         const u: P2 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l]
-        poly([[e - u[0] * 0.1 + nrm[0] * 0.22, n - u[1] * 0.1 + nrm[1] * 0.22, PANEL_TOP], [e + u[0] * 0.1 + nrm[0] * 0.22, n + u[1] * 0.1 + nrm[1] * 0.22, PANEL_TOP],
-          [e + u[0] * 0.1 + nrm[0] * 0.22, n + u[1] * 0.1 + nrm[1] * 0.22, RIM], [e - u[0] * 0.1 + nrm[0] * 0.22, n - u[1] * 0.1 + nrm[1] * 0.22, RIM]], MULLION, [nrm[0], nrm[1], 0])
+        poly([[e - u[0] * 0.08 + nrm[0] * 0.22, n - u[1] * 0.08 + nrm[1] * 0.22, g0], [e + u[0] * 0.08 + nrm[0] * 0.22, n + u[1] * 0.08 + nrm[1] * 0.22, g0],
+          [e + u[0] * 0.08 + nrm[0] * 0.22, n + u[1] * 0.08 + nrm[1] * 0.22, RIM], [e - u[0] * 0.08 + nrm[0] * 0.22, n - u[1] * 0.08 + nrm[1] * 0.22, RIM]], MULLION, [nrm[0], nrm[1], 0])
       }
-    } else {
-      // behind and left of the arch the band is panelled too, with a few square windows
-      T.mottled([[a[0], a[1], PANEL_TOP], [b[0], b[1], PANEL_TOP], [b[0], b[1], RIM], [a[0], a[1], RIM]], PANEL, [nrm[0], nrm[1], 0], 1.6, 0.04)
     }
     // the pillars: square, 1.4 m, at every third vertex of the run (6.5 m), from the street to the colonnade's ceiling
     const u: P2 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l]
@@ -200,4 +236,101 @@ export function operaBastille(out: MeshBuilder, fit: Fit): void {
     [[[-6, -108], [14, -178], [36, -172], [24, -130], [30, -124], [22, -100], [10, -100]], 28.5],   // the annex down the Rue de Lyon
   ]
   for (const [ring, h] of rear) prism(ring, 0, h, PALE, ROOF)
+
+  // ================================================================ the Rue de Lyon side (the photograph, right of the drum)
+  // a straight face skinned like the front: an arcade of square pillars at the street over dark glazing, a glass
+  // curtain wall in the 1.6 m grid above, and a panelled parapet with the joints. Outward is RIGHT of travel.
+  const side = (a: P2, b: P2, top: number, arcade = true): void => {
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]), u: P2 = [(b[0] - a[0]) / l, (b[1] - a[1]) / l]
+    const nrm: P2 = [u[1], -u[0]]
+    const at = (p: P2, o: number): P2 => [p[0] + nrm[0] * o, p[1] + nrm[1] * o]
+    const A = at(a, SKIN), B = at(b, SKIN)
+    const q = (h0: number, h1: number, c: Rgb, cell = 0, sp = 0.03): void => {
+      const pts: [[number, number, number], [number, number, number], [number, number, number], [number, number, number]] = [[A[0], A[1], h0], [B[0], B[1], h0], [B[0], B[1], h1], [A[0], A[1], h1]]
+      if (cell) T.mottled(pts, c, [nrm[0], nrm[1], 0], cell, sp); else poly(pts, c, [nrm[0], nrm[1], 0])
+    }
+    const g0 = arcade ? SIDE_ARCADE : 0, g1 = top - SIDE_PARAPET
+    if (arcade) {
+      q(0, SIDE_ARCADE, GLASS_DARK)
+      for (let s = SIDE_BAY / 2; s < l; s += SIDE_BAY) {
+        const c: P2 = [a[0] + u[0] * s, a[1] + u[1] * s], w = 0.6
+        prism([[c[0] - u[0] * w, c[1] - u[1] * w], [c[0] + u[0] * w, c[1] + u[1] * w], at([c[0] + u[0] * w, c[1] + u[1] * w], 1.8), at([c[0] - u[0] * w, c[1] - u[1] * w], 1.8)], 0, SIDE_ARCADE, PALE, null)
+      }
+      // the canopy over the arcade
+      poly([[A[0], A[1], SIDE_ARCADE], [B[0], B[1], SIDE_ARCADE], [...at(b, 2), SIDE_ARCADE], [...at(a, 2), SIDE_ARCADE]] as [number, number, number][], PALE_DARK, [0, 0, -1])
+      poly([[...at(a, 2), SIDE_ARCADE], [...at(b, 2), SIDE_ARCADE], [...at(b, 2), SIDE_ARCADE + 0.8], [...at(a, 2), SIDE_ARCADE + 0.8]] as [number, number, number][], PALE, [nrm[0], nrm[1], 0])
+    }
+    if (g1 > g0 + 1) {
+      q(g0, g1, GLASS, 1.6, 0.06)
+      for (let h = g0 + SIDE_FLOOR; h < g1 - 0.5; h += SIDE_FLOOR) poly([[...at(a, SKIN + 0.25), h], [...at(b, SKIN + 0.25), h], [...at(b, SKIN + 0.25), h + 0.7], [...at(a, SKIN + 0.25), h + 0.7]] as [number, number, number][], PALE, [nrm[0], nrm[1], 0])
+      for (let h = g0; h < g1; h += 1.6) poly([[...at(a, SKIN + 0.15), h], [...at(b, SKIN + 0.15), h], [...at(b, SKIN + 0.15), h + 0.15], [...at(a, SKIN + 0.15), h + 0.15]] as [number, number, number][], MULLION, [nrm[0], nrm[1], 0])
+      for (let s = 0.8; s < l; s += 1.6) {
+        const e = a[0] + u[0] * s, n = a[1] + u[1] * s
+        poly([[...at([e - u[0] * 0.08, n - u[1] * 0.08], SKIN + 0.15), g0], [...at([e + u[0] * 0.08, n + u[1] * 0.08], SKIN + 0.15), g0], [...at([e + u[0] * 0.08, n + u[1] * 0.08], SKIN + 0.15), g1], [...at([e - u[0] * 0.08, n - u[1] * 0.08], SKIN + 0.15), g1]] as [number, number, number][], MULLION, [nrm[0], nrm[1], 0])
+      }
+    }
+    q(Math.max(g1, g0), top, PANEL, PANEL_CELL, 0.03)
+    joints(A, B, nrm, l, Math.max(g1, g0), top)
+  }
+  // the west terraces' street face, then the halls and the annex down the Rue de Lyon (travel southward: outward west)
+  side(W0, W1, 25)
+  // the pergola on the wing's roof: beams across the terrace every few metres, cantilevered over the street, on a rail
+  for (let s = 2; s < wl - 1; s += PERGOLA_STEP) {
+    const e = W0[0] + ((W1[0] - W0[0]) * s) / wl, n = W0[1] + ((W1[1] - W0[1]) * s) / wl
+    beam([e + wn[0] * PERGOLA_OUT, n + wn[1] * PERGOLA_OUT, 26.4], [e - wn[0] * PERGOLA_IN, n - wn[1] * PERGOLA_IN, 26.4], 0.35, PALE)
+    beam([e - wn[0] * (PERGOLA_IN - 0.5), n - wn[1] * (PERGOLA_IN - 0.5), 25], [e - wn[0] * (PERGOLA_IN - 0.5), n - wn[1] * (PERGOLA_IN - 0.5), 26.4], 0.3, PALE)
+  }
+  {
+    const e0 = W0[0] + ((W1[0] - W0[0]) * 2) / wl, n0 = W0[1] + ((W1[1] - W0[1]) * 2) / wl
+    const e1 = W1[0] - ((W1[0] - W0[0]) * 1) / wl, n1 = W1[1] - ((W1[1] - W0[1]) * 1) / wl
+    beam([e0 - wn[0] * 1, n0 - wn[1] * 1, 26.9], [e1 - wn[0] * 1, n1 - wn[1] * 1, 26.9], 0.3, PALE)
+  }
+  // the tall white tower where the wing meets the drum (Street View: a sheer panelled slab with a glazed slot beside it)
+  {
+    const t0 = 3, ux = (W1[0] - W0[0]) / wl, uy = (W1[1] - W0[1]) / wl
+    const p = (s: number, d: number): P2 => [W0[0] + ux * s - wn[0] * d, W0[1] + uy * s - wn[1] * d]
+    prism([p(t0, -0.5), p(t0 + TOWER_W, -0.5), p(t0 + TOWER_W, TOWER_D), p(t0, TOWER_D)], 0, TOWER_H, PALE, ROOF, 3, 0.02)
+    prism([p(t0 + TOWER_W, 0.5), p(t0 + TOWER_W + 3, 0.5), p(t0 + TOWER_W + 3, TOWER_D), p(t0 + TOWER_W, TOWER_D)], 0, TOWER_H - 4, GLASS, ROOF, 1.6, 0.06)
+  }
+  // the round bit: the south-west corner is a true arc (OSM's ring and its columns fit a circle to 0.1 m), a glazed drum
+  // with pale floor bands under a panelled top band, the columns standing free at its foot
+  {
+    const at2 = (b: number, r: number): P2 => [ROUND_C[0] + r * Math.sin((b * Math.PI) / 180), ROUND_C[1] + r * Math.cos((b * Math.PI) / 180)]
+    const n = Math.ceil((ROUND_B1 - ROUND_B0) / 3)
+    for (let k = 0; k < n; k++) {
+      const b0 = ROUND_B0 + ((ROUND_B1 - ROUND_B0) * k) / n, b1 = ROUND_B0 + ((ROUND_B1 - ROUND_B0) * (k + 1)) / n
+      const bm = ((b0 + b1) / 2) * Math.PI / 180, nrm: [number, number, number] = [Math.sin(bm), Math.cos(bm), 0]
+      const q = (r: number, h0: number, h1: number): [[number, number, number], [number, number, number], [number, number, number], [number, number, number]] => {
+        const A = at2(b0, r), B = at2(b1, r)
+        return [[A[0], A[1], h0], [B[0], B[1], h0], [B[0], B[1], h1], [A[0], A[1], h1]]
+      }
+      const R0 = ROUND_R + 0.05
+      poly(q(R0 - 0.5, 0, ROUND_GROUND), GLASS_DARK, nrm)                       // the ground floor, recessed behind the columns
+      poly(q(R0, ROUND_GROUND - 0.6, ROUND_GROUND), PALE_DARK, nrm)
+      T.mottled(q(R0, ROUND_GROUND, ROUND_TOP - ROUND_CAP), GLASS, nrm, 1.6, 0.06)
+      for (let h = ROUND_GROUND + SIDE_FLOOR; h < ROUND_TOP - ROUND_CAP - 0.5; h += SIDE_FLOOR) poly(q(R0 + 0.25, h, h + 0.6), PALE, nrm)
+      for (let h = ROUND_GROUND; h < ROUND_TOP - ROUND_CAP; h += 1.6) poly(q(R0 + 0.12, h, h + 0.12), MULLION, nrm)
+      // one vertical mullion per 3° segment: 1.6 m at this radius, the building's grid
+      { const t = (b0 * Math.PI) / 180, u: P2 = [Math.cos(t), -Math.sin(t)], c = at2(b0, R0 + 0.12), w = 0.08
+        poly([[c[0] - u[0] * w, c[1] - u[1] * w, ROUND_GROUND], [c[0] + u[0] * w, c[1] + u[1] * w, ROUND_GROUND], [c[0] + u[0] * w, c[1] + u[1] * w, ROUND_TOP - ROUND_CAP], [c[0] - u[0] * w, c[1] - u[1] * w, ROUND_TOP - ROUND_CAP]], MULLION, nrm) }
+
+      T.mottled(q(R0, ROUND_TOP - ROUND_CAP, ROUND_TOP), PANEL, nrm, PANEL_CELL, 0.03)
+      // the soffit under the ground floor's overhang
+      { const A0 = at2(b0, R0 - 0.5), B0 = at2(b1, R0 - 0.5), A1 = at2(b0, R0), B1 = at2(b1, R0)
+        poly([[A0[0], A0[1], ROUND_GROUND - 0.6], [B0[0], B0[1], ROUND_GROUND - 0.6], [B1[0], B1[1], ROUND_GROUND - 0.6], [A1[0], A1[1], ROUND_GROUND - 0.6]], PALE_DARK, [0, 0, -1]) }
+    }
+    // the roof's lip and the columns (OSM: 0.6 m round, 6/12/18 m — the 18 m ones rising to the top band's floor)
+    for (let k = 0; k <= 32; k++) {
+      const b = ROUND_B0 + ((ROUND_B1 - ROUND_B0) * k) / 32
+      if (k % 4 === 0) { const c = at2(b, ROUND_R + 1.2); prism([[c[0] - 0.5, c[1] - 0.5], [c[0] + 0.5, c[1] - 0.5], [c[0] + 0.5, c[1] + 0.5], [c[0] - 0.5, c[1] + 0.5]], 0, ROUND_GROUND - 0.6, PALE, null) }
+    }
+  }
+  side([-5.8, -108.1], [14.2, -178.4], 28.5)
+  // the stepped white blocks above: panel grid on each step's street face, no glass (the photograph's tall white shoulders)
+  for (const [d0, , h] of W.slice(1)) {
+    const a: P2 = [W0[0] - wn[0] * d0, W0[1] - wn[1] * d0], b: P2 = [W1[0] - wn[0] * d0, W1[1] - wn[1] * d0]
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]), nrm: P2 = [(b[1] - a[1]) / l, -(b[0] - a[0]) / l]
+    const prev = W[W.findIndex((w) => w[0] === d0) - 1][2]
+    joints([a[0] + nrm[0] * SKIN, a[1] + nrm[1] * SKIN], [b[0] + nrm[0] * SKIN, b[1] + nrm[1] * SKIN], nrm, l, prev, h)
+  }
 }

@@ -1,4 +1,15 @@
 /**
+ * Heights (m) for untagged buildings whose neighbour guess is badly wrong, by OSM way id. Read off aerials.
+ * The Boulogne tennis club by the A13 (48.8479, 2.2297, owner 2026-11-04): two low sheds guessed at 28 m.
+ */
+const HEIGHT_FIXES: Record<number, number> = {
+  72055805: 6, // the long white hall along the courts' east end
+  72056047: 4.5, // the grey shed at the loop's east end
+}
+/** Pitches whose courts are red clay though OSM gives no surface: the same club's bank of four. */
+const CLAY_PITCHES = new Set<number>([24732817])
+
+/**
  * Turn a real place into a city package, once, offline.
  *
  *   npm run bake                     every city in tools/cities.ts
@@ -60,7 +71,7 @@ import { formCode } from '../src/city/tree-forms.ts'
 import { PlantZones } from '../src/city/zone-planting.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
-import { COURT_MAX_M2, courtEligible, courtSport, fitCourt, ringArea } from '../src/city/sports.ts'
+import { COURT_MAX_M2, courtEligible, courtSport, fitCourt, ringArea, tileCourts } from '../src/city/sports.ts'
 import { chooseStyle, style as styleOf, type StyleId } from '../src/city/facade.ts'
 import { packPoints, unpackPoints, waterLevels, type CityPackage, type PackedPoi, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedCourt, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
 import { pavementFor } from '../src/city/pavement.ts'
@@ -73,6 +84,7 @@ import { bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footB
 import { bedPosts, footWaysOnTracks, levelParisRails, parisRailRecord, railFineTiles, stationShells, straightDeck } from './rail-levels.ts'
 import { levelFootOnDecks } from '../src/render/rail-overbridge.ts'
 import { RAIL_DECKS } from '../src/city/paris/rail-decks.ts'
+import { gardenPaths } from './gardens/paths.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -118,6 +130,7 @@ import { GroundModel } from '../src/map/ground.ts'
 import { writeV3 } from './v3-writer.ts'
 import { HUGE_AREA_SPAN, tooBigForAnArea } from '../src/city/park-planting.ts'
 import { localZones, zoneTouchesRect, zonesAt, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
+import { ROOF_RGB, roofKind } from '../src/city/paris/materials.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
 // the shipped bake (public/cities/<id>/v3/) and the bake-private files (tools/cache/bake/<id>/): tools/bake-files.ts
@@ -850,8 +863,18 @@ async function bake(spec: CitySpec): Promise<void> {
       .catch((e: unknown) => { console.warn(`  sf-parcels: not fetched (${String(e).slice(0, 120)})`); return null })
     // Paris: every building's age and whether it is a public facility, from APUR (tools/paris-apur.ts)
     : spec.region === 'paris'
-      ? await import('./paris-apur.ts').then(async (m) => m.apurIndex(await m.fetchApur()))
-        .catch((e: unknown) => { console.warn(`  apur: not fetched (${String(e).slice(0, 120)})`); return null })
+      ? await Promise.all([
+        import('./paris-apur.ts').then(async (m) => m.apurIndex(await m.fetchApur()))
+          .catch((e: unknown) => { console.warn(`  apur: not fetched (${String(e).slice(0, 120)})`); return null }),
+        // and every building's wall and roof material, from BD TOPO (tools/paris-bdtopo.ts), suburbs too
+        import('./paris-bdtopo.ts').then(async (m) => m.topoIndex(await m.fetchTopoFor(spec)))
+          .catch((e: unknown) => { console.warn(`  bdtopo: not fetched (${String(e).slice(0, 120)})`); return null }),
+      ]).then(([apur, topo]) => apur || topo
+        ? (ring: { lat: number; lon: number }[]) => {
+            const a = apur?.(ring) ?? null, t = topo?.(ring) ?? null
+            return a || t ? { ...(a ?? { construction: '99', units: 0, parcels: 1 }), ...(t ?? {}) } : null
+          }
+        : null)
     : null
   const taggedNear: TaggedNeighbour[] = []
   const ringOfWay = (w: OsmWay): { x: number; z: number }[] | null =>
@@ -871,8 +894,10 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   const grid = new NeighbourGrid(taggedNear)
   /** the tags to hand the tag layer: the mapper's, plus a guessed level count where they gave none */
-  const withLevels = (tags: Record<string, string>, ring: { x: number; z: number }[] | null)
+  const withLevels = (tags0: Record<string, string>, ring: { x: number; z: number }[] | null, id?: number)
     : { tags: Record<string, string>; inferred: boolean } => {
+    const fix = id === undefined ? undefined : HEIGHT_FIXES[id]
+    const tags = fix === undefined ? tags0 : { ...tags0, height: String(fix) }
     // a part hung in the air by min_level/min_height is left to the tag layer: a guessed total would fight it
     if (!ring || tags['building:min_level'] !== undefined || tags.min_height !== undefined) {
       return { tags, inferred: false }
@@ -995,8 +1020,9 @@ async function bake(spec: CitySpec): Promise<void> {
   for (const w of buildingWays) {
     if (!w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))  // OSM closes the ring; we do not
-    if (ring.length < 3 || area(ring) < 12) continue
-    const own = withLevels(w.tags, ring)
+    // (a landmark's own tiny outline stays: Ville-d'Avray's Fontaine du Roi is 4 x 3 m, and dropping it dropped its model)
+    if (ring.length < 3 || (area(ring) < 12 && !shipModels.has(w.id))) continue
+    const own = withLevels(w.tags, ring, w.id)
     if (own.inferred) inferredCount++
     const p = getBuildingParamsFromOSMTags(own.tags) as {
       buildingLevels?: number; buildingHeight?: number; buildingMinHeight?: number
@@ -1104,7 +1130,7 @@ async function bake(spec: CitySpec): Promise<void> {
       minHeight: /^(roof|carport|shelter|gazebo)$/.test(w.tags.building ?? '') && (p.buildingHeight ?? 0) > 1.5
         ? Math.max(p.buildingMinHeight ?? 0, (tall ? raised! : low ? capped! : p.buildingHeight!) - 0.5)
         : p.buildingMinHeight,
-      ...roofFor(w.tags, p, styleId, ccwRing, w.id),
+      ...withRoofMaterial(roofFor(w.tags, p, styleId, ccwRing, w.id), spec.region === 'paris' ? recordOf?.(w.geometry) as { roofMat?: string } | null : null),
       ...(own.inferred ? { levelsInferred: true as const } : {}),
       ...(kind ? { archetype: kind.archetype } : {}),
       ...(form ? { form } : {}),
@@ -1197,22 +1223,25 @@ async function bake(spec: CitySpec): Promise<void> {
     if (w.tags.leisure !== 'pitch' || !w.geometry || w.geometry.length < 4) continue
     // (a region's own word on a pitch, by id, overrides OSM's sport AND the landmark exclusion: it was looked at)
     const told = streetRegion.courtSports?.[String(w.id)]
-    const sport = courtSport(told ?? w.tags.sport)
+    const sport = courtSport(told ?? w.tags.sport, told !== undefined)
     if (!sport) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     const m2 = ringArea(ring)
     const c = { x: ring.reduce((s, p) => s + p.x, 0) / ring.length, z: ring.reduce((s, p) => s + p.z, 0) / ring.length }
     const venue = venues.find((v) => pointInRing(v.ring, c.x, c.z))
     if (!told && !courtEligible(w.tags, m2, venue?.name)) { courtsExcluded++; continue }
-    const fit = fitCourt(ring, sport)
-    if (!fit) { courtsExcluded++; continue }
-    sportsCourts.push({
+    const bank = tileCourts(ring, sport)
+    const one = bank ? null : fitCourt(ring, sport)
+    if (!bank && !one) { courtsExcluded++; continue }
+    const clay = w.tags.surface === 'clay' || CLAY_PITCHES.has(w.id)
+    for (const fit of bank ?? [one!]) sportsCourts.push({
       sport: fit.sport, x: Math.round(fit.x * 100) / 100, z: Math.round(fit.z * 100) / 100,
       heading: Math.round(fit.heading * 10000) / 10000,
       len: Math.round(fit.len * 100) / 100, wid: Math.round(fit.wid * 100) / 100,
       ...(fit.half ? { half: true as const } : {}),
+      ...(clay ? { clay: true as const } : {}),
     })
-    courtsBySport.set(fit.sport, (courtsBySport.get(fit.sport) ?? 0) + 1)
+    courtsBySport.set(sport, (courtsBySport.get(sport) ?? 0) + (bank?.length ?? 1))
   }
   // …and the PLAYGROUNDS (owner, 2026-10-03): every leisure=playground, fitted as its own box and furnished at run time
   // from the playground kit (render/playground.ts) — it travels with the courts as sport `playground`
@@ -3394,7 +3423,7 @@ async function bake(spec: CitySpec): Promise<void> {
       // only outside the box: inside it the city's own buildings stand
       if (!regionFringe.has(w.id) && c.x >= -shut.west && c.x <= shut.east && c.z >= -shut.south && c.z <= shut.north) continue
       const ccwRing = ccw(ring)
-      const own = withLevels(w.tags, ring)
+      const own = withLevels(w.tags, ring, w.id)
       const p = getBuildingParamsFromOSMTags(own.tags) as {
         buildingLevels?: number; buildingHeight?: number; buildingFacadeMaterial?: string
         buildingRoofType?: string; buildingRoofHeight?: number; buildingRoofDirection?: number
@@ -3835,7 +3864,8 @@ async function bake(spec: CitySpec): Promise<void> {
         // Sacré-Cœur stands on Montmartre: the ground under a far landmark comes from the same tiles
         const baseY = Math.round((elevation.at(s) - datumRaw) * 10) / 10
         return { name: s.name, x: Math.round(p.x), z: Math.round(p.z), procedural: s.procedural, heightM: s.heightM, baseY,
-          ...(s.bearing !== undefined ? { bearing: s.bearing } : {}), ...(s.boost !== undefined ? { boost: s.boost } : {}) }
+          ...(s.bearing !== undefined ? { bearing: s.bearing } : {}), ...(s.boost !== undefined ? { boost: s.boost } : {}),
+          ...(s.hx !== undefined ? { hx: s.hx } : {}), ...(s.hz !== undefined ? { hz: s.hz } : {}) }
       }),
     } : {}),
     attribution: [copyright, `OSM base ${timestamp}`, TERRAIN_CREDIT],
@@ -4133,6 +4163,12 @@ function roofFor(
     //  seen from any hill — Golden Gate Heights, 2026-10-06; render/buildings.ts does the same where no colour is baked)
     roofColour: shape === 'flat' && styleId === 'stucco' ? [0.5, 0.49, 0.47] : colour,
   }
+}
+
+/** a pitched roof in the colour BD TOPO's roof material says (tiles red, slate dark, zinc grey); a flat one keeps its own */
+function withRoofMaterial<R extends { roof: RoofShape; roofColour: [number, number, number] }>(r: R, rec: { roofMat?: string } | null | undefined): R {
+  const k = roofKind(rec?.roofMat)
+  return k && k !== 'concrete' && r.roof !== 'flat' ? { ...r, roofColour: ROOF_RGB[k] } : r
 }
 
 const hexRgb = (hex: string): [number, number, number] => {
@@ -5053,6 +5089,13 @@ async function dropOldLayout(id: string): Promise<void> {
 async function writeRides(pkg: CityPackage): Promise<void> {
   const terrain = new Terrain(pkg.terrain)
   const edges = mapEdges(pkg.edges, terrain)
+  // (the traced gardens' walks OSM has not got, ridden but not drawn — their gravel is: tools/gardens/paths.ts)
+  if (pkg.region === 'paris') {
+    const walks = gardenPaths(pkg.origin, edges, (x, z) => terrain.heightAt(x, z), pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring))
+    edges.push(...walks.edges)
+    console.log(`  garden walks laid in ${walks.gardens.length} gardens: ${walks.gardens.join('; ')}`)
+    if (walks.skipped.length) console.log(`  garden walks not laid: ${walks.skipped.join('; ')}`)
+  }
   for (const mode of ['bike', 'run'] as const) {
     const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z), pkg.region,
       pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring), pkg.roundabouts)

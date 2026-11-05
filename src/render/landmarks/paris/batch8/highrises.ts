@@ -32,3 +32,30 @@ export const highriseBands = make(build(face('bands', '#e6e3da', '#33383b', 3, 0
 export const highriseFins = make(build(face('fins', '#e0dccf', '#3a3e41', 3.2, 0.5, 3.0, 0.5), '#8c8a82', '#cfcabb'))
 /** a pinkish-cream punched grid */
 export const highriseGrid = make(build(face('punched', '#d4c3b0', '#45484a', 3.6, 0.58, 3.0), '#85796d', '#c0aea0'))
+
+/* ---------------------------------------------------------------------------------- Italie 13: the brutalist slabs */
+
+/** Photo-derived (owner, 2026-11): the Italie 13 towers are plain white / light-grey precast slabs, strong horizontal floor bands with continuous dark ribbon windows between, a flat roof with small plant boxes, a plain podium. Tunables: */
+const BRUT = {
+  podium: 5,        // m, plain ground floor
+  slabEvery: 4,     // floors between the projecting precast floor slabs (the strong horizontal lines)
+  slabH: 0.55, slabDepth: 0.35,
+  plantBoxes: 3,    // rooftop plant boxes
+}
+const brut = (wall: string, slab: string, glass: string, solid: number, floor: number, roof: string, height = 95): TowerSpec => ({
+  height, roof: hex(roof),
+  base: { height: BRUT.podium, face: { kind: 'blank', wall: hex('#9a978e'), material: 'concrete' } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(wall), glass: hex(glass), pitch: 3, solid, floor, depth: 0.2, material: 'concrete' } }],
+  cornices: Array.from({ length: Math.floor((height - BRUT.podium) / (floor * BRUT.slabEvery)) }, (_, k) =>
+    ({ at: BRUT.podium + floor * BRUT.slabEvery * (k + 1), depth: BRUT.slabDepth, height: BRUT.slabH, colour: hex(slab) })),
+  crown: { kind: 'parapet', height: 1.0, colour: hex(slab), material: 'concrete' },
+  penthouse: BRUT.plantBoxes,
+})
+/** white precast, dark ribbons */
+export const brutWhite = make(brut('#e6e3da', '#efece4', '#2f3437', 0.5, 3.0, '#8e8b82', 105))
+/** light grey precast */
+export const brutGrey = make(brut('#c9c8c2', '#d9d8d2', '#30353a', 0.52, 3.0, '#7f7d77', 95))
+/** off-white, a tall-ribbon variant */
+export const brutBand = make(brut('#dedbd0', '#e9e6dc', '#2b3033', 0.44, 3.1, '#898780', 100))
+/** pale warm grey, deeper spandrels */
+export const brutWarm = make(brut('#d3cfc3', '#e0dcd0', '#363a3d', 0.58, 2.9, '#85827a', 95))

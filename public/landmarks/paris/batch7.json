@@ -91,7 +91,9 @@
   },
   {
     "osm": [
-      "way/851434516"
+      "way/851434516",
+      "way/851434517",
+      "way/851434518"
     ],
     "name": "La Défense: Tour Carpe Diem",
     "procedural": "carpeDiem",
@@ -228,27 +230,13 @@
     "osm": [
       "relation/3071645"
     ],
-    "restyle": "skyscraper",
+    "restyle": "skyscraper-banded",
     "noShops": true,
-    "note": "Ex-Descartes (2013's reclad): pale frame and clear glass. A relation of parts, so a restyle.",
+    "note": "Ex-Descartes (2013's reclad): grey glass striped in gold at every floor (slabBands in the skyscraper-banded style; trim = the gold). A relation of parts, so a restyle.",
     "roof": "flat",
-    "wall": "#5f7c8b",
-    "trim": "#a7b4ba",
+    "wall": "#737b81",
+    "trim": "#c4a24a",
     "roofColour": "#8a9499",
-    "madeBy": "claude-opus-5-5"
-  },
-  {
-    "name": "Hyatt Regency Paris Étoile",
-    "osm": [
-      "relation/3074643"
-    ],
-    "restyle": "bauhaus",
-    "noShops": true,
-    "note": "The Concorde La Fayette (Henri Beauclair, 1974), 137 m at the Porte Maillot: pale ribbed concrete on a podium. A relation of parts, so a restyle, keeping them.",
-    "roof": "flat",
-    "wall": "#a59c88",
-    "trim": "#bbb3a2",
-    "roofColour": "#918a7b",
     "madeBy": "claude-opus-5-5"
   },
   {

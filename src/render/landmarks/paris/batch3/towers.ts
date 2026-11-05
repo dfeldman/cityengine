@@ -58,8 +58,6 @@ function organ(out: MeshBuilder, fit: Fit, o: { steps: number; floor?: number; l
     }
   }
 }
-export const orguesPrelude = (out: MeshBuilder, fit: Fit): void => organ(out, fit, { steps: 7 })
-export const orguesFugue = (out: MeshBuilder, fit: Fit): void => organ(out, fit, { steps: 6 })
 export const orguesBloc = (out: MeshBuilder, fit: Fit): void => organ(out, fit, { steps: 7, low: true, floor: 3 })
 
 /* --------------------------------------------------------------------------------------------------- La Tour Totem */
@@ -176,7 +174,24 @@ const OLY: TowerSpec = {
 export const olympiadesTower = raised(OLY)
 export const olympiadesPale = raised({ ...OLY, tiers: [{ to: 1, face: fins('#8a8474', '#2f3233', 3, 0.5, 0.55, 2.9) }] })
 export const olympiadesRust = raised({ ...OLY, tiers: [{ to: 1, face: fins('#6a5a4c', '#2c2a28', 3, 0.5, 0.55, 2.9) }] })
-export const olympiadesBar = raised({ ...OLY, height: 52, tiers: [{ to: 1, face: { kind: 'punched', wall: hex('#a0998a'), glass: hex('#2b2e30'), pitch: 3, solid: 0.48, floor: 2.9, material: 'concrete' } }], penthouse: 0 })
+/** the bars (Rome, Grenoble, Olympie, Squaw Valley): long slabs of pale balcony bands, a rust-orange panel in about one bay in RUST_SHARE (owner's street views, Dec 2022) */
+const BAR: TowerSpec = { ...OLY, height: 52, tiers: [{ to: 1, face: band('#b3ab9c', '#3a3d3e', 0.42, 2.9) }], crown: { kind: 'parapet', height: 1.2, colour: hex('#bdb6a8') }, penthouse: 0 }
+const RUST = hex('#b4643c'), RUST_SHARE = 0.22, BAR_BAY = 3, BAR_FLOOR = 2.9
+export function olympiadesBar(out: MeshBuilder, fit: Fit): void {
+  tower(out, fit, BAR)
+  const ring = towerRing(fit), H = fit.height || 52
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 8) continue
+    const n = Math.floor(e.L / BAR_BAY)
+    for (let k = 0; k < n; k++) for (let f = 1; f * BAR_FLOOR < H - 3; f++) {
+      if (hash(i * 131 + k, f) > RUST_SHARE) continue
+      const t0 = (k + 0.1) * BAR_BAY, t1 = (k + 0.9) * BAR_BAY, y0 = f * BAR_FLOOR + 0.1, y1 = y0 + BAR_FLOOR * 0.55
+      const p = (t: number, y: number): [number, number, number] => [e.a.x + e.tx * t + e.nx * 0.08, y, e.a.z + e.tz * t + e.nz * 0.08]
+      out.quad([p(t0, y0), p(t1, y0), p(t1, y1), p(t0, y1)], [e.nx, 0, e.nz], UV, shade(RUST, 0.9 + hash(k, f) * 0.2), surfaceTag('panel'))
+    }
+  }
+}
 
 /** LE TRIPODE (Ivry's edge; way/149277208; aerial 48.8224 2.3991): a Y of three identical arms, 60 m off its shadow, ribbon windows in cream panels: one of the odd shapes on the Périphérique. The Y is OSM's outline. */
 export const tripode = raised({ height: 60, roof: hex('#6b6456'), tiers: [{ to: 1, face: { kind: 'bands', wall: hex('#9a8d72'), glass: hex('#3a3734'), solid: 0.5, floor: 3 } }], crown: { kind: 'parapet', height: 1.1, colour: hex('#a89b80') }, penthouse: 1 })
@@ -199,54 +214,3 @@ export function fdsChimney(out: MeshBuilder, fit: Fit): void {
   for (const y of [H * 0.45, H * 0.72, H * 0.97]) prism(out, 0, 0, y, y + 1, r - ((y / H) * 1.6) + 0.7, 12, shade(C, 1.08), 0)
   prism(out, 0, 0, H - 0.1, H, 2.3, 12, hex('#26282a'), 0)
 }
-
-/* -------------------------------------------------------------------------------------------- Les Olympiades's pagodas */
-
-/**
- * LES PAGODES of the Olympiades (way/40690954… in OSM, `retail`, one level each): the Galerie du Mercure's sawtooth of tented roofs, meant to evoke a market's tents in hyperbolic paraboloid sheet (fr.wikipedia "Les Olympiades") and long since called pagodas. Aerial 48.8245 2.3650: their long
- * plum-brown roofs run 146 m along bearing 160 between the bars Rome and Grenoble. Local frame: x east, z north about the row's middle, drawn along its own axis. Each tent is square over its bay with its corners up and its ridges sagging, so a rider on the dalle sees a row of swept eaves.
- */
-export function olympiadesPagodes(out: MeshBuilder, fit: Fit): void {
-  const y = (fit.grade ?? 0) + 3.6, ROOF = hex('#5a3c3c'), RIB = hex('#83605a'), W = hex('#88847a'), G = hex('#343c40')
-  const q = new MB()
-  const n = 7, bay = 146 / n, hw = 15
-  for (let k = 0; k < n; k++) {
-    const c = -73 + (k + 0.5) * bay
-    const x0 = c - bay / 2, x1 = c + bay / 2
-    // the shop glass and the piers under the eave
-    block(q, x0, x1, -hw + 1.2, hw - 1.2, y - 3.6, y, G)
-    for (const z of [-hw + 1, hw - 1]) block(q, x0 - 0.3, x0 + 0.5, z - 0.3, z + 0.3, y - 3.6, y + 0.1, W)
-    // the tent, four sagging facets to its point: a band at a time, its corners swept out and up
-    const top = y + 8.4, m = 4
-    const corner = (s: number, t: number): [number, number, number] => [c + s * bay * 0.5, y + 1.1, t * hw]
-    const C = [corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1)]
-    for (let i = 0; i < 4; i++) {
-      const A = C[i], B = C[(i + 1) % 4]
-      for (let j = 0; j < m; j++) {
-        const f0 = j / m, f1 = (j + 1) / m
-        const at = (p: [number, number, number], f: number): [number, number, number] => {
-          const sag = Math.sin(f * Math.PI) * 1.05
-          return [p[0] + (c - p[0]) * f, p[1] + (top - p[1]) * f - sag, p[2] * (1 - f)]
-        }
-        const a0 = at(A, f0), b0 = at(B, f0), b1 = at(B, f1), a1 = at(A, f1)
-        const ux = b0[0] - a0[0], uy = b0[1] - a0[1], uz = b0[2] - a0[2], vx = a1[0] - a0[0], vy = a1[1] - a0[1], vz = a1[2] - a0[2]
-        let nn: [number, number, number] = [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx]
-        if (nn[1] < 0) nn = [-nn[0], -nn[1], -nn[2]]
-        q.quad([a0, b0, b1, a1], nn, UV, shade(ROOF, 0.9 + hash(k, i + j) * 0.16), surfaceTag('metal'))
-      }
-      // the hip's rib
-      const h = (f: number): [number, number, number] => [A[0] + (c - A[0]) * f, A[1] + (top - A[1]) * f - Math.sin(f * Math.PI) * 1.05 + 0.08, A[2] * (1 - f)]
-      for (let j = 0; j < m; j++) {
-        const a = h(j / m), b = h((j + 1) / m)
-        q.quad([[a[0] - 0.14, a[1], a[2]], [a[0] + 0.14, a[1], a[2]], [b[0] + 0.14, b[1], b[2]], [b[0] - 0.14, b[1], b[2]]], [0, 1, 0], UV, RIB, 0)
-      }
-    }
-    prism(q, c, 0, top - 0.3, top + 1.2, 0.5, 6, RIB, 0, 0.12)
-    // the eave's fascia
-    block(q, x0, x1, -hw - 0.25, -hw + 0.25, y + 0.5, y + 1.15, W)
-    block(q, x0, x1, hw - 0.25, hw + 0.25, y + 0.5, y + 1.15, W)
-  }
-  // (along x in `q`; its axis runs on bearing 160, so turned 70° off east)
-  placed(out, q, (70 * Math.PI) / 180, 0, 0)
-}
-

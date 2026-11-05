@@ -61,3 +61,21 @@ describe('Paris\'s fronts', () => {
     expect(share(styles(AT.belleville, 5), 'skyscraper')).toBe(0)
   })
 })
+
+describe('BD TOPO wall and roof material', () => {
+  const rec = (period: number, walls: string) => ({ record: { construction: String(period), units: 0, parcels: 1, walls } })
+  it('reads the codes: only pure brick is brick, millstone with brick is millstone, a stone mix is stone', async () => {
+    const { wallKind, roofKind } = await import('../src/city/paris/materials.ts')
+    expect(wallKind('40')).toBe('brick'); expect(wallKind('04')).toBe('brick'); expect(wallKind('44')).toBe('brick')
+    expect(wallKind('14')).toBe('stone'); expect(wallKind('24')).toBe('millstone'); expect(wallKind('00')).toBeUndefined()
+    expect(roofKind('10')).toBe('tile'); expect(roofKind('23')).toBeUndefined(); expect(roofKind('30')).toBe('zinc')
+  })
+  it('a pure-brick building is brick even in the cream centre-west; a stone-and-brick one stays cream', () => {
+    expect(share(styles(AT.elysee, 3, rec(3, '40')), 'brick')).toBe(1)
+    expect(share(styles(AT.passy, 3, rec(3, '14')), 'brick')).toBe(0)
+  })
+  it('known non-brick walls roll no brick dice; unknown walls still do', () => {
+    expect(share(styles(AT.belleville, 5, rec(5, '10')), 'brick')).toBe(0)
+    expect(share(styles(AT.outside, 5), 'brick')).toBeGreaterThan(0.2)
+  })
+})

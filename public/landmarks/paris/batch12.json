@@ -12,22 +12,6 @@
   },
   {
     "osm": [
-      "way/13853585"
-    ],
-    "name": "Maison du Cambodge",
-    "procedural": "maisonCambodge",
-    "height": 20,
-    "lat": 48.81742,
-    "lon": 2.33635,
-    "size": [
-      64,
-      44
-    ],
-    "note": "batch12/buildings.ts: wings round an open court, stepped terraces, small spire; photo Commons; open side read from the ring at build time, unverified; OSM 26 m",
-    "madeBy": "claude-opus-5-5"
-  },
-  {
-    "osm": [
       "way/79084050"
     ],
     "name": "Palatino",
@@ -47,6 +31,343 @@
     "procedural": "malakoffSlab",
     "height": 75,
     "note": "batch12/buildings.ts: one curved slab stepping 51-75 m; priority rows 30, 35, 78; lower two steps from the photo",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Synagogue de Boulogne",
+    "procedural": "synagogueBoulogne",
+    "osm": [
+      "way/72055705"
+    ],
+    "front": 277,
+    "height": 20,
+    "sign": false,
+    "note": "synagogue-boulogne.ts: buff-brick gabled house and annex with the star rondel, hip-roofed hall and lantern behind, steel fence; owner street views 2026-11-04. Front bearing from rue des Abondances.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Maison de Loo (La Pagoda)",
+    "procedural": "maisonLoo",
+    "osm": [
+      "way/68828954"
+    ],
+    "front": 309,
+    "height": 24,
+    "sign": false,
+    "note": "maison-loo.ts: square oxblood block with three tiers of tiled Chinese eaves with upturned corners, lattice windows between piers, gilt friezes, columned front loggia, green-ridged hip roof, iron railing; owner photo 2026-11-04. Front bearing (309) guessed from the plot's NW face toward the rue de Courcelles.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Bis (ENSCI)",
+    "procedural": "leBisEnsci",
+    "osm": [
+      "way/118754152"
+    ],
+    "front": 0,
+    "height": 27,
+    "sign": false,
+    "note": "le-bis-ensci.ts: glazed ground storey behind white V-piers, dark soffit, bronze panel block with small windows over orange/pink spandrels, mirrored louvred glass prow toward Place de la Bastille, white blade; owner photo 2026-11-04. Front bearing 0 (north, the plaza).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/84198307"
+    ],
+    "name": "Castel Béranger",
+    "procedural": "castelBeranger",
+    "height": 24,
+    "front": 144,
+    "note": "batch12/guimard.ts: millstone base, brick storeys, off-centre green gate, oriel, wavy balconies, gabled roofline; front from rue Jean de La Fontaine's geometry; from memory, no photo",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/84262071"
+    ],
+    "name": "Hôtel Mezzara",
+    "procedural": "hotelMezzara",
+    "height": 15,
+    "front": 151,
+    "note": "batch12/guimard.ts: pale stone, brick trim, central studio window, wavy balcony, gable; front from the street's geometry; from memory",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/69073399"
+    ],
+    "name": "Immeuble Lavirotte",
+    "procedural": "immeubleLavirotte",
+    "height": 26,
+    "front": 281,
+    "note": "batch12/lavirotte.ts: ochre Bigot stoneware, arched sculpted doorway with figures and swirls, curved balconies, rounded crown; front from avenue Rapp's geometry; from memory",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/70224059"
+    ],
+    "name": "Céramic Hôtel",
+    "procedural": "ceramicHotel",
+    "height": 27,
+    "front": 296,
+    "note": "batch12/lavirotte.ts: glazed-tile front, two bow windows, swirl-crowned doorway; front from avenue de Wagram's geometry; from memory",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/84959686"
+    ],
+    "name": "Villa Allatini (rue Mallet-Stevens)",
+    "procedural": "villaAllatini",
+    "height": 9.3,
+    "front": 30,
+    "note": "batch12/malletstevens.ts: white cubist stucco volume, glazed strip windows in dark frames, cantilevered slab, roof terrace box; front toward rue Mallet-Stevens (nearest street point, snapped to the facing edge); from memory",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/84959702"
+    ],
+    "name": "Villa Dreyfus (rue Mallet-Stevens)",
+    "procedural": "villaDreyfus",
+    "height": 6.4,
+    "front": 30,
+    "note": "batch12/malletstevens.ts: white cubist stucco volume, glazed strip windows in dark frames, cantilevered slab, roof terrace box; front toward rue Mallet-Stevens (nearest street point, snapped to the facing edge); from memory",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/84959734"
+    ],
+    "name": "Hôtel Martel (rue Mallet-Stevens)",
+    "procedural": "hotelMartel",
+    "height": 9.6,
+    "front": 210,
+    "note": "batch12/malletstevens.ts: white cubist stucco volume, glazed strip windows in dark frames, cantilevered slab, roof terrace box, cylindrical stair tower; front toward rue Mallet-Stevens (nearest street point, snapped to the facing edge); from memory",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/84959778"
+    ],
+    "name": "Villa Reifenberg (rue Mallet-Stevens)",
+    "procedural": "villaReifenberg",
+    "height": 12,
+    "front": 211,
+    "note": "batch12/malletstevens.ts: white cubist stucco volume, glazed strip windows in dark frames, cantilevered slab, roof terrace box; front toward rue Mallet-Stevens (nearest street point, snapped to the facing edge); from memory",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/84959674"
+    ],
+    "name": "Hôtel Mallet-Stevens",
+    "procedural": "hotelMalletStevens",
+    "height": 12.4,
+    "front": 209,
+    "note": "batch12/malletstevens.ts: white cubist stucco volume, glazed strip windows in dark frames, cantilevered slab, roof terrace box; front toward rue Mallet-Stevens (nearest street point, snapped to the facing edge); from memory",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Orgues de Flandre — tower 64037866",
+    "procedural": "flandreModern",
+    "osm": [
+      "way/64037866"
+    ],
+    "front": 0,
+    "height": 40,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; stepped tiers, hex windows, roof garden",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre — tower 64037931",
+    "procedural": "flandreModern",
+    "osm": [
+      "way/64037931"
+    ],
+    "front": 0,
+    "height": 57,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; stepped tiers, hex windows, roof garden",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre — tower 64039306",
+    "procedural": "flandreModern",
+    "osm": [
+      "way/64039306"
+    ],
+    "front": 0,
+    "height": 35,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; stepped tiers, hex windows, roof garden",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64037722",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64037722"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64037859",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64037859"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64038204",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64038204"
+    ],
+    "front": 0,
+    "height": 17,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64038336",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64038336"
+    ],
+    "front": 0,
+    "height": 17,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64039748",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64039748"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64039750",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64039750"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64039775",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64039775"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64039877",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64039877"
+    ],
+    "front": 0,
+    "height": 17,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64040192",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64040192"
+    ],
+    "front": 0,
+    "height": 25,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64040355",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64040355"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64040660",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64040660"
+    ],
+    "front": 0,
+    "height": 17,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Orgues de Flandre slab 64040805",
+    "procedural": "flandreSlab",
+    "osm": [
+      "way/64040805"
+    ],
+    "front": 0,
+    "height": 22,
+    "sign": false,
+    "note": "orgues-de-flandre.ts: owner photo 2026-11-04; plain concrete slab",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/69257441"
+    ],
+    "name": "Immeuble des Eaux Minérales (30 rue de Londres)",
+    "procedural": "eauxMinerales",
+    "height": 24.8,
+    "front": 23,
+    "note": "batch12/decorated.ts: azure ceramic front of the Société française des Eaux minérales, bubble columns in the side bays, three pearl crowns, lettered band over the door; from memory",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/56140815"
+    ],
+    "name": "Immeuble aux sgraffites (134 rue Mouffetard)",
+    "procedural": "sgraffiti",
+    "height": 17.2,
+    "front": 90,
+    "note": "batch12/decorated.ts: pale render with dark sgraffito vines and birds between the windows, red shopfront; from memory",
     "madeBy": "claude-opus-5-5"
   }
 ]

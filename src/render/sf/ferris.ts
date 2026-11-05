@@ -25,14 +25,36 @@ import { box, EMIT, type Rgb } from '../models.ts'
 import type { VehicleView } from '../../sim/transit.ts'
 
 /** where it stands: the hub over this point, its face to `heading` (radians, 0 = north, π = south) */
-export const SKYSTAR = { lat: 37.80873, lon: -122.413413, heading: Math.PI, hub: 25.8, rim: 18, count: 36 }
+export interface WheelSpec {
+  id: string; name: string; lat: number; lon: number; heading: number; hub: number; rim: number; count: number
+  /** one turn, seconds */
+  turn: number
+  /**
+   * 'capsule' (SkyStar): glass capsules on arms outboard of a narrow rim, cable spokes. 'traditional' (Roue de Paris):
+   * cabins hung on axles BETWEEN two rims set wide apart, rigid spokes to each rim, no outboard arms.
+   */
+  style?: 'capsule' | 'traditional'
+  /** draw its own standing legs (SF's stand in the wharf-carnival landmark instead) */
+  legs?: boolean
+  /** where the camera looks aboard, in the wheel frame: pan centre, radians off the axle */
+  panAt?: number
+  /** the banner when put off */
+  offBanner?: string
+}
+export const SKYSTAR: WheelSpec = { id: 'skystar', name: 'SkyStar wheel', lat: 37.80873, lon: -122.413413, heading: Math.PI, hub: 25.8, rim: 18, count: 36, turn: 150, offBanner: 'Back on the Wharf' }
+/**
+ * La Grande Roue de Paris, Place de la Concorde at the Tuileries' gate (Marcel Campion's; 60 m over the ground, 42
+ * cabins), facing west down the Champs-Élysées axis past the obelisk. Its legs are drawn here.
+ */
+export const ROUE_DE_PARIS: WheelSpec = { id: 'roue', name: 'Grande Roue de Paris', lat: 48.86568, lon: 2.32270, heading: Math.PI * 1.5, hub: 31, rim: 25, count: 42, turn: 180, legs: true, style: 'traditional', offBanner: 'Back on the Concorde' }
 /**
  * A gondola's pivot, this far out past the rim: far enough that at the top of the turn, hanging back toward the hub,
  * the cabin's floor still clears the rim (its 2.4 m of cabin hangs 0.75 m under the pivot).
  */
-const PIVOT = SKYSTAR.rim + 3.4
-/** one turn, in seconds */
-const TURN = 150
+const PIVOT_OUT = 3.4
+/** a traditional wheel's two rims, either side of the centre plane: wide enough for a cabin (±0.95) to hang between */
+const ZR_TRAD = 1.9
+const pivotOf = (W: WheelSpec): number => W.rim + (W.style === 'traditional' ? 0 : PIVOT_OUT)
 /** the deck the gondolas are boarded from: its floor over the ground, and how far it stands in front of the face */
 export const DECK = { y: 1.2, front: 0 }
 
@@ -58,12 +80,14 @@ function bar(out: MeshBuilder, a: V3, b: V3, w: number, c: Rgb, tag: number): vo
 }
 
 /** the turning part, in the wheel's frame with the hub at the origin */
-function wheelMesh(): MeshBuilder {
+function wheelMesh(W: WheelSpec): MeshBuilder {
   const out = new MeshBuilder()
+  const PIVOT = pivotOf(W)
+  const TRAD = W.style === 'traditional'
   const MT = surfaceTag('metal')
-  const R = SKYSTAR.rim, N = SKYSTAR.count, SEG = N * 2
+  const R = W.rim, N = W.count, SEG = N * 2
   const at = (a: number, r: number, z: number): V3 => [Math.cos(a) * r, Math.sin(a) * r, z]
-  const ZR = 1.3              // the two rims, either side of the centre plane
+  const ZR = TRAD ? ZR_TRAD : 1.3 // the two rims, either side of the centre plane
   const RI = R - 1.7          // the inner chord of the truss
   for (let i = 0; i < SEG; i++) {
     const a0 = (i / SEG) * Math.PI * 2, a1 = ((i + 1) / SEG) * Math.PI * 2
@@ -80,6 +104,15 @@ function wheelMesh(): MeshBuilder {
     const a = (i / N) * Math.PI * 2
     // the cross-members between the two rims, and the radial between chord and rim
     bar(out, at(a, R, -ZR), at(a, R, ZR), 0.22, WHITE, MT)
+    if (TRAD) {
+      // rigid spokes, a pair from each hub flange to its own rim's inner chord (nothing crosses the cabins' path)
+      for (const z of [-ZR, ZR]) {
+        bar(out, at(a, RI, z * 0.75), at(a, R, z), 0.14, WHITE, MT)
+        for (const da of [-0.05, 0.05]) bar(out, at(a, 1.6, Math.sign(z) * 2.6), at(a + da, RI, z * 0.75), 0.16, WHITE, MT)
+        if (i % 2 === 0) bar(out, at(a, 1.9, Math.sign(z) * 2.62), at(a, RI - 0.2, z * 0.75 + Math.sign(z) * 0.12), 0.1, LED, EMIT)
+      }
+      continue
+    }
     bar(out, at(a, RI, -ZR * 0.75), at(a, RI, ZR * 0.75), 0.14, WHITE, MT)
     for (const z of [-ZR, ZR]) bar(out, at(a, RI, z * 0.75), at(a, R, z), 0.14, WHITE, MT)
     // the cable spokes, from the hub's flanges crossing to the far rim, as a bicycle wheel's are
@@ -108,6 +141,34 @@ function wheelMesh(): MeshBuilder {
  * One gondola, its pivot at the origin: a white capsule — rounded ends, a band of tinted glass all round, a dark floor
  * — hanging on a yoke, the door on the face side. 2.2 wide, 2.4 tall, 1.9 deep.
  */
+/**
+ * A traditional wheel's cabin, hung from its axle between the rims: an octagonal tub, half-height panelled, glazed
+ * above, under a domed red roof, with the hanger bar up to the pivot. Same heights as the capsule (floor 3.15 under
+ * the pivot), so boarding and the camera aboard need nothing of their own.
+ */
+function cabinMesh(): MeshBuilder {
+  const out = new MeshBuilder()
+  const MT = surfaceTag('metal'), GL = surfaceTag('glass')
+  const CREAM: Rgb = [0.92, 0.88, 0.78], RED: Rgb = [0.62, 0.1, 0.12]
+  const RX = 1.05, RZ = 0.85, top = -1.0, bot = -3.15, sill = -2.3, eave = -1.2
+  const plan: [number, number][] = []
+  for (let k = 0; k < 8; k++) { const a = (k + 0.5) / 8 * Math.PI * 2; plan.push([Math.cos(a) * RX, Math.sin(a) * RZ]) }
+  const band = (y0: number, y1: number, k0: number, k1: number, c: Rgb, tag: number): void => {
+    for (let i = 0; i < 8; i++) {
+      const [ax, az] = plan[i], [bx, bz] = plan[(i + 1) % 8]
+      out.quad([[bx * k0, y0, bz * k0], [ax * k0, y0, az * k0], [ax * k1, y1, az * k1], [bx * k1, y1, bz * k1]], [-(az - bz), 0, -(bx - ax)], UVQ, c, tag)
+    }
+  }
+  band(bot, sill, 0.9, 1, CREAM, MT)
+  band(sill, eave, 1, 1, GLASS, GL)
+  band(eave, top, 1.08, 0.5, RED, MT)       // the roof, out over the eave and up to a peak
+  for (let i = 1; i + 1 < 8; i++) out.quad([[plan[0][0] * 0.9, bot, plan[0][1] * 0.9], [plan[i][0] * 0.9, bot, plan[i][1] * 0.9], [plan[i + 1][0] * 0.9, bot, plan[i + 1][1] * 0.9], [plan[i + 1][0] * 0.9, bot, plan[i + 1][1] * 0.9]], [0, -1, 0], UVQ, DARK, MT)
+  for (const [x, z] of plan) bar(out, [x, sill, z], [x, eave, z], 0.06, CREAM, MT)   // the window posts
+  bar(out, [0, top, 0], [0, 0, 0], 0.12, DARK, MT)                                  // the hanger up to the axle
+  bar(out, [0, 0, -ZR_TRAD], [0, 0, ZR_TRAD], 0.14, DARK, MT)                        // and the axle, rim to rim
+  return out
+}
+
 function gondolaMesh(): MeshBuilder {
   const out = new MeshBuilder()
   const MT = surfaceTag('metal'), GL = surfaceTag('glass')
@@ -144,6 +205,26 @@ function gondolaMesh(): MeshBuilder {
   return out
 }
 
+
+/**
+ * Standing legs for a wheel that has no landmark of its own: two splayed A-frames either side of the face, from the
+ * axle down to footings, braced across, and a low boarding platform under the bottom. In the wheel frame, hub at HUB.
+ */
+function legsMesh(W: WheelSpec): MeshBuilder {
+  const out = new MeshBuilder()
+  const MT = surfaceTag('metal')
+  const H = W.hub, SPLAY = W.hub * 0.42, ZL = 3.4, ZF = 7
+  for (const zs of [-1, 1]) {
+    const top: V3 = [0, H, zs * ZL]
+    for (const xs of [-1, 1]) bar(out, [xs * SPLAY, 0, zs * ZF], top, 0.9, STEELW, MT)
+    for (const f of [0.35, 0.65]) bar(out, [-SPLAY * (1 - f), H * f, zs * (ZF - (ZF - ZL) * f)], [SPLAY * (1 - f), H * f, zs * (ZF - (ZF - ZL) * f)], 0.4, STEELW, MT)
+    for (const xs of [-1, 1]) box(out, xs * SPLAY, 0.4, zs * ZF, 0.8, 0.4, 0.8, DARK, MT)
+  }
+  bar(out, [0, H, -ZL - 0.5], [0, H, ZL + 0.5], 1.0, WHITE, MT)   // the axle
+  box(out, 0, DECK.y / 2, -6, 6, DECK.y / 2, 3, DARK, MT)             // the boarding platform, in front of the face
+  return out
+}
+
 export class FerrisWheel {
   private wheel: Mesh
   private cabins: Mesh
@@ -156,11 +237,15 @@ export class FerrisWheel {
   private riding: { i: number; turned: number; leave: boolean } | null = null
   private readonly base: Vector3
   private readonly face: number
+  private readonly W: WheelSpec
+  private readonly PIVOT: number
 
   /** `x`, `z`: the hub's place in the city; `ground`: the ground there */
-  constructor(scene: Scene, x: number, z: number, ground: number) {
+  constructor(scene: Scene, x: number, z: number, ground: number, spec: WheelSpec = SKYSTAR) {
+    this.W = spec
+    this.PIVOT = pivotOf(spec)
     this.base = new Vector3(x, ground, z)
-    this.face = SKYSTAR.heading
+    this.face = spec.heading
     const mk = (name: string, mb: MeshBuilder, n: number): Mesh => {
       const m = new Mesh(name, scene)
       mb.toVertexData().applyToMesh(m)
@@ -170,15 +255,22 @@ export class FerrisWheel {
       m.renderingGroupId = 3
       return m
     }
-    this.wheel = mk('skystar:wheel', wheelMesh(), 1)
-    this.cabins = mk('skystar:gondolas', gondolaMesh(), SKYSTAR.count)
-    this.mats = new Float32Array(SKYSTAR.count * 16)
-    this.cols = new Float32Array(SKYSTAR.count * 4)
+    this.wheel = mk(`${spec.id}:wheel`, wheelMesh(spec), 1)
+    this.cabins = mk(`${spec.id}:gondolas`, spec.style === 'traditional' ? cabinMesh() : gondolaMesh(), this.W.count)
+    this.mats = new Float32Array(this.W.count * 16)
+    this.cols = new Float32Array(this.W.count * 4)
     // (mix 0: the mesh's own colours)
     this.wheel.thinInstanceSetBuffer('matrix', this.wheelMat, 16, false)
     this.wheel.thinInstanceSetBuffer('instColor', new Float32Array(4), 4, true)
     this.cabins.thinInstanceSetBuffer('matrix', this.mats, 16, false)
     this.cabins.thinInstanceSetBuffer('instColor', this.cols, 4, true)
+    if (spec.legs) {
+      const legs = mk(`${spec.id}:legs`, legsMesh(spec), 1)
+      const m = new Float32Array(16)
+      Matrix.RotationY(this.face + Math.PI).multiply(Matrix.Translation(x, ground, z)).copyToArray(m, 0)
+      legs.thinInstanceSetBuffer('matrix', m, 16, true)
+      legs.thinInstanceSetBuffer('instColor', new Float32Array(4), 4, true)
+    }
     this.update(0)
   }
 
@@ -187,17 +279,17 @@ export class FerrisWheel {
     // local +z is the axle, pointing away from the face (the face looks along −z); turned so the face looks along `heading`
     const yaw = this.face + Math.PI
     const c = Math.cos(yaw), s = Math.sin(yaw)
-    return new Vector3(this.base.x + lx * c + lz * s, this.base.y + SKYSTAR.hub + ly, this.base.z - lx * s + lz * c)
+    return new Vector3(this.base.x + lx * c + lz * s, this.base.y + this.W.hub + ly, this.base.z - lx * s + lz * c)
   }
 
   /** where gondola `i`'s pivot is now, in the city */
   private pivot(i: number): Vector3 {
-    const a = this.angle + (i / SKYSTAR.count) * Math.PI * 2
-    return this.toWorld(Math.cos(a) * PIVOT, Math.sin(a) * PIVOT, 0)
+    const a = this.angle + (i / this.W.count) * Math.PI * 2
+    return this.toWorld(Math.cos(a) * this.PIVOT, Math.sin(a) * this.PIVOT, 0)
   }
 
   update(dt: number): void {
-    const w = (Math.PI * 2) / TURN
+    const w = (Math.PI * 2) / this.W.turn
     this.angle = (this.angle + w * dt) % (Math.PI * 2)
     if (this.riding) this.riding.turned += w * dt
     const yaw = this.face + Math.PI
@@ -207,21 +299,21 @@ export class FerrisWheel {
     Matrix.RotationZ(this.angle).multiply(Y).multiply(Matrix.Translation(hub.x, hub.y, hub.z)).copyToArray(this.wheelMat, 0)
     this.wheel.thinInstanceCount = 1
     this.wheel.thinInstancePartialBufferUpdate('matrix', this.wheelMat, 0)
-    for (let i = 0; i < SKYSTAR.count; i++) {
+    for (let i = 0; i < this.W.count; i++) {
       // hung from its pivot, upright, swaying a little as it goes over the top
-      const a = this.angle + (i / SKYSTAR.count) * Math.PI * 2
+      const a = this.angle + (i / this.W.count) * Math.PI * 2
       const p = this.pivot(i)
       Matrix.RotationZ(0.03 * Math.sin(a * 2 + i)).multiply(Y).multiply(Matrix.Translation(p.x, p.y, p.z)).copyToArray(this.mats, i * 16)
     }
-    this.cabins.thinInstanceCount = SKYSTAR.count
+    this.cabins.thinInstanceCount = this.W.count
     this.cabins.thinInstancePartialBufferUpdate('matrix', this.mats, 0)
   }
 
   /** the gondola nearest the bottom: the one at the deck */
   private bottom(): number {
     let best = 0, bd = Infinity
-    for (let i = 0; i < SKYSTAR.count; i++) {
-      const a = (this.angle + (i / SKYSTAR.count) * Math.PI * 2) % (Math.PI * 2)
+    for (let i = 0; i < this.W.count; i++) {
+      const a = (this.angle + (i / this.W.count) * Math.PI * 2) % (Math.PI * 2)
       const d = Math.abs(a - Math.PI * 1.5)
       if (d < bd) { bd = d; best = i }
     }
@@ -231,7 +323,7 @@ export class FerrisWheel {
   /** a gondola's cabin floor, as a transit vehicle; the rider stands in the middle of it */
   private view(i: number, dwelling: boolean): VehicleView {
     const p = this.pivot(i)
-    return { id: `skystar:${i}`, kind: 'wheel', x: p.x, z: p.z, y: p.y - 3.1, heading: this.face, speed: 0, dwelling, name: 'SkyStar wheel' }
+    return { id: `${this.W.id}:${i}`, kind: 'wheel', x: p.x, z: p.z, y: p.y - 3.1, heading: this.face, speed: 0, dwelling, name: this.W.name }
   }
 
   /** what may be boarded: the gondola at the deck — or, aboard, the one being ridden */
@@ -260,7 +352,7 @@ export class FerrisWheel {
 
   private atBottom(): boolean {
     if (!this.riding) return false
-    const a = (this.angle + (this.riding.i / SKYSTAR.count) * Math.PI * 2) % (Math.PI * 2)
+    const a = (this.angle + (this.riding.i / this.W.count) * Math.PI * 2) % (Math.PI * 2)
     return Math.abs(a - Math.PI * 1.5) < 0.09
   }
 
@@ -271,6 +363,8 @@ export class FerrisWheel {
   }
 
   alighted(): void { this.riding = null }
+
+  get spec(): WheelSpec { return this.W }
 
   get aboard(): boolean { return this.riding !== null }
 
@@ -283,9 +377,9 @@ export class FerrisWheel {
     if (!this.riding) return null
     const p = this.pivot(this.riding.i)
     const eye = p.add(new Vector3(0, -1.55, 0))
-    const up = (p.y - this.base.y) / (SKYSTAR.hub + PIVOT)
+    const up = (p.y - this.base.y) / (this.W.hub + this.PIVOT)
     // panning slowly as it goes round: from the Golden Gate in the west, over Alcatraz, to Pier 39 and the Bay Bridge
-    const pan = Math.sin(this.riding.turned * 0.9 - 0.6) * 0.95
+    const pan = (this.W.panAt ?? 0) + Math.sin(this.riding.turned * 0.9 - 0.6) * 0.95
     const ahead = this.toWorld(Math.sin(pan) * 60, 0, Math.cos(pan) * 60).subtract(this.toWorld(0, 0, 0))
     return { eye, look: eye.add(ahead).add(new Vector3(0, -6 - 18 * up, 0)) }
   }

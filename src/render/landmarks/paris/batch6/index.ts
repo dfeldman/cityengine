@@ -6,9 +6,11 @@ import type { Fit } from '../../fit.ts'
 import { arenesWestWall } from './arenes-wall.ts'
 import { citeMusique } from './cite.ts'
 import { casinoParis, conseilDoor, gymnase, marigny, mogador, quaiOrsay, sallePleyel, trianonRochechouart, varietes } from './fronts.ts'
+import { galerieVivienne, passageJouffroy, passagePanoramas } from './passages.ts'
 import { bagatelleRocher, billancourtParasols, brassensAmphi, brassensHalls, closHut, cloudBasins, cloudCascade, cloudGrandJet, kahnSerre, kahnVillage } from './parks.ts'
 
 export const PARIS_BATCH6: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   arenesWestWall, brassensHalls, closHut, brassensAmphi, bagatelleRocher, kahnVillage, kahnSerre, billancourtParasols, cloudCascade, cloudBasins, cloudGrandJet,
   citeMusique, quaiOrsay, conseilDoor, sallePleyel, casinoParis, mogador, trianonRochechouart, gymnase, varietes, marigny,
+  passagePanoramas, passageJouffroy, galerieVivienne,
 }

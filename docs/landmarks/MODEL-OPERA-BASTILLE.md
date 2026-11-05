@@ -58,3 +58,29 @@ pure white wall under a bright cyan band. Read off `model-city-place.png` at the
   city's sun shows.
 - The rear halls are boxes from the lidar's plateaus, without their own terraces and plant.
 - The Place in front is the city's paving; the stair's side walls are the only landscape drawn.
+
+## The facade fix and the stairstep (owner, 2026-11-04: "the stairstep pattern on the main glass facade is key")
+
+- The drum's run (`OUTER`) goes CLOCKWISE (bearings 269° → 356°), but the loop took outward as right of travel: every face of
+  the front was lit as facing inward, the colonnade glazing stood 2.5 m outside the pillars, and `bearingOf` returned −91…−4,
+  so the lobby bay never appeared. Fixed (outward is left of travel; bearings normalised to 0–360°); the panels went back to a
+  pale 0.66 with dark 9 cm joints on a 1.8 m grid (`PANEL_CELL`, `JOINT`), the glass to a paler 0.38/0.44/0.50.
+- `PANEL_STEPS` (bearing → panel top): the panel wall runs to the rim by the arch and steps down bay by bay (31/27/23/19/15.5 m)
+  to 12.5 m toward the Rue de Lyon, standing `PROUD` 0.6 m of the glass, with top, soffit and end faces so each step reads.
+  Check: `model-shots.ts --entry="Opéra Bastille" --city=paris-centre --view=a:-2.05,1.48,140,-62,18,-16` → `refs/opera-bastille/model-stairstep.png`.
+- Not yet re-checked in the city's sun (the old colour notes above were tuned against the inverted normals).
+
+## The Rue de Lyon side (owner, 2026-11-04, Street View from 30 rue Biscornet)
+
+`side(a, b, top)` skins a straight face (outward right of travel): an 8.5 m arcade of square pillars over dark glazing with a
+canopy, a 1.6 m glass grid with pale floor bands every 3.3 m, a panelled parapet. Applied to the west wing (W0→W1, 25 m), the
+halls at N −50…−69 and the annex; the stepped blocks above get the panel joints; a roof pergola of cantilevered beams on the
+wing; the tall white tower (42 m) and its glazed slot where the wing meets the drum. Constants `SIDE_*`, `PERGOLA_*`, `TOWER_*`.
+Check: `--view=a:-1.75,1.4,130,-10,18,-30` → `refs/opera-bastille/model-side.png`.
+
+## The round south-west corner (owner, 2026-11-04)
+
+OSM's ring at N −50…−87 and its eight `building=column` ways fit a circle of 30.7 m about (7.5, −56.5) to 0.1 m, bearings
+188°–283°. Drawn as a true drum in 3° segments (one 1.6 m mullion each): a dark recessed ground floor to 6 m behind free
+columns, glass with pale floor bands every 3.3 m, a panelled top band 24–27.5 m. Constants `ROUND_*`. Replaces the two flat
+`side()` skins on those chords. Check: `--view=a:-1.3,1.42,110,20,15,-30` → `refs/opera-bastille/model-round.png`.

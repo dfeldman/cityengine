@@ -110,6 +110,39 @@ const serresEast = (): GardenPlan => {
  * THE PARCS DE LA CITÉ UNIVERSITAIRE (Est and Ouest; aerial 48.8190 2.3385, 0.8 m/px). The Grande Pelouse is OSM's; the woods round it are half-registered and half not. The rest of the crown is the photograph's, shrubs at the walks' edges, the terrace behind the
  * Maison Internationale in pale gravel with a clipped edge. Its round rose court is OSM's.
  */
+/** Tunables for the Maison Internationale's forecourt (north side, off the Avenue Rockefeller; Commons photos in docs/landmarks/refs/citeu/gardens/). */
+const MI = {
+  /** the roundabout: OSM's round village_green, centre and radius in the Parc Est grid */
+  c: [-14, 81] as EN, r: 8, hedgeH: 0.8, hedgeW: 0.6, flowerIn: 1.2, flowerW: 1.4, heartR: 2.2,
+  /** the parterre's grass beds (OSM landuse=grass, the radiating panels) get a low clipped rim */
+  bedHedgeH: 0.5, bedHedgeW: 0.4, seg: 24,
+}
+/** OSM's parterre panels round the roundabout, Parc Est grid metres */
+const MI_BEDS: EN[][] = [
+  [[-40, 37], [-33, 35], [-25, 57], [-33, 60]], [[-27, 32], [-19, 30], [-12, 52], [-19, 55]],
+  [[-19, 58], [-11, 55], [-8, 63], [-17, 63]], [[-32, 62], [-24, 60], [-23, 65], [-29, 70]],
+  [[-39, 68], [-38, 64], [-34, 63], [-32, 69]], [[-42, 72], [-41, 70], [-31, 74], [-39, 80]],
+  [[-39, 81], [-32, 79], [-32, 83], [-37, 85]], [[-35, 91], [-30, 89], [-28, 93], [-34, 95]],
+  [[-8, 54], [-5, 53], [-2, 55], [-5, 60]], [[-4, 64], [0, 57], [3, 58], [5, 65], [-2, 68]],
+  [[1, 70], [7, 68], [10, 78], [4, 80]],
+]
+const circle = (c: EN, r: number, n = MI.seg): EN[] => Array.from({ length: n }, (_, i): EN => [c[0] + r * Math.cos((i / n) * 2 * Math.PI), c[1] + r * Math.sin((i / n) * 2 * Math.PI)])
+/** the forecourt: a clipped ring round the roundabout's lawn, a flower ring inside it and a round heart bed; every parterre panel rimmed */
+const miForecourt = (g: (p: EN[]) => LL[]) => ({
+  hedges: [
+    { line: g(closed(circle(MI.c, MI.r) as LL[]) as EN[]), h: MI.hedgeH, w: MI.hedgeW },
+    ...MI_BEDS.map((b) => ({ line: g(closed(b as LL[]) as EN[]), h: MI.bedHedgeH, w: MI.bedHedgeW })),
+  ],
+  beds: [
+    // the flower ring as four arcs (a bed ring is one simple polygon, no hole)
+    ...[0, 1, 2, 3].map((q) => {
+      const rr = MI.r - MI.flowerIn - MI.flowerW / 2, arc = circle(MI.c, rr, MI.seg).slice((q * MI.seg) / 4, ((q + 1) * MI.seg) / 4)
+      return { ring: g(strip(arc, -MI.flowerW / 2, MI.flowerW / 2)), rim: true }
+    }),
+    { ring: g(circle(MI.c, MI.heartR, 12)) },
+  ],
+})
+
 const citeEst = (): GardenPlan => {
   const g = grid(48.819, 2.3385)
   const walks: EN[][] = [
@@ -127,6 +160,7 @@ const citeEst = (): GardenPlan => {
       hedges: [{ line: g([[-95, -28], [-50, -39], [-8, -51]]), h: 0.9, w: 0.7 }],
       beds: [{ ring: g(strip([[-90, -31], [-60, -38]], -3.5, -2)) }, { ring: g(strip([[-40, -44], [-12, -52]], -3.5, -2)) }],
     },
+    miForecourt(g),
     trees(g, CITEUEST_TREES),
     ...walks.flatMap((w) => walkside(g, w, { every: 40, off: 6, flowers: 2 })),
   )

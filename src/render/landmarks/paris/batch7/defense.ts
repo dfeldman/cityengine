@@ -163,19 +163,90 @@ export const defenseBronze = raised({ height: 130, roof: '#514e48', base: lobby(
 export const defenseStone = raised({ height: 130, roof: '#696660', base: lobby(), tiers: [{ to: 1, skin: { glass: '#6b6a62', module: 3.8 } }], crown: ROOF })
 export const defenseSteel = raised({ height: 150, roof: '#59636a', base: lobby(), tiers: [{ to: 1, skin: { glass: '#414d55', fin: '#6d777c', every: 5 } }], crown: ROOF })
 
-/** TOUR D2 (Anthony Béchu and Tom Sheehan, 2014; 171 m): an egg in a steel net, the columns on the outside so that the floors have none. The diagrid is what you see, from anywhere. */
-export function tourD2(out: MeshBuilder, fit: Fit): void {
-  const r = towerRing(fit), H = fit.height || 171
-  const at = (): P[] => r
-  loft(out, at, 0, H, 7.8, hex('#3f5a69'), hex('#567280'), hex('#5c686e'))
-  lattice(out, at, 8, H, 11, 15.6, 1.2, hex('#a9b3b6'))
+/** TOUR D2 (Anthony Béchu and Tom Sheehan, 2014; 171 m): an egg in a white steel net over dark glass, the columns on the outside so that the floors have none. Its plan is a lozenge with round ends, fattest a little below mid-height and drawn in at foot and crown; the top is a glass dome over a garden. The plan is a superellipse on the OSM ring's principal axes, scaled by a wavy profile. */
+const D2 = {
+  height: 171,
+  /** superellipse exponent of the plan: 2 an ellipse, higher squarer */
+  squareness: 2.6,
+  /** scale of the plan at the foot, at the bulge and at the dome's spring */
+  foot: 0.86, bulge: 1.04, crown: 0.8,
+  /** where the bulge peaks, as a fraction of the shaft */
+  bulgeAt: 0.45,
+  /** the dome: its height and how far in it draws at the top */
+  dome: 14, domeTop: 0.35,
+  storey: 4.2, segs: 40,
+  /** diagrid: metres round the foot between nodes, metres up to a crossing, strut width */
+  gridPitch: 9, gridRise: 12, gridWidth: 1.1,
+  glass: '#2c3c46', floorLine: '#3a4a54', domeGlass: '#7f97a2', steel: '#e4e8e9',
 }
+export function tourD2(out: MeshBuilder, fit: Fit): void {
+  const r = towerRing(fit), H = fit.height || D2.height, Hs = H - D2.dome
+  let cx = 0, cz = 0
+  for (const p of r) { cx += p.x / r.length; cz += p.z / r.length }
+  let sxx = 0, szz = 0, sxz = 0
+  for (const p of r) { const dx = p.x - cx, dz = p.z - cz; sxx += dx * dx; szz += dz * dz; sxz += dx * dz }
+  const th = 0.5 * Math.atan2(2 * sxz, sxx - szz), ux = Math.cos(th), uz = Math.sin(th)
+  let A = 0, B = 0
+  for (const p of r) { const dx = p.x - cx, dz = p.z - cz; A = Math.max(A, Math.abs(dx * ux + dz * uz)); B = Math.max(B, Math.abs(-dx * uz + dz * ux)) }
+  const e = 2 / D2.squareness
+  const plan: P[] = []
+  for (let i = 0; i < D2.segs; i++) {
+    const t = (i / D2.segs) * Math.PI * 2, c = Math.cos(t), s = Math.sin(t)
+    const u = A * Math.sign(c) * Math.abs(c) ** e, v = B * Math.sign(s) * Math.abs(s) ** e
+    plan.push({ x: u * ux - v * uz, z: u * uz + v * ux })
+  }
+  if (signedArea(plan) * signedArea(r) < 0) plan.reverse()
+  const scale = (y: number): number => {
+    if (y > Hs) { const t = Math.min(1, (y - Hs) / D2.dome); return D2.crown * (1 - (1 - D2.domeTop) * (1 - Math.sqrt(1 - t * t))) }
+    const t = y / Hs
+    return t < D2.bulgeAt
+      ? D2.foot + (D2.bulge - D2.foot) * Math.sin((t / D2.bulgeAt) * Math.PI / 2)
+      : D2.crown + (D2.bulge - D2.crown) * Math.cos(((t - D2.bulgeAt) / (1 - D2.bulgeAt)) * Math.PI / 2)
+  }
+  const at = (y: number): P[] => { const k = scale(y); return plan.map((p) => ({ x: cx + p.x * k, z: cz + p.z * k })) }
+  loft(out, at, 0, Hs, D2.storey, hex(D2.glass), hex(D2.floorLine), hex(D2.glass))
+  loft(out, at, Hs, H, D2.dome / 4, hex(D2.domeGlass), hex(D2.steel), hex(D2.domeGlass))
+  lattice(out, at, 0, H, D2.gridPitch, D2.gridRise, D2.gridWidth, hex(D2.steel))
+}
+const signedArea = (r: P[]): number => { let a = 0; for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z } return a / 2 }
 
 /** TOUR CARPE DIEM (Robert A. M. Stern, 2013; 166 m): cut facets and a tall diamond of pale mullions down each one, a crown slanting to a point. */
+// Carpe Diem tunables
+const CD_CROWN = 12        // open frame above the last floor
+const CD_FOLD = 3.2        // metres each corner swings in/out as the facets fold
+const CD_FOLDS = 2         // fold cycles over the height
+const CD_STEP = 4.2        // storey
+const CD_PLANT_H = 2.5     // the rooftop planter's rise
 export function carpeDiem(out: MeshBuilder, fit: Fit): void {
-  const r = towerRing(fit), H = (fit.height || 166) - 10
-  raised({ height: H, roof: '#5c686e', base: lobby(), tiers: [{ to: 1, skin: { glass: '#4b6675' } }], crown: slant(10) })(out, { ...fit, height: H })
-  lattice(out, () => r, 8, H, 16, 30, 0.9, hex('#a0aaae'), 0.35)
+  const r = towerRing(fit), H = (fit.height || 166) - CD_CROWN
+  let cx = 0, cz = 0
+  for (const p of r) { cx += p.x / r.length; cz += p.z / r.length }
+  // corners alternate their phase, so neighbouring corners swing opposite ways: each face folds into two big triangles
+  const at = (y: number): P[] => r.map((p, i) => {
+    const dx = p.x - cx, dz = p.z - cz, d = Math.hypot(dx, dz) || 1
+    const t = (y / (H + CD_CROWN)) * CD_FOLDS + (i % 2) * 0.5
+    const tri = 1 - 2 * Math.abs(t - Math.floor(t) - 0.5) * 2 // -1..1 zigzag
+    const k = CD_FOLD * tri
+    return { x: p.x + (dx / d) * k, z: p.z + (dz / d) * k }
+  })
+  loft(out, at, 0, H, CD_STEP, hex('#4b6675'), hex('#71858f'), hex('#5c686e'))
+  lattice(out, at, 0, H, 16, 30, 0.6, hex('#a0aaae'), 0.3)
+  // the crown: an open frame of diagonal struts round the planter
+  lattice(out, at, H, H + CD_CROWN, 6, CD_CROWN, 0.5, hex('#c4ccd0'), 0.1)
+  const top = at(H + CD_CROWN)
+  for (let i = 0; i < top.length; i++) {
+    const a = top[i], b = top[(i + 1) % top.length]
+    const L = Math.hypot(b.x - a.x, b.z - a.z); if (L < 0.1) continue
+    const nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L, y = H + CD_CROWN
+    out.quad([[a.x, y - 1, a.z], [b.x, y - 1, b.z], [b.x, y, b.z], [a.x, y, a.z]], [nx, 0, nz], UV, hex('#c4ccd0'), METAL)
+  }
+  const box = at(H).map((p) => ({ x: cx + (p.x - cx) * 0.7, z: cz + (p.z - cz) * 0.7 }))
+  for (let i = 0; i < box.length; i++) {
+    const a = box[i], b = box[(i + 1) % box.length]
+    const L = Math.hypot(b.x - a.x, b.z - a.z); if (L < 0.1) continue
+    out.quad([[a.x, H, a.z], [b.x, H, b.z], [b.x, H + CD_PLANT_H, b.z], [a.x, H + CD_PLANT_H, a.z]], [(b.z - a.z) / L, 0, -(b.x - a.x) / L], UV, hex('#8a8f8c'), METAL)
+  }
+  capPolygon(out, box, H + CD_PLANT_H, hex('#4f7a3c'), 0)
 }
 
 /** TOUR ALTO (IF Architectes and Arquitectonica's kin, 2020; 160 m): the tower that widens as it climbs, a third more floor at the top than at its foot, on a site too small for it. OSM's outline is the top; the shaft draws in towards the parvis. */

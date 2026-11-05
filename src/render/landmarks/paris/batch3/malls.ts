@@ -132,6 +132,12 @@ export function grandEcran(out: MeshBuilder, fit: Fit): void {
     q.quad([[f0[0], 0, f0[2]], [f1[0], 0, f1[2]], [f1[0], f1[1], f1[2]], [f0[0], f0[1], f0[2]]], [0, 0, 1], UV, G, surfaceTag('glass'))
     for (let i = 0; i <= cols; i += 3) { const p = P(i / cols, 1); block(q, p[0] - 0.5, p[0] + 0.5, p[2] - 0.4, p[2] + 0.4, 0, p[1], W2) }
     for (const y of [6, 14, 22, 30, 38]) strut(q, [f0[0], y, f0[2] + 0.1], [f1[0], y, f1[2] + 0.1], 0.3, 0.3, W2, 0, false)
+    // the low mall frontage: a dark frame and canopy over the entrances, fine mullions on the glass (tunable)
+    const CANOPY = { y: 5.2, h: 0.6, out: 4, frame: 0.5, mullion: 2.4 }
+    block(q, f0[0], f1[0], f0[2], f0[2] + CANOPY.out, CANOPY.y, CANOPY.y + CANOPY.h, DK)
+    block(q, f0[0] - CANOPY.frame, f0[0], f0[2] - 0.2, f0[2] + CANOPY.out, 0, CANOPY.y + CANOPY.h, DK)
+    block(q, f1[0], f1[0] + CANOPY.frame, f1[2] - 0.2, f1[2] + CANOPY.out, 0, CANOPY.y + CANOPY.h, DK)
+    for (let x = f0[0] + CANOPY.mullion; x < f1[0]; x += CANOPY.mullion) block(q, x - 0.08, x + 0.08, f0[2], f0[2] + 0.2, 0, CANOPY.y, DK)
     // its sides, closed
     for (const u of [0, 1]) {
       const a = P(u, 0), b = P(u, 1)

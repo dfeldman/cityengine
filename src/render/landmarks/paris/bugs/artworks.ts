@@ -54,13 +54,18 @@ export function charlieParker(out: MeshBuilder, _fit: Fit): void {
 }
 
 export function vasque(out: MeshBuilder, _fit: Fit): void {
+  // the mooring pad
+  prism(out, 0, 0, 0, 0.4, 5, 24, [0.55, 0.55, 0.53], surfaceTag('metal'))
+  // the rest goes up and down on its cable (render/paris/balloons.ts)
+}
+
+/** what rises: the flame ring, its frame and the balloon over it, the ground at local y = 0 */
+export function vasqueFloat(out: MeshBuilder): void {
   const metal = surfaceTag('metal')
   const skin = surfaceTag('stucco')
   const flame: Rgb = [1.0, 0.62, 0.22]
   const steel: Rgb = [0.72, 0.72, 0.7]
   const white: Rgb = [0.95, 0.95, 0.93]
-  // the mooring pad and the ring's footing
-  prism(out, 0, 0, 0, 0.4, 5, 24, [0.55, 0.55, 0.53], metal)
   // the ring: a metal band, the mist flame rising off it
   const yr = 2.2
   prism(out, 0, 0, yr - 0.5, yr, 3.5, 32, steel, metal, 3.5, false)

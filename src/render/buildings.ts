@@ -25,7 +25,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
 import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
 import { artOf, groundArtOf, planWall, rng, type Cell, type CornerShop, type FacadePlan, type Feature } from '../city/facade.ts'
-import { addRoofscape, buildRoof, buildRoofAroundCourts, type Roofscape } from './roofs.ts'
+import { addRoofscape, buildRoof, buildRoofAroundCourts, insetRing, insetValid, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
 import type { TreeForm } from '../city/tree-forms.ts'
 import type { PlacedSign } from './landmarks/signage.ts'
@@ -785,6 +785,28 @@ export function buildBuilding(
   /** the arches cut through each outer wall i by passages (render/passages.ts `passageArches`) */
   arches?: (i: number) => Arch[],
 ): void {
+  // a Paris post-war block's set-back top storeys (facade.ts PostwarDress): the body to the terrace, its rail a raised
+  // parapet, then each storey on a ring stepped further in, plain all round
+  const pw = plan.dress?.postwar
+  if (pw && pw.attic > 0 && holes.length === 0 && plan.storeys.length > pw.attic + 2) {
+    const n = plan.storeys.length - pw.attic
+    const bodyH = plan.storeys[n - 1].y1
+    const body: FacadePlan = { ...plan, storeys: plan.storeys.slice(0, n), height: bodyH, levels: n,
+      dress: { ...plan.dress!, parapet: 0.95, postwar: { ...pw, attic: 0 } } }
+    buildBuilding(out, ring, body, atlas, seed, baseY, undefined, undefined, facesStreet, [], arches)
+    let inner: Ring = ring
+    for (let k = 0; k < pw.attic; k++) {
+      const next = insetRing(inner, pw.atticStep) as Ring
+      if (next.length < 3 || !insetValid(inner, next)) return buildRoofOnly(out, inner, plan, baseY + plan.storeys[n + k - 1].y1)
+      inner = next
+      const s = plan.storeys[n + k], last = k === pw.attic - 1
+      const y0 = s.y0
+      const storey: FacadePlan = { ...plan, storeys: [{ ...s, y0: 0, y1: s.y1 - y0, kind: 'top', index: 0 }], height: s.y1 - y0, levels: 1,
+        dress: { ...plan.dress!, parapet: last ? 0 : 0.95, postwar: { ...pw, attic: 0, balconies: 'none', frame: false } } }
+      buildBuilding(out, inner, storey, atlas, seed ^ (k + 1) * 0x51ed27, baseY + y0, last ? roofSpec : undefined)
+    }
+    return
+  }
   const streets = cornerShops(ring, ring.map((_, i) => facesStreet?.(i) ?? null), plan, seed)
   const roles = fronts(ring, streets)
   for (let i = 0; i < ring.length; i++) {
@@ -896,3 +918,8 @@ export function rectangle(width: number, depth: number, cx = 0, cz = 0): Ring {
 
 
 const shadeRgb = (c: [number, number, number], k: number): [number, number, number] => [c[0] * k, c[1] * k, c[2] * k]
+
+/** a flat roof at `y`, where a set-back storey would not fit */
+function buildRoofOnly(out: MeshBuilder, ring: Ring, plan: FacadePlan, y: number): void {
+  buildRoof(out, ring, { shape: 'flat', y, height: 0, colour: rgb(plan.palette.roof) })
+}

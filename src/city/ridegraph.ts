@@ -179,7 +179,9 @@ export function joinDeadEnds(ridden: RideEdge[], all: Edge[], blocked?: (a: Poin
   const deg = degrees(ridden)
   // never a path through a building: a courtyard footway joined Passage Lhomme and Cité Popincourt through walls
   const clear = (e: Edge): boolean => !blocked || e.points.every((q, i) => i === 0 || !blocked(e.points[i - 1], q))
-  const paths = all.filter((e) => e.a !== e.b && onSurface(e) && RUN_EXTRA.has(e.kind ?? '') && clear(e))
+  // (not a path already ridden — a trail a zone opens to bikes: added again, it came in twice under one id)
+  const have = new Set(ridden.map((e) => e.id))
+  const paths = all.filter((e) => !have.has(e.id) && e.a !== e.b && onSurface(e) && RUN_EXTRA.has(e.kind ?? '') && clear(e))
   if (paths.length === 0) return ridden
   const at = new Map<number, Edge[]>()
   for (const e of paths) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)

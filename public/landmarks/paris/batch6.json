@@ -401,5 +401,47 @@
     "roofColour": "#4b5257",
     "note": "Peyre and de Wailly's square of 1782, the houses to one design with the theatre, curving round its forecourt. Uniform cream, as the owner has the 6th.",
     "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Passage des Panoramas",
+    "procedural": "passagePanoramas",
+    "lat": 48.871503,
+    "lon": 2.341824,
+    "size": [
+      7,
+      6
+    ],
+    "front": 13,
+    "height": 15,
+    "note": "batch6/passages.ts: the street mouth only, at the boulevard's facade line.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Passage Jouffroy",
+    "procedural": "passageJouffroy",
+    "lat": 48.871865,
+    "lon": 2.341927,
+    "size": [
+      7,
+      6
+    ],
+    "front": 193,
+    "height": 15,
+    "note": "batch6/passages.ts: the street mouth only, at the boulevard's facade line.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Galerie Vivienne",
+    "procedural": "galerieVivienne",
+    "lat": 48.866205,
+    "lon": 2.339475,
+    "size": [
+      7,
+      6
+    ],
+    "front": 200,
+    "height": 15,
+    "note": "batch6/passages.ts: the rue des Petits-Champs portal only.",
+    "madeBy": "claude-sonnet-5-5"
   }
 ]

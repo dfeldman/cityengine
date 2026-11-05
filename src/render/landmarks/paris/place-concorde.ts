@@ -1,8 +1,34 @@
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, prism, type Rgb } from '../../models.ts'
+import { box, prism, strut, type Rgb } from '../../models.ts'
 import { beam, shade } from '../kit.ts'
+import type { Fit } from '../fit.ts'
+import { horseman } from './monuments/common.ts'
 
 const FIXED = 0
+
+/*
+ * The square's layout, from OSM (docs/landmarks/PLAN-PLACE-CONCORDE.md, 2026-11-04): centres rotated into this frame
+ * (obelisk 0,0; +z north; +x east to the Tuileries) — the two pools land at 0, ±64, which is how the frame was checked.
+ */
+/** the eight cities' pavilions, in pairs at the octagon's cut corners (OSM way/54191271 … way/54194609) */
+export const CITIES: readonly [string, number, number][] = [
+  ['Strasbourg', 85, 88], ['Lille', 68, 121], ['Brest', -85, 88], ['Rouen', -68, 121],
+  ['Lyon', 85, -88], ['Marseille', 68, -121], ['Nantes', -85, -87], ['Bordeaux', -68, -121],
+]
+/** the rostral columns OSM has (10 of the 20): one at each end of an opening in the balustrade, one mid-run on the east */
+const ROSTRAL_OSM: readonly [number, number][] = [
+  [85, -15], [85, 16], [85, -51], [85, 50], [-85, -30], [-85, 31], [25, 123], [-26, 123], [25, -123], [-25, -123],
+]
+/** not in OSM: the west runs' middles, by the east's — off when a survey says otherwise */
+const INFER_ROSTRAL = true
+const ROSTRAL_INFERRED: readonly [number, number][] = [[-85, 58], [-85, -57]]
+/** the octagon's balustrade: OSM's fences round the old sauts-de-loup, broken for the four avenues (x0, z0, x1, z1) */
+const BALUSTRADE: readonly [number, number, number, number][] = [
+  [85, 16, 85, 85], [85, -15, 85, -85], [-85, 31, -85, 85], [-85, -30, -85, -84],
+  [25, 123, 65, 123], [-26, 123, -65, 123], [25, -123, 65, -123], [-25, -123, -65, -123],
+]
+/** the balustrade's section: plinth height, baluster height, rail depth, width, baluster spacing */
+const BAL = { base: 0.3, h: 0.65, rail: 0.14, w: 0.42, step: 0.55 }
 
 /**
  * The ornaments of the Place de la Concorde (PARIS_EXPAND §5 A): the Luxor OBELISK at the centre — pink
@@ -49,10 +75,11 @@ export function placeConcorde(out: MeshBuilder): void {
   prism(out, 0, 0, 29.6, 31.4, 0.85, 4, gold, FIXED, 0.02)                               // the pyramidion
   // the two fountains, 64 m either side along the axis (OSM's pools)
   for (const sz of [-1, 1]) fountain(out, 0, sz * 64, gold, bronze)
-  for (const [x, z] of [[84, 88], [-84, 88], [84, -88], [-84, -88], [132, 46], [-132, 46], [132, -46], [-132, -46]]) city(out, x, z)
-  // rostral columns round the square: two by each fountain and along the edges
-  for (const [x, z] of [[-24, -70], [24, -70], [-24, 70], [24, 70], [-70, -24], [70, -24], [-70, 24], [70, 24],
-    [-110, 0], [110, 0], [0, -120], [0, 120]]) {
+  for (const [, x, z] of CITIES) city(out, x, z)
+  const stone: Rgb = [0.74, 0.71, 0.64]
+  for (const [x0, z0, x1, z1] of BALUSTRADE) balustrade(out, x0, z0, x1, z1, stone)
+  // the rostral columns, standing on the balustrade's line
+  for (const [x, z] of [...ROSTRAL_OSM, ...(INFER_ROSTRAL ? ROSTRAL_INFERRED : [])]) {
     prism(out, x, z, 0, 0.8, 0.9, 8, plinth, FIXED)
     prism(out, x, z, 0.8, 7.4, 0.32, 10, bronze, FIXED, 0.26)
     for (const y of [2.8, 4.2]) {
@@ -118,10 +145,25 @@ function fountain(out: MeshBuilder, cx: number, cz: number, gold: Rgb, bronze: R
   prism(out, cx, cz, 8.76, 9.9, 0.32, 8, gold, FIXED, 0.08)                                // the jet's finial
 }
 
+/** One run of the octagon's balustrade: a plinth, square balusters, the rail; ending a hand short of the pavilion or column. */
+function balustrade(out: MeshBuilder, x0: number, z0: number, x1: number, z1: number, c: Rgb): void {
+  const L = Math.hypot(x1 - x0, z1 - z0)
+  const tx = (x1 - x0) / L, tz = (z1 - z0) / L
+  const a: [number, number] = [x0 + tx * 0.6, z0 + tz * 0.6], b: [number, number] = [x1 - tx * 0.6, z1 - tz * 0.6]
+  const top = BAL.base + BAL.h
+  strut(out, [a[0], BAL.base / 2, a[1]], [b[0], BAL.base / 2, b[1]], BAL.w, BAL.base, shade(c, 0.92), FIXED)
+  const n = Math.max(1, Math.round((L - 1.2) / BAL.step))
+  for (let k = 0; k < n; k++) {
+    const f = (k + 0.5) / n
+    prism(out, a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, BAL.base, top, 0.1, 4, c, FIXED, 0.07, false)
+  }
+  strut(out, [a[0], top + BAL.rail / 2, a[1]], [b[0], top + BAL.rail / 2, b[1]], BAL.w, BAL.rail, c, FIXED)
+}
+
 /**
  * One of the eight seated cities on their pavilions (Pradier, Cortot; 1836): Lille and Strasbourg to the north-east, Rouen and Brest north-west,
  * Lyon and Marseille south-east, Nantes and Bordeaux south-west. A stone lodge of about 6 m, its door and cornice, the figure in her mural crown
- * looking at the obelisk. North-east's inner one is off IGN's aerial (84, 88 in this frame), and the rest by the octagon's symmetry: not surveyed.
+ * looking at the obelisk. Placed on OSM's eight ways (CITIES), 2026-11-04; the four outer ones had been guessed at (±132, ±46).
  */
 function city(out: MeshBuilder, x: number, z: number): void {
   const c: Rgb = [0.72, 0.69, 0.62]
@@ -139,4 +181,31 @@ function city(out: MeshBuilder, x: number, z: number): void {
   beam(out, [x, 7.9, z], [x, 9.75, z], 0.72, trim, 0.72)
   prism(out, x, z, 9.75, 10.6, 0.4, 6, trim, FIXED, 0.3)
   prism(out, x, z, 10.55, 10.95, 0.42, 6, c, FIXED, 0.45)
+}
+
+/** the pedestals at the square's two ends (PLAN-PLACE-CONCORDE.md step 1): plan and height, metres */
+const GATE_PIER = { w: 2.4, d: 3.2, h: 4.6 }
+const MARLY_BASE = { w: 4.6, d: 2.6, h: 4.0 }
+const PIER_STONE: Rgb = [0.76, 0.73, 0.66]
+
+/** a pedestal: a base course, the die, the cornice; returns its top */
+function pedestal(out: MeshBuilder, p: { w: number; d: number; h: number }): number {
+  box(out, 0, 0.25, 0, p.w / 2 + 0.2, 0.25, p.d / 2 + 0.2, shade(PIER_STONE, 0.9), FIXED)
+  box(out, 0, 0.5 + (p.h - 0.9) / 2, 0, p.w / 2, (p.h - 0.9) / 2, p.d / 2, PIER_STONE, FIXED)
+  box(out, 0, p.h - 0.2, 0, p.w / 2 + 0.18, 0.2, p.d / 2 + 0.18, shade(PIER_STONE, 1.06), FIXED)
+  return p.h
+}
+
+/**
+ * A pier of the Tuileries' gate on the Concorde (Grille du Pont-Tournant), with Coysevox's horse on Pegasus on top: Renommée to the
+ * south, Mercure to the north (OSM node/2165181089, node/5311490411; the originals are in the Louvre). The figure is a stand-in
+ * horseman, leaping west to the square, until its GLB comes (assets_to_model/la-renommee-montee-sur-pegase--…).
+ */
+export function concordeGatePier(out: MeshBuilder, _fit: Fit): void {
+  horseman(out, 0, pedestal(out, GATE_PIER), 0, -Math.PI / 2, [0.84, 0.81, 0.74], 1, true)
+}
+
+/** A pedestal of Coustou's Chevaux de Marly at the Champs-Élysées end (OSM way/553416270, way/553416271; copies), its stand-in horse facing the square. */
+export function marlyPedestal(out: MeshBuilder, _fit: Fit): void {
+  horseman(out, 0, pedestal(out, MARLY_BASE), 0, Math.PI / 2, [0.84, 0.81, 0.74], 1.1, false)
 }

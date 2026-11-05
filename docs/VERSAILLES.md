@@ -26,6 +26,8 @@ A rectangle is still allowed: it is a four-point ring.
 | versailles-park | park outline + 60 m (Trianon, Hameau, Grand Canal inside) | 372 | 148 |
 | versailles-town | hand ring: Place d'Armes, Écuries, Notre-Dame, Saint-Louis, Potager | 2 604 | 81 |
 | route | corridor, 120 m half-width | 900 | 27 |
+| n10 (2026-11-04, not baked yet) | the old N10 / D910 + D10 (Sèvres, Chaville, Viroflay → Avenue de Paris), 50 m half-width | ~1 990 | |
+| n10 squares, Ville-d'Avray centre | hand rings: Sèvres' Hôtel de Ville, the old Manufacture, Chaville's mairie; Ville-d'Avray's mairie, church, Fontaine du Roi | ~830 | |
 | **total** | | **~4 900** | **~500** |
 
 Fringe massing round the regions (outside all of them), by width: 150 m → 5.1k, **300 m → 10.4k**, 500 m → 17k,

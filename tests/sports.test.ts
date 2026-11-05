@@ -125,3 +125,15 @@ describe('fitCourt', () => {
     }
   })
 })
+
+describe('field sports (Cité universitaire)', () => {
+  it('only on a region\'s word', () => {
+    expect(courtSport('soccer')).toBeNull()
+    expect(courtSport('soccer', true)).toBe('soccer')
+    expect(courtSport('rugby_league', true)).toBe('rugby')
+  })
+  it('a 92 x 62 pitch gets the 90 x 60 rung', () => {
+    const f = fitCourt([{ x: 0, z: 0 }, { x: 92, z: 0 }, { x: 92, z: 62 }, { x: 0, z: 62 }], 'soccer')!
+    expect(f.len).toBeCloseTo(90); expect(f.wid).toBeCloseTo(60)
+  })
+})

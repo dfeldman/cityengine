@@ -18,7 +18,9 @@ export interface BuildingFacts {
   id: number
   area: number
   /** the region's own records of the building, where it has them (SF's Assessor rolls: tools/sf-parcels.ts) */
-  record?: { year?: number; stories?: number; units: number; use?: string; construction?: string; parcels: number }
+  record?: { year?: number; stories?: number; units: number; use?: string; construction?: string; parcels: number
+    /** Paris: BD TOPO's wall and roof material codes (tools/paris-bdtopo.ts) */
+    walls?: string; roofMat?: string }
 }
 export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId; district: string; rule: string } | null
 

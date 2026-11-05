@@ -11,6 +11,7 @@ import { hallesGarden } from './halles-garden.ts'
 import { halleCarpentier } from './carpentier.ts'
 import { centQuatre } from './cent-quatre.ts'
 import { stadeCharlety } from './charlety.ts'
+import { europeanBusinessSchool } from './ebs.ts'
 import { stadeCoubertin } from './coubertin.ts'
 import { domeParis } from './dome-paris.ts'
 import { piscineMolitor } from './molitor.ts'
@@ -62,6 +63,7 @@ export const PARIS_VENUES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   halleCarpentier,
   domeParis,
   stadeCharlety,
+  europeanBusinessSchool,
   plenitudeArena,
   piscineMolitor,
   piscineVallerey,

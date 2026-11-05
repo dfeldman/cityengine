@@ -36,7 +36,12 @@ const SURFACE: Record<CourtSport, Rgb> = {
   four_square: [0.30, 0.31, 0.33],
   volleyball: [0.44, 0.38, 0.30],
   playground: [0.6, 0.3, 0.24],
+  soccer: [0.15, 0.36, 0.17],
+  rugby: [0.17, 0.38, 0.18],
+  handball: [0.20, 0.33, 0.45],
 }
+/** terre battue */
+const CLAY: Rgb = [0.56, 0.26, 0.19]
 const LINE: Rgb = [0.88, 0.88, 0.85]
 const LINE_W = 0.10
 /** Above the pitch area's own cap (which sits at 0.02): high enough not to fight it, low enough to drape. */
@@ -179,8 +184,9 @@ export function court(out: MeshBuilder, fit: CourtFit, glass?: MeshBuilder): voi
   const hw = fit.wid / 2
   if (fit.sport === 'padel') { padel(out, glass ?? out, fit, to, hl, hw); return }
   if (fit.sport === 'american_football') { football(out, fit, to, hl, hw); return }
+  if (fit.sport === 'soccer' || fit.sport === 'rugby' || fit.sport === 'handball') { field(out, fit, to, hl, hw); return }
   // the surface itself, a little proud of the pitch area it stands on
-  quadLocal(out, to, -hl - 0.25, -hw - 0.25, hl + 0.25, hw + 0.25, SURFACE_Y, SURFACE[fit.sport])
+  quadLocal(out, to, -hl - 0.25, -hw - 0.25, hl + 0.25, hw + 0.25, SURFACE_Y, fit.clay ? CLAY : SURFACE[fit.sport])
 
   if (fit.sport === 'tennis' || fit.sport === 'pickleball') {
     const full = fit.sport === 'tennis' ? 23.77 : 13.41
@@ -409,6 +415,71 @@ function football(out: MeshBuilder, fit: CourtFit, to: (lx: number, ly: number, 
     for (const zs of [-1, 1]) {
       const u = to(x, 0, zs * 2.82)
       box(out, u[0], 3.05 + 3, u[2], 0.06, 3, 0.06, Y, FIXED)
+    }
+  }
+}
+
+/** Field-sport tunables: turf margin beyond the lines (m), the draped cell size, the goal/post colour. */
+const FIELD = { margin: 2, cell: 6, post: [0.95, 0.95, 0.93] as Rgb, rugbyPostH: 8, rugbyBar: 3, rugbyGap: 5.6 }
+
+/**
+ * SOCCER, RUGBY AND HANDBALL (Cité universitaire, 2026-11-05): the turf (or the handball court's blue) in draped
+ * cells like the football field, the published markings scaled with the fit, and the goals. ~300 triangles a field.
+ */
+function field(out: MeshBuilder, fit: CourtFit, to: (lx: number, ly: number, lz: number) => [number, number, number],
+               hl: number, hw: number): void {
+  const grid = (x0: number, z0: number, x1: number, z1: number, c: Rgb): void => {
+    const nx = Math.max(1, Math.ceil((x1 - x0) / FIELD.cell)), nz = Math.max(1, Math.ceil((z1 - z0) / FIELD.cell))
+    for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+      quadLocal(out, to, x0 + ((x1 - x0) * i) / nx, z0 + ((z1 - z0) * j) / nz, x0 + ((x1 - x0) * (i + 1)) / nx, z0 + ((z1 - z0) * (j + 1)) / nz, SURFACE_Y, c)
+    }
+  }
+  const line = (x0: number, z0: number, x1: number, z1: number, w = 0.12): void => {
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, z1 - z0) / 5))
+    for (let i = 0; i < n; i++) stripe(out, to, x0 + ((x1 - x0) * i) / n, z0 + ((z1 - z0) * i) / n, x0 + ((x1 - x0) * (i + 1)) / n, z0 + ((z1 - z0) * (i + 1)) / n, w)
+  }
+  const m = FIELD.margin
+  grid(-hl - m, -hw - m, hl + m, hw + m, SURFACE[fit.sport])
+  line(-hl, -hw, hl, -hw); line(-hl, hw, hl, hw); line(-hl, -hw, -hl, hw); line(hl, -hw, hl, hw)
+  line(0, -hw, 0, hw)
+  const goal = (x: number, _s: number, halfW: number, h: number): void => {
+    for (const zs of [-1, 1]) { const u = to(x, 0, zs * halfW); box(out, u[0], h / 2, u[2], 0.06, h / 2, 0.06, FIELD.post, FIXED) }
+    const steps = Math.max(2, Math.round(halfW))
+    for (let i = 0; i < steps; i++) {
+      const p = to(x, h, -halfW + (2 * halfW * (i + 0.5)) / steps)
+      box(out, p[0], h, p[2], 0.06 + Math.abs(Math.sin(fit.heading)) * halfW / steps, 0.06, 0.06 + Math.abs(Math.cos(fit.heading)) * halfW / steps, FIELD.post, FIXED)
+    }
+  }
+  if (fit.sport === 'soccer') {
+    const k = fit.wid / 68
+    arc(out, to, 0, 0, 9.15 * k, 0, 2 * Math.PI, 24)
+    for (const s of [-1, 1]) {
+      const x = s * hl
+      const pb = 20.16 * k, pd = 16.5 * k, gb = 9.16 * k, gd = 5.5 * k
+      line(x, -pb, x - s * pd, -pb); line(x, pb, x - s * pd, pb); line(x - s * pd, -pb, x - s * pd, pb)
+      line(x, -gb, x - s * gd, -gb); line(x, gb, x - s * gd, gb); line(x - s * gd, -gb, x - s * gd, gb)
+      arc(out, to, x - s * 11 * k, 0, 9.15 * k, s > 0 ? Math.PI - 0.93 : -0.93, s > 0 ? Math.PI + 0.93 : 0.93, 8)
+      goal(x + s * 0.3, s, 3.66 * Math.min(1, k * 1.3), 2.44 * Math.min(1, k * 1.3))
+    }
+  } else if (fit.sport === 'rugby') {
+    const k = fit.len / 100
+    for (const s of [-1, 1]) {
+      line(s * 22 * k, -hw, s * 22 * k, hw)
+      // the dashed 10 m lines
+      for (let z = -hw; z < hw; z += 5) line(s * 10 * k, z, s * 10 * k, Math.min(hw, z + 2.5))
+      // the H: two tall uprights and the crossbar 3 m up
+      const x = s * hl, g = FIELD.rugbyGap / 2
+      for (const zs of [-1, 1]) { const u = to(x, 0, zs * g); box(out, u[0], FIELD.rugbyPostH / 2, u[2], 0.08, FIELD.rugbyPostH / 2, 0.08, FIELD.post, FIXED) }
+      goal(x, s, g, FIELD.rugbyBar)
+    }
+  } else {
+    // handball: the 6 m goal area and the dashed 9 m line as arcs round each goal
+    const k = fit.len / 40
+    for (const s of [-1, 1]) {
+      const x = s * hl, a0 = s > 0 ? Math.PI / 2 : -Math.PI / 2, a1 = s > 0 ? 1.5 * Math.PI : Math.PI / 2
+      arc(out, to, x, 0, 6 * k, a0, a1, 12)
+      for (let i = 0; i < 12; i += 2) arc(out, to, x, 0, 9 * k, a0 + ((a1 - a0) * i) / 12, a0 + ((a1 - a0) * (i + 1)) / 12, 1)
+      goal(x + s * 0.3, s, 1.5, 2)
     }
   }
 }

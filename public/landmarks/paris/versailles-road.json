@@ -1,0 +1,173 @@
+[
+  {
+    "name": "Saint-Cloud: l'Allée des Statues",
+    "procedural": "cloudStatues",
+    "lat": 48.83747,
+    "lon": 2.213185,
+    "rotateDeg": 354,
+    "size": [
+      144,
+      34
+    ],
+    "height": 4,
+    "sign": false,
+    "stone": false,
+    "kind": "garden",
+    "note": "versailles/road.ts: OSM's three walks of the Allée des Statues (bearing 84), the terrace in setts (owner, 2026-11-04: cobblestone), clipped yew cones between; statues' places left empty for the GLBs.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Saint-Cloud: le Grand Réservoir",
+    "procedural": "cloudReservoir",
+    "lat": 48.834048,
+    "lon": 2.205834,
+    "rotateDeg": 16,
+    "size": [
+      180,
+      80
+    ],
+    "height": 1.5,
+    "sign": false,
+    "stone": false,
+    "note": "versailles/road.ts: coping and railing round OSM's water (way/168492667, 176 x 76 m, bearing 106). Edge treatment unverified.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Saint-Cloud: the Lanterne's foundations (Rond de la Balustrade)",
+    "procedural": "cloudRond",
+    "lat": 48.83148,
+    "lon": 2.21735,
+    "rotateDeg": 0,
+    "size": [
+      30,
+      26
+    ],
+    "height": 0.6,
+    "sign": false,
+    "stone": false,
+    "note": "versailles/road.ts: the Lanterne de Démosthène's foundations on the round's lawn, off IGN's orthophoto (refs/versailles/lanterne); frame origin OSM's junction node. Replaces the guessed kerbed round and balustrade (2026-11-04).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Saint-Cloud: la grille de l'Île Monsieur",
+    "procedural": "cloudGate",
+    "lat": 48.8345,
+    "lon": 2.2224,
+    "rotateDeg": 270,
+    "size": [
+      32,
+      3
+    ],
+    "height": 5,
+    "sign": false,
+    "stone": false,
+    "note": "versailles/road.ts: on the park's east wall by the Parc nautique (OSM: lift gate 48.8345 2.22259). Name and place from the owner's Google map; look unverified.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Musée national de céramique (Manufacture de Sèvres)",
+    "procedural": "sevresMusee",
+    "osm": [
+      "way/43402166"
+    ],
+    "front": 69,
+    "height": 16,
+    "sign": false,
+    "note": "versailles/road.ts: Laudin, 1876, three levels, pedimented middle pavilion (Monumentum); the front to the Seine. Brick and stone a guess.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hôtel de ville de Sèvres",
+    "procedural": "sevresMairie",
+    "osm": [
+      "way/146283515"
+    ],
+    "front": 160,
+    "height": 14.5,
+    "sign": false,
+    "note": "versailles/road.ts: on the Grande Rue (the old N10); supersedes its civic.json entry. Not identified in a photograph.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Mairie de Chaville",
+    "procedural": "chavilleMairie",
+    "osm": [
+      "way/132162478"
+    ],
+    "front": 143,
+    "height": 14,
+    "sign": false,
+    "note": "versailles/road.ts: 1909, in its park, toward the Avenue Roger-Salengro (the old N10); a clock belfry over the front.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Mairie de Ville-d'Avray",
+    "procedural": "avrayMairie",
+    "osm": [
+      "way/129454210"
+    ],
+    "front": "street",
+    "height": 9.5,
+    "sign": false,
+    "note": "versailles/road.ts: two storeys, the kit's mairie.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Fontaine du Roi (Ville-d'Avray)",
+    "procedural": "avrayFontaine",
+    "osm": [
+      "way/129454665"
+    ],
+    "front": "street",
+    "height": 3.4,
+    "sign": false,
+    "stone": false,
+    "note": "versailles/road.ts: the stone fountain pavilion; OSM's 4 x 3 m building.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Église Saint-Nicolas-Saint-Marc (Ville-d'Avray)",
+    "procedural": "parisCivic",
+    "kit": {
+      "kind": "eglise",
+      "p": 2,
+      "seed": 1
+    },
+    "osm": [
+      "way/129455533"
+    ],
+    "front": "street",
+    "height": 13,
+    "sign": false,
+    "note": "Louis XVI, consecrated 1791: the kit's classical front (pediment). Corot's paintings inside. Its low flank tower not drawn.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Pavillon de Breteuil (BIPM)",
+    "procedural": "breteuil",
+    "osm": [
+      "way/170038102"
+    ],
+    "front": 90,
+    "height": 7.8,
+    "sign": false,
+    "note": "versailles/road.ts: lidar 10-11 m ranges, the middle 13-14 m (refs/versailles/breteuil); render, two storeys, low slate hip (en.wikipedia photo). The east front over the old Grand Parterre's slope.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Saint-Cloud: le fronton du Palais de l'Industrie (pedestal)",
+    "procedural": "cloudFronton",
+    "lat": 48.835021,
+    "lon": 2.219856,
+    "rotateDeg": 0,
+    "size": [
+      12.5,
+      8
+    ],
+    "height": 3,
+    "sign": false,
+    "stone": false,
+    "note": "versailles/road.ts: the pedestal of Élias Robert's group (the figures are the GLB pipeline's); sizes from the en.wikipedia photo scaled by the 6.5 m group and IGN lidar (refs/versailles/fronton). Front to the south assumed.",
+    "madeBy": "claude-opus-5-5"
+  }
+]

@@ -78,6 +78,7 @@
     }
   },
   "paris": {
+    "courtSports": {"_note": "2026-11-05, Cité universitaire gardens: the Parc Est soccer pitches, Stade Ouest (rugby, named so courtEligible skips it) and the two handball courts by the Porte de Gentilly get their markings", "30174582": "soccer", "37524482": "soccer", "211640148": "rugby", "864277614": "handball", "864277615": "handball"},
     "timeZone": "Europe/Paris",
     "note": "Paris. Cream limestone almost everywhere (Haussmann's city is one colour, and that colour is what makes it Paris), slate-blue zinc roofs and black ironwork. No lamp posts on the pavement edge: Paris street lamps hang from the buildings. Black bollards (potelets) line the narrow pavements to keep cars off them. Crossings are the passage piéton: broad white bands, wider apart than a zebra (crossings: bands).",
     "palettes": {
@@ -127,6 +128,14 @@
           "roof": "#66727b",
           "accent": "#202224"
         }
+      ],
+      "parismodern": [
+        { "wall": "#efebe2", "trim": "#e0dbd0", "roof": "#6f777d", "accent": "#2a2c2e", "ground": "#b9b2a4", "weight": 3 },
+        { "wall": "#f4f2ee", "trim": "#e4e2dd", "roof": "#6a7278", "accent": "#3a3f44", "ground": "#8f8f8c", "weight": 2 },
+        { "wall": "#e4d9c3", "trim": "#d3c7ae", "roof": "#6f777d", "accent": "#2a2c2e", "ground": "#a89c86", "weight": 2 },
+        { "wall": "#d9d6cf", "trim": "#c9c5bc", "roof": "#6a7278", "accent": "#23272b", "ground": "#77736c", "weight": 1.5 },
+        { "wall": "#e8e0cf", "trim": "#f3efe6", "roof": "#6f777d", "accent": "#5b4a3a", "weight": 1 },
+        { "wall": "#c9b79a", "trim": "#e6dccb", "roof": "#6a7278", "accent": "#2a2c2e", "ground": "#8e7f69", "weight": 0.7 }
       ],
       "bauhaus": [
         {

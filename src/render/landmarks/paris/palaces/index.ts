@@ -21,6 +21,7 @@ import { foliesBergere } from './folies-bergere.ts'
 import { grandRex } from './grand-rex.ts'
 import { iena } from './iena.ts'
 import { invalides } from './invalides.ts'
+import { bouillonChartier, cafeDeFlore, fouquets, laduree, maxims, laCoupole, laRotonde, leDome, lesDeuxMagots } from './cafes.ts'
 import { lapinAgile } from './lapin-agile.ts'
 import { legionHonneur } from './legion-honneur.ts'
 import { luxembourgPalace } from './luxembourg.ts'
@@ -38,6 +39,8 @@ import { odeon } from './odeon.ts'
 import { olympia } from './olympia.ts'
 import { operaComique } from './opera-comique.ts'
 import { palaisRoyal } from './palais-royal.ts'
+import { versaillesChateau } from '../versailles/chateau.ts'
+import { VERSAILLES_DEPENDANCES, versaillesGrandCommun, versaillesMinistres, versaillesOrangerie, versaillesReservoirs } from '../versailles/communs.ts'
 import { theatreChampsElysees } from './champs-elysees-theatre.ts'
 import { tokyoParvis } from './tokyo.ts'
 import { tribunalCommerce } from './tribunal-commerce.ts'
@@ -74,6 +77,15 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   iena,
   invalides,
   lapinAgile,
+  cafeDeFlore,
+  lesDeuxMagots,
+  fouquets,
+  maxims,
+  bouillonChartier,
+  laduree,
+  laCoupole,
+  leDome,
+  laRotonde,
   legionHonneur,
   luxembourgPalace,
   luxembourgMuseum,
@@ -92,6 +104,9 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   olympia,
   operaComique,
   palaisRoyal,
+  versaillesChateau,
+  versaillesMinistres, versaillesGrandCommun, versaillesReservoirs, versaillesOrangerie,
+  ...VERSAILLES_DEPENDANCES,
   theatreChampsElysees,
   theatreDeLaVille,
   tokyoParvis,

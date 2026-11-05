@@ -220,31 +220,10 @@
     "madeBy": "claude-opus-5-5"
   },
   {
-    "name": "Cité universitaire: la Maison Internationale",
-    "osm": [
-      "way/28754150"
-    ],
-    "restyle": "classical",
-    "levels": 4,
-    "roof": "mansard",
-    "roofHeight": 5,
-    "wall": "#dcd2bc",
-    "trim": "#ece5d2",
-    "roofColour": "#4b5359",
-    "noShops": true,
-    "madeBy": "claude-opus-5-5"
-  },
-  {
     "name": "Cité universitaire: la Fondation suisse",
     "procedural": "fondationSuisse",
     "osm": [
       "way/32530611"
-    ],
-    "lat": 48.818152,
-    "lon": 2.342214,
-    "size": [
-      42.3,
-      24.7
     ],
     "height": 22,
     "front": 212,
@@ -256,12 +235,6 @@
     "procedural": "maisonBresil",
     "osm": [
       "way/32530537"
-    ],
-    "lat": 48.817807,
-    "lon": 2.343628,
-    "size": [
-      58,
-      18
     ],
     "height": 28,
     "front": 117,
@@ -925,6 +898,24 @@
     "front": 180,
     "kind": "plaza",
     "stone": false,
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "UNESCO: the Garden of Peace (Noguchi)",
+    "procedural": "unescoJardin",
+    "osm": [
+      "way/1565494805"
+    ],
+    "lat": 48.849331,
+    "lon": 2.306971,
+    "size": [
+      46,
+      48
+    ],
+    "height": 19,
+    "front": 180,
+    "kind": "plaza",
+    "shadow": false,
     "madeBy": "claude-opus-5-5"
   },
   {

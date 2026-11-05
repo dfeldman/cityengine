@@ -54,6 +54,8 @@ export type StyleId =
   | 'aptclassical' | 'aptbrick' | 'aptmed' | 'aptmodern' | 'aptluxe'
   // …and the same proportions in stucco, for a label that saw render where the style paints wood (appearance research)
   | 'flatsstucco' | 'shopflatsstucco'
+  // Paris after 1945 (owner, 2026-11-04: the generic modern box had no doors and nothing on it): PostwarDress
+  | 'parismodern'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
@@ -307,7 +309,40 @@ export interface Dress {
   solid?: boolean
   /** a Haussmann front's own variations (`ParisDress`) */
   paris?: ParisDress
+  /** a Paris post-war front's (`PostwarDress`) */
+  postwar?: PostwarDress
 }
+
+/**
+ * A Paris block of 1950–2000, front by front (owner, 2026-11-04: "a generic box with evenly spaced windows and no doors or
+ * decoration at all"). What the real ones share is a few parts combined differently: set-back top storeys behind a terrace
+ * rail (the gabarit's), balconies of one kind or another, a stone plinth, a lobby door under a canopy among the shops.
+ */
+export interface PostwarDress {
+  /** storeys set back at the top, each `atticStep` m further in (buildings.ts draws them on an inset ring) */
+  attic: number
+  atticStep: number
+  /** continuous slab balconies on every upper storey; on every other one; in pairs of bays; a rail at each French window; none */
+  balconies: 'continuous' | 'alternate' | 'pairs' | 'rails' | 'none'
+  /** the end bays framed by a pier proud of the wall, full height: the 1960s front's frame */
+  frame: boolean
+  /** a canopy over the lobby door */
+  doorCanopy: boolean
+  /** the lobby door's own paint and its glass surround's */
+  door: string
+}
+
+/** how often a Paris post-war front shows each part (PostwarDress); tune here */
+export const POSTWAR_ODDS = {
+  attic: [['0', 25], ['1', 45], ['2', 30]] as [string, number][],
+  balconies: [['rails', 35], ['continuous', 20], ['alternate', 12], ['pairs', 15], ['none', 18]] as [PostwarDress['balconies'], number][],
+  frame: 0.3, doorCanopy: 0.55, belts: 0.4, fins: 0.12, canopy: 0.35, plinth: 0.7,
+  shops: [['several', 45], ['all', 15], ['one', 20], ['none', 20]] as [GroundMix['shops'], number][],
+  garage: 0.25,
+}
+/** dimensions (m) */
+export const POSTWAR_DIM = { atticStep: [1.4, 2.4], slab: 1.1, rail: 0.14, frameW: 0.45, frameD: 0.3, canopyD: 1.4 }
+const POSTWAR_DOORS = ['#2a2c2e', '#3b3f42', '#5b4a3a', '#1f2a36', '#6b6e70']
 
 /**
  * A Haussmann front, building by building (owner, 2026-10-29: "The most important improvement is to improve the facade
@@ -346,7 +381,31 @@ export interface ParisDress {
   rustic: number
   oriel: boolean
   single: number[]
+  /**
+   * From photo surveys of ordinary fronts (2026-11-04): a stone pediment over the étage noble's windows, triangular or
+   * segmental (alternating on some fronts); a keystone at every window head; a stone string course (bandeau) at the floor
+   * lines; quoins at the wall's two ends; a carved panel (allège) under the noble windows; the noble balcony in stone
+   * balusters instead of iron. All optional: absent is off.
+   */
+  pediments?: 'triangle' | 'segment' | 'alternate'
+  keystones?: boolean
+  bandeaux?: boolean
+  quoins?: boolean
+  alleges?: boolean
+  stoneNoble?: boolean
 }
+
+/** how often a Haussmann front shows each of the photo-survey parts (ParisDress), by scheme; tune here */
+export const PARIS_ODDS = {
+  pediments: { classic: 0.35, noble: 0.45, late: 0.05, rich: 0.8 },
+  keystones: { classic: 0.65, noble: 0.6, late: 0.3, rich: 0.85 },
+  bandeaux: { classic: 0.85, noble: 0.8, late: 0.65, rich: 0.95 },
+  quoins: { classic: 0.12, noble: 0.12, late: 0.05, rich: 0.35 },
+  alleges: { classic: 0.25, noble: 0.3, late: 0.05, rich: 0.6 },
+  stoneNoble: { classic: 0.08, noble: 0.15, late: 0, rich: 0.25 },
+}
+/** dimensions of those parts (m) */
+const PARIS_DIM = { pedRise: 0.42, pedOver: 0.2, pedSteps: 4, keyW: 0.22, keyH: 0.34, bandH: 0.16, bandD: 0.06, quoinW: 0.55, quoinH: 0.32, allegeH: 0.55 }
 
 export interface GroundMix {
   garages: number
@@ -456,6 +515,12 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
       rustic: weighted(r, scheme === 'late' ? [[1, 55], [0, 45]] : scheme === 'rich' ? [[2, 75], [1, 25]] : [[2, 40], [1, 45], [0, 15]]),
       oriel: scheme === 'rich' && r() < 0.55,
       single: scheme === 'rich' && noble + 2 < under ? [noble + 2] : scheme === 'classic' && noble + 1 < under && r() < 0.3 ? [noble + 1] : [],
+      pediments: r() < PARIS_ODDS.pediments[scheme] ? weighted(r, [['triangle', 25], ['segment', 50], ['alternate', 25]] as const) : undefined,
+      keystones: r() < PARIS_ODDS.keystones[scheme],
+      bandeaux: r() < PARIS_ODDS.bandeaux[scheme],
+      quoins: r() < PARIS_ODDS.quoins[scheme],
+      alleges: r() < PARIS_ODDS.alleges[scheme],
+      stoneNoble: r() < PARIS_ODDS.stoneNoble[scheme],
     }
     return { dress: { ...NO_DRESS, paris } }
   },
@@ -578,6 +643,30 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
       shops: weighted<Dress['shops']>(r, [['all', 60], ['one', 40]]),
     },
   }),
+  parismodern: (r, levels) => {
+    const attic = levels >= 5 ? Math.min(Number(weighted(r, POSTWAR_ODDS.attic)), levels - 4) : 0
+    const postwar: PostwarDress = {
+      attic,
+      atticStep: POSTWAR_DIM.atticStep[0] + r() * (POSTWAR_DIM.atticStep[1] - POSTWAR_DIM.atticStep[0]),
+      balconies: weighted(r, POSTWAR_ODDS.balconies),
+      frame: r() < POSTWAR_ODDS.frame,
+      doorCanopy: r() < POSTWAR_ODDS.doorCanopy,
+      door: pick(r, POSTWAR_DOORS),
+    }
+    const shops = weighted(r, POSTWAR_ODDS.shops)
+    const dress: Dress = {
+      ...NO_DRESS,
+      cap: 'plain',
+      belts: r() < POSTWAR_ODDS.belts,
+      fins: postwar.balconies !== 'continuous' && r() < POSTWAR_ODDS.fins,
+      canopy: shops !== 'none' && r() < POSTWAR_ODDS.canopy,
+      shops: shops === 'none' ? 'none' : 'all',
+      ground: { garages: r() < POSTWAR_ODDS.garage ? 1 : 0, shops, entrance: 'at_grade' },
+      garageTint: '#4a4c4e',
+      postwar,
+    }
+    return { dress, groundPaint: r() < POSTWAR_ODDS.plinth ? '#b3ac9f' : undefined }
+  },
   bauhaus: (r, levels) => {
     const cap = weighted<Dress['cap']>(r, [['plain', 50], ['overhang', 25], ['panel', levels <= 2 ? 25 : 8]])
     const dress: Dress = {
@@ -933,7 +1022,9 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     if (plan.hasBalconyAt(s.index) && st.balcony && !(plan.dress?.paris && shown === null)) {
       if (st.balcony.continuous) {
         features.push({
-          kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: st.balcony.depth, colour: plan.palette.accent,
+          kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: st.balcony.depth,
+          // (a stone balustrade on the étage noble of some Haussmann fronts)
+          colour: plan.dress?.paris?.stoneNoble && s.index === Math.min(...plan.dress.paris.balconies) ? plan.palette.trim : plan.palette.accent,
         })
       } else {
         for (let b = 0; b < bays; b += 2) {
@@ -1158,6 +1249,7 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
   }
   if (!street) return
   if (d.paris) dressParis(plan, d.paris, features, margin, bayW, bays)
+  if (d.postwar) dressPostwar(plan, d.postwar, d, features, len, margin, bayW, bays, street)
   const top = h + style(plan.style).cornice.height * 0.35 + d.parapet
 
   if (d.cap === 'corbel') {
@@ -1382,6 +1474,45 @@ function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin
       for (const x of [x0 - 0.1, x0 + winW + 0.1]) features.push({ kind: 'bracket', y0: s.y0 - 0.42, y1: s.y0, depth: 0.4, x0: x - 0.09, x1: x + 0.09, colour: plan.palette.trim })
     }
   }
+  const trim = plan.palette.trim
+  const noble = Math.min(...p.balconies)
+  const wallLen = margin * 2 + bays * bayW
+  for (const s of plan.storeys) {
+    if (s.kind === 'ground' || (s.index === top && plan.top === 'mansard')) continue
+    const h = s.y1 - s.y0, head = s.y1 - h * 0.13
+    // the bandeau: a flat stone band across the wall at each floor line
+    if (p.bandeaux && s.index > 1) features.push({ kind: 'cornice', y0: s.y0 - PARIS_DIM.bandH, y1: s.y0, depth: PARIS_DIM.bandD, colour: trim })
+    for (let b = 0; b < bays; b++) {
+      const x0 = margin + b * bayW + (bayW - winW) / 2, cx = x0 + winW / 2
+      const hooded = p.hoods.includes(s.index)
+      // the pediment over the noble windows: stepped courses narrowing to a point (triangle) or a flat curve (segment)
+      if (p.pediments && s.index === noble) {
+        const tri = p.pediments === 'triangle' || (p.pediments === 'alternate' && b % 2 === 0)
+        const base = head + (hooded ? (p.deep ? 0.34 : 0.2) : 0.12), n = PARIS_DIM.pedSteps, half = winW / 2 + PARIS_DIM.pedOver
+        for (let k = 0; k < n; k++) {
+          const t = (k + 1) / n, w = tri ? half * (1 - t * 0.85) : half * Math.sqrt(1 - t * t * 0.7)
+          const dy = PARIS_DIM.pedRise / n
+          features.push({ kind: 'cornice', y0: base + k * dy, y1: base + (k + 1) * dy, depth: 0.12, x0: cx - w, x1: cx + w, colour: trim })
+        }
+      } else if (p.keystones && !hooded) {
+        // the keystone (now and then a mascaron) at the window head
+        features.push({ kind: 'bracket', y0: head - 0.08, y1: head - 0.08 + PARIS_DIM.keyH, depth: 0.1, x0: cx - PARIS_DIM.keyW / 2, x1: cx + PARIS_DIM.keyW / 2, colour: trim })
+      }
+      // the allège: a carved panel in the stone under the noble window, below the balcony line
+      if (p.alleges && s.index === noble + 1 && !plan.hasBalconyAt(s.index) && !p.single.includes(s.index)) {
+        features.push({ kind: 'panel', y0: s.y0 - PARIS_DIM.allegeH - 0.05, y1: s.y0 - 0.05, depth: 0.04, x0: x0 + 0.05, x1: x0 + winW - 0.05, colour: trim })
+      }
+    }
+  }
+  // the quoins: alternating long and short blocks up the wall's two ends, above the shops
+  if (p.quoins && plan.storeys.length > 2) {
+    const y0 = plan.storeys[1].y0, y1 = plan.storeys[top].y0
+    let i = 0
+    for (let y = y0; y + PARIS_DIM.quoinH <= y1; y += PARIS_DIM.quoinH + 0.04, i++) {
+      const w = i % 2 ? PARIS_DIM.quoinW * 0.6 : PARIS_DIM.quoinW
+      for (const [a, c] of [[0, w], [wallLen - w, wallLen]]) features.push({ kind: 'pilaster', y0: y, y1: y + PARIS_DIM.quoinH, depth: 0.05, x0: a, x1: c, colour: trim })
+    }
+  }
   // the small consoles under the main cornice, every metre (every 0.7 m doubled a front's triangles for a detail a rider
   // cannot count)
   if (p.modillions) {
@@ -1447,5 +1578,50 @@ function dressVictorian(plan: FacadePlan, kind: NonNullable<Dress['victorian']>,
     const r = Math.min(1.6, len * 0.17)
     features.push({ kind: 'turret', y0: plan.storeys[1].y0, y1: h + 0.8, depth: r * 0.8, x0: len - 2 * r - 0.1, x1: len - 0.1, colour: plan.palette.wall })
     features.push({ kind: 'cornice', y0: h - 0.5, y1: h - 0.2, depth: 0.35, colour: trim })
+  }
+}
+
+/** A Paris post-war street front's parts (PostwarDress); the set-back storeys are buildings.ts's. */
+function dressPostwar(plan: FacadePlan, p: PostwarDress, d: Dress, features: Feature[], len: number, margin: number, bayW: number,
+  bays: number, street: { pavement?: number | null }): void {
+  const trim = plan.palette.trim, wall = plan.palette.wall, iron = '#2b2d2f'
+  const g = plan.storeys[0]
+  const upper = plan.storeys.filter((s) => s.kind !== 'ground')
+  const win = plan.window.widthFrac * bayW
+  for (const s of upper) {
+    const k = s.index
+    if (p.balconies === 'continuous' || (p.balconies === 'alternate' && k % 2 === 0)) {
+      features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1, depth: POSTWAR_DIM.slab, x0: margin * 0.5, x1: len - margin * 0.5, colour: iron })
+    } else if (p.balconies === 'pairs') {
+      for (let b = (k % 2); b + 2 <= bays; b += 3) {
+        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1, depth: POSTWAR_DIM.slab * 0.9, x0: margin + b * bayW + 0.15, x1: margin + (b + 2) * bayW - 0.15, colour: iron })
+      }
+    } else if (p.balconies === 'rails') {
+      // the garde-corps across each French window, a hand's breadth proud
+      for (let b = 0; b < bays; b++) {
+        const c = margin + (b + 0.5) * bayW
+        features.push({ kind: 'balcony', y0: s.y0 + 0.05, y1: s.y0 + 1, depth: POSTWAR_DIM.rail, x0: c - win / 2 - 0.05, x1: c + win / 2 + 0.05, colour: iron })
+      }
+    }
+  }
+  if (p.frame && bays >= 3) {
+    for (const x of [margin, len - margin]) {
+      features.push({ kind: 'pilaster', y0: g.kind === 'ground' ? g.y1 - 0.3 : 0, y1: plan.height, depth: POSTWAR_DIM.frameD,
+        x0: x - POSTWAR_DIM.frameW / 2, x1: x + POSTWAR_DIM.frameW / 2, colour: trim })
+    }
+    features.push({ kind: 'cornice', y0: plan.height - 0.35, y1: plan.height + 0.05, depth: POSTWAR_DIM.frameD, colour: trim })
+  }
+  // the lobby door: a canopy over it, and its surround in the trim
+  if (g.kind === 'ground' && d.ground && bays > 0) {
+    const at = groundBays(bays, d.ground).indexOf('door')
+    if (at >= 0) {
+      const x0 = margin + at * bayW, x1 = x0 + bayW
+      if (p.doorCanopy) {
+        const reach = Math.max(0.6, Math.min(POSTWAR_DIM.canopyD, (street.pavement ?? 9) - 0.3))
+        features.push({ kind: 'canopy', y0: g.y1 - 0.75, y1: g.y1 - 0.6, depth: reach, x0: x0 - 0.2, x1: x1 + 0.2, colour: p.door })
+      }
+      features.push({ kind: 'pilaster', y0: 0, y1: g.y1 - 0.6, depth: 0.08, x0: x0 - 0.12, x1: x0 + 0.08, colour: wall === trim ? p.door : trim })
+      features.push({ kind: 'pilaster', y0: 0, y1: g.y1 - 0.6, depth: 0.08, x0: x1 - 0.08, x1: x1 + 0.12, colour: wall === trim ? p.door : trim })
+    }
   }
 }

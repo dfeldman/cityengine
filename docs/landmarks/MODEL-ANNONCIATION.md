@@ -1,0 +1,7 @@
+# Temple de l'Annonciation (Passy), 19 rue Cortambert
+
+- OSM way/81792421 (48.8620, 2.2803; the brief's 48.8590 was about 300 m off). Built 1891; builder `templeAnnonciation` in `src/render/landmarks/paris/protestant.ts`; entry in `public/landmarks/paris/protestant.json` (madeBy claude-sonnet-5-5); the `parisCivic` entry for the same way was removed from `civic.json`.
+- Refs: Commons P1040908/P1040909 (`refs/annonciation/`). Visible from the street, so the pre-check passed.
+- Model: gabled nave (11.7 m wide, ridge 13.4) with a meulière front framed in cream ashlar (pilasters, two bands, stepped rake, date plaque), rose window, round-arched porch with barrel vault, two free columns, hood gable, steps, fanlit door, belfry with cross on the ridge; lower flat-slate wings from the OSM plan; round-arched windows on the long walls. All sizes are `AN_*` constants.
+- Shot: `refs/annonciation/shot-top.png` (CITY=paris-centre, target -3772,157, bearing 304, dist 1.5, HEIGHT=60 PITCH=70, lowres). Shows plan, roofs and belfry only.
+- Risks: the street front was NOT seen in-city; the opposite block hides it from every angle tried (bearings 55-345, heights 14-45). Front detail is checked against the photos only by construction. Gable width, porch position (u=5.85 from the south end) come from OSM jogs; heights are estimated from perspective photos. Side and rear walls are guesses (no photos). Nave depth 26 m is inferred from the OSM plan.

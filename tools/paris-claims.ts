@@ -28,7 +28,7 @@ const inside = (r: Ring, x: number, z: number): boolean => {
 // every building's outline in OSM, by ref: the bake has dropped the outlines its parts supersede
 const dir = mkdtempSync(resolve(tmpdir(), 'claims-'))
 const box = resolve(dir, 'box.pbf'), bld = resolve(dir, 'b.pbf')
-execFileSync('osmium', ['extract', '-b', '2.20,48.80,2.43,48.92', '--overwrite', '-o', box, resolve(ROOT, 'tools/cache/osm/ile-de-france-latest.osm.pbf')], { stdio: 'ignore' })
+execFileSync('osmium', ['extract', '-b', '2.05,48.77,2.47,48.92', '--overwrite', '-o', box, resolve(ROOT, 'tools/cache/osm/ile-de-france-latest.osm.pbf')], { stdio: 'ignore' })
 execFileSync('osmium', ['tags-filter', box, 'a/building', 'a/building:part', 'a/man_made', 'a/amenity', 'a/tourism', 'a/historic', '--overwrite', '-o', bld], { stdio: 'ignore' })
 const seq = resolve(dir, 'b.geojsonseq')
 execFileSync('osmium', ['export', bld, '-f', 'geojsonseq', '--add-unique-id=type_id', '--overwrite', '-o', seq], { stdio: 'ignore' })
@@ -47,7 +47,7 @@ for await (const l of createInterface({ input: createReadStream(seq) })) {
 rmSync(dir, { recursive: true, force: true })
 
 interface Entry { name?: string; osm?: string | string[]; procedural?: string; restyle?: string }
-const FILES = ['stations', 'palaces', 'monuments', 'venues', 'museums', 'rivegauche', 'minor', 'batch1', 'bugs', 'batch2', 'batch3', 'batch4', 'batch5', 'batch7', 'batch8', 'batch9', 'batch10', 'batch11', 'batch12', 'extras', 'civic', 'recipes']
+const FILES = ['stations', 'palaces', 'monuments', 'venues', 'museums', 'rivegauche', 'minor', 'batch1', 'bugs', 'batch2', 'batch3', 'batch4', 'batch5', 'batch7', 'defense2', 'batch8', 'batch9', 'batch10', 'batch11', 'batch12', 'commercial1', 'extras', 'civic', 'recipes', 'worship']
 const files = new Map(FILES.map((f) => [f, JSON.parse(readFileSync(resolve(ROOT, `public/landmarks/paris/${f}.json`), 'utf8')) as Entry[]]))
 const top = JSON.parse(readFileSync(resolve(ROOT, 'public/landmarks/paris.json'), 'utf8')) as Entry[]
 const refsOf = (e: Entry): string[] => (e.osm === undefined ? [] : Array.isArray(e.osm) ? e.osm : [e.osm])

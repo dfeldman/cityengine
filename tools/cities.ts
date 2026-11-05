@@ -13,6 +13,7 @@
 import type { StyleId } from '../src/city/facade.ts'
 import type { RingFormThresholds } from '../src/city/ring-forms.ts'
 import { VERSAILLES_REGIONS } from './regions/versailles.ts'
+import { PARIS_EXTRA_REGIONS } from './regions/paris-extra.ts'
 
 /**
  * A DETAIL REGION beyond the detail box (docs/VERSAILLES.md): modelled like the city inside its rings, or along its
@@ -87,7 +88,7 @@ export interface CitySpec {
    * plane cannot reach them, so they are sky furniture, not scene meshes. `procedural` names a builder in
    * src/render/landmarks/procedural.ts.
    */
-  skyline?: { name: string; lat: number; lon: number; procedural: string; heightM: number; bearing?: number; boost?: number }[]
+  skyline?: { name: string; lat: number; lon: number; procedural: string; heightM: number; bearing?: number; boost?: number; hx?: number; hz?: number }[]
   /**
    * Overrides for the footprint-form scan that flags buildings the slot kit cannot express
    * (`src/city/ring-forms.ts`, run by the bake, LADDER §3c treatment 4+). Absent means the defaults, which
@@ -148,6 +149,27 @@ export const CITIES: CitySpec[] = [
       { name: 'Sacré-Cœur', lat: 48.8867, lon: 2.3431, procedural: 'sacreCoeur', heightM: 83 },
       { name: 'Panthéon', lat: 48.8462, lon: 2.3464, procedural: 'pantheon', heightM: 83 },
       { name: 'Notre-Dame', lat: 48.8530, lon: 2.3499, procedural: 'notreDame', heightM: 96 },
+      /*
+       * The far landmarks a rider should see from anywhere in the box (owner, 2026-11-05: "from the Grande Arche you
+       * are supposed to be able to see the Arc de Triomphe"). Names are the manifests' own, so each stand-in gives way to
+       * its real model within 1.3 km (render/landmarks.ts `update`). The La Défense towers are the 150 m+ ones with a
+       * bespoke builder (Tour Coupole has none yet); hx/hz/bearing are each OSM outline's minimum-area rectangle
+       * (local pbf, 2026-11-05), bearing clockwise from north along the hz axis.
+       */
+      { name: 'Arc de Triomphe', lat: 48.87378, lon: 2.29504, procedural: 'arcDeTriomphe', heightM: 50 },
+      { name: 'Dôme des Invalides', lat: 48.854991, lon: 2.312527, procedural: 'invalidesDome', heightM: 85.6 },
+      { name: 'Tribunal de Paris', lat: 48.894848, lon: 2.309563, procedural: 'tribunal', heightM: 163 },
+      { name: 'Tour Triangle', lat: 48.83165, lon: 2.28588, procedural: 'tourTriangle', heightM: 180, bearing: 46, hx: 21, hz: 107 },
+      { name: 'Grande Arche de la Défense', lat: 48.892564, lon: 2.235875, procedural: 'grandeArche', heightM: 110 },
+      { name: 'Tour First', lat: 48.888815, lon: 2.251592, procedural: 'tourFirst', heightM: 231 },
+      { name: 'La Défense: Hekla', lat: 48.88903, lon: 2.23507, procedural: 'hekla', heightM: 221, bearing: 12, hx: 28, hz: 38 },
+      { name: 'La Défense: Tour Majunga', lat: 48.88886, lon: 2.24360, procedural: 'majunga', heightM: 186, bearing: 34, hx: 45, hz: 18 },
+      { name: 'La Défense: Tour Orano (Areva, Fiat)', lat: 48.89249, lon: 2.24190, procedural: 'areva', heightM: 184, bearing: 26, hx: 25, hz: 33 },
+      { name: 'La Défense: Tour Granite', lat: 48.89167, lon: 2.22979, procedural: 'granite', heightM: 184, bearing: 62, hx: 27, hz: 50 },
+      { name: 'La Défense: Tour CB21', lat: 48.88890, lon: 2.24986, procedural: 'defenseGreen', heightM: 179, bearing: 26, hx: 24, hz: 24 },
+      { name: 'La Défense: Tour D2', lat: 48.89050, lon: 2.24796, procedural: 'tourD2', heightM: 175, bearing: 21, hx: 31, hz: 13 },
+      { name: 'La Défense: Tour Saint-Gobain', lat: 48.88972, lon: 2.24929, procedural: 'saintGobain', heightM: 168, bearing: 116, hx: 28, hz: 26 },
+      { name: 'La Défense: Tour Carpe Diem', lat: 48.89145, lon: 2.24563, procedural: 'carpeDiem', heightM: 166, bearing: 26, hx: 18, hz: 31 },
     ],
     name: 'Central Paris',
     centre: { lat: 48.8605, lon: 2.3320 },
@@ -168,9 +190,10 @@ export const CITIES: CitySpec[] = [
      * the box of before, unchanged to the metre so every cached fetch of central Paris still answers — and the regions
      * along the ride (docs/VERSAILLES.md). Was box: { west: 8355, east: 5715, north: 4175, south: 4510 }.
      */
-    box: { west: 19000, east: 5715, north: 4175, south: 7900 },
+    // east to the Bois de Vincennes (owner, 2026-11-04: a detail region, not the suburbs); was east: 5715
+    box: { west: 19000, east: 10300, north: 4175, south: 7900 },
     detail: { west: 8355, east: 5715, north: 4175, south: 4510 },
-    regions: VERSAILLES_REGIONS,
+    regions: [...VERSAILLES_REGIONS, ...PARIS_EXTRA_REGIONS],
     wide: false,
     ground: 'grass',
     styles: [
