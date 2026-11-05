@@ -1382,5 +1382,138 @@
     ],
     "height": 20,
     "note": "Placed on the avenue end of OSM way 926307484 (nearest building to the address node 75, osmium, 2026-11-04), −z bearing 25 toward the Champs-Élysées. Pale-green front, gold lettering, green awnings; building above generic."
+  },
+  {
+    "name": "Le Grand Trianon",
+    "procedural": "versaillesGrandTrianon",
+    "osm": [
+      "relation/12426409",
+      "relation/12426393",
+      "relation/12426395",
+      "relation/12426394"
+    ],
+    "height": 9.5,
+    "note": "Hardouin-Mansart's Trianon de marbre (1687): one storey of arched windows, pink Languedoc marble pilasters, flat roof behind a balustrade, on its OSM footprint with its courts (versailles/trianon.ts, tunables in GT).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Maison de la Reine",
+    "procedural": "hameauMaisonReine",
+    "osm": [
+      "way/74634949"
+    ],
+    "height": 10,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Maison du Billard",
+    "procedural": "hameauBillard",
+    "osm": [
+      "way/74630065"
+    ],
+    "height": 10,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Le Moulin",
+    "procedural": "hameauMoulin",
+    "osm": [
+      "way/74620096"
+    ],
+    "height": 10,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Le Réchauffoir",
+    "procedural": "hameauRechauffoir",
+    "osm": [
+      "way/63855290"
+    ],
+    "height": 7,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Boudoir",
+    "procedural": "hameauBoudoir",
+    "osm": [
+      "way/63855493"
+    ],
+    "height": 6.5,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Laiterie",
+    "procedural": "hameauLaiterie",
+    "osm": [
+      "way/74631685"
+    ],
+    "height": 7,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Colombier",
+    "procedural": "hameauColombier",
+    "osm": [
+      "way/74629213"
+    ],
+    "height": 7,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Maison du garde",
+    "procedural": "hameauGarde",
+    "osm": [
+      "way/63855322"
+    ],
+    "height": 7,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Porcherie",
+    "procedural": "hameauFerme",
+    "osm": [
+      "way/124533472"
+    ],
+    "height": 7,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Étable des moutons",
+    "procedural": "hameauFerme",
+    "osm": [
+      "way/427280138"
+    ],
+    "height": 7,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Hameau: Tour de Marlborough",
+    "procedural": "hameauMarlborough",
+    "osm": [
+      "way/74628684"
+    ],
+    "height": 14.5,
+    "note": "Drawn on its OSM footprint by versailles/trianon.ts (hameauBuilder: plaster, timber, thatch or tile; tunables in HAMEAU).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Le Grand Trianon: south wing",
+    "procedural": "versaillesGrandTrianon",
+    "osm": [
+      "relation/12426407"
+    ],
+    "height": 9.5,
+    "note": "The Grand Trianon's one-storey range to the south, drawn like the main building (versailles/trianon.ts).",
+    "madeBy": "claude-opus-5-5"
   }
 ]

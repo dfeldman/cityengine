@@ -13,6 +13,7 @@ import { BATCH5_GARDENS } from './paris-batch5.ts'
 import { BATCH6_GARDENS } from './paris-batch6.ts'
 import { VERSAILLES_GARDENS } from './versailles.ts'
 import { TRIANON_GARDENS } from './trianon.ts'
+import { HAMEAU_GARDENS } from './hameau.ts'
 import { VINCENNES_GARDENS } from './vincennes.ts'
 
 /**
@@ -62,4 +63,4 @@ const quaiBasCite = (): GardenPlan => {
   }
 }
 
-export const GARDENS: GardenPlan[] = [palaisRoyal(), quaiBasCite(), ...PALACE_GARDENS, ...PUBLIC_GARDENS, ...PARKS_GARDENS, ...BATCH2_GARDENS, ...BATCH3_GARDENS, ...BATCH4_GARDENS, ...BATCH5_GARDENS, ...BATCH6_GARDENS, ...VERSAILLES_GARDENS, ...TRIANON_GARDENS, ...VINCENNES_GARDENS]
+export const GARDENS: GardenPlan[] = [palaisRoyal(), quaiBasCite(), ...PALACE_GARDENS, ...PUBLIC_GARDENS, ...PARKS_GARDENS, ...BATCH2_GARDENS, ...BATCH3_GARDENS, ...BATCH4_GARDENS, ...BATCH5_GARDENS, ...BATCH6_GARDENS, ...VERSAILLES_GARDENS, ...TRIANON_GARDENS, ...HAMEAU_GARDENS, ...VINCENNES_GARDENS]

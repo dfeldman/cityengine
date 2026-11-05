@@ -40,6 +40,7 @@ import { olympia } from './olympia.ts'
 import { operaComique } from './opera-comique.ts'
 import { palaisRoyal } from './palais-royal.ts'
 import { versaillesChateau } from '../versailles/chateau.ts'
+import { TRIANON_BUILDERS } from '../versailles/trianon.ts'
 import { VERSAILLES_DEPENDANCES, versaillesGrandCommun, versaillesMinistres, versaillesOrangerie, versaillesReservoirs } from '../versailles/communs.ts'
 import { theatreChampsElysees } from './champs-elysees-theatre.ts'
 import { tokyoParvis } from './tokyo.ts'
@@ -107,6 +108,7 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   versaillesChateau,
   versaillesMinistres, versaillesGrandCommun, versaillesReservoirs, versaillesOrangerie,
   ...VERSAILLES_DEPENDANCES,
+  ...TRIANON_BUILDERS,
   theatreChampsElysees,
   theatreDeLaVille,
   tokyoParvis,
