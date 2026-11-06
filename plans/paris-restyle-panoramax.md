@@ -75,3 +75,6 @@ Bagnolet total: 13 of 19.
 disabled — with it on, 600 tokens went to thinking and no answer) → `src/city/paris-looks.json` → hand-looks.ts
 (MIN_CONFIDENCE 2; hand ENTRIES win). Brief: tools/paris-looks-brief.md.
 Trial, Olympiades/13e 10 tallest: 9 applied (7 conf 3), 1 hidden by trees. Total usage 10.7k in + 6.2k cached + 1.6k out.
+City-wide run (box 2.218,48.812,2.418,48.905): 865 targets (76 ≥50 m), 170 with no photos, 685 labelled:
+141 conf 3, 331 conf 2, 213 conf 1 → 472 applied. Usage 710k in + 465k cached + 111k out.
+61 came back stone: hand-looks keeps the bake's style for stone/French-window fronts and only recolours them.

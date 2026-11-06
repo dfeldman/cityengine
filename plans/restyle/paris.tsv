@@ -1,0 +1,866 @@
+cluster	way	height	latlon	street	name	why
+m1_m11	way/78470434	40	48.83070,2.34301	Boulevard Auguste Blanqui		40 m
+m1_m11	way/78470618	40	48.83053,2.34364	Boulevard Auguste Blanqui		40 m
+m1_m11	way/78470959	40	48.82980,2.34642	Boulevard Auguste Blanqui		40 m
+m1_m13	way/78493043	37	48.82558,2.34429	Rue de Tolbiac		37 m
+m1_m15	way/79804158	47	48.81984,2.34337	Boulevard Jourdan		47 m
+m1_m15	way/79804936	0	48.82000,2.34328			untagged, in cluster
+m1_8	relation/1086823	9	48.88201,2.34319	Boulevard Marguerite de Rochechouart	Collège et Lycée Jacques Decour	1977
+m10_m10	way/80152253	43	48.83346,2.30816	Rue de Vouillé		43 m
+m10_m10	way/80152349	40	48.83386,2.30734	Rue de Vouillé		40 m
+m10_m10	way/1027105265	28	48.83405,2.30916	Rue de Vouillé		2019
+m10_m10	way/80152200	0	48.83376,2.30752			untagged, in cluster
+m10_m13	way/83791531	56	48.82351,2.30761	Boulevard Adolphe Pinard		56 m
+m10_m9	way/80158482	22	48.83431,2.30714	Rue de Vouillé		1999
+m10_m9	way/80158404	0	48.83476,2.30676			untagged, in cluster
+m10_10	way/84328750	37	48.88734,2.30733	Boulevard Pereire		37 m
+m10_10	way/84322164	0	48.88739,2.30801			untagged, in cluster
+m10_10	relation/1261317	0	48.88695,2.30763			untagged, in cluster
+m10_14	way/74475854	25	48.89858,2.30965	Rue du 8 Mai 1945	Link It	2022
+m10_14	way/74470403	0	48.89864,2.30858			untagged, in cluster
+m10_14	way/74475203	0	48.89819,2.30967			untagged, in cluster
+m10_14	way/904149094	0	48.89823,2.30906			untagged, in cluster
+m10_15	way/74468327	47	48.90004,2.30946	Rue Martre		47 m
+m10_15	way/849796808	28	48.89889,2.30925	Rue Martre	Link It	2022
+m10_4	way/69073789	28	48.87022,2.30780	Avenue des Champs-Élysées		modern
+m10_4	way/69073809	0	48.87133,2.30913	Avenue Franklin Delano Roosevelt		1962
+m10_4	way/69073795	0	48.87110,2.30965			untagged, in cluster
+m10_4	relation/1084502	0	48.87093,2.30925			untagged, in cluster
+m10_4	relation/1084501	0	48.87163,2.30945			untagged, in cluster
+m10_4	relation/1084505	0	48.87167,2.30966			untagged, in cluster
+m10_4	way/69073909	0	48.87050,2.30814			untagged, in cluster
+m10_4	way/69073921	0	48.87031,2.30854			untagged, in cluster
+m10_4	way/69103159	0	48.87063,2.30731			untagged, in cluster
+m10_6	way/68831226	0	48.87464,2.30912	Boulevard Haussmann		1990
+m10_6	way/68805506	0	48.87472,2.30973			untagged, in cluster
+m11_m12	way/80143355	40	48.82783,2.30285	Boulevard Lefebvre		40 m
+m11_m12	way/80143357	40	48.82811,2.30241	Boulevard Lefebvre		40 m
+m11_m2	way/69074680	19	48.85535,2.30200	Avenue Émile Deschanel		1971
+m11_m2	way/69074690	0	48.85519,2.30233			untagged, in cluster
+m11_m5	way/54117390	43	48.84628,2.30308	Boulevard Garibaldi		43 m
+m11_m9	way/80152048	43	48.83454,2.30362	Rue de Vouillé		43 m
+m11_m9	way/80151946	40	48.83487,2.30379	Rue de Vouillé		40 m
+m11_m9	way/80152043	40	48.83456,2.30453	Rue de Vouillé		40 m
+m11_m9	way/80152237	40	48.83512,2.30298	Rue de Vouillé		40 m
+m11_m9	relation/1211728	40	48.83612,2.30265	Rue de la Convention		40 m
+m11_m9	way/80152063	37	48.83426,2.30503	Rue de Vouillé		37 m
+m11_m9	way/80158021	37	48.83483,2.30595	Rue de Vouillé		37 m
+m11_m9	way/80158220	0	48.83617,2.30219			untagged, in cluster
+m11_16	way/1000635400	22	48.90391,2.30257	Boulevard Jean Jaurès	Tribe	2024
+m11_16	way/74470480	0	48.90375,2.30482	Rue Martre		2021
+m11_16	way/74469323	0	48.90372,2.30277			untagged, in cluster
+m11_16	way/74475404	0	48.90365,2.30512			untagged, in cluster
+m11_16	way/74476002	0	48.90343,2.30447			untagged, in cluster
+m11_2	way/69332077	19	48.86497,2.30452	Cours Albert-Iᵉʳ		2023
+m11_2	way/69332042	0	48.86501,2.30480			untagged, in cluster
+m12_m11	relation/1211721	59	48.82924,2.29986	Boulevard Lefebvre		59 m
+m12_m11	relation/18727310	6	48.82942,2.30059	Boulevard Lefebvre		2025
+m12_m11	relation/1211696	0	48.82922,2.30105			untagged, in cluster
+m12_m12	way/80143261	40	48.82771,2.30162	Avenue de la Porte Brancion		40 m
+m12_m13	way/88058543	37	48.82457,2.29806	Rue Jean Bleuzen	Résidence Le Poitou	37 m
+m12_m4	relation/8125733	6	48.84883,2.29992	Boulevard de Grenelle		1997
+m12_m4	way/54117315	0	48.84776,2.29922	Rue Frémicourt		1998
+m12_m4	way/247586842	0	48.84782,2.29977	Rue Frémicourt		2012
+m12_m4	way/53943805	0	48.84869,2.30054			untagged, in cluster
+m12_m4	relation/540588	0	48.84924,2.29972			untagged, in cluster
+m12_m4	way/352408046	0	48.84812,2.29977			untagged, in cluster
+m12_m4	way/756389664	0	48.84809,2.29880			untagged, in cluster
+m12_m5	way/53262633	28	48.84760,2.29812	Rue Frémicourt		1990
+m12_m5	way/54117319	0	48.84729,2.29911			untagged, in cluster
+m12_m5	way/54117346	0	48.84728,2.29939			untagged, in cluster
+m12_m9	way/53727478	37	48.83679,2.29883	Rue de la Convention		37 m
+m12_m9	way/53727606	0	48.83621,2.29799	Avenue Sainte-Eugénie		2009
+m12_m9	way/53727425	0	48.83616,2.29843			untagged, in cluster
+m12_m9	way/304104266	0	48.83600,2.29867			untagged, in cluster
+m12_0	way/69045194	16	48.85986,2.29964	Avenue Franco-Russe	Poste électrique de Montessuy	1962
+m12_0	way/69045202	0	48.85978,2.29939			untagged, in cluster
+m12_12	way/64800173	50	48.89288,2.29962	Rue Victor Hugo		50 m
+m12_12	way/84329223	47	48.89087,2.29794	Boulevard de Reims		47 m
+m12_13	way/64799869	62	48.89369,2.30013	Rue Victor Hugo		62 m
+m12_13	way/64800066	0	48.89405,2.29985			untagged, in cluster
+m12_3	way/69482637	37	48.86881,2.30151	Avenue George V		37 m
+m12_4	way/69104414	3	48.87144,2.30118	Avenue George V		modern
+m12_4	way/1291792987	0	48.87103,2.30151			untagged, in cluster
+m12_5	way/70187670	0	48.87382,2.29986	Avenue de Friedland		1971
+m12_5	way/70187646	0	48.87364,2.29950			untagged, in cluster
+m12_6	way/70192454	28	48.87491,2.29943	Avenue Hoche		1961
+m12_6	way/70192478	0	48.87460,2.29887			untagged, in cluster
+m13_m11	way/53724068	40	48.83011,2.29695	Boulevard Lefebvre		40 m
+m13_m11	way/80146273	40	48.82982,2.29766	Boulevard Lefebvre		40 m
+m13_m12	way/307409527	0	48.82757,2.29400	trunk_link	Gymnase de la Plaine	1971
+m13_m14	way/88049332	50	48.82269,2.29602	Rue Jean Bleuzen		50 m
+m13_m14	way/88049271	47	48.82153,2.29485	Avenue de Verdun	Résidence des Clozeaux-Verdun	47 m
+m13_m14	way/88060264	47	48.82315,2.29498	Rue Jean Bleuzen		47 m
+m13_m14	way/88058460	43	48.82260,2.29441	Rue Jean Bleuzen		43 m
+m13_m14	way/88049285	0	48.82243,2.29580			untagged, in cluster
+m13_m14	way/88049466	0	48.82261,2.29586			untagged, in cluster
+m13_m14	way/88058167	0	48.82309,2.29441			untagged, in cluster
+m13_m2	way/54031871	37	48.85517,2.29384	Avenue de Suffren		37 m
+m13_m2	way/54031715	0	48.85305,2.29756			untagged, in cluster
+m13_m3	way/54031665	40	48.85266,2.29760	Avenue de Suffren		40 m
+m13_m3	way/54031650	0	48.85236,2.29782			untagged, in cluster
+m13_m3	way/54031895	0	48.85243,2.29696			untagged, in cluster
+m13_m5	way/53262880	19	48.84751,2.29766	Rue Frémicourt		1990
+m13_m5	way/53262383	0	48.84702,2.29747			untagged, in cluster
+m13_m7	way/105536427	43	48.84083,2.29619	Rue Lecourbe		43 m
+m13_m7	way/105537057	43	48.84068,2.29728	Rue Lecourbe		43 m
+m13_m7	way/52301868	25	48.84016,2.29421	Rue Lecourbe		concrete
+m13_m7	way/105535465	0	48.84127,2.29611			untagged, in cluster
+m13_m7	way/105535502	0	48.84032,2.29689			untagged, in cluster
+m13_m7	way/105535824	0	48.84102,2.29627			untagged, in cluster
+m13_m7	way/105536813	0	48.84068,2.29696			untagged, in cluster
+m13_m7	way/1215428675	0	48.84053,2.29635			untagged, in cluster
+m13_m8	way/53727411	37	48.83710,2.29471	Rue de Vaugirard		37 m
+m13_m8	way/1111835968	22	48.83809,2.29683	Rue de Vaugirard		2022
+m13_m8	way/53727215	0	48.83688,2.29629	Rue de Vaugirard		1978
+m13_m8	way/53727164	0	48.83707,2.29564			untagged, in cluster
+m13_m8	way/53727227	0	48.83693,2.29648			untagged, in cluster
+m13_m9	way/53727367	0	48.83650,2.29699	Rue de la Convention		1961
+m13_11	way/84331867	47	48.88950,2.29534	Boulevard Périphérique Extérieur		47 m
+m13_11	way/84322431	40	48.89015,2.29677	Boulevard Périphérique Extérieur		40 m
+m13_11	way/84332884	40	48.89008,2.29726	Boulevard Périphérique Extérieur		40 m
+m13_13	way/64800289	22	48.89559,2.29610	Rue Victor Hugo		concrete
+m13_13	way/64799687	0	48.89584,2.29686			untagged, in cluster
+m13_13	relation/2466579	0	48.89595,2.29612			untagged, in cluster
+m13_13	way/64800369	0	48.89522,2.29629			untagged, in cluster
+m13_14	way/64799831	19	48.89620,2.29646	Rue Victor Hugo		concrete
+m13_14	way/64790786	0	48.89853,2.29385			untagged, in cluster
+m13_14	relation/1551219	0	48.89634,2.29658			untagged, in cluster
+m13_5	way/226413508	50	48.87375,2.29500	Place Charles de Gaulle	Arc de Triomphe	50 m
+m13_5	way/680443640	0	48.87429,2.29476	Avenue de la Grande Armée	Charles de Gaulle — Étoile	1970
+m14_m13	way/87157428	50	48.82598,2.29268	Avenue Pasteur		50 m
+m14_m15	way/88037174	15	48.81881,2.29217	Avenue Victor et Hélène Basch		concrete
+m14_m15	way/371904749	0	48.81835,2.29200			untagged, in cluster
+m14_m17	relation/21640986	9	48.81340,2.29072	Boulevard de Stalingrad		2026
+m14_m3	way/54031711	43	48.85245,2.29013	Boulevard de Grenelle		43 m
+m14_m5	way/53262881	25	48.84552,2.29250	Avenue Delecourt		1996
+m14_m5	way/53262831	0	48.84531,2.29315			untagged, in cluster
+m14_m8	way/79511705	22	48.83859,2.29282	Rue de la Convention		1992
+m14_m8	relation/538901	0	48.83890,2.29337			untagged, in cluster
+m14_14	way/64790454	22	48.89822,2.29330	Rue Victor Hugo		2004
+m14_14	way/64790376	0	48.89838,2.29273			untagged, in cluster
+m14_17	way/1007712113	0	48.90510,2.29376	Quai de Clichy - Charles de Gaulle	Centre sportif et culturel Camille Muffat	2024
+m14_4	way/79394541	36	48.87069,2.29339	Avenue Kléber		36 m
+m14_4	way/79394573	0	48.86987,2.29295	Avenue Kléber		1999
+m14_4	way/79394550	0	48.86949,2.29277			untagged, in cluster
+m14_4	way/79394554	0	48.87017,2.29325			untagged, in cluster
+m14_6	way/80374912	0	48.87459,2.29020	Avenue de la Grande Armée		1984
+m14_6	relation/1206953	0	48.87463,2.29082			untagged, in cluster
+m15_m10	way/53671325	43	48.83375,2.28744	Boulevard Victor		43 m
+m15_m14	way/1015055938	56	48.82141,2.28868	Rue Antoine Fratacci		56 m
+m15_m14	way/87376808	0	48.82154,2.28839			untagged, in cluster
+m15_m2	way/54031892	53	48.85366,2.28904	Boulevard de Grenelle		53 m
+m15_m2	relation/540848	53	48.85314,2.28888	Boulevard de Grenelle	Groupe Le Parisien Les Echos	53 m
+m15_m3	way/53482344	43	48.85228,2.28658	Quai de Grenelle	Tour Mercure	43 m; 1973
+m15_m3	way/54031901	0	48.85286,2.28957			untagged, in cluster
+m15_m8	way/300864793	40	48.83729,2.28619	Rue Lecourbe		40 m
+m15_2	way/80858415	19	48.86615,2.28593	Avenue Raymond Poincaré		1996
+m15_2	way/79870881	0	48.86600,2.28657			untagged, in cluster
+m15_3	way/79872354	0	48.86708,2.28632	Avenue Raymond Poincaré		2006
+m15_3	way/79872402	0	48.86670,2.28674			untagged, in cluster
+m15_3	way/80301507	0	48.86694,2.28559			untagged, in cluster
+m15_4	way/80300376	25	48.87060,2.28635	Avenue Victor Hugo		1998
+m15_4	relation/1206057	0	48.87098,2.28578			untagged, in cluster
+m15_7	relation/1261074	0	48.87845,2.28665	Boulevard Pereire		1973
+m15_9	way/84328102	0	48.88369,2.28938	Boulevard Gouvion-Saint-Cyr		1977
+m16_m1	relation/1254815	37	48.85604,2.28187	Avenue Marthe Bibesco		37 m
+m16_m1	relation/1253942	37	48.85663,2.28271	Avenue Marthe Bibesco		37 m
+m16_m1	way/83862920	25	48.85646,2.28460	Avenue René Boylesve	Résidence les Thermes de Passy	2005
+m16_m1	way/83862922	22	48.85627,2.28382	Avenue Marcel Proust		2004
+m16_m1	way/83862926	16	48.85576,2.28243	Avenue Marcel Proust		2001
+m16_m13	way/934641558	3	48.82499,2.28196	Boulevard du Lycée		2022
+m16_m14	way/96577696	10	48.82332,2.28441	Boulevard du Lycée		2022
+m16_m4	way/353535645	0	48.84827,2.28252	Quai André Citroën		glass
+m16_m8	way/298621828	56	48.83686,2.28209	Rue Lecourbe		56 m
+m16_m8	way/300074548	47	48.83901,2.28184	Avenue Félix Faure		47 m
+m16_m8	way/105535140	40	48.83836,2.28236	Avenue Félix Faure		40 m
+m16_m9	way/105535774	43	48.83675,2.28432	Rue Lecourbe		43 m
+m16_m9	way/53591867	40	48.83443,2.28466	Boulevard Victor		40 m
+m16_m9	way/105534658	37	48.83605,2.28214	Rue Lecourbe	Amirauté 15	37 m
+m16_12	way/64623806	16	48.89246,2.28437	Rue Anatole France	Parfums Givenchy	1998
+m16_12	way/64623199	0	48.89314,2.28432	Rue Anatole France		1990
+m16_12	way/64623210	0	48.89313,2.28463			untagged, in cluster
+m16_12	way/64623312	0	48.89295,2.28469			untagged, in cluster
+m16_12	way/64623623	0	48.89267,2.28384			untagged, in cluster
+m16_12	way/64623722	0	48.89211,2.28410			untagged, in cluster
+m16_12	way/64623797	0	48.89287,2.28376			untagged, in cluster
+m16_12	way/64624145	0	48.89333,2.28416			untagged, in cluster
+m16_3	way/80301491	31	48.86799,2.28528	Avenue Raymond Poincaré		1961
+m16_3	way/80301530	0	48.86804,2.28467			untagged, in cluster
+m17_m5	way/53446977	37	48.84602,2.28067	Avenue Émile Zola		37 m
+m17_m5	way/937728792	9	48.84718,2.27973	Quai André Citroën		glass
+m17_m5	way/53446989	0	48.84591,2.27988			untagged, in cluster
+m17_m7	way/53401266	40	48.84077,2.28091	Avenue Principale		40 m
+m17_m7	relation/535981	0	48.84054,2.28053			untagged, in cluster
+m17_m8	way/300074550	47	48.83858,2.28106	Avenue Félix Faure		47 m
+m17_8	way/1010340748	0	48.88194,2.27876	Avenue du Roule		2012
+m17_8	relation/1224375	0	48.88198,2.27809			untagged, in cluster
+m18_m12	relation/6217188	19	48.82863,2.27444	Rue Guynemer	Nouvel Air	glass
+m18_m12	way/418361493	0	48.82823,2.27410	Rue Guynemer	Nouvel Air	glass
+m18_m12	way/42681072	0	48.82807,2.27488			untagged, in cluster
+m18_m13	way/114924080	56	48.82434,2.27472	Avenue Jean Jaurès		56 m
+m18_m4	way/86424772	37	48.84788,2.27343	Avenue de Versailles		37 m
+m18_m4	way/86424783	0	48.84820,2.27374			untagged, in cluster
+m18_16	way/82229438	56	48.90301,2.27438	Boulevard Georges Clemenceau	Résidence Jean Mermoz	56 m
+m18_16	way/82229530	0	48.90336,2.27477			untagged, in cluster
+m19_m12	way/226315532	43	48.82849,2.27109	Boulevard des Frères Voisin	B	43 m
+m19_m12	way/226315535	43	48.82819,2.27169	Boulevard des Frères Voisin	C	43 m
+m19_m12	way/226315541	43	48.82840,2.27241	Boulevard des Frères Voisin	D	43 m
+m19_m12	way/42734653	0	48.82832,2.27292			untagged, in cluster
+m19_m3	way/84198315	25	48.85281,2.27247	Avenue du Recteur Poincaré		1996
+m19_m3	way/85220100	25	48.85033,2.27135	Avenue de l'Abbé Roussel		1961
+m19_m3	way/85220088	22	48.85034,2.27193	Avenue de l'Abbé Roussel		1989
+m19_m3	way/85220123	22	48.85043,2.27173	Avenue de l'Abbé Roussel		1963
+m19_m3	way/85220108	0	48.85038,2.27103			untagged, in cluster
+m19_m3	relation/1271214	0	48.85037,2.27260			untagged, in cluster
+m19_m4	way/85220127	25	48.85020,2.27208	Avenue de l'Abbé Roussel		1962
+m19_m4	way/85220083	19	48.85019,2.27158	Avenue de l'Abbé Roussel		1972
+m19_m5	way/86418713	28	48.84686,2.27126	Avenue Léon Heuzey		1991
+m19_m6	way/87399955	45	48.84431,2.27128	Quai Louis Blériot	Le Panoramique	45 m
+m19_15	way/82250561	25	48.90094,2.26966	Boulevard Saint-Denis		1999
+m19_15	way/82250389	0	48.90138,2.27009			untagged, in cluster
+m19_16	way/82229824	19	48.90258,2.27116	Avenue Malvesin		2012
+m19_16	way/444593180	0	48.90268,2.27170			untagged, in cluster
+m19_2	relation/1236588	0	48.86620,2.27026	Avenue du Maréchal Fayolle		1975
+m19_3	way/353950123	40	48.86678,2.27237	Boulevard Flandrin		40 m
+m19_3	way/81208030	0	48.86713,2.27329	Boulevard Flandrin		1976
+m19_3	way/81208022	0	48.86685,2.27322			untagged, in cluster
+m19_3	way/81208053	0	48.86667,2.27321			untagged, in cluster
+m2_m10	way/78407264	31	48.83192,2.34226	Boulevard Auguste Blanqui		2001
+m2_m11	way/78470609	59	48.83122,2.34164	Boulevard Auguste Blanqui		59 m
+m2_m11	way/78469972	40	48.83087,2.34239	Boulevard Auguste Blanqui		40 m
+m2_m13	relation/1211318	62	48.82425,2.34078	Avenue Reille		62 m
+m2_m13	way/118528604	37	48.82492,2.33906	Avenue Reille		37 m
+m2_m15	way/79804931	47	48.82002,2.34247	Boulevard Jourdan		47 m
+m20_m10	way/89564706	22	48.83305,2.26738	Boulevard Gallieni	Bouygues Immobilier	glass
+m20_m12	way/94743892	43	48.82745,2.26695	Boulevard Gallieni		43 m
+m20_m3	way/85316773	0	48.85111,2.26660	Avenue Mozart		2001
+m20_m3	way/85316716	0	48.85068,2.26628			untagged, in cluster
+m20_8	way/67543490	34	48.88167,2.26871	Avenue Charles de Gaulle	Le France	2000
+m21_m12	way/547046818	0	48.82782,2.26128	Quai de la Bataille de Stalingrad		2018
+m21_m12	way/105152389	0	48.82727,2.26127			untagged, in cluster
+m21_m12	way/547046815	0	48.82796,2.26156			untagged, in cluster
+m21_m2	way/85224467	37	48.85387,2.26322	Boulevard de Montmorency		37 m
+m21_m3	way/85893084	37	48.85219,2.26181	Boulevard Suchet		37 m
+m21_10	relation/1217199	0	48.88632,2.26240	Avenue Achille Peretti		2014
+m21_10	way/81233665	0	48.88613,2.26274			untagged, in cluster
+m21_10	relation/1223406	0	48.88578,2.26243			untagged, in cluster
+m21_10	relation/1223376	0	48.88607,2.26180			untagged, in cluster
+m21_15	way/82250458	25	48.89910,2.26257	Boulevard de Verdun		2001
+m21_15	way/82250367	0	48.89887,2.26319			untagged, in cluster
+m21_9	way/67543447	28	48.88321,2.26296	Avenue Charles de Gaulle		2025
+m21_9	way/81234262	0	48.88388,2.26486	Avenue Charles de Gaulle		1973
+m21_9	way/67543233	0	48.88293,2.26305			untagged, in cluster
+m21_9	way/67543455	0	48.88360,2.26258			untagged, in cluster
+m21_9	way/67543563	0	48.88343,2.26273			untagged, in cluster
+m21_9	relation/1223383	0	48.88410,2.26411			untagged, in cluster
+m21_9	way/81234634	0	48.88421,2.26460			untagged, in cluster
+m22_m12	way/547046821	0	48.82757,2.26084	Quai de la Bataille de Stalingrad		2018
+m22_m14	way/1209311534	0	48.82142,2.25864	Rue Aristide Briand		2021
+m22_m14	way/104641208	0	48.82184,2.25901			untagged, in cluster
+m22_m14	way/1110001842	0	48.82163,2.25794			untagged, in cluster
+m22_m14	way/1110001843	0	48.82136,2.25797			untagged, in cluster
+m22_m16	relation/6278245	74	48.81691,2.25969	Rue de l'Égalité	Les Épinettes;Centre commercial des Épinettes	74 m
+m22_10	way/81128712	40	48.88655,2.25736	Avenue Charles de Gaulle		40 m
+m22_12	relation/5583998	47	48.89167,2.25710	Quai du Président Paul Doumer	Workstation	47 m
+m22_13	way/375238500	62	48.89601,2.25726	Boulevard Saint-Denis	Montjoie - tour B	62 m
+m23_m10	way/74005779	25	48.83373,2.25395	Avenue Pierre Grenier		1991
+m23_m10	way/74006040	0	48.83410,2.25364			untagged, in cluster
+m23_m14	way/397477508	50	48.82076,2.25533	Rue Aristide Briand		50 m
+m23_m5	way/792571152	6	48.84685,2.25685	Avenue du Général Sarrail	Central téléphonique Murat	1976
+m23_m9	way/74005593	50	48.83450,2.25493	Avenue Pierre Grenier		50 m
+m23_m9	way/74005741	50	48.83458,2.25518	Avenue du Stade de Coubertin		50 m
+m23_12	way/82467010	50	48.89114,2.25685	Quai du Président Paul Doumer	Kauffman et Broad	50 m
+m23_12	way/82467078	0	48.89143,2.25658			untagged, in cluster
+m23_13	way/375238499	43	48.89564,2.25683	Rue de l'Hôtel de Ville	Montjoie - tour A	43 m
+m23_13	way/875612515	0	48.89609,2.25417	Rue de l'Alma	Nouvelle Halle Charras	2020
+m23_13	way/82322669	0	48.89568,2.25686			untagged, in cluster
+m23_14	way/1389195390	37	48.89706,2.25577	Rue de l'Alma		37 m
+m23_14	way/82323159	0	48.89628,2.25491			untagged, in cluster
+m23_14	way/82323193	0	48.89626,2.25458			untagged, in cluster
+m24_m10	way/74005986	25	48.83191,2.25170	Boulevard de la République		2001
+m24_m10	way/74489704	0	48.83167,2.25135			untagged, in cluster
+m24_m12	way/74333069	53	48.82792,2.24913	Cours des Longs Prés		53 m
+m24_m12	way/74493969	53	48.82687,2.24890	Cours des Longs Prés		53 m
+m24_m12	way/1044078378	0	48.82746,2.25203	Quai du Point du Jour		2021
+m24_m12	way/74489798	0	48.82770,2.25219			untagged, in cluster
+m24_m12	way/74496918	0	48.82730,2.25173			untagged, in cluster
+m24_11	way/375240430	47	48.88808,2.25283	D 7		47 m
+m24_13	way/82322709	47	48.89449,2.24875	Place Charras		47 m
+m24_13	relation/5584008	47	48.89566,2.25146	Rue Baudin		47 m
+m24_13	way/82323129	43	48.89482,2.24886	Place Charras		43 m
+m24_9	way/68852608	40	48.88508,2.25013	Quai de Dion Bouton		40 m
+m24_9	way/729340305	37	48.88445,2.24938	Boulevard Alexandre Soljenitsyne		37 m
+m25_m10	relation/1019302	19	48.83393,2.24719	Avenue Édouard Vaillant	Le Quintet	1991
+m25_m12	way/74493714	50	48.82627,2.24859	Avenue Pierre Grenier		50 m
+m25_m12	way/74493888	22	48.82765,2.24662	Boulevard Jean Jaurès		1998
+m25_m12	relation/1147403	0	48.82609,2.24754			untagged, in cluster
+m25_m13	way/74493884	65	48.82598,2.24823	Boulevard Jean Jaurès		65 m
+m25_m13	way/74493484	47	48.82516,2.24741	Quai de Stalingrad		47 m
+m25_m13	way/74493743	0	48.82516,2.24664			untagged, in cluster
+m25_m14	way/89706462	16	48.82273,2.24846	Avenue du Bas-Meudon		1998
+m25_m7	way/64326477	0	48.83968,2.24552	Route de la Reine		1996
+m25_m7	way/64326472	0	48.83955,2.24579			untagged, in cluster
+m25_m7	way/360710020	0	48.83982,2.24488			untagged, in cluster
+m25_11	way/82468233	21	48.88953,2.24641	N 192	Résidence Vision 80	1973
+m25_12	way/82486290	35	48.89313,2.24535	Avenue Gambetta	Ellipse	35 m
+m25_15	way/82566909	40	48.89951,2.24627	Avenue Marceau		40 m
+m25_15	way/251202738	37	48.89916,2.24546	Avenue Marceau		37 m
+m25_8	way/68850237	47	48.88110,2.24499	Quai de Dion Bouton		47 m
+m25_8	way/68852682	47	48.88127,2.24523	Quai de Dion Bouton	Bolloré	47 m
+m25_8	way/68853470	0	48.88138,2.24510			untagged, in cluster
+m26_m10	way/63566587	22	48.83312,2.24100	Avenue du Général Leclerc		1964
+m26_m9	way/63072157	25	48.83496,2.24361	Boulevard Jean Jaurès		1993
+m27_m10	way/63566597	19	48.83300,2.24054	Avenue du Général Leclerc	MGEN	2002
+m27_m10	way/74145441	19	48.83153,2.23882	Avenue du Général Leclerc		2008
+m27_m10	way/1001027789	0	48.83198,2.23910			untagged, in cluster
+m27_m13	way/287679337	31	48.82598,2.23903	Avenue Émile Zola		metal
+m27_m6	way/68884427	37	48.84401,2.23844	Boulevard Jean Jaurès		37 m
+m27_m8	way/66041457	19	48.83909,2.24014	Boulevard Jean Jaurès		1998
+m27_14	way/883977522	43	48.89810,2.23958	Boulevard de la Mission Marchand	Tour Highland	43 m
+m27_14	way/82486230	36	48.89657,2.23852	Avenue de l'Arche	Le Sunside	36 m
+m27_14	way/161244180	36	48.89718,2.23955	Boulevard de la Mission Marchand	Tour Adamas	36 m
+m27_14	way/82556696	0	48.89811,2.23924			untagged, in cluster
+m27_14	way/82556770	0	48.89867,2.23786			untagged, in cluster
+m27_15	way/82557157	40	48.90016,2.23811	Avenue de l'Arche		40 m
+m27_15	way/82556820	37	48.89899,2.23725	Avenue Puvis de Chavannes		37 m
+m27_15	way/82556841	0	48.89932,2.23756			untagged, in cluster
+m27_15	way/82556938	0	48.89964,2.23700			untagged, in cluster
+m27_15	way/82557093	0	48.89978,2.23774			untagged, in cluster
+m28_m10	way/73371548	40	48.83367,2.23450	Avenue du Maréchal Juin	Résidence Boulogne Carnot	40 m
+m28_m10	way/109104220	31	48.83247,2.23414	Rue de Silly		1992
+m28_m11	way/74145463	25	48.83124,2.23490	Avenue du Général Leclerc		1994
+m28_m12	way/83653081	88	48.82800,2.23381	Cours de l'Île Seguin	Tour Horizons	88 m
+m28_m17	way/413274663	0	48.81333,2.23613	Boulevard des Nations Unies		2019
+m28_m4	way/72055986	0	48.84780,2.23550	Cours Béranger		1996
+m28_m4	way/72055914	0	48.84818,2.23568			untagged, in cluster
+m28_m7	way/72678766	40	48.84177,2.23243	Rue de Paris		40 m
+m28_m7	way/72678764	28	48.84208,2.23333	Rue de Paris		1988
+m28_10	way/1361938169	37	48.88799,2.23304	Avenue du Général de Gaulle		37 m
+m28_14	way/82557203	37	48.89876,2.23601	Avenue Puvis de Chavannes		37 m
+m28_15	way/82556692	40	48.89947,2.23637	Avenue Puvis de Chavannes	Le Phare de l'Arche	40 m
+m28_15	way/82556861	0	48.89899,2.23617			untagged, in cluster
+m28_15	way/82557102	0	48.89935,2.23576			untagged, in cluster
+m29_m10	way/650231486	43	48.83312,2.23086	Avenue du Maréchal Juin		43 m
+m29_m12	relation/14062123	0	48.82708,2.23214	Quai Georges Gorse	Métal 57	2022
+m29_m6	way/72230640	37	48.84277,2.23178	Avenue Jean Baptiste Clément	La Résidence Jean-Baptiste Clément	37 m
+m29_m7	way/72676968	50	48.84162,2.23160	Rue de Paris		50 m
+m29_m7	way/72676937	43	48.84193,2.23135	Rue de Silly		43 m
+m29_10	way/68853378	56	48.88759,2.22852	Avenue Pablo Picasso		56 m
+m29_10	way/68849603	47	48.88643,2.23160	Avenue du Général de Gaulle		47 m
+m29_10	way/68852099	0	48.88605,2.23199			untagged, in cluster
+m29_11	way/67865897	50	48.88928,2.22895	Avenue Pablo Picasso		50 m; 1972
+m3_14	way/1216753632	31	48.89755,2.33785	Boulevard Ney		2023
+m3_14	way/1216753633	0	48.89747,2.33831	Boulevard Ney		2023
+m3_14	way/75383481	0	48.89718,2.33876			untagged, in cluster
+m3_14	way/381317025	0	48.89718,2.33732			untagged, in cluster
+m30_m10	way/73206107	47	48.83295,2.22768	Quai Alphonse Le Gallo		47 m
+m30_m10	way/1008230327	40	48.83338,2.22744	Quai Alphonse Le Gallo		40 m
+m30_m14	way/415541091	12	48.82291,2.22803	Avenue Brimborion		2016
+m30_10	way/170823628	62	48.88798,2.22769	Avenue Pablo Picasso		62 m; concrete
+m30_11	way/67865413	33	48.88874,2.22634	Avenue Pablo Picasso		1972
+m30_11	way/67865696	33	48.88873,2.22510	Avenue Pablo Picasso		1972
+m30_11	way/67865946	33	48.88866,2.22585	Avenue Pablo Picasso		1972
+m30_12	way/637810233	44	48.89241,2.22715	Boulevard de Pesaro		44 m
+m30_13	way/137355143	35	48.89572,2.22709	Boulevard Aimé Césaire		35 m; 2011
+m30_13	way/67855428	32	48.89609,2.22593	Boulevard des Bouvets		2006
+m30_13	way/137355139	31	48.89445,2.22671	Boulevard de Pesaro		2011
+m30_13	way/908919157	31	48.89347,2.22640	Boulevard de Pesaro		2021
+m30_13	way/67855339	28	48.89487,2.22566	Boulevard de Pesaro	MB15	1986
+m30_13	way/337236545	28	48.89467,2.22639	Boulevard de Pesaro	Le 3 Fontanot	2015
+m30_14	way/67854731	32	48.89651,2.22451	Boulevard des Bouvets		2006
+m30_14	way/360155565	28	48.89683,2.22518	Boulevard des Bouvets	Edenn	2025
+m30_14	way/67855248	0	48.89707,2.22442	Boulevard de la Défense		2006
+m31_10	way/423414431	16	48.88536,2.22017	Avenue Georges Clemenceau		2016
+m31_11	way/304921831	56	48.88807,2.22363	Avenue Pablo Picasso		56 m
+m31_13	way/68254445	6	48.89564,2.22309	Boulevard de Pesaro	Carillon	1991
+m31_14	way/50861098	36	48.89784,2.22029	Boulevard des Bouvets	Les Champs de l'Arche	36 m
+m31_14	way/67854806	32	48.89694,2.22318	Boulevard des Bouvets	AXA	2006
+m31_14	way/137355145	28	48.89732,2.22186	Boulevard des Bouvets		2011
+m31_3	way/70966660	40	48.86895,2.22350	Avenue du Général Charles de Gaulle		40 m
+m31_3	way/70964715	0	48.86905,2.22316			untagged, in cluster
+m31_4	way/70963249	40	48.86927,2.22327	Avenue du Général Charles de Gaulle		40 m
+m31_4	way/70964777	0	48.86921,2.22360			untagged, in cluster
+m32_m17	way/146282131	0	48.81449,2.21868	Route du Pavé des Gardes	Cité artisanale des Bruyères	1965
+m32_10	way/75179653	19	48.88618,2.21874	Avenue Georges Clemenceau	Le Tivoli	1993
+m32_14	relation/3454121	30	48.89860,2.21940	Avenue François Arago	GRDF - CCI - EPADESA	2011
+m32_14	way/68254430	28	48.89705,2.21874	Boulevard de Pesaro		2003
+m32_14	way/150276916	16	48.89856,2.21770	Place Nelson Mandela	Résidence Pesaro	2011
+m32_14	way/68254443	0	48.89712,2.21857	Boulevard de Pesaro		2003
+m4_m13	way/79804736	0	48.82383,2.33401	Avenue Reille	Villa Diana	2008
+m4_m13	way/79805139	0	48.82342,2.33415			untagged, in cluster
+m4_m15	way/620158818	0	48.82053,2.33370	Avenue David Weill	Usine de traitement UV de la Porte d'Arcueil	2017
+m4_m15	way/260177841	0	48.82026,2.33354			untagged, in cluster
+m4_m16	way/83236185	37	48.81744,2.33179	Rue Barbès		37 m
+m4_14	way/176708015	40	48.89746,2.33281	Boulevard Ney		40 m
+m4_14	way/176708051	0	48.89704,2.33320			untagged, in cluster
+m4_4	way/54667456	70	48.87183,2.33182	Rue Halévy	Opéra Garnier	70 m
+m5_m10	way/1264018183	0	48.83396,2.33045	Place Denfert-Rochereau	La Maison 14	2014
+m5_m13	way/68754132	43	48.82388,2.32667	Avenue du Général Leclerc		43 m
+m5_m13	way/68754158	0	48.82355,2.32671			untagged, in cluster
+m5_m14	way/68754143	40	48.82307,2.32754	Boulevard Jourdan		40 m
+m5_m14	way/68754166	0	48.82329,2.32720			untagged, in cluster
+m5_m15	way/954179938	28	48.81953,2.32997	Boulevard Périphérique Intérieur	Maison des étudiants de la francophonie	2021
+m5_m16	way/83234310	19	48.81685,2.32662	Boulevard du Général de Gaulle	Olympe	2020
+m5_m17	way/62643310	25	48.81279,2.32930	Avenue du Président Nelson Mandela	Orange France	glass
+m5_m18	way/62642922	25	48.81139,2.32794	Avenue du Président Nelson Mandela	Orange France	glass
+m5_m18	way/83236789	16	48.81250,2.32785	Avenue du Président Nelson Mandela		concrete
+m5_m9	way/79633509	16	48.83490,2.32912	Rue Froidevaux		1987
+m5_m9	relation/1213137	0	48.83535,2.32870			untagged, in cluster
+m5_15	way/75390895	43	48.89938,2.33042	Avenue de la Porte de Saint-Ouen		43 m
+m5_6	relation/1085565	19	48.87717,2.32793	Rue de Londres	ACPR Banque de France	2017
+m6_m11	way/79688375	37	48.82952,2.32560	Avenue du Maine		37 m
+m6_m11	way/1127628706	37	48.82975,2.32570	Avenue du Maine		37 m
+m6_m11	way/79687301	0	48.82918,2.32517			untagged, in cluster
+m6_m11	way/79687791	0	48.82969,2.32509			untagged, in cluster
+m6_m12	way/79688340	40	48.82857,2.32573	Avenue du Maine		40 m
+m6_m12	way/79719285	40	48.82725,2.32622	Avenue Jean Moulin		40 m
+m6_m13	way/79717299	40	48.82543,2.32560	Avenue du Général Leclerc		40 m
+m6_m13	way/68754083	37	48.82372,2.32605	Avenue du Général Leclerc		37 m
+m6_m13	way/68754137	0	48.82417,2.32624			untagged, in cluster
+m6_m14	way/779004544	0	48.82143,2.32605	Avenue de la Porte d'Orléans	Piscine Thérèse et Jeanne Brulé	2020
+m6_m15	way/83234225	31	48.81814,2.32297	Rue Gabriel Péri		1965
+m6_m15	way/83234186	0	48.81807,2.32333	Rue Gabriel Péri		1965
+m6_m15	way/83233702	0	48.81864,2.32321			untagged, in cluster
+m6_m16	way/440501152	19	48.81774,2.32316	Rue Gabriel Péri		2013
+m6_m16	way/83234513	0	48.81755,2.32263			untagged, in cluster
+m6_m16	way/83234754	0	48.81687,2.32635			untagged, in cluster
+m6_m16	way/83237343	0	48.81649,2.32612			untagged, in cluster
+m6_m17	way/83237952	19	48.81289,2.32634	Avenue Aristide Briand		glass
+m6_m17	way/83233473	0	48.81319,2.32647			untagged, in cluster
+m6_m7	way/79621362	40	48.84130,2.32269	Rue du Départ	Monoprix	40 m
+m6_m7	relation/1212845	0	48.84108,2.32308			untagged, in cluster
+m6_m7	relation/1212830	0	48.84085,2.32292			untagged, in cluster
+m6_6	way/64046222	6	48.87570,2.32419	Rue de Rome		glass
+m7_m15	way/83234224	22	48.81817,2.31911	Avenue de la République		2004
+m7_m16	way/83234846	16	48.81652,2.32165	Avenue Henri Ginoux		1992
+m7_m16	way/83236430	16	48.81637,2.32094	Avenue Henri Ginoux		2001
+m7_m8	way/79687603	56	48.83773,2.31963	Rue Vercingétorix		56 m
+m7_m8	way/79687854	37	48.83795,2.32205	Rue Jean Zay		37 m
+m7_m8	way/79688077	0	48.83784,2.32154			untagged, in cluster
+m7_11	relation/2186426	25	48.88930,2.32183	Avenue de Clichy		2020
+m7_11	way/75750504	0	48.88905,2.32208			untagged, in cluster
+m7_11	way/75751324	0	48.88967,2.32229			untagged, in cluster
+m7_15	way/74472196	37	48.90029,2.31854	Boulevard du Général Leclerc		37 m
+m8_m11	way/79719470	56	48.83113,2.31586	Rue d'Alésia		56 m
+m8_m11	way/79717760	40	48.83059,2.31791	Rue d'Alésia		40 m
+m8_m11	way/79719095	40	48.83020,2.31817	Rue d'Alésia		40 m
+m8_m17	way/83236369	22	48.81272,2.31573	Avenue de la République		2001
+m8_m17	way/83233885	9	48.81514,2.31772	Avenue de la République		glass
+m8_m7	way/1078512495	53	48.83989,2.31724	Boulevard Pasteur		53 m
+m8_m7	way/1078512496	53	48.83988,2.31652	Boulevard Pasteur		53 m
+m8_m7	way/80292692	34	48.84141,2.31720	Boulevard de Vaugirard		1973
+m8_11	way/547070910	43	48.88864,2.31500	Rue Cardinet	My Cardinet	43 m
+m8_12	way/75748208	37	48.89339,2.31485	Avenue de Clichy		37 m
+m8_13	way/75748764	43	48.89381,2.31581	Avenue de Clichy		43 m
+m8_13	way/75749759	37	48.89397,2.31555	Avenue de Clichy		37 m
+m8_13	way/299633675	19	48.89508,2.31650	Boulevard Bessières		1989
+m8_15	way/74475830	25	48.90053,2.31607	Boulevard du Général Leclerc		2000
+m8_15	relation/1147078	0	48.90024,2.31551			untagged, in cluster
+m8_15	way/74473834	0	48.90022,2.31614			untagged, in cluster
+m8_15	way/117626735	0	48.90074,2.31669			untagged, in cluster
+m8_15	way/1154065795	0	48.90009,2.31602			untagged, in cluster
+m8_16	way/74468359	50	48.90172,2.31792	Boulevard Victor Hugo		50 m
+m8_5	way/67396396	0	48.87212,2.31467	Avenue Matignon		1992
+m9_m10	way/79687763	59	48.83342,2.31300	Rue Vercingétorix	Moulin de la Vierge - B	59 m
+m9_m10	way/79688383	50	48.83248,2.31366	Rue d'Alésia		50 m
+m9_m10	way/80252201	37	48.83372,2.31048	Rue de Vouillé		37 m
+m9_m10	way/79686905	0	48.83382,2.31336			untagged, in cluster
+m9_m12	way/79717962	43	48.82695,2.31156	Boulevard Brune		43 m
+m9_m12	way/79718728	43	48.82728,2.31017	Boulevard Brune		43 m
+m9_m15	way/83233445	40	48.81958,2.31099	Rue Gabriel Péri		40 m
+m9_m3	way/68903038	0	48.85167,2.31142	Avenue de Breteuil		1989
+m9_13	way/1356670753	31	48.89497,2.31305	Avenue du Cimetière des Batignolles		2025
+m9_13	way/361174311	28	48.89591,2.31139	Avenue de la Porte de Clichy	Stream Building	2022
+m9_13	way/75747980	0	48.89582,2.31219			untagged, in cluster
+m9_14	way/493308044	6	48.89859,2.31279	Avenue Transversale	Bâtiment des Bûcherons	2016
+m9_14	way/121093712	0	48.89638,2.31113			untagged, in cluster
+m9_4	way/67356437	0	48.87119,2.31399	Avenue Matignon		1975
+m9_4	relation/1067183	0	48.87135,2.31335			untagged, in cluster
+0_m11	way/78470352	40	48.82913,2.34883	Boulevard Auguste Blanqui		40 m
+0_m11	way/78471006	40	48.82921,2.34985	Boulevard Auguste Blanqui		40 m
+0_m12	way/78470109	19	48.82624,2.34900	Rue de Tolbiac		1995
+0_m12	way/78470985	0	48.82611,2.34849			untagged, in cluster
+0_m14	way/1132244787	59	48.82106,2.34888	Boulevard Kellermann	Tour 4	59 m
+0_m14	way/78493014	53	48.82091,2.34926	Boulevard Kellermann	Tour 5	53 m
+0_m14	way/78493926	40	48.82104,2.34979	Boulevard Kellermann	Tour 6	40 m
+0_m17	way/81092577	43	48.81314,2.34799	Avenue Raspail		43 m
+0_m17	way/1164722876	0	48.81395,2.35064	Avenue Jean Jaurès		2020
+0_m17	way/81091661	0	48.81381,2.35006			untagged, in cluster
+0_14	way/258134632	59	48.89875,2.34909	Boulevard Ney		59 m
+0_14	way/454372985	0	48.89751,2.35040	Boulevard Ney	Bâtiment P	metal
+1_m10	way/78407166	19	48.83259,2.35298	Avenue de la Sœur Rosalie		2022
+1_m10	way/78406906	0	48.83257,2.35353			untagged, in cluster
+1_m10	way/1148662234	0	48.83289,2.35247			untagged, in cluster
+1_m12	way/78470107	19	48.82611,2.35282	Rue de Tolbiac		1969
+1_14	way/49338376	40	48.89757,2.35186	Boulevard Ney	Restaurant d'entreprise	40 m
+1_14	way/582258610	0	48.89763,2.35119	Boulevard Ney	Bâtiment R	metal
+1_15	way/75381438	53	48.90069,2.35158	Boulevard Périphérique Intérieur		53 m
+10_m1	way/63639934	37	48.85742,2.39176	Boulevard de Charonne		37 m
+10_m1	way/63643416	37	48.85661,2.39051	Avenue Philippe Auguste		37 m
+10_m13	way/1182637342	56	48.82399,2.38928	Quai Marcel Boyer		56 m
+10_m2	way/63648985	40	48.85420,2.39168	Avenue Philippe Auguste		40 m
+10_m2	way/63638198	0	48.85488,2.39154			untagged, in cluster
+10_m2	way/63644428	0	48.85465,2.39150			untagged, in cluster
+10_m4	way/123368547	0	48.84802,2.38955	Boulevard Diderot	Résidence Denis Diderot	2011
+10_m4	way/78144303	0	48.84824,2.38935			untagged, in cluster
+10_m7	way/78019087	31	48.84119,2.39032	Avenue Daumesnil		1992
+10_m8	way/78055364	40	48.83922,2.38855	Boulevard de Bercy		40 m
+10_10	way/63240417	0	48.88690,2.38817	Avenue Jean Jaurès		1985
+10_10	way/63234497	0	48.88686,2.38864			untagged, in cluster
+10_10	way/63243332	0	48.88728,2.38843			untagged, in cluster
+10_5	way/70003420	25	48.87361,2.38918	Rue des Pyrénées		1974
+10_5	way/70001628	0	48.87200,2.39123	Rue des Pyrénées		1998
+10_6	way/63233489	19	48.87599,2.39155	Rue de Belleville		1997
+10_6	way/349252628	0	48.87502,2.39190	Rue de Belleville	Cœur Vingtième	2015
+10_6	way/70001060	0	48.87469,2.39192			untagged, in cluster
+10_6	relation/5203884	0	48.87485,2.39144			untagged, in cluster
+11_m1	way/70151086	70	48.85755,2.39322	Boulevard de Charonne		70 m
+11_m1	way/63638516	0	48.85722,2.39229			untagged, in cluster
+11_m2	relation/1003158	37	48.85308,2.39375	Avenue Philippe Auguste		37 m
+11_m2	way/63648651	37	48.85470,2.39226	Avenue Philippe Auguste		37 m
+11_m2	way/63642643	0	48.85510,2.39228			untagged, in cluster
+11_m2	way/63643875	0	48.85490,2.39283			untagged, in cluster
+11_m2	way/63644576	0	48.85324,2.39329			untagged, in cluster
+11_m2	way/63648418	0	48.85351,2.39349			untagged, in cluster
+11_m7	way/125693801	28	48.84071,2.39325	Avenue Daumesnil		glass
+11_m7	way/78019398	0	48.84064,2.39389			untagged, in cluster
+11_m9	way/78052270	40	48.83480,2.39389	Rue de Charenton		40 m
+11_4	way/70002266	22	48.87115,2.39260	Rue des Pyrénées		2025
+11_8	way/63242299	0	48.88111,2.39595	Boulevard Sérurier		1999
+12_m10	way/78052454	40	48.83316,2.39656	Rue de Charenton		40 m
+12_m10	way/78052092	28	48.83345,2.39943	Avenue du Général Michel Bizot		2003
+12_m10	way/78052102	0	48.83371,2.39874			untagged, in cluster
+12_m10	way/78052785	0	48.83328,2.39928			untagged, in cluster
+12_m15	way/79147614	37	48.81889,2.39779	Quai Jean Compagnon		37 m
+12_m6	relation/1746491	0	48.84489,2.39892	Avenue de Saint-Mandé		2007
+12_m6	way/78007081	0	48.84472,2.39816			untagged, in cluster
+12_m8	way/78008805	40	48.83939,2.39988	Boulevard de Reuilly		40 m
+12_m8	way/78009111	40	48.83940,2.39928	Boulevard de Reuilly		40 m
+12_m8	way/78009447	40	48.83933,2.39870	Boulevard de Reuilly		40 m
+12_m8	way/78009260	37	48.83927,2.39900	Boulevard de Reuilly		37 m
+12_12	way/73112258	80	48.89188,2.39884	Route des Petits Ponts	Tour Essor	80 m
+12_12	way/73111349	54	48.89297,2.39890	Route des Petits Ponts		54 m
+12_12	way/73121258	43	48.89115,2.39908	Avenue Jean Lolive		43 m
+12_12	way/73114039	0	48.89141,2.39933			untagged, in cluster
+12_12	way/73116266	0	48.89316,2.39952			untagged, in cluster
+12_13	way/195115754	0	48.89379,2.39755	Avenue du Général Leclerc		2012
+12_6	way/63237071	43	48.87601,2.40021	Rue de Belleville		43 m
+12_6	way/63236873	25	48.87585,2.39962	Rue de Belleville		1993
+12_6	way/63224592	0	48.87612,2.39976			untagged, in cluster
+12_6	relation/3300156	0	48.87588,2.39903			untagged, in cluster
+12_8	way/63213910	9	48.88103,2.39615	Boulevard Sérurier		1999
+12_8	way/63212490	0	48.88064,2.39621			untagged, in cluster
+12_8	way/63243020	0	48.88069,2.39656			untagged, in cluster
+12_9	way/63213908	50	48.88310,2.39854	Boulevard d'Algérie		50 m
+12_9	way/228991879	0	48.88345,2.39879			untagged, in cluster
+13_m1	relation/1104377	43	48.85799,2.40232	Rue des Pyrénées		43 m
+13_m10	way/78052607	40	48.83411,2.40063	Avenue du Général Michel Bizot		40 m
+13_m11	way/377250799	16	48.82942,2.40184	Avenue de la Porte de Charenton		2014
+13_m12	way/149273960	19	48.82662,2.40282	Avenue Winston Churchill		1991
+13_m12	way/149271191	0	48.82618,2.40329			untagged, in cluster
+13_m12	way/149273844	0	48.82676,2.40224			untagged, in cluster
+13_m13	way/149268106	22	48.82542,2.40394	Avenue Winston Churchill		1992
+13_m13	way/149271074	19	48.82599,2.40298	Avenue Winston Churchill		1993
+13_m13	way/149269652	0	48.82592,2.40378	Avenue Winston Churchill	Maison des artistes	1993
+13_m16	way/1549733119	56	48.81702,2.40365	Avenue de l'Industrie		56 m
+13_m16	way/1549733127	55	48.81733,2.40344	Quai Auguste Deshaies		55 m
+13_m16	way/1549733123	52	48.81739,2.40413	Quai Auguste Deshaies		52 m
+13_m16	way/1126721967	43	48.81643,2.40319	Avenue de l'Industrie	Résidence Marthe Gautier	43 m
+13_m16	way/1549733120	37	48.81758,2.40319	Quai Auguste Deshaies		37 m
+13_m16	relation/15082000	28	48.81628,2.40257	Avenue de l'Industrie		2022
+13_m5	way/77385378	37	48.84571,2.40045	Boulevard de Picpus		37 m
+13_m5	way/77385233	0	48.84720,2.40375	Cours de Vincennes		1961
+13_m5	way/77385269	0	48.84707,2.40305			untagged, in cluster
+13_m5	way/77385361	0	48.84684,2.40424			untagged, in cluster
+13_m6	way/78007063	40	48.84231,2.40030	Boulevard de Picpus		40 m
+13_m7	way/78006919	43	48.84203,2.40071	Boulevard de Picpus		43 m
+13_m7	way/78008929	43	48.84067,2.40333	Avenue du Général Michel Bizot		43 m
+13_m7	way/78009246	37	48.84002,2.40078	Boulevard de Picpus		37 m
+13_m7	way/78009259	25	48.84008,2.40338	Avenue du Général Michel Bizot		concrete
+13_m8	way/78009056	37	48.83773,2.40354	Avenue du Général Michel Bizot		37 m
+13_m8	way/78008832	0	48.83804,2.40355			untagged, in cluster
+13_m8	way/78009053	0	48.83757,2.40346			untagged, in cluster
+13_m9	way/78052673	0	48.83433,2.40358	Boulevard Poniatowski		2003
+13_0	way/70145783	43	48.85863,2.40186	Rue des Pyrénées		43 m
+13_14	way/30067711	0	48.89726,2.40317	Avenue du Général Leclerc	Conservatoire Jacques Higelin	2022
+13_2	way/70149749	0	48.86441,2.40206	Rue Belgrand		1991
+13_2	way/70152322	0	48.86431,2.40238			untagged, in cluster
+13_2	way/70153935	0	48.86423,2.40266			untagged, in cluster
+13_3	way/722336048	22	48.86851,2.40097	Avenue Gambetta	La Manutention	2019
+13_3	way/70001973	0	48.86874,2.40052			untagged, in cluster
+13_6	way/69999625	40	48.87570,2.40150	Rue de Belleville		40 m
+13_6	way/70002134	28	48.87577,2.40234	Rue de Belleville		1996
+13_6	way/157863441	0	48.87555,2.40243	Rue de Belleville		2012
+13_6	way/69999065	0	48.87537,2.40213			untagged, in cluster
+14_m12	way/149269992	28	48.82734,2.40510	Rue de Paris		1964
+14_m12	way/149277260	22	48.82677,2.40597	Rue de Paris		1997
+14_m12	relation/6271320	0	48.82612,2.40506	Rue de Paris	Centre commercial Liberté	1992
+14_m12	way/149268497	0	48.82772,2.40526			untagged, in cluster
+14_m13	way/149277225	22	48.82593,2.40639	Rue de Paris		1990
+14_m13	way/149269984	0	48.82554,2.40596			untagged, in cluster
+14_m17	way/667210052	47	48.81300,2.40562	Avenue de l'Industrie		47 m
+14_m17	way/667225773	47	48.81438,2.40598	Boulevard du Colonel Fabien		47 m
+14_m17	way/924805911	34	48.81480,2.40622	Boulevard du Colonel Fabien	B1	concrete
+14_m7	way/78009029	0	48.84051,2.40565	Avenue du Général Michel Bizot		1987
+14_m7	way/78009101	0	48.84037,2.40570			untagged, in cluster
+14_13	way/73111903	51	48.89589,2.40726	Quai de l'Ourcq		51 m
+14_13	way/73122145	51	48.89581,2.40812	Quai de l'Ourcq		51 m
+14_14	way/244705051	25	48.89639,2.40835	Rue Delizy		modern
+14_14	way/73111513	25	48.89670,2.40793	Rue Delizy		modern
+14_14	way/73116980	25	48.89714,2.40774	Rue Delizy	Immeuble "Les Diamants"	modern
+14_14	way/73113290	0	48.89748,2.40820			untagged, in cluster
+14_5	way/70003188	62	48.87406,2.40459	Avenue Gambetta		62 m
+14_5	way/70000562	40	48.87198,2.40834	Boulevard Mortier		40 m
+14_5	way/70003745	40	48.87301,2.40807	Boulevard Mortier		40 m
+14_5	way/69999842	0	48.87292,2.40756			untagged, in cluster
+14_5	way/69999854	0	48.87254,2.40792			untagged, in cluster
+14_5	way/70000132	0	48.87205,2.40798			untagged, in cluster
+14_6	way/302656283	0	48.87539,2.40540	Avenue Gambetta		2014
+15_m1	way/70148381	25	48.85601,2.40945	Boulevard Davout		1984
+15_m1	relation/1104392	0	48.85610,2.40891			untagged, in cluster
+15_m13	way/988686926	0	48.82433,2.41100	Avenue Anatole France		2013
+15_m13	way/149273918	0	48.82438,2.41165			untagged, in cluster
+15_m15	way/149271222	37	48.81916,2.41053	Quai des Carrières		37 m
+15_m15	way/167403894	0	48.81878,2.41036			untagged, in cluster
+15_m7	way/78000100	40	48.84088,2.40863	Boulevard Soult		40 m
+15_13	way/73111705	51	48.89573,2.40900	Quai de l'Ourcq		51 m
+15_13	way/73121547	0	48.89548,2.40948			untagged, in cluster
+15_14	way/73120928	25	48.89624,2.40884	Rue Delizy		modern
+15_14	way/244705052	22	48.89637,2.40866	Rue Delizy		modern
+15_5	way/69999781	25	48.87361,2.41228	Boulevard Périphérique Extérieur		2001
+15_5	way/70001607	0	48.87322,2.41075	Boulevard Périphérique Intérieur		1995
+15_5	way/70000769	0	48.87218,2.40896			untagged, in cluster
+15_6	way/70000768	37	48.87633,2.41196	Avenue du Docteur Gley		37 m
+15_7	way/766737698	37	48.87970,2.41037	Avenue du Belvédère		37 m
+15_7	way/70003460	25	48.87727,2.41123	Avenue du Docteur Gley		1989
+15_7	way/63240593	0	48.87893,2.40967	Avenue René Fonck	Cité Internationale Universitaire de Paris	2005
+15_7	way/63234188	0	48.87861,2.41002			untagged, in cluster
+16_m14	way/149274780	0	48.82294,2.41422	Avenue Jean Jaurès		1990
+16_m4	way/70148112	47	48.84881,2.41385	trunk_link		47 m
+16_m5	way/77388138	37	48.84584,2.41538	Avenue de la Porte de Vincennes		37 m
+16_m5	way/131310932	25	48.84607,2.41652	Avenue Gallieni		1965
+16_m5	relation/1764774	0	48.84576,2.41641			untagged, in cluster
+16_m5	way/1363892803	0	48.84568,2.41486			untagged, in cluster
+16_m8	way/148133556	0	48.83746,2.41344	Boulevard de la Guyane	Résidence Alouette - Guyane	1990
+16_m8	way/148381948	0	48.83757,2.41541	Avenue Alphand		1982
+16_m8	way/148390206	0	48.83707,2.41362	Boulevard de la Guyane	Résidence La Commanderie	1981
+16_m9	way/151532581	0	48.83464,2.41560	Avenue Robert-André Vivien	Résidence Gascogne	1980
+16_6	way/1021493843	22	48.87676,2.41409	Avenue Pasteur		2021
+16_6	way/73433330	0	48.87666,2.41361	Avenue Pasteur		2023
+16_6	way/460236835	0	48.87634,2.41288	Avenue Pasteur		2016
+16_6	way/73431374	0	48.87705,2.41477			untagged, in cluster
+16_6	way/73432097	0	48.87620,2.41302			untagged, in cluster
+16_6	way/73433626	0	48.87597,2.41314			untagged, in cluster
+16_7	way/73431805	19	48.87936,2.41387	Rue de Paris		2003
+16_7	way/317980876	19	48.87949,2.41335	Rue de Paris	L'Orée des Lilas	2014
+16_7	way/73432864	0	48.87911,2.41455	Rue de Paris		1997
+16_7	way/73429118	0	48.87928,2.41513			untagged, in cluster
+16_7	way/73432058	0	48.87974,2.41373			untagged, in cluster
+16_7	way/73433007	0	48.87727,2.41432			untagged, in cluster
+16_7	way/73433634	0	48.87978,2.41328			untagged, in cluster
+17_m7	way/148232422	0	48.84003,2.41788	Avenue du Général de Gaulle		1996
+17_m7	way/147363945	0	48.84053,2.41816			untagged, in cluster
+17_m8	way/148240081	0	48.83893,2.41800	Avenue du Général de Gaulle		2016
+17_m8	way/148386927	0	48.83743,2.41764	Avenue du Général de Gaulle	Résidence Anjou	1988
+17_m8	way/293584639	0	48.83829,2.41807	Avenue du Général de Gaulle	La Villa Gabriel	2013
+17_m8	way/148232423	0	48.83937,2.41821			untagged, in cluster
+17_m8	way/148240139	0	48.83839,2.41801			untagged, in cluster
+17_m8	way/148386931	0	48.83719,2.41744			untagged, in cluster
+2_m11	way/79084153	56	48.83030,2.35744	Avenue Edison		56 m
+2_m11	way/219962570	56	48.82977,2.35782	Avenue Edison		56 m
+2_m11	way/219962571	56	48.82999,2.35768	Avenue Edison		56 m
+2_m11	way/79084640	43	48.83122,2.35926	Boulevard Vincent Auriol		43 m
+2_m12	way/78470374	28	48.82812,2.35624	Avenue d'Italie		1997
+2_m12	way/78470321	0	48.82786,2.35626			untagged, in cluster
+2_m13	way/79082701	37	48.82380,2.35870	Avenue d'Italie		37 m
+2_m13	way/78493750	12	48.82478,2.35693	Avenue d'Italie		1992
+2_m13	way/78493282	0	48.82431,2.35659			untagged, in cluster
+2_m13	way/78493672	0	48.82509,2.35647			untagged, in cluster
+2_m14	way/78492948	37	48.82253,2.35797	Avenue d'Italie	Résidence Maison Blanche	37 m
+2_m14	way/78493799	25	48.82100,2.35828	Avenue d'Italie		1998
+2_m14	way/78493403	0	48.82228,2.35738			untagged, in cluster
+2_m14	relation/1189666	0	48.82259,2.35878			untagged, in cluster
+2_m16	way/930856976	22	48.81706,2.35685	trunk_link		2015
+2_m16	way/1095159470	0	48.81673,2.35717			untagged, in cluster
+2_m8	way/78536152	37	48.83693,2.35836	Boulevard de l'Hôpital		37 m
+2_m9	way/78536065	56	48.83522,2.35743	Boulevard de l'Hôpital		56 m
+2_14	way/84153312	84	48.89790,2.35830	Boulevard Ney		84 m
+2_14	way/810350553	50	48.89807,2.35641	Boulevard Ney		50 m
+2_14	way/810350554	28	48.89811,2.35722	Boulevard Ney		metal
+2_15	way/1336436553	19	48.89919,2.35746	Boulevard Ney		2026
+2_9	way/421483012	25	48.88531,2.35903	Rue Marx Dormoy		1996
+3_m10	way/78534463	62	48.83331,2.36069	Boulevard Vincent Auriol		62 m
+3_m10	way/79083123	43	48.83170,2.36075	Boulevard Vincent Auriol		43 m
+3_m10	way/79084911	43	48.83262,2.36286	Boulevard Vincent Auriol		43 m
+3_m11	way/79083295	43	48.83142,2.35996	Boulevard Vincent Auriol		43 m
+3_m11	way/79084189	37	48.82887,2.36308	Avenue Edison		37 m
+3_m13	way/79084830	40	48.82448,2.36082	Avenue de Choisy		40 m
+3_m13	way/79083076	0	48.82594,2.36149	Rue de Tolbiac		1988
+3_m13	way/79082711	0	48.82602,2.36182			untagged, in cluster
+3_m13	relation/1189690	0	48.82605,2.36108			untagged, in cluster
+3_m14	way/79084800	47	48.82156,2.35992	Avenue d'Italie		47 m
+3_m14	way/79084014	43	48.82113,2.35964	Avenue d'Italie		43 m
+3_m14	way/46592731	40	48.82288,2.36303	Avenue de Choisy		40 m
+3_m14	way/46592732	40	48.82314,2.36265	Avenue de Choisy		40 m
+3_m14	way/79083189	16	48.82269,2.36196	Avenue de Choisy		1987
+3_m14	relation/1189699	0	48.82076,2.36005			untagged, in cluster
+3_m15	way/79084428	40	48.81949,2.36146	Boulevard Masséna	Résidence Masséna	40 m
+3_m16	way/62376375	0	48.81762,2.36098	Avenue Léon Bollée		1993
+3_10	way/84154040	37	48.88704,2.36006	Rue Marx Dormoy		37 m
+3_10	way/1364507985	37	48.88713,2.36014	Rue Marx Dormoy		37 m; 2024
+3_10	way/1364507984	25	48.88731,2.36007	Rue Marx Dormoy		2024
+3_10	relation/1441111	0	48.88547,2.35993			untagged, in cluster
+3_11	way/84153117	0	48.88938,2.36017	Rue Marx Dormoy		2021
+3_11	way/84153420	0	48.88933,2.36091			untagged, in cluster
+3_11	relation/2426066	0	48.88921,2.36024			untagged, in cluster
+3_15	way/861084938	16	48.89967,2.36056	trunk_link	Adidas Arena	2024
+3_8	way/63203230	22	48.88014,2.35948	Rue La Fayette		1994
+3_9	way/84155280	40	48.88511,2.35996	Rue Marx Dormoy		40 m
+4_m10	way/79084729	65	48.83335,2.36471	Boulevard Vincent Auriol		65 m
+4_m10	way/79083043	59	48.83342,2.36540	Boulevard Vincent Auriol		59 m
+4_m10	way/79083808	43	48.83252,2.36423	Boulevard Vincent Auriol		43 m
+4_m12	way/1305768970	0	48.82722,2.36467	Rue de Tolbiac	Centre Pierre Mendès France - Université Paris 1 Panthéon-Sorbonne	1973
+4_m12	way/79084275	0	48.82742,2.36509			untagged, in cluster
+4_m15	way/62376391	37	48.81885,2.36391	Boulevard Masséna		37 m
+4_m15	way/62376347	0	48.81840,2.36415			untagged, in cluster
+4_m15	way/340187326	0	48.81813,2.36483			untagged, in cluster
+4_m16	way/62376401	40	48.81763,2.36505	Avenue de la Porte de Choisy		40 m
+4_m9	way/253523821	16	48.83532,2.36407	Avenue de la Nouvelle Pitié	Institut du Cerveau	concrete/glass
+4_6	way/63202945	28	48.87701,2.36716	Quai de Jemmapes		1981
+4_8	way/419241720	19	48.88042,2.36690	Quai de Valmy		2011
+5_m12	way/79083073	40	48.82744,2.36771	Rue de Tolbiac		40 m
+5_m17	way/79150658	50	48.81352,2.37056	Avenue de Verdun		50 m
+5_m17	way/397810185	37	48.81289,2.37096	Avenue de Verdun		37 m
+5_m17	way/397810190	0	48.81312,2.37154			untagged, in cluster
+5_m18	way/397810186	40	48.81247,2.37132	Avenue de Verdun		40 m
+5_m9	way/154059913	0	48.83477,2.36880	Boulevard Vincent Auriol		1992
+5_m9	way/1235067696	0	48.83495,2.36808			untagged, in cluster
+5_10	way/64039697	40	48.88608,2.37046	Avenue de Flandre		40 m
+5_10	way/64037900	0	48.88543,2.37122			untagged, in cluster
+5_3	way/63644587	50	48.86756,2.36760	Boulevard Jules Ferry		50 m
+5_3	way/63649046	0	48.86728,2.36770			untagged, in cluster
+5_7	way/63212523	50	48.87987,2.37095	Boulevard de la Villette		50 m
+5_7	way/63198630	22	48.87904,2.36832	Quai de Jemmapes		1987
+5_7	way/714889911	16	48.87855,2.37112	Boulevard de la Villette		2018
+5_7	relation/1000472	0	48.87785,2.37142	Avenue Mathurin Moreau	Siège du Parti communiste français	concrete
+5_9	way/64039301	31	48.88509,2.36907	Avenue de Flandre		1993
+6_m10	way/547064377	37	48.83165,2.37517	Avenue de France		37 m
+6_m10	way/907799262	37	48.83237,2.37457	Avenue de France		37 m
+6_m10	way/547064378	0	48.83177,2.37478			untagged, in cluster
+6_m11	way/276809755	37	48.83115,2.37536	Avenue de France		37 m; modern
+6_m11	way/79083120	28	48.82924,2.37351	Rue de Tolbiac		1995
+6_m13	way/79083605	47	48.82382,2.37515	Boulevard Masséna	La Sablière	47 m
+6_m15	way/79153343	50	48.81903,2.37336	Avenue Maurice Thorez		50 m
+6_m15	way/79155006	40	48.81846,2.37239	Boulevard Hippolyte Marquès		40 m
+6_m16	way/79152373	37	48.81676,2.37359	Rue Baudin		37 m
+6_m16	way/79148629	0	48.81797,2.37464	Rue Barbès		2004
+6_m16	way/79148035	0	48.81637,2.37314			untagged, in cluster
+6_m16	relation/1190279	0	48.81749,2.37495			untagged, in cluster
+6_m16	way/79154482	0	48.81762,2.37473			untagged, in cluster
+6_m7	way/78159067	56	48.84120,2.37554	Quai de la Rapée	Le Mistral	56 m
+6_m7	way/78158565	39	48.84125,2.37403	Quai de la Rapée		39 m
+6_m7	way/78158746	39	48.84154,2.37372	Quai de la Rapée		39 m
+6_m9	way/62379727	25	48.83619,2.37443	Quai de la Gare		1997
+6_m9	way/62379735	25	48.83659,2.37306	Boulevard Vincent Auriol		modern
+6_m9	way/62379744	25	48.83646,2.37413	Quai de la Gare		1997
+6_m9	way/62379726	19	48.83683,2.37371	Quai de la Gare		modern
+6_10	way/64039084	47	48.88654,2.37382	Quai de la Seine		47 m
+6_10	way/64038002	19	48.88567,2.37181	Quai de la Seine		1991
+6_10	way/63971651	0	48.88536,2.37523			untagged, in cluster
+6_10	way/64038162	0	48.88649,2.37335			untagged, in cluster
+6_10	relation/1014192	0	48.88604,2.37168			untagged, in cluster
+6_10	relation/3935178	0	48.88619,2.37186			untagged, in cluster
+6_10	way/759539867	0	48.88678,2.37345			untagged, in cluster
+6_13	way/64038102	59	48.89490,2.37298	Rue de Crimée	B	59 m
+6_13	way/64040462	59	48.89451,2.37336	Rue de Crimée	A	59 m
+6_13	way/64039243	56	48.89465,2.37172	Rue de Crimée		56 m
+6_13	way/64039511	0	48.89427,2.37219			untagged, in cluster
+6_13	way/64040090	0	48.89518,2.37360			untagged, in cluster
+6_13	way/759859345	0	48.89438,2.37413			untagged, in cluster
+6_14	way/1069231891	3	48.89683,2.37225	Rue d'Aubervilliers		2022
+6_14	way/1069231892	3	48.89637,2.37195	Rue d'Aubervilliers		2022
+6_7	way/63234342	43	48.87879,2.37253	Avenue Mathurin Moreau		43 m
+6_7	way/764634441	43	48.87930,2.37374	Avenue Simón Bolívar		43 m
+6_7	way/764634442	43	48.87909,2.37393	Avenue Simón Bolívar		43 m
+6_7	way/63232928	0	48.87873,2.37340			untagged, in cluster
+6_7	way/63240172	0	48.87865,2.37168			untagged, in cluster
+6_7	way/63241098	0	48.87857,2.37382			untagged, in cluster
+6_9	way/63971464	43	48.88426,2.37420	Avenue Jean Jaurès		43 m
+6_9	way/63971514	0	48.88403,2.37395			untagged, in cluster
+7_m10	way/62379541	25	48.83228,2.37882	Quai François Mauriac		1997
+7_m10	way/62379554	25	48.83167,2.37747	Rue Neuve Tolbiac	Caisse d'Épargne d'Île-de-France	modern
+7_m11	way/276809756	37	48.83078,2.37576	Avenue de France		37 m; glass
+7_m11	way/62378582	31	48.83007,2.37798	Avenue de France		modern
+7_m11	way/62378656	25	48.82968,2.37847	Avenue de France		glass
+7_m11	way/62378663	25	48.83048,2.37755	Rue Neuve Tolbiac		modern
+7_m5	way/78146192	22	48.84672,2.37748	Boulevard Diderot	Espace Diderot	glass
+7_m5	way/78146171	0	48.84673,2.37801			untagged, in cluster
+7_m5	way/78158801	0	48.84495,2.37808			untagged, in cluster
+7_m5	relation/1653441	0	48.84689,2.37777			untagged, in cluster
+7_m6	way/78158615	22	48.84459,2.37868	Avenue Daumesnil		1988
+7_10	way/63971417	56	48.88654,2.37762	Quai de la Loire		56 m
+7_10	way/63971527	25	48.88544,2.37570	Quai de la Loire		1993
+7_12	relation/1014080	37	48.89184,2.37701	Rue de Crimée		37 m
+7_4	way/63639913	25	48.86964,2.37884	Boulevard de Belleville		1992
+7_5	way/63213872	28	48.87267,2.37708	Boulevard de la Villette	Confédération Française Démocratique du Travail	1984
+7_5	way/63240675	28	48.87380,2.37583	Boulevard de la Villette		concrete
+8_m11	way/62377966	37	48.82926,2.38299	Quai Panhard et Levassor		37 m
+8_m13	way/1223623387	59	48.82587,2.38327	Boulevard du Général d'Armée Jean Simon		59 m
+8_m13	way/308175378	50	48.82606,2.38208	Boulevard du Général d'Armée Jean Simon		50 m
+8_m6	way/78055124	37	48.84341,2.38268	Avenue Daumesnil		37 m
+8_m6	way/78018991	28	48.84424,2.38211	Avenue Daumesnil		1995
+8_m6	way/130117393	6	48.84403,2.38267	Avenue Daumesnil		1995
+8_m6	way/78019062	0	48.84446,2.38240			untagged, in cluster
+8_10	way/63971618	40	48.88649,2.38278	Avenue Jean Jaurès		40 m
+8_10	way/63971197	0	48.88651,2.38229			untagged, in cluster
+8_11	way/63971353	37	48.88931,2.38251	Quai de la Marne	Le Doge	37 m
+8_11	way/395820829	6	48.88999,2.38378	Quai de la Marne		2016
+8_11	way/351663556	0	48.88967,2.38304			untagged, in cluster
+8_12	relation/8171743	40	48.89076,2.38325	Quai de l'Oise		40 m
+8_12	way/64039467	0	48.89108,2.38272			untagged, in cluster
+8_12	relation/1014205	0	48.89091,2.38312			untagged, in cluster
+8_3	way/69999147	59	48.86841,2.38279	Boulevard de Belleville		59 m
+8_3	way/70003376	40	48.86810,2.38260	Boulevard de Belleville		40 m
+8_3	way/63639616	37	48.86798,2.38149	Boulevard de Belleville		37 m
+8_4	way/70003351	28	48.86932,2.38098	Boulevard de Belleville		1989
+8_4	way/70003022	0	48.86971,2.38083			untagged, in cluster
+8_6	way/1062732148	25	48.87566,2.38215	Avenue Simón Bolívar		2025
+8_6	way/636357385	19	48.87577,2.38231	Avenue Simón Bolívar		2017
+8_6	relation/1000358	0	48.87588,2.37978	Avenue Simón Bolívar	Siège de la Confédération française démocratique du travail	1990
+8_6	way/83628114	0	48.87593,2.38055			untagged, in cluster
+8_7	way/63213580	37	48.87777,2.38211	Avenue du Général San Martin		37 m
+8_9	way/284075477	0	48.88433,2.38121	Avenue de Laumière		2010
+8_9	way/63241232	0	48.88453,2.38056			untagged, in cluster
+8_9	relation/1000480	0	48.88465,2.38162			untagged, in cluster
+9_m17	way/79148212	0	48.81349,2.38579	Avenue Danielle Casanova		1972
+9_m18	way/79154895	0	48.81189,2.38645	Avenue Georges Gosnat	Tour Raspail	1968
+9_m18	way/79154774	0	48.81172,2.38587			untagged, in cluster
+9_m5	way/818166674	25	48.84753,2.38606	Boulevard Diderot		glass
+9_m6	way/78019451	28	48.84269,2.38555	Avenue Daumesnil		concrete
+9_m6	way/78019094	19	48.84384,2.38403	Avenue Daumesnil		1996
+9_m6	way/818161822	6	48.84318,2.38438	Avenue Daumesnil		1995
+9_m6	way/1090430106	0	48.84333,2.38440			untagged, in cluster
+9_m9	way/78271134	25	48.83494,2.38517	Rue Joseph Kessel		1994
+9_1	way/69998895	0	48.86358,2.38733	Boulevard de Ménilmontant		1998
+9_10	way/63234603	40	48.88662,2.38701	Avenue Jean Jaurès		40 m
+9_10	way/63236036	0	48.88693,2.38783			untagged, in cluster
+9_11	way/63971363	25	48.89030,2.38641	Quai de la Garonne		1999
+9_11	way/395820830	25	48.88993,2.38400	Quai de la Marne	Canal Square	2016
+9_11	way/63971381	0	48.89067,2.38578			untagged, in cluster
+9_11	way/63971578	0	48.89005,2.38665			untagged, in cluster
+9_11	way/63971627	0	48.89022,2.38686			untagged, in cluster
+9_12	way/64040560	40	48.89116,2.38408	Quai de l'Oise		40 m
+9_12	way/63971492	0	48.89098,2.38629	Quai de Metz		2012
+9_12	way/64039584	0	48.89161,2.38412			untagged, in cluster
+9_13	way/64038577	37	48.89371,2.38462	Quai de la Gironde		37 m
+9_13	way/64038024	0	48.89355,2.38390			untagged, in cluster
+9_14	relation/9930696	40	48.89810,2.38430	Boulevard MacDdonald	Deskeo	40 m
+9_14	way/64038522	0	48.89668,2.38505	Boulevard Macdonald		1990
+9_16	way/73002783	43	48.90282,2.38488	Boulevard Félix Faure		43 m
+9_16	way/72998936	0	48.90323,2.38525			untagged, in cluster
+9_2	way/70003493	19	48.86562,2.38489	Boulevard de Ménilmontant		1996
+9_2	way/69999502	0	48.86433,2.38695	Boulevard de Ménilmontant		1996
+9_2	way/70000645	0	48.86413,2.38747			untagged, in cluster
+9_2	relation/1103241	0	48.86468,2.38641			untagged, in cluster
+9_7	way/63224969	22	48.87853,2.38617	Cours du 7e Art		1999

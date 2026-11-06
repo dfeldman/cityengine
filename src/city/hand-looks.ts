@@ -88,14 +88,16 @@ interface Label { confidence: number; seen?: number; wall: string; trim?: string
   glass?: string; balconies?: string; bands?: boolean; fins?: boolean; colour_panels?: boolean }
 function fromLabel(l: Label): Look | null {
   if ((l.confidence ?? 0) < MIN_CONFIDENCE || !/^#[0-9a-f]{6}$/i.test(l.wall ?? '')) return null
-  const style: Look['style'] = l.windows === 'curtain' ? 'skyscraper' : l.windows === 'ribbon' ? 'bauhaus' : 'parismodern'
+  // stone or French windows is an older front the list let through (Haussmann, or 1930s): keep the bake's style, recolour only
+  const old = l.material === 'stone' || l.windows === 'french'
+  const style: Look['style'] = old ? undefined : l.windows === 'curtain' ? 'skyscraper' : l.windows === 'ribbon' ? 'bauhaus' : 'parismodern'
   const dress: Look['dress'] = {}
   if (l.balconies && l.balconies !== 'none') dress.balconies = true
   if (l.bands || l.balconies === 'continuous') dress.belts = true
   if (l.fins) dress.fins = true
   if (l.colour_panels) dress.blocks = true
   if (l.glass && /^#[0-9a-f]{6}$/i.test(l.glass)) dress.glassTint = l.glass
-  return { style, dress, palette: { wall: l.wall, trim: l.trim ?? l.wall, ground: l.ground ?? l.wall } }
+  return { ...(style ? { style } : {}), dress: old ? {} : dress, palette: { wall: l.wall, trim: l.trim ?? l.wall, ground: l.ground ?? l.wall } }
 }
 for (const [id, l] of Object.entries(labelled as Record<string, Label>)) { const k = fromLabel(l); if (k) BY_ID.set(Number(id), k) }
 for (const e of ENTRIES) for (const id of e.ids) BY_ID.set(id, { palette: HAND_PALETTES[e.palette], style: e.style, dress: e.dress })

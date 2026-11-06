@@ -11,6 +11,7 @@ footprint's corners seen from the camera) plus a margin, with the span's edges d
 the building's elevation, so a tower is not cropped off at the top.
 """
 import base64, io, json, math, os, sys, urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from PIL import Image, ImageDraw
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +28,7 @@ FLOOR = -28                  # degrees below the horizon kept
 LONG = 1024                  # px on the long side sent to the model
 MODEL = 'claude-haiku-5-5'
 RED = (255, 45, 45)
+PHOTO_WORKERS, LABEL_WORKERS = 8, 6
 
 
 def bearing(lat0, lon0, lat1, lon1):
@@ -106,25 +108,34 @@ def main():
     # tallest first: they are the ones a rider sees
     ts = sorted(json.load(open(src)), key=lambda t: -(t['h'] or 0))[:n]
     if mode == 'photos':
-        for t in ts:
-            try: print(t['id'], t['h'], len(photos(t, N_PHOTOS)))
-            except Exception as e: print(t['id'], 'failed', e)
+        def one(t):
+            d = os.path.join(CACHE, str(t['id']))
+            if os.path.isdir(d) and len(os.listdir(d)) >= N_PHOTOS: return f"{t['id']} cached"
+            try: return f"{t['id']} {t['h']} {len(photos(t, N_PHOTOS))}"
+            except Exception as e: return f"{t['id']} failed {e}"
+        with ThreadPoolExecutor(PHOTO_WORKERS) as ex:
+            for line in ex.map(one, ts): print(line, flush=True)
         return
     key = os.environ.get('ANTHROPIC_API_KEY') or next((l.split('=', 1)[1].strip().strip('"').strip("'") for l in open(os.path.join(ROOT, '.env'))
                                                        if l.startswith('ANTHROPIC_API_KEY=')), '')
     brief = open(BRIEF).read()
     looks = json.load(open(OUT)) if os.path.exists(OUT) else {}
     tot = {}
-    for t in ts:
+    redo = '--redo' in sys.argv
+    def one(t):
+        if str(t['id']) in looks and not redo: return t, None, None, 'labelled'
         d = os.path.join(CACHE, str(t['id']))
         paths = sorted(os.path.join(d, f) for f in os.listdir(d)) if os.path.isdir(d) else []
-        if not paths: print(t['id'], 'no photos'); continue
-        try: lab, use = ask(t, paths, key, brief)
-        except Exception as e: print(t['id'], 'failed', e); continue
-        for k, v in use.items():
-            if isinstance(v, (int, float)): tot[k] = tot.get(k, 0) + v
-        lab['src'] = os.path.basename(src); looks[str(t['id'])] = lab
-        print(t['id'], t['h'], json.dumps(lab))
+        if not paths: return t, None, None, 'no photos'
+        try: lab, use = ask(t, paths, key, brief); return t, lab, use, None
+        except Exception as e: return t, None, None, f'failed {e}'
+    with ThreadPoolExecutor(LABEL_WORKERS) as ex:
+        for t, lab, use, err in ex.map(one, ts):
+            if err: print(t['id'], err, flush=True); continue
+            for k, v in use.items():
+                if isinstance(v, (int, float)): tot[k] = tot.get(k, 0) + v
+            lab['src'] = os.path.basename(src); looks[str(t['id'])] = lab
+            print(t['id'], t['h'], lab.get('confidence'), lab.get('note', ''), flush=True)
     json.dump(looks, open(OUT, 'w'), indent=1, sort_keys=True)
     print('usage', tot)
 
