@@ -288,6 +288,9 @@ export interface Dress {
   blank?: boolean
   /** a label's garage door colour: the paintings' doors are dark, and a white roll-up door is half of a stucco front */
   garageTint?: string
+  /** the window glass's colour (#rrggbb), multiplying the room behind it and a little of the reflection: a pale building's
+   *  dark-blue or green glazing (plans/paris-restyle-panoramax.md). Packed into the vertex alpha (buildings.ts glassCode). */
+  glassTint?: string
   /** how ornamented the front is (a label's): `rich` puts hoods over the windows of any style */
   ornament?: 'plain' | 'some' | 'rich'
   /** how much of a label's shop bays is glass: `full` is a modern store's glazed front, `little` a few windows */

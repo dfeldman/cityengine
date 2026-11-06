@@ -1,0 +1,25 @@
+cluster	way	height	latlon	street	name	why
+12_1	way/70149750	12	48.86143,2.39957	Avenue Circulaire		2018
+13_m1	relation/1104377	43	48.85799,2.40232	Rue des Pyrénées		43 m
+13_m1	way/70147113	40	48.85707,2.40383	Rue des Pyrénées		40 m
+13_m1	way/70151994	19	48.85771,2.40419	Rue des Pyrénées		1995
+13_0	way/70145783	43	48.85863,2.40186	Rue des Pyrénées		43 m
+13_2	way/70149749	0	48.86441,2.40206	Rue Belgrand		1991
+13_2	way/70152322	0	48.86431,2.40238			untagged, in cluster
+13_2	way/70153935	0	48.86423,2.40266			untagged, in cluster
+13_3	way/722336048	22	48.86851,2.40097	Avenue Gambetta	La Manutention	2019
+13_3	way/70001973	0	48.86874,2.40052			untagged, in cluster
+14_5	way/70003188	62	48.87406,2.40459	Avenue Gambetta		62 m
+14_5	way/70000562	40	48.87198,2.40834	Boulevard Mortier		40 m
+14_5	way/70003745	40	48.87301,2.40807	Boulevard Mortier		40 m
+14_5	way/69999842	0	48.87292,2.40756			untagged, in cluster
+14_5	way/69999854	0	48.87254,2.40792			untagged, in cluster
+14_5	way/70000132	0	48.87205,2.40798			untagged, in cluster
+15_m1	way/70148381	25	48.85601,2.40945	Boulevard Davout		1984
+15_m1	relation/1104392	0	48.85610,2.40891			untagged, in cluster
+15_5	way/69999781	25	48.87361,2.41228	Boulevard Périphérique Extérieur		2001
+15_5	way/70001607	0	48.87322,2.41075	Boulevard Périphérique Intérieur		1995
+15_5	way/70000769	0	48.87218,2.40896			untagged, in cluster
+15_6	way/685508512	19	48.87522,2.41097	Boulevard Périphérique Extérieur		2018
+16_1	way/81613737	53	48.86352,2.41517	Avenue de la République		53 m
+16_1	way/70153549	37	48.86362,2.41254	trunk_link		37 m

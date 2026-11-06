@@ -768,7 +768,27 @@ export function capPolygon(out: MeshBuilder, ring: Ring, y: number, tint: [numbe
  * walls are, because the line a building makes against the sky is the first thing the eye picks up — and a
  * Paris mansard or a suburban gable is most of what says where you are. See `roofs.ts`.
  */
-export function buildBuilding(
+/**
+ * A glass tint as a fraction under 0.5 added to every vertex alpha (the page kind, an integer): 4 bits a channel,
+ * code + 1 over GLASS_SCALE, so 0 means none. facade-material.ts decodes it; tune GLASS_SCALE in both together.
+ */
+export const GLASS_SCALE = 8192
+export function glassCode(hex: string): number {
+  const v = parseInt(hex.replace('#', ''), 16)
+  const r = (v >> 20) & 15, g = (v >> 12) & 15, b = (v >> 4) & 15
+  return ((r << 8) | (g << 4) | b) + 1
+}
+
+export function buildBuilding(...a: Parameters<typeof buildBuildingRaw>): void {
+  const c0 = a[0].colors.length
+  buildBuildingRaw(...a)
+  const hex = a[2].dress?.glassTint
+  if (!hex) return
+  const f = glassCode(hex) / GLASS_SCALE, c = a[0].colors
+  for (let i = c0 + 3; i < c.length; i += 4) c[i] = Math.floor(c[i] + 1e-6) + f
+}
+
+function buildBuildingRaw(
   out: MeshBuilder,
   ring: Ring,
   plan: FacadePlan,

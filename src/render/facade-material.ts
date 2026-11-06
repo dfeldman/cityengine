@@ -109,6 +109,11 @@ bool underside(vec3 p, vec3 e) {
   return n.y < -0.05;
 }
 
+// glass tint strength (Dress.glassTint): the interior's gain, and how far the reflection leans to the tint
+#define GLASS_BODY 2.2
+#define GLASS_SKY_GAIN 1.8
+#define GLASS_SKY_MIX 0.55
+
 void main(void) {
   // The ground variant is drawn with culling off, so it must refuse its own underside, or a lawn standing
   // above the eye becomes a green ceiling.
@@ -116,12 +121,17 @@ void main(void) {
   // vKind: 0 = the seamless wall page (uv in metres, wrapped), 1 = the element atlas (uv already a cell)
   vec4 w = texture2D(wallTex, vUV);
   vec4 a = texture2D(atlasTex, vUV);
-  vec4 albedo = mix(w, a, step(0.5, vKind));
+  // the kind is the alpha's integer part; its fraction carries a glass tint (buildings.ts glassCode, GLASS_SCALE 8192)
+  float kindInt = floor(vKind + 0.0001);
+  float gcode = floor((vKind - kindInt) * 8192.0 + 0.5) - 1.0;
+  vec3 glassTint = gcode < 0.0 ? vec3(1.0)
+    : vec3(floor(gcode / 256.0), mod(floor(gcode / 16.0), 16.0), mod(gcode, 16.0)) / 15.0;
+  vec4 albedo = mix(w, a, step(0.5, kindInt));
   // 2 = a wrought-iron RAIL (BUGS.md #23): uv.x metres along it, uv.y 0 at its foot to 1 at its top. The
   // openwork is cut here, not modelled: a top and bottom rail, bars every 11 cm, and a band of rings at
   // mid-height, each antialiased by its own screen size — a bar thinner than a pixel coverage-fades and is
   // dropped, so a far balcony reads as its two rails and the wall behind, never as a black band.
-  if (vKind > 1.5) {
+  if (kindInt > 1.5) {
     float fu = max(fwidth(vUV.x), 1e-4);
     float fv = max(fwidth(vUV.y), 1e-4);
     float rails = max(1.0 - smoothstep(0.07 - fv, 0.07 + fv, vUV.y), smoothstep(0.9 - fv, 0.9 + fv, vUV.y));
@@ -163,6 +173,9 @@ void main(void) {
     // the painted pixel becomes the room behind the glass: darkened, and tinted slightly by the sky so an
     // unlit interior is cold rather than black
     vec3 interior = albedo.rgb * 0.34 + skyColour * 0.06;
+    // a tinted pane: the room behind it takes the tint (scaled up, a #3d5c70 is a dark colour) and the reflection some
+    interior = gcode < 0.0 ? interior : interior * glassTint * GLASS_BODY;
+    sky = gcode < 0.0 ? sky : sky * mix(vec3(1.0), glassTint * GLASS_SKY_GAIN, GLASS_SKY_MIX);
 
     lit = mix(interior, sky, clamp(fresnel * 1.35, 0.0, 0.94)) + sunColour * spec * 1.6;
 

@@ -1,0 +1,48 @@
+cluster	way	height	latlon	street	name	why
+1_m12	way/78470107	19	48.82611,2.35282	Rue de Tolbiac		1969
+2_m11	way/79084153	56	48.83030,2.35744	Avenue Edison		56 m
+2_m11	way/219962570	56	48.82977,2.35782	Avenue Edison		56 m
+2_m11	way/219962571	56	48.82999,2.35768	Avenue Edison		56 m
+2_m11	way/79084640	43	48.83122,2.35926	Boulevard Vincent Auriol		43 m
+2_m12	way/78470374	28	48.82812,2.35624	Avenue d'Italie		1997
+2_m12	way/78470321	0	48.82786,2.35626			untagged, in cluster
+2_m13	way/79082701	37	48.82380,2.35870	Avenue d'Italie		37 m
+2_m13	way/78493750	12	48.82478,2.35693	Avenue d'Italie		1992
+2_m13	way/78493282	0	48.82431,2.35659			untagged, in cluster
+2_m13	way/78493672	0	48.82509,2.35647			untagged, in cluster
+2_m14	way/78492948	37	48.82253,2.35797	Avenue d'Italie	Résidence Maison Blanche	37 m
+2_m14	way/78493799	25	48.82100,2.35828	Avenue d'Italie		1998
+2_m14	way/78493403	0	48.82228,2.35738			untagged, in cluster
+2_m14	relation/1189666	0	48.82259,2.35878			untagged, in cluster
+3_m10	way/79083123	43	48.83170,2.36075	Boulevard Vincent Auriol		43 m
+3_m11	way/79083295	43	48.83142,2.35996	Boulevard Vincent Auriol		43 m
+3_m11	way/79084189	37	48.82887,2.36308	Avenue Edison		37 m
+3_m13	way/79084830	40	48.82448,2.36082	Avenue de Choisy		40 m
+3_m13	way/79083076	0	48.82594,2.36149	Rue de Tolbiac		1988
+3_m13	way/79082711	0	48.82602,2.36182			untagged, in cluster
+3_m13	relation/1189690	0	48.82605,2.36108			untagged, in cluster
+3_m14	way/79084800	47	48.82156,2.35992	Avenue d'Italie		47 m
+3_m14	way/79084014	43	48.82113,2.35964	Avenue d'Italie		43 m
+3_m14	way/46592731	40	48.82288,2.36303	Avenue de Choisy		40 m
+3_m14	way/46592732	40	48.82314,2.36265	Avenue de Choisy		40 m
+3_m14	way/79083189	16	48.82269,2.36196	Avenue de Choisy		1987
+3_m14	relation/1189699	0	48.82076,2.36005			untagged, in cluster
+3_m15	way/79084428	40	48.81949,2.36146	Boulevard Masséna	Résidence Masséna	40 m
+4_m12	way/1305768970	0	48.82722,2.36467	Rue de Tolbiac	Centre Pierre Mendès France - Université Paris 1 Panthéon-Sorbonne	1973
+4_m12	way/79084275	0	48.82742,2.36509			untagged, in cluster
+4_m15	way/62376391	37	48.81885,2.36391	Boulevard Masséna		37 m
+4_m15	way/62376347	0	48.81840,2.36415			untagged, in cluster
+5_m12	way/79083073	40	48.82744,2.36771	Rue de Tolbiac		40 m
+6_m10	way/547064377	37	48.83165,2.37517	Avenue de France		37 m
+6_m10	way/547064378	0	48.83177,2.37478			untagged, in cluster
+6_m11	way/276809755	37	48.83115,2.37536	Avenue de France		37 m; modern
+6_m11	way/79083120	28	48.82924,2.37351	Rue de Tolbiac		1995
+6_m13	way/79083605	47	48.82382,2.37515	Boulevard Masséna	La Sablière	47 m
+6_m15	way/79153343	50	48.81903,2.37336	Avenue Maurice Thorez		50 m
+6_m15	way/79155006	40	48.81846,2.37239	Boulevard Hippolyte Marquès		40 m
+6_m16	way/79148629	0	48.81797,2.37464	Rue Barbès		2004
+7_m10	way/62379554	25	48.83167,2.37747	Rue Neuve Tolbiac	Caisse d'Épargne d'Île-de-France	modern
+7_m11	way/276809756	37	48.83078,2.37576	Avenue de France		37 m; glass
+7_m11	way/62378582	31	48.83007,2.37798	Avenue de France		modern
+7_m11	way/62378656	25	48.82968,2.37847	Avenue de France		glass
+7_m11	way/62378663	25	48.83048,2.37755	Rue Neuve Tolbiac		modern
