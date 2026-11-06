@@ -5,6 +5,7 @@
  */
 import type { Look } from './appearance.ts'
 import type { Palette, StyleId } from './facade.ts'
+import { labelPostwar } from './facade.ts'
 import { Projection, type LatLon } from './geo.ts'
 import labelled from './paris-looks.json' with { type: 'json' }
 
@@ -86,7 +87,7 @@ const BY_ID = new Map<number, Look>()
 const MIN_CONFIDENCE = 2
 interface Label { confidence: number; seen?: number; wall: string; trim?: string; ground?: string; material?: string; windows?: string;
   glass?: string; balconies?: string; bands?: boolean; fins?: boolean; colour_panels?: boolean }
-function fromLabel(l: Label): Look | null {
+function fromLabel(l: Label, id: number): Look | null {
   if ((l.confidence ?? 0) < MIN_CONFIDENCE || !/^#[0-9a-f]{6}$/i.test(l.wall ?? '')) return null
   // stone or French windows is an older front the list let through (Haussmann, or 1930s): keep the bake's style, recolour only
   const old = l.material === 'stone' || l.windows === 'french'
@@ -97,10 +98,15 @@ function fromLabel(l: Label): Look | null {
   if (l.fins) dress.fins = true
   if (l.colour_panels) dress.blocks = true
   if (l.glass && /^#[0-9a-f]{6}$/i.test(l.glass)) dress.glassTint = l.glass
+  // (a ribbon or curtain front gets a Paris lobby, roofline and balconies: the SF dressers left them doorless)
+  if (style === 'bauhaus' || style === 'skyscraper') Object.assign(dress, labelPostwar(id, style === 'skyscraper', l.balconies))
   return { ...(style ? { style } : {}), dress: old ? {} : dress, palette: { wall: l.wall, trim: l.trim ?? l.wall, ground: l.ground ?? l.wall } }
 }
-for (const [id, l] of Object.entries(labelled as Record<string, Label>)) { const k = fromLabel(l); if (k) BY_ID.set(Number(id), k) }
-for (const e of ENTRIES) for (const id of e.ids) BY_ID.set(id, { palette: HAND_PALETTES[e.palette], style: e.style, dress: e.dress })
+for (const [id, l] of Object.entries(labelled as Record<string, Label>)) { const k = fromLabel(l, Number(id)); if (k) BY_ID.set(Number(id), k) }
+for (const e of ENTRIES) for (const id of e.ids) {
+  const pw = e.style === 'bauhaus' || e.style === 'skyscraper' ? labelPostwar(id, e.style === 'skyscraper', e.dress?.balconies ? undefined : 'none') : {}
+  BY_ID.set(id, { palette: HAND_PALETTES[e.palette], style: e.style, dress: { ...pw, ...e.dress } })
+}
 
 /** for the inspector: a building's Panoramax label, the hand entry naming it, and the look it gets (null if none) */
 export function restyleInfo(id: number): { label?: unknown; entry?: string; look?: Look; applied: boolean } | null {
