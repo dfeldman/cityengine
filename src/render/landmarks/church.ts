@@ -490,9 +490,9 @@ export function curvedGable(out: MeshBuilder, at: P2, heading: number, w: number
  * that makes a Gothic steeple read as openwork rather than as a cone. Axis-symmetric, so no heading.
  */
 export function spire(out: MeshBuilder, at: P2, y0: number, r: number, h: number, sides: number, colour: Rgb,
-                      material: Surface = 'tile', pinnacles = 0): void {
+                      material: Surface = 'tile', pinnacles = 0, phase = 0): void {
   const tag = surfaceTag(material)
-  prism(out, at.x, at.z, y0, y0 + h, r, sides, colour, tag, 0.02)
+  prism(out, at.x, at.z, y0, y0 + h, r, sides, colour, tag, 0.02, true, phase)
   for (let i = 0; i < pinnacles; i++) {
     const a = ((i + 0.5) / pinnacles) * Math.PI * 2
     const px = at.x + Math.sin(a) * r * 0.95
@@ -513,6 +513,9 @@ export function churchTower(out: MeshBuilder, at: P2, y0: number, r: number, sta
                             top: Tower['top'], plan: 'square' | 'octagon',
                             o: { wall: Rgb; material: Surface; roof: Rgb; roofMaterial: Surface; trim: Rgb }): void {
   const sides = plan === 'octagon' ? 8 : 4
+  // prism()'s first vertex is on +z; the shaft's ring has its corners half a side off the axes, so every cap turns by this
+  // to sit square on the shaft (without it a square tower's spire stood turned 45° on it: Saint-Pierre de Chaillot, 2026-11-05)
+  const ph = Math.PI / sides
   const ring = (rr: number, y: number): P2[] => Array.from({ length: sides }, (_, k) => {
     const a = ((k + 0.5) / sides) * Math.PI * 2
     return { x: at.x + Math.cos(a) * rr, z: at.z + Math.sin(a) * rr }
@@ -539,7 +542,7 @@ export function churchTower(out: MeshBuilder, at: P2, y0: number, r: number, sta
     // the belfry: an OPEN stage — corner piers carrying a cap, with the dark of the bell chamber behind them
     const pier = r * 0.3
     for (let i = 0; i < sides; i++) {
-      const a = (i / sides) * Math.PI * 2
+      const a = (i / sides) * Math.PI * 2 + ph
       box(out, at.x + Math.sin(a) * (r - pier * 0.5), y + stageH / 2, at.z + Math.cos(a) * (r - pier * 0.5),
         pier, stageH / 2, pier, o.wall, surfaceTag(o.material))
     }
@@ -549,19 +552,19 @@ export function churchTower(out: MeshBuilder, at: P2, y0: number, r: number, sta
   }
   switch (top) {
     case 'spire':
-      spire(out, at, y, r * 1.02, shaft * 0.9, sides === 4 ? 8 : 8, o.roof, o.roofMaterial, sides)
+      spire(out, at, y, r * 1.02, shaft * 0.9, sides, o.roof, o.roofMaterial, sides, ph)
       crossFinial(out, at, y + shaft * 0.9, r * 0.9, o.trim)
       break
     case 'steeple':
-      spire(out, at, y, r * 0.98, shaft * 0.8, 8, o.roof, o.roofMaterial, sides)
+      spire(out, at, y, r * 0.98, shaft * 0.8, sides, o.roof, o.roofMaterial, sides, ph)
       crossFinial(out, at, y + shaft * 0.8, r * 0.9, o.trim)
       break
     case 'belfry':
-      prism(out, at.x, at.z, y, y + r * 0.9, r * 1.06, sides, o.roof, surfaceTag(o.roofMaterial), 0.02)
+      prism(out, at.x, at.z, y, y + r * 0.9, r * 1.06, sides, o.roof, surfaceTag(o.roofMaterial), 0.02, true, ph)
       crossFinial(out, at, y + r * 0.9, r * 0.7, o.trim)
       break
     case 'pyramid':
-      prism(out, at.x, at.z, y, y + r * 2.2, r * 1.04, sides, o.roof, surfaceTag(o.roofMaterial), 0.02)
+      prism(out, at.x, at.z, y, y + r * 2.2, r * 1.04, sides, o.roof, surfaceTag(o.roofMaterial), 0.02, true, ph)
       break
     case 'dome':
       dome(out, at.x, at.z, y, r * 1.05, r * 1.25, o.roof, 12)

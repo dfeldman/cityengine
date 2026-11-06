@@ -265,13 +265,14 @@ export function tourAlto(out: MeshBuilder, fit: Fit): void {
 /**
  * TOUR TRIANGLE (Herzog & de Meuron, Porte de Versailles, 180 m): a blade seen end-on and a great triangle seen side-on: its long plan, some 170 m at the foot, draws in to a short ridge at the top, and its glass is a net of big diamonds. OSM has the foot's outline, and the bake raised that to 180 m, a slab the size of a street. The long axis scales down with height; the thickness barely.
  */
+const TRIANGLE_GLASS = '#b9c3c9', TRIANGLE_BAND = '#f1f1ee', TRIANGLE_FLOOR = 4.2
 export function tourTriangle(out: MeshBuilder, fit: Fit): void {
   const r = towerRing(fit), H = fit.height || 180
   let cx = 0, cz = 0
   for (const p of r) { cx += p.x / r.length; cz += p.z / r.length }
-  // (the long axis: the ring's two farthest corners)
+  // (the long axis: the ring's longest edge; the farthest corners are a diagonal, which skewed the far rectangle's taper)
   let far = 0, ax = 1, az = 0
-  for (const p of r) for (const q of r) { const d = Math.hypot(p.x - q.x, p.z - q.z); if (d > far) { far = d; ax = (q.x - p.x) / d; az = (q.z - p.z) / d } }
+  for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length], d = Math.hypot(p.x - q.x, p.z - q.z); if (d > far) { far = d; ax = (q.x - p.x) / d; az = (q.z - p.z) / d } }
   const at = (y: number): P[] => {
     const t = y / H
     const sl = 1 - 0.9 * t, sw = 1 - 0.3 * t
@@ -281,8 +282,9 @@ export function tourTriangle(out: MeshBuilder, fit: Fit): void {
       return { x: cx + ax * u * sl - az * v * sw, z: cz + az * u * sl + ax * v * sw }
     })
   }
-  loft(out, at, 0, H, 7.2, hex('#4a6371'), hex('#5f7683'), hex('#5c686e'))
-  lattice(out, at, 0, H, 14, 14.4, 1, hex('#8e9a9f'), 0.3)
+  // white: pale glass between white floor bands (owner's photograph, 2026-11-05)
+  loft(out, at, 0, H, TRIANGLE_FLOOR, hex(TRIANGLE_GLASS), hex(TRIANGLE_BAND), hex(TRIANGLE_BAND))
+  lattice(out, at, 0, H, 14, 14.4, 1, hex(TRIANGLE_BAND), 0.3)
 }
 
 /**

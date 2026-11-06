@@ -15,6 +15,7 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPoints, waterLevels, wholeWater, type CityPackage } from '../city/package.ts'
 import type { TileLayer } from './city.ts'
 import { waterMaterial } from './water-material.ts'
+import { terraceTree } from './landmarks/paris/museums/modern.ts'
 import type { Terrain } from '../city/terrain.ts'
 
 type Rgb = [number, number, number]
@@ -39,14 +40,21 @@ const BERGE_FOOT_FLAT = 0.12
 const BERGE_MIN_DROP = 2
 const BERGE_WALL_INSET = 0.3
 const BERGE_MAX_SLOPE = 15
+// how far out from the street the water and the slope are looked for
+const BERGE_REACH = 45
 // lower quays shorter than this along the street are dropped; gaps in one shorter than BERGE_MIN_GAP are filled
-const BERGE_MIN_RUN = 60
-const BERGE_MIN_GAP = 80
+const BERGE_MIN_RUN = 16
+const BERGE_MIN_GAP = 24
 // stairs up from the lower quay, against the wall: one every BERGE_STAIR_PITCH metres of run, BERGE_STAIR_W wide
 const BERGE_STAIR_PITCH = 90
 const BERGE_STAIR_W = 1.8
 const BERGE_STAIR_RISE = 0.17
 const BERGE_STAIR_TREAD = 0.32
+// chestnuts and planes on the lower quay: one in most BERGE_TREE_PITCH metres where the paving is BERGE_TREE_MIN_W wide
+const BERGE_TREE_PITCH = 22
+const BERGE_TREE_MIN_W = 6
+const BERGE_TREE_R = 3.2
+const LEAF: Rgb = [0.36, 0.45, 0.2]
 /*
  * PARIS PLAGES (every summer since 2002): sand, parasols and deckchairs on the right bank's lower quay, the Voie
  * Georges-Pompidou from the Pont Neuf to the Pont de Sully. Local x from PLAGES_X0 to PLAGES_X1 (paris-centre frame).
@@ -94,12 +102,13 @@ function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: nu
  * river's side and its level need all of it), and each tile draws the parapet and wall pieces whose middle
  * lies in it — so a piece is drawn once, by exactly one tile.
  */
-export function quaysLayer(scene: Scene, pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrain, drop = 0): TileLayer {
+export function quaysLayer(scene: Scene, pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrain, drop = 0, lowerQuays?: string[]): TileLayer {
+  const lq = lowerQuays ? new Set(lowerQuays) : null
   const water = prepareWater(pkg, terrain, drop)
   return {
     name: 'quays',
     build(near, rect) {
-      const m = buildQuays(scene, near.tile.edges, water, terrain, drop, rect, `quays:${near.key}`, near.around.edges)
+      const m = buildQuays(scene, near.tile.edges, water, terrain, drop, rect, `quays:${near.key}`, near.around.edges, lq)
       return m ? [m] : []
     },
   }
@@ -120,7 +129,7 @@ function prepareWater(pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrai
 }
 
 function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], terrain: Terrain, drop: number,
-  rect: { x0: number; z0: number; x1: number; z1: number }, name: string, around: CityPackage['edges'] = edges): Mesh | null {
+  rect: { x0: number; z0: number; x1: number; z1: number }, name: string, around: CityPackage['edges'] = edges, lq: Set<string> | null = null): Mesh | null {
   if (water.length === 0) return null
   /*
    * A bridge's mouth is open (the Seine audit, 2026-10-30). The parapet is laid along the quay's river side and knows nothing of what leaves it: at every bridge head on a
@@ -177,7 +186,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
         let side = 0
         let edge = Infinity
         for (const sd of [-1, 1]) {
-          for (let o = d; o <= d + 40; o += 1) {
+          for (let o = d; o <= d + BERGE_REACH; o += 1) {
             if (wet(mx - uz * sd * o, mz + ux * sd * o)) { if (o < edge) { edge = o; side = sd } break }
           }
         }
@@ -185,14 +194,15 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
         if (side !== 0) {
           const at = (o: number): number => terrain.heightAt(mx - uz * side * o, mz + ux * side * o)
           const street = at(d)
-          for (let o = d; o < Math.min(edge, d + 40); o += 1) if (at(o) < street - BERGE_TOP_FALL) { top = o; break }
+          for (let o = d; o < Math.min(edge, d + BERGE_REACH); o += 1) if (at(o) < street - BERGE_TOP_FALL) { top = o; break }
           if (top > 0) {
             foot = top
             while (foot + 1 < edge && foot - top < BERGE_MAX_SLOPE && at(foot) - at(foot + 1) > BERGE_FOOT_FLAT) foot += 1
             drop = street - at(foot)
-            berge = drop >= BERGE_MIN_DROP
+            berge = drop >= BERGE_MIN_DROP && (!lq || lq.has(e.name))
           }
         }
+        if (inMouth(mx, mz) || (top > 0 && inMouth(mx - uz * side * top, mz + ux * side * top))) berge = false
         steps.push({ mx, mz, ux, uz, l, run, side, edge, top, foot, drop, berge })
       }
     }
@@ -204,9 +214,9 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
         let j = i, len = 0
         while (j < steps.length && steps[j].berge !== want) { len += steps[j].l; j++ }
         const inner = i > 0 && j < steps.length
-        if (len < min && (want || inner)) for (let k = i; k < j; k++) {
+        if (len < min && (!want || inner)) for (let k = i; k < j; k++) {
           const st = steps[k]
-          if (st.side === 0) continue
+          if (st.side === 0 || (want && inMouth(st.mx, st.mz))) continue
           if (want) {
             // a gap in a lower quay: the bank there is a hump in the terrain, not a real break. Borrow the
             // nearer side's wall line and drop
@@ -260,9 +270,14 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
           if (ap > 0.5) {
             const am = wall + ap / 2
             boxAt(out, { x: mx - uz * side * am, z: mz + ux * side * am }, footY - 0.2, ux, uz, l / 2 + 0.02, ap / 2, 0.27, SETTS, SETT)
-            // the stone kerb at the water's edge
+            // the edging stone at the water: a lip barely above the setts, no wall
             const km = wall + ap - 0.25
-            boxAt(out, { x: mx - uz * side * km, z: mz + ux * side * km }, footY - 0.2, ux, uz, l / 2 + 0.02, 0.3, 0.6, CAP, ASHLAR)
+            const tk = Math.floor(st.run / BERGE_TREE_PITCH)
+            if (ap >= BERGE_TREE_MIN_W && tk !== Math.floor((st.run - l) / BERGE_TREE_PITCH) && Math.sin(tk * 12.9898) * 43758.5 % 1 > -0.6) {
+              const to = wall + ap * 0.68
+              terraceTree(out, mx - uz * side * to, mz + ux * side * to, footY + 0.07, BERGE_TREE_R, LEAF)
+            }
+            boxAt(out, { x: mx - uz * side * km, z: mz + ux * side * km }, footY - 0.2, ux, uz, l / 2 + 0.02, 0.3, 0.39, CAP, ASHLAR)
           }
         }
         off = wall - 0.25

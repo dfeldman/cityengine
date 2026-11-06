@@ -60,6 +60,8 @@ import { PARIS_BATCH8 } from './paris/batch8/index.ts'
 import { PARIS_BATCH9 } from './paris/batch9/index.ts'
 import { PARIS_BATCH11 } from './paris/batch11/index.ts'
 import { PARIS_BATCH12 } from './paris/batch12/index.ts'
+import { PARIS_EXPO } from './paris/expo/index.ts'
+import { PARIS_ISSY } from './paris/issy/index.ts'
 import { PARIS_COMMERCIAL1 } from './paris/commercial1/index.ts'
 import { PARIS_CAROUSELS } from './paris/carousels.ts'
 import { PARIS_BATCH10 } from './paris/batch10/index.ts'
@@ -144,7 +146,7 @@ export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitAr
   // San Francisco's (render/landmarks/sf/index.ts)
   ...SF_BUILDERS,
   // Paris's families (PARIS_PARITY.md): each its own folder and its own manifest file
-  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1, ...PARIS_BUGS, ...PARIS_CITEU, ...PARIS_VINCENNES, ...PARIS_BATCH2, ...PARIS_BATCH3, ...PARIS_BATCH4, ...PARIS_BATCH5, ...PARIS_BATCH6, ...VERSAILLES_ROAD, ...PARIS_BATCH7, ...PARIS_CEINTURE, ...PARIS_DEFENSE2, ...PARIS_BATCH8, ...PARIS_BATCH9, ...PARIS_BATCH10, ...PARIS_BATCH11, ...PARIS_BATCH12, ...PARIS_COMMERCIAL1, ...PARIS_CAROUSELS,
+  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1, ...PARIS_BUGS, ...PARIS_CITEU, ...PARIS_VINCENNES, ...PARIS_BATCH2, ...PARIS_BATCH3, ...PARIS_BATCH4, ...PARIS_BATCH5, ...PARIS_BATCH6, ...VERSAILLES_ROAD, ...PARIS_BATCH7, ...PARIS_CEINTURE, ...PARIS_DEFENSE2, ...PARIS_BATCH8, ...PARIS_BATCH9, ...PARIS_BATCH10, ...PARIS_BATCH11, ...PARIS_BATCH12, ...PARIS_COMMERCIAL1, ...PARIS_EXPO, ...PARIS_ISSY, ...PARIS_CAROUSELS,
   // (the exceptions, said by kind and date: paris/kit/)
   hotelGaillard, hotelBehague, hotelPotocki, hotelColbertTorcy, hotelRohan, hotelCastries, hotelLandolfoCarcano, hotelMercyArgenteau, hotelBrienne, hotelVendome, hotelGunsburg, hotelRoquelaure, hotelMiramion, hotelSaintFlorentin, parisCivic, parisRecipe,
   barriereEnfer, bnfEsplanade, ecoleDeDroit, fontaineGambetta, railPortal, roadPortal,

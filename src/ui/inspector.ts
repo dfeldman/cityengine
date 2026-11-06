@@ -10,6 +10,7 @@
  * B Google Earth (E is the free camera's way up, with Shift to go fast), G Google Maps.
  */
 import type { Scene } from '@babylonjs/core/scene'
+import { restyleInfo } from '../city/hand-looks.ts'
 import { arrondissementOf, frontZone } from '../city/paris/arrondissements.ts'
 
 export interface InspectorSources {
@@ -142,10 +143,15 @@ export class Inspector {
     const facts = [b.style, b.height !== undefined ? `${b.height} m` : '', b.levels !== undefined ? `${b.levels} storeys` : ''].filter(Boolean).join(' · ')
     const fields = Object.entries(b).filter(([k]) => k !== 'ring' && k !== 'holes').map(([k, v]) => `  ${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join('\n')
     const ent = entries.length ? entries.map((e) => `  ${esc(String(e._file ?? '?'))}: ${esc(JSON.stringify(e))}`).join('\n') : '  (none — the city draws it from OSM alone)'
+    const rs = restyleInfo(id) ?? (partOf !== undefined ? restyleInfo(partOf) : null)
+    const restyle = rs ? `\n<span class="k">restyle</span> ${rs.applied ? 'applied' : `not applied (confidence ${esc(String((rs.label as { confidence?: number })?.confidence ?? '?'))} &lt; 2)`}`
+      + `${rs.entry ? `\n  hand entry (src/city/hand-looks.ts): ${esc(rs.entry)}` : ''}`
+      + `${rs.label ? `\n  Panoramax label (src/city/paris-looks.json): ${esc(JSON.stringify(rs.label))}` : ''}`
+      + `${rs.look ? `\n  look: ${esc(JSON.stringify(rs.look))}` : ''}\n` : ''
     this.show(named ?? `An ordinary building: ${facts}`, `${named ? `${esc(facts)}\n` : ''}${where}<span class="k">mesh</span> ${esc(name)}  <span class="k">tile</span> ${got?.tile ?? '?'}\n`
       + `<span class="k">OSM</span> ${refs.map((r) => `<a href="https://www.openstreetmap.org/${r}" target="_blank">${r}</a>`).join(' or ')}`
       + `${partOf !== undefined ? `  <span class="k">part of</span> ${osmRefs(partOf).join(' / ')}` : ''}\n`
-      + `\n<span class="k">baked</span>\n${esc(fields)}\n\n<span class="k">manifest entries naming it</span>\n${ent}\n\n<span class="k">OSM tags</span>\n<span class="osm">fetching…</span>`)
+      + `\n<span class="k">baked</span>\n${esc(fields)}\n${restyle}\n<span class="k">manifest entries naming it</span>\n${ent}\n\n<span class="k">OSM tags</span>\n<span class="osm">fetching…</span>`)
     void this.tags(refs).then((t) => { const el = this.box.querySelector('.osm'); if (el) el.textContent = t })
   }
 

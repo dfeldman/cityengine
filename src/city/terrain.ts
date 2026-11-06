@@ -186,6 +186,15 @@ export class Terrain {
    */
   shore: ((x: number, z: number, h: number) => number) | null = null
 
+  /** a park's grass kept under the streets beside it (city/grade.ts `grassAt`); null: the raw ground */
+  grass: ((x: number, z: number, raw: number) => number) | null = null
+
+  /** the raw ground as a park's grass is draped on it: below any street beside it */
+  grassHeightAt(x: number, z: number): number {
+    const raw = this.rawHeightAt(x, z)
+    return this.grass ? this.grass(x, z, raw) : raw
+  }
+
   rawHeightAt(x: number, z: number): number {
     const h = this.dataHeightAt(x, z)
     return this.shore ? this.shore(x, z, h) : h
@@ -246,7 +255,7 @@ export class Terrain {
   drapeRaw(positions: number[]): void {
     if (this.flat) return
     for (let i = 0; i < positions.length; i += 3) {
-      positions[i + 1] += this.rawHeightAt(positions[i], positions[i + 2])
+      positions[i + 1] += this.grassHeightAt(positions[i], positions[i + 2])
     }
   }
 }

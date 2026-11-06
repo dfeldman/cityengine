@@ -47,6 +47,11 @@ export interface ZoneProps {
   dry?: boolean
   /** what grows here (docs/MAP-FORMAT.md §7, src/city/zone-planting.ts) — the whole planting, winner-takes-all */
   plant?: ZonePlant
+  /**
+   * A THICKET over a city that plants without zones (Paris): trees scattered at `density` a square metre on top of the
+   * register's, off the water, `h` their height range (owner, 2026-11-05: the Buttes-Chaumont "not densely forested enough")
+   */
+  thicket?: { density: number; h: [number, number] }
   itemColour?: Record<string, number>
   palette?: Record<string, unknown>
   crowd?: number

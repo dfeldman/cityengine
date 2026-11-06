@@ -36,7 +36,11 @@ export interface TunnelEdge {
 
 /** street classes a bore may be (never motorway, trunk or service: a highway tunnel, a garage ramp) */
 const STREET = new Set(['primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link',
-  'unclassified', 'residential', 'living_street'])
+  'unclassified', 'residential', 'living_street',
+  // Paris's bike tunnels under its great squares (Tunnel de l'Étoile, Tunnel Concorde) are cycleways
+  'cycleway'])
+/** bike tunnels whatever OSM's class: the Tunnel des Tuileries is `service` (owner, 2026-11-05: "reserved for pedestrians and bicycles") */
+const BIKE_TUNNELS = new Set(['Tunnel des Tuileries', 'Tunnel Concorde', "Tunnel de l'Étoile"])
 /**
  * Under a hill: the ground never below the bore (this much over it, everywhere but near its mouths) and well above
  * it somewhere. A cover of 4 m throughout failed the Broadway Tunnel, whose east end runs in under a slope rising
@@ -90,7 +94,7 @@ function nearest(line: P[], cum: number[], q: P): { along: number; off: number }
 export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) => number,
   report?: (name: string, why: string) => void, fine?: (x: number, z: number) => number): Set<number> {
   const done = new Set<number>()
-  const isBore = (e: TunnelEdge): boolean => !!e.tunnel && !e.foot && STREET.has(e.kind ?? '')
+  const isBore = (e: TunnelEdge): boolean => !!e.tunnel && !e.foot && (STREET.has(e.kind ?? '') || BIKE_TUNNELS.has(e.name ?? ''))
   const candidates = edges.filter(isBore)
   const byNode = new Map<number, TunnelEdge[]>()
   for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
@@ -235,13 +239,17 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
     let covered = true
     let peak = -Infinity
     for (let d = 0; d <= L; d += 10) { const q = nearestPoint(line, cum, d); peak = Math.max(peak, ground(q.x, q.z) - y(d)) }
-    if (peak < (UNDER_A_BUILDING.has(name) ? SHALLOW_PEAK : PEAK)) { report?.(name, `not under a hill: at most ${peak.toFixed(1)} m of ground over it`); continue }
-    for (let i = 0; i < line.length && covered; i++) {
+    // (a known bike tunnel is a tunnel whatever the ground says: the Tuileries' quay is low on the coarse ground, and
+    //  the fill in tools/bake.ts raises the ground over its crown)
+    const known = BIKE_TUNNELS.has(name)
+    if (known) report?.(name, `the street is a known bike tunnel, ridden with at most ${peak.toFixed(1)} m of ground over it`)
+    else if (peak < (UNDER_A_BUILDING.has(name) ? SHALLOW_PEAK : PEAK)) { report?.(name, `not under a hill: at most ${peak.toFixed(1)} m of ground over it`); continue }
+    for (let i = 0; i < line.length && covered && !known; i++) {
       if (cum[i] < MOUTH || cum[i] > L - MOUTH) continue
       if (ground(line[i].x, line[i].z) - y(cum[i]) < COVER) { covered = false; report?.(name, `only ${(ground(line[i].x, line[i].z) - y(cum[i])).toFixed(1)} m of ground over it ${Math.round(cum[i])} m in`) }
     }
     // (and between the vertices, every 10 m)
-    for (let d = MOUTH; d <= L - MOUTH && covered; d += 10) {
+    for (let d = MOUTH; d <= L - MOUTH && covered && !known; d += 10) {
       const q = nearestPoint(line, cum, d)
       if (ground(q.x, q.z) - y(d) < COVER) { covered = false; report?.(name, `only ${(ground(q.x, q.z) - y(d)).toFixed(1)} m of ground over it ${Math.round(d)} m in`) }
     }
@@ -325,4 +333,99 @@ function nearestPoint(line: P[], cum: number[], d: number): P {
   while (i < line.length - 1 && cum[i] < d) i++
   const t = Math.max(0, Math.min(1, (d - cum[i - 1]) / (cum[i] - cum[i - 1] || 1)))
   return { x: line[i - 1].x + (line[i].x - line[i - 1].x) * t, z: line[i - 1].z + (line[i].z - line[i - 1].z) * t }
+}
+
+/** a road tunnel no bore takes (tools/paris-portals.ts draws its mouth): these classes, as there */
+const ROAD_TUNNEL = /^(motorway|trunk|primary|secondary)(_link)?$/
+/** a sunk mouth's road climbs back to its own level over this far (≈7% for CLEAR) */
+export const SINK_RAMP = 90
+/** a street counts as over the mouth if it crosses the tunnel within this far of it */
+const SINK_OVER = 25
+/** a near-miss join (tools/gaps.ts) at a sunk mouth is dropped when shorter than this: it would be a cliff */
+const SINK_STUB = 20
+const GAP_NODE_BASE = 9e14
+
+/**
+ * SUNK MOUTHS (owner, 2026-11-05, the Voie Georges-Pompidou under the Place de l'Alma: "the road doesn't descend…
+ * the route goes right through a tunnel entrance, when it is really supposed to be going over a submerged tunnel
+ * entrance"). A road tunnel no bore takes is neither drawn nor ridden, but its mouth is (paris-portals.ts) — and the
+ * road into it ran in at grade, the street over the tunnel crossing the portal at the same level. Where a street
+ * crosses the tunnel near a mouth, the mouth is sunk CLEAR below it and the road in ramps down to it in a cut, so the
+ * portal's headwall comes up to the street and no higher. Returns the ids of near-miss stubs to drop.
+ */
+export function sinkRoadMouths(edges: TunnelEdge[], report?: (name: string, why: string) => void): Set<number> {
+  const drop = new Set<number>()
+  const byNode = new Map<number, TunnelEdge[]>()
+  for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
+  const isT = (e: TunnelEdge): boolean => !!e.tunnel && !e.bore && !e.foot && ROAD_TUNNEL.test(e.kind ?? '')
+  const open = (e: TunnelEdge): boolean => !e.tunnel && !e.foot && (e.layer ?? 0) >= 0 && !!e.heights?.length
+  for (const t of edges) {
+    if (!isT(t)) continue
+    const tp = unpackPoints(t.points)
+    for (const n of [t.a, t.b]) {
+      const into = (byNode.get(n) ?? []).filter(open)
+      if (!into.length) continue
+      // the tunnel's first SINK_OVER metres from this mouth
+      const fromN = t.a === n ? tp : [...tp].reverse()
+      const fc = lengths(fromN)
+      const mouth = fromN[0]
+      let top = -Infinity
+      for (const o of edges) {
+        if (!open(o) || o.a === n || o.b === n || /^(service|footway|cycleway|path|steps)$/.test(o.kind ?? '')) continue
+        const op = unpackPoints(o.points)
+        if (op.every((q) => Math.hypot(q.x - mouth.x, q.z - mouth.z) > SINK_OVER + 60)) continue
+        const oc = lengths(op)
+        for (let d = 2; d <= Math.min(SINK_OVER, fc[fc.length - 1]); d += 2) {
+          const hit = nearest(op, oc, nearestPoint(fromN, fc, d))
+          if (hit.off > (o.width ?? 8) / 2 + 1) continue
+          const k = Math.min(o.heights!.length - 1, Math.round((hit.along / (oc[oc.length - 1] || 1)) * (o.heights!.length - 1)))
+          top = Math.max(top, o.heights![k])
+        }
+      }
+      if (!Number.isFinite(top)) continue
+      const y = top - CLEAR
+      const here = Math.min(...into.map((o) => (o.a === n ? o.heights![0] : o.heights![o.heights!.length - 1])))
+      if (here <= y + 0.3) continue
+      const name = t.name ?? `tunnel ${t.id}`
+      // the road straight on out of the mouth ramps down to it, along its chain for SINK_RAMP metres
+      const out = { x: fromN[0].x - fromN[Math.min(1, fromN.length - 1)].x, z: fromN[0].z - fromN[Math.min(1, fromN.length - 1)].z }
+      const ol = Math.hypot(out.x, out.z) || 1
+      let ramped = 0
+      for (const o of into) {
+        const op = unpackPoints(o.points)
+        const len = lengths(op)[op.length - 1]
+        const far = o.a === n ? o.b : o.a
+        // a near-miss join or a scrap to another road: a cliff once the mouth is sunk
+        if (len < SINK_STUB && (far >= GAP_NODE_BASE || n >= GAP_NODE_BASE)) { drop.add(o.id); continue }
+        const away = o.a === n ? op : [...op].reverse()
+        const k = Math.min(away.length - 1, 1)
+        const dir = { x: away[k].x - away[0].x, z: away[k].z - away[0].z }
+        if ((dir.x * out.x + dir.z * out.z) / (ol * (Math.hypot(dir.x, dir.z) || 1)) < 0.5) continue
+        // walk the chain on from the mouth
+        let node = n, cur: TunnelEdge | undefined = o, run = 0
+        while (cur && run < SINK_RAMP) {
+          const p = unpackPoints(cur.points)
+          const c = lengths(p)
+          const L = c[c.length - 1]
+          const fromA = cur.a === node
+          const start = run
+          cur.heights = cur.heights!.map((h, i) => {
+            const d = start + (fromA ? c[i] : L - c[i])
+            if (d >= SINK_RAMP) return h
+            const s = d / SINK_RAMP
+            return Math.round(Math.min(h, y + (h - y) * s * s * (3 - 2 * s)) * 100) / 100
+          })
+          cur.cut = true
+          ramped++
+          run += L
+          node = fromA ? cur.b : cur.a
+          const prev: TunnelEdge = cur
+          const next = (byNode.get(node) ?? []).filter((x) => x !== prev && open(x) && x.name === prev.name && x.kind === prev.kind)
+          cur = next.length === 1 ? next[0] : undefined
+        }
+      }
+      if (ramped) report?.(name, `mouth sunk ${(here - y).toFixed(1)} m under the street over it, ${ramped} way(s) ramped down to it`)
+    }
+  }
+  return drop
 }

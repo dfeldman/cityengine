@@ -476,6 +476,16 @@ const LINES: Record<number, string[]> = {
   1: ['Finally.', 'Was that a scenic route?', 'It looks like it fell off the bike.'],
 }
 
+/** Paris customers (owner, 2026-11-05): French, but basic enough to read without any, with patchy English and swearing. */
+const PARIS_LINES: Record<number, string[]> = {
+  5: ['Magnifique! Très très bien!', 'Oh là là, super rapide! Merci!!', 'C\'est chaud! Hot! Parfait!', 'Bravo! Champion! Merci beaucoup!'],
+  4: ['Merci! Très bien!', 'Super, merci!', 'Bon! Good! À bientôt!'],
+  3: ['Oui, merci.', 'Bof. OK.', 'Ça va. Merci.'],
+  2: ['Merde, c\'est froid! Cold!', 'Très lent... slow, monsieur!', 'Oh là là... pas bien.'],
+  1: ['Putain! Enfin!!', 'Merde alors! Non non non!', 'Catastrophe! Is cold! Is broken!'],
+}
+export const PARIS_ATE_LINES = ['Où est ma pizza?? Merde!', 'Vous avez MANGÉ?! Non! Une étoile!', 'Putain! Is empty! Voleur!']
+
 /**
  * THE RATING (2026-10-01, for the demo: a delivery should feel like it was worth doing). The time is judged against
  * what the job's distance takes at `pace` m/s (the world speed of a steady rider in this mode, the speedup counted),
@@ -486,7 +496,7 @@ const LINES: Record<number, string[]> = {
 export const ATE_LINES = ['Where is my food?? Never ordering again.', 'Did you EAT it? One star.', 'The app says delivered. My plate says otherwise.',
   'I can see crumbs in your beard on the doorbell camera.', 'Refund requested. Courier reported.']
 
-export function rate(job: Job, seconds: number, bumps: number, level: number, pace: number, pick = Math.random()): Rating {
+export function rate(job: Job, seconds: number, bumps: number, level: number, pace: number, pick = Math.random(), paris = false): Rating {
   const expected = Delivery.expected(job, pace)
   const r = seconds / expected
   let stars = r <= 0.8 ? 5 : r <= 1.0 ? 4 : r <= 1.3 ? 3 : r <= 1.7 ? 2 : 1
@@ -495,6 +505,6 @@ export function rate(job: Job, seconds: number, bumps: number, level: number, pa
   const half = (v: number): number => Math.round(v * 2) / 2
   const fee = half((3 + 2 * job.metres / 1000) * boost)
   const tip = half([0, 0, 0.5, 1.5, 2.5, 4][stars] * boost)
-  const lines = LINES[stars]
+  const lines = (paris ? PARIS_LINES : LINES)[stars]
   return { stars, fee, tip, line: lines[Math.floor(pick * lines.length) % lines.length] }
 }

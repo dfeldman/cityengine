@@ -65,6 +65,9 @@ const FREEWAY_MIN_RISE = 6
  *  level deck between, rather than crest once in the middle (see `bridgeHeights`). */
 const VIADUCT_LENGTH = 200
 const VIADUCT_EASE = 80
+/** A viaduct whose ends stand further apart in height than this follows the slope between them, not the higher end's level
+ *  (the Périphérique from Porte de Vanves down to Issy, 2026-11-05: held at the Vanves end's 24.9 m for 1.5 km, then 21 m down in 100 m) */
+const VIADUCT_SLOPE_FROM = 4
 
 const pts = (flat: number[]): Pt[] => {
   const out: Pt[] = []
@@ -605,16 +608,19 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     // a kilometres-long freeway run instead of the flat elevated run it actually is
     const viaduct = isFreeway && L > VIADUCT_LENGTH
     // (…and at a grade a road has: the Périphérique came off the Pont Aval at 30%, 15 m down in the 80 m allowed here, to the ground at the Quai d'Issy)
-    const ease = world.liftAbutments ? Math.min(L / 2.2, Math.max(VIADUCT_EASE, (top - Math.min(h0, h1)) / 0.05)) : Math.min(VIADUCT_EASE, L / 3)
+    const sloped = viaduct && Math.abs(h0 - h1) > VIADUCT_SLOPE_FROM
+    const ease = world.liftAbutments ? Math.min(L / 2.2, Math.max(VIADUCT_EASE, ((sloped ? top - Math.max(h0, h1) : top - Math.min(h0, h1))) / 0.05)) : Math.min(VIADUCT_EASE, L / 3)
     segs.forEach((sg, k) => {
       const cum = cumulative(sg.p)
       const hs = cum.map((c) => {
         const t = L > 0 ? (starts[k] + c) / L : 0
         if (viaduct) {
           const d = starts[k] + c
-          let v = top
-          if (d < ease) v = h0 + (top - h0) * (1 - Math.cos(Math.PI * (d / ease))) / 2
-          else if (L - d < ease) v = h1 + (top - h1) * (1 - Math.cos(Math.PI * ((L - d) / ease))) / 2
+          // the higher end's clearance carried down the line between the ends
+          const deck = sloped ? top - Math.max(h0, h1) + h0 + (h1 - h0) * t : top
+          let v = deck
+          if (d < ease) v = h0 + (deck - h0) * (1 - Math.cos(Math.PI * (d / ease))) / 2
+          else if (L - d < ease) v = h1 + (deck - h1) * (1 - Math.cos(Math.PI * ((L - d) / ease))) / 2
           return Math.round(v * 100) / 100
         }
         const base = h0 + (h1 - h0) * t
@@ -632,7 +638,8 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
       const end = chain[chain.length - 1]
       const a = first.reversed ? first.e.b : first.e.a
       const b = end.reversed ? end.e.a : end.e.b
-      for (const node of [a, b]) deckAt.set(node, Math.max(deckAt.get(node) ?? -Infinity, top))
+      // (a sloped viaduct has eased to its ends' own heights there: a ramp up to `top` stood 21 m over its end)
+      for (const [node, y] of [[a, sloped ? h0 : top], [b, sloped ? h1 : top]] as const) deckAt.set(node, Math.max(deckAt.get(node) ?? -Infinity, y))
     }
   }
 

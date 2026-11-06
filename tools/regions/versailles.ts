@@ -63,6 +63,19 @@ export const VERSAILLES_REGIONS: DetailRegion[] = [
     rings: [[[48.82950, 2.18650], [48.82950, 2.19150], [48.82550, 2.19150], [48.82550, 2.18650]]],
   },
   {
+    name: "Ville-d'Avray, between the forests",
+    // owner, 2026-11-05: the pocket between Fausses-Reposes, Saint-Cloud and the old centre (48.8240, 2.1857)
+    // rode as empty fringe; this fills it, east to Sèvres' edge.
+    margin: 40,
+    rings: [[[48.83050, 2.18300], [48.83050, 2.19700], [48.82900, 2.20550], [48.82150, 2.20550], [48.82000, 2.19500], [48.81400, 2.18850], [48.81450, 2.18350], [48.82200, 2.18150], [48.82700, 2.18150]]],
+  },
+  {
+    name: "Versailles-Montreuil, by the forest",
+    // owner, 2026-11-05: off the route's corridor at 48.8131, 2.1510, between the forest's edge and the old N10
+    margin: 40,
+    rings: [[[48.81750, 2.14500], [48.81750, 2.15250], [48.81000, 2.15300], [48.80600, 2.14700], [48.80600, 2.13700], [48.81250, 2.13700]]],
+  },
+  {
     name: "The N10's squares",
     // set back a little more than the corridor's 100 m: Chaville's mairie and its square, the old Manufacture de Sèvres, Sèvres' Hôtel de Ville
     margin: 90,

@@ -23,6 +23,13 @@ interface Seg {
   squareA?: boolean; squareB?: boolean
 }
 
+/** how far past a corridor a park's grass is still held under the street (m); a park triangle is up to 8 m */
+export const GRASS_MARGIN = 8
+/** how far under the street's level the grass is held inside its corridor (m) */
+export const GRASS_DROP = 0.12
+/** how fast the cap rises away from the corridor (m per m), back to the raw ground by the margin */
+export const GRASS_SLOPE = 0.5
+
 export class StreetGrade {
   /** each segment of each street at grade, with its heights at both ends and its half-width, in 10 m cells */
   // (keyed by number: a string key built per query was half this class's cost, every wheel of every car every frame)
@@ -47,10 +54,11 @@ export class StreetGrade {
       if (e.ramp) { sg.squareA = i === 2; sg.squareB = i === e.points.length - 2 }
       if (e.ramp && i === 2) this.rampEnds.set(endKey(sg.ax, sg.az), (this.rampEnds.get(endKey(sg.ax, sg.az)) ?? 0) + 1)
       if (e.ramp && i === e.points.length - 2) this.rampEnds.set(endKey(sg.bx, sg.bz), (this.rampEnds.get(endKey(sg.bx, sg.bz)) ?? 0) + 1)
-      const x0 = Math.floor((Math.min(sg.ax, sg.bx) - half) / 10)
-      const x1 = Math.floor((Math.max(sg.ax, sg.bx) + half) / 10)
-      const z0 = Math.floor((Math.min(sg.az, sg.bz) - half) / 10)
-      const z1 = Math.floor((Math.max(sg.az, sg.bz) + half) / 10)
+      const reach = half + GRASS_MARGIN
+      const x0 = Math.floor((Math.min(sg.ax, sg.bx) - reach) / 10)
+      const x1 = Math.floor((Math.max(sg.ax, sg.bx) + reach) / 10)
+      const z0 = Math.floor((Math.min(sg.az, sg.bz) - reach) / 10)
+      const z1 = Math.floor((Math.max(sg.az, sg.bz) + reach) / 10)
       for (let gx = x0; gx <= x1; gx++) for (let gz = z0; gz <= z1; gz++) {
         const k = cellKey(gx, gz)
         const list = this.cells.get(k)
@@ -93,6 +101,30 @@ export class StreetGrade {
       if (best === null || h > best) best = h
     }
     return best
+  }
+
+  /**
+   * Raw ground for a park's grass, kept under the streets beside it (owner, 2026-11-05, Route de Versailles at
+   * 48.8168, 2.1615: "the grass visually sticks out of the road"). A park's fine ground is draped raw, and its
+   * bumps — and its 8 m triangles chording from the bank above a street — stood through the levelled road. Within a
+   * corridor plus GRASS_MARGIN the grass is held GRASS_DROP below the street, fading back to the raw ground by the
+   * margin's edge so no cliff is drawn.
+   */
+  grassAt(x: number, z: number, raw: number): number {
+    const list = this.cells.get(cellKey(Math.floor(x / 10), Math.floor(z / 10)))
+    if (!list) return raw
+    let h = raw
+    for (const sg of list) {
+      if (sg.cut) continue
+      const dx = sg.bx - sg.ax, dz = sg.bz - sg.az, l2 = dx * dx + dz * dz || 1e-9
+      const t = Math.max(0, Math.min(1, ((x - sg.ax) * dx + (z - sg.az) * dz) / l2))
+      const ex = x - sg.ax - dx * t, ez = z - sg.az - dz * t
+      const d = Math.sqrt(ex * ex + ez * ez) - sg.half
+      if (d > GRASS_MARGIN) continue
+      const cap = sg.ha + (sg.hb - sg.ha) * t - GRASS_DROP + Math.max(0, d) * GRASS_SLOPE
+      if (cap < h) h = cap
+    }
+    return h
   }
 
   private nearest(x: number, z: number): { h: number; cut: boolean } | null {

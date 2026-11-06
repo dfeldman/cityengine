@@ -109,7 +109,7 @@ export function streetRailsLayer(scene: Scene, terrain: Terrain, underStreets = 
     build(near, rect) {
       // tram track AND heavy rail: a Caltrain yard with trains standing on bare asphalt was the giveaway that
       // only trams were drawn here (user, 2026-09-22: "dozens of trains … but no train tracks")
-      const rails = (near.tile.rails ?? []).filter((r) => (r.kind === 'tram' || r.kind === 'rail') && !r.heights)
+      const rails = (near.tile.rails ?? []).filter((r) => (r.kind === 'tram' || r.kind === 'rail' || r.kind === 'subway') && !r.heights)
       const funiculars = (near.tile.rails ?? []).filter((r) => r.funicular && r.heights)
       if (rails.length === 0 && funiculars.length === 0) return []
       const out = new MeshBuilder()
@@ -117,12 +117,14 @@ export function streetRailsLayer(scene: Scene, terrain: Terrain, underStreets = 
       for (const r of funiculars) funicularTrack(out, unpackPoints(r.points), r.heights!, inRect)
       for (const r of rails) {
         const pts = unpackPoints(r.points)
+        // (a metro yard at the surface — the line 10 depot at Boulogne, owner 2026-11-05 — is ballasted like heavy rail)
+        const heavy = r.kind === 'rail' || r.kind === 'subway'
         const g = r.cable ? 1.067 : 1.435
         // (just proud of the road surface, which is draped a few centimetres over the ground)
-        const lift = r.kind === 'rail' ? 0.34 : 0.14
-        const ground = underStreets && r.kind === 'rail' ? bed : terrain
+        const lift = heavy ? 0.34 : 0.14
+        const ground = underStreets && heavy ? bed : terrain
         // heavy rail rides on its own ballast shoulder, with sleepers across it; tram track is set flush in the street
-        if (r.kind === 'rail') {
+        if (heavy) {
           strip(out, pts, -2.0, 2.0, 0.08, r.disused ? OVERGROWN : BALLAST, ground, inRect)
           sleepers(out, pts, ground, inRect)
         }

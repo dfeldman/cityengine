@@ -310,4 +310,10 @@ const billancourt = (): GardenPlan => {
   )
 }
 
-export const BATCH6_GARDENS: GardenPlan[] = [clos(), brassensHalls(), reuilly(), ...bagatelle(), kahnJapon(), arenes(), ...saintCloud(), ...malraux(), billancourt()]
+/**
+ * THE SQUARE BRIGNOLE-GALLIERA: OSM's lawns are the cadastre's, and its oval walk is drawn over them, so the lawn-edge hedges
+ * and path shrubs crossed the walk (owner, 2026-11-05: "misaligned with the paths"). Left plain lawn round the oval.
+ */
+const galliera = (): GardenPlan => ringOnly('Square Brignole-Galliera', [[48.8649, 2.2959], [48.8649, 2.2972], [48.86555, 2.2972], [48.86555, 2.2959]])
+
+export const BATCH6_GARDENS: GardenPlan[] = [galliera(), clos(), brassensHalls(), reuilly(), ...bagatelle(), kahnJapon(), arenes(), ...saintCloud(), ...malraux(), billancourt()]

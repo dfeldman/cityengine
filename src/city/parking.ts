@@ -30,6 +30,8 @@ export interface Stall {
    */
   y?: number
   grade?: number
+  /** a kerb bay's car (render/city.ts `kerbBays`), not a lot's: its bay has its own paint */
+  kerb?: boolean
 }
 
 const W = 2.6          // stall width

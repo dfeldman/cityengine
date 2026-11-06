@@ -22,8 +22,11 @@ const CELL = 250
 export class PlantZones {
   private readonly cells = new Map<string, LocalZone[]>()
   readonly count: number
+  /** zones with a `thicket` (map/format.ts), for the zone-less pass */
+  readonly thickets: LocalZone[]
 
   constructor(zones: LocalZone[]) {
+    this.thickets = zones.filter((z) => z.props.thicket)
     const planted = zones.filter((z) => z.props.plant).sort((a, b) => b.priority - a.priority)
     this.count = planted.length
     for (const zn of planted) {

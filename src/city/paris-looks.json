@@ -2379,6 +2379,23 @@
   "wall": "#2a2820",
   "windows": "punched"
  },
+ "228288777": {
+  "balconies": "none",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": true,
+  "glass": "#3a3428",
+  "ground": "#5a4a3a",
+  "material": "metal",
+  "note": "Gold-yellow louvred facade with dark vertical fins; the target sits between the lines in photos 1-2, mostly hidden by trees and nearer building in photo 3.",
+  "seen": 2,
+  "src": "aurelium.json",
+  "storeys": 8,
+  "trim": "#8a7a5a",
+  "wall": "#c9a24a",
+  "windows": "punched"
+ },
  "228991879": {
   "balconies": "rails",
   "bands": true,

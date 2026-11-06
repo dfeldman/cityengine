@@ -1,0 +1,60 @@
+[
+  {
+    "osm": ["way/42736338"],
+    "name": "Pavillon 5 (Paris Expo)",
+    "procedural": "pavilion5",
+    "height": 24,
+    "noShops": true,
+    "note": "expo/pavilion5.ts: OSM ring walled in cladding and glass, roof a sine surface (6 waves, 3.2 m amplitude, along the long axis, pale); wave count, amplitude, heights and colours are estimates, no photo read",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": ["way/23811464"],
+    "name": "Pavillon 7 (Paris Convention Centre)",
+    "procedural": "pavilion7",
+    "height": 28,
+    "noShops": true,
+    "note": "expo/pavilion7.ts: 185 m box, glass and metal walls with mullions, pale roof with glazed rooflight strips; height and colours are estimates, no photo read",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": ["way/404252944"],
+    "name": "Pavillon 1 (Paris Expo)",
+    "procedural": "pavilion1",
+    "height": 24,
+    "front": 135,
+    "noShops": true,
+    "note": "expo/pavilion1.ts: metal hall, SE front (bearing 135, a guess at the Porte de Versailles side) in coloured glass panels; colours, height and which face are estimates, no photo read",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": ["way/42736344"],
+    "name": "Pavillon 4 (Paris Expo)",
+    "procedural": "pavilion4",
+    "height": 17,
+    "noShops": true,
+    "note": "expo/pavilion4.ts: plain shed, grey-blue cladding, shallow gable; estimates, no photo read",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": ["way/754205326"],
+    "name": "Pavillon 6 (Paris Expo)",
+    "procedural": "pavilion6",
+    "height": 15,
+    "noShops": true,
+    "note": "expo/pavilion6.ts: plain shed, white-grey cladding, shallow gable; estimates, no photo read",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Paris Expo entrance fountain",
+    "procedural": "fountainExpo",
+    "lat": 48.831551,
+    "lon": 2.2884104,
+    "size": [20, 20],
+    "front": 180,
+    "height": 12,
+    "kind": "fountain",
+    "note": "expo/fountainExpo.ts: OSM node/6993689786 amenity=fountain; round basin 9 m radius, central jet and ring of jets; estimates, no photo read",
+    "madeBy": "claude-sonnet-5-5"
+  }
+]

@@ -1,0 +1,158 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Four-pane viewer</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/mapillary-js@4.1.2/dist/mapillary.css">
+<script src="https://unpkg.com/mapillary-js@4.1.2/dist/mapillary.js"></script>
+<style>
+  html,body{margin:0;height:100%;font:13px system-ui;background:#111;color:#eee}
+  #bar{height:32px;display:flex;gap:10px;align-items:center;padding:0 10px;white-space:nowrap;overflow:hidden}
+  #grid{display:grid;grid-template:1fr 1fr/1fr 1fr;gap:3px;height:calc(100% - 32px)}
+  #grid>*{width:100%;height:100%;border:0;background:#222;position:relative}
+  #street>*{position:absolute;inset:0;width:100%;height:100%;border:0}
+  input,select,button{background:#222;color:#eee;border:1px solid #444;font:inherit}
+  #go{width:190px} #hd{width:44px}
+  code{user-select:all}
+</style></head><body>
+<div id="bar">
+  <button id="sf">SF</button><button id="paris">Paris</button>
+  <code id="ll">—</code>
+  <input id="go" placeholder="lat,lon + Enter">
+  <select id="src"><option value="google">Street View</option><option value="mapillary">Mapillary</option><option value="panoramax">Panoramax</option></select>
+  heading <input id="hd" type="number"> <button id="send">→ game</button>
+  <label><input id="sync" type="checkbox" checked> live</label>
+  <button id="keys">keys</button>
+  <span id="msg"></span>
+</div>
+<div id="grid">
+  <div id="gmap"></div>
+  <iframe id="osm"></iframe>
+  <div id="street"></div>
+  <iframe id="cd" allow="autoplay; fullscreen"></iframe>
+</div>
+<script>
+// ---- tunables ----
+const GAME = 'http://localhost:5200/'
+const GAME_FLAGS = '&dev=1&edit=1'
+const PLACES = { sf: [37.7793, -122.4193], paris: [48.8584, 2.2945] }
+const cityOf = (lat, lon) => lon > -50 ? 'paris-centre' : 'san-francisco'
+const LOOK_DEBOUNCE_MS = 400            // heading changes → game, at most this often
+const PANORAMAX = 'https://api.panoramax.xyz'
+const NEAR_M = 60                       // photo search radius
+
+const $ = (id) => document.getElementById(id)
+const store = { get: (k) => { try { return localStorage.getItem(k) || '' } catch { return '' } }, set: (k, v) => { try { localStorage.setItem(k, v) } catch {} } }
+const msg = (t) => { $('msg').textContent = t }
+let here = PLACES.sf, heading = null, gameCity = null, gameReady = false, pendingJump = null
+
+// ---- map + OSM (zoom follows the map) ----
+const map = L.map('gmap').setView(here, 17)
+L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { subdomains: '0123', maxZoom: 21 }).addTo(map)
+const pin = L.marker(here).addTo(map)
+const arrow = L.polyline([], { color: '#ff0', weight: 3 }).addTo(map)
+function syncOsm() {
+  const b = map.getBounds()
+  $('osm').src = `https://www.openstreetmap.org/export/embed.html?bbox=${b.getWest()},${b.getSouth()},${b.getEast()},${b.getNorth()}&layer=mapnik&marker=${here[0]},${here[1]}`
+}
+map.on('moveend', syncOsm)
+
+// ---- the game ----
+addEventListener('message', (e) => {
+  if (e.source !== $('cd').contentWindow || !e.data || !('cdJumped' in e.data)) return
+  gameReady = true
+  if (pendingJump) { pendingJump = null; msg(e.data.cdJumped ? 'game jumped (frozen view)' : 'no rideable street near there') }
+})
+function jumpGame() {
+  const city = cityOf(...here)
+  const h = heading ?? undefined
+  if (city !== gameCity) {
+    gameCity = city; gameReady = false
+    msg('loading cycle dash…')
+    $('cd').src = `${GAME}?city=${city}${GAME_FLAGS}&at=${here[0].toFixed(6)},${here[1].toFixed(6)}`
+  }
+  pendingJump = [here[0], here[1], h]
+}
+// retry until the game's listener answers (covers the 30 s first load)
+setInterval(() => { if (pendingJump) $('cd').contentWindow?.postMessage({ cdJump: pendingJump }, '*') }, 1000)
+let lookT = 0
+function setHeading(h, fromViewer) {
+  if (h == null || !isFinite(h)) return
+  heading = ((h % 360) + 360) % 360
+  $('hd').value = Math.round(heading)
+  const r = heading * Math.PI / 180, d = 0.0004
+  arrow.setLatLngs([here, [here[0] + Math.cos(r) * d, here[1] + Math.sin(r) * d / Math.cos(here[0] * Math.PI / 180)]])
+  if (fromViewer && !$('sync').checked) return
+  clearTimeout(lookT)
+  lookT = setTimeout(() => { if (gameReady && !pendingJump) $('cd').contentWindow.postMessage({ cdLook: heading }, '*') }, LOOK_DEBOUNCE_MS)
+}
+
+// ---- street imagery: each returns a promise once it has shown something ----
+let mly = null, gpano = null
+const street = {
+  async google(lat, lon) {
+    const key = store.get('gkey')
+    if (!key) {   // keyless embed: no heading out of it
+      $('street').innerHTML = `<iframe src="https://maps.google.com/maps?layer=c&cbll=${lat},${lon}&cbp=11,${heading ?? 0},0,0,0&output=svembed"></iframe>`
+      return
+    }
+    if (!window.google?.maps) await new Promise((ok) => { window.__g = ok; const s = document.createElement('script'); s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=__g`; document.head.append(s) })
+    $('street').innerHTML = '<div></div>'
+    gpano = new google.maps.StreetViewPanorama($('street').firstChild, { position: { lat, lng: lon }, pov: { heading: heading ?? 0, pitch: 0 } })
+    gpano.addListener('pov_changed', () => setHeading(gpano.getPov().heading, true))
+  },
+  async mapillary(lat, lon) {
+    const token = store.get('mlytoken')
+    if (!token) { $('street').innerHTML = '<p style="padding:1em">Mapillary needs a client token: press <b>keys</b>.</p>'; return }
+    const d = NEAR_M / 111000
+    const r = await fetch(`https://graph.mapillary.com/images?access_token=${token}&fields=id,compass_angle,geometry&bbox=${lon - d},${lat - d},${lon + d},${lat + d}&limit=50`).then((r) => r.json())
+    const best = (r.data || []).sort((a, b) => dist(a.geometry.coordinates) - dist(b.geometry.coordinates))[0]
+    if (!best) { $('street').innerHTML = '<p style="padding:1em">No Mapillary photo nearby.</p>'; return }
+    $('street').innerHTML = '<div></div>'
+    mly?.remove()
+    mly = new mapillary.Viewer({ accessToken: token, container: $('street').firstChild, imageId: best.id })
+    setHeading(best.compass_angle, true)
+    mly.on('bearing', (e) => setHeading(e.bearing, true))
+  },
+  async panoramax(lat, lon) {
+    const r = await fetch(`${PANORAMAX}/api/search?place_position=${lon},${lat}&place_distance=0-${NEAR_M}&limit=1`).then((r) => r.json())
+    const f = r.features?.[0]
+    if (!f) { $('street').innerHTML = '<p style="padding:1em">No Panoramax photo nearby.</p>'; return }
+    // (its viewer is another site in a frame: the heading synced is the photo's own azimuth, not where you turn)
+    setHeading(f.properties?.['view:azimuth'], true)
+    $('street').innerHTML = `<iframe src="${PANORAMAX}/#focus=pic&pic=${f.id}&map=17/${lat}/${lon}"></iframe>`
+  },
+}
+const dist = ([lo, la]) => (la - here[0]) ** 2 + ((lo - here[1]) * Math.cos(here[0] * Math.PI / 180)) ** 2
+async function showStreet() {
+  mly?.remove(); mly = null; gpano = null
+  try { await street[$('src').value](...here) } catch (e) { msg(`${$('src').value}: ${e.message}`) }
+}
+
+// ---- go somewhere ----
+async function go(lat, lon) {
+  here = [lat, lon]
+  $('ll').textContent = `${lat.toFixed(6)},${lon.toFixed(6)}`
+  pin.setLatLng(here); arrow.setLatLngs([])
+  syncOsm()
+  await showStreet()        // may set the heading from the photo first
+  jumpGame()
+}
+
+map.on('click', (e) => go(e.latlng.lat, e.latlng.lng))
+for (const k of ['sf', 'paris']) $(k).onclick = () => { map.setView(PLACES[k], 17); go(...PLACES[k]) }
+$('go').onkeydown = (e) => {
+  if (e.key !== 'Enter') return
+  const [a, b] = e.target.value.split(/[ ,]+/).map(Number)
+  if (isFinite(a) && isFinite(b)) { map.setView([a, b]); go(a, b) }
+}
+$('src').onchange = () => { store.set('src', $('src').value); showStreet() }
+$('send').onclick = () => setHeading(Number($('hd').value), false)
+$('hd').onkeydown = (e) => { if (e.key === 'Enter') $('send').click() }
+$('keys').onclick = () => {
+  const g = prompt('Google Maps JS API key (blank = keyless embed, no heading sync)', store.get('gkey')); if (g !== null) store.set('gkey', g.trim())
+  const m = prompt('Mapillary client token', store.get('mlytoken')); if (m !== null) store.set('mlytoken', m.trim())
+  showStreet()
+}
+$('src').value = store.get('src') || 'google'
+go(...here)
+</script></body></html>

@@ -21,6 +21,12 @@ import { mairie5e } from './museums/mairie-5e.ts'
 
 const FIXED = 0
 const DARK: Rgb = [0.09, 0.09, 0.1]
+/** a mouth sunk this far under the street behind it (tools/tunnels.ts `sinkRoadMouths`) gets a parapet this high over that street */
+const SUNK = 4.5
+const PARAPET = 1.1
+/** a mouth's bank of earth behind it falls this many metres back per metre down, in this green */
+const BANK_SLOPE = 1.6
+const BANK: Rgb = [0.09, 0.17, 0.05]
 
 export function barriereEnfer(out: MeshBuilder, fit: Fit): void {
   const H = 12
@@ -71,11 +77,12 @@ function portal(out: MeshBuilder, fit: Fit, stone: Rgb, road: boolean): void {
    * to the street behind and no higher, where there is one. In the open it stands as high as its arch.
    */
   const g = (x: number, z: number): number => fit.groundAt ? fit.groundAt(x, z) : 0
-  const track = g(0, hz + 2)
+  // (the lowest road or track across the front: a dual road's mouth is centred BETWEEN its carriageways, off both cuts)
+  const track = Math.min(...[-0.8, -0.4, 0, 0.4, 0.8].map((f) => g(hx * f, hz + 2)))
   const street = Math.max(g(0, -hz - 5), g(-hx * 0.6, -hz - 5), g(hx * 0.6, -hz - 5)) - track
   // (a mouth let in between two tracks is narrower than a pier and a half each side: tools/rail-levels.ts `railMouths`; a road's keeps its width)
   const span = road ? Math.max(4.5, hx - 3) : Math.max(Math.min(4.5, hx - 0.8), hx - 3)
-  const room = street > 7 ? street - 0.4 : Math.max(7, fit.height)
+  const room = street > 7 ? street - 0.4 : street > SUNK ? street + PARAPET : Math.max(7, fit.height)
   const rise = road ? 0.5 : Math.max(1.2, Math.min(span * 0.75, 5.5, room - 5))
   const springing = road ? Math.min(5, room - rise - 0.5) : Math.min(4, room - rise - 0.5)
   const top = track + Math.max(room, springing + rise + 0.5)
@@ -102,6 +109,20 @@ function portal(out: MeshBuilder, fit: Fit, stone: Rgb, road: boolean): void {
   }
   box(out, 0, top - 0.1, 0, span, 0.1, hz - 0.5, DARK, FIXED)
   box(out, 0, top + 0.05, 0, span + 0.35, 0.05, hz - 0.5, stone, ash)
+  /*
+   * From BEHIND, a bank of earth over it (owner, 2026-11-05: train mouths "equally bad"). Where nothing rises behind a mouth —
+   * the Petite Ceinture's at 48.833081, 2.290562 runs on under level lawn — the culvert stood 8 m over the grass, a stone block
+   * in a field. Banked down from the coping to the ground behind, at BANK_SLOPE, it reads as the hill the track goes into.
+   */
+  const behind = Math.max(g(-hx * 0.6, -hz - 2), g(hx * 0.6, -hz - 2), g(0, -hz - 2))
+  if (top - behind > 1.5) {
+    const W = hx + 0.3, L = (top - behind) * BANK_SLOPE, z0 = -hz - 0.02, z1 = z0 - L, lo = behind - 0.3
+    quadN(out, [[-W, top + 0.25, z0], [W, top + 0.25, z0], [W + L * 0.5, lo, z1], [-W - L * 0.5, lo, z1]], [0, 1, -0.5], BANK, FIXED)
+    for (const sg of [-1, 1]) {
+      // each flank, from the wall's end down to the ground beside and behind it
+      quadN(out, [[sg * W, top + 0.25, z0], [sg * (W + L * 0.5), lo, z1], [sg * (W + L * 0.5), lo, z0], [sg * (W + L * 0.25), lo, z0]], [sg, 1, 0], BANK, FIXED)
+    }
+  }
   // and the voussoirs round the arch, a paler ring
   if (!road) for (let k = 0; k < seg; k++) {
     const a = ((k + 0.5) / seg) * Math.PI

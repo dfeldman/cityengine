@@ -20,9 +20,13 @@ export interface BuildingFacts {
   /** the region's own records of the building, where it has them (SF's Assessor rolls: tools/sf-parcels.ts) */
   record?: { year?: number; stories?: number; units: number; use?: string; construction?: string; parcels: number
     /** Paris: BD TOPO's wall and roof material codes (tools/paris-bdtopo.ts) */
-    walls?: string; roofMat?: string }
+    walls?: string; roofMat?: string
+    /** Paris: who lives there (BD TOPO usage_1, nombre_de_logements, nature): one dwelling is a house */
+    usage?: string; dwellings?: number; nature?: string }
 }
-export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId; district: string; rule: string } | null
+export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId; district: string; rule: string
+  /** a house's wall (src/city/paris/house.ts): 'brick', 'millstone', 'render' or 'stone' */
+  wall?: string } | null
 
 const CLASSIFIERS: Record<string, Classifier> = { 'san-francisco': classifySF, paris: classifyParis }
 

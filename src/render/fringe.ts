@@ -11,6 +11,7 @@
  *
  * One mesh per style for the whole ring: it is all far away and all static, so nothing is gained by tiling.
  */
+import { areaPalettes, handLook } from '../city/hand-looks.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
@@ -59,10 +60,10 @@ export function massing(scene: Scene, list: PackedFringe[], reg: Region, terrain
     // a building with no style (a restyle or a v3 style index that did not resolve) takes the region's first, rather
     // than throwing out of the frame loop (owner, 2026-10-02, Sausalito: "Uncaught Error: unknown style undefined")
     if (!f.style || !(f.style in reg.palettes) && !STYLES.some((st) => st.id === f.style)) f = { ...f, style: 'sfapartment' as typeof f.style }
-    const palettes: Palette[] = reg.palettes[f.style] ?? styleOf(f.style).palettes
+    const palettes: Palette[] = areaPalettes(ring[0].x, ring[0].z, f.style) ?? reg.palettes[f.style] ?? styleOf(f.style).palettes
     // the palette the near city gives it (facade.ts planFacade), so a building does not change colour as its tile loads
     const pal = paletteFor(f.id, palettes)
-    const tint = rgb(pal.wall)
+    const tint = rgb(handLook(f.id, null)?.palette?.wall ?? pal.wall)
     // explicit Z (map format v3) when the city was baked with it: the same rule, decided at bake
     let foot = Infinity
     if (f.baseY !== undefined) foot = f.baseY

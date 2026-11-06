@@ -45,6 +45,7 @@ import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
 import { LOOKS_ON, lookFor } from '../city/appearance.ts'
 import { specialFor, specialLook } from '../city/specials.ts'
+import { areaPalettes, handLook } from '../city/hand-looks.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
@@ -93,6 +94,7 @@ export function setBuildBudget(ms: number): void { BUILD_MS = Math.max(0.5, ms) 
 export let MID = 6
 import { onSurface, steeperThanWall, waterLevels, wholeWater } from '../city/package.ts'
 import { buildingFooting, simplifyRing } from '../map/footing.ts'
+import { isParisHouse } from './paris-houses.ts'
 import { signalLamps, type SignalHead } from './lamps.ts'
 import { StreetGrade } from '../city/grade.ts'
 
@@ -228,6 +230,10 @@ const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
  * triangle budget — there is one strip of sand in San Francisco, not a network of them.
  */
 const SAND_MAX_EDGE = 4
+/** metres from a path's edge that a car park stall's centre must keep: half a car's length and some room to ride */
+const PATH_STALL_CLEAR = 3.4
+/** a kerb bay's car stands at least this far (m, centre past kerb) out of any other street's carriageway */
+const BAY_JUNCTION_CLEAR = 2.5
 /** planted beds' ground: pale grey-brown bark mulch between low shrubs (the Tunnel Tops, Commons aerial) */
 const BEDS: [number, number, number] = [0.47, 0.44, 0.37]
 /** …and a Japanese garden's: deep moss green between clipped shrubs and stones, not mown grass (PackedArea `moss`) */
@@ -1159,6 +1165,7 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
    * measured over all 578 391 cells, 4 005 327 probes, zero differing answers, 81x faster.
    */
   const wetOnly = waterLookup(water)
+  const OCC_CUT_PROBES: [number, number][] = [[0, 0], [4, 0], [-4, 0], [0, 4], [0, -4]]
   /*
    * The ground it stands for (BUGS.md #240). Built first from the coarse 20 m grid, and that was all it ever was —
    * but near the rider the ground DRAWN is each tile's fine block (4 m in the zones), and on Marin's and Yerba
@@ -1182,7 +1189,12 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
     const mean = (heightOf(x + d, z) + heightOf(x - d, z) + heightOf(x, z + d) + heightOf(x, z - d)) / 4
     const convex = Math.max(0, h - mean)
     const sink = Math.max(OCC_CREST_MIN_SINK, OCC_SINK - convex * OCC_CREST_GAIN)
-    const g = h - sink
+    // (down into a street's cut — a road ramping into a sunk tunnel mouth, tools/tunnels.ts — and a lattice step round
+    //  it, or the raw ground the fine block gives hides the road and the portal's face: Place de l'Alma, 2026-11-05)
+    let c = Infinity
+    const cutAt = fine?.cut
+    if (cutAt) for (const [ox, oz] of OCC_CUT_PROBES) { const v = cutAt(x + ox, z + oz); if (v !== null && v !== undefined) c = Math.min(c, v) }
+    const g = Math.min(h - sink, c - OCC_SINK)
     return lv === null ? g : Math.min(g, lv - 0.4)
   }
   /*
@@ -1251,7 +1263,7 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
     const ck = `${kx},${kz}`
     for (const m of meshes.get(ck) ?? []) m.dispose()
     meshes.delete(ck)
-    heightOf = useFine && fine ? (x, z) => fine.rawHeightAt(x, z) : (x, z) => terrain.heightAt(x, z)
+    heightOf = useFine && fine ? (x, z) => fine.grassHeightAt(x, z) : (x, z) => terrain.heightAt(x, z)
     np = 0
     ni = 0
     // this chunk's cells: the same `floor(x / CHUNK)` test as ever, over a window a cell wider than the chunk
@@ -1603,6 +1615,8 @@ export class City {
     return out
   }
 
+  // (paths too, PATH_STALL_CLEAR off their line — owner, 2026-11-05: Rue du Général Pershing's median lot has the bike
+  //  route through it, and a parked car across it every few metres)
   /** the stalls of the car parks (PackedArea `parking`) in one tile, avoiding the buildings standing on them */
   stallsIn(k: string): Stall[] {
     const got = this.stallCache.get(k)
@@ -1616,8 +1630,8 @@ export class City {
       // (and off the drawn carriageways: OSM maps a big lot's driving aisles as service ways, drawn as road)
       // (from this tile and its neighbours: the street beside a lot is often filed in the next tile — owner, 2026-10-17,
       //  "cars parked on side of street" on Columbus, where OSM's car park polygon runs out over the carriageway)
-      const ways: { pts: { x: number; z: number }[]; half: number }[] = []
-      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const e of this.edgesIn.get(key(tx + dx, tz + dz)) ?? []) if (!e.foot) ways.push({ pts: unpackPoints(e.points), half: e.width / 2 + Math.max(e.walk, 0.6) })
+      const ways: { foot: boolean; pts: { x: number; z: number }[]; half: number }[] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const e of this.edgesIn.get(key(tx + dx, tz + dz)) ?? []) ways.push({ foot: !!e.foot, pts: unpackPoints(e.points), half: e.width / 2 + (e.foot ? PATH_STALL_CLEAR : Math.max(e.walk, 0.6)) })
       const onWay = (x: number, z: number): boolean => ways.some((w) => {
         for (let i = 1; i < w.pts.length; i++) {
           const a = w.pts[i - 1], b = w.pts[i], dx = b.x - a.x, dz = b.z - a.z
@@ -1627,9 +1641,28 @@ export class City {
         return false
       })
       const blocked = (x: number, z: number): boolean => near.some((r) => pointInFlatRing(r, x, z)) || onWay(x, z)
-      for (const a of lots) stalls = stalls.concat(layoutLot(unpackPoints(a.ring), blocked))
+      // (Paris: no cars at all in a lot a path runs through — the boulevard medians, where the bike route rides down
+      //  the middle and cars on both sides left no way past; owner, 2026-11-05)
+      const pathed = (flat: number[]): boolean => this.region.roadPaint === 'paris' && ways.some((w) =>
+        w.half > 0 && w.foot && w.pts.some((q) => pointInFlatRing(flat, q.x, q.z)))
+      for (const a of lots) { const ring = unpackPoints(a.ring); if (!pathed(a.ring)) stalls = stalls.concat(layoutLot(ring, blocked)) }
     }
     // the kerb bays' cars (`kerbBays`): four bays in five taken, facing the way their side's traffic goes
+    // (never one standing in ANOTHER street's carriageway — a junction, where bays ran on into the crossing road;
+    //  owner, 2026-11-05, Boulogne 48.8395, 2.2625)
+    const [ktx, ktz] = k.split(',').map(Number)
+    const roads: { id: number; pts: { x: number; z: number }[]; half: number }[] = []
+    if (this.edgesIn.has(k)) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++)
+      for (const o of this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []) if (!o.foot) roads.push({ id: o.id, pts: unpackPoints(o.points), half: o.width / 2 + BAY_JUNCTION_CLEAR })
+    const inOther = (id: number, x: number, z: number): boolean => roads.some((w) => {
+      if (w.id === id) return false
+      for (let i = 1; i < w.pts.length; i++) {
+        const a = w.pts[i - 1], c = w.pts[i], dx = c.x - a.x, dz = c.z - a.z
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+        if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < w.half) return true
+      }
+      return false
+    })
     for (const e of this.edgesIn.get(k) ?? []) {
       for (const b of this.kerbBays(e)) {
         const m = alongLine(b.pts, b.s + 2.5)
@@ -1637,11 +1670,12 @@ export class City {
         const id = (Math.imul(e.id, 2654435761) ^ Math.imul(Math.round(b.s) + (b.side > 0 ? 7919 : 0), 40503)) >>> 0
         const ahead = e.oneway || b.side < 0
         const x = m.x - m.uz * off, z = m.z + m.ux * off
+        if (inOther(e.id, x, z)) continue
         // (on the street's own profile: its height here, and its fall along the bay)
         const y0 = e.heights ? heightOnEdge(e, m.x - m.ux * 2.5, m.z - m.uz * 2.5) : null
         const y1 = e.heights ? heightOnEdge(e, m.x + m.ux * 2.5, m.z + m.uz * 2.5) : null
         stalls.push({ x, z, heading: Math.atan2(m.ux, m.uz) + (ahead ? 0 : Math.PI),
-          ux: m.ux, uz: m.uz, occupied: id % 5 !== 0, id, ...(y0 !== null && y1 !== null ? { y: (y0 + y1) / 2, grade: (y1 - y0) / 5 } : {}) })
+          ux: m.ux, uz: m.uz, occupied: id % 5 !== 0, id, kerb: true, ...(y0 !== null && y1 !== null ? { y: (y0 + y1) / 2, grade: (y1 - y0) / 5 } : {}) })
       }
     }
     if (this.areasIn.has(k) || this.edgesIn.has(k)) this.stallCache.set(k, stalls)
@@ -1792,7 +1826,11 @@ export class City {
   source: TileSource | null = null
   private readonly nearCache = new Map<string, Near>()
 
-  addLayer(layer: TileLayer): this { this.layers.push(layer); this.layerByName.set(layer.name, layer); return this }
+  /** true once render/paris-houses.ts is drawing the suburban houses, so the facade grammar leaves them out */
+  housesLayer = false
+  addLayer(layer: TileLayer): this {
+    if (layer.name === 'parisHouses') this.housesLayer = true
+    this.layers.push(layer); this.layerByName.set(layer.name, layer); return this }
 
   /** subsystems to leave out, for isolating a visual fault */
   private off: Set<string> = new Set()
@@ -1833,6 +1871,7 @@ export class City {
     this.terrain = new Terrain(pkg.terrain, TILE)
     // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
     this.terrain.grade = (x, z) => (this.off.has('grade') ? null : this.gradeAt(x, z))
+    this.terrain.grass = (x, z, raw) => (this.off.has('grade') ? raw : this.grade.grassAt(x, z, raw))
     this.terrain.cut = (x, z) => (this.off.has('grade') ? null : this.grade.cutAt(x, z))
     this.region = region(pkg.region)
     const __tg0 = performance.now()
@@ -3499,6 +3538,7 @@ export class City {
     // a car park's stall lines: white, down each side of every stall (city/parking.ts)
     this.stallCache.delete(k)
     for (const st of this.stallsIn(k)) {
+      if (st.kerb) continue
       const vx = -st.uz, vz = st.ux
       for (const side of [-1.3, 1.3]) {
         const cx = st.x + st.ux * side, cz = st.z + st.uz * side
@@ -5070,6 +5110,8 @@ export class City {
     for (const b of this.buildingsIn.get(k) ?? []) {
       // a `building:part` of a bridge a landmark draws itself (BUGS.md #211)
       if (this.coversBuilding(b)) continue
+      // a suburban house is drawn by its own layer (render/paris-houses.ts), where the game has added it
+      if (this.housesLayer && isParisHouse(b)) continue
       // curves as chords a bay or more long: a hemicycle mapped in 3 m pieces had no wall wide enough for one
       // window (the Institut de France's wings were blank)
       const ring = simplifyRing(unpackPoints(b.ring)) as Ring
@@ -5124,7 +5166,7 @@ export class City {
       // (`?labels=1`: a building with a street-photo label is drawn as the label says — src/city/appearance.ts)
       // (…and a fuel canopy, a station shop or a car wash, which the map names outright, from its recipe — city/specials.ts)
       const special = specialFor(b.id)
-      const look = special ? specialLook(special, LOOKS_ON ? lookFor(b.id, b.style) : null) : LOOKS_ON ? lookFor(b.id, b.style) : null
+      const look = handLook(b.id, special ? specialLook(special, LOOKS_ON ? lookFor(b.id, b.style) : null) : LOOKS_ON ? lookFor(b.id, b.style) : null)
       // (a region with a post-war palette of its own draws its baked modern boxes as that: Paris, facade.ts PostwarDress)
       const styleId = (look?.style ?? b.style) === 'bauhaus' && !look?.style && this.region.palettes.parismodern ? 'parismodern' : look?.style ?? b.style
       // (a label's storey count wins, and the walls are kept within what that many storeys can be: a one-storey shop the
@@ -5135,7 +5177,7 @@ export class City {
       // (a pump canopy's edge is a fascia a metre deep, whatever thin slab the map gives it)
       const minHeight = special?.part === 'canopy' && b.minHeight && b.height ? Math.min(b.minHeight, b.height - 0.9) : b.minHeight
       const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
-        b.palette ? [b.palette] : this.region.palettes[styleId], look ?? undefined)
+        b.palette ? [b.palette] : areaPalettes(ring[0].x, ring[0].z, styleId) ?? this.region.palettes[styleId], look ?? undefined)
       const out = byStyle.get(styleId) ?? new MeshBuilder()
       byStyle.set(styleId, out)
       if (this.pickable) {

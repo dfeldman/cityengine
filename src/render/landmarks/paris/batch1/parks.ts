@@ -151,15 +151,20 @@ export function fall(out: MeshBuilder, x0: number, x1: number, z: number, y0: nu
  * falling in its depth, its stalactites of cement in the mouth's head. `front` to the path in front of the mouth. The Grande Cascade's own stream runs on to the lake.
  */
 export function buttesGrotto(out: MeshBuilder, fit: Fit): void {
-  const y = (fit.grade ?? 0) - 0.5, D: Rgb = hex('#191c1c')
+  // bedded at the LOWEST ground under its 26×14 footprint, not one grade: on the slope it stood clear of the downhill side
+  // (owner, 2026-11-05: "the large boulder … is floating midair"); every lump runs SINK m further down into the earth
+  const g = groundOf(fit), SINK = 4
+  let gmin = Infinity
+  for (let ix = -13; ix <= 13; ix += 2.6) for (let iz = -7; iz <= 7; iz += 2.8) gmin = Math.min(gmin, g(ix, iz))
+  const y = (Number.isFinite(gmin) ? gmin : fit.grade ?? 0) - 0.5, D: Rgb = hex('#191c1c')
   // the dark back of the cave
   block(out, -6, 6, 1.5, 3, y, y + 11, D)
   // the rock either side and over the mouth, in lumps
   for (let i = 0; i < 14; i++) {
     const a = (i / 13) * Math.PI
     const x = Math.cos(a) * 9.5, h = 4 + Math.sin(a) * 9
-    rock(out, x, -1 + hash(i, 1) * 2, y + Math.sin(a) * 6.5, h, 3.4 + hash(i, 2) * 1.8, i * 1.7)
-    rock(out, x * 1.2, 4 + hash(i, 3) * 3, y, 8 + Math.sin(a) * 9, 5 + hash(i, 4) * 2, i * 2.3, ROCK_DK)
+    rock(out, x, -1 + hash(i, 1) * 2, y - SINK + Math.sin(a) * 6.5, h + SINK, 3.4 + hash(i, 2) * 1.8, i * 1.7)
+    rock(out, x * 1.2, 4 + hash(i, 3) * 3, y - SINK, 8 + SINK + Math.sin(a) * 9, 5 + hash(i, 4) * 2, i * 2.3, ROCK_DK)
   }
   // the stalactites in the mouth's head
   for (let i = 0; i < 9; i++) {

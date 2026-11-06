@@ -724,6 +724,118 @@
     "note": "Bonnet's mairie (1866–77) on the north side of the Place d'Italie. Placed on OSM relation 1187504's box turned to its front (osmium, 2026-10-30), the front (−z) to the place, the outline's slanting wings and main court with it. The front, its clock gable and the bell lantern are from the Commons photographs of the Mairie; heights are read off them, not measured."
   },
   {
+    "name": "Mairie du 10e arrondissement",
+    "procedural": "mairie10e",
+    "osm": [
+      "way/63203297"
+    ],
+    "lat": 48.871785,
+    "lon": 2.357767,
+    "size": [
+      54.8,
+      57.6
+    ],
+    "front": 292,
+    "height": 45,
+    "note": "Rouyer's neo-Renaissance mairie (1892-96) on the Rue du Faubourg-Saint-Martin. Placed on OSM way 63203297's outline turned so the front (-z) is parallel to the street (bearing 292, osmium 2026-11-05). Seven-bay front, roof dormers, end pyramids and belfry from the Commons print PH58580; eaves 17 m and the roof plateau ~30 m from the IGN lidar MNS; belfry top ~45 m read off the print and not confirmed by lidar."
+  },
+  {
+    "name": "Mairie du 19e arrondissement",
+    "procedural": "mairie19e",
+    "osm": [
+      "relation/13114180"
+    ],
+    "lat": 48.882987,
+    "lon": 2.381904,
+    "size": [
+      47.2,
+      50.4
+    ],
+    "front": 154.1,
+    "height": 28,
+    "note": "Davioud's mairie (1876–78) on the Place Armand-Carrel, facing the Buttes-Chaumont. Placed on OSM relation 13114180's box turned to its front (osmium, 2026-11-05), the front (−z) to the place. The brick wings, stone pavilion, clock aedicule and lantern are from the Commons photograph Paris_mairie_XIX.jpg; heights read off it and checked against the IGN lidar MNS (eaves ~15 m, pyramid 23 m)."
+  },
+  {
+    "name": "Mairie du 18e arrondissement",
+    "procedural": "mairie18e",
+    "osm": [
+      "way/28882087"
+    ],
+    "lat": 48.892088,
+    "lon": 2.344447,
+    "size": [
+      40.7,
+      68.8
+    ],
+    "front": 19.2,
+    "height": 29,
+    "note": "Varcollier's mairie (1888-1905) on the Place Jules-Joffrin, facing the church Notre-Dame-de-Clignancourt. Placed on OSM way 28882087's box turned so the front (-z) faces the place (bearing 19.2, osmium 2026-11-05); the same way is the only townhall outline, the duplicate in the export is its line and polygon forms. Front (rusticated base, three-arch portico with balcony, pedimented windows, cornice, mansard, clock gable) read off the Commons photograph Mairie du 18e arrondissement de Paris.jpg; front range roof 25-29 m, rear wings 17-21 m and the 8 m portico from the IGN lidar MNS."
+  },
+  {
+    "name": "Mairie du 12e arrondissement",
+    "procedural": "mairie12e",
+    "osm": [
+      "relation/1708164"
+    ],
+    "lat": 48.840856,
+    "lon": 2.388221,
+    "size": [
+      75.6,
+      48.6
+    ],
+    "front": 308.6,
+    "height": 30,
+    "note": "Hénard's mairie (1873–77) on the Avenue Daumesnil / Place Félix-Éboué fork. Placed on OSM relation 1708164's box turned to its front (osmium, 2026-11-05), the front (−z) to the avenue; baked building id 3416329. Mansard wings, pavilion with arcade and clock, belfry from the Commons photographs of Chabe01 (Mairie 12e arrondissement Paris 4.jpg); mansard tops 18 m and pyramid 20 m from the IGN lidar MNS; the belfry (~30 m) is too thin for the lidar and is read off the photo. No earlier entry existed for this building."
+  },
+  {
+    "name": "Mairie du 11e arrondissement",
+    "procedural": "mairie11e",
+    "osm": [
+      "relation/1002474"
+    ],
+    "lat": 48.858698,
+    "lon": 2.379307,
+    "size": [
+      49.0,
+      55.8
+    ],
+    "front": 143.1,
+    "height": 25,
+    "note": "Gancel's mairie (1862-65) on the Place Léon-Blum. Placed on OSM relation 1002474's box turned to its front (bearing 143.1, osmium 2026-11-05); the footprint is a trapezoid widening to Boulevard Voltaire behind a 28 m front. Front (three arched doors, three pedimented arched windows between pilasters, end-bay windows, cornice, slate roof, clock aedicule, chimneys) read off the fr.wikipedia infobox photograph of the facade (28 m = 536 px); cornice 16.4 m from it, roof ridge 22-25 m from the IGN lidar MNS."
+  },
+  {
+    "name": "Mairie du 20e arrondissement",
+    "procedural": "mairie20e",
+    "osm": [
+      "relation/1103270"
+    ],
+    "lat": 48.865214,
+    "lon": 2.399346,
+    "size": [
+      88.1,
+      59.8
+    ],
+    "front": 241.5,
+    "height": 30,
+    "note": "Salleron's mairie (1867-77) on the Place Gambetta. Placed on OSM relation 1103270's box turned to its front (osmium, 2026-11-05), the front (-z) to the place; the chevron plan has the pavilion at the apex and two wings splayed back. Pavilion, clock tower and belfry from the Commons photograph 'Mairie du 20e arrondissement de Paris.JPG' (pavilion 19 m = 275 px); wings' mansard ridge ~17-18 m and pavilion roof ~23 m from the IGN lidar MNS; tower top ~30 m read off the photo."
+  },
+  {
+    "name": "Mairie du 6e arrondissement",
+    "procedural": "mairie6e",
+    "osm": [
+      "relation/976402"
+    ],
+    "lat": 48.850588,
+    "lon": 2.332296,
+    "size": [
+      65.6,
+      50.4
+    ],
+    "front": 97.4,
+    "height": 28,
+    "note": "Magne's mairie (1848-49) on the Place Saint-Sulpice, its front to the place (east). Placed on OSM relation 976402's box (outer way 63026210, inner court way 63026204; osmium 2026-11-05), the front (-z) at bearing 97.4. Baked as building id 1952805 (= 2x976402+1, the multipolygon area id), not 1953133. Front (ground-floor joints, triple-arched central pavilion, first-floor windows, cornice, low hipped roof, clock gable, bell lantern) from the Commons photograph PH77328; cornice 15.5 m, roof ~20 m, gable ~22 m from the IGN lidar MNS; the lantern is read off the print."
+  },
+  {
     "name": "Tribunal de Paris",
     "procedural": "tribunal",
     "osm": [

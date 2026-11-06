@@ -430,6 +430,42 @@ export const CITIES: CitySpec[] = [
     styles: [{ id: 'classical', weight: 3 }, { id: 'haussmann', weight: 2 }],
     note: 'A test area: detail regions beyond the detail box (tools/detail.ts).',
   },
+  /* A test of PARIS BIKE TUNNELS (tools/tunnels.ts): the Tunnel de l'Étoile and the Tunnel Concorde. */
+  {
+    id: 'etoile-mini', live: false, test: true, region: 'paris',
+    name: 'Étoile test area (bike tunnel)',
+    centre: { lat: 48.8738, lon: 2.2953 }, radius: 300, wide: false, ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Tunnel de l\'Étoile under the Place Charles-de-Gaulle.',
+  },
+  {
+    id: 'concorde-mini', live: false, test: true, region: 'paris',
+    name: 'Concorde test area (bike tunnel)',
+    centre: { lat: 48.8648, lon: 2.3202 }, radius: 300, wide: false, ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Tunnel Concorde under the Port de la Concorde.',
+  },
+  {
+    id: 'tuileries-mini', live: false, test: true, region: 'paris',
+    name: 'Tuileries test area (bike tunnel)',
+    centre: { lat: 48.8613, lon: 2.3290 }, radius: 550, wide: false, ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Tunnel des Tuileries along the Quai des Tuileries.',
+  },
+  /* A test of SUNK ROAD-TUNNEL MOUTHS (tools/tunnels.ts `sinkRoadMouths`): the Voie Georges-Pompidou under the Place de l'Alma. */
+  {
+    id: 'alma-mini',
+    live: false,
+    test: true,
+    region: 'paris',
+    name: 'Alma test area (tunnel mouths)',
+    centre: { lat: 48.8641, lon: 2.3008 },
+    radius: 300,
+    wide: false,
+    ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Voie Georges-Pompidou into its tunnel under the Place de l\'Alma.',
+  },
   /* A test of the Parc de Saint-Cloud's gardens (tools/gardens/paris-batch6.ts): the Grande Perspective to the Cascade. */
   {
     id: 'saint-cloud-mini',
@@ -443,6 +479,20 @@ export const CITIES: CitySpec[] = [
     ground: 'grass',
     styles: [{ id: 'classical', weight: 3 }, { id: 'haussmann', weight: 2 }],
     note: 'A test area: the Parc de Saint-Cloud from the Grande Gerbe to the Cascade.',
+  },
+  /* A test of the Pont de Saint-Cloud's Boulogne bridgehead: the junction over the D1 underpass. */
+  {
+    id: 'pont-saint-cloud-mini',
+    live: false,
+    test: true,
+    region: 'paris',
+    name: 'Pont de Saint-Cloud test area',
+    centre: { lat: 48.8412, lon: 2.2252 },
+    radius: 350,
+    wide: false,
+    ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Pont de Saint-Cloud and its Boulogne interchange.',
   },
 ]
 

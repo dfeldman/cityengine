@@ -1468,6 +1468,12 @@
     "include": "paris/commercial1.json"
   },
   {
+    "include": "paris/expo.json"
+  },
+  {
+    "include": "paris/issy.json"
+  },
+  {
     "include": "paris/ceinture.json"
   },
   {

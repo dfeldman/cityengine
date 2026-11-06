@@ -129,6 +129,8 @@ export interface PackedBuilding {
   levelsInferred?: true
   /** what kind of building the region's classifier says it is (src/city/building-types.ts): 'rowhouse', 'loft'… */
   archetype?: string
+  /** a Paris suburban house's wall (archetype 'parishouse'): 'brick' | 'millstone' | 'render' | 'stone'; drawn by render/paris-houses.ts, not the facade grammar */
+  wall?: string
   /**
    * **The slot kit cannot express this building's form** — route it up to from-scratch modelling, treatment
    * 4 or 5 in docs/LADDER.md §3c. Written by the bake from the FOOTPRINT alone (src/city/ring-forms.ts), for

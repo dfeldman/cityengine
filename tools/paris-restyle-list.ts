@@ -17,6 +17,9 @@ import { createInterface } from 'node:readline'
 const TALL_M = 35            // a building this tall qualifies whatever its date (31 m is a ten-level Haussmann block)
 const MODERN_YEAR = 1960     // or one built this year or later
 const CENTRE_TALL_M = 50     // inside the centre ring only this tall
+const MID_LEVELS = 8         // outside the centre ring, this many storeys qualifies (the Aurélium: 8, untagged date)
+const CENTRE_LEVELS = 10     // inside it, this many (Haussmann tops out at 7–8 with the attic)
+const CENTRE_MODERN_YEAR = 1955 // inside it, a dated postwar build qualifies too
 const CENTRE = { lat: 48.8584, lon: 2.3470 } // Châtelet
 const CENTRE_R = 2500        // m
 const FRONT_M = 40           // within this of a main street
@@ -93,7 +96,9 @@ for (const b of blds) {
   const year = parseInt(b.t.start_date ?? b.t['building:start_date'] ?? '')
   const central = Math.hypot(b.cx, b.cz) < CENTRE_R
   const tall = b.h >= (central ? CENTRE_TALL_M : TALL_M)
-  const modern = !central && (year >= MODERN_YEAR || MODERN_TAGS.test(b.t['building:material'] ?? b.t['building:facade:material'] ?? ''))
+  const lv = parseFloat(b.t['building:levels'] ?? '') || 0
+  const storeys = lv >= (central ? CENTRE_LEVELS : MID_LEVELS)
+  const modern = central ? (year >= CENTRE_MODERN_YEAR || storeys) : (storeys || year >= MODERN_YEAR || MODERN_TAGS.test(b.t['building:material'] ?? b.t['building:facade:material'] ?? ''))
   if (!tall && !modern) continue
   if (tall) b.why.push(`${Math.round(b.h)} m`); if (modern) b.why.push(year ? `${year}` : b.t['building:material'] ?? 'modern')
   let best = Infinity, st = '', sp: P = [0, 0]

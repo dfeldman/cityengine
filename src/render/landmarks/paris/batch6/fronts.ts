@@ -103,9 +103,11 @@ export function conseilDoor(out: MeshBuilder, fit: Fit): void {
 /**
  * LA SALLE PLEYEL (Gustave Lyon, Jean-Marcel Auburtin and André Granet, 1927; 252 rue du Faubourg-Saint-Honoré; OSM has a node, in the block way/70287879, 83 × 38 m, nine storeys): Paris's great concert hall of the Twenties, its stone front flat and tall on the street: a dark marble ground floor and a long glass and bronze marquee with the name lit under it, then eight storeys of tight stone piers between the tall window strips, an attic setback at the top. Art Deco, cream. −z to the Faubourg.
  */
+// OSM's block (27 corners, 2 600 m²) is far from its 83 × 38 m box, and the hall filled the box into the street (owner, 2026-11-05)
+const PLEYEL_ACROSS = 0.8, PLEYEL_ALONG = 1
 export function sallePleyel(out: MeshBuilder, fit: Fit): void {
   const HX = 19, HZ = 41.4
-  fitted(out, fit, HX, HZ, (q) => {
+  fitted(out, { ...fit, hx: fit.hx * PLEYEL_ACROSS, hz: fit.hz * PLEYEL_ALONG }, HX, HZ, (q) => {
     const p = palette('#d9cfb8', '#50565a'), z = -HZ, E = 30
     block(q, -HX, HX, z, HZ, 0, E, p.stone)
     // the dark base, the doors with their warm light, the marquee

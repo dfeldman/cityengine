@@ -156,18 +156,20 @@ function slabInset(out: MeshBuilder, ring: P2[], y0: number, y1: number, c: Rgb)
 }
 
 /** The tower: pale, ribboned, finned, its open storey at 62–65 m and its flat hat over that. */
+/** the tower stands on the ground: the core under it reaches only half its depth, so from 24 m it floated over the court */
+const TOWER_FOOT = 0
 function tower(out: MeshBuilder): void {
   const x0 = -8.4
   const x1 = 7.2
   const z0 = 12.6
   const z1 = 46.9
-  volume(out, TOWER, 24, 62, { c: PALE, floors: 12, ribbon: hex('#4a5660') })
+  volume(out, TOWER, TOWER_FOOT, 62, { c: PALE, floors: 17, base: 3.6, ribbon: hex('#4a5660') })
   // the fins, thin and close, up the long walls
   for (let z = z0 + 1.2; z < z1 - 0.6; z += 2.4) {
-    for (const [f, x] of [['-x', x0], ['+x', x1]] as const) rectOn(out, f, x, z - 0.08, z + 0.08, 24, 62, shade(PALE, 1.03), 0.1)
+    for (const [f, x] of [['-x', x0], ['+x', x1]] as const) rectOn(out, f, x, z - 0.08, z + 0.08, TOWER_FOOT, 62, shade(PALE, 1.03), 0.1)
   }
   for (let x = x0 + 1.2; x < x1 - 0.6; x += 2.4) {
-    for (const [f, z] of [['-z', z0], ['+z', z1]] as const) rectOn(out, f, z, x - 0.08, x + 0.08, 24, 62, shade(PALE, 1.03), 0.1)
+    for (const [f, z] of [['-z', z0], ['+z', z1]] as const) rectOn(out, f, z, x - 0.08, x + 0.08, TOWER_FOOT, 62, shade(PALE, 1.03), 0.1)
   }
   // the open storey, dark, and the hat
   volume(out, TOWERMID, 62, 65, { c: DARK })

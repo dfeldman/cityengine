@@ -25,6 +25,13 @@ import { jacquemartAndre } from './jacquemart-andre.ts'
 import { mairie1er } from './mairie-1er.ts'
 import { mairie5e } from './mairie-5e.ts'
 import { mairie13e } from './mairie-13e.ts'
+import { mairie18e } from './mairie-18e.ts'
+import { mairie19e } from './mairie-19e.ts'
+import { mairie10e } from './mairie-10e.ts'
+import { mairie12e } from './mairie-12e.ts'
+import { mairie11e } from './mairie-11e.ts'
+import { mairie20e } from './mairie-20e.ts'
+import { mairie6e } from './mairie-6e.ts'
 import { tribunal } from './tribunal.ts'
 import { hexagoneBalard } from './hexagone-balard.ts'
 import { mobilierNational } from './mobilier-national.ts'
@@ -53,6 +60,6 @@ export const PARIS_MUSEUMS: Record<string, (out: MeshBuilder, fit: Fit) => void>
   geode, citeDesSciences, bnfTower,
   sorbonne, chapelleSorbonne, hotelDieu, sainteGenevieve, beauxArts, hopitalSaintLouis, salpetriere, citeDeLaMode, rotondeVillette, pavillonArsenal, collegeDeFrance,
   tourZamansky, pagode, mairie5e, mairie1er, piscineJosephineBaker, zenith, jacquemartAndre,
-  mairie13e, tribunal, hexagoneBalard, mobilierNational, reservoirMontsouris, facultePharmacie, faculteMedecine, ensam, prefecturePolice, bnfRichelieu, creditMunicipal, valDeGraceHopital,
+  mairie13e, mairie18e, mairie19e, mairie10e, mairie11e, mairie12e, mairie20e, mairie6e, tribunal, hexagoneBalard, mobilierNational, reservoirMontsouris, facultePharmacie, faculteMedecine, ensam, prefecturePolice, bnfRichelieu, creditMunicipal, valDeGraceHopital,
   philharmonie, operaBastille,
 }

@@ -133,6 +133,7 @@ const BY_MODULE: [Record<string, unknown>, NonbuildingKind][] = [
 export const EXPLICIT: Record<string, NonbuildingKind> = {
   // Batch 1's parks (paris/batch1/): gates, follies, rockwork, the moored balloon and the fountain, the wine lanes' rails, the bulls (2026-10-31)
   monceauGateVelasquez: 'monument', monceauGateRuysdael: 'monument', monceauGateVanDyck: 'monument', monceauGateCourcelles: 'monument',
+  fountainExpo: 'fountain',
   monceauPyramid: 'monument', monceauArcade: 'monument', monceauBridge: 'bridge', buttesGrotto: 'monument', montsourisCascade: 'fountain', mireDuSud: 'monument',
   citroenBallon: 'monument', citroenJets: 'fountain', bercyRails: 'plaza', brassensBullEast: 'statue', brassensBullWest: 'statue',
   gloriette: 'monument', ranelaghKiosk: 'monument', ranelaghManege: 'monument', villetteDragon: 'monument',
@@ -213,6 +214,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
  * "everything is classified" test meaningful. Only needed for names that look like nonbuildings and are not.
  */
 export const BUILDINGS_OK: string[] = [
+  // Paris Expo's halls, numbered "Pavillon" (paris/expo/)
+  'pavilion1', 'pavilion4', 'pavilion5', 'pavilion6', 'pavilion7',
   // Batch 7's towers, whatever their names sound like (paris/batch7/): Ircam's is a stair and labs, and an office tower's name is a tower's
   'ircamTower', 'tourTriangle', 'tourD2', 'tourAlto',
   // La Défense's buildings, whatever a dome or a vault sounds like (paris/monuments/la-defense.ts)

@@ -1,3 +1,4 @@
+import './bake-lock.ts'
 /**
  * Heights (m) for untagged buildings whose neighbour guess is badly wrong, by OSM way id. Read off aerials.
  * The Boulogne tennis club by the A13 (48.8479, 2.2297, owner 2026-11-04): two low sheds guessed at 28 m.
@@ -40,7 +41,7 @@ import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, r
 import { applyStreetPaint, applyStreetWidths, markBrickSquares } from './street-paint.ts'
 import { Carriageways } from '../src/city/carriageways.ts'
 import { StreetGrade } from '../src/city/grade.ts'
-import { boreTunnels } from './tunnels.ts'
+import { boreTunnels, sinkRoadMouths } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
@@ -133,6 +134,9 @@ import { HUGE_AREA_SPAN, tooBigForAnArea } from '../src/city/park-planting.ts'
 import { localZones, zoneTouchesRect, zonesAt, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
 import { ROOF_RGB, roofKind } from '../src/city/paris/materials.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
+/** how far round a road bridge's end its junction reaches, and the most a point of it is brought up (bake: bridgeheads) */
+const JUNCTION_R = 45
+const JUNCTION_MAX_STEP = 6
 
 // the shipped bake (public/cities/<id>/v3/) and the bake-private files (tools/cache/bake/<id>/): tools/bake-files.ts
 const OUT = SHIPPED
@@ -567,7 +571,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * BUGS.md #29). A building standing at grade with a basement keeps its own non-negative layer.
    */
   const belowGround = (t: Record<string, string>): boolean => t.location === 'underground' || t.indoor !== undefined
-    || parseFloat(t.layer ?? '0') < 0 || (t.level !== undefined && t.level.split(';').every((v) => parseFloat(v) < 0))
+    || (parseFloat(t.layer ?? '0') < 0 && t.location !== 'surface') || (t.level !== undefined && t.level.split(';').every((v) => parseFloat(v) < 0))
   // boats moored on the river are drawn as boats (render/boats.ts), not as twenty-metre blocks in the water
   /*
    * …and the historic SHIPS (BUGS.md #229, #251): OSM tags the waterfront's vessels `building=ship`, which went down
@@ -576,8 +580,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * Pampanito, manual-1.json): that one stays a building for the model to replace.
    */
   const shipModels = landmarkClaims(spec.region ?? spec.id)
-  const isBoat = (w: { id: number; tags: Record<string, string> }): boolean => w.tags.building === 'boat' || w.tags.building === 'houseboat'
-    || (w.tags.building === 'ship' && !shipModels.has(w.id))
+  const isBoat = (w: { id: number; tags: Record<string, string> }): boolean => ['boat', 'houseboat', 'ship'].includes(w.tags.building) && !shipModels.has(w.id)
   const boatWays = ways.filter((w) => isBoat(w) && w.geometry && w.geometry.length >= 4)
   /*
    * BUGS.md #150, #151. Infrastructure wearing a building tag. The Bay Bridge's four western-span suspension
@@ -873,7 +876,8 @@ async function bake(spec: CitySpec): Promise<void> {
       ]).then(([apur, topo]) => apur || topo
         ? (ring: { lat: number; lon: number }[]) => {
             const a = apur?.(ring) ?? null, t = topo?.(ring) ?? null
-            return a || t ? { ...(a ?? { construction: '99', units: 0, parcels: 1 }), ...(t ?? {}) } : null
+            // APUR's surveyed height wins inside Paris; BD TOPO's measures the suburbs
+            return a || t ? { ...(a ?? { construction: '99', units: 0, parcels: 1 }), ...(t ?? {}), ...(a?.height ? { height: a.height } : {}) } : null
           }
         : null)
     : null
@@ -1134,6 +1138,7 @@ async function bake(spec: CitySpec): Promise<void> {
       ...withRoofMaterial(roofFor(w.tags, p, styleId, ccwRing, w.id), spec.region === 'paris' ? recordOf?.(w.geometry) as { roofMat?: string } | null : null),
       ...(own.inferred ? { levelsInferred: true as const } : {}),
       ...(kind ? { archetype: kind.archetype } : {}),
+      ...(kind?.wall ? { wall: kind.wall } : {}),
       ...(form ? { form } : {}),
       ...(noShopsFor(dressTags) || bigNonHome === 'institution' ? { noShops: true } : {}),
       // a part of a building whose outline its parts replace: that outline's id (a church's towers and apse
@@ -2049,6 +2054,100 @@ async function bake(spec: CitySpec): Promise<void> {
     console.log(`  ${lv.name}: ${n} fine posts levelled at ${y.toFixed(2)} m`)
   }
   /*
+   * THE LOWER QUAYS ARE A SHELF, NOT A SLOPE (owner, 2026-11-05, Port du Louvre 48.860476, 2.330698): the survey's ground
+   * between a quay street and the Seine is a smooth grass bank, where Paris has a vertical wall and a wide cobbled lower
+   * quay at one level. Every LQ_STEP m along every `Quai ` street, stepping out to the water: a sample is a lower quay
+   * where the ground falls LQ_MIN_DROP or more from the street to LQ_BANK m short of the water. OSM cuts a quay into
+   * many short ways, so the samples are pooled across ALL of them: each one's shelf is the median level of the good
+   * samples within LQ_LEVEL_R m (a single sample on the slope reads too high), and a majority over LQ_VOTE_R m decides
+   * where the shelf is, so it neither stops and starts nor reaches a stray bank. From the slope's top to the water the
+   * ground is set to the shelf; render/quays.ts finds it and draws the wall, the setts and the stairs.
+   */
+  // the shelf's posts, so the tiles they are in ship the 4 m ground (a 20 m post cannot hold a wall)
+  const shelfPosts: number[] = []
+  {
+    const LQ_STEP = 2, LQ_REACH = 80, LQ_TOP_FALL = 0.8, LQ_MIN_DROP = 2.5, LQ_BANK = 3, LQ_LEVEL_R = 250, LQ_VOTE_R = 35, LQ_VOTE = 0.5
+    const G = (x: number, z: number): number => sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z)
+    // never at a bridge's end: the square a bridge lands on stays at the street's level (Pont d'Iéna, Place de Varsovie)
+    const LQ_BRIDGE_CLEAR = 8
+    const bridgeLines = kept.filter((b) => b.bridge).map((b) => ({ p: unpackPoints(b.points), r: b.width / 2 + LQ_BRIDGE_CLEAR }))
+    const nearBridge = (x: number, z: number): boolean => bridgeLines.some(({ p, r }) => {
+      for (let i = 1; i < p.length; i++) {
+        const a = p[i - 1], b = p[i], dx = b.x - a.x, dz = b.z - a.z
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+        if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < r) return true
+      }
+      return false
+    })
+    type S = { x: number; z: number; vx: number; vz: number; l: number; top: number; edge: number; street: number; y: number; ok: boolean }
+    const ss: S[] = []
+    const lq = streetRegion.lowerQuays ? new Set(streetRegion.lowerQuays) : null
+    for (const e of kept) {
+      if (!e.name || !/^Quai /.test(e.name) || e.foot || e.bridge || e.tunnel || (lq && !lq.has(e.name))) continue
+      const pts = unpackPoints(e.points)
+      const d = e.width / 2 + e.walk + 0.15
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1], b = pts[i]
+        const seg = Math.hypot(b.x - a.x, b.z - a.z)
+        if (seg < 0.1) continue
+        const ux = (b.x - a.x) / seg, uz = (b.z - a.z) / seg
+        for (let t = 0; t < seg - 1e-6; t += LQ_STEP) {
+          const l = Math.min(LQ_STEP, seg - t)
+          const x = a.x + ux * (t + l / 2), z = a.z + uz * (t + l / 2)
+          let side = 0, edge = Infinity
+          for (const sd of [-1, 1]) for (let o = d; o <= d + LQ_REACH; o += 1) {
+            if (wetIndex(x - uz * sd * o, z + ux * sd * o) !== null) { if (o < edge) { edge = o; side = sd } break }
+          }
+          if (side === 0 || nearBridge(x, z)) continue
+          const st: S = { x, z, vx: -uz * side, vz: ux * side, l, top: -1, edge, street: 0, y: 0, ok: false }
+          const at = (o: number): number => G(x + st.vx * o, z + st.vz * o)
+          st.street = at(d)
+          for (let o = d; o < edge - LQ_BANK; o += 1) if (at(o) < st.street - LQ_TOP_FALL) { st.top = o; break }
+          st.y = at(edge - LQ_BANK)
+          st.ok = st.top > 0 && st.street - st.y >= LQ_MIN_DROP && !nearBridge(x + st.vx * st.top, z + st.vz * st.top)
+          ss.push(st)
+        }
+      }
+    }
+    // a coarse bucket grid for the neighbourhood queries
+    const CELL = LQ_LEVEL_R
+    const buckets = new Map<string, S[]>()
+    for (const q of ss) { const k = `${Math.floor(q.x / CELL)},${Math.floor(q.z / CELL)}`; (buckets.get(k) ?? buckets.set(k, []).get(k)!).push(q) }
+    const near = (q: S, r: number): S[] => {
+      const out: S[] = []
+      const cx = Math.floor(q.x / CELL), cz = Math.floor(q.z / CELL)
+      for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (const o of buckets.get(`${cx + i},${cz + j}`) ?? []) if (Math.hypot(o.x - q.x, o.z - q.z) < r) out.push(o)
+      return out
+    }
+    const level = ss.map((q) => {
+      const ys = near(q, LQ_LEVEL_R).filter((o) => o.ok).map((o) => o.y).sort((a, b) => a - b)
+      return ys.length ? ys[ys.length >> 1] : NaN
+    })
+    const good = ss.map((q, i) => {
+      const n = near(q, LQ_VOTE_R)
+      return n.filter((o) => o.ok).length >= LQ_VOTE * n.length && Number.isFinite(level[i]) && q.street - level[i] >= LQ_MIN_DROP
+    })
+    let posts = 0, kept2 = 0
+    ss.forEach((st, i) => {
+      if (!good[i]) return
+      kept2++
+      const y = level[i]
+      // the slope's top for a sample that had none: where the ground first falls under the street, else a third of the way out
+      let top = st.top
+      if (top <= 0) { top = st.edge / 3; for (let o = 1; o < st.edge; o += 1) if (G(st.x + st.vx * o, st.z + st.vz * o) < st.street - LQ_TOP_FALL) { top = o; break } }
+      const ux = st.vz, uz = -st.vx
+      for (let o = top + 1; o <= st.edge + 2; o += 1) for (let a = -st.l / 2 - 1; a <= st.l / 2 + 1; a += 1) {
+        const px = st.x + st.vx * o + ux * a, pz = st.z + st.vz * o + uz * a
+        const c = Math.round((px - fx0) / FINE_STEP), r = Math.round((pz - fz0) / FINE_STEP)
+        if (c < 0 || r < 0 || c >= fcols || r >= frows) continue
+        const k = r * fcols + c
+        if (fineGround[k] !== y) { fineGround[k] = y; posts++ }
+        shelfPosts.push(px, pz)
+      }
+    })
+    console.log(`  lower quays: ${kept2} of ${ss.length} quay samples levelled, ${posts} fine posts set`)
+  }
+  /*
    * POND BEDS (2026-10-26). The lidar has no ground returns over water, and the tiles' height there is a smoothed
    * blur of the banks round it — so a pond came out as a MOUND under its water plane: in the garden test area the
    * Japanese Tea Garden's Main Pond's bed stood 1.7 m over its own water (a pond's level is its lowest bank,
@@ -2365,6 +2464,12 @@ async function bake(spec: CitySpec): Promise<void> {
     let n = 0
     for (const k of railFineTiles([...rails, ...sunkRails], TILE)) if (blocks.has(k) && !fineTiles.has(k)) { fineTiles.add(k); n++ }
     console.log(`  ${n} tiles ship fine ground for the railway through them`)
+    let nq = 0
+    for (let i = 0; i < shelfPosts.length; i += 2) {
+      const k = `${Math.floor(shelfPosts[i] / TILE)},${Math.floor(shelfPosts[i + 1] / TILE)}`
+      if (blocks.has(k) && !fineTiles.has(k)) { fineTiles.add(k); nq++ }
+    }
+    console.log(`  ${nq} tiles ship fine ground for the lower quays in them`)
   }
   let shipped = new GroundModel({
     coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
@@ -2726,6 +2831,34 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
   // (each way's heights before any bridge lifts them: a bridge found later to be at grade over a cut goes back to them)
+  /*
+   * A bridgehead's junction at ONE level (owner, 2026-11-05, the Pont de Saint-Cloud: "a spaghetti of roads in the air"). The ground
+   * model smears the river's bank into a slope, so the street-level roads round a bridge end sat anywhere from the street's level
+   * to 5 m under it, and the ramps up to the deck, laid from those heights, left the junction's ways at as many heights as it has
+   * ways. Each surface road point near a road bridge's end comes up to the junction's own level: the upper quartile of the road
+   * heights there — the streets that are on the street. Only ever up, and only by a step a bank's smear makes.
+   */
+  if (spec.region === 'paris') {
+    const isRoad = (e: PackedEdge): boolean => !e.foot && /^(primary|secondary|trunk|tertiary|unclassified|residential|living_street)(_link)?$/.test(e.kind ?? '')
+    const ends: { x: number; z: number }[] = []
+    for (const e of kept) if (e.bridge && isRoad(e)) { const p = e.points; ends.push({ x: p[0], z: p[1] }, { x: p[p.length - 2], z: p[p.length - 1] }) }
+    let levelled = 0
+    for (const c of ends) {
+      const pts: { e: PackedEdge; i: number }[] = []
+      for (const e of kept) {
+        if (!isRoad(e) || e.bridge || e.tunnel || (e.layer ?? 0) !== 0 || !e.heights) continue
+        for (let i = 0; i < e.heights.length; i++) if (Math.hypot(e.points[2 * i] - c.x, e.points[2 * i + 1] - c.z) < JUNCTION_R) pts.push({ e, i })
+      }
+      if (pts.length < 8) continue
+      const hs = pts.map((q) => q.e.heights![q.i]).sort((a, b) => a - b)
+      const level = hs[Math.floor(hs.length * 0.75)]
+      for (const q of pts) {
+        const h = q.e.heights![q.i]
+        if (h < level && level - h < JUNCTION_MAX_STEP) { q.e.heights![q.i] = level; levelled++ }
+      }
+    }
+    if (levelled) console.log(`  bridgeheads: ${levelled} road points brought up to their junction's level`)
+  }
   const preBridge = new Map(kept.map((e) => [e.id, e.heights ? [...e.heights] : undefined]))
   const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps,
     straight: new Set(kept.filter((e) => e.bridge && (streetRegion.straightDecks ?? []).includes(e.name ?? '')).map((e) => e.id)),
@@ -2773,6 +2906,11 @@ async function bake(spec: CitySpec): Promise<void> {
       return (x: number, z: number): number => zonesAt(lidar, x, z).length ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z) : NaN
     })())
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
+  // road tunnels no bore takes, with a street over the mouth: the mouth sunk under it, the road ramped down (tools/tunnels.ts)
+  {
+    const drop = sinkRoadMouths(kept, (name, why) => console.log(`  ${name}: ${why}`))
+    if (drop.size) { const k = kept.filter((e) => !drop.has(e.id)); kept.length = 0; for (const e of k) kept.push(e); console.log(`  ${drop.size} near-miss joins at sunk mouths dropped`) }
+  }
   /*
    * A SHORT UNDERPASS is a street, not a tunnel (owner, 2026-10-16, Geary under the Fillmore overpass: "hard to go
    * straight under, most paths go in the air to the overpass above"). OSM maps the 26 m of Geary's main lanes beneath
@@ -3272,6 +3410,33 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     kept.length = w
     console.log(`  ${f.name}: ${flattened} ways at ${y.toFixed(2)} m, ${cleared} walks and steps gone`)
+  }
+  // walks on a model's own paved levels (region `modelWalks`: the Trocadéro's parvis, whose paths were draped on the ground under its paving)
+  for (const m of streetRegion.modelWalks ?? []) {
+    const c = proj.toLocal({ lat: m.at[0], lon: m.at[1] }), r = (m.rotateDeg * Math.PI) / 180, lift = m.lift ?? 0.06
+    const levelAt = (x: number, z: number): number | null => {
+      const dx = x - c.x, dz = z - c.z
+      const lx = dx * Math.cos(r) - dz * Math.sin(r), lz = dx * Math.sin(r) + dz * Math.cos(r)
+      for (const [x0, x1, z0, z1, ya, yb] of m.levels) {
+        if (lx >= x0 && lx <= x1 && lz >= z0 && lz <= z1) return m.baseY + ya + ((yb - ya) * (lz - z0)) / (z1 - z0 || 1) + lift
+      }
+      return null
+    }
+    let lifted = 0, cleared = 0, w = 0
+    for (const e of kept) {
+      const walk = e.foot || e.kind === 'steps'
+      const ps = walk ? unpackPoints(e.points) : []
+      const ys = ps.map((q) => levelAt(q.x, q.z))
+      const on = ys.filter((y) => y !== null).length
+      if (walk && e.kind === 'steps' && on * 2 >= ps.length) { cleared++; continue }
+      kept[w++] = e
+      if (!walk || !on || !e.heights) continue
+      e.heights = e.heights.map((h, i) => ys[i] ?? h)
+      delete e.ramp
+      lifted++
+    }
+    kept.length = w
+    console.log(`  ${m.name}: ${lifted} walks on its levels, ${cleared} steps gone`)
   }
   /*
    * Walks on a viaduct's roof (BUGS.md #32): the Coulée Verte runs along the top of the Viaduc des Arts, which

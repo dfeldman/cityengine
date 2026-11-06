@@ -15,6 +15,8 @@ type P = { x: number; z: number }
 
 /** metres a U-turn is worth: turn round only when going on costs more than this extra */
 export const TURN_ROUND_COST = 250
+/** a single edge shorter than this back from the node ahead to the node behind is a twin, not a block (metres) */
+export const TWIN_LOOP = 150
 
 export interface Route {
   /** the destination on the graph */
@@ -164,7 +166,11 @@ export function planRoute(g: CityGraph, from: Position, target: P,
       const e = g.edges.get(eid)!
       if (againstFreeway(e, n)) continue
       const m = e.a === n ? e.b : e.a
-      const nd = d + e.length
+      // straight back from the node ahead to the node behind by a short twin — a road and its side path between
+      // the same two junctions (Rue de Versailles at Ville-d'Avray) — is a U-turn in disguise: it costs what
+      // turning round costs. Round a real block is still a route.
+      const twin = n === aheadNode && m === behindNode && e.length < TWIN_LOOP
+      const nd = d + e.length + (twin ? TURN_ROUND_COST : 0)
       if (nd < (dist.get(m) ?? Infinity)) {
         dist.set(m, nd)
         via.set(m, { edge: eid, prev: n })

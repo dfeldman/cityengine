@@ -257,5 +257,23 @@
     "sign": false,
     "note": "Bernard Bühler's social housing at 11 quai d'Austerlitz / 2 rue Fulton (2017): a four-storey concrete base on OSM's outline and two eleven-floor towers hung with staggered yellow-to-green glass balcony boxes (owner's Street View, 2026-11-03; ArchDaily): bugs/fulton.ts. North-up frame from 48.8381 2.3720; the box placement is a fixed scatter, not surveyed.",
     "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/79276832"
+    ],
+    "name": "Église Saint-Pierre de Chaillot",
+    "procedural": "parisCivic",
+    "kit": {
+      "kind": "eglise",
+      "p": 5,
+      "seed": 1455,
+      "width": 30
+    },
+    "height": 28.3,
+    "front": 79,
+    "sign": false,
+    "note": "Auguste Bossu's church of 1938 on the Avenue Marceau. OSM's outline takes in the presbytery and courts, a 62 x 52 m box, and the kit's nave filled all of it into the streets (owner, 2026-11-05): the nave cut to 30 m.",
+    "madeBy": "claude-opus-5-5"
   }
 ]

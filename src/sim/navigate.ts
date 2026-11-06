@@ -39,7 +39,8 @@
  */
 import { distance, type Point } from '../city/geo.ts'
 import { profileAt } from '../city/terrain.ts'
-import { available, exits, resolve, type CityGraph, type Exit, type Turn } from '../city/graph.ts'
+import { arrivalBearing, available, departureBearing, exits, resolve, type CityGraph, type Exit, type Turn } from '../city/graph.ts'
+import { angleDiff } from '../city/geo.ts'
 import { mapEdgeAt } from '../city/ridegraph.ts'
 import { cornerRadius } from './ride.ts'
 
@@ -122,8 +123,23 @@ export const EDGE_SPEED = 0.6
 /** Fast input: a tap counts for this long before the corner, seconds of travel. */
 export const FAST_TAP_SECONDS = 0.6
 
+/**
+ * THE COURSE (owner, 2026-11-05, a roundabout at Viroflay: "you'll just go around the circle forever unless you turn").
+ * Straight on at each node of a ring is round the ring again, so the default is steered by the heading the rider
+ * last had on a street at least COURSE_EDGE long and near straight (COURSE_STRAIGHT): arriving off any other edge (an arc of a ring, a spoke), when the
+ * straightest exit is more than COURSE_PULL off that heading, the exit nearest it is taken instead — if it is at
+ * least COURSE_GAIN nearer.
+ */
+export const COURSE_EDGE = 45
+export const COURSE_PULL = Math.PI / 3
+export const COURSE_GAIN = Math.PI / 6
+/** …and straight enough to be a street, not an arc of the ring: end to end at least this share of its length */
+export const COURSE_STRAIGHT = 0.9
+
 export class Navigator {
   private readonly g: CityGraph
+  /** the heading on the last long edge, or after the rider's own last turn (THE COURSE) */
+  private course: number | null = null
   private pos: Position
   private intent: Turn = 'straight'
   private committed: Turn | null = null
@@ -205,6 +221,7 @@ export class Navigator {
    * the crossing is eased over the next few metres instead of teleported.
    */
   turnAround(): void {
+    this.course = null
     // a U-turn has its own easing (`swap`); no corner is rounded through it
     this.arcAhead = null
     this.arcBehind = null
@@ -299,6 +316,16 @@ export class Navigator {
   get edge() { return this.g.edges.get(this.pos.edgeId)! }
   /** the turn the rider has asked for, or has been locked into */
   get requested(): Turn { return this.committed ?? this.choice() }
+
+  /** the exit a turn picks at `nodeId`, arrived at along `arrivedOn`: `resolve`, with straight on held to the course */
+  private pick(xs: Exit[], want: Turn, nodeId: number, arrivedOn: number): Exit | null {
+    const r = resolve(xs, want)
+    const on = this.g.edges.get(arrivedOn)
+    if (!r || want !== 'straight' || this.course === null || !on || (on.length >= COURSE_EDGE && distance(on.points[0], on.points[on.points.length - 1]) >= on.length * COURSE_STRAIGHT)) return r
+    const off = (x: Exit): number => Math.abs(angleDiff(this.course!, departureBearing(this.g, x.edgeId, nodeId)))
+    const best = xs.reduce((b, x) => (off(x) < off(b) ? x : b))
+    return off(r) > COURSE_PULL && off(best) < off(r) - COURSE_GAIN ? best : r
+  }
 
   /** what the rider is asking for now: slow, the intent; fast, the hold, else a fresh tap, else the intent */
   private choice(): Turn {
@@ -661,6 +688,8 @@ export class Navigator {
       remaining -= toEnd
       const nodeId = this.pos.reversed ? e.a : e.b
       const xs = this.exitsOf(this.g, nodeId, this.pos.edgeId)
+      // the course: from a long, straight street's own heading (THE COURSE) — pass-through nodes included
+      if (e.length >= COURSE_EDGE && distance(e.points[0], e.points[e.points.length - 1]) >= e.length * COURSE_STRAIGHT) this.course = arrivalBearing(this.g, e.id, nodeId)
       if (isPassThrough(xs)) {
         // not a junction: roll on, and keep whatever the rider asked for the real one ahead
         this.handOver(nodeId, xs[0].edgeId)
@@ -677,7 +706,10 @@ export class Navigator {
        */
       const byEdge = this.wantEdge === null ? undefined
         : xs.find((x) => x.edgeId === this.wantEdge) ?? exits(this.g, nodeId, this.pos.edgeId).find((x) => x.edgeId === this.wantEdge)
-      const chosen = byEdge ?? resolve(xs, this.committed ?? this.choice())
+      const want = this.committed ?? this.choice()
+      const chosen = byEdge ?? this.pick(xs, want, nodeId, e.id)
+      // the course: from a long street's own heading, or the rider's own turn (THE COURSE)
+      if (chosen && (byEdge || want !== 'straight')) this.course = departureBearing(this.g, chosen.edgeId, nodeId)
       // fast input: the hold that took this corner is spent until let go, and a tap is used up
       if (this.fast && (this.committed ?? this.choice()) !== 'straight') {
         if (this.held !== 0) this.heldSpent = true
@@ -763,7 +795,7 @@ export class Navigator {
     if (toEnd > commit) return
     const xs = this.exitsOf(this.g, nodeId, e.id)
     if (xs.length === 0) return
-    const chosen = isPassThrough(xs) ? xs[0] : resolve(xs, this.committed ?? this.choice())
+    const chosen = isPassThrough(xs) ? xs[0] : this.pick(xs, this.committed ?? this.choice(), nodeId, e.id)
     if (!chosen) return
     const theta = Math.abs(chosen.angle)
     if (theta < ARC_MIN || theta > Math.PI - 0.05) return

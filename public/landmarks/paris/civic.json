@@ -348,23 +348,6 @@
  },
  {
   "osm": [
-   "way/28882087"
-  ],
-  "name": "Mairie du 18e",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "mairie",
-   "p": 3,
-   "word": "MAIRIE DU 18E",
-   "seed": 279
-  },
-  "height": 19.2,
-  "front": -161,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: mairie, APUR period 3."
- },
- {
-  "osm": [
    "way/30088407"
   ],
   "name": "Le Cabaret Sauvage",
@@ -7819,23 +7802,6 @@
  },
  {
   "osm": [
-   "way/63203297"
-  ],
-  "name": "Mairie du 10e arrondissement",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "mairie",
-   "p": 3,
-   "word": "MAIRIE DU 10E ARRONDISSEMENT",
-   "seed": 4396
-  },
-  "height": 28.9,
-  "front": -141,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: mairie, APUR period 3."
- },
- {
-  "osm": [
    "way/63203379"
   ],
   "name": "ecole 63203379",
@@ -13708,7 +13674,8 @@
   "front": -77,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hotel, APUR period 2."
- }, {
+ },
+ {
   "osm": [
    "way/68565783"
   ],
@@ -25399,22 +25366,6 @@
   "front": 141,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: equipement, APUR period 99."
- },
- {
-  "osm": [
-   "way/79276832"
-  ],
-  "name": "Église Saint-Pierre de Chaillot",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "eglise",
-   "p": 5,
-   "seed": 1455
-  },
-  "height": 28.3,
-  "front": 79,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: eglise, APUR period 5."
  },
  {
   "osm": [
@@ -39721,23 +39672,6 @@
  },
  {
   "osm": [
-   "way/652247192"
-  ],
-  "name": "Cirque Bormann-Moreno",
-  "procedural": "parisCivic",
-  "kit": {
-   "kind": "salle",
-   "p": 12,
-   "word": "CIRQUE BORMANN-MORENO",
-   "seed": 3019
-  },
-  "height": 6.4,
-  "front": -121,
-  "sign": false,
-  "note": "Written by tools/paris-civic.ts: salle, APUR period 12."
- },
- {
-  "osm": [
    "way/660965336"
   ],
   "name": "ecole 660965336",
@@ -42725,5 +42659,22 @@
   "front": 115,
   "sign": false,
   "note": "Written by tools/paris-civic.ts: hopital, APUR period 99."
+ },
+ {
+  "osm": [
+   "relation/546790"
+  ],
+  "name": "Mairie du 2e Arrondissement",
+  "procedural": "parisCivic",
+  "kit": {
+   "kind": "mairie",
+   "p": 3,
+   "word": "MAIRIE DU 2E ARRONDISSEMENT",
+   "seed": 6524
+  },
+  "height": 18.3,
+  "front": -70,
+  "sign": false,
+  "note": "Written by tools/paris-civic.ts: mairie, APUR period 3."
  }
 ]

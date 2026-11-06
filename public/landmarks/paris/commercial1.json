@@ -45,7 +45,9 @@
   },
   {
     "osm": [
-      "relation/538267"
+      "relation/538267",
+      "relation/3076120",
+      "way/229418339"
     ],
     "name": "Tour DGA (Cité de l'Air, Tour A)",
     "procedural": "tourDGA",

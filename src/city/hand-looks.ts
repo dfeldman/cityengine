@@ -102,6 +102,15 @@ function fromLabel(l: Label): Look | null {
 for (const [id, l] of Object.entries(labelled as Record<string, Label>)) { const k = fromLabel(l); if (k) BY_ID.set(Number(id), k) }
 for (const e of ENTRIES) for (const id of e.ids) BY_ID.set(id, { palette: HAND_PALETTES[e.palette], style: e.style, dress: e.dress })
 
+/** for the inspector: a building's Panoramax label, the hand entry naming it, and the look it gets (null if none) */
+export function restyleInfo(id: number): { label?: unknown; entry?: string; look?: Look; applied: boolean } | null {
+  const label = (labelled as Record<string, unknown>)[String(id)]
+  const entry = ENTRIES.find((e) => e.ids.includes(id))?.name
+  const look = BY_ID.get(id)
+  if (!label && !entry) return null
+  return { label, entry, look, applied: !!look }
+}
+
 /** a building's hand look, merged under whatever look it already has (a label or a special wins field by field) */
 export function handLook(id: number, other: Look | null): Look | null {
   const h = BY_ID.get(id)

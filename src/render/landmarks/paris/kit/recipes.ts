@@ -8,12 +8,13 @@ import { church, type ChurchSpec } from '../../church.ts'
 import type { Material } from '../../facade.ts'
 import { civic, type CivicSpec, type Style } from './civic.ts'
 import { hotel } from './hotel.ts'
+import { towerRing } from '../../tower.ts'
 
 /**
  * (`word`, on a place of worship, is its faith: temple, synagogue, mosque, chapelle; a church has none. `noTower`: a chapel
  * hemmed in by its block, like Notre-Dame-du-Liban, whose tower would only stand through the neighbours' roofs)
  */
-export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean; style?: Partial<Style> }
+export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean; /** eglise: the church's width in metres, where OSM's outline takes in a presbytery or a court and its box is far wider than the church */ width?: number; style?: Partial<Style> }
 
 /** the building's materials and windows by its date: what the kinds share */
 function byDate(p: number): Pick<CivicSpec, 'wall' | 'windows' | 'roof'> {
@@ -97,11 +98,22 @@ function eglise(p: number, seed: number, big: boolean, faith: string): ChurchSpe
   }
 }
 
+/** the outline's box, its short side cut to `w` about its middle */
+function narrowed(fit: Fit, w: number): Fit {
+  const r = towerRing(fit)
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+  for (const p of r) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
+  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2
+  const ex = x1 - x0, ez = z1 - z0
+  if (ex <= ez) { x0 = cx - Math.min(w, ex) / 2; x1 = cx + Math.min(w, ex) / 2 } else { z0 = cz - Math.min(w, ez) / 2; z1 = cz + Math.min(w, ez) / 2 }
+  return { ...fit, ring: [{ x: x0, z: z0 }, { x: x1, z: z0 }, { x: x1, z: z1 }, { x: x0, z: z1 }] }
+}
+
 /** the registered builder: `{"procedural": "parisCivic", "kit": {"kind": "ecole", "p": 3}}` */
 export function parisCivic(out: MeshBuilder, fit: Fit, a?: KitArgs): void {
   if (a?.kind === 'eglise') {
     const spec = eglise(a.p, a.seed ?? 0, fit.hx * fit.hz * 4 > 1400, a.word ?? '')
-    church(out, fit, a.noTower ? { ...spec, tower: null } : spec)
+    church(out, a.width ? narrowed(fit, a.width) : fit, a.noTower ? { ...spec, tower: null } : spec)
     return
   }
   if (a?.kind === 'hotel') { hotel(out, fit, { p: a.p, seed: a.seed }); return }

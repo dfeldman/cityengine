@@ -1,0 +1,138 @@
+[
+  {
+    "osm": [
+      "way/89564254",
+      "way/89564255",
+      "way/89564247",
+      "way/89564257",
+      "way/89564258",
+      "way/89564260"
+    ],
+    "name": "Les trois ailes en forme de bateau, rue Henry Farman",
+    "procedural": "boatWings",
+    "height": 43,
+    "noShops": true,
+    "note": "issy/boatWings.ts: three crescent glass hulls from OSM plans (43 m), pale floor bands, lifted prows; no photo found, shape from the plan",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/100135446"
+    ],
+    "name": "Direction Générale de l'Aviation Civile",
+    "procedural": "dgac",
+    "height": 27,
+    "noShops": true,
+    "note": "issy/dgac.ts: long bent 7-level slab, pale walls, dark glazed band per floor, plant box; no photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/44326514",
+      "way/44281431",
+      "way/44048677"
+    ],
+    "name": "Aquaboulevard",
+    "procedural": "aquaboulevard",
+    "height": 32,
+    "noShops": true,
+    "note": "issy/aquaboulevard.ts: OSM-claimed (main commercial way, Pathé wing, annexe); low end, dark pool hall with glass pyramids on its roof, tall teal NE block with sign bands, slide towers/tubes on the NW face; positions read off the IGN ortho",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/44281432"
+    ],
+    "name": "Aquaboulevard office slab (white fins)",
+    "procedural": "aquaOffice",
+    "height": 26,
+    "noShops": true,
+    "note": "issy/aquaOffice.ts: 7-level glass block with white fins round a garden court; owner photo",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Héliport de Paris – Issy-les-Moulineaux (pads)",
+    "procedural": "heliport",
+    "lat": 48.833127,
+    "lon": 2.275145,
+    "size": [
+      130,
+      130
+    ],
+    "front": 0,
+    "height": 8,
+    "shadow": false,
+    "sign": false,
+    "note": "issy/heliport.ts: standalone apron, five round pads with painted H, hangar and windsocks read off the IGN ortho",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/652247192"
+    ],
+    "name": "Cirque Bormann-Moreno (chapiteau)",
+    "procedural": "cirqueBormann",
+    "height": 19,
+    "sign": false,
+    "noShops": true,
+    "note": "issy/cirqueBormann.ts: striped big top (20 stripes, red/white guess), scalloped hem, mast, five caravans; replaces civic.json's sign-only salle entry (this include is first)",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "relation/14953001",
+      "way/547046812",
+      "way/1118279942"
+    ],
+    "name": "Capgemini (Aquarel)",
+    "procedural": "capgemini",
+    "height": 36,
+    "noShops": true,
+    "note": "issy/capgemini.ts: 9-level glazed office campus on the Seine from the OSM outer ring (courtyard way as dark well); no photo, from knowledge of Aquarel (Arte Charpentier, 2019)",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/712556637"
+    ],
+    "name": "La Barge",
+    "procedural": "laBarge",
+    "height": 7,
+    "noShops": true,
+    "note": "issy/laBarge.ts: moored restaurant barge, dark hull, white two-deck glazed superstructure; no photo, from OSM plan (building=boat)",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/554636238"
+    ],
+    "name": "Mirrored-glass wedge opposite Aquaboulevard",
+    "procedural": "mirrorPrism",
+    "height": 45,
+    "noShops": true,
+    "note": "issy/mirrorPrism.ts: mirror-glass wedge on OSM 'Colas' office way; 45 m tall end falling to 5 m, flagpoles on the street edge; owner photo, which end is tall is a guess",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "osm": [
+      "way/1334545440"
+    ],
+    "name": "Le Large (Île Seguin)",
+    "procedural": "leLarge",
+    "height": 27,
+    "noShops": true,
+    "note": "issy/leLarge.ts: the cultural district on the upstream point of the Île Seguin with the Hyde hotel; bronze-framed finned glass blocks with roof gardens, a copper hall swelling to the point under a pale glass box; from the owner's aerial rendering, on OSM's only footprint there",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "relation/18294091"
+    ],
+    "name": "Le Large, RCR building (Île Seguin)",
+    "procedural": "leLargeMain",
+    "height": 30,
+    "noShops": true,
+    "note": "issy/leLarge.ts leLargeMain: RCR Arquitectes' C-plan offices/cinema/cultural centre; finned bronze glass, a taller northern arm, a copper hall swelling on the downstream end, a garden on the court; from the owner's aerial rendering",
+    "madeBy": "claude-opus-5-5"
+  }
+]

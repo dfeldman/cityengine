@@ -106,6 +106,10 @@ export interface Region {
   /** how far below its lowest bank a river's surface lies, metres: the elevation data smooths a walled river's
    *  drop away (Paris: the Seine runs ~2.5 m below the lower quays, ~7 m below the streets) */
   riverDrop?: number
+  /** the quay streets (`Quai …`, exact names) that have a lower quay — a walled, paved port by the water. Every other
+   *  quay keeps its bank as the ground has it. Unset: every quay may. Paris: the left bank's run, the islands and the
+   *  few right-bank ports (owner, 2026-11-05: the right bank's is patchy, Saint-Cloud has none) */
+  lowerQuays?: string[]
   /** a big river's surface, metres above sea level, over what its lowest bank would say (Paris: the Seine's 26.9 m, between its locks) */
   riverLevel?: number
   /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
@@ -150,6 +154,12 @@ export interface Region {
   /** a pit in the lidar that is no pit (`ring` [lat, lon]: the Cour Napoléon, seen through the Pyramid's glass into the hall under it): level, at the height of its edge (tools/bake.ts) */
   /** a street level with the bridge it joins (the Pont Neuf over the Cité): tools/bake.ts. `clearWalks`, a platform a model draws: OSM's walks and steps on it go */
   flatStreets?: { name: string; deck: string; ring: [number, number][]; clearWalks?: [number, number][]; fade?: number }[]
+  /**
+   * A model that draws its own paved levels (the Trocadéro's parvis): OSM's walks on it take the model's level, its steps go (the model
+   * draws the flights). Placed as the manifest places it: `at` [lat, lon], `rotateDeg`, `baseY`; each level a local rect
+   * [x0, x1, z0, z1, y at z0, y at z1] (tools/bake.ts)
+   */
+  modelWalks?: { name: string; at: [number, number]; rotateDeg: number; baseY: number; lift?: number; levels: [number, number, number, number, number, number][] }[]
   levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number; /** [lat, lon]: level at the ground's height there, not its edge's median */ at?: [number, number] }[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
@@ -270,6 +280,7 @@ export function region(id: string | undefined): Region {
     bareViaducts: own?.bareViaducts ?? base.bareViaducts,
     flatStreets: own?.flatStreets ?? base.flatStreets,
     levelGrounds: own?.levelGrounds ?? base.levelGrounds,
+    modelWalks: own?.modelWalks ?? base.modelWalks,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,

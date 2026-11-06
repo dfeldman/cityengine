@@ -4,6 +4,7 @@
  * Standalone the controls are the keyboard; on Dandyhorse the same `Controls` interface is backed by the
  * platform session and nothing else here changes. See INTEGRATION.md.
  */
+import { setHandOrigin } from './city/hand-looks.ts'
 import { CourtPlayers } from './sim/players.ts'
 import { setSignPlates } from './render/sign-plates.ts'
 import { Color4 } from '@babylonjs/core/Maths/math.color'
@@ -46,6 +47,7 @@ import { postersLayer } from './render/posters.ts'
 import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts'
 import { bridgeStructuresLayer, PARIS_BRIDGES, STEEL_OVER_WATER } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
+import { parisHousesLayer } from './render/paris-houses.ts'
 import { boatsLayer } from './render/boats.ts'
 import { RiverTraffic, riverLine } from './render/river-traffic.ts'
 import { regionKit } from './render/region-kits.ts'
@@ -73,7 +75,7 @@ import { Statues, statueManifest } from './render/statues.ts'
 import { Traffic, laneOf, onEdge, type RiderNow, type Vehicle } from './sim/traffic.ts'
 import { Signals } from './sim/signals.ts'
 import { SignalLamps } from './render/lamps.ts'
-import { ATE_LINES, DEFAULTS as DELIVERY_DEFAULTS, Delivery, rate, type DeliveryEvent, type Job, type Source, type Stop } from './game/delivery.ts'
+import { ATE_LINES, PARIS_ATE_LINES, DEFAULTS as DELIVERY_DEFAULTS, Delivery, rate, type DeliveryEvent, type Job, type Source, type Stop } from './game/delivery.ts'
 import { DeliveryCard } from './ui/delivery-card.ts'
 import { Tunnels } from './render/tunnels.ts'
 import { Beacon } from './render/beacon.ts'
@@ -497,6 +499,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     return Number.isFinite(x0) ? { x0, x1, z0, z1 } : undefined
   })()
+  setHandOrigin(pkg.origin) // hand-looks.ts: area palettes are lat/lon rings
   const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain, sea: index.sea,
     water: pkg.water, box: index.box, walls: index.walls, garden: index.garden, contentBox }, atlas, ASSETS).omit(off)
   // which Paris métro entrances are Guimard's own (render/paris/guimard-sites.ts), before any tile places its furniture
@@ -809,13 +812,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (region(pkg.region).furniture.terraces) city.addLayer(terracesLayer(scene, city.terrain))
   mark('terraces')
   // the river's parapets and the bouquinistes on the quays (render/quays.ts)
-  city.addLayer(quaysLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0))
+  city.addLayer(quaysLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0, region(pkg.region).lowerQuays))
   // the bridges, each built once from its outline in its own design (render/bridge-structures.ts, BUGS.md #37)
   city.addLayer(bridgeStructuresLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0,
     pkg.region === 'paris' ? PARIS_BRIDGES : {}, (id) => city.coversOutline(id), pkg.region === 'paris' ? undefined : STEEL_OVER_WATER))
   mark('quays')
   // the arches and covered ways that take streets through buildings (render/passages.ts)
   city.addLayer(passagesLayer(scene, city.terrain, pkg.region === 'paris'))
+  // the suburban single-family houses of the Paris city (render/paris-houses.ts)
+  if (pkg.region === 'paris') city.addLayer(parisHousesLayer(scene, city.terrain))
   // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
   city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
   /*
@@ -1846,7 +1851,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         routeTo(null)
         eatHint = 0
         if (energy) { energy.level = 1; energy.bonked = false }
-        const line = ATE_LINES[Math.floor(Math.random() * ATE_LINES.length)]
+        const ate = pkg.region === 'paris' ? PARIS_ATE_LINES : ATE_LINES
+        const line = ate[Math.floor(Math.random() * ate.length)]
         deliveryCard.receipt(ev.job, { stars: 1, fee: 0, tip: 0, line }, ev.seconds, null, `Ate the ${ev.job.item?.name ?? 'order'}`)
         hud.banner(`${ev.job.item?.emoji ?? '🍽'} Mmm.`, 'full energy · no pay for this one', 3500)
         jobLine(ev.job, 'eaten', 1, 0, ev.seconds)   // [#303 HOOK]
@@ -1859,7 +1865,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const was = delivery.level
         delivery.level = levelFor(delivered)
         // the customer's stars and the pay (game/delivery.ts `rate`): judged at a steady rider's pace in this mode
-        const r = rate(ev.job, ev.seconds, ev.bumps, was, 6.5 * play.speedup)
+        const r = rate(ev.job, ev.seconds, ev.bumps, was, 6.5 * play.speedup, Math.random(), pkg.region === 'paris')
         earned += r.fee + r.tip
         try { localStorage.setItem(EARNED_KEY, earned.toFixed(2)) } catch { /* fine */ }
         deliveryCard.receipt(ev.job, r, ev.seconds, delivery.level > was ? delivery.level : null)
@@ -3892,7 +3898,25 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * the point, the route and the tour are dropped, and the city streams round the new place. Returns false when
    * there is no rideable street near enough, so the caller can fall back to a reload.
    */
-  w.__jump = (lat: number, lon: number): boolean => {
+  // the owner's 4-pane viewer (tools/viewer.html) frames the game and jumps it with {cdJump:[lat,lon]}
+  addEventListener('message', (ev: MessageEvent) => {
+    const d = ev.data as { cdJump?: [number, number, number?]; cdLook?: number } | null
+    if (ev.source !== window.parent || !d) return
+    const j: [number, number, number?] | null = Array.isArray(d.cdJump) ? d.cdJump : typeof d.cdLook === 'number' ? [NaN, NaN, d.cdLook] : null
+    if (!j) return
+    // (cdLook: turn the frozen view at the same spot, no jump)
+    const ok = Number.isNaN(j[0]) ? true : (w.__jump as (a: number, b: number, h?: number) => boolean)(j[0], j[1], j[2])
+    // frozen, view only: the camera behind the landing, facing the photo's bearing (VIEW_BACK/UP/AHEAD metres)
+    if (ok) {
+      const VIEW_BACK = 6, VIEW_UP = 2.5, VIEW_AHEAD = 25
+      const at = nav.at(), h = j[2] != null ? j[2] * Math.PI / 180 : nav.heading()
+      const fx = Math.sin(h), fz = Math.cos(h)
+      ;(w.__viewLocal as (a: number[], b: number[]) => void)(
+        [at.x - fx * VIEW_BACK, VIEW_UP, at.z - fz * VIEW_BACK], [at.x + fx * VIEW_AHEAD, 1.5, at.z + fz * VIEW_AHEAD])
+    }
+    window.parent.postMessage({ cdJumped: ok }, '*')
+  })
+  w.__jump = (lat: number, lon: number, bearing?: number): boolean => {
     const where = nearestStart({ lat, lon })
     if (!where) return false
     // off whatever was carrying the rider first: a jump made aboard the gondola or a streetcar left the rider on the
@@ -3905,6 +3929,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     liftUsed = -1
     liftTime = 0
     nav.placeAt(where)
+    // a compass bearing (degrees) to face: the viewer's street photo; the nearer of the edge's two directions
+    if (bearing != null && Math.cos(nav.heading() - bearing * Math.PI / 180) < 0) nav.turnAround()
     destination = null
     tour = null
     clearRoute()

@@ -9,6 +9,7 @@ import { Carriageways, type Near } from './carriageways.ts'
 import { GREEN, inside, plantParks, type ParkRule } from './park-planting.ts'
 import { crownRadius, formCode, type TreeForm } from './tree-forms.ts'
 import { zonePlantRule, type PlantZones } from './zone-planting.ts'
+import { inRing } from '../map/zones.ts'
 
 export interface Planting {
   x: number; z: number; height: number; spin: number; park: boolean
@@ -81,7 +82,8 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & 
   // zones, where the city has planting zones (data/zones/): the zone-driven pass below
   if (parks && typeof parks !== 'function' && parks.count > 0) return plantZoned(pkg, cap, given, parks, report)
   const rule = typeof parks === 'function' ? parks : undefined
-  return spaced(plantLegacy(pkg, cap, given, rule), report)
+  const legacy = plantLegacy(pkg, cap, given, rule)
+  return spaced(parks && typeof parks !== 'function' ? [...legacy, ...thickets(pkg, parks)] : legacy, report)
 }
 
 /** The trees a city's `data/trees/<city>.json` plants by hand, in local metres. */
@@ -500,12 +502,18 @@ function thin(out: Planting[], cap: number): Planting[] {
  * plaza, a front garden) keeps its place, pushed out of a building it has strayed a little way into, or dropped
  * if it is deep inside one. With `kerb` false only that last part is done: the mapped and scattered trees.
  */
+/** metres beyond a path's edge a seated tree's trunk must keep */
+export const TREE_PATH_CLEAR = 0.8
+
 export function seatTrees(trees: Planting[], pkg: Pick<CityPackage, 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, kerb = true): Planting[] {
   const roads = new Carriageways(pkg.edges)
   const near = (x: number, z: number): Near[] => roads.near(x, z)
   const blds = new Buildings(pkg.buildings ?? [])
   const inBuilding = (x: number, z: number): { depth: number; out: { x: number; z: number } } | null => blds.inBuilding(x, z)
   const inCarriageway = (x: number, z: number): boolean => roads.inside(x, z)
+  // (and the paths: a mapped median tree on the bike way through the median, Rue du Général Pershing — owner, 2026-11-05)
+  const paths = new Carriageways(pkg.edges.filter((e) => e.foot), true)
+  const onPath = (x: number, z: number): boolean => paths.inside(x, z, TREE_PATH_CLEAR)
 
   const out: Planting[] = []
   for (const tree of trees) {
@@ -525,6 +533,8 @@ export function seatTrees(trees: Planting[], pkg: Pick<CityPackage, 'edges'> & P
       z = s.az + (s.bz - s.az) * t + nz * off * side
       if (inCarriageway(x, z) || inBuilding(x, z)) continue
     } else {
+      // a tree left where it was mapped is still never in a carriageway or on a path
+      if (inCarriageway(x, z) || onPath(x, z)) continue
       const b = inBuilding(x, z)
       if (b) {
         if (b.depth > 3) continue
@@ -629,4 +639,24 @@ function mulberry(seed: number): () => number {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
+}
+
+/** what the zone-less pass adds where a zone asks for a THICKET: scattered trees off the water, after the register's */
+function thickets(pkg: Pick<CityPackage, 'areas'>, zones: PlantZones): Planting[] {
+  const out: Planting[] = []
+  if (!zones.thickets.length) return out
+  const water = pkg.areas.filter((a) => a.kind === 'water').map((a) => unpackPoints(a.ring))
+  let seed = 0x5bd1e995
+  const r = (): number => { seed = (Math.imul(seed ^ (seed >>> 15), 0x2c1b3c6d) + 0x9e3779b9) | 0; return ((seed >>> 0) % 1e6) / 1e6 }
+  for (const zn of zones.thickets) {
+    const { density, h } = zn.props.thicket!
+    const [x0, z0, x1, z1] = zn.bbox
+    const want = Math.floor((x1 - x0) * (z1 - z0) * density)
+    for (let i = 0; i < want; i++) {
+      const x = x0 + r() * (x1 - x0), z = z0 + r() * (z1 - z0)
+      if (!inRing(zn.ring, x, z) || water.some((w) => inside(w, x, z))) continue
+      out.push({ x, z, height: h[0] + r() * (h[1] - h[0]), spin: r() * 6.28, park: true })
+    }
+  }
+  return out
 }

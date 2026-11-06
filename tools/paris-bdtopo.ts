@@ -21,16 +21,26 @@ const DIR = resolve(import.meta.dirname, 'cache', 'bdtopo')
 /** tile size in degrees (~1.1 km × 0.75 km); a dense Paris tile holds ~4 000 buildings, two or three pages */
 const TILE = 0.01
 const PAGE = 2000
-const PROPS = 'materiaux_des_murs,materiaux_de_la_toiture,hauteur'
+/** BD TOPO heights under this (m) are sheds or bad measures: ignored */
+const MIN_TOPO_HEIGHT = 2.5
+/** (usage_1 and nombre_de_logements say who lives there: one dwelling is a single-family house, src/city/paris/house.ts) */
+const PROPS = 'materiaux_des_murs,materiaux_de_la_toiture,hauteur,usage_1,nombre_de_logements,nature'
+/** a cached page from before the dwelling fields (no `l` key on its first row) is fetched again; a failed refetch keeps the old page */
+const PAGE_HAS_DWELLINGS = (fs: Feature[]): boolean => fs.length === 0 || 'l' in fs[0].properties
 
 /** [lon, lat, walls, roof, height] at the footprint's centroid; walls/roof the raw two-character code, '' unknown */
-export type TopoRow = [lon: number, lat: number, walls: string, roof: string, height: number]
+export type TopoRow = [lon: number, lat: number, walls: string, roof: string, height: number, usage?: string, dwellings?: number, nature?: string]
 
 type Feature = { geometry?: { type: string; coordinates: number[][][][] | number[][][] }; properties: Record<string, unknown> }
 
 async function getPage(tx: number, ty: number, page: number): Promise<Feature[]> {
   const file = resolve(DIR, `t${tx}_${ty}_p${page}.json`)
-  if (existsSync(file)) return JSON.parse(readFileSync(file, 'utf8')) as Feature[]
+  let stale: Feature[] | null = null
+  if (existsSync(file)) {
+    const old = JSON.parse(readFileSync(file, 'utf8')) as Feature[]
+    if (PAGE_HAS_DWELLINGS(old)) return old
+    stale = old
+  }
   const s = ty * TILE, w = tx * TILE
   const q = new URLSearchParams({
     SERVICE: 'WFS', VERSION: '2.0.0', REQUEST: 'GetFeature', TYPENAMES: 'BDTOPO_V3:batiment', OUTPUTFORMAT: 'application/json',
@@ -49,13 +59,14 @@ async function getPage(tx: number, ty: number, page: number): Promise<Feature[]>
         const g = f.geometry
         const ring = !g ? [] : g.type === 'MultiPolygon' ? (g.coordinates as number[][][][])[0][0] : (g.coordinates as number[][][])[0]
         return { geometry: { type: 'Polygon', coordinates: [ring.map((p) => [+p[0].toFixed(6), +p[1].toFixed(6)])] },
-          properties: { m: f.properties.materiaux_des_murs ?? '', r: f.properties.materiaux_de_la_toiture ?? '', h: f.properties.hauteur ?? 0 } }
+          properties: { m: f.properties.materiaux_des_murs ?? '', r: f.properties.materiaux_de_la_toiture ?? '', h: f.properties.hauteur ?? 0,
+            u: f.properties.usage_1 ?? '', l: f.properties.nombre_de_logements ?? null, n: f.properties.nature ?? '' } }
       })
       mkdirSync(DIR, { recursive: true })
       writeFileSync(file, JSON.stringify(slim))
       return slim as Feature[]
     } catch (e) {
-      if (attempt >= 4) throw e
+      if (attempt >= 4) { if (stale) return stale; throw e }
       await new Promise((ok) => setTimeout(ok, 2000 * (attempt + 1)))
     }
   }
@@ -85,7 +96,8 @@ export async function fetchTopo(box: { south: number; north: number; west: numbe
           // a building on the tile's edge comes back from both tiles: keep it in the tile its centre is in
           if (cx < w || cx >= w + TILE || cy < s || cy >= s + TILE) continue
           const t = f.properties
-          rows.push([+cx.toFixed(6), +cy.toFixed(6), String(t.m ?? ''), String(t.r ?? ''), Number(t.h ?? 0)])
+          rows.push([+cx.toFixed(6), +cy.toFixed(6), String(t.m ?? ''), String(t.r ?? ''), Number(t.h ?? 0),
+            String(t.u ?? ''), t.l === null || t.l === undefined ? undefined : Number(t.l), String(t.n ?? '')])
         }
         if (process.stdout.isTTY) process.stdout.write(`\r  bdtopo: ${tiles} tiles, ${rows.length} buildings`)
         if (fs.length < PAGE) break
@@ -100,7 +112,7 @@ export async function fetchTopo(box: { south: number; north: number; west: numbe
  * A building's BD TOPO row, by its outline: the rows whose centroid is inside it (most of a block's are), else the
  * nearest within ~15 m. Returns the raw codes.
  */
-export function topoIndex(rows: TopoRow[]): (ring: { lat: number; lon: number }[]) => { walls?: string; roofMat?: string } | null {
+export function topoIndex(rows: TopoRow[]): (ring: { lat: number; lon: number }[]) => { walls?: string; roofMat?: string; height?: number; usage?: string; dwellings?: number; nature?: string } | null {
   const C = 0.0005
   const cells = new Map<number, TopoRow[]>()
   for (const r of rows) { const k = Math.floor(r[0] / C) * 1e6 + Math.floor(r[1] / C); const l = cells.get(k); if (l) l.push(r); else cells.set(k, [r]) }
@@ -129,8 +141,23 @@ export function topoIndex(rows: TopoRow[]): (ring: { lat: number; lon: number }[
         }
       }
     }
-    const pool = (hits.length ? hits : near ? [near] : []).filter((r) => r[2] || r[3])
-    if (!pool.length) return null
+    const all = hits.length ? hits : near ? [near] : []
+    /*
+     * the MEASURED height (owner, 2026-11-05: the road to Versailles was "every building ... a 6 story paris-like building"
+     * where it is houses and low flats behind hedges): BD TOPO's hauteur, the median of the rows in the footprint
+     */
+    const hs = all.map((r) => r[4]).filter((h) => h >= MIN_TOPO_HEIGHT).sort((a, b) => a - b)
+    const height = hs.length ? hs[hs.length >> 1] : undefined
+    const pool = all.filter((r) => r[2] || r[3])
+    // who lives there: the commonest usage, the most dwellings any row in the footprint records (one row a house, several an apartment block)
+    const uses = new Map<string, number>()
+    for (const r of all) if (r[5]) uses.set(r[5], (uses.get(r[5]) ?? 0) + 1)
+    const usage = [...uses.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
+    const dw = all.map((r) => r[6]).filter((n): n is number => n !== undefined)
+    const dwellings = dw.length ? dw.reduce((a, b) => a + b, 0) : undefined
+    const nature = all[0]?.[7] || undefined
+    const who = { ...(usage ? { usage } : {}), ...(dwellings !== undefined ? { dwellings } : {}), ...(nature ? { nature } : {}) }
+    if (!pool.length) return height || usage ? { ...(height ? { height } : {}), ...who } : null
     // the commonest known wall code and roof code among them
     const vote = (k: 2 | 3): string | undefined => {
       const m = new Map<string, number>()
@@ -138,7 +165,8 @@ export function topoIndex(rows: TopoRow[]): (ring: { lat: number; lon: number }[
       return [...m.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
     }
     const walls = vote(2), roofMat = vote(3)
-    return walls || roofMat ? { ...(walls ? { walls } : {}), ...(roofMat ? { roofMat } : {}) } : null
+    return walls || roofMat || height || usage
+      ? { ...(walls ? { walls } : {}), ...(roofMat ? { roofMat } : {}), ...(height ? { height } : {}), ...who } : null
   }
 }
 

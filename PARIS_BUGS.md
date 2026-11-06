@@ -326,3 +326,83 @@ Only what is very prominent or touches many buildings runs until then, with no n
 19. Famous postmodern and late-modern buildings with no model (owner, 2026-11-01; list from memory, found by name search, check each against OSM and Opus with real photos, since their character is all in the vertical plane). In order: Les Échelles du Baroque and Place de Catalogne (Bofill, Montparnasse); Canal+ headquarters (Meier, Quai André-Citroën); Marché Saint-Honoré (Bofill); Maison de la culture du Japon (Armstrong); Tour Pacific (Kurokawa, La Défense, lower priority); Hôtel industriel Berlier (Perrault); Rue des Hautes-Formes (Portzamparc); Rue de Meaux (Piano; a search for "Piano" matched other files, so check it isn't there).
 20. Check these three: the Opéra Bastille (no landmark entry under that name, one model file mentions it; first to check, it's so prominent); Parc de la Villette's red follies (Tschumi; may be part of the park in Batch 1); the Ministère de la Culture (the entry may be only a restyle: does it have Soler's metal lattice?). DONE for the Opéra (2026-11-03; owner, with a photograph from the Place: "our version doesn't look much like the real thing"): a TS builder (src/render/landmarks/paris/museums/opera-bastille.ts, entry "Opéra Bastille" naming way/78149064, which claims OSM's 87 parts) measured off IGN's lidar and orthophoto — the 41 m drum with its colonnade, panel wall and square-paned glass band, the crown and its glass boxes, the fly tower, the terraces, the arch on its stair, the halls behind as prisms; 8,231 triangles. The restyle entries and the standalone arch (opera-arch.ts) are gone. Evidence: docs/landmarks/MODEL-OPERA-BASTILLE.md. Not done: the follies and the Ministère.
 7. A named shop's sign plate isn't centred on its shop (the Pâtisserie de la Bastille stands half over the door beside it): snap a plate to the nearest shop bay.
+
+
+
+
+
+
+
+MINOR BUGS
+1. 48.841733, 2.272494: the pedestrian bridge here is fancy stainless steel and very visible even though it's not huge
+   seen from 48.841681, 2.272660, -1 m up (ground zero of the city's own datum), looking 295° pitch -16°
+   2026-11-05 23:44 · paris-centre · spot x -4358.0 y -4.5 z -2089.2
+   nearest: railway tunnel mouth 73 (89 m) · Parc André-Citroën: the Ballon de Paris (117 m) · road tunnel mouth 45 (120 m)
+2. 48.849003, 2.283797: this high rise is a distinctive red with oval windows
+   seen from 48.849662, 2.283412, 47 m up (ground zero of the city's own datum), looking 106° pitch -12°
+   2026-11-05 23:46 · paris-centre · spot x -3530.2 y 5.4 z -1279.8
+   looking at: an ordinary building (way/10557799)
+   nearest: Front de Seine: Tour Rive Gauche (36 m) · MJLF (50 m) · Front de Seine: Perspective 1 (50 m)
+3. 48.838136, 2.267612: this area has a big oil delivery point (huge tanks)
+   seen from 48.836582, 2.267148, -2 m up (ground zero of the city's own datum), looking 221° pitch 0°
+   2026-11-05 23:48 · paris-centre · spot x -4715.6 y -7.6 z -2489.6
+   nearest: railway tunnel mouth 54 (171 m) · railway tunnel mouth 56 (191 m) · railway tunnel mouth 55 (246 m)
+4. 48.832773, 2.265652: this is actually a green-roof building (likely parking) with many trees on top
+   seen from 48.833105, 2.265019, 21 m up (ground zero of the city's own datum), looking 128° pitch -17°
+   2026-11-05 23:49 · paris-centre · spot x -4859.1 y 2.5 z -3086.5
+   nearest: railway tunnel mouth 130 (40 m) · EFB (76 m) · railway tunnel mouth 129 (152 m)
+5. 48.831905, 2.263719: this is a huge incinerator, mostly underground. from the survace it looks like a distinctive zigzaggy scaffold strucutre about 3 stories high
+   seen from 48.832005, 2.263515, 17 m up (ground zero of the city's own datum), looking 71° pitch -17°
+   2026-11-05 23:51 · paris-centre · spot x -5000.7 y 6.3 z -3183.2
+   looking at: an ordinary building (way/122634042)
+   nearest: railway tunnel mouth 129 (64 m) · railway tunnel mouth 130 (153 m) · EFB (167 m)
+6. 48.827578, 2.261003: this complex is two towers of white apartment buildings with unusual, irregular wraparound balconies around a square base
+   seen from 48.827647, 2.260951, 16 m up (ground zero of the city's own datum), looking 98° pitch -17°
+   2026-11-05 23:53 · paris-centre · spot x -5199.6 y 10.9 z -3664.8
+   looking at: an ordinary building (way/547046821)
+   nearest: Keiko (194 m) · La Tour aux Figures (212 m) · Bridge (Orange headquarters) (309 m)
+7. 48.827642, 2.260768: actually this one is black. it's called paullette
+   seen from 48.827627, 2.260972, 15 m up (ground zero of the city's own datum), looking 225° pitch -10°
+   2026-11-05 23:53 · paris-centre · spot x -5216.8 y 7.5 z -3657.8
+   looking at: an ordinary building (way/547046821)
+   nearest: Keiko (193 m) · La Tour aux Figures (194 m) · Bridge (Orange headquarters) (310 m)
+8. 48.826674, 2.260410: glass buildin
+   seen from 48.826810, 2.260392, 24 m up (ground zero of the city's own datum), looking 120° pitch -18°
+   2026-11-05 23:54 · paris-centre · spot x -5243.0 y 14.6 z -3765.5
+   looking at: an ordinary building (way/469725899)
+   nearest: La Tour aux Figures (248 m) · Keiko (303 m) · railway tunnel mouth 270 (319 m)
+9. 48.825556, 2.259214: unusual glass building with a stainless lid over the road
+   seen from 48.825620, 2.259001, 3 m up (ground zero of the city's own datum), looking 115° pitch -17°
+   2026-11-05 23:55 · paris-centre · spot x -5330.6 y -1.8 z -3890.0
+   nearest: railway tunnel mouth 270 (192 m) · railway tunnel mouth 269 (213 m) · railway tunnel mouth 271 (279 m)
+10. 48.824207, 2.257034: white and galss buidlign
+   seen from 48.824260, 2.257062, 7 m up (ground zero of the city's own datum), looking 147° pitch -12°
+   2026-11-05 23:56 · paris-centre · spot x -5490.3 y 3.6 z -4040.2
+   looking at: an ordinary building (way/19843239)
+   nearest: railway tunnel mouth 272 (151 m) · railway tunnel mouth 271 (162 m) · railway tunnel mouth 269 (172 m)
+11. 48.878108, 2.298078: these small buidlngs in the circle are actually bright green (mostly florists)
+   seen from 48.878164, 2.298243, 24 m up (ground zero of the city's own datum), looking 242° pitch -47°
+   2026-11-05 23:58 · paris-centre · spot x -2484.3 y 9.0 z 1960.1
+   nearest: Salle Wagram (131 m) · Céramic Hôtel (151 m) · La Salle Pleyel (259 m)
+12. 48.878777, 2.294956: this is a really cool building with a small dome on the corner
+   seen from 48.878754, 2.294560, 17 m up (ground zero of the city's own datum), looking 35° pitch -3°
+   2026-11-06 00:03 · paris-centre · spot x -2712.9 y 5.2 z 2034.6
+   looking at: an ordinary building (way/84319508)
+   nearest: Salle Wagram (178 m) · Château des Ternes (277 m) · Céramic Hôtel (305 m)
+13. 48.882134, 2.280638: newer building made to look old
+   seen from 48.881994, 2.280628, 6 m up (ground zero of the city's own datum), looking 3° pitch -13°
+   2026-11-06 00:04 · paris-centre · spot x -3761.6 y 2.3 z 2408.3
+   nearest: Institution Notre-Dame de Sainte-Croix (8 m) · Centre Culturel Louis de Broglie (181 m) · Chapelle de la compassion (203 m)
+14. 48.882177, 2.279971: more newer building made to look old
+   seen from 48.882130, 2.279969, 22 m up (ground zero of the city's own datum), looking 308° pitch -13°
+   2026-11-06 00:04 · paris-centre · spot x -3810.4 y 19.5 z 2413.0
+   looking at: an ordinary building (way/81248047)
+   nearest: Institution Notre-Dame de Sainte-Croix (52 m) · Centre Culturel Louis de Broglie (167 m) · Chapelle de la compassion (250 m)
+15. 48.879167, 2.282904: floating wall here
+   seen from 48.879383, 2.282537, 87 m up (ground zero of the city's own datum), looking 132° pitch -66°
+   2026-11-06 00:06 · paris-centre · spot x -3595.6 y 6.3 z 2078.0
+   nearest: Palais des Congrès (54 m) · road tunnel mouth 28 (58 m) · Hyatt Regency Paris Étoile (ex Concorde Lafayette) (142 m)
+
+   synagogue copernic shows as a grey cube - likely rotated wrong 
+
+   building at 48.827212, 2.379465 is floating midair over another building 

@@ -17,11 +17,15 @@ import type { BuildingFacts, Classifier } from '../building-types.ts'
 import type { StyleId } from '../facade.ts'
 import { frontZone } from './arrondissements.ts'
 import { wallKind } from './materials.ts'
+import { houseFor } from './house.ts'
 
 export const classifyParis: Classifier = (b: BuildingFacts) => {
   const rec = b.record
   const out = (archetype: string, style: StyleId, rule: string) => ({ archetype, style, district: 'paris', rule })
   const zone = frontZone(b.lat, b.lon)
+  // a SUBURBAN SINGLE-FAMILY HOUSE (house.ts) is drawn by render/paris-houses.ts, whatever else it might have been
+  const house = zone === 'beyond' ? houseFor(b) : null
+  if (house) return { archetype: 'parishouse', style: 'marais', district: 'paris', rule: house.rule, wall: house.wall }
   /*
    * GLASS IS RARE. It was everything from 1968 on that was an office or a shop, and a share of the rest (owner, 2026-10-30: "more
    * variety of modern buildings"), which came to 8,200 dark curtain walls. But (2026-10-31): "we draw them all as dark curtain walls, which

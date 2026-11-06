@@ -59,6 +59,32 @@ execFileSync('osmium', ['extract', '-b', box, pbf, '-o', `${dir}/box.pbf`, '--ov
 execFileSync('osmium', ['tags-filter', `${dir}/box.pbf`, 'w/building', 'r/building', '-o', `${dir}/b.pbf`, '--overwrite'], { stdio: 'ignore' })
 execFileSync('osmium', ['export', `${dir}/b.pbf`, '-f', 'geojsonseq', '-o', `${dir}/b.geojsonseq`, '--overwrite', '--add-unique-id=type_id', '--geometry-types=polygon'], { stdio: 'ignore' })
 const lines = readFileSync(`${dir}/b.geojsonseq`, 'utf8').split('\n')
+// a town hall mapped as its site (amenity=townhall, no building tag): its largest building takes the mairie (the 7e, the 16e)
+execFileSync('osmium', ['tags-filter', `${dir}/box.pbf`, 'a/amenity=townhall', '-o', `${dir}/t.pbf`, '--overwrite'], { stdio: 'ignore' })
+execFileSync('osmium', ['export', `${dir}/t.pbf`, '-f', 'geojsonseq', '-o', `${dir}/t.geojsonseq`, '--overwrite', '--geometry-types=polygon'], { stdio: 'ignore' })
+const sites = readFileSync(`${dir}/t.geojsonseq`, 'utf8').split('\n').filter((l) => l.trim())
+  .map((l) => JSON.parse(l.replace(/^\x1e/, '')) as { properties: Tags; geometry: { type: string; coordinates: number[][][] | number[][][][] } })
+  .filter((s) => !s.properties.building)
+  .map((s) => ({ name: s.properties.name, ring: (s.geometry.type === 'Polygon' ? s.geometry.coordinates : (s.geometry.coordinates as number[][][][])[0])[0] as number[][] }))
+const inside = (r: number[][], lo: number, la: number): boolean => {
+  let c = false
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i][1] > la) !== (r[j][1] > la) && lo < ((r[j][0] - r[i][0]) * (la - r[i][1])) / (r[j][1] - r[i][1]) + r[i][0]) c = !c
+  return c
+}
+const ringArea = (r: number[][]): number => { let a = 0; for (let i = 0; i + 1 < r.length; i++) a += X(r[i][0]) * Z(r[i + 1][1]) - X(r[i + 1][0]) * Z(r[i][1]); return Math.abs(a) / 2 }
+/** each site's largest building, by its osmium id */
+const siteOf = new Map<string, string | undefined>()
+{
+  const best = new Map<number, [string, number]>()
+  for (const l of lines) {
+    if (!l.trim()) continue
+    const f = JSON.parse(l.replace(/^\x1e/, '')) as { id: string; geometry: { coordinates: number[][][][] } }
+    const r = f.geometry.coordinates[0][0]
+    const lo = r.reduce((s, q) => s + q[0], 0) / r.length, la = r.reduce((s, q) => s + q[1], 0) / r.length
+    sites.forEach((s, i) => { if (inside(s.ring, lo, la)) { const a = ringArea(r); if (a > (best.get(i)?.[1] ?? 0)) best.set(i, [f.id, a]) } })
+  }
+  for (const [i, [id]] of best) siteOf.set(id, sites[i].name)
+}
 rmSync(dir, { recursive: true })
 
 // ---- what is claimed already
@@ -154,12 +180,12 @@ const counts: Record<string, number> = {}
 for (const l of lines) {
   if (!l.trim()) continue
   const f = JSON.parse(l.replace(/^\x1e/, '')) as { id: string; properties: Tags; geometry: { coordinates: number[][][][] } }
-  const t = f.properties
+  const t = siteOf.has(f.id) && [null, 'equipement'].includes(kindOf(f.properties)) ? { ...f.properties, amenity: 'townhall', name: siteOf.get(f.id) ?? f.properties.name } as Tags : f.properties
   const kind = kindOf(t)
   // (osmium numbers its areas twice the way's id; an odd one is a relation's, which a kit building does not take)
   const area = Number(f.id.slice(1))
-  // (an hôtel particulier may be a relation, whose courtyards the bake keeps as holes; any other kind takes ways only)
-  if (!kind || (area % 2 && kind !== 'hotel')) continue
+  // (an hôtel particulier or a mairie may be a relation, whose courtyards the bake keeps as holes; any other kind takes ways only)
+  if (!kind || (area % 2 && kind !== 'hotel' && kind !== 'mairie')) continue
   const wayId = area % 2 ? area : area / 2
   const ref = area % 2 ? `relation/${(area - 1) / 2}` : `way/${wayId}`
   if (claimed.has(ref) || !inPackage.has(wayId)) continue
