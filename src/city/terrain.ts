@@ -1,3 +1,4 @@
+import { applyTweaks, type TerrainTweak } from './terrain-tweaks.ts'
 /**
  * The ground is not flat, and for a training game that is not a cosmetic point.
  *
@@ -125,6 +126,9 @@ export class Terrain {
   // (15 bits each, so the key is a small integer: past 2^30 every Map lookup boxed a double, 2026-11-06)
   private static at(tx: number, tz: number): number { return ((tx & 0x7fff) << 15) | (tz & 0x7fff) }
 
+  /** regions.json `terrainTweaks`, in local metres (city/terrain-tweaks.ts): applied to each fine block as it lands */
+  tweaks: TerrainTweak[] = []
+
   /** A tile's ground, as its data lands (render/city.ts `ingest`, which runs before anything is built). */
   addTile(tx: number, tz: number, b: TileTerrain | undefined): void {
     if (!b || b.cols < 2 || b.dm.length !== b.cols * b.cols) return
@@ -133,7 +137,9 @@ export class Terrain {
     // heights twice is pure waste, and `City` is also used without game.ts, so neither call can go
     const had = this.blocks.get(k)
     if (had && had.step === b.step && had.cols === b.cols) return
-    this.blocks.set(k, { step: b.step, cols: b.cols, dm: Int16Array.from(b.dm) })
+    const dm = Int16Array.from(b.dm)
+    if (this.tweaks.length) applyTweaks(this.tweaks, dm, b.cols, b.step, tx * this.tile, tz * this.tile)
+    this.blocks.set(k, { step: b.step, cols: b.cols, dm })
     this.onTile?.(tx, tz)
   }
 

@@ -11,6 +11,8 @@
  * two thousand. Trail Trainer's expensive lesson was that a triangle budget goes not on detail but on things
  * drawn separately, and a city is the case where that bites hardest.
  */
+import { Projection } from '../city/geo.ts'
+import { prepareTweaks } from '../city/terrain-tweaks.ts'
 import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
 import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisPanel, stoneBench, sucette, treePit } from './paris/furniture.ts'
 import { WallaceFountains } from './paris/wallace.ts'
@@ -185,7 +187,7 @@ interface Junction {
 }
 
 /** What the city needs up front: the index's global part (city/tiles.ts `CityIndex`). */
-export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain' | 'water' | 'box' | 'walls' | 'garden'>
+export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain' | 'water' | 'box' | 'walls' | 'garden'> & { origin?: CityPackage['origin'] }
   & {
     /**
      * Where the city's CONTENT actually is, in local metres, from the index's own tile list (BUGS.md #225,
@@ -1918,6 +1920,8 @@ export class City {
     this.terrain.grass = (x, z, raw) => (this.off.has('grade') ? raw : this.grade.grassAt(x, z, raw))
     this.terrain.cut = (x, z) => (this.off.has('grade') ? null : this.grade.cutAt(x, z))
     this.region = region(pkg.region)
+    // the runtime pits in the fine ground (city/terrain-tweaks.ts), before any tile's block lands
+    if (pkg.origin) this.terrain.tweaks = prepareTweaks(this.region.terrainTweaks, new Projection(pkg.origin), (x, z) => this.terrain.rawHeightAt(x, z))
     const __tg0 = performance.now()
     distantGround(scene, this.terrain, pkg, this.roadAssets)
     distantSea(scene, pkg)
@@ -5234,7 +5238,8 @@ export class City {
       const attic = !lv && !b.stretch && this.region.roadPaint === 'paris' && ATTIC.roofs.includes(b.roof) && b.roofHeight >= ATTIC.minRoof &&
         (b.levels ?? 0) >= ATTIC.minLevels && ATTIC.styles.includes(styleId) && height !== undefined && height - (minHeight ?? 0) - b.roofHeight >= ATTIC.minWalls
       const plan = planFacade(styleId, b.id, attic
-        ? { levels: b.levels! - 1, height: height! - b.roofHeight, minHeight, noShops: b.noShops, attic: true }
+        ? { levels: Math.min(b.levels! - 1, Math.max(2, 1 + Math.round((height! - (minHeight ?? 0) - b.roofHeight - ATTIC.ground) / ATTIC.storey))),
+            height: height! - b.roofHeight, minHeight, noShops: b.noShops, attic: true }
         : { levels: lv ?? b.levels, height, minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
         b.palette ? [b.palette] : areaPalettes(ring[0].x, ring[0].z, styleId) ?? this.region.palettes[styleId], look ?? undefined)
       const out = byStyle.get(styleId) ?? new MeshBuilder()
@@ -5462,7 +5467,13 @@ export { simplifyRing }
 
 const ZCHECK = typeof location !== 'undefined' && new URLSearchParams(location.search).get('zcheck') === '1'
 /** a Paris mansard roof counted as a storey (render: the walls take one fewer): its least rise, the least tagged levels, the least wall left */
-const ATTIC = { minRoof: 2.5, minLevels: 3, minWalls: 6, roofs: ['mansard', 'hipped'] as string[], styles: ['haussmann', 'marais', 'classical'] as string[] }
+/*
+ * `ground`/`storey`: the wall storeys under it are as many as the eaves height holds at a Paris front's proportions (a 4.6 m
+ * shop storey, 3.2 m above it), never more than the stated count less the mansard (owner, 2026-11-07: "many of our
+ * haussmann buildings are 1 floor too tall STILL … looks 7 levels tall, PLUS a mansard"). The bake's storeys are its
+ * height over 3.1 m, so a 22 m block came out seven storeys, six of them squeezed to 2.6 m in 17.8 m of wall; it holds five.
+ */
+const ATTIC = { minRoof: 2.5, minLevels: 3, minWalls: 6, ground: 4.6, storey: 3.2, roofs: ['mansard', 'hipped'] as string[], styles: ['haussmann', 'marais', 'classical'] as string[] }
 /** `?zcheck=1`: baked building feet against the ones the renderer would have computed, for measuring map v3 */
 function zcheck(id: number, baked: number, computed: number): void {
   const w = window as unknown as { __zcheck?: { n: number; sumAbs: number; max: number; worst: number; over5cm: number } }

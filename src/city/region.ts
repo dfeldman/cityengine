@@ -2,6 +2,7 @@
  * A city's regional character: the palette its stone comes in, what stands on its pavements, how its
  * crossings are marked. Read from regions.json; see the note there.
  */
+import type { TerrainTweakSpec } from './terrain-tweaks.ts'
 import regions from './regions.json' with { type: 'json' }
 import type { Palette, StyleId } from './facade.ts'
 import type { ShopLanguage } from './shopnames.ts'
@@ -161,6 +162,8 @@ export interface Region {
    */
   modelWalks?: { name: string; at: [number, number]; rotateDeg: number; baseY: number; lift?: number; levels: [number, number, number, number, number, number][] }[]
   levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number; /** [lat, lon]: level at the ground's height there, not its edge's median */ at?: [number, number] }[]
+  /** runtime pits and the like in the fine ground (city/terrain-tweaks.ts) */
+  terrainTweaks?: TerrainTweakSpec[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -281,6 +284,7 @@ export function region(id: string | undefined): Region {
     bareViaducts: own?.bareViaducts ?? base.bareViaducts,
     flatStreets: own?.flatStreets ?? base.flatStreets,
     levelGrounds: own?.levelGrounds ?? base.levelGrounds,
+    terrainTweaks: own?.terrainTweaks ?? base.terrainTweaks,
     modelWalks: own?.modelWalks ?? base.modelWalks,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,

@@ -501,7 +501,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return Number.isFinite(x0) ? { x0, x1, z0, z1 } : undefined
   })()
   setHandOrigin(pkg.origin) // hand-looks.ts: area palettes are lat/lon rings
-  const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain, sea: index.sea,
+  const city = new City(scene, { name: pkg.name, origin: pkg.origin, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain, sea: index.sea,
     water: pkg.water, box: index.box, walls: index.walls, garden: index.garden, contentBox }, atlas, ASSETS).omit(off)
   // which Paris métro entrances are Guimard's own (render/paris/guimard-sites.ts), before any tile places its furniture
   if (region(pkg.region).pointFurniture.metro === 'guimard') {

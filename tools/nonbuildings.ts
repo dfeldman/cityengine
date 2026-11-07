@@ -188,7 +188,7 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   louisXIV: 'statue', fochTrocadero: 'statue',
   // plazas, parvises, courts, gardens — the flat ones, and the z-fighting family
   placeConcorde: 'plaza', trocaderoParvis: 'plaza', vosgesGarden: 'garden',
-  louvrePyramid: 'plaza',
+  louvrePyramid: 'plaza', louvreInverted: 'plaza',
   sullyCourt: 'plaza', soubiseCourt: 'plaza', carnavaletCourt: 'plaza',
   // San Francisco's park furniture, inside the mixed PARKS record (which also holds the Conservatory of
   // Flowers and the Academy of Sciences — real buildings, on BUILDINGS_OK)

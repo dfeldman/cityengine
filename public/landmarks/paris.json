@@ -481,6 +481,17 @@
     "note": "Alicante and Chassagne, La Défense (owner, 2026-10-30, 48.891995, 2.230358: \"colors are not quite right\"): OSM has them as pale glass, building:facade:colour #A2E1FA, where the office towers' palette is dark. A silvery glass from the styles there are; not their own colour."
   },
   {
+    "name": "Pyramide inversée",
+    "procedural": "louvreInverted",
+    "lat": 48.8614474,
+    "lon": 2.3341126,
+    "size": [23, 23],
+    "rotateDeg": 110,
+    "baseY": 1.6,
+    "stone": false,
+    "note": "Pei's inverted pyramid hung under the Carrousel's skylight, in the middle of the roundabout's lawn: the glass and its sloped stone frame measured on IGN's aerial (2026-11-07, ~14.4 m in ~22.5 m, bearing ~110). The lawn is levelled and the pit dug at runtime (regions.json terrainTweaks); baseY is that level."
+  },
+  {
     "name": "Louvre Pyramid",
     "procedural": "louvrePyramid",
     "osm": [
