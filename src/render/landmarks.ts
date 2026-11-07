@@ -38,7 +38,9 @@ import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
 import { offsetRing } from './landmarks/parts.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
-import { MID } from './city.ts'
+import { GROUND_STENCIL, MID } from './city.ts'
+import { Constants } from '@babylonjs/core/Engines/constants'
+import { RenderingGroup } from '@babylonjs/core/Rendering/renderingGroup'
 
 /**
  * Whether a placed model keeps a CPU copy of its vertices once they are on the GPU (src/tier.ts, BUGS.md #242).
@@ -287,6 +289,9 @@ function styleOnly(e: LandmarkEntry): LandmarkEntry {
  * houses fronting a square, however deep they run back, and not whatever stands in its garden. Applied when
  * the package is loaded, before any tile is built, so a restyle needs no re-bake.
  */
+/** each `within` entry's ring in local metres, with its box (`restyles`); keyed by entry, so a new manifest starts afresh */
+const withinMemo = new WeakMap<LandmarkEntry, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
+
 export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origin' | 'buildings' | 'landmarks'>): Map<number, LandmarkEntry> {
   const out = new Map<number, LandmarkEntry>()
   const proj = new Projection(pkg.origin)
@@ -327,10 +332,22 @@ export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origi
       for (const l of pkg.landmarks ?? []) if (re.test(l.name) && !out.has(l.id)) out.set(l.id, e)
     }
     if (!e.within) continue
-    const ring = e.within.map(([lat, lon]) => proj.toLocal({ lat, lon }))
+    // (the ring projected once per entry, and a building wholly outside its box plus the margin skipped before any
+    //  distance is measured: every tile walked every building against every ring, ~2 GB a flight, 2026-11-06)
+    let w = withinMemo.get(e)
+    if (!w) {
+      const ring = e.within.map(([lat, lon]) => proj.toLocal({ lat, lon }))
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      withinMemo.set(e, (w = { ring, x0, x1, z0, z1 }))
+    }
+    const ring = w.ring
     const margin = e.margin ?? 20
     for (const b of pkg.buildings) {
       const r = b.ring
+      let bx0 = Infinity, bx1 = -Infinity, bz0 = Infinity, bz1 = -Infinity
+      for (let i = 0; i < r.length; i += 2) { if (r[i] < bx0) bx0 = r[i]; if (r[i] > bx1) bx1 = r[i]; if (r[i + 1] < bz0) bz0 = r[i + 1]; if (r[i + 1] > bz1) bz1 = r[i + 1] }
+      if (bx0 > w.x1 + margin || bx1 < w.x0 - margin || bz0 > w.z1 + margin || bz1 < w.z0 - margin) continue
       let x = 0
       let z = 0
       let near = Infinity
@@ -698,6 +715,19 @@ export function tileNearParts(parts: PartLike[], tx: number, tz: number, slack =
   return t !== null && tx >= t.tx0 - slack && tx <= t.tx1 + slack && tz >= t.tz0 - slack && tz <= t.tz1 + slack
 }
 
+/**
+ * How far from the eye the skyline stand-ins are drawn (they are scaled by SKYLINE_R / true distance, so every
+ * angle is kept). It was 800 m, where a 24-bit depth buffer (minZ 0.9) resolves ~4 cm; La Défense at 7 km is
+ * shrunk ×0.2 there, so its 5–15 cm façade layers (defense.ts) fought all over the skyline. The safe true gap
+ * scales with R: ~20 cm at 800, ~2 cm at 80. Nothing in group 0 nearer than R needs to hide them — the
+ * streamed ground and the city draw in later groups, after a depth clear.
+ */
+const SKYLINE_R = 80
+/** where the stand-in is placed (and its foot clamped to the ground) before it is shrunk to SKYLINE_R */
+const SKYLINE_PLACE_R = 800
+/** how far below the ground at SKYLINE_PLACE_R the stand-in's foot is sunk */
+const SKYLINE_SINK = 3
+
 /** A skyline landmark: its true position, and how much larger than true it is drawn (see skylineBoost). */
 interface SkyItem { name: string; mesh: Mesh; x: number; y: number; z: number; boost: number; haze: { fog: number } }
 
@@ -804,6 +834,19 @@ export class Landmarks {
   /** every tile that has arrived, so `partsComplete` can tell "not here yet" from "not there" */
   private readonly seenTiles = new Set<string>()
   private readonly wanted = new Set<number>()
+  /*
+   * RELEASED WITH THEIR TILE (owner, 2026-11-06: "we definitely should reduce the meshes when we deallocate the whole
+   * tile"). A placed procedural model belongs to the tile whose arrival placed it; when game.ts drops that tile's raw
+   * data (`dropTile`, MID + 2 out, past the skyline stand-ins' 1.3 km swap) its meshes go, and it sleeps till the tile
+   * comes back. Flying a lap of central Paris had placed ~3 000 and kept every one. What a model told the city once —
+   * covers, pavings, clearings, decks, plants — stays told (`told`): it is small, and the city keeps it anyway.
+   * Loaded glTF models (`file`) are not released: they arrive later, and SF's few are worth keeping.
+   */
+  private readonly live = new Map<string, { e: LandmarkEntry; meshes: Mesh[]; rec: Landmarks['placed'][number] | null }[]>()
+  private readonly asleep = new Map<string, LandmarkEntry[]>()
+  private readonly told = new Set<LandmarkEntry>()
+  /** the model being placed now, and the meshes it made (`place`) */
+  private placing: { meshes: Mesh[]; rec: Landmarks['placed'][number] | null } | null = null
   /**
    * The model entry that names each building id ITSELF (not through an outline). An entry fitted to an OUTLINE takes
    * the union of its parts — but not a part another model names for itself: the Paramount's entry named the 3-storey
@@ -892,6 +935,27 @@ export class Landmarks {
     // ---- the skyline
     const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
     skyMat.setFloat('fogDensity', 0.00002)
+    /*
+     * Drawn only where the group-0 ground has not (GROUND_STENCIL, city.ts): at SKYLINE_R it is nearer than most of
+     * that ground, so depth cannot hide its sunk foot. For the stencil to be written first it must draw after the
+     * ground AND the (alpha-blended) sea, so it joins group 0's transparent queue (its alpha is 1, so it still
+     * reads as solid) and is sorted to the very end of it.
+     */
+    const st = skyMat.stencil
+    st.enabled = true
+    st.func = Constants.NOTEQUAL
+    st.funcRef = GROUND_STENCIL
+    st.funcMask = 0xff
+    st.mask = 0x00
+    st.opStencilFail = Constants.KEEP
+    st.opDepthFail = Constants.KEEP
+    st.opStencilDepthPass = Constants.KEEP
+    skyMat.needAlphaBlending = () => true
+    const isSky = (m: { getMesh(): { name: string } }) => m.getMesh().name.startsWith('skyline:')
+    scene.setRenderingOrder(0, undefined, undefined, (a, b) => {
+      const sa = isSky(a), sb = isSky(b)
+      return sa === sb ? RenderingGroup.defaultTransparentSortCompare(a, b) : sa ? 1 : -1
+    })
     for (const s of pkg.skyline ?? []) {
       const build = PROCEDURAL[s.procedural]
       if (!build) continue
@@ -934,11 +998,14 @@ export class Landmarks {
       // a long thing needs less of the distance boost a slender tower does (the Golden Gate is 2.7 km of it)
       this.sky.push({ name: s.name, mesh: m, x: at.x, y: at.y, z: at.z, boost: s.boost ?? skylineBoost(d), haze: item })
     }
+    if (this.sky.length) scene.onBeforeCameraRenderObservable.add((cam) => this.placeSkyline(cam.parent ? cam.globalPosition : cam.position))  // (globalPosition lags a hand-set position by a frame)
   }
 
   /** A tile's data arrived: place every landmark that was waiting for it. */
   addTile(t: TileData): void {
     this.seenTiles.add(t.key)
+    const woken = this.asleep.get(t.key)
+    if (woken) { this.asleep.delete(t.key); for (const e of woken) this.place(e, t.key) }
     if (this.pending.length === 0) return
     // only the buildings some landmark is fitted to: a streamed city passes every one of them through here
     for (const b of t.fringe) if (this.wanted.has(b.id)) this.byId.set(b.id, b)
@@ -974,7 +1041,7 @@ export class Landmarks {
           ? this.partsReady(e, ids, tx, tz)
           : this.byId.has(ids[0]) || this.waitedEnough(e, ids))
       if (!ready) return true
-      this.place(e)
+      this.place(e, t.key)
       return false
     })
   }
@@ -1043,7 +1110,37 @@ export class Landmarks {
     return n >= 4
   }
 
-  private place(e: LandmarkEntry): void {
+  /** A tile's raw data was dropped: its models go, to be placed again when it comes back. */
+  dropTile(key: string): void {
+    const here = this.live.get(key)
+    if (!here) return
+    this.live.delete(key)
+    for (const p of here) {
+      for (const m of p.meshes) m.dispose()          // and with each host its signs, clock hands, rotors and water
+      if (p.rec) { const i = this.placed.indexOf(p.rec); if (i >= 0) this.placed.splice(i, 1) }
+    }
+    this.asleep.set(key, here.map((p) => p.e))
+    for (let i = this.signs.length - 1; i >= 0; i--) if (this.signs[i].mesh.isDisposed()) this.signs.splice(i, 1)
+    this.clockHands.prune()
+    this.rotors.prune()
+  }
+
+  private place(e: LandmarkEntry, home: string): void {
+    const first = !this.told.has(e)
+    this.told.add(e)
+    this.placing = { meshes: [], rec: null }
+    try { this.placeOnce(e, first) } finally {
+      const got = this.placing
+      this.placing = null
+      if (e.procedural && got.meshes.length > 0) {
+        const list = this.live.get(home) ?? []
+        list.push({ e, ...got })
+        this.live.set(home, list)
+      }
+    }
+  }
+
+  private placeOnce(e: LandmarkEntry, first: boolean): void {
     const onId = e.on ? packedIds({ name: e.name, osm: e.on })[0] : undefined
     // of those that have arrived, the biggest footprint: the outline where there is one, else the largest part
     const arrived = packedIds(e).map((id) => this.byId.get(id)).filter((b): b is PackedBuilding => !!b)
@@ -1135,7 +1232,7 @@ export class Landmarks {
      * owner's "trees sometimes disappear when the rider gets close", 2026-10-05.)
      */
     const spans = /bridge|moorings/i.test(`${e.name} ${e.procedural ?? ''}`) || /^sutroTower/.test(e.procedural ?? '')
-    if (!spans && !/^(plaza|garden|park)$/.test(e.kind ?? '') && !/plaza|park|garden|square|marina|harbo|deck|podium|paddock|labyrinth|court/i.test(`${e.name} ${e.procedural ?? ''}`)) this.onFootprint?.(under)
+    if (!spans && !/^(plaza|garden|park)$/.test(e.kind ?? '') && !/plaza|park|garden|square|marina|harbo|deck|podium|paddock|labyrinth|court/i.test(`${e.name} ${e.procedural ?? ''}`) && first) this.onFootprint?.(under)
     // a structure on piles takes its own deck datum off the sea, not the sea bed under it (BUGS.md #181):
     // the terrain there is deliberately below the waterline, and draping the model on it submerges it
     const y = e.baseY !== undefined
@@ -1166,6 +1263,7 @@ export class Landmarks {
      * later, the entry's own rectangle and height are all there is.
      */
     const publishCover = (ring: { x: number; z: number }[], y0: number, y1: number): void => {
+      if (!first) return
       const cover = { ring, y0, y1 }
       this.covers.push(cover)
       this.onCover?.(cover)
@@ -1298,19 +1396,20 @@ export class Landmarks {
       m.scaling.setAll(e.scale ?? 1)
       m.renderingGroupId = 3
       m.isPickable = false
-      this.count++
+      this.placing?.meshes.push(m)
+      if (first) this.count++
       // any deck the builder planted on itself, turned into world metres by the same transform as the mesh
       const scale = e.scale ?? 1
       const cosR = Math.cos(rotation)
       const sinR = Math.sin(rotation)
-      for (const d of mb.decks) {
+      for (const d of first ? mb.decks : []) {
         const ring = d.ring.map((p) => ({
           x: cx + ox + (p.x * cosR + p.z * sinR) * scale,
           z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
         }))
         this.decks.push({ ring, y: y + d.y * scale, keepOff: d.keepOff, trees: d.trees, shrubs: d.shrubs, spacing: d.spacing ? d.spacing * scale : undefined, form: d.form })
       }
-      for (const q of mb.plants) {
+      for (const q of first ? mb.plants : []) {
         this.plants.push({
           x: cx + ox + (q.x * cosR + q.z * sinR) * scale,
           z: cz + oz + (-q.x * sinR + q.z * cosR) * scale,
@@ -1318,7 +1417,7 @@ export class Landmarks {
         })
       }
       // and the ground it paves at street level (MeshBuilder.grounds), in world metres, for the city to drape
-      for (const g of mb.grounds) {
+      for (const g of first ? mb.grounds : []) {
         this.onGround?.(g.map((p) => ({
           x: cx + ox + (p.x * cosR + p.z * sinR) * scale,
           z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
@@ -1348,7 +1447,9 @@ export class Landmarks {
       if (mb.rotors.length) this.rotors.raise(mb.rotors, m, e.name)
       if (mb.water.length) this.water.raise(mb.water, m, e.name)
       // every placed model is on the list (fountains, statues and the landmark card find their host by it)
-      this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
+      const rec = { name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) }
+      this.placed.push(rec)
+      if (this.placing) this.placing.rec = rec
       /*
        * And its shadow, from the footprint it STANDS ON, the height it reaches — which is why a model given
        * its own datum (`baseY`) gets none. The shadow is draped on the terrain, and a model floated to a
@@ -1369,6 +1470,7 @@ export class Landmarks {
       if (e.baseY === undefined && e.deckAbove === undefined && e.shadow !== false && mh >= 6) addShadow(shadows, under, mh * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
+        this.placing?.meshes.push(sm)
         this.terrain.drape(shadows.positions)
         shadows.toVertexData().applyToMesh(sm)
         sm.material = shadowMaterial(this.scene)
@@ -1439,8 +1541,8 @@ export class Landmarks {
   }
 
   /**
-   * Every frame: each skyline landmark moved to 800 m along its true direction from the camera and scaled by
-   * 800 / its true distance. Uniform scaling about the eye preserves every angle, so the tower is exactly
+   * Every frame: each skyline landmark moved to SKYLINE_R along its true direction from the camera and scaled by
+   * SKYLINE_R / its true distance. Uniform scaling about the eye preserves every angle, so the tower is exactly
    * where and exactly as big as it would be at five kilometres.
    */
   update(eye: Vector3): void {
@@ -1459,7 +1561,15 @@ export class Landmarks {
         if (s.plate) { if (on) wakeSign(this.scene, s.mesh, s.plate); else sleepSign(s.mesh) }
       }
     }
-    const R = 800
+  }
+
+  /**
+   * The skyline is placed just before the camera draws (wired in the constructor), from where the camera
+   * actually is then: at SKYLINE_R = 80 m, an eye one frame stale — or a camera moved after `update` (photo
+   * mode, the shot tools) — puts the towers ten times further off true than it did at 800 m.
+   */
+  private placeSkyline(eye: Vector3): void {
+    const R = SKYLINE_R
     for (const s of this.sky) {
       // a skyline stand-in gives way to the landmark's own model within the camera's reach (the Eiffel Tower
       // in central Paris): drawn behind everything, it showed through the lattice
@@ -1478,22 +1588,26 @@ export class Landmarks {
       const dy = s.y - eye.y
       const dz = s.z - eye.z
       const d = Math.hypot(dx, dy, dz)
-      const k = R / Math.max(R, d)
+      // placed as it would be at SKYLINE_PLACE_R (where the ground clamp below was tuned), then shrunk about the eye
+      // to SKYLINE_R — which keeps every angle, so only the depth changes
+      const P = SKYLINE_PLACE_R
+      const k = P / Math.max(P, d)
       const px = eye.x + dx * k
       const pz = eye.z + dz * k
       /*
        * Never above the ground it is drawn over. At its true angle a tower's foot five kilometres off is a
-       * fraction of a degree below the eye, but the stand-in stands 800 m out, where the city's own ground
+       * fraction of a degree below the eye, but the stand-in is placed SKYLINE_PLACE_R out, where the city's own ground
        * can be higher than that — and then the tower hung in the sky over a field. Sunk to a little under
        * the ground there, the foot is hidden by it, as it would be by the city in between.
        */
-      const py = Math.min(eye.y + dy * k, this.terrain.heightAt(px, pz) - 3)
-      s.mesh.position.set(px, py, pz)
-      s.mesh.scaling.setAll(k * s.boost)
+      const py = Math.min(eye.y + dy * k, this.terrain.heightAt(px, pz) - SKYLINE_SINK)
+      const q = R / P
+      s.mesh.position.set(eye.x + (px - eye.x) * q, eye.y + (py - eye.y) * q, eye.z + (pz - eye.z) * q)
+      s.mesh.scaling.setAll(k * q * s.boost)
       // as hazed as the city would be at its true distance, but never past 0.8 — a little under what the city's own fog has
       // reached at the 1.3 km where the real model hands over to this one
       const f = Math.min(0.8, 1 - Math.exp(-d * DAYLIGHT.fogDensity))
-      s.haze.fog = -Math.log(1 - f) / Math.max(R, d * k)
+      s.haze.fog = -Math.log(1 - f) / Math.max(R, d * k * q)
     }
   }
 

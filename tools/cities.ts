@@ -452,6 +452,29 @@ export const CITIES: CitySpec[] = [
     styles: [{ id: 'haussmann', weight: 1 }],
     note: 'A test area: the Tunnel des Tuileries along the Quai des Tuileries.',
   },
+  /* Tests of BRIDGE AND OVERPASS GROUND (owner, 2026-11-06): the Seine's bridges by the Île Seguin, and the périphérique's south side. */
+  {
+    id: 'seguin-mini', live: false, test: true, region: 'paris',
+    name: 'Île Seguin bridges test area',
+    centre: { lat: 48.8285, lon: 2.2272 }, radius: 400, wide: false, ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the quays rising to bridge level at the bridge ends (48.828052, 2.225968; 48.829048, 2.228420).',
+  },
+  {
+    id: 'perif-sud-mini', live: false, test: true, region: 'paris',
+    name: 'Périphérique south test area',
+    centre: { lat: 48.8200, lon: 2.3230 }, radius: 750, wide: false, ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: overpasses over the périphérique (48.822465, 2.313944; 48.821063, 2.320527; 48.820044, 2.325386).',
+  },
+  /* A test of the GROUND AT STRUCTURES (tools/bake.ts, the structure mask): the périphérique's trench, mouths and overpasses at Porte Maillot. */
+  {
+    id: 'maillot-mini', live: false, test: true, region: 'paris',
+    name: 'Porte Maillot test area (trench, mouths, overpasses)',
+    centre: { lat: 48.8785, lon: 2.2825 }, radius: 350, wide: false, ground: 'grass',
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the périphérique in its cut and tunnels under Porte Maillot, the avenue over it.',
+  },
   /* A test of SUNK ROAD-TUNNEL MOUTHS (tools/tunnels.ts `sinkRoadMouths`): the Voie Georges-Pompidou under the Place de l'Alma. */
   {
     id: 'alma-mini',

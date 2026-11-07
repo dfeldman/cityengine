@@ -89,6 +89,15 @@ function peniche(out: MeshBuilder, len: number, beam: number, id: number): void 
   }
 }
 
+function nearestWater(water: TileArea[], x: number, z: number): TileArea | undefined {
+  let best: TileArea | undefined, bd = Infinity
+  for (const a of water) for (let i = 0; i < a.ring.length; i += 2) {
+    const d = (a.ring[i] - x) ** 2 + (a.ring[i + 1] - z) ** 2
+    if (d < bd) { bd = d; best = a }
+  }
+  return best
+}
+
 export function boatsLayer(scene: Scene): TileLayer {
   return {
     name: 'boats',
@@ -100,7 +109,9 @@ export function boatsLayer(scene: Scene): TileLayer {
       for (const b of boats as PackedBoat[]) {
         const f = fit(b.ring)
         // the level of the water it lies in (every piece of a body carries the body's level)
-        const w = water.find((a) => inside(a.ring, f.cx, f.cz)) ?? water[0]
+        // …and a boat the river's outline leaves out (OSM often traces the bank round the péniches) takes the NEAREST body's,
+        // not the first one listed: that was a pond's or a canal's level, and most of the Seine's boats sat buried in the bank
+        const w = water.find((a) => inside(a.ring, f.cx, f.cz)) ?? nearestWater(water, f.cx, f.cz)
         if (!w) continue
         const part = new MeshBuilder()
         peniche(part, f.len, f.beam, b.id)

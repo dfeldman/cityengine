@@ -15,6 +15,8 @@ import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
 import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisPanel, stoneBench, sucette, treePit } from './paris/furniture.ts'
 import { WallaceFountains } from './paris/wallace.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { Constants } from '@babylonjs/core/Engines/constants'
+import type { Material } from '@babylonjs/core/Materials/material'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
@@ -345,11 +347,14 @@ const VIADUCT_CLEAR = 6.5
 /** set while a tile's furniture is placed: points on a viaduct-top walk, where nothing of the streets' may stand */
 let offDeck: ((x: number, z: number) => boolean) | null = null
 
+const MODEL_MEMO = new WeakMap<(b: MeshBuilder) => void, MeshBuilder>()
 function placeModel(out: MeshBuilder, model: (b: MeshBuilder) => void, x: number, y: number, z: number,
                     heading: number): void {
   if (offDeck?.(x, z)) return
-  const tmp = new MeshBuilder()
-  model(tmp)
+  // built once per model and copied after (a lamp post is the same lamp post every time); a closure made for one
+  // placement simply misses, and the WeakMap lets it go
+  let tmp = MODEL_MEMO.get(model)
+  if (!tmp) { tmp = new MeshBuilder(); model(tmp); MODEL_MEMO.set(model, tmp) }
   const base = out.positions.length / 3
   const cos = Math.cos(heading)
   const sin = Math.sin(heading)
@@ -858,6 +863,27 @@ interface Tile {
 }
 
 /**
+ * The stencil bit the group-0 ground (distant grid, skirt, sea, the base surface) writes wherever it draws. The
+ * skyline stand-ins (landmarks.ts) are drawn last in group 0 at a fake depth of SKYLINE_R, nearer than most of
+ * that ground, so the depth test alone let their sunk feet show through it below the horizon; they draw only
+ * where this bit is still clear — over sky, never over ground.
+ */
+export const GROUND_STENCIL = 1
+
+/** Make a ground material in group 0 mark GROUND_STENCIL wherever it draws. */
+export function markGroundStencil(mat: Material): void {
+  const st = mat.stencil
+  st.enabled = true
+  st.func = Constants.ALWAYS
+  st.funcRef = GROUND_STENCIL
+  st.funcMask = 0xff
+  st.mask = 0xff
+  st.opStencilFail = Constants.KEEP
+  st.opDepthFail = Constants.KEEP
+  st.opStencilDepthPass = Constants.REPLACE
+}
+
+/**
  * Babylon clears depth between rendering groups by default, but the whole ground scheme depends on it, so it
  * is stated here rather than assumed — a future change to the default would otherwise bring the shimmer back
  * with nothing to point at.
@@ -958,6 +984,7 @@ function distantSea(scene: Scene, pkg: CityPackage): Mesh | null {
   const m = new Mesh('ground:sea', scene)
   vd.applyToMesh(m)
   m.material = waterMaterial(scene)
+  markGroundStencil(m.material)
   m.renderingGroupId = GROUP.base
   m.isPickable = false
   return m
@@ -1043,6 +1070,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
       vd.applyToMesh(m)
       m.geometry?.clearCachedData()
       m.material = mat
+      markGroundStencil(mat)
       m.renderingGroupId = GROUP.base
       m.isPickable = false
     }
@@ -1086,6 +1114,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
   out.toVertexData().applyToMesh(m)
   m.geometry?.clearCachedData()
   m.material = mat
+  markGroundStencil(mat)
   m.renderingGroupId = GROUP.base
   m.isPickable = false
   m.alwaysSelectAsActiveMesh = true
@@ -1119,6 +1148,13 @@ const OCC_SINK = 0.6
 const OCC_CREST_PROBE = 8
 const OCC_CREST_GAIN = 4
 const OCC_CREST_MIN_SINK = 0.05
+/**
+ * The finest lattice the occluder takes over a fine tile, metres. The quays' 1 m detail ground (tools/bake.ts QD_STEP)
+ * made the occluder 16x denser there — 1.8M triangles a copy, three copies, 5.4M of the frame along the Seine (2026-11-06).
+ * Under a coarser lattice each post sinks to the LOWEST ground within one cell of it (sampled at the tile's own step), so
+ * a chord across a quay wall stays under the lower quay instead of hiding it.
+ */
+const OCC_MIN_STEP = 4
 
 function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain): GroundOccluder | null {
   const t = groundGrid(pkg.terrain)
@@ -1286,8 +1322,15 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
         // a tile with fine ground: the cell at the fine ground's own resolution, its lattice shared within it
         const fs = useFine && fine ? fine.stepIn(tileKey(Math.floor((x + t.step / 2) / TILE), Math.floor((z + t.step / 2) / TILE))) : null
         if ((allDry || allWet) && fs !== null && fs < t.step) {
-          const n = Math.max(1, Math.round(t.step / fs))
+          const n = Math.max(1, Math.round(t.step / Math.max(fs, OCC_MIN_STEP)))
           const sub = t.step / n
+          // (coarser than the ground: each post at the lowest ground within a cell of it, so no chord stands proud)
+          const low = fs < sub ? (px: number, pz: number): number => {
+            let m = Infinity
+            const k = Math.round(sub / fs)
+            for (let a = -k; a <= k; a++) for (let b = -k; b <= k; b++) m = Math.min(m, heightOf(px + a * fs, pz + b * fs))
+            return m - OCC_SINK
+          } : null
           const lat = new Int32Array((n + 1) * (n + 1)).fill(-1)
           const pt = new Array<[number, number, number] | null>((n + 1) * (n + 1)).fill(null)
           const get = (i: number, j: number): [number, number, number] => {
@@ -1295,7 +1338,8 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
             if (pt[k]) return pt[k]!
             const px = x + i * sub
             const pz = z + j * sub
-            return (pt[k] = [px, occ(px, pz, allWet ? wetAt(px, pz) : null), pz])
+            const o = occ(px, pz, allWet ? wetAt(px, pz) : null)
+            return (pt[k] = [px, low && !allWet ? Math.min(o, low(px, pz)) : o, pz])
           }
           const id = (i: number, j: number): number => {
             const k = j * (n + 1) + i
@@ -2400,6 +2444,7 @@ export class City {
   private rebuild(k: string): boolean {
     const t = this.tiles.get(k)
     if (!t) return false
+    this.buildStats.rebuilds++
     for (const m of t.meshes) m.dispose()
     for (const [name, ms] of t.layers) { for (const m of ms) m.dispose(); this.layerByName.get(name)?.release?.(k) }
     this.wallace?.release(k)
@@ -2827,7 +2872,11 @@ export class City {
     return meshes
   }
 
+  /** how many tiles were built, and how many of those had been dropped to be built again (tools/fly-soak.ts) */
+  readonly buildStats = { builds: 0, rebuilds: 0, keys: new Map<string, number>() }
   private build(k: string): void {
+    this.buildStats.builds++
+    this.buildStats.keys.set(k, (this.buildStats.keys.get(k) ?? 0) + 1)
     const meshes: Mesh[] = []
     this.coverEdges(k)
     this.decksNear(k)
@@ -3573,6 +3622,7 @@ export class City {
         ? roadMaterial(this.scene, surface, this.roadAssets)
         : groundLayerMaterial(this.scene, this.roadAssets, surface, 'carriage')
       m.renderingGroupId = surface === this.pkg.ground ? GROUP.base : GROUP.road
+      if (surface === this.pkg.ground) markGroundStencil(m.material)
       meshes.push(m)
       /*
        * …and the carriageway again as DEPTH ONLY, first in the buildings' group, like the ground occluder (owner,
@@ -5176,7 +5226,16 @@ export class City {
       const height = lv && b.height ? Math.min(Math.max(b.height, lv * 2.9), lv * 3.3 + 0.8) : b.height
       // (a pump canopy's edge is a fascia a metre deep, whatever thin slab the map gives it)
       const minHeight = special?.part === 'canopy' && b.minHeight && b.height ? Math.min(b.minHeight, b.height - 0.9) : b.minHeight
-      const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
+      /*
+       * THE MANSARD IS A STOREY (owner, 2026-11-05: "six floors plus an occupiable mansard roof … shows as 7 levels"): Paris
+       * counts the lived-in mansard in building:levels, and the height runs to the ridge. The roof draws that storey, so the
+       * walls take one storey fewer and stop at the eaves — they had all seven, a mansard on top made eight.
+       */
+      const attic = !lv && !b.stretch && this.region.roadPaint === 'paris' && ATTIC.roofs.includes(b.roof) && b.roofHeight >= ATTIC.minRoof &&
+        (b.levels ?? 0) >= ATTIC.minLevels && ATTIC.styles.includes(styleId) && height !== undefined && height - (minHeight ?? 0) - b.roofHeight >= ATTIC.minWalls
+      const plan = planFacade(styleId, b.id, attic
+        ? { levels: b.levels! - 1, height: height! - b.roofHeight, minHeight, noShops: b.noShops, attic: true }
+        : { levels: lv ?? b.levels, height, minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
         b.palette ? [b.palette] : areaPalettes(ring[0].x, ring[0].z, styleId) ?? this.region.palettes[styleId], look ?? undefined)
       const out = byStyle.get(styleId) ?? new MeshBuilder()
       byStyle.set(styleId, out)
@@ -5402,6 +5461,8 @@ function hexRgb(hex: string): [number, number, number] {
 export { simplifyRing }
 
 const ZCHECK = typeof location !== 'undefined' && new URLSearchParams(location.search).get('zcheck') === '1'
+/** a Paris mansard roof counted as a storey (render: the walls take one fewer): its least rise, the least tagged levels, the least wall left */
+const ATTIC = { minRoof: 2.5, minLevels: 3, minWalls: 6, roofs: ['mansard', 'hipped'] as string[], styles: ['haussmann', 'marais', 'classical'] as string[] }
 /** `?zcheck=1`: baked building feet against the ones the renderer would have computed, for measuring map v3 */
 function zcheck(id: number, baked: number, computed: number): void {
   const w = window as unknown as { __zcheck?: { n: number; sumAbs: number; max: number; worst: number; over5cm: number } }

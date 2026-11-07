@@ -48,6 +48,12 @@ export interface GroundModelInput {
   tiles: Iterable<[number, number]>
   fineStep: number
   tile?: number
+  /**
+   * DETAIL ground, finer than the fine grid, for a few tiles: the Seine's quays, whose walls the 4 m grid smears into a
+   * grass bank (owner, 2026-11-05). A sampler (null where it has no value: the fine surface stands) at `step` metres.
+   * A detail tile eases into its non-detail neighbours over BLEND, as a fine tile does into a coarse one.
+   */
+  detail?: { tiles: Set<string>; step: number; at: (x: number, z: number) => number | null }
 }
 
 export class GroundModel {
@@ -74,7 +80,14 @@ export class GroundModel {
     const T = this.tile
     for (const [tx, tz] of inp.tiles) {
       const fine = inp.fine !== null && this.fineTiles.has(`${tx},${tz}`)
-      const step = fine ? this.fineStep : COARSE_STEP
+      const det = fine && inp.detail?.tiles.has(`${tx},${tz}`) ? inp.detail : null
+      const step = det ? det.step : fine ? this.fineStep : COARSE_STEP
+      const plainNear: [number, number, number, number][] = []
+      if (det) {
+        for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+          if ((dx || dz) && !det.tiles.has(`${tx + dx},${tz + dz}`)) plainNear.push([(tx + dx) * T, (tz + dz) * T, (tx + dx + 1) * T, (tz + dz + 1) * T])
+        }
+      }
       const cols = Math.round(T / step) + 1
       // how far a point is from the nearest neighbouring tile that ships coarse ground (the 8 around this one)
       const coarseNear: [number, number, number, number][] = []
@@ -101,6 +114,14 @@ export class GroundModel {
             }
             const w = Math.min(1, d / BLEND)
             h = base + (bilinear(inp.fine!, x, z) - base) * w
+          }
+          if (det) {
+            const v = det.at(x, z)
+            if (v !== null) {
+              let d = Infinity
+              for (const [x0, z0, x1, z1] of plainNear) d = Math.min(d, Math.hypot(Math.max(x0 - x, 0, x - x1), Math.max(z0 - z, 0, z - z1)))
+              h = h + (v - h) * Math.min(1, d / BLEND)
+            }
           }
           dm.push(Math.max(-32768, Math.min(32767, Math.round(h * 10))))
         }

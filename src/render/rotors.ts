@@ -34,6 +34,9 @@ export class Rotors {
   }
 
   /** Once a frame. */
+  /** forget the parts whose model was released (render/landmarks.ts `dropTile`) */
+  prune(): void { for (let i = this.spinning.length - 1; i >= 0; i--) if (this.spinning[i].mesh.isDisposed()) this.spinning.splice(i, 1) }
+
   update(nowMs = performance.now()): void {
     if (this.spinning.length === 0) return
     const t = nowMs / 1000

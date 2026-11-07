@@ -24,7 +24,8 @@ export function dropCoincidentFaces(mb: MeshBuilder): number {
   // a vertex's position, as one number (to the millimetre), so shared corners compare without strings
   const vkey = (k: number): number => {
     const x = Math.round(p[k] * 1000), y = Math.round(p[k + 1] * 1000), z = Math.round(p[k + 2] * 1000)
-    return ((x * 73856093) ^ (y * 19349663) ^ (z * 83492791)) >>> 0
+    // (30 bits: a small integer, not a boxed double)
+    return ((x * 73856093) ^ (y * 19349663) ^ (z * 83492791)) & 0x3fffffff
   }
   type T = { i: number; down: boolean; up: boolean; keys: [number, number, number]; d: number; uv: [number, number][]; x0: number; x1: number; y0: number; y1: number; area: number }
   const buckets = new Map<number, T[]>()
@@ -41,8 +42,9 @@ export function dropCoincidentFaces(mb: MeshBuilder): number {
     const down = dny < -0.9 && Math.abs(ny) > 0.9, up = dny > 0.9 && Math.abs(ny) > 0.9
     if (nx < -1e-6 || (Math.abs(nx) < 1e-6 && (ny < -1e-6 || (Math.abs(ny) < 1e-6 && nz < 0)))) { nx = -nx; ny = -ny; nz = -nz }
     const d = nx * p[a] + ny * p[a + 1] + nz * p[a + 2]
-    const ax = Math.abs(nx) > 0.9 ? [0, 1, 0] : [1, 0, 0]
-    let ex = ax[1] * nz - ax[2] * ny, ey = ax[2] * nx - ax[0] * nz, ez = ax[0] * ny - ax[1] * nx
+    // (the helper axis as scalars: y when the face looks along x, else x)
+    const ay = Math.abs(nx) > 0.9 ? 1 : 0, ax0 = 1 - ay
+    let ex = ay * nz, ey = -ax0 * nz, ez = ax0 * ny - ay * nx
     const EL = Math.hypot(ex, ey, ez); ex /= EL; ey /= EL; ez /= EL
     const fx = ny * ez - nz * ey, fy = nz * ex - nx * ez, fz = nx * ey - ny * ex
     const uv: [number, number][] = [[p[a] * ex + p[a + 1] * ey + p[a + 2] * ez, p[a] * fx + p[a + 1] * fy + p[a + 2] * fz],
@@ -52,11 +54,10 @@ export function dropCoincidentFaces(mb: MeshBuilder): number {
     const tri: T = { i: t, down, up, keys: [vkey(a), vkey(b), vkey(c)], d, uv,
       x0: Math.min(uv[0][0], uv[1][0], uv[2][0]), x1: Math.max(uv[0][0], uv[1][0], uv[2][0]),
       y0: Math.min(uv[0][1], uv[1][1], uv[2][1]), y1: Math.max(uv[0][1], uv[1][1], uv[2][1]), area: L / 2 }
-    for (const key of [nk + Math.round(d / (2 * GAP))]) {
-      let list = buckets.get(key)
-      if (!list) { list = []; buckets.set(key, list) }
-      list.push(tri)
-    }
+    const key = nk + Math.round(d / (2 * GAP))
+    let list = buckets.get(key)
+    if (!list) { list = []; buckets.set(key, list) }
+    list.push(tri)
   }
   const inside = (qx: number, qy: number, tri: [number, number][]): boolean => {
     let sign = 0
@@ -81,17 +82,26 @@ export function dropCoincidentFaces(mb: MeshBuilder): number {
     const cells = (t: T, f: (k: number) => void): void => {
       const i0 = Math.floor((t.x0 - EPS) / CELL), i1 = Math.floor((t.x1 + EPS) / CELL)
       const j0 = Math.floor((t.y0 - EPS) / CELL), j1 = Math.floor((t.y1 + EPS) / CELL)
-      for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) f(i * 1000003 + j)
+      // (15 bits each: a small-integer key, where `i * 1000003 + j` boxed a double on every lookup)
+      for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) f(((i & 0x7fff) << 15) | (j & 0x7fff))
     }
-    for (const t of list) cells(t, (k) => { let c = grid.get(k); if (!c) { c = []; grid.set(k, c) } c.push(t) })
+    const file = (t: T) => (k: number): void => { let c = grid.get(k); if (!c) { c = []; grid.set(k, c) } c.push(t) }
+    for (const t of list) cells(t, file(t))
+    // (one set, one list and one collector for every triangle, cleared each time, not three new ones per triangle)
+    const near = new Set<T>()
+    const cover: T[] = []
+    let self: T | null = null
+    const gather = (k: number): void => { const c = grid.get(k); if (c) for (const B of c) if (B !== self) near.add(B) }
     for (const S of list) {
-      const near = new Set<T>()
-      cells(S, (k) => { for (const B of grid.get(k) ?? []) if (B !== S) near.add(B) })
+      near.clear()
+      self = S
+      cells(S, gather)
       if (!near.size) continue
-      const [q0, q1, q2] = S.uv
-      samples.set([q0[0], q0[1], q1[0], q1[1], q2[0], q2[1], (q0[0] + q1[0]) / 2, (q0[1] + q1[1]) / 2, (q1[0] + q2[0]) / 2, (q1[1] + q2[1]) / 2,
-        (q2[0] + q0[0]) / 2, (q2[1] + q0[1]) / 2, (q0[0] + q1[0] + q2[0]) / 3, (q0[1] + q1[1] + q2[1]) / 3])
-      const cover: T[] = []
+      const q0 = S.uv[0], q1 = S.uv[1], q2 = S.uv[2]
+      samples[0] = q0[0]; samples[1] = q0[1]; samples[2] = q1[0]; samples[3] = q1[1]; samples[4] = q2[0]; samples[5] = q2[1]
+      samples[6] = (q0[0] + q1[0]) / 2; samples[7] = (q0[1] + q1[1]) / 2; samples[8] = (q1[0] + q2[0]) / 2; samples[9] = (q1[1] + q2[1]) / 2
+      samples[10] = (q2[0] + q0[0]) / 2; samples[11] = (q2[1] + q0[1]) / 2; samples[12] = (q0[0] + q1[0] + q2[0]) / 3; samples[13] = (q0[1] + q1[1] + q2[1]) / 3
+      cover.length = 0
       let floorOn = false
       for (const B of near) {
         if (drop.has(B.i) || Math.abs(B.d - S.d) > GAP) continue

@@ -528,3 +528,17 @@ describe('fast input', () => {
     expect(n.nudged).toBeCloseTo(HOME, 5)   // on its own line, not steered left
   })
 })
+
+describe('the planned route after the choice latched', () => {
+  it('still takes the exit asked for by edge once the turn has committed straight', () => {
+    // a short block at speed: the junction is inside the commit distance before the GPS has asked
+    const g = crossroads()
+    const nav = new Navigator(g, { edgeId: 3, s: COMMIT_MIN_METRES * 3, reversed: true })
+    nav.advance(COMMIT_MIN_METRES * 2.5, 8)
+    expect(nav.isCommitted).toBe(true)
+    expect(nav.requested).toBe('straight')
+    nav.requestEdge(2)
+    nav.advance(100, 8)
+    expect(nav.edge.id).toBe(2)
+  })
+})

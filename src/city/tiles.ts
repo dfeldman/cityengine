@@ -111,6 +111,8 @@ export interface CityIndex {
   skyline?: CityPackage['skyline']
   /** the roundabouts OSM maps (CityPackage.roundabouts): the ride graph's, and the monuments in their middles */
   roundabouts?: CityPackage['roundabouts']
+  /** the Seine's quay walls (CityPackage.quayWalls) */
+  quayWalls?: CityPackage['quayWalls']
   /** every named landmark, for the menu and the minimap (they are also in their tiles, for the plates) */
   landmarks: PackedLandmark[]
   /** the water bodies whole: quays, the ground occluder and the crowd need the river, not its tile pieces */
@@ -329,6 +331,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
     ...(pkg.walls && pkg.walls.length > 0 ? { walls: pkg.walls } : {}),
     ...(pkg.garden ? { garden: pkg.garden } : {}),
     ...(pkg.roundabouts && pkg.roundabouts.length > 0 ? { roundabouts: pkg.roundabouts } : {}),
+    ...(pkg.quayWalls && pkg.quayWalls.length > 0 ? { quayWalls: pkg.quayWalls } : {}),
     attribution: pkg.attribution, baked: pkg.baked, tile: TILE,
   }
   return { index, tiles }

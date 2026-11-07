@@ -373,7 +373,15 @@ export interface PackedRail {
 /** a modelled area for the map: rings, or a line drawn `margin` metres either side (tools/detail.ts) */
 export interface DetailOutline { name: string; margin: number; rings?: number[][]; line?: number[] }
 
+/**
+ * A piece of quay wall (tools/bake.ts, the quays' walls): a vertical face along a→b from `low` up to `top`, its high side to the
+ * LEFT of a→b, with a paved cap `cap` metres deep on that side at `top` over the slope the 4 m ground draws behind it.
+ */
+export interface QuayWall { ax: number; az: number; bx: number; bz: number; top: number; low: number; cap: number }
+
 export interface CityPackage {
+  /** the Seine's quay walls (render/quays.ts), Paris only */
+  quayWalls?: QuayWall[]
   /** the roundabouts OSM maps (junction=roundabout rings, tools/bake.ts), for the ride graph beside the hand-made ones */
   roundabouts?: { lat: number; lon: number; r: number; R: number; name?: string }[]
   id: string

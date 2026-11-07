@@ -122,7 +122,8 @@ export class Terrain {
    * — so this lookup is on the hottest path there is here, and building a string per call would allocate
    * millions of them per tile build.
    */
-  private static at(tx: number, tz: number): number { return (tx + 32768) * 65536 + (tz + 32768) }
+  // (15 bits each, so the key is a small integer: past 2^30 every Map lookup boxed a double, 2026-11-06)
+  private static at(tx: number, tz: number): number { return ((tx & 0x7fff) << 15) | (tz & 0x7fff) }
 
   /** A tile's ground, as its data lands (render/city.ts `ingest`, which runs before anything is built). */
   addTile(tx: number, tz: number, b: TileTerrain | undefined): void {

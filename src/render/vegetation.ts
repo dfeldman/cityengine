@@ -208,6 +208,17 @@ export class Vegetation {
     return ps.filter((p) => !near.some((c) => p.x >= c.x0 - 2 && p.x <= c.x1 + 2 && p.z >= c.z0 - 2 && p.z <= c.z1 + 2 && inside(c.ring, p.x, p.z)))
   }
 
+  /**
+   * Trees another layer places at run time, held under its own key (render/quays.ts: the lower quays' planes), so they come
+   * and go with that layer's tile. The real tree models, not boxes (owner, 2026-11-05).
+   */
+  setTrees(key: string, ps: Planting[]): void {
+    if (ps.length === 0) { if (this.byTile.delete(key)) this.dirty = true; return }
+    this.byTile.set(key, ps)
+    this.seated.delete(key)
+    this.dirty = true
+  }
+
   /** how many decks have been planted, so game.ts adds only the new ones (the same bookkeeping Plants does) */
   private decks = 0
 

@@ -158,7 +158,11 @@ export class Navigator {
    */
   private wantEdge: number | null = null
   /** ask for this exit (an edge leaving the junction ahead) */
-  requestEdge(edgeId: number | null): void { this.wantEdge = edgeId }
+  requestEdge(edgeId: number | null): void {
+    // a corner already prepared for another exit is stale: `prepareArc` works it out again for this one
+    if (edgeId !== null && this.arcAhead && this.arcAhead.out !== edgeId) this.arcAhead = null
+    this.wantEdge = edgeId
+  }
   get requestedEdge(): number | null { return this.wantEdge }
   private lastNode: number | null = null
   /** the node where the rider last had to turn round, so the HUD can say so */
@@ -795,7 +799,10 @@ export class Navigator {
     if (toEnd > commit) return
     const xs = this.exitsOf(this.g, nodeId, e.id)
     if (xs.length === 0) return
-    const chosen = isPassThrough(xs) ? xs[0] : this.pick(xs, this.committed ?? this.choice(), nodeId, e.id)
+    // (the edge asked for wins here as it does in `step`, so the corner drawn is the one taken)
+    const byEdge = this.wantEdge === null ? undefined
+      : xs.find((x) => x.edgeId === this.wantEdge) ?? exits(this.g, nodeId, e.id).find((x) => x.edgeId === this.wantEdge)
+    const chosen = isPassThrough(xs) ? xs[0] : byEdge ?? this.pick(xs, this.committed ?? this.choice(), nodeId, e.id)
     if (!chosen) return
     const theta = Math.abs(chosen.angle)
     if (theta < ARC_MIN || theta > Math.PI - 0.05) return

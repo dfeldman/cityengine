@@ -135,7 +135,11 @@
         { "wall": "#e4d9c3", "trim": "#d3c7ae", "roof": "#6f777d", "accent": "#2a2c2e", "ground": "#a89c86", "weight": 2 },
         { "wall": "#d9d6cf", "trim": "#c9c5bc", "roof": "#6a7278", "accent": "#23272b", "ground": "#77736c", "weight": 1.5 },
         { "wall": "#e8e0cf", "trim": "#f3efe6", "roof": "#6f777d", "accent": "#5b4a3a", "weight": 1 },
-        { "wall": "#c9b79a", "trim": "#e6dccb", "roof": "#6a7278", "accent": "#2a2c2e", "ground": "#8e7f69", "weight": 0.7 }
+        { "wall": "#c9b79a", "trim": "#e6dccb", "roof": "#6a7278", "accent": "#2a2c2e", "ground": "#8e7f69", "weight": 0.7 },
+        { "wall": "#b65a35", "trim": "#e9e3d8", "roof": "#6a7278", "accent": "#2a2c2e", "ground": "#e9e3d8", "weight": 0.5 },
+        { "wall": "#a8a196", "trim": "#7a2c33", "roof": "#6a7278", "accent": "#7a2c33", "ground": "#bdb6aa", "weight": 0.8 },
+        { "wall": "#d8b77c", "trim": "#f1ebdf", "roof": "#6f777d", "accent": "#3a3f44", "weight": 0.5 },
+        { "wall": "#9fa9ad", "trim": "#eef0ee", "roof": "#6a7278", "accent": "#1f2a36", "weight": 0.5 }
       ],
       "bauhaus": [
         {
@@ -230,7 +234,7 @@
     "streetSigns": "plaque",
     "awnings": 0.9,
     "riverDrop": 2.5,
-    "lowerQuays": ["Quai d'Austerlitz", "Quai Saint-Bernard", "Quai de la Tournelle", "Quai de Montebello", "Quai Saint-Michel", "Quai des Grands Augustins", "Quai de Conti", "Quai Malaquais", "Quai Voltaire", "Quai Anatole France", "Quai d'Orsay", "Quai Branly", "Quai Jacques Chirac", "Quai de Grenelle", "Quai André Citroën", "Quai d'Orléans", "Quai de Béthune", "Quai d'Anjou", "Quai de Bourbon", "Quai aux Fleurs", "Quai de l'Horloge", "Quai des Orfèvres", "Quai du Marché Neuf", "Quai de la Corse", "Quai Henri IV", "Quai des Célestins", "Quai de l'Hôtel de Ville", "Quai du Louvre", "Quai François Mitterrand", "Quai des Tuileries", "Quai de la Rapée"],
+    "lowerQuays": ["Quai d'Austerlitz", "Quai Saint-Bernard", "Quai de la Tournelle", "Quai de Montebello", "Quai Saint-Michel", "Quai des Grands Augustins", "Quai de Conti", "Quai Malaquais", "Quai Voltaire", "Quai Anatole France", "Quai d'Orsay", "Quai Branly", "Quai Jacques Chirac", "Quai de Grenelle", "Quai André Citroën", "Quai d'Orléans", "Quai de Béthune", "Quai d'Anjou", "Quai de Bourbon", "Quai aux Fleurs", "Quai de l'Horloge", "Quai des Orfèvres", "Quai du Marché Neuf", "Quai de la Corse", "Quai Henri IV", "Quai des Célestins", "Quai de l'Hôtel de Ville", "Quai du Louvre", "Quai François Mitterrand", "Quai des Tuileries", "Quai de la Rapée", "Cours la Reine", "Cours Albert Ier", "Avenue de New-York", "Avenue du Président Kennedy", "Quai Louis Blériot", "Quai Valéry Giscard d'Estaing", "Quai de la Mégisserie", "Quai de Gesvres", "Quai de l'Archevêché", "Quai de Bercy", "Quai François Mauriac", "Quai Panhard et Levassor", "Quai de la Gare"],
     "riverLevel": 26.9,
     "flatStreets": [{ "name": "Le Pont Neuf sur la Cité", "deck": "Pont Neuf", "ring": [[48.857048, 2.340676], [48.857347, 2.340927], [48.857391, 2.341404], [48.857265, 2.341643], [48.857139, 2.341607], [48.856888, 2.341404], [48.856699, 2.341141], [48.856762, 2.34095], [48.856943, 2.341017]], "clearWalks": [[48.857347, 2.340927], [48.857226, 2.341268], [48.856943, 2.341017], [48.857048, 2.340676]] }],
     "modelWalks": [{ "name": "Parvis du Trocadéro", "at": [48.862366, 2.288098], "rotateDeg": 134.3, "baseY": 28, "levels": [[-27.4, 27.4, -28, 22.6, 0, 0], [-27.4, 27.4, 22.6, 24.9, 0, -0.5], [-27.4, 27.4, 24.9, 30, -0.5, -0.5], [-55.6, 55.6, 30, 35.3, -0.5, -0.5], [-55.6, 55.6, 35.3, 37.3, -0.5, -1.5], [-55.6, 55.6, 37.3, 68, -1.5, -1.5]] }],

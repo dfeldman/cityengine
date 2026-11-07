@@ -90,6 +90,13 @@ const layerOf = (e: Edge): number => e.layer ?? 0
 /** Rule 1: which ways this rider is steered along at all. Tunnels never — nobody can see them. */
 const k0 = (e: Edge): string => e.kind ?? 'residential'
 
+/**
+ * Walks ridden by bike by NAME (owner, 2026-11-05: "i think we should make the entire petite ceinture walking path
+ * rideable" — a tour route). Kept by `classify` in bike mode though they are footways, and never cut as dead ends
+ * (`pruneDeadEndPockets`): its open stretches end at gates, and that is where the walk ends too.
+ */
+export const BIKE_PATHS = /Petite Ceinture/
+const bikePath = (e: Pick<Edge, 'name'>): boolean => !!e.name && BIKE_PATHS.test(e.name)
 export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
   return edges
     .filter((e) => {
@@ -122,6 +129,8 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       if (FREEWAY.has(k)) return !!e.ridden
       // a trail in a zone that opens its trails to bikes (`trails: 'bike'`): the Lands End trail down to Sutro Baths
       // (and a short flight a foot bridge's way off goes up: tools/bridges.ts footBridgeLinks)
+      // a promenade a bike rides by name though OSM draws it as a footway (BIKE_PATHS: the Petite Ceinture)
+      if (bikePath(e) && (k === 'footway' || k === 'path' || k === 'track' || k === 'cycleway')) return true
       if (e.trail && (k === 'footway' || k === 'path' || k === 'track' || k === 'bridleway' || k === 'steps')) return true
       return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
@@ -1036,6 +1045,59 @@ export function pruneStubs(edges: RideEdge[]): RideEdge[] {
   return cur
 }
 
+/** Dead-end pockets at least this long (total metres of street) are cut from the ride graph; shorter ones are a harmless cul-de-sac. */
+export const DEAD_END_POCKET_MIN_M = 80
+/**
+ * DEAD-END POCKETS (owner, 2026-11-05: "we should have a way to block the rider from going down dead-end routes, which
+ * are frustrating"). The detail box is cut out of a bigger network, so at its edges — the narrow strip along the road
+ * to Versailles, San Francisco's fringe — a street leaves the box and its cross streets don't come with it: a long
+ * ride to nowhere. `pruneStubs` takes only the short ones.
+ *
+ * Leaves are peeled repeatedly; what peels is a forest hanging off the looped core. Each tree (its edges joined
+ * through non-core nodes) is a pocket the rider can only ride out of the way they came, and goes if it is longer
+ * than DEAD_END_POCKET_MIN_M — unless it holds a bridge or ramp (`raised` or `bridge`: the Bay Bridge path ends on Yerba Buena), an
+ * authored route, a motorway-class way, or a `keep` point (a start). A pocket with a loop in it is a neighbourhood,
+ * not a dead end, and is never peeled.
+ */
+export function pruneDeadEndPockets(edges: RideEdge[], keep?: (e: Edge) => boolean, minM = DEAD_END_POCKET_MIN_M): RideEdge[] {
+  const deg = degrees(edges)
+  const byNode = new Map<number, RideEdge[]>()
+  for (const e of edges) for (const n of [e.a, e.b]) { if (!byNode.has(n)) byNode.set(n, []); byNode.get(n)!.push(e) }
+  const peeled = new Set<RideEdge>()
+  const queue = [...deg].filter(([, d]) => d === 1).map(([n]) => n)
+  while (queue.length) {
+    const n = queue.pop()!
+    if ((deg.get(n) ?? 0) !== 1) continue
+    const e = byNode.get(n)!.find((x) => !peeled.has(x))
+    if (!e) continue
+    peeled.add(e)
+    for (const m of [e.a, e.b]) { const d = (deg.get(m) ?? 0) - 1; deg.set(m, d); if (d === 1) queue.push(m) }
+  }
+  // the whole graph a tree: no core to protect, leave it be
+  if (peeled.size === 0 || peeled.size === edges.length) return edges
+  const core = (n: number): boolean => (deg.get(n) ?? 0) > 0
+  const uf = new UnionFind()
+  const list = [...peeled]
+  const nodeOwner = new Map<number, number>()
+  list.forEach((e, i) => {
+    for (const n of [e.a, e.b]) {
+      if (core(n)) continue
+      const j = nodeOwner.get(n)
+      if (j === undefined) nodeOwner.set(n, i); else uf.union(i, j)
+    }
+  })
+  const pockets = new Map<number, RideEdge[]>()
+  list.forEach((e, i) => { const r = uf.find(i); if (!pockets.has(r)) pockets.set(r, []); pockets.get(r)!.push(e) })
+  const drop = new Set<RideEdge>()
+  for (const p of pockets.values()) {
+    const len = p.reduce((s, e) => s + e.length, 0)
+    if (len < minM) continue
+    if (p.some((e) => e.raised || e.bridge || e.authored || bikePath(e) || RIDEABLE_MOTORWAY.has(e.kind ?? "") || keep?.(e))) continue
+    for (const e of p) drop.add(e)
+  }
+  return drop.size ? edges.filter((e) => !drop.has(e)) : edges
+}
+
 /**
  * Two short edges joining the same two nodes (BUGS.md #44): a loop of a few metres at a junction — a
  * boulevard's side-lane scrap and the link a dead end was joined back by, or the same way mapped twice
@@ -1349,9 +1411,30 @@ function circleCut(p: Point, q: Point, c: Point, R: number): number | null {
 }
 
 /** The circle and spokes in place of everything inside a roundabout's boundary. */
-export function applyRoundabout(es: RideEdge[], o: Roundabout, ids: Ids, heightAt: (x: number, z: number) => number): RideEdge[] {
+/** a roundabout's new ways take the heights of this many nearest road points in the place */
+const ROUNDABOUT_NEAR = 6
+
+export function applyRoundabout(es: RideEdge[], o: Roundabout, ids: Ids, groundAt: (x: number, z: number) => number): RideEdge[] {
   const c = { x: o.x, z: o.z }
   const inside = (p: Point): boolean => distance(p, c) < o.R
+  /*
+   * The ring and its spokes stand where the place's own streets do (owner, 2026-11-06, the Place de la Résistance at the Pont
+   * d'Issy's head: "the rider spends quite a while under the street before reemerging"). The ground the ride files are built
+   * against is the coarse grid, 2.5 m under a bridgehead the bake levelled its streets onto: so a point takes the heights of the
+   * nearest road points inside the place, the ground only where there are none.
+   */
+  const samples: { p: Point; h: number }[] = []
+  for (const e of es) {
+    if (e.foot || !e.heights || e.heights.length !== e.points.length || e.bridge || e.tunnel) continue
+    e.points.forEach((p, i) => { if (distance(p, c) < o.R) samples.push({ p, h: e.heights![i] }) })
+  }
+  const heightAt = (x: number, z: number): number => {
+    if (samples.length < 3) return groundAt(x, z)
+    const near = samples.map((q) => ({ d: Math.hypot(q.p.x - x, q.p.z - z), h: q.h })).sort((a, b) => a.d - b.d).slice(0, ROUNDABOUT_NEAR)
+    let w = 0, s = 0
+    for (const q of near) { const k = 1 / (q.d + 1); w += k; s += q.h * k }
+    return Math.round((s / w) * 100) / 100
+  }
   const out: RideEdge[] = []
   /*
    * Each cut remembers where its street goes INSIDE the boundary (`inward`): its own points from the cut on
@@ -1736,6 +1819,8 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   if (mode === 'bike') es = linkCarriageways(es, ids, overrides?.ground)
   // and the little loops all that can leave (BUGS.md #44), and the stubs they leave in turn
   es = pruneStubs(dropLoops(es))
+  // …and the long dead ends a box's edge leaves: streets that lead out of it with nothing beyond (pruneDeadEndPockets)
+  es = pruneStubs(pruneDeadEndPockets(es, keep))
   // …a street ridden straight through its stretch, its cross streets meeting it one node each (straightCorridor)
   for (const c of overrides?.corridors ?? []) es = pruneStubs(largest(straightCorridor(es, c, ids, overrides!.heightAt)))
   // and last of all, no edge doubling back on itself (BUGS.md #194), and every edge meeting its junction

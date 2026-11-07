@@ -23,8 +23,10 @@
 import type { WaterFeature } from './water.ts'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
+/** a deep (≥1 m) concrete balcony slab's thickness, m: thin ones read as a line across the front */
+const BALCONY_SLAB_DEEP = 0.28
 import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
-import { artOf, groundArtOf, planWall, rng, type Cell, type CornerShop, type FacadePlan, type Feature } from '../city/facade.ts'
+import { POSTWAR_DIM, artOf, groundArtOf, planWall, rng, type Cell, type CornerShop, type FacadePlan, type Feature } from '../city/facade.ts'
 import { addRoofscape, buildRoof, buildRoofAroundCourts, insetRing, insetValid, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
 import type { TreeForm } from '../city/tree-forms.ts'
@@ -123,9 +125,10 @@ export class MeshBuilder {
     // and balcony slab in the city — came in wound the other way, so from above the top was culled and the
     // dark soffit showed through it: a black line along every building (BUGS.md #23). A quad with no normal
     // keeps its order.
-    const e1 = [p[1][0] - p[0][0], p[1][1] - p[0][1], p[1][2] - p[0][2]]
-    const e2 = [p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]]
-    const facing = (e1[1] * e2[2] - e1[2] * e2[1]) * n[0] + (e1[2] * e2[0] - e1[0] * e2[2]) * n[1] + (e1[0] * e2[1] - e1[1] * e2[0]) * n[2]
+    // (scalars, not two arrays: every quad in the city passes here, and the arrays were garbage by the next line)
+    const ax = p[1][0] - p[0][0], ay = p[1][1] - p[0][1], az = p[1][2] - p[0][2]
+    const bx = p[2][0] - p[0][0], by = p[2][1] - p[0][1], bz = p[2][2] - p[0][2]
+    const facing = (ay * bz - az * by) * n[0] + (az * bx - ax * bz) * n[1] + (ax * by - ay * bx) * n[2]
     if (facing > 0) this.indices.push(base, base + 2, base + 1, base, base + 3, base + 2)
     else this.indices.push(base, base + 1, base + 2, base, base + 2, base + 3)
   }
@@ -585,7 +588,7 @@ function feature(
   if (f.kind === 'balcony') {
     // A balcony is a THIN slab you stand on plus an openwork rail to lean over — not a solid metre of wall.
     // Drawn as one it reads as a black stripe across the building, which is what it did on the first pass.
-    const slabTop = f.y0 + 0.14
+    const slabTop = f.y0 + (f.depth >= 1 ? BALCONY_SLAB_DEEP : 0.14)
     const railTop = f.y0 + 0.95
     const railTint = tint
     // the slab is STONE, the facade's trim — in the rail's dark iron it was a black band seen from any angle
@@ -599,7 +602,7 @@ function feature(
       [0, -1, 0], uvq, shadeRgb(slab, 0.8), KIND_WALL)
     // the rail, set at the slab's outer edge, with a lighter cap along the top
     out.quad([at(x0, slabTop, d), at(x1, slabTop, d), at(x1, railTop, d), at(x0, railTop, d)],
-      [nx, 0, nz], [[x0, 0], [x1, 0], [x1, 1], [x0, 1]], railTint, KIND_RAIL)
+      [nx, 0, nz], f.glass ? FLAT_UV : [[x0, 0], [x1, 0], [x1, 1], [x0, 1]], railTint, f.glass ? KIND_WALL : KIND_RAIL)
     out.quad([at(x0, railTop, d - 0.05), at(x1, railTop, d - 0.05), at(x1, railTop, d), at(x0, railTop, d)],
       [0, 1, 0], uvq, rgb(plan.palette.trim), KIND_WALL)
     return
@@ -808,6 +811,26 @@ function buildBuildingRaw(
   // a Paris post-war block's set-back top storeys (facade.ts PostwarDress): the body to the terrace, its rail a raised
   // parapet, then each storey on a ring stepped further in, plain all round
   const pw = plan.dress?.postwar
+  // a set-back ground storey (PostwarDress.inset; owner, 2026-11-06: "make it a real recess"): the shops on a ring
+  // stepped in, the piers out to the old line, and the storeys above on the full ring over a soffit
+  if (pw?.inset && holes.length === 0 && plan.storeys.length >= 3 && plan.storeys[0].kind === 'ground') {
+    const g = plan.storeys[0]
+    const inner = insetRing(ring, POSTWAR_DIM.insetD) as Ring
+    if (inner.length >= 3 && insetValid(ring, inner)) {
+      const ground: FacadePlan = { ...plan, storeys: [g], height: g.y1, levels: 1,
+        dress: { ...plan.dress!, parapet: 0, postwar: { ...pw, attic: 0, balconies: 'none', tower: false, coping: false, frame: false } } }
+      buildBuilding(out, inner, ground, atlas, seed, baseY, undefined, undefined, facesStreet, [], arches)
+      const upper: FacadePlan = { ...plan, storeys: plan.storeys.slice(1).map((s) => ({ ...s, y0: s.y0 - g.y1, y1: s.y1 - g.y1 })),
+        height: plan.height - g.y1, levels: plan.storeys.length - 1, dress: { ...plan.dress!, postwar: { ...pw, inset: false } } }
+      buildBuilding(out, ring, upper, atlas, seed, baseY + g.y1, roofSpec, roofscape, facesStreet, [], arches)
+      // the soffit over the recess, facing down
+      const base = out.positions.length / 3, i0 = out.indices.length
+      capPolygonWithHoles(out, [ring], baseY + g.y1, shadeRgb(rgb(plan.palette.wall), POSTWAR_DIM.soffitShade), KIND_WALL)
+      for (let v = base; v < out.positions.length / 3; v++) out.normals[v * 3 + 1] = -1
+      for (let k = i0; k < out.indices.length; k += 3) { const t = out.indices[k]; out.indices[k] = out.indices[k + 1]; out.indices[k + 1] = t }
+      return
+    }
+  }
   if (pw && pw.attic > 0 && holes.length === 0 && plan.storeys.length > pw.attic + 2) {
     const n = plan.storeys.length - pw.attic
     const bodyH = plan.storeys[n - 1].y1

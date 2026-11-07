@@ -1343,7 +1343,10 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false, rampOn = false): 
         if (Math.abs(deck - own) > Math.abs(deck - (onward.get(node)?.own ?? deck))) onward.set(node, { deck, own })
         continue
       }
-      if (rampOn && e.foot && e.kind !== 'steps' && Math.abs(deck - own) > Math.max(1.5, L)) {
+      // (…and a path too short to take its step at a grade you could ride, by the ease it would get (owner, 2026-11-06, the Île Seguin's
+      //  bridge ends: a 10 m footway took 4.9 m off the Pont de Sèvres's deck at 85%) — ramped on along the paths past it, as a road is)
+      if (rampOn && e.foot && e.kind !== 'steps' && (Math.abs(deck - own) > Math.max(1.5, L)
+        || Math.abs(deck - own) / Math.max(0.5, Math.min(Math.max(EASE, Math.abs(deck - own) / 0.1), L * 0.6)) > FOOT_STEEPEST)) {
         if (Math.abs(deck - own) > Math.abs(deck - (onwardFoot.get(node)?.own ?? deck))) onwardFoot.set(node, { deck, own })
         continue
       }
@@ -1367,6 +1370,8 @@ export function meetDecks(edges: BridgeEdge[], upOnly = false, rampOn = false): 
 
 /** the steepest a road off a deck may take its step (…`rampOnward` lays it at `RAMP_GRADE`) */
 const STEEPEST = 0.12
+/** the steepest a path off a deck may take its step before it is ramped on past its far end */
+const FOOT_STEEPEST = 0.15
 const RAMP_GRADE = 0.07
 
 /**

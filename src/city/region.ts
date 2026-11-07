@@ -264,6 +264,7 @@ export function region(id: string | undefined): Region {
     awnings: own?.awnings ?? base.awnings,
     riverDrop: own?.riverDrop ?? base.riverDrop,
     riverLevel: own?.riverLevel ?? base.riverLevel,
+    lowerQuays: own?.lowerQuays ?? base.lowerQuays,
     elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
     footBridgeLayers: own?.footBridgeLayers ?? base.footBridgeLayers,
     ferryIslands: own?.ferryIslands ?? base.ferryIslands,

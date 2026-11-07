@@ -12,7 +12,8 @@
 import type { PackedEdge } from './package.ts'
 
 /** a 10 m cell's key, as a number (cells run to a few thousand either way of the origin) */
-const cellKey = (gx: number, gz: number): number => (gx + 50000) * 100000 + (gz + 50000)
+// (15 bits each, so the key is a small integer: past 2^30 every Map lookup boxed a double — 3 GB a flight, 2026-11-06)
+const cellKey = (gx: number, gz: number): number => ((gx & 0x7fff) << 15) | (gz & 0x7fff)
 const endKey = (x: number, z: number): string => `${Math.round(x * 10)},${Math.round(z * 10)}`
 
 interface Seg {

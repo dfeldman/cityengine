@@ -6,7 +6,7 @@ import { buildGraph, lengthOf, type Edge } from '../src/city/graph.ts'
 import type { Point } from '../src/city/geo.ts'
 import {
   Ids, againstFreeway, classify, collapseClusters, contract, dropSidePaths, locate, mapEdgeAt, mergeParallel, pruneFreewayTraps,
-  pruneStubs, rideExits,
+  pruneStubs, pruneDeadEndPockets, rideExits,
   rideGraph,
   reverseEdge, straightCorridor,
   type RideEdge,
@@ -294,5 +294,27 @@ describe('a river bridge is one way over (tools/bridges.ts oneDeck; the Seine au
     const over = (one: boolean): number => [...rideGraph(es(), 'bike', { ground, oneDeck: one } as never).edges.values()].filter((e) => e.bridge).length
     expect(over(false)).toBe(2)
     expect(over(true)).toBe(1)
+  })
+})
+
+describe('pruneDeadEndPockets', () => {
+  // a 100 m square (the core) with a long branching tree off one corner, a short cul-de-sac off another, and a
+  // loop on a stalk (a neighbourhood reached by one street) off a third
+  const sq = [edge(1, 2, [[0, 0], [100, 0]]), edge(2, 3, [[100, 0], [100, 100]]), edge(3, 4, [[100, 100], [0, 100]]), edge(4, 1, [[0, 100], [0, 0]])]
+  const tree = [edge(1, 10, [[0, 0], [-200, 0]]), edge(10, 11, [[-200, 0], [-200, 50]]), edge(10, 12, [[-200, 0], [-300, 0]])]
+  const cul = edge(2, 20, [[100, 0], [140, 0]])
+  const stalk = edge(3, 30, [[100, 100], [300, 100]])
+  const loop = [edge(30, 31, [[300, 100], [400, 100]]), edge(31, 32, [[400, 100], [350, 200]]), edge(32, 30, [[350, 200], [300, 100]])]
+  const all = ride([...sq, ...tree, cul, ...[stalk], ...loop])
+  it('drops the long tree, keeps the short cul-de-sac and the looped pocket', () => {
+    const ids = new Set(pruneDeadEndPockets(all).map((e) => e.id))
+    for (const e of tree) expect(ids.has(e.id)).toBe(false)
+    expect(ids.has(cul.id)).toBe(true)
+    for (const e of [stalk, ...loop, ...sq]) expect(ids.has(e.id)).toBe(true)
+  })
+  it('spares a pocket with a bridge or a keep point', () => {
+    const raised = all.map((e) => (e.id === tree[0].id ? { ...e, raised: true } : e))
+    expect(pruneDeadEndPockets(raised).length).toBe(all.length)
+    expect(pruneDeadEndPockets(all, (e) => e.id === tree[2].id).length).toBe(all.length)
   })
 })

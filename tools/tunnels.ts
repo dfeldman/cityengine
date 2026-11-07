@@ -28,6 +28,7 @@ export interface TunnelEdge {
   foot?: boolean
   kind?: string
   bore?: boolean
+  bridge?: boolean
   cut?: boolean
   name?: string
   width?: number
@@ -344,6 +345,10 @@ const SINK_OVER = 25
 /** a near-miss join (tools/gaps.ts) at a sunk mouth is dropped when shorter than this: it would be a cliff */
 const SINK_STUB = 20
 const GAP_NODE_BASE = 9e14
+/** a road tunnel this near a bridge deck, its whole chain no longer than this, is a road under the bridge: not sunk (0 sinks all) */
+const UNDER_DECK_R = Number(process.env.UNDER_DECK_R ?? 40), UNDER_DECK_LEN = 90
+/** …and only a quay road (or an unnamed piece of street): the Périphérique under an overpass, a street under a railway, still sink */
+const QUAY_NAME = /^(Quai|Port|Voie|Berges?|Rampe)\b/
 
 /**
  * SUNK MOUTHS (owner, 2026-11-05, the Voie Georges-Pompidou under the Place de l'Alma: "the road doesn't descend…
@@ -359,9 +364,35 @@ export function sinkRoadMouths(edges: TunnelEdge[], report?: (name: string, why:
   for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
   const isT = (e: TunnelEdge): boolean => !!e.tunnel && !e.bore && !e.foot && ROAD_TUNNEL.test(e.kind ?? '')
   const open = (e: TunnelEdge): boolean => !e.tunnel && !e.foot && (e.layer ?? 0) >= 0 && !!e.heights?.length
+  // a short road "tunnel" by a bridge deck is the road under the bridge (a quay under its bridgehead, owner 2026-11-06:
+  // "not really a tunnel and don't need a terrain tweak, since the bridge deck is above") — not a mouth to sink. Short
+  // is the whole tunnel chain, so the Voie Georges-Pompidou under the Alma still sinks.
+  const decks = edges.filter((e) => e.bridge && !e.tunnel).map((e) => unpackPoints(e.points))
+  const segD = (p: { x: number; z: number }, a: { x: number; z: number }, b: { x: number; z: number }): number => {
+    const dx = b.x - a.x, dz = b.z - a.z, L = dx * dx + dz * dz
+    const s = L ? Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / L)) : 0
+    return Math.hypot(p.x - a.x - s * dx, p.z - a.z - s * dz)
+  }
+  const nearDeck = (tp: { x: number; z: number }[]): number => {
+    let m = Infinity
+    for (const d of decks) for (let j = 1; j < d.length; j++) for (const p of tp) m = Math.min(m, segD(p, d[j - 1], d[j]))
+    return m
+  }
+  const chainLen = (t0: TunnelEdge): number => {
+    const seen = new Set([t0]), todo = [t0]
+    let len = 0
+    while (todo.length) {
+      const t = todo.pop()!
+      const tp = unpackPoints(t.points)
+      len += lengths(tp)[tp.length - 1]
+      for (const n of [t.a, t.b]) for (const o of byNode.get(n) ?? []) if (isT(o) && !seen.has(o)) { seen.add(o); todo.push(o) }
+    }
+    return len
+  }
   for (const t of edges) {
     if (!isT(t)) continue
     const tp = unpackPoints(t.points)
+    if (UNDER_DECK_R > 0 && (t.name ? QUAY_NAME.test(t.name) : !/^(motorway|trunk)/.test(t.kind ?? '')) && nearDeck(tp) < UNDER_DECK_R && chainLen(t) <= UNDER_DECK_LEN) { report?.(t.name ?? `tunnel ${t.id}`, 'under a bridge: left at its own level'); continue }
     for (const n of [t.a, t.b]) {
       const into = (byNode.get(n) ?? []).filter(open)
       if (!into.length) continue

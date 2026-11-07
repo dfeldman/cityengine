@@ -405,4 +405,208 @@ MINOR BUGS
 
    synagogue copernic shows as a grey cube - likely rotated wrong 
 
+OOPS some of these are outside the city
    building at 48.827212, 2.379465 is floating midair over another building 
+   custom renderer at 48.825214, 2.382512 looks nothing like its two large buidlings , and the building across the road is part of the same complex and is generic
+   elevated road drops here 48.824753, 2.383922
+   impossibly narrow building here 48.823951, 2.384755
+   there's a cool little spaceship building here 48.824070, 2.384132
+   another impossibly narrow here 48.821943, 2.377868, it is actually a 2 story building for some tennis courts
+
+
+pompidou hospital is just generics with a glass hat
+
+commission on atomic and alternative energy is generic, it's really cool arhitecture 
+
+there's generally more stuff in the 15th that we haven't gotten, further from the expo area which we did in detail
+
+there are a few roundabouts with a short tunnel under. we allow riding to the tunnel entrance but not through. this is confusing
+
+something's off with our skyline rendering. the ballon for example is visible all the way across the city, and appears hundreds of times its real size. 
+
+one front de seine building is drawn generically
+
+at 48.878581, 2.280878 a messed up overpass is lying on the ground 
+
+you can ride on the blvd peripheque, which si problematic because it's not well modeled
+
+palais de congerss could use more work. it has a mess of staircases in front. it has a massive detached wall. a building across the steet is generic when it is an interesting faux classical and is shown as muh too large.we show a nonexistent huge hole in teh ground at 48.878145, 2.283270 - likely construction site
+
+fountain at 48.850919, 2.333386 looks bad
+
+this building is missinga roof orsomethin 48.869741, 2.289591 .... OH it is a series of reservoirs with tall stone walls
+
+garden hedges around 48.863552, 2.252926 are ugly -- probably most garden hedges 
+
+you can't bike on one-way bikeways. you CAN bike on one-way streets. this isn't obvious and it's annoying when you try
+many hedges on the bike path 48.855073, 2.256940
+very messed up road tunnel entrances near 48.854927, 2.255734 , dead end at 48.855131, 2.255325 where you should be able to go to a nearby route
+i think at road tunnels, LIDAR is reading the tunnel entrance, so we draw a sharply sloped road rather than a discontinuity. probably applies to train tunnels too. 
+
+huge strucutre at 48.831730, 2.262269 not modeled
+
+massive wooded cemetery at 48.861738, 2.388817 not modeled, proabbyl others 
+
+the quays have trees on bumpouts. we show them IN the quay footpath.
+
+broken buildings at 48.807006, 2.132268 with floating walls
+z fighting nearby at 48.806224, 2.131789
+
+z fighting on all bus stop posters
+z fighting on windows near 48.802225, 2.129594
+z fighting on all morris coluns
+
+random patches of grass on huge versailles plaza / terrace
+
+at 48.813957, 2.214384 road goes way out of detail area
+
+i think we have a big slowdown with the new 6000 restyled buildings
+
+path selection at intersections often takes you down a totally different road ... why
+
+park buildings at 48.845742, 2.360858 look unrealistc
+
+
+super dumb looking giant square hedges at 48.841137, 2.336603, they're not nearly that square and boxy
+
+sharp hills at 48.841618, 2.226663
+
+building goes way into the road 48.841854, 2.229160
+
+lateral offset at 48.840484, 2.231362 keeps you in the median hitting trees
+
+velib stations are too blocky
+npcs go right through parked cars
+
+48.847576, 2.236942 we draw a tiny segmetn of fence, but reality is that the whole road has privacy fences and hedges. lilkely this is pulling in the house model which is rare in paris proper. the buildings look weird because the grass is actually in big fenced courtyards
+
+anothe rstandalone house at 48.844460, 2.231630 . the walls need to go on both sides if it's not on another house
+
+the buildings on both sidees 48.831680, 2.234204 are modern unique buildigns
+
+more at 48.828659, 2.238195...
+
+we show fire escapes on some paris. i htink this is bleeding in from sf. paris has no external fireescapes 
+
+really messed up bridge entrance 
+really messed up bridge entrance 48.841145, 2.224568
+
+seine is CURVED at 48.829335, 2.257594 
+
+park footpaths should all be bikeable. maybe just all footpaths
+
+collonaded generics have columns taht are way too big
+
+at 48.834188, 2.250431 there is a cool elementary school. maybe have a new renderer for elementery schools? the generic looks really bad
+
+many signs are white on beige, appears just beige
+
+another cemetery here 48.838919, 2.243973
+
+
+roads near arc d'triomphe are all twisted
+
+the tunnel under arc d'triomphe starts, but the route jumps up to surface level without going under
+similar on the other side
+there's a big hole in the ground near the arch
+
+all transit is free, so we shouldn't SHOW free. we could show distance
+
+
+
+
+
+Bridge issues: there's a very sharp rise in the quai footpath up to bridge level, likely because the bridge is reading as a lidar surface, and the masking isn't wide enough. 48.828052, 2.225968
+
+same basic situation here, at a different bridge 48.829048, 2.228420
+
+another here: 48.825186, 2.249072
+
+Basically every bridge entrance with a quai has htis
+
+Here's a train line that's incredibly bad. 48.832275, 2.289326 the path goes up and down and up and down and there is no way off
+
+Overpasses: 
+Same basic problem we had before, here's oen 48.822465, 2.313944
+here's one that's a bit better, because one side is coded as a tunnel entrance, but the other is not 48.821063, 2.320527
+Here's an underpass that doesn't render at all, it's just crossed roads. although, that's better than rendering a giant broken hill 48.818192, 2.332693
+48.816471, 2.344556 this overpass pretty much works 
+here' there's a footbridge with a giant broken hill under it and also the route path is broken, you can't go over it
+
+another messed up overpass 48.820044, 2.325386
+this one is actually closer, the masking is havign some effect I think
+
+So either the terrain masking is not working, or it is the wrong solution for overpasses and bridges
+here's an overpass that looks bad, but at least it's functional, you can go over and under. it does look really ugly where the bridge meets the hills on the sides 48.891791, 2.301566
+
+here's a tunnel entrance where i think the terrain masking is almost but not quite working. the road rises signigicantly right before the tunnel, but stops before hitting the tunnel 48.890791, 2.299401
+
+remember, it's a cycling game, we don't ever expect the player to be on the highway or on the water. it has to look good and be functional from the top only
+
+there are two overpasses near here that look pretty good. the highway still jumps but not too bad. 48.881759, 2.282596
+
+the seine bridge ends (37*2) and peripheque overpasses and underpasses (about 250) so it's more than 50 terrain tweaks. but some look good already
+
+here's one where the terrain is fine but the overpass is just roads in air 48.892135, 2.300986
+
+the park area at 48.842151, 2.442686 is really ugly, no gardens geenric buildings
+
+the park roads are very narrow (coded as paths I guess)
+
+large building here is more haussman e and near a big museum 48.836026, 2.409901
+
+bizarely thin building here 48.832141, 2.398123
+
+dead end ride 48.843367, 2.380349 is default
+
+hold in the elevated bike route 48.844472, 2.381809
+
+roof over the bike path interferes with camera
+48.843897, 2.382826
+
+and path needs a lot of smoothinf
+
+couvee route goes in tpo a building... maybe just add a ramp going down... the roof isn't real here
+
+weird building near the couvee is not shown 48.849663, 2.370956.. we do show a different odd thing 48.850346, 2.370589
+
+
+path pointlessly rises and falls 48.827887, 2.225957
+
+random overpasses for peds in the sky 48.846232, 2.276430
+
+
+pedestrian bridge near 48.852825, 2.221747 goes over streets but has a huge hump 
+
+overall, la defense is still not good enough. this isn't surprising since the area has some really wild architecture, tunnels, overpasses, a ton of art, a giant plaza full of sculpture. We only have a handful of the buildings, and they're not rendered very well.
+Also it's outside the Paris city limits, so our data sources are not as good. Essentially every building in the La Defense core needs a custom model. It's hard to even find images of some of the buildings for some reason.
+
+at 48.893074, 2.239855 the ladefense mall has several attached generic buildings. 
+
+there are supposed to be underground roads under the mall plaza, we don't need to render them though
+
+Vive le vent near the mall
+Q Park colorful plaza near the mall
+building at 48.892391, 2.243402 is all wrong
+generic interseciton 48.890191, 2.240975
+and here 48.890941, 2.239014
+floating green dome and yellow domes 48.886263, 2.228133
+
+la defense de paris is a very important statue in la defense 
+the entire la defense pond and fountain at the grand arche are missing
+
+the three big arches Arc de Triomphe de l'Étoile and the Arc de Triomphe du Carrousel, the third arch on the Historical Axis of Paris.
+many statues on la defense promenade
+there are actually 4 historic triumphal arches in paris, plus the grand arche
+
+giant building on top of a road 48.892831, 2.240951
+road going through a building 48.894869, 2.241880
+we model a RED skyscraper at 48.892783, 2.245314 that doesn't really exist
+generic building intersection 48.890249, 2.240609
+
+most buildings in la defense get our default skyscraper skin. really they are mostly light blue glass or cream. 
+there are two big black towers at 48.888941, 2.240842 and another at 48.889114, 2.238945
+ (same complex) and another at 48.891735, 2.230284
+ (that one has really wild architecture) but othersiwe I couldn't find any black skyscrapers
+
+another road through a building 48.894931, 2.241546

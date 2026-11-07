@@ -19,8 +19,8 @@ CACHE = os.path.join(ROOT, 'tools/cache/paris-looks')
 OUT = os.path.join(ROOT, 'src/city/paris-looks.json')
 BRIEF = os.path.join(ROOT, 'tools/paris-looks-brief.md')
 # ---- tunables ----
-N_PHOTOS = 3
-NEAR, FAR = 25, 220          # metres from the building's centre
+N_PHOTOS = int(os.environ.get('PL_N', 3))
+NEAR, FAR = 25, int(os.environ.get('PL_FAR', 220))         # metres from the building's centre
 MARGIN = 12                  # degrees each side of the building's span
 MIN_FOV, MAX_FOV = 50, 140   # the window's width, degrees
 SKY = 6                      # degrees above the building's top kept

@@ -41,13 +41,25 @@ export const heapLimitMB = (): number => {
  * crossed 60%" arrives exactly when something changed. The step is remembered so a heap that sits at 61%
  * says nothing more, and a heap that falls back and climbs again reports the crossing again.
  */
+/** how many readings `watchHeap` takes the lowest of (×4 s: half a minute) */
+const TROUGH_SAMPLES = 8
+
 export function watchHeap(onWarn?: (msg: string) => void, everyMs = 4000): void {
   if (!memory()) return                       // not Chrome, or the flag is off: nothing to watch
   const limit = heapLimitMB()
   let lastStep = -1
+  /*
+   * Judged on the LOWEST reading of the last TROUGH_SAMPLES, not the latest: `usedJSHeapSize` counts garbage V8 has
+   * not collected yet, and flying over Paris it sat at 1.8 GB with 600 MB live (2026-11-06) — the owner saw 3.8 GB of
+   * 4.2 and a banner that never went away. A collection comes within the window, and what it leaves is what is held.
+   */
+  const recent: number[] = []
   setInterval(() => {
-    const used = heapMB()
-    if (used === null) return
+    const now = heapMB()
+    if (now === null) return
+    recent.push(now)
+    if (recent.length > TROUGH_SAMPLES) recent.shift()
+    const used = Math.min(...recent)
     const step = Math.floor((used / limit) * 10)
     if (step <= lastStep) { lastStep = Math.min(lastStep, step); return }
     lastStep = step

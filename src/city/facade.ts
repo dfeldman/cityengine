@@ -197,6 +197,8 @@ export interface Feature {
   body?: string
   /** painted flat, not in the wall's stone: a door's paint, a box of plants */
   flat?: boolean
+  /** a balcony's rail is a solid glass panel, not iron openwork */
+  glass?: boolean
 }
 
 export interface FacadePlan {
@@ -333,18 +335,28 @@ export interface PostwarDress {
   doorCanopy: boolean
   /** the lobby door's own paint and its glass surround's */
   door: string
+  /** a mock tower up the middle bay: piers either side in the trim, rising past the roof (owner, 2026-11-05, Espace Lumière) */
+  tower?: boolean
+  /** a coping band in the trim along the roofline */
+  coping?: boolean
+  /** glass balcony rails instead of iron, on deeper slabs (owner, 2026-11-05 photos) */
+  glassRail?: boolean
+  /** ground storey set back behind piers, inviting the pedestrian in */
+  inset?: boolean
 }
 
 /** how often a Paris post-war front shows each part (PostwarDress); tune here */
 export const POSTWAR_ODDS = {
   attic: [['0', 25], ['1', 45], ['2', 30]] as [string, number][],
-  balconies: [['rails', 35], ['continuous', 20], ['alternate', 12], ['pairs', 15], ['none', 18]] as [PostwarDress['balconies'], number][],
+  // (owner, 2026-11-05: "ones that are apartments should have balconies in most cases - either wraparound or per apartment")
+  balconies: [['rails', 25], ['continuous', 28], ['alternate', 12], ['pairs', 27], ['none', 8]] as [PostwarDress['balconies'], number][],
+  tower: 0.3, coping: 0.8, glassRail: 0.5, inset: 0.35,
   frame: 0.3, doorCanopy: 0.55, belts: 0.4, fins: 0.12, canopy: 0.35, plinth: 0.7,
   shops: [['several', 45], ['all', 15], ['one', 20], ['none', 20]] as [GroundMix['shops'], number][],
   garage: 0.25,
 }
 /** dimensions (m) */
-export const POSTWAR_DIM = { atticStep: [1.4, 2.4], slab: 1.1, rail: 0.14, frameW: 0.45, frameD: 0.3, canopyD: 1.4 }
+export const POSTWAR_DIM = { atticStep: [1.4, 2.4], slab: 1.3, rail: 0.14, frameW: 0.45, frameD: 0.3, canopyD: 1.4, coping: 0.4, towerW: 1.0, towerD: 0.7, towerRise: 3.0, glassSlab: 1.6, glass: '#a9c2c8', insetD: 2.2, pierW: 0.8, soffit: 0.6, soffitShade: 0.55 }
 const POSTWAR_DOORS = ['#2a2c2e', '#3b3f42', '#5b4a3a', '#1f2a36', '#6b6e70']
 
 /**
@@ -656,6 +668,12 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
       doorCanopy: r() < POSTWAR_ODDS.doorCanopy,
       door: pick(r, POSTWAR_DOORS),
     }
+    // (their own stream, so the draws above do not move)
+    const r2 = rng(Math.floor(r() * 1e9))
+    postwar.tower = levels >= 4 && r2() < POSTWAR_ODDS.tower
+    postwar.coping = !postwar.frame && r2() < POSTWAR_ODDS.coping
+    postwar.glassRail = r2() < POSTWAR_ODDS.glassRail
+    postwar.inset = r2() < POSTWAR_ODDS.inset
     const shops = weighted(r, POSTWAR_ODDS.shops)
     const dress: Dress = {
       ...NO_DRESS,
@@ -687,6 +705,21 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
     // shopfront read as a black hole, owner, 2026-10-21)
     return { dress }
   },
+}
+
+/**
+ * A labelled Paris modern front's (`bauhaus` ribbon windows, `skyscraper` curtain wall) lobby, roofline and balconies: the
+ * SF dressers gave them none, so they stood doorless (owner, 2026-11-05). `balconies` is the label's word, if it said one.
+ */
+export function labelPostwar(seed: number, office: boolean, balconies?: string): Partial<Dress> {
+  const r = rng(seed ^ 0x9e3779b)
+  const kind: PostwarDress['balconies'] = office ? 'none'
+    : balconies && ['continuous', 'alternate', 'rails', 'pairs', 'none'].includes(balconies) ? balconies as PostwarDress['balconies']
+    : weighted(r, POSTWAR_ODDS.balconies)
+  const postwar: PostwarDress = { attic: 0, atticStep: 0, balconies: kind, frame: false, doorCanopy: true,
+    door: pick(r, POSTWAR_DOORS), tower: !office && r() < POSTWAR_ODDS.tower, coping: true,
+    glassRail: r() < POSTWAR_ODDS.glassRail, inset: r() < POSTWAR_ODDS.inset }
+  return { postwar, canopy: false, shops: 'all', ground: { garages: 0, shops: office ? 'one' : 'several', entrance: 'at_grade' } }
 }
 
 /** A palette from a list, by weight where the list gives weights. One draw from `r` either way, so nothing downstream moves. */
@@ -786,7 +819,7 @@ export function chooseStyle(
 export function planFacade(
   styleId: StyleId,
   seed: number,
-  osm: { levels?: number; height?: number; minHeight?: number; stretch?: boolean; noShops?: boolean },
+  osm: { levels?: number; height?: number; minHeight?: number; stretch?: boolean; noShops?: boolean; attic?: boolean },
   /** a region's own palettes for this style, which replace the style's (Paris is cream) */
   palettes?: Palette[],
   /** what a street-photo label says about this building, over the draws (src/city/appearance.ts, `?labels=1`) */
@@ -860,7 +893,7 @@ export function planFacade(
   const drawn = osm.noShops
     ? (styleId === 'haussmann' ? { dress: { ...NO_DRESS, paris: { balconies: [], centre: [], railings: 'none', hoods: [], deep: false, consoles: false, surrounds: true,
         modillions: false, door: '#141516', plants: 0, rustic: 2, oriel: false, single: [] } as ParisDress } } : undefined)
-    : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
+    : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels + (osm.attic ? 1 : 0))
   // (a Haussmann front's balconies are its own: ParisDress)
   const balconyLevels = new Set(drawn?.dress.paris?.balconies ?? st.balcony?.levels ?? [])
   // (a label's answers win over the draws, and dress a style that has no dresser of its own)
@@ -881,7 +914,8 @@ export function planFacade(
     },
     ground: osm.noShops && st.ground === 'shopfront' ? 'plain' : st.ground,
     ...(osm.noShops ? { institution: true } : {}),
-    top: st.top,
+    // (the roof holds the mansard storey: the wall's top is its cornice, not a second row of dormers)
+    top: osm.attic && st.top === 'mansard' ? 'cornice' : st.top,
     hasBalconyAt: (level) => balconyLevels.has(level),
     // (a raised part has no street front to dress — except a canopy, whose whole edge is its fascia: Dress.solid)
     ...(dressed && (!aloft || dressed.dress.solid) ? { dress: dressed.dress } : {}),
@@ -1591,19 +1625,29 @@ function dressPostwar(plan: FacadePlan, p: PostwarDress, d: Dress, features: Fea
   const g = plan.storeys[0]
   const upper = plan.storeys.filter((s) => s.kind !== 'ground')
   const win = plan.window.widthFrac * bayW
+  const rail = p.glassRail ? POSTWAR_DIM.glass : iron
+  const slabD = p.glassRail ? POSTWAR_DIM.glassSlab : POSTWAR_DIM.slab
+  if (p.inset && g && bays >= 2) {
+    // the set-back ground storey: a soffit under the first floor and piers out to the old line, every other bay
+    features.push({ kind: 'canopy', y0: g.y1 - POSTWAR_DIM.soffit, y1: g.y1, depth: POSTWAR_DIM.insetD, x0: 0, x1: len, colour: wall })
+    for (let b = 0; b <= bays; b += 2) {
+      const x = b === 0 ? POSTWAR_DIM.pierW / 2 : b >= bays ? len - POSTWAR_DIM.pierW / 2 : margin + b * bayW
+      features.push({ kind: 'pilaster', y0: 0, y1: g.y1, depth: POSTWAR_DIM.insetD, x0: x - POSTWAR_DIM.pierW / 2, x1: x + POSTWAR_DIM.pierW / 2, colour: wall })
+    }
+  }
   for (const s of upper) {
     const k = s.index
     if (p.balconies === 'continuous' || (p.balconies === 'alternate' && k % 2 === 0)) {
-      features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1, depth: POSTWAR_DIM.slab, x0: margin * 0.5, x1: len - margin * 0.5, colour: iron })
+      features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1, depth: slabD, x0: margin * 0.5, x1: len - margin * 0.5, colour: rail, glass: p.glassRail })
     } else if (p.balconies === 'pairs') {
       for (let b = (k % 2); b + 2 <= bays; b += 3) {
-        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1, depth: POSTWAR_DIM.slab * 0.9, x0: margin + b * bayW + 0.15, x1: margin + (b + 2) * bayW - 0.15, colour: iron })
+        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1, depth: slabD * 0.9, x0: margin + b * bayW + 0.15, x1: margin + (b + 2) * bayW - 0.15, colour: rail, glass: p.glassRail })
       }
     } else if (p.balconies === 'rails') {
       // the garde-corps across each French window, a hand's breadth proud
       for (let b = 0; b < bays; b++) {
         const c = margin + (b + 0.5) * bayW
-        features.push({ kind: 'balcony', y0: s.y0 + 0.05, y1: s.y0 + 1, depth: POSTWAR_DIM.rail, x0: c - win / 2 - 0.05, x1: c + win / 2 + 0.05, colour: iron })
+        features.push({ kind: 'balcony', y0: s.y0 + 0.05, y1: s.y0 + 1, depth: POSTWAR_DIM.rail, x0: c - win / 2 - 0.05, x1: c + win / 2 + 0.05, colour: rail, glass: p.glassRail })
       }
     }
   }
@@ -1613,6 +1657,18 @@ function dressPostwar(plan: FacadePlan, p: PostwarDress, d: Dress, features: Fea
         x0: x - POSTWAR_DIM.frameW / 2, x1: x + POSTWAR_DIM.frameW / 2, colour: trim })
     }
     features.push({ kind: 'cornice', y0: plan.height - 0.35, y1: plan.height + 0.05, depth: POSTWAR_DIM.frameD, colour: trim })
+  }
+  // the roofline: a coping band in the trim, a little proud
+  if (p.coping && !p.frame) {
+    features.push({ kind: 'cornice', y0: plan.height - POSTWAR_DIM.coping, y1: plan.height + 0.05, depth: 0.12, colour: trim })
+  }
+  // the mock tower: piers in the trim either side of the middle bay, rising past the roof, its windows left showing
+  if (p.tower && bays >= 3) {
+    const mid = Math.floor(bays / 2), x0 = margin + mid * bayW, x1 = x0 + bayW, w = POSTWAR_DIM.towerW, top = plan.height + POSTWAR_DIM.towerRise
+    for (const [a, b] of [[x0 - w, x0 + 0.1], [x1 - 0.1, x1 + w]]) {
+      features.push({ kind: 'pilaster', y0: 0, y1: top, depth: POSTWAR_DIM.towerD, x0: a, x1: b, colour: trim })
+    }
+    features.push({ kind: 'pilaster', y0: plan.height - 0.1, y1: top, depth: POSTWAR_DIM.towerD, x0: x0 - w, x1: x1 + w, colour: trim })
   }
   // the lobby door: a canopy over it, and its surround in the trim
   if (g.kind === 'ground' && d.ground && bays > 0) {

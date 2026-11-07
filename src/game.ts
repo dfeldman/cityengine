@@ -245,7 +245,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   setBuildBudget(Number(new URLSearchParams(location.search).get('buildms')) || tier.buildMs)
   setTextScale(tier.textScale)
   setGroundStride(tier.groundStride)
-  setKeepGeometry(tier.keepGeometry)
+  // `?keepgeo=0|1` overrides the tier, to measure what the CPU copies of the models' vertices cost
+  { const k = new URLSearchParams(location.search).get('keepgeo'); setKeepGeometry(k === null ? tier.keepGeometry : k === '1') }
   if (!tier.ao) off.add('ao')
   // `?with=grade,plants` puts back what the tier leaves out, to measure it on a device without a code change
   const back = new Set((new URLSearchParams(location.search).get('with') ?? '').split(',').filter(Boolean))
@@ -559,6 +560,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const anyTile: ((raw: TileData) => void)[] = []
   const seenRaw: TileData[] = []
   anyTile.push((raw) => { if (keepArrived) seenRaw.push(raw) })
+  /** told of every tile whose raw data is dropped (`wantTiles`): the landmarks release theirs */
+  const anyDrop: ((key: string) => void)[] = []
   /*
    * The tile's own ground, for EVERY tile fetched — mid ring as well as full (BUGS.md #206k).
    *
@@ -750,6 +753,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         city.forget(k)
         const [dx, dz] = k.split(',').map(Number)
         city.terrain.dropTile(dx, dz)
+        for (const f of anyDrop) f(k)
       }
     }
     return Promise.all(jobs.map(([k, full]) => bring(k, full))).then(() => undefined)
@@ -812,7 +816,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (region(pkg.region).furniture.terraces) city.addLayer(terracesLayer(scene, city.terrain))
   mark('terraces')
   // the river's parapets and the bouquinistes on the quays (render/quays.ts)
-  city.addLayer(quaysLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0, region(pkg.region).lowerQuays))
+  const quays = quaysLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0, region(pkg.region).lowerQuays, index.quayWalls)
+  city.addLayer(quays)
   // the bridges, each built once from its outline in its own design (render/bridge-structures.ts, BUGS.md #37)
   city.addLayer(bridgeStructuresLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0,
     pkg.region === 'paris' ? PARIS_BRIDGES : {}, (id) => city.coversOutline(id), pkg.region === 'paris' ? undefined : STEEL_OVER_WATER))
@@ -902,6 +907,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)
     anyTile.push((raw) => landmarks.addTile(raw))
+    anyDrop.push((k) => landmarks.dropTile(k))
   }
   mark('landmarks')
   const rain = opts.weather === 'rain' && !off.has('rain') ? new Rain(scene) : null
@@ -1450,6 +1456,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     floraOf?.((x, z) => new Projection(pkg.origin).toLatLon({ x, z })), opts.veg ?? CANOPY, opts.vegMerge !== false)
   trees.farCrowns = pkg.region === 'paris'
   if (!off.has('trees')) city.addLayer(trees.layer())
+  quays.plantWith((k, ps) => trees.setTrees(k, ps))
   treesReady = true
   for (const r of clearingsEarly) trees.clear(r)
   mark('vegetation')
@@ -3132,12 +3139,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           }
         }
       }
-      if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId && !nav.isCommitted) {
+      /*
+       * Asked for even once the choice has latched (owner, 2026-11-06: the rider "goes right past the turn about 1/4
+       * of the time"). Crossing a junction resets the turn to straight, and on a short block at speed the next one is
+       * already inside the commit distance — so it latched straight in that same step, before this ever ran, and the
+       * old `!nav.isCommitted` guard then kept the route's exit out. The edge still wins at the node (`step`); only the
+       * turn intent is left alone once latched, or it would carry on to the junction after.
+       */
+      if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId) {
         const want = route.leave.get(junction.nodeId)
         // (the route's exit even where the junction's offer folded it into a neighbour: `Navigator` takes it by edge)
         const exit = want === undefined ? undefined
           : junction.exits.find((x) => x.edgeId === want) ?? exits(rides, junction.nodeId, nav.edge.id).find((x) => x.edgeId === want)
-        if (exit && nav.requestedEdge !== exit.edgeId) { nav.request(exit.turn); nav.requestEdge(exit.edgeId) }
+        if (exit && nav.requestedEdge !== exit.edgeId) { if (!nav.isCommitted) nav.request(exit.turn); nav.requestEdge(exit.edgeId) }
       }
       /*
        * The route's line: how far, and the next turn. Not during a delivery, whose compass pill already says how far,

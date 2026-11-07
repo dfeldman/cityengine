@@ -320,12 +320,18 @@ export class Crowd {
   private roads(): Map<string, Edge[]> {
     if (this.g.edges.size === this.gridded) return this.roadGrid
     let i = 0
+    /** the cells new roads went into, as numbers (`cellKey`) */
+    const fresh = new Set<number>()
     for (const r of this.g.edges.values()) {
-      if (i++ < this.gridded || r.foot) continue
+      if (i++ < this.gridded) continue
+      // a new footway's own ends may meet an old road (`touchesRoad`), so its cells count too
+      for (const p of r.points) fresh.add(cellKey(Math.floor(p.x / 50), Math.floor(p.z / 50)))
+      if (r.foot) continue
       const seen = new Set<string>()
       for (let s = 0; s <= r.length; s += 25) {
         const p = pointAlong(r.points, s)
         const k = `${Math.floor(p.x / 50)},${Math.floor(p.z / 50)}`
+        fresh.add(cellKey(Math.floor(p.x / 50), Math.floor(p.z / 50)))
         if (seen.has(k)) continue
         seen.add(k)
         let list = this.roadGrid.get(k)
@@ -334,8 +340,17 @@ export class Crowd {
       }
     }
     this.gridded = this.g.edges.size
-    this.walkableCache.clear()
-    this.medianCache.clear()
+    /*
+     * Forget only what the new roads could change: the edges within REGRID_REACH cells of a cell they went into. Clearing
+     * every answer each time the graph grew re-tested every footway in the city against the roads on every tile that
+     * arrived — quadratic in the network, 11 GB of garbage in a three-minute flight over Paris (2026-11-06).
+     */
+    for (const cache of [this.walkableCache, this.medianCache] as Map<number, unknown>[]) {
+      for (const id of cache.keys()) {
+        const e = this.g.edges.get(id)
+        if (!e || nearCells(e.points, fresh)) cache.delete(id)
+      }
+    }
     return this.roadGrid
   }
 
@@ -759,6 +774,20 @@ function distanceToLine(points: Point[], p: Point): number {
     best = Math.min(best, Math.hypot(p.x - a.x - dx * t, p.z - a.z - dz * t))
   }
   return best
+}
+
+/** how many 50 m cells round an edge a new road can change its answers from: `overRoad` looks one cell out, `median` one cell past a ~15 m reach */
+const REGRID_REACH = 2
+// (15 bits each: a small integer, not a boxed double)
+const cellKey = (cx: number, cz: number): number => ((cx & 0x7fff) << 15) | (cz & 0x7fff)
+/** does any cell within REGRID_REACH of the edge's box hold one of `cells`? */
+function nearCells(points: readonly { x: number; z: number }[], cells: ReadonlySet<number>): boolean {
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+  for (const p of points) { if (p.x < x0) x0 = p.x; if (p.x > x1) x1 = p.x; if (p.z < z0) z0 = p.z; if (p.z > z1) z1 = p.z }
+  const cx0 = Math.floor(x0 / 50) - REGRID_REACH, cx1 = Math.floor(x1 / 50) + REGRID_REACH
+  const cz0 = Math.floor(z0 / 50) - REGRID_REACH, cz1 = Math.floor(z1 / 50) + REGRID_REACH
+  for (let cx = cx0; cx <= cx1; cx++) for (let cz = cz0; cz <= cz1; cz++) if (cells.has(cellKey(cx, cz))) return true
+  return false
 }
 
 /** How far a point is from a line, and the line's direction (a unit vector along its points) where it is nearest. */

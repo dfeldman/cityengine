@@ -141,7 +141,8 @@ function waterMask(water: { ring: { x: number; z: number }[]; holes: { x: number
 function wayIndex(ways: { p: { x: number; z: number }[]; half: number }[]): (x: number, z: number, r: number) => boolean {
   const REACH = 4.5
   const cells = new Map<number, { ax: number; az: number; bx: number; bz: number; half: number }[]>()
-  const key = (i: number, j: number): number => (i + 50000) * 100000 + (j + 50000)
+  // (15 bits each, so the key is a small integer: past 2^30 every Map lookup boxed a double, 2026-11-06)
+  const key = (i: number, j: number): number => ((i & 0x7fff) << 15) | (j & 0x7fff)
   for (const { p, half } of ways) {
     for (let i = 1; i < p.length; i++) {
       const a = p[i - 1], b = p[i], m = half + REACH

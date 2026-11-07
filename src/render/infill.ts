@@ -71,7 +71,7 @@ function h01(x: number, z: number, salt: number): number {
 export function woodAt(ps: Planting[]): (x: number, z: number) => number {
   const cell = NEIGHBOUR
   const grid = new Map<number, { x: number; z: number }[]>()
-  const key = (x: number, z: number): number => (Math.floor(x / cell) & 0xffff) * 65536 + (Math.floor(z / cell) & 0xffff)
+  const key = (x: number, z: number): number => ((Math.floor(x / cell) & 0x7fff) << 15) | (Math.floor(z / cell) & 0x7fff)
   for (const p of ps) {
     if (!p.park) continue
     const k = key(p.x, p.z)
@@ -107,7 +107,7 @@ export function thicken(ps: Planting[], edges: PackedEdge[] | undefined, mult: n
   // neighbours, from a grid at the test radius: three cells each way is the whole neighbourhood
   const cell = NEIGHBOUR
   const grid = new Map<number, Planting[]>()
-  const key = (x: number, z: number): number => (Math.floor(x / cell) & 0xffff) * 65536 + (Math.floor(z / cell) & 0xffff)
+  const key = (x: number, z: number): number => ((Math.floor(x / cell) & 0x7fff) << 15) | (Math.floor(z / cell) & 0x7fff)
   for (const p of park) {
     const k = key(p.x, p.z)
     const list = grid.get(k)

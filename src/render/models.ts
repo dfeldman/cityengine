@@ -1044,7 +1044,25 @@ export function kiosk(out: MeshBuilder): void {
 }
 
 /** A bike-share station: a terminal and a row of docks along the kerb, some with a bike in. */
+/*
+ * The model factories hand back the SAME function for the same arguments, so render/city.ts `placeModel` builds each
+ * model once and copies it after (2026-11-06: the bikes were rebuilt for every one placed, ~12 GB of garbage flying a
+ * lap of central Paris). A parked row's arrangement is one of BIKE_PARKING_VARIANTS per length.
+ */
+const BIKE_PARKING_VARIANTS = 8
+const docksMemo = new Map<string, (out: MeshBuilder) => void>()
+const parkingMemo = new Map<string, (out: MeshBuilder) => void>()
+
 export function bikeDocks(colour: Rgb): (out: MeshBuilder) => void {
+  const k = colour.join()
+  const had = docksMemo.get(k)
+  if (had) return had
+  const made = bikeDocksOf(colour)
+  docksMemo.set(k, made)
+  return made
+}
+
+function bikeDocksOf(colour: Rgb): (out: MeshBuilder) => void {
   return (out) => {
     box(out, 0, 0.7, -3.4, 0.16, 0.7, 0.14, colour, FIXED)                       // the terminal
     box(out, 0, 1.15, -3.26, 0.13, 0.18, 0.01, [0.1, 0.12, 0.14], FIXED)
@@ -1107,6 +1125,16 @@ export function velibStation(n: number, seed: number): (out: MeshBuilder) => voi
 const skew0 = (u: number): number => (u - 0.5) * 0.5
 
 export function bikeParking(n: number, seed: number): (out: MeshBuilder) => void {
+  const v = (seed >>> 0) % BIKE_PARKING_VARIANTS
+  const k = `${n},${v}`
+  const had = parkingMemo.get(k)
+  if (had) return had
+  const made = bikeParkingOf(n, v * 0x9e3779b1)
+  parkingMemo.set(k, made)
+  return made
+}
+
+function bikeParkingOf(n: number, seed: number): (out: MeshBuilder) => void {
   return (out) => {
     const steel: Rgb = [0.42, 0.43, 0.44]
     const tyre: Rgb = [0.08, 0.08, 0.08]

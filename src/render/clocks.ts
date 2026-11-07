@@ -69,6 +69,9 @@ export class Clocks {
   }
 
   /** Once a second, every hand to the time. */
+  /** forget the parts whose model was released (render/landmarks.ts `dropTile`) */
+  prune(): void { for (let i = this.hands.length - 1; i >= 0; i--) if (this.hands[i].mesh.isDisposed()) this.hands.splice(i, 1) }
+
   update(nowMs = Date.now()): void {
     if (this.hands.length === 0 || nowMs - this.last < 1000) return
     this.last = nowMs
