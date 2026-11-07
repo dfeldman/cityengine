@@ -86,9 +86,13 @@ const BY_ID = new Map<number, Look>()
  */
 const MIN_CONFIDENCE = 2
 interface Label { confidence: number; seen?: number; wall: string; trim?: string; ground?: string; material?: string; windows?: string;
-  glass?: string; balconies?: string; fits_in?: boolean; bands?: boolean; fins?: boolean; colour_panels?: boolean }
+  glass?: string; balconies?: string; fits_in?: boolean; paris?: boolean; bands?: boolean; fins?: boolean; colour_panels?: boolean }
 function fromLabel(l: Label, id: number): Look | null {
-  if ((l.confidence ?? 0) < MIN_CONFIDENCE || !/^#[0-9a-f]{6}$/i.test(l.wall ?? '')) return null
+  const sure = (l.confidence ?? 0) >= MIN_CONFIDENCE && /^#[0-9a-f]{6}$/i.test(l.wall ?? '')
+  // Paris proper (APUR footprint): Haussmann is the common case (owner 2026-11-07: "if we have no information we should continue
+  // to draw as haussmann"). Unsure, or not asked whether it fits the old street: Haussmann in the bake's colours.
+  if (l.paris && (!sure || l.fits_in === undefined)) return { style: 'haussmann', dress: {} }
+  if (!sure) return null
   // stone or French windows is an older front the list let through (Haussmann, or 1930s): keep the bake's style, recolour only
   // a postwar front built to fit the old street (neo-Haussmann) is drawn as Haussmann, whatever its date says
   if (l.fits_in) return { style: 'haussmann', dress: {}, palette: { wall: l.wall, trim: l.trim ?? l.wall, ground: l.ground ?? l.wall } }

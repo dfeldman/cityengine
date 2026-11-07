@@ -134,7 +134,9 @@ def main():
             if err: print(t['id'], err, flush=True); continue
             for k, v in use.items():
                 if isinstance(v, (int, float)): tot[k] = tot.get(k, 0) + v
-            lab['src'] = os.path.basename(src); looks[str(t['id'])] = lab
+            lab['src'] = os.path.basename(src)
+            if looks.get(str(t['id']), {}).get('paris'): lab['paris'] = True  # Paris proper (APUR): the Haussmann default
+            looks[str(t['id'])] = lab
             print(t['id'], t['h'], lab.get('confidence'), lab.get('note', ''), flush=True)
     json.dump(looks, open(OUT, 'w'), indent=1, sort_keys=True)
     print('usage', tot)
