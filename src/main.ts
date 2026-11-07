@@ -33,9 +33,12 @@ import { toursFor, type Tour } from './game/tour.ts'
 import CITIES from './cities.json'
 import { settings } from './ui/settings.ts'
 import { beginRun, recoverFromCrash } from './ui/crashguard.ts'
+import { startTelemetry, telemetryEvent, telemetryOptions } from './telemetry.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
+// beacons (src/telemetry.ts): first, so the boot's stages and errors are in it; off unless an endpoint is set
+startTelemetry(canvas, params)
 
 const style = document.createElement('style')
 style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS + MENU_CSS + SEARCH_CSS + TOUR_CSS
@@ -60,13 +63,14 @@ const showcasing = ['model', 'trees', 'palms', 'showcase'].some((k) => params.ge
 if (showcasing || params.get('freeze') === '1') LoadingScreen.dismiss()
 else {
   LoadingScreen.get().stage('boot')
+  telemetryEvent('load:boot')
   // did the last ride crash (a setting too big for this device)? then a step down, before the tier is chosen
   recoverFromCrash()
 }
 
 // the shared asset bucket's indexes (trees, plants, statues, this game's own): before anything loads a model
 await initAssets()
-if (!showcasing && params.get('freeze') !== '1') LoadingScreen.get().stage('assets')
+if (!showcasing && params.get('freeze') !== '1') { LoadingScreen.get().stage('assets'); telemetryEvent('load:assets') }
 
 if (params.get('model')) {
   const { modelShowcase } = await import('./model-showcase.ts')
@@ -251,6 +255,8 @@ if (params.get('model')) {
         platform: !!platform, city: cities.find((c) => c.id === city)?.name })
     }
   }
+  telemetryOptions({ city, mode, device, play: touring ? 'tour' : 'delivery', tour: tourPick?.id ?? (touring ? 'free' : undefined),
+    platform: platform ? 'dandyhorse' : 'standalone', tier })
   const { game } = await import('./game.ts')
   void game(canvas, {
     city,

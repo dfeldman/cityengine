@@ -91,6 +91,8 @@ export class BugReports {
   onChanged: (() => void) | null = null
   /** told when a report is saved, to say so */
   onSaved: ((count: number, stored: boolean) => void) | null = null
+  /** told each report as it is written, to send it on (src/telemetry.ts) */
+  onReport: ((b: BugReport) => void) | null = null
 
   constructor() {
     const st = document.createElement('style')
@@ -157,6 +159,7 @@ export class BugReports {
     const b: BugReport = { ...this.place, id: Date.now(), at: new Date().toISOString(), text }
     list.push(b)
     const stored = save(list)
+    this.onReport?.(b)
     this.close()
     this.onChanged?.()
     this.onSaved?.(list.length, stored)

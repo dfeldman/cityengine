@@ -113,6 +113,7 @@ import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { BugReports, type BugPlace } from './ui/bugs.ts'
+import { telemetryBake, telemetryBug, telemetryEvent, telemetryReady, telemetryWorld } from './telemetry.ts'
 import { autoReduced, recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
 import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
@@ -281,6 +282,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const t = performance.now()
     marks[name] = Math.round(t - lastMark)
     marks[`${name}MB`] = heapMB()
+    telemetryEvent(`load:${name}`, { ms: marks[name] })
     lastMark = t
   }
   ;(window as unknown as { __marks?: unknown }).__marks = marks
@@ -2469,6 +2471,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (bugs) {
     bugs.onChanged = showBugs
     showBugs()
+    // and to beacons, pinned to the spot looked at, with a screenshot (src/telemetry.ts; nothing when telemetry is off)
+    bugs.onReport = (b) => telemetryBug(b.text, { lat: b.lat, lon: b.lon, alt: b.spot.y },
+      { street: b.street, facing: b.facing, near: b.near, cam: { lat: b.camLat, lon: b.camLon, y: b.cam.y }, bearing: b.bearing, pitch: b.pitch, localSpot: b.spot })
     bugs.onSaved = (n, stored) => debug.toast(stored ? `bug report saved: ${n} in all (Menu → Bug reports)` : 'could not save the bug report: browser storage is full or off')
     bugs.onGo = (b) => { if (opts.goTo) { const why = opts.goTo(`${b.lat}, ${b.lon}`, true); if (why) debug.toast(why) } }
   }
@@ -3996,6 +4001,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     void copyText(text).then((ok) => debug.toast(`${ok ? 'view copied' : 'could not copy'} — paste it into views/${opts.city}.json\n${text}`))
   })
   ;(window as unknown as { gameReady?: boolean }).gameReady = true
+  // beacons (src/telemetry.ts): the rider's place for heartbeats, a frame for bug screenshots, and loading is over
+  telemetryBake(src.stamp)
+  telemetryWorld(() => { const ll = proj.toLatLon(lastAt); return { lat: ll.lat, lon: ll.lon, alt: nav.elevation().y, street: nav.edge.name || undefined } },
+    () => scene.render())
+  telemetryReady(marks)
 
   // on Dandyhorse: the session starts ticking now the rider is on the street (src/platform.ts)
   if (opts.platform) {

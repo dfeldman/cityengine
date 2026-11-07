@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs'
+import { execSync } from 'node:child_process'
 import { relative, resolve } from 'node:path'
 import { configDefaults } from 'vitest/config'
 import { defineConfig, type Plugin } from 'vite'
@@ -10,6 +11,8 @@ import { defineConfig, type Plugin } from 'vite'
  */
 const sibling = (name: string, env: string): string => resolve(process.env[env] || resolve(import.meta.dirname, '..', name))
 const AVATARKIT_DIR = sibling('avatarkit', 'AVATARKIT_DIR')
+// the commit a build is from, for telemetry (src/telemetry.ts); '+' when the tree had changes
+const GIT_REV = (() => { try { return execSync('git describe --always --dirty=+', { encoding: 'utf8' }).trim() } catch { return 'unknown' } })()
 const ASSETKIT_DIR = sibling('assetkit', 'ASSETKIT_DIR')
 
 /*
@@ -34,7 +37,7 @@ const gamekit: Plugin = {
 export default defineConfig({
   base: './',
   plugins: [gamekit],
-  define: { __AVATARKIT_DIR__: JSON.stringify(AVATARKIT_DIR), __ASSETKIT_DIR__: JSON.stringify(ASSETKIT_DIR) },
+  define: { __AVATARKIT_DIR__: JSON.stringify(AVATARKIT_DIR), __ASSETKIT_DIR__: JSON.stringify(ASSETKIT_DIR), __GIT_REV__: JSON.stringify(GIT_REV) },
   /*
    * ONE BABYLON for the app and every linked kit (carkit, avatarkit). In a production build a `file:` kit's
    * `@babylonjs/core` import resolves to the kit's OWN copy, so carkit registered its shaders with a Babylon the

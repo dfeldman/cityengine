@@ -4,3 +4,5 @@
  */
 declare const __AVATARKIT_DIR__: string
 declare const __ASSETKIT_DIR__: string
+/** the git commit the page was built from (vite.config.ts), for telemetry */
+declare const __GIT_REV__: string
