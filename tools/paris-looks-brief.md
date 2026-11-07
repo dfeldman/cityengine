@@ -17,6 +17,8 @@ Answer with ONE JSON object and nothing else:
  "bands": true|false,         // visible horizontal floor bands
  "fins": true|false,          // vertical fins or mullions proud of the wall
  "colour_panels": true|false, // panels of a second colour scattered on the facade
+ "fits_in": true|false,       // the front imitates the old Paris street, though it may be new: cream stone or render, tall
+                              // French windows, wrought-iron rails, a cornice or mansard (neo-Haussmann); false for a plainly modern front
  "storeys": n,                // storeys you can count, or 0
  "confidence": 1-3,           // 3 = clearly seen in 2+ photos; 2 = seen once or partly; 1 = not really seen
  "note": "≤15 words"}

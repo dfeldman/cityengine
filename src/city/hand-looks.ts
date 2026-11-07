@@ -86,10 +86,12 @@ const BY_ID = new Map<number, Look>()
  */
 const MIN_CONFIDENCE = 2
 interface Label { confidence: number; seen?: number; wall: string; trim?: string; ground?: string; material?: string; windows?: string;
-  glass?: string; balconies?: string; bands?: boolean; fins?: boolean; colour_panels?: boolean }
+  glass?: string; balconies?: string; fits_in?: boolean; bands?: boolean; fins?: boolean; colour_panels?: boolean }
 function fromLabel(l: Label, id: number): Look | null {
   if ((l.confidence ?? 0) < MIN_CONFIDENCE || !/^#[0-9a-f]{6}$/i.test(l.wall ?? '')) return null
   // stone or French windows is an older front the list let through (Haussmann, or 1930s): keep the bake's style, recolour only
+  // a postwar front built to fit the old street (neo-Haussmann) is drawn as Haussmann, whatever its date says
+  if (l.fits_in) return { style: 'haussmann', dress: {}, palette: { wall: l.wall, trim: l.trim ?? l.wall, ground: l.ground ?? l.wall } }
   const old = l.material === 'stone' || l.windows === 'french'
   const style: Look['style'] = old ? undefined : l.windows === 'curtain' ? 'skyscraper' : l.windows === 'ribbon' ? 'bauhaus' : 'parismodern'
   const dress: Look['dress'] = {}

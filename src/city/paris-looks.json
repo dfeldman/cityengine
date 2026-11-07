@@ -3127,6 +3127,24 @@
   "wall": "#c9bfae",
   "windows": "punched"
  },
+ "105536604": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#3a3a3a",
+  "material": "render",
+  "note": "Cream render with grey-blue balconies between lines; ground-floor shop base; pale render, punched French windows.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 7,
+  "trim": "#d6cfc0",
+  "wall": "#e8e2d4",
+  "windows": "punched"
+ },
  "105536608": {
   "balconies": "rails",
   "bands": true,
@@ -24394,6 +24412,24 @@
   "wall": "#8a8a8a",
   "windows": "curtain"
  },
+ "151074619": {
+  "balconies": "continuous",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#5c6670",
+  "ground": "#8a8f88",
+  "material": "render",
+  "note": "Beige rendered slab tower, continuous balcony slabs; scaffolding and trees partly obscure the lower floors.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 13,
+  "trim": "#c8b898",
+  "wall": "#d9cbb0",
+  "windows": "punched"
+ },
  "151074630": {
   "balconies": "rails",
   "bands": true,
@@ -24936,6 +24972,24 @@
   "storeys": 6,
   "trim": "#e8e0d2",
   "wall": "#c9b8a0",
+  "windows": "punched"
+ },
+ "157863434": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#5a6068",
+  "ground": "#3a3a3a",
+  "material": "render",
+  "note": "Brick-red rendered block with punched windows and a dark ground-floor base; the target lies between the lines in photos 1 and 3.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 8,
+  "trim": "#e8e2d8",
+  "wall": "#c98a6b",
   "windows": "punched"
  },
  "157863441": {
@@ -27641,6 +27695,24 @@
   "wall": "#e8dcc8",
   "windows": "punched"
  },
+ "23658695": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 3,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#d8cbb8",
+  "material": "render",
+  "note": "Cream rendered 1950s block with curved corner, wrought-iron balcony rails, shutters, arched gateway.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 9,
+  "trim": "#f2ebe0",
+  "wall": "#e8ddd0",
+  "windows": "punched"
+ },
  "238029193": {
   "balconies": "rails",
   "bands": true,
@@ -29018,6 +29090,24 @@
   "wall": "#3a6f8f",
   "windows": "curtain"
  },
+ "275266171": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#6f8a94",
+  "ground": "#4a3a30",
+  "material": "render",
+  "note": "Pinkish-red rendered block with stacked railed balconies and a brick chimney stack; plainly modern, not Haussmann.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#7a4a3e",
+  "wall": "#c98a7a",
+  "windows": "punched"
+ },
  "276809755": {
   "balconies": "none",
   "bands": false,
@@ -29917,6 +30007,24 @@
   "storeys": 7,
   "trim": "#d9d2c2",
   "wall": "#e8e2d4",
+  "windows": "punched"
+ },
+ "30626505": {
+  "balconies": "continuous",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 3,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#8a8178",
+  "material": "render",
+  "note": "Cream rendered 1970s block, continuous balcony slabs, dark ground-floor commercial base; plainly modern.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 10,
+  "trim": "#c8c2b4",
+  "wall": "#d9d4c7",
   "windows": "punched"
  },
  "30626506": {
@@ -32467,6 +32575,24 @@
   "storeys": 8,
   "trim": "#e8dcc8",
   "wall": "#d9cbb4",
+  "windows": "punched"
+ },
+ "41874421": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#1e1e1e",
+  "material": "render",
+  "note": "Between the lines only ground-floor shopfronts and a wall edge; upper storeys cropped out of frame.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 0,
+  "trim": "#b5a48a",
+  "wall": "#c9b89a",
   "windows": "punched"
  },
  "41914689": {
@@ -35597,6 +35723,24 @@
   "wall": "#e8e2d6",
   "windows": "punched"
  },
+ "53262381": {
+  "balconies": "continuous",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#7a8a8a",
+  "ground": "#8a8a80",
+  "material": "render",
+  "note": "Curved cream rendered 1990s block with continuous balcony slabs and glazed rails; ground-floor shopfronts.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 8,
+  "trim": "#d8ccb0",
+  "wall": "#e8dcc4",
+  "windows": "punched"
+ },
  "53262383": {
   "balconies": "none",
   "bands": true,
@@ -35631,6 +35775,24 @@
   "wall": "#e8dcc4",
   "windows": "punched"
  },
+ "53262489": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#8a7f70",
+  "material": "stone",
+  "note": "Cream stone Haussmann-style block with wrought-iron rails and mansard top; reads as neo-Haussmann.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 7,
+  "trim": "#c9b99c",
+  "wall": "#d9cbb4",
+  "windows": "punched"
+ },
  "53262492": {
   "balconies": "rails",
   "bands": false,
@@ -35646,6 +35808,24 @@
   "storeys": 5,
   "trim": "#e6e1d6",
   "wall": "#c9c2b4",
+  "windows": "punched"
+ },
+ "53262517": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#7d8c96",
+  "ground": "#8a2c2e",
+  "material": "render",
+  "note": "Cream rendered corner block with shuttered French windows and iron rails; reads as classic Haussmann-style, not modern.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#f2efe6",
+  "wall": "#e9e4d8",
   "windows": "punched"
  },
  "53262531": {
@@ -36632,6 +36812,24 @@
   "storeys": 9,
   "trim": "#e0d4bc",
   "wall": "#c9b89a",
+  "windows": "punched"
+ },
+ "53309395": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": true,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#5a1f1a",
+  "material": "render",
+  "note": "Cream rendered 1990s-style block with curved corner, rail balconies, a teal panel band, red shopfront base.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 8,
+  "trim": "#d8d0c0",
+  "wall": "#e8e2d4",
   "windows": "punched"
  },
  "53309400": {
@@ -38011,6 +38209,24 @@
   "wall": "#4a4d4f",
   "windows": "punched"
  },
+ "53400739": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#3a3a3a",
+  "material": "brick",
+  "note": "Tall brick-faced block with white-railed balconies behind the trees; seen in two photos, partly obscured.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 9,
+  "trim": "#8a3f2c",
+  "wall": "#b5573a",
+  "windows": "punched"
+ },
  "53400743": {
   "balconies": "rails",
   "bands": true,
@@ -38673,6 +38889,24 @@
   "trim": "#cdbb98",
   "wall": "#e3d3b5",
   "windows": "punched"
+ },
+ "53447997": {
+  "balconies": "none",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#3a3a3c",
+  "material": "concrete",
+  "note": "Only ground-level shopfront and a cream stone arcade visible; target tower's upper wall not visible between lines.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 0,
+  "trim": "#9a958f",
+  "wall": "#8a8580",
+  "windows": "ribbon"
  },
  "53447999": {
   "balconies": "rails",
@@ -41479,6 +41713,24 @@
   "wall": "#c9bfae",
   "windows": "punched"
  },
+ "53727134": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#3a3d40",
+  "material": "render",
+  "note": "Pale rendered block with bands and glass-rail balconies, dark glazed shopfront base; modern, not Haussmann.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 7,
+  "trim": "#e8e6e1",
+  "wall": "#c9c4bb",
+  "windows": "punched"
+ },
  "53727136": {
   "balconies": "rails",
   "bands": true,
@@ -43077,6 +43329,24 @@
   "wall": "#c9bfae",
   "windows": "punched"
  },
+ "53774593": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": true,
+  "confidence": 3,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a4f55",
+  "ground": "#2b2c2e",
+  "material": "render",
+  "note": "White rendered curved corner block; green-tinted balcony rails and panels; dark glazed ground storey with shopfronts; 1980s-style.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 7,
+  "trim": "#e9ece6",
+  "wall": "#f2f1ec",
+  "windows": "punched"
+ },
  "53774600": {
   "balconies": "rails",
   "bands": true,
@@ -44146,6 +44416,24 @@
   "storeys": 8,
   "trim": "#e0dbd0",
   "wall": "#c9c2b4",
+  "windows": "punched"
+ },
+ "53943999": {
+  "balconies": "none",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#3d4a52",
+  "ground": "#2e3236",
+  "material": "metal",
+  "note": "Grey zinc-clad facade with dormer-like projecting windows and a dark shopfront base; plainly modern, not Haussmann.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 5,
+  "trim": "#4a4f57",
+  "wall": "#8a8f96",
   "windows": "punched"
  },
  "53944104": {
@@ -46698,6 +46986,24 @@
   "wall": "#d9cfc0",
   "windows": "punched"
  },
+ "558286": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#8a8a85",
+  "material": "stone",
+  "note": "Cream stone curved corner block with rail balconies, shopfronts at ground; the target lies between the lines in each shot.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 7,
+  "trim": "#c9b89c",
+  "wall": "#d9c7ad",
+  "windows": "punched"
+ },
  "5584008": {
   "balconies": "none",
   "bands": true,
@@ -48942,6 +49248,24 @@
   "wall": "#d8cdb8",
   "windows": "punched"
  },
+ "63201814": {
+  "balconies": "none",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#808080",
+  "ground": "#808080",
+  "material": "concrete",
+  "note": "Photos show only mulch bed, paved forecourt and pedestrians; target building not visible between lines.",
+  "seen": 0,
+  "src": "apur-trial.json",
+  "storeys": 0,
+  "trim": "#808080",
+  "wall": "#808080",
+  "windows": "punched"
+ },
  "63201921": {
   "balconies": "none",
   "bands": true,
@@ -51016,6 +51340,24 @@
   "wall": "#f2f1ec",
   "windows": "punched"
  },
+ "63638406": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#5b6670",
+  "ground": "#8a8178",
+  "material": "render",
+  "note": "Between lines only trees, parked cars and a van; facade barely visible, pale render like older blocks.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 5,
+  "trim": "#c9c3b3",
+  "wall": "#d9d4c7",
+  "windows": "punched"
+ },
  "63638499": {
   "balconies": "none",
   "bands": false,
@@ -52512,6 +52854,24 @@
   "wall": "#d9d4c7",
   "windows": "punched"
  },
+ "63647168": {
+  "balconies": "continuous",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 3,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#5d6a70",
+  "ground": "#2e3b33",
+  "material": "render",
+  "note": "Curved cream-white rendered block with continuous balcony slabs; dark green ground-floor medical centre base.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#f2efe8",
+  "wall": "#e8e0d2",
+  "windows": "punched"
+ },
  "63647522": {
   "balconies": "rails",
   "bands": false,
@@ -52612,6 +52972,24 @@
   "storeys": 8,
   "trim": "#d9d2c3",
   "wall": "#e8e2d6",
+  "windows": "punched"
+ },
+ "63648231": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#8a8178",
+  "material": "render",
+  "note": "Cream render, curved corner, wrought-iron rails, shopfront base; neo-Haussmann style, partly seen",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#d6cbb5",
+  "wall": "#e8e2d4",
   "windows": "punched"
  },
  "63648236": {
@@ -52902,6 +53280,24 @@
   "trim": "#e8e4dc",
   "wall": "#c9c2b4",
   "windows": "ribbon"
+ },
+ "63649303": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#8a8f8c",
+  "material": "render",
+  "note": "Between the lines is a low ivy-covered render block with a glazed shopfront and mansard-capped roof; the target is unclear.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 5,
+  "trim": "#c9c2b2",
+  "wall": "#d9d4c8",
+  "windows": "punched"
  },
  "63649333": {
   "balconies": "rails",
@@ -54975,6 +55371,24 @@
   "storeys": 7,
   "trim": "#d8ccb4",
   "wall": "#e6dcc8",
+  "windows": "punched"
+ },
+ "64301479": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#3a3a36",
+  "material": "render",
+  "note": "Cream rendered corner block with iron balconies and dark shopfront base; the lines frame the flat wall, not the corner.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 3,
+  "trim": "#e8dcc4",
+  "wall": "#d9c9a8",
   "windows": "punched"
  },
  "64302377": {
@@ -59310,6 +59724,24 @@
   "storeys": 7,
   "trim": "#e8dcc4",
   "wall": "#d9cbb0",
+  "windows": "punched"
+ },
+ "67353048": {
+  "balconies": "rails",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#8a7f70",
+  "material": "render",
+  "note": "Between the lines only a cream rendered Haussmann-style wall with barred ground-floor windows and a corner building; target largely hidden.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#c8bca4",
+  "wall": "#d9cdb5",
   "windows": "punched"
  },
  "67356268": {
@@ -70819,6 +71251,24 @@
   "storeys": 0,
   "trim": "#c9b99a",
   "wall": "#c9b99a",
+  "windows": "punched"
+ },
+ "69072403": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a5560",
+  "ground": "#3a3a3a",
+  "material": "render",
+  "note": "Lines frame a shopfront, a bollard and a street corner; upper facade not visible in these shots.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 8,
+  "trim": "#c8c2b4",
+  "wall": "#d9d4c7",
   "windows": "punched"
  },
  "69072429": {
@@ -82517,6 +82967,24 @@
   "wall": "#d9cbb4",
   "windows": "punched"
  },
+ "713960148": {
+  "balconies": "none",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 3,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#5b6670",
+  "ground": "#8a8f92",
+  "material": "render",
+  "note": "Curved white rendered block on pilotis; modern, plainly not Haussmannian; windows punched in regular grid.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#d4d7d9",
+  "wall": "#e9ebec",
+  "windows": "punched"
+ },
  "714889911": {
   "balconies": "rails",
   "bands": true,
@@ -90794,6 +91262,24 @@
   "storeys": 0,
   "trim": "#b5b0a6",
   "wall": "#c9c4bb",
+  "windows": "punched"
+ },
+ "75749078": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#8a9099",
+  "ground": "#3a3d4a",
+  "material": "render",
+  "note": "Cream rendered Haussmann-style facade, tall shuttered windows, iron balcony rails, dark shopfront base.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#c8c0b4",
+  "wall": "#d9d4cc",
   "windows": "punched"
  },
  "75749096": {
@@ -100996,6 +101482,24 @@
   "wall": "#b8b0a8",
   "windows": "punched"
  },
+ "78149300": {
+  "balconies": "continuous",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": true,
+  "fits_in": false,
+  "glass": "#5c6670",
+  "ground": "#6f6b64",
+  "material": "render",
+  "note": "Curved 1960s-style modern block with continuous balcony slabs and vertical fins; the Haussmann-style building at right lies outside the lines.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 7,
+  "trim": "#8e8a82",
+  "wall": "#b9b4a8",
+  "windows": "ribbon"
+ },
  "78149313": {
   "balconies": "rails",
   "bands": true,
@@ -103783,6 +104287,24 @@
   "trim": "#f2f1ed",
   "wall": "#e8e6e0",
   "windows": "punched"
+ },
+ "78534556": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#a89e92",
+  "material": "render",
+  "note": "Pale rendered 1970s block, ribbon glazing and recessed loggias, grey-green glass.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 8,
+  "trim": "#c9c3ba",
+  "wall": "#d9d4cc",
+  "windows": "ribbon"
  },
  "78534620": {
   "balconies": "rails",
@@ -118642,6 +119164,24 @@
   "wall": "#e8dcc4",
   "windows": "punched"
  },
+ "79719405": {
+  "balconies": "none",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5560",
+  "ground": "#8a8580",
+  "material": "render",
+  "note": "Target largely hidden by tree and van; only pale rendered upper facade and punched windows visible.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 6,
+  "trim": "#c2bcae",
+  "wall": "#d9d4c7",
+  "windows": "punched"
+ },
  "79719407": {
   "balconies": "rails",
   "bands": true,
@@ -126121,6 +126661,24 @@
   "trim": "#c9c3ba",
   "wall": "#d9d4cc",
   "windows": "punched"
+ },
+ "80301558": {
+  "balconies": "continuous",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#4a5258",
+  "ground": "#2a2a2c",
+  "material": "concrete",
+  "note": "Ground floor is night-lit shopfront; upper wall grey-beige concrete with projecting slab bands, ribbon glazing.",
+  "seen": 2,
+  "src": "apur-trial.json",
+  "storeys": 10,
+  "trim": "#8e8a84",
+  "wall": "#b8b2a6",
+  "windows": "ribbon"
  },
  "80303450": {
   "balconies": "none",
@@ -144805,6 +145363,24 @@
   "wall": "#e8dcc4",
   "windows": "punched"
  },
+ "84153726": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#4a4f55",
+  "ground": "#8a7d6e",
+  "material": "render",
+  "note": "Between the lines is mostly foliage and a van; only a faint cream Haussmann-style block shows.",
+  "seen": 1,
+  "src": "apur-trial.json",
+  "storeys": 5,
+  "trim": "#b5a48a",
+  "wall": "#c9b89a",
+  "windows": "punched"
+ },
  "84153734": {
   "balconies": "alternate",
   "bands": true,
@@ -154070,6 +154646,24 @@
   "wall": "#c9c6c0",
   "windows": "punched"
  },
+ "84332229": {
+  "balconies": "none",
+  "bands": false,
+  "colour_panels": false,
+  "confidence": 1,
+  "fins": false,
+  "fits_in": false,
+  "glass": "#2b2b2b",
+  "ground": "#2a2a2a",
+  "material": "render",
+  "note": "Between the lines only street-level shopfronts, a pole and ground; no upper facade visible.",
+  "seen": 0,
+  "src": "apur-trial.json",
+  "storeys": 0,
+  "trim": "#7a7a7a",
+  "wall": "#7a7a7a",
+  "windows": "punched"
+ },
  "84332274": {
   "balconies": "none",
   "bands": false,
@@ -157842,6 +158436,24 @@
   "storeys": 6,
   "trim": "#c9bfa9",
   "wall": "#d9d0bd",
+  "windows": "punched"
+ },
+ "86279997": {
+  "balconies": "rails",
+  "bands": true,
+  "colour_panels": false,
+  "confidence": 2,
+  "fins": false,
+  "fits_in": true,
+  "glass": "#5a6068",
+  "ground": "#c9bfae",
+  "material": "render",
+  "note": "Cream rendered 1980s block with rail balconies, shutters and a stone-toned ground floor; the lines frame the corner facade.",
+  "seen": 3,
+  "src": "apur-trial.json",
+  "storeys": 8,
+  "trim": "#d6cfc2",
+  "wall": "#e8e4dc",
   "windows": "punched"
  },
  "86280002": {

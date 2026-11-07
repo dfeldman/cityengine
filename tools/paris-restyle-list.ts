@@ -22,7 +22,7 @@ const CENTRE_LEVELS = 10     // inside it, this many (Haussmann tops out at 7–
 const CENTRE_MODERN_YEAR = 1955 // inside it, a dated postwar build qualifies too
 const CENTRE = { lat: 48.8584, lon: 2.3470 } // Châtelet
 const CENTRE_R = 2500        // m
-const FRONT_M = 40           // within this of a main street
+const FRONT_M = Number(process.env.FRONT_M ?? 40)          // within this of a main street
 const MIN_AREA = 150         // m²
 const CLUSTER_M = 300        // grid cell for one look
 const LEVEL_M = 3.1
@@ -57,6 +57,23 @@ for (const f of [resolve(ROOT, 'public/landmarks/paris.json'), ...readdirSync(lm
 }
 for (const m of readFileSync(resolve(ROOT, 'src/city/hand-looks.ts'), 'utf8').matchAll(/\b(\d{6,})\b/g)) taken.add(`way/${m[1]}`)
 const where = readFileSync(resolve(ROOT, 'public/landmarks/paris.where.json'), 'utf8')
+
+// ---- APUR mode (APUR=1): Paris proper by APUR's surveyed age — postwar, not a public facility (those have the civic builder) ----
+const APUR = process.env.APUR === '1'
+const APUR_MIN_PERIOD = Number(process.env.APUR_MIN_PERIOD ?? 6) // 6 = 1940–1967 (tools/paris-apur.ts codes); 99 undated is skipped
+const APUR_R = 15             // m: an APUR centroid this near the OSM centroid is the same building
+const apurGrid = new Map<string, [number, number, number, number, number][]>()
+if (APUR) for (const r of JSON.parse(readFileSync(resolve(ROOT, 'tools/cache/apur/emprise-paris.json'), 'utf8')) as number[][]) {
+  const x = X(r[0]), z = Z(r[1]), k = `${Math.floor(x / 50)},${Math.floor(z / 50)}`
+  if (!apurGrid.has(k)) apurGrid.set(k, []); apurGrid.get(k)!.push([x, z, r[2], r[3], r[4]])
+}
+const apurAt = (x: number, z: number): [number, number, number, number, number] | null => {
+  let best = null, bd = APUR_R
+  for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (const r of apurGrid.get(`${Math.floor(x / 50) + i},${Math.floor(z / 50) + j}`) ?? []) {
+    const d = Math.hypot(r[0] - x, r[1] - z); if (d < bd) { bd = d; best = r }
+  }
+  return best
+}
 
 // ---- OSM ----
 const dir = mkdtempSync(resolve(tmpdir(), 'rlist-'))
@@ -99,8 +116,14 @@ for (const b of blds) {
   const lv = parseFloat(b.t['building:levels'] ?? '') || 0
   const storeys = lv >= (central ? CENTRE_LEVELS : MID_LEVELS)
   const modern = central ? (year >= CENTRE_MODERN_YEAR || storeys) : (storeys || year >= MODERN_YEAR || MODERN_TAGS.test(b.t['building:material'] ?? b.t['building:facade:material'] ?? ''))
-  if (!tall && !modern) continue
+  if (APUR) {
+    const a = apurAt(b.cx, b.cz)
+    if (!a || a[4] === 1 || a[2] === 99 || a[2] < APUR_MIN_PERIOD) continue
+    b.why = [`APUR ${a[3] || 'period ' + a[2]}`]
+  } else if (!tall && !modern) continue
+  else {
   if (tall) b.why.push(`${Math.round(b.h)} m`); if (modern) b.why.push(year ? `${year}` : b.t['building:material'] ?? 'modern')
+  }
   let best = Infinity, st = '', sp: P = [0, 0]
   for (const s of streets) for (const p of b.ring) {
     const d = segDist(p, s.a, s.b)
@@ -113,7 +136,7 @@ for (const b of blds) {
 const cell = (x: number, z: number): string => `${Math.floor(x / CLUSTER_M)},${Math.floor(z / CLUSTER_M)}`
 const cells = new Set(kept.map((b) => cell(b.cx, b.cz)))
 const keptRefs = new Set(kept.map((b) => b.ref))
-const extra = blds.filter((b) => !keptRefs.has(b.ref) && !b.h && cells.has(cell(b.cx, b.cz)) && area(b.ring) > 400 && !taken.has(b.ref)
+const extra = APUR ? [] : blds.filter((b) => !keptRefs.has(b.ref) && !b.h && cells.has(cell(b.cx, b.cz)) && area(b.ring) > 400 && !taken.has(b.ref)
   && !b.t.amenity && !b.t.name && kept.some((k) => Math.hypot(k.cx - b.cx, k.cz - b.cz) < NEIGH_M))
   .map((b) => ({ ...b, street: '', sp: [b.cx, b.cz] as P, why: ['untagged, in cluster'] }))
 
