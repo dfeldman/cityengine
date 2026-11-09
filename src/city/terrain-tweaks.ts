@@ -25,6 +25,13 @@ export interface TerrainTweakSpec {
   fade?: number
 }
 
+/** The runtime ground of regions.json `levelPlans` (tools/level-plans.ts): each surface with `ground` a `level` tweak at its y,
+ *  over its own ring (`ground: true`) or the ring `ground` gives (a quai's open part, not the embankment over its tunnels). */
+export function levelPlanTweaks(plans: { surfaces?: { name: string; y: number; ring: [number, number][]; ground?: true | [number, number][]; groundFade?: number }[] }[] | undefined): TerrainTweakSpec[] {
+  return (plans ?? []).flatMap((p) => (p.surfaces ?? []).filter((s) => s.ground)
+    .map((s) => ({ name: s.name, kind: 'level' as const, y: s.y, fade: s.groundFade ?? 4, ring: s.ground === true ? s.ring : s.ground! })))
+}
+
 /** A tweak in local metres, ready to apply: `ring` flat [x, z, …], `y` the floor in metres. */
 export interface TerrainTweak {
   name: string

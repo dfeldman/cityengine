@@ -111,6 +111,19 @@ export interface Region {
    *  quay keeps its bank as the ground has it. Unset: every quay may. Paris: the left bank's run, the islands and the
    *  few right-bank ports (owner, 2026-11-05: the right bank's is patchy, Saint-Cloud has none) */
   lowerQuays?: string[]
+  /** ways set to surveyed (IGN) heights in a ring, last in the bake and again by --rides: tools/survey-pins.ts */
+  surveyPins?: { name: string; ring: [number, number][]; ways?: string; kinds?: string; points: [number, number, number][]; datum: number; fade?: number }[]
+  /** authored tiers: flat surfaces (ring + y) the ways in them take, graded ramps between two ends; bake (tools/level-plans.ts,
+   *  after the survey pins, and by --rides) and runtime ground (`ground`: city/terrain-tweaks.ts levelPlanTweaks) */
+  /** tools/deck-zones.ts: a bridgehead's authored levels, walls and routes */
+  deckZones?: import('../../tools/deck-zones.ts').DeckZoneSpec[]
+  /** tools/seine-band.ts (BDTOPO_BAND=1): bridges (BD TOPO names, case and accents ignored) kept out of the Seine band */
+  bandExclude?: string[]
+  levelPlans?: {
+    name: string
+    surfaces?: { name: string; y: number; ring: [number, number][]; ways?: string; kinds?: string; fade?: number; bridges?: boolean; ground?: true | [number, number][]; groundFade?: number }[]
+    ramps?: { name: string; ways?: string; kinds?: string; from: [number, number, number?]; to: [number, number, number?]; snap?: number }[]
+  }[]
   /** a big river's surface, metres above sea level, over what its lowest bank would say (Paris: the Seine's 26.9 m, between its locks) */
   riverLevel?: number
   /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
@@ -284,6 +297,10 @@ export function region(id: string | undefined): Region {
     bareViaducts: own?.bareViaducts ?? base.bareViaducts,
     flatStreets: own?.flatStreets ?? base.flatStreets,
     levelGrounds: own?.levelGrounds ?? base.levelGrounds,
+    surveyPins: own?.surveyPins ?? base.surveyPins,
+    levelPlans: own?.levelPlans ?? base.levelPlans,
+    deckZones: own?.deckZones ?? base.deckZones,
+    bandExclude: own?.bandExclude ?? base.bandExclude,
     terrainTweaks: own?.terrainTweaks ?? base.terrainTweaks,
     modelWalks: own?.modelWalks ?? base.modelWalks,
     touristStrips: own?.touristStrips ?? base.touristStrips,

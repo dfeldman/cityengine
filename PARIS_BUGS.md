@@ -578,6 +578,47 @@ random overpasses for peds in the sky 48.846232, 2.276430
 
 pedestrian bridge near 48.852825, 2.221747 goes over streets but has a huge hump 
 
+complex pedestrian bridge here 48.858635, 2.332178 that is rendered from OSM and looks really bad
+
+steep dip in a garden at 48.861511, 2.333982 . This is ACTUALLY an inverted pyramid going into the earth, and part of the Louvre complex . this confuses LIDAR
+
+we should improve the tuileries plots at 48.863972, 2.325790
+
+generic intersecting a palace 48.862285, 2.318927
+
+generic intersecitng a churhc 48.854038, 2.333862
+
+near 48.862888, 2.329369 the giant balloon in the skyline is hundreds of times too large 
+
+
+we draw sky in front of skyline objects, so La Defense in partiualr appears to be floating midair
+
+tunnel at 48.873027, 2.297955 leads to terrain inconsistencies
+
+arc d'triomphe is not a skyline object, so it appears after la defense/grand arche
+
+lourve roofline doesn't touch its walls
+
+improbably skinny building at 48.876692, 2.301471
+
+custom building in the road at 48.876822, 2.301111, also its sign is on the ground
+
+we should make displayed speeds realistic by adjusting them down greatly, even while keeping the bike going far faster than is realistic to keep the game fun
+
+deliveries in paris are essentially impossible to complete on time, we need a large adjustment factor 
+
+Poi signs are often embedded in the facade
+
+48.870052, 2.290230 npcs go under terrain becausse this ped-only street is not graded like a real street 
+
+we lost our code for making multi-way decisions at intersecions somehow
+
+despite mulitpl efix attempts the rider still misses scheudled turns sometimes
+
+we should probably just suppress delivery orders if the player is in a very large park (golden gate, the bois in paris), since even getting to the restaurant will take forever. probably on bridges too 
+
+suuuuper cool undulating apartment building at 48.866421, 2.269534
+
 overall, la defense is still not good enough. this isn't surprising since the area has some really wild architecture, tunnels, overpasses, a ton of art, a giant plaza full of sculpture. We only have a handful of the buildings, and they're not rendered very well.
 Also it's outside the Paris city limits, so our data sources are not as good. Essentially every building in the La Defense core needs a custom model. It's hard to even find images of some of the buildings for some reason.
 
@@ -610,3 +651,71 @@ there are two big black towers at 48.888941, 2.240842 and another at 48.889114, 
  (that one has really wild architecture) but othersiwe I couldn't find any black skyscrapers
 
 another road through a building 48.894931, 2.241546
+
+X in general, all our haussman buildings are 1 floor too tall STILL. We attempted to fix this but I dont' think it worked - the rooftop story still reads like a normal story and the building looks 7 floors tall
+
+all our window shaders are bad and could be improved
+
+submerged low building at 48.858092, 2.272282
+
+tour counter shows 1.2 of 9.5 knm and doesn't change - what?
+
+excuse me should be in french in france 
+axe historique tour needs far more stops
+axe historique tour takes you UNDER the arc d'triomphe in the tunnel... which isn't complete and randomly pops up to surface level 48.873559, 2.296482
+floating building in the air at 48.872170, 2.299056
+
+
+messed up train overpass (lying on ground) 48.878430, 2.280863
+
+if you go the wrong way on a tour the distances don't recalculate
+
+if you take transit on a tour it should highlight a station near where you're going next
+
+z fighting on generic house window
+
+
+cars take reandom u-turns which lok very unrealistc
+
+major z fighting on unique church at 48.883705, 2.272213
+
+bikes and runners also flip around frequently for no obvious reason rather than turn
+it's way too easy to hit a pedestrian
+
+road at 48.885047, 2.263076 is too narrow for traffic and parked cars
+
+random church tower in the road at 48.884485, 2.262396
+
+bridge surfaces are untextured gray
+edges of bridge surfaes show a bit of water in a gap
+
+48.888761, 2.253356 ped footway goes thhrough a building
+again at 48.889371, 2.253476
+
+
+z fighting on yellow building at 48.891018, 2.251802
+
+runners go up staircases at comical speed
+
+canopied skyway hides camera 48.890685, 2.246557
+
+
+plazas have random benches scattered around, even plazas that definitely have no benches
+
+
+massive drop in path at 48.893146, 2.233859
+
+again at 48.894397, 2.229903 although this is not traversale
+
+
+giant dip in quay road at 48.830142, 2.386624 and here 48.830975, 2.385550 - bad overpasses 
+tunnel overpass is just a portal 48.833497, 2.382349 and impassable
+another quay overpass tunnel situation 48.843117, 2.370530
+another
+
+
+oddly disconneted bridge 48.849166, 2.367216
+
+at here the path goes through a building 48.836075, 2.379465 
+
+we are drawing a LOT of parked bikes. in some areas just thousands of them. i don't know why. it's like 100% of the bortder in some areas

@@ -53,7 +53,7 @@ export interface GroundModelInput {
    * grass bank (owner, 2026-11-05). A sampler (null where it has no value: the fine surface stands) at `step` metres.
    * A detail tile eases into its non-detail neighbours over BLEND, as a fine tile does into a coarse one.
    */
-  detail?: { tiles: Set<string>; step: number; at: (x: number, z: number) => number | null }
+  detail?: { tiles: Set<string>; step: number; at: (x: number, z: number) => number | null; stepOf?: (tx: number, tz: number) => number | undefined }
 }
 
 export class GroundModel {
@@ -81,7 +81,7 @@ export class GroundModel {
     for (const [tx, tz] of inp.tiles) {
       const fine = inp.fine !== null && this.fineTiles.has(`${tx},${tz}`)
       const det = fine && inp.detail?.tiles.has(`${tx},${tz}`) ? inp.detail : null
-      const step = det ? det.step : fine ? this.fineStep : COARSE_STEP
+      const step = det ? det.stepOf?.(tx, tz) ?? det.step : fine ? this.fineStep : COARSE_STEP
       const plainNear: [number, number, number, number][] = []
       if (det) {
         for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {

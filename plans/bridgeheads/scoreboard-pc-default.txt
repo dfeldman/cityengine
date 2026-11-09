@@ -1,0 +1,1425 @@
+
+== Pont Nelson Mandela (349 m, ends h 6.5 / 7.8) ==
+FAIL  deck A>B                           507 m ×1.45, max grade 16.5%, h 2.2..9.2
+      [join]; detour ×1.45; grade 17%
+FAIL  deck B>A                           507 m ×1.45, max grade 16.5%, h 2.2..9.2
+      [join]; detour ×1.45; grade 17%
+pass  quai A Avenue de la L >            0 m ×0.00, max grade 0.0%, h Infinity..-Infinity
+pass  quai A Avenue de la L <            0 m ×0.00, max grade 0.0%, h Infinity..-Infinity
+FAIL  quai B Quai Jean Comp >            300 m ×1.02, max grade 11.2%, h -0.5..2.6
+      [height]; grade 11%
+FAIL  quai B Quai Jean Comp <            300 m ×1.02, max grade 11.2%, h -0.5..2.6
+      [height]; grade 11%
+pass  lower quai #1 unnamed              300 m ×1.00, max grade 7.1%, h 0.6..3.5
+pass  lower quai #2 unnamed              300 m ×1.00, max grade 7.1%, h 0.1..3.5
+FAIL  lower quai #3 QU AUGUSTE DES       301 m ×1.02, max grade 10.1%, h 0.1..2.6
+      [height]; grade 10%; crosses 0.3 m under the deck (< 3)
+FAIL  lower quai #4 QU JEAN COMPAG       300 m ×1.01, max grade 10.0%, h -0.5..2.6
+      [height]; grade 10%; crosses 0.3 m under the deck (< 3)
+FAIL  lower quai #5 unnamed              204 m ×1.01, max grade 2.3%, h 1.1..2.2
+      [height]; crosses 0.2/0.1 m under the deck (< 3)
+FAIL  lower quai #6 unnamed              478 m ×1.59, max grade 6.5%, h 0.9..3.5
+      [height]; crosses 0.1/0.2/0.0/0.0/0.2/0.2 m under the deck (< 3)
+  at: step 48.819527,2.398013 1.5 m
+  at: step 48.819504,2.397791 1.5 m
+  at: step 48.819458,2.397750 1.4 m
+  at: step 48.820523,2.400707 1.3 m
+
+== Pont d'Ivry (144 m, ends h 3.0 / 1.5) ==
+pass  deck A>B                           144 m ×1.00, max grade 3.5%, h 1.5..3.5
+pass  deck B>A                           144 m ×1.00, max grade 3.5%, h 1.5..3.5
+pass  quai A Quai Blanqui >              49 m ×1.02, max grade 4.0%, h 3.0..3.6
+pass  quai A Quai Blanqui <              49 m ×1.02, max grade 4.0%, h 3.0..3.6
+pass  quai B residential >               32 m ×1.00, max grade 0.0%, h 1.5..1.5
+pass  quai B residential <               32 m ×1.00, max grade 0.0%, h 1.5..1.5
+FAIL  lower quai #1 QU HENRI POURC       301 m ×1.05, max grade 6.4%, h -0.5..1.5
+      [height]; crosses 0.2 m under the deck (< 3)
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+
+== Pont Renault (232 m, ends h 3.0 / -1.5) ==
+pass  deck A>B                           232 m ×1.00, max grade 3.5%, h -1.5..3.0
+pass  deck B>A                           232 m ×1.00, max grade 3.5%, h -1.5..3.0
+pass  quai B Cours de l'Île >            23 m ×1.01, max grade 0.0%, h -1.5..-1.5
+pass  quai B Cours de l'Île <            23 m ×1.01, max grade 0.0%, h -1.5..-1.5
+pass  lower quai #1 QU GEORGES GOR       313 m ×1.04, max grade 1.1%, h -2.5..-2.2
+  info: upper quai A: no cross way within 60 m (no leg)
+  at: step 48.827356,2.230417 3.5 m
+  at: step 48.826148,2.233180 1.5 m
+  at: step 48.826358,2.232752 1.6 m
+  at: step 48.827484,2.230413 1.5 m
+  at: step 48.826305,2.232840 2.2 m
+
+== Pont Seibert (8 m, ends h 1.4 / 7.9) ==
+FAIL  deck A>B                           14 m ×1.74, max grade 0.0%, h 1.4..8.2
+      [join]; detour ×1.74
+FAIL  deck B>A                           14 m ×1.74, max grade 0.0%, h 1.4..8.2
+      [join]; detour ×1.74
+pass  quai A Route de Vaugi >            300 m ×1.00, max grade 4.5%, h -2.6..-1.3
+pass  quai A Route de Vaugi <            300 m ×1.00, max grade 4.5%, h -2.6..-1.3
+FAIL  quai B Rue de la Verr >            233 m ×1.06, max grade 9.8%, h 4.1..7.4
+      [height]; grade 10%
+FAIL  quai B Rue de la Verr <            233 m ×1.06, max grade 9.8%, h 4.1..7.4
+      [height]; grade 10%
+pass  lower quai #1 RTE DE VAUGIRA       303 m ×1.01, max grade 4.5%, h -2.6..-1.3
+  info: lower quai CHE DE HALAGE: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.821739,2.232600 1.2 m
+  at: step 48.821276,2.234807 5.0 m
+  at: step 48.820847,2.234536 5.5 m
+  at: step 48.820805,2.234652 4.1 m
+  at: deckEnd 48.820805,2.234652 4.1 m
+
+== Pont National (242 m, ends h 5.6 / 5.6) ==
+pass  deck A>B                           242 m ×1.00, max grade 1.5%, h 5.4..6.0
+pass  deck B>A                           242 m ×1.00, max grade 1.5%, h 5.4..6.0
+FAIL  quai A Quai d'Ivry >               180 m ×1.00, max grade 8.6%, h -0.4..1.8
+      [height]; grade 9%
+FAIL  quai A Quai d'Ivry <               180 m ×1.00, max grade 8.6%, h -0.4..1.8
+      [height]; grade 9%
+pass  quai B Quai de Bercy >             162 m ×1.00, max grade 0.0%, h -1.0..-1.0
+pass  quai B Quai de Bercy <             162 m ×1.00, max grade 0.0%, h -1.0..-1.0
+pass  lower quai #1 QU DE BERCY          296 m ×1.07, max grade 3.9%, h -1.0..0.6
+pass  lower quai #2 QU DE BERCY          229 m ×1.02, max grade 4.2%, h -1.0..1.9
+FAIL  lower quai #3 QU PANHARD ET        300 m ×1.00, max grade 8.6%, h -0.4..1.8
+      [height]; grade 9%
+FAIL  slip B Quai de Bercy               478 m ×5.57, max grade 17.5%, h -0.3..5.6
+      [join]; detour ×5.57; grade 18%
+  info: slip B troncon_de_route.17231221: not rideable (no OSM ride edge within 20 m)
+  at: step 48.824756,2.384450 11.6 m
+  at: step 48.827100,2.385398 3.5 m
+  at: step 48.825306,2.384908 5.1 m
+  at: step 48.827045,2.385461 3.0 m
+  at: step 48.827165,2.385271 1.4 m
+  at: step 48.830032,2.386679 1.1 m
+  at: step 48.829185,2.390439 1.6 m
+  at: step 48.827943,2.388605 6.9 m
+  at: step 48.827936,2.390656 10.8 m
+  at: step 48.827274,2.390601 2.5 m
+  at: step 48.827586,2.389548 1.9 m
+  at: step 48.829348,2.390846 1.1 m
+
+== Pont du Garigliano (206 m, ends h 8.8 / 2.6) ==
+pass  deck A>B                           206 m ×1.00, max grade 4.5%, h 2.6..8.8
+pass  deck B>A                           206 m ×1.00, max grade 4.5%, h 2.6..8.8
+pass  quai A Quai d'Issy-le >            151 m ×1.00, max grade 4.2%, h 8.1..9.0
+pass  quai A Quai d'Issy-le <            151 m ×1.00, max grade 4.2%, h 8.1..9.0
+FAIL  quai B residential >               40 m ×1.00, max grade 13.9%, h -0.0..2.6
+      [height]; grade 14%
+pass  quai B residential <               40 m ×1.00, max grade 0.0%, h -0.0..2.6
+FAIL  lower quai #1 QU LOUIS BLERI       300 m ×1.00, max grade 21.4%, h -2.6..2.6
+      [height]; grade 21%; crosses 0.3 m under the deck (< 3)
+FAIL  lower quai #2 Quai André Cit       300 m ×1.01, max grade 38.8%, h -0.1..9.0
+      [height]; grade 39%; crosses 0.5 m under the deck (< 3)
+  at: step 48.838867,2.269387 5.1 m
+  at: step 48.839313,2.266877 1.7 m
+  at: step 48.839342,2.270088 12.7 m
+  at: step 48.839843,2.270761 5.4 m
+  at: step 48.839927,2.270928 3.5 m
+  at: step 48.839653,2.267186 2.6 m
+  at: step 48.839418,2.271042 1.2 m
+  at: step 48.838812,2.269529 6.7 m
+  at: step 48.840687,2.265355 4.7 m
+
+== Passerelle Simone de Beauvoir (359 m, ends h 4.0 / 1.8) ==
+FAIL  deck A>B                           483 m ×1.35, max grade 15.2%, h 0.7..5.1
+      [join]; detour ×1.35; grade 15%
+FAIL  deck B>A                           483 m ×1.35, max grade 15.2%, h 0.7..5.1
+      [join]; detour ×1.35; grade 15%
+pass  quai A Rue Jean Giono >            73 m ×1.00, max grade 1.6%, h 4.0..4.5
+pass  quai A Rue Jean Giono <            73 m ×1.00, max grade 1.6%, h 4.0..4.5
+pass  quai B Quai de Bercy >             300 m ×1.01, max grade 2.6%, h 1.6..2.3
+pass  quai B Quai de Bercy <             300 m ×1.01, max grade 2.6%, h 1.6..2.3
+pass  lower quai #2 PORT DE BERCY        299 m ×1.00, max grade 5.5%, h -3.9..-1.9
+  info: lower quai PORT DE LA GARE: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  at: step 48.837138,2.374092 1.2 m
+  at: step 48.837463,2.374049 5.9 m
+  at: step 48.837673,2.373537 1.9 m
+  at: step 48.837624,2.373862 6.0 m
+  at: step 48.837214,2.373850 2.1 m
+  at: step 48.837435,2.374082 5.8 m
+  at: step 48.837749,2.373941 6.0 m
+  at: step 48.836658,2.374818 2.8 m
+  at: step 48.837207,2.378373 2.2 m
+  at: step 48.837511,2.373994 5.8 m
+  at: step 48.837587,2.373906 5.8 m
+  at: step 48.837672,2.373807 5.9 m
+
+== Pont de Grenelle - Cadets de Saumur (227 m, ends h 3.3 / -0.2) ==
+pass  deck A>B                           227 m ×1.00, max grade 3.2%, h -0.2..3.7
+pass  deck B>A                           227 m ×1.00, max grade 3.2%, h -0.2..3.7
+FAIL  quai A Port de Grenel >            150 m ×1.00, max grade 10.0%, h -4.7..3.3
+      [height]; grade 10%
+FAIL  quai A Port de Grenel <            150 m ×1.00, max grade 10.0%, h -4.7..3.3
+      [height]; grade 10%
+FAIL  quai B Voie Georges P >            300 m ×1.00, max grade 12.1%, h -3.3..-0.3
+      [height]; grade 12%
+FAIL  quai B Voie Georges P <            300 m ×1.00, max grade 12.1%, h -3.3..-0.3
+      [height]; grade 12%
+FAIL  lower quai #1 unnamed              301 m ×1.00, max grade 12.1%, h -3.3..-0.3
+      [height]; grade 12%; crosses 0.2 m under the deck (< 3)
+FAIL  lower quai #2 unnamed              295 m ×1.00, max grade 23.6%, h -4.7..3.3
+      [height]; grade 24%; crosses 0.0/0.0/0.0 m under the deck (< 3)
+  at: step 48.849032,2.280483 2.1 m
+  at: step 48.847822,2.279085 1.0 m
+  at: step 48.849440,2.281472 1.1 m
+  at: step 48.849474,2.281105 1.5 m
+  at: step 48.849651,2.281388 1.6 m
+  at: step 48.847601,2.282459 11.7 m
+  at: step 48.848128,2.283772 10.7 m
+  at: step 48.848108,2.283814 10.6 m
+
+== Pont de Bir Hakeim (250 m, ends h 4.2 / 3.6) ==
+FAIL  deck A>B                           260 m ×1.04, max grade 29.1%, h 2.2..10.7
+      [height]; grade 29%
+FAIL  deck B>A                           260 m ×1.04, max grade 40.0%, h 2.2..10.7
+      [height]; grade 40%
+FAIL  quai A secondary >                 142 m ×1.01, max grade 17.3%, h -2.0..4.2
+      [height]; grade 17%; touches Pont de Bir Hakeim
+FAIL  quai A secondary <                 142 m ×1.01, max grade 17.3%, h -2.0..4.2
+      [height]; grade 17%; touches Pont de Bir Hakeim
+pass  quai B residential >               12 m ×1.01, max grade 0.0%, h 7.8..8.5
+pass  quai B residential <               12 m ×1.01, max grade 0.0%, h 7.8..8.5
+FAIL  lower quai #1 unnamed              301 m ×1.01, max grade 14.7%, h -3.9..-0.6
+      [height]; grade 15%
+  at: step 48.854742,2.288695 3.9 m
+  at: step 48.854834,2.288563 5.9 m
+  at: step 48.856544,2.286620 1.4 m
+  at: step 48.856640,2.286641 2.3 m
+  at: step 48.856620,2.286601 1.6 m
+  at: step 48.856742,2.286727 1.5 m
+  at: step 48.854783,2.288483 4.5 m
+  at: step 48.854890,2.288596 5.6 m
+  at: step 48.854672,2.288362 2.3 m
+  at: step 48.854728,2.288423 4.8 m
+  at: step 48.856633,2.286768 1.3 m
+  at: step 48.854589,2.288546 2.8 m
+
+== Pont Royal (135 m, ends h 2.3 / 2.1) ==
+pass  deck A>B                           138 m ×1.02, max grade 4.4%, h 2.1..3.9
+pass  deck B>A                           138 m ×1.02, max grade 4.4%, h 2.1..3.9
+pass  quai A Quai Valéry Gi >            150 m ×1.01, max grade 2.7%, h 1.1..2.3
+pass  quai A Quai Valéry Gi <            150 m ×1.01, max grade 2.7%, h 1.1..2.3
+pass  quai B Quai François  >            179 m ×1.00, max grade 4.8%, h 0.5..2.0
+pass  quai B Quai François  <            179 m ×1.00, max grade 5.5%, h 0.5..2.0
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.859609,2.329426 2.4 m
+  at: step 48.859497,2.329462 1.1 m
+  at: step 48.858540,2.332362 3.1 m
+  at: step 48.858642,2.332624 5.7 m
+  at: step 48.858606,2.332410 4.6 m
+  at: step 48.858686,2.332422 5.4 m
+  at: step 48.858669,2.332982 2.8 m
+  at: step 48.858858,2.332202 2.5 m
+  at: step 48.859321,2.330246 2.7 m
+  at: step 48.859534,2.329490 1.4 m
+  at: step 48.859569,2.329611 1.3 m
+  at: step 48.859644,2.329320 2.9 m
+
+== Pont d'Arcole (102 m, ends h 2.0 / 1.8) ==
+pass  deck A>B                           104 m ×1.02, max grade 4.1%, h 1.8..3.1
+pass  deck B>A                           104 m ×1.02, max grade 4.1%, h 1.8..3.1
+FAIL  quai A Quai aux Fleur >            150 m ×1.01, max grade 8.1%, h -0.4..2.0
+      [height]; grade 8%
+FAIL  quai A Quai aux Fleur <            150 m ×1.01, max grade 8.1%, h -0.4..2.0
+      [height]; grade 8%
+FAIL  quai B Parc Rives de  >            150 m ×1.01, max grade 27.0%, h -3.9..1.8
+      [height]; grade 27%
+FAIL  quai B Parc Rives de  <            150 m ×1.01, max grade 27.0%, h -3.9..1.8
+      [height]; grade 27%
+FAIL  lower quai #1 VOI GEORGES PO       309 m ×1.04, max grade 27.0%, h -3.9..1.9
+      [height]; grade 27%; crosses 0.0/0.0/0.0/0.0/0.0/0.0/0.0/0.0 m under the deck (< 3)
+  at: step 48.856629,2.348904 7.3 m
+  at: step 48.855194,2.352828 1.7 m
+  at: step 48.853476,2.347049 9.2 m
+  at: step 48.856813,2.349010 2.0 m
+  at: step 48.855128,2.350309 3.1 m
+  at: step 48.855783,2.351007 1.6 m
+  at: step 48.855921,2.350631 3.8 m
+  at: step 48.855103,2.350169 2.1 m
+  at: step 48.853492,2.346983 4.7 m
+  at: step 48.853456,2.347130 3.4 m
+  at: step 48.853574,2.347269 5.8 m
+  at: step 48.856769,2.348770 5.1 m
+
+== Pont Neuf (302 m, ends h 2.9 / 3.3) ==
+pass  deck A>B                           303 m ×1.00, max grade 4.4%, h 2.9..4.7
+pass  deck B>A                           303 m ×1.00, max grade 4.4%, h 2.9..4.7
+pass  quai A Quai de Conti >             150 m ×1.00, max grade 7.0%, h 0.6..2.9
+pass  quai A Quai de Conti <             150 m ×1.00, max grade 7.0%, h 0.6..2.9
+pass  quai B Quai de la Még >            150 m ×1.00, max grade 1.7%, h 2.1..3.3
+pass  quai B Quai de la Még <            150 m ×1.00, max grade 1.7%, h 2.1..3.3
+pass  lower quai #1 VOI GEORGES PO       300 m ×1.00, max grade 3.5%, h -3.9..-2.5
+FAIL  lower quai #3 QU DES GRANDS        282 m ×1.00, max grade 7.8%, h 0.0..2.9
+      [height]; crosses 0.0/0.0 m under the deck (< 3)
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.855953,2.340358 1.7 m
+  at: step 48.858537,2.342242 4.3 m
+  at: step 48.856459,2.339977 3.9 m
+  at: step 48.856323,2.340370 2.2 m
+  at: step 48.858840,2.340070 2.6 m
+  at: step 48.857218,2.341700 1.2 m
+  at: step 48.858382,2.342837 2.7 m
+  at: step 48.856012,2.340552 4.2 m
+  at: step 48.856057,2.340599 5.2 m
+  at: step 48.856101,2.340661 2.5 m
+  at: step 48.856160,2.340627 2.6 m
+
+== Pont au Double (37 m, ends h 0.3 / -0.2) ==
+pass  deck A>B                           37 m ×1.00, max grade 3.1%, h -0.2..0.5
+pass  deck B>A                           37 m ×1.00, max grade 3.1%, h -0.2..0.5
+pass  quai A Quai de Monteb >            276 m ×1.01, max grade 2.3%, h 1.1..2.9
+pass  quai A Quai de Monteb <            276 m ×1.01, max grade 2.3%, h 1.1..2.9
+pass  quai B Quai de Monteb >            283 m ×1.01, max grade 2.3%, h 1.1..2.9
+pass  quai B Quai de Monteb <            283 m ×1.01, max grade 2.3%, h 1.1..2.9
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.852646,2.352207 1.4 m
+  at: step 48.853476,2.347049 9.2 m
+  at: step 48.853136,2.346648 7.1 m
+  at: step 48.853143,2.346861 8.1 m
+  at: step 48.853114,2.346836 2.8 m
+  at: step 48.855128,2.350309 3.1 m
+  at: step 48.852981,2.346744 3.2 m
+  at: step 48.852996,2.346930 6.3 m
+  at: step 48.855103,2.350169 2.1 m
+  at: step 48.853492,2.346983 4.7 m
+  at: step 48.853456,2.347130 3.4 m
+  at: step 48.853574,2.347269 5.8 m
+
+== Pont Notre-Dame (109 m, ends h 3.3 / 3.5) ==
+pass  deck A>B                           109 m ×1.00, max grade 3.5%, h 3.3..4.6
+pass  deck B>A                           109 m ×1.00, max grade 3.5%, h 3.3..4.6
+pass  quai A residential >               28 m ×1.00, max grade 0.0%, h 3.3..3.3
+pass  quai A residential <               28 m ×1.00, max grade 0.0%, h 3.3..3.3
+pass  quai B Quai de Gesvre >            296 m ×1.01, max grade 4.9%, h 1.8..3.5
+pass  quai B Quai de Gesvre <            296 m ×1.01, max grade 4.9%, h 1.8..3.5
+FAIL  lower quai #1 VOI GEORGES PO       322 m ×1.08, max grade 21.6%, h -3.9..3.3
+      [height]; grade 22%
+  at: step 48.856629,2.348904 7.3 m
+  at: step 48.853476,2.347049 9.2 m
+  at: step 48.856813,2.349010 2.0 m
+  at: step 48.855128,2.350309 3.1 m
+  at: step 48.855783,2.351007 1.6 m
+  at: step 48.855921,2.350631 3.8 m
+  at: step 48.854295,2.345040 2.8 m
+  at: step 48.855103,2.350169 2.1 m
+  at: step 48.853492,2.346983 4.7 m
+  at: step 48.853456,2.347130 3.4 m
+  at: step 48.853574,2.347269 5.8 m
+  at: step 48.856769,2.348770 5.1 m
+
+== Pont de Suresnes (182 m, ends h 1.6 / 0.9) ==
+pass  deck A>B                           182 m ×1.00, max grade 1.5%, h 0.9..2.1
+pass  deck B>A                           182 m ×1.00, max grade 1.5%, h 0.9..2.1
+FAIL  quai A Quai Léon Blum >            300 m ×1.01, max grade 10.1%, h -3.1..0.8
+      [height]; grade 10%
+FAIL  quai A Quai Léon Blum <            300 m ×1.01, max grade 10.1%, h -3.1..0.8
+      [height]; grade 10%
+FAIL  quai B Allée du Bord  >            300 m ×1.02, max grade 11.1%, h -3.3..0.9
+      [height]; grade 11%
+FAIL  quai B Allée du Bord  <            300 m ×1.02, max grade 11.1%, h -3.3..0.9
+      [height]; grade 11%
+FAIL  lower quai #1 QU GALLIENI          301 m ×1.00, max grade 10.1%, h -3.1..0.8
+      [height]; grade 10%; never crosses the bridge line
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  at: step 48.867467,2.227721 4.6 m
+  at: step 48.867292,2.227689 4.1 m
+  at: step 48.867433,2.227842 8.3 m
+  at: step 48.866596,2.230979 2.1 m
+  at: step 48.867567,2.227520 1.8 m
+  at: step 48.867338,2.227780 3.8 m
+  at: step 48.867543,2.227554 2.5 m
+  at: step 48.866708,2.227884 1.1 m
+  at: step 48.867415,2.227829 3.7 m
+  at: deckEnd 48.866504,2.230901 dip/hump 1.1 m within 40 m
+
+== Pont de la Rue de l'Ourcq (65 m, ends h 22.9 / 22.2) ==
+pass  deck A>B                           65 m ×1.00, max grade 5.6%, h 22.2..23.7
+pass  deck B>A                           65 m ×1.00, max grade 5.6%, h 22.2..23.7
+FAIL  quai A Quai de l'Oise >            300 m ×1.00, max grade 40.2%, h 8.5..20.0
+      [height]; grade 40%
+FAIL  quai A Quai de l'Oise <            300 m ×1.00, max grade 40.2%, h 8.5..20.0
+      [height]; grade 40%
+FAIL  quai B Quai de la Mar >            300 m ×1.00, max grade 36.3%, h 10.1..20.0
+      [height]; grade 36%
+FAIL  quai B Quai de la Mar <            300 m ×1.00, max grade 36.3%, h 10.1..20.0
+      [height]; grade 36%
+FAIL  lower quai #1 unnamed              302 m ×1.01, max grade 36.3%, h 10.1..20.0
+      [height]; grade 36%
+FAIL  lower quai #2 unnamed              300 m ×1.00, max grade 40.2%, h 8.5..20.0
+      [height]; grade 40%
+  at: step 48.890275,2.382566 9.4 m
+  at: step 48.890326,2.382674 9.9 m
+  at: step 48.891382,2.386119 5.4 m
+  at: step 48.891401,2.386108 6.8 m
+  at: step 48.891435,2.386088 10.8 m
+
+== Pont Levant de la Rue de Crimée (20 m, ends h 20.4 / 20.4) ==
+pass  deck A>B                           20 m ×1.00, max grade 0.0%, h 20.4..20.4
+pass  deck B>A                           20 m ×1.00, max grade 0.0%, h 20.4..20.4
+FAIL  quai A Passerelle de  >            50 m ×1.11, max grade 0.8%, h 20.3..20.4
+      [height]; touches Pont Levant de la Rue de Crimée
+FAIL  quai A Passerelle de  <            50 m ×1.11, max grade 0.8%, h 20.3..20.4
+      [height]; touches Pont Levant de la Rue de Crimée
+FAIL  quai B residential >               13 m ×1.00, max grade 0.0%, h 20.4..20.4
+      [height]; touches Pont Levant de la Rue de Crimée
+FAIL  quai B residential <               13 m ×1.00, max grade 0.0%, h 20.4..20.4
+      [height]; touches Pont Levant de la Rue de Crimée
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.888609,2.379316 8.7 m
+  at: step 48.888480,2.379273 12.0 m
+  at: step 48.888577,2.379352 13.5 m
+  at: step 48.888222,2.379712 7.1 m
+  at: step 48.888252,2.379678 11.0 m
+  at: step 48.888236,2.379561 11.2 m
+  at: step 48.888457,2.379357 14.4 m
+  at: step 48.888317,2.379524 13.7 m
+  at: step 48.888283,2.379455 11.3 m
+  at: step 48.888424,2.379290 15.5 m
+
+== Pont de Courbevoie (154 m, ends h 3.3 / 0.4) ==
+pass  deck A>B                           163 m ×1.06, max grade 4.2%, h 0.4..3.3
+pass  deck B>A                           163 m ×1.06, max grade 4.2%, h 0.4..3.3
+FAIL  quai A Rue Victor Hug >            164 m ×1.03, max grade 9.8%, h -0.0..3.3
+      [height]; grade 10%
+FAIL  quai A Rue Victor Hug <            164 m ×1.03, max grade 9.8%, h -0.0..3.3
+      [height]; grade 10%
+pass  quai B residential >               43 m ×1.00, max grade 0.0%, h 0.4..0.4
+pass  quai B residential <               43 m ×1.00, max grade 0.0%, h 0.4..0.4
+FAIL  lower quai #1 unnamed              81 m ×1.04, max grade 0.0%, h 0.4..0.4
+      [height]; crosses 0.0/0.0 m under the deck (< 3)
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  at: step 48.896541,2.263878 6.3 m
+  at: step 48.897023,2.265006 5.9 m
+  at: step 48.895088,2.261882 1.1 m
+  at: step 48.898152,2.262861 3.4 m
+  at: step 48.897549,2.264049 1.4 m
+  at: step 48.893596,2.267066 1.3 m
+  at: step 48.893842,2.267825 2.0 m
+  at: step 48.893822,2.267870 1.7 m
+  at: step 48.893910,2.267754 2.2 m
+
+== Passerelle Industrielle d'Ivry-Charenton (205 m, ends h -0.5 / -0.0) ==
+FAIL  deck A>B                           441 m ×2.16, max grade 72.9%, h -0.5..11.8
+      [join]; detour ×2.16; grade 73%
+FAIL  deck B>A                           441 m ×2.16, max grade 72.9%, h -0.5..11.8
+      [join]; detour ×2.16; grade 73%
+pass  quai A Quai Auguste D >            277 m ×1.01, max grade 0.6%, h -0.6..-0.4
+pass  quai A Quai Auguste D <            277 m ×1.01, max grade 0.6%, h -0.6..-0.4
+pass  quai B Chemin de l'An >            300 m ×1.00, max grade 1.9%, h -1.1..0.4
+pass  quai B Chemin de l'An <            300 m ×1.00, max grade 1.8%, h -1.1..0.4
+pass  lower quai #1 unnamed              300 m ×1.00, max grade 1.9%, h -1.1..0.3
+FAIL  lower quai #2 QU AUGUSTE DES       300 m ×1.01, max grade 0.8%, h -0.6..-0.3
+      [height]; crosses 0.0 m under the deck (< 3)
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+
+== Passerelle des Grandes Serres (76 m, ends h 18.8 / 20.9) ==
+FAIL  deck A>B                           86 m ×1.13, max grade 17.7%, h 18.8..22.3
+      [height]; grade 18%
+FAIL  deck B>A                           86 m ×1.13, max grade 17.7%, h 18.8..22.3
+      [height]; grade 18%
+pass  quai A Rue Louis Nado >            150 m ×1.01, max grade 1.6%, h 18.5..20.3
+pass  quai A Rue Louis Nado <            150 m ×1.01, max grade 1.6%, h 18.5..20.3
+pass  quai B Rue Lucienne G >            97 m ×1.02, max grade 3.9%, h 19.2..20.2
+pass  quai B Rue Lucienne G <            97 m ×1.02, max grade 3.9%, h 19.2..20.2
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.895357,2.409383 12.0 m
+  at: step 48.895244,2.412781 1.9 m
+  at: step 48.895333,2.409670 2.1 m
+  at: step 48.895309,2.409394 16.5 m
+  at: step 48.895026,2.409599 14.8 m
+  at: step 48.895005,2.409788 14.0 m
+  at: step 48.895265,2.409800 14.5 m
+
+== Pont du Canal de l'Ourcq (283 m, ends h 16.4 / 21.7) ==
+pass  deck A>B                           283 m ×1.00, max grade 7.8%, h 16.4..23.7
+pass  deck B>A                           283 m ×1.00, max grade 7.8%, h 16.4..23.7
+pass  quai A Rue de la Clôt >            150 m ×1.00, max grade 4.7%, h 16.0..17.9
+pass  quai A Rue de la Clôt <            150 m ×1.00, max grade 4.8%, h 16.0..17.9
+pass  quai B service >                   3 m ×1.00, max grade 0.0%, h 21.3..21.3
+pass  quai B service <                   3 m ×1.00, max grade 0.0%, h 21.3..21.3
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.895258,2.394159 1.9 m
+  at: step 48.895705,2.400736 3.6 m
+  at: step 48.898354,2.398046 8.1 m
+  at: step 48.895225,2.393995 3.2 m
+  at: step 48.896107,2.400934 16.8 m
+  at: step 48.895579,2.393806 13.8 m
+  at: step 48.895357,2.393928 12.8 m
+  at: step 48.895442,2.394176 13.5 m
+  at: step 48.895661,2.394044 12.0 m
+  at: step 48.895349,2.394116 6.8 m
+  at: step 48.895321,2.394005 7.5 m
+  at: step 48.895272,2.394032 1.1 m
+
+== Passerelle des Ardennes (68 m, ends h 19.8 / 20.0) ==
+FAIL  deck A>B                           107 m ×1.56, max grade 4.1%, h 19.7..20.6
+      [join]; detour ×1.56
+FAIL  deck B>A                           107 m ×1.56, max grade 4.1%, h 19.7..20.6
+      [join]; detour ×1.56
+pass  quai A Quai de l'Oise >            286 m ×1.07, max grade 1.4%, h 19.0..20.0
+pass  quai A Quai de l'Oise <            286 m ×1.07, max grade 1.4%, h 19.0..20.0
+FAIL  quai B Quai de la Mar >            255 m ×1.00, max grade 36.3%, h 10.1..20.3
+      [height]; grade 36%
+FAIL  quai B Quai de la Mar <            255 m ×1.00, max grade 36.3%, h 10.1..20.3
+      [height]; grade 36%
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.890275,2.382566 9.4 m
+  at: step 48.890326,2.382674 9.9 m
+  at: step 48.891382,2.386119 5.4 m
+  at: step 48.892514,2.388152 5.5 m
+  at: step 48.891706,2.386687 11.1 m
+  at: step 48.891401,2.386108 6.8 m
+  at: step 48.891576,2.386430 12.1 m
+  at: step 48.892627,2.388023 5.4 m
+  at: step 48.892852,2.387884 2.6 m
+  at: step 48.891435,2.386088 10.8 m
+
+== Pont des Suicidés (28 m, ends h 42.6 / 40.0) ==
+FAIL  deck A>B                           28 m ×1.00, max grade 23.3%, h 38.0..42.6
+      [height]; grade 23%
+pass  deck B>A                           28 m ×1.00, max grade 7.2%, h 38.0..42.6
+FAIL  lower quai #1 RTE CIRCULAIRE       300 m ×1.67, max grade 16.3%, h 26.0..32.9
+      [height]; grade 16%
+  info: upper quai A: no cross way within 60 m (no leg)
+  info: upper quai B: no cross way within 60 m (no leg)
+  at: step 48.879802,2.383779 1.3 m
+  at: step 48.879818,2.383596 1.6 m
+  at: deckEnd 48.880148,2.383016 dip/hump 3.5 m within 40 m
+  at: deckEnd 48.880396,2.383028 dip/hump 1.0 m within 40 m
+
+== Pont de Neuilly (280 m, ends h 2.2 / 1.3) ==
+pass  deck A>B                           280 m ×1.00, max grade 1.8%, h 1.3..3.0
+pass  deck B>A                           280 m ×1.00, max grade 1.8%, h 1.3..3.0
+FAIL  quai A Chaussée du Pr >            158 m ×1.10, max grade 16.6%, h -2.4..8.2
+      [height]; grade 17%
+FAIL  quai A Chaussée du Pr <            158 m ×1.10, max grade 16.6%, h -2.4..8.2
+      [height]; grade 17%
+FAIL  quai B residential >               190 m ×1.08, max grade 8.3%, h -3.6..2.5
+      [height]; grade 8%
+FAIL  quai B residential <               190 m ×1.08, max grade 8.3%, h -3.6..2.5
+      [height]; grade 8%
+FAIL  lower quai #2 BD DU GENERAL        304 m ×1.02, max grade 17.3%, h -3.4..1.3
+      [height]; grade 17%; crosses 0.0 m under the deck (< 3)
+FAIL  lower quai #3 QU DE DION BOU       1352 m ×4.52, max grade 25.9%, h -3.5..8.0
+      [join]; detour ×4.52; grade 26%; crosses 0.0/0.0 m under the deck (< 3)
+pass  slip A Boulevard Pier              123 m ×1.00, max grade 0.8%, h 2.0..2.2
+pass  slip A Boulevard Pier              80 m ×1.00, max grade 0.8%, h 2.0..2.2
+FAIL  slip A primary                     837 m ×6.02, max grade 34.3%, h -3.6..7.8
+      [join]; detour ×6.02; grade 34%
+FAIL  slip A Voie des Bâtis              864 m ×7.76, max grade 1.8%, h 1.3..3.0
+      [join]; detour ×7.76
+pass  slip A Boulevard Pier              51 m ×0.97, max grade 0.0%, h 2.2..2.2
+pass  slip A Boulevard Pier              12 m ×0.88, max grade 0.0%, h 2.2..2.2
+pass  slip A Boulevard Pier              12 m ×0.88, max grade 0.0%, h 2.2..2.2
+pass  slip A Boulevard Pier              0 m ×0.00, max grade 0.0%, h 2.2..2.2
+pass  slip A Boulevard Pier              27 m ×0.91, max grade 0.0%, h 2.2..2.2
+pass  slip A Boulevard Pier              0 m ×0.00, max grade 0.0%, h 2.2..2.2
+pass  slip A Boulevard Pier              133 m ×1.00, max grade 0.8%, h 2.0..2.3
+pass  slip A Boulevard Pier              27 m ×0.91, max grade 0.0%, h 2.2..2.2
+FAIL  slip A Chaussée du Pr              993 m ×37.50, max grade 18.2%, h -2.5..7.7
+      [join]; detour ×37.50; grade 18%
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  info: slip A troncon_de_route.36603: not rideable (no OSM ride edge within 20 m)
+  info: slip A CHAUSSEE(S) NATIONALE: not rideable (no OSM ride edge within 20 m)
+  info: slip A troncon_de_route.36613: not rideable (no OSM ride edge within 20 m)
+  at: step 48.887911,2.251251 1.4 m
+  at: step 48.888242,2.249854 1.6 m
+  at: step 48.887881,2.250173 1.8 m
+  at: step 48.887622,2.251101 1.1 m
+  at: step 48.888210,2.251631 5.4 m
+  at: step 48.886959,2.252302 6.5 m
+  at: step 48.887305,2.253244 2.5 m
+
+== Passerelle Maria Schneider (44 m, ends h 3.7 / 4.3) ==
+FAIL  deck A>B                           52 m ×1.19, max grade 13.8%, h 2.5..5.6
+      [height]; grade 14%
+pass  deck B>A                           52 m ×1.19, max grade 7.4%, h 2.5..5.6
+pass  quai A Quai de Jemmap >            300 m ×1.00, max grade 5.2%, h 1.8..3.7
+pass  quai A Quai de Jemmap <            300 m ×1.00, max grade 5.2%, h 1.8..3.7
+pass  quai B Quai de Valmy >             300 m ×1.00, max grade 5.9%, h 1.9..4.3
+pass  quai B Quai de Valmy <             300 m ×1.00, max grade 5.9%, h 1.9..4.3
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.869702,2.366230 1.6 m
+  at: step 48.870669,2.365428 1.1 m
+  at: step 48.871738,2.364650 1.8 m
+  at: step 48.870698,2.365464 1.3 m
+  at: step 48.869893,2.366782 1.6 m
+  at: step 48.870958,2.365856 1.7 m
+  at: step 48.871786,2.365312 1.5 m
+
+== Passerelle Emmanuelle Riva (51 m, ends h 2.2 / 4.5) ==
+FAIL  deck A>B                           67 m ×1.31, max grade 10.1%, h 2.2..4.5
+      [join]; detour ×1.31; grade 10%
+FAIL  deck B>A                           67 m ×1.31, max grade 10.1%, h 2.2..4.5
+      [join]; detour ×1.31; grade 10%
+pass  quai A Quai de Jemmap >            300 m ×1.00, max grade 5.2%, h 1.8..3.7
+pass  quai A Quai de Jemmap <            300 m ×1.00, max grade 5.2%, h 1.8..3.7
+pass  quai B Quai de Valmy >             297 m ×1.00, max grade 5.9%, h 2.1..4.3
+pass  quai B Quai de Valmy <             297 m ×1.00, max grade 5.9%, h 2.1..4.3
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.869702,2.366230 1.6 m
+  at: step 48.870669,2.365428 1.1 m
+  at: step 48.871738,2.364650 1.8 m
+  at: step 48.870698,2.365464 1.3 m
+  at: step 48.869893,2.366782 1.6 m
+  at: step 48.870958,2.365856 1.7 m
+  at: step 48.871786,2.365312 1.5 m
+  at: deckEnd 48.871738,2.364650 1.8 m
+
+== Pont de Puteaux (359 m, ends h -2.3 / -0.5) ==
+FAIL  deck A>B                           365 m ×1.02, max grade 11.8%, h -2.3..4.1
+      [height]; grade 12%
+FAIL  deck B>A                           365 m ×1.02, max grade 11.8%, h -2.3..4.1
+      [height]; grade 12%
+FAIL  quai A primary >                   33 m ×1.15, max grade 1.6%, h -2.6..-2.3
+      [height]; touches Pont de Puteaux
+FAIL  quai A primary <                   33 m ×1.15, max grade 0.0%, h -2.6..-2.3
+      [height]; touches Pont de Puteaux
+FAIL  quai B D 7 Quai Galli >            35 m ×1.01, max grade 14.1%, h -4.0..-1.8
+      [height]; grade 14%
+FAIL  quai B D 7 Quai Galli <            35 m ×1.01, max grade 14.1%, h -4.0..-1.8
+      [height]; grade 14%
+FAIL  lower quai #1 ALL DES SPORTS       215 m ×1.19, max grade 14.7%, h -0.5..4.1
+      [height]; grade 15%; crosses 0.0/0.0 m under the deck (< 3)
+FAIL  lower quai #4 QU DE DION BOU       301 m ×1.00, max grade 31.7%, h -6.7..-1.8
+      [height]; grade 32%; crosses 1.4/0.0/0.0 m under the deck (< 3)
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  info: lower quai unnamed: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  at: step 48.878028,2.242133 6.4 m
+  at: step 48.878347,2.242848 5.7 m
+  at: step 48.878114,2.242561 6.0 m
+  at: step 48.878685,2.242918 6.3 m
+  at: step 48.876211,2.244429 2.2 m
+  at: step 48.876676,2.244415 1.1 m
+  at: step 48.877306,2.245521 1.0 m
+  at: step 48.877503,2.245354 1.1 m
+  at: step 48.876378,2.246258 1.3 m
+  at: deckEnd 48.878296,2.242653 dip/hump 1.2 m within 40 m
+
+== Passerelle Jane Birkin (46 m, ends h 2.1 / 3.7) ==
+FAIL  deck A>B                           47 m ×1.02, max grade 10.0%, h 2.1..4.1
+      [height]; grade 10%
+FAIL  deck B>A                           47 m ×1.02, max grade 10.0%, h 2.1..4.1
+      [height]; grade 10%
+pass  quai A Quai de Valmy >             284 m ×1.00, max grade 4.4%, h 1.9..4.3
+pass  quai A Quai de Valmy <             284 m ×1.00, max grade 4.4%, h 1.9..4.3
+pass  quai B Quai de Jemmap >            284 m ×1.00, max grade 4.6%, h 1.9..3.7
+pass  quai B Quai de Jemmap <            284 m ×1.00, max grade 4.6%, h 1.9..3.7
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.869702,2.366230 1.6 m
+  at: step 48.870669,2.365428 1.1 m
+  at: step 48.871738,2.364650 1.8 m
+  at: step 48.870698,2.365464 1.3 m
+  at: step 48.869893,2.366782 1.6 m
+  at: step 48.870958,2.365856 1.7 m
+  at: step 48.871786,2.365312 1.5 m
+  at: deckEnd 48.869893,2.366782 1.6 m
+
+== Pont de la Concorde (178 m, ends h 1.2 / 2.0) ==
+pass  deck A>B                           181 m ×1.02, max grade 2.5%, h 1.0..2.4
+pass  deck B>A                           181 m ×1.02, max grade 2.5%, h 1.0..2.4
+pass  quai A Place de la Co >            150 m ×1.08, max grade 2.5%, h -0.2..1.2
+pass  quai A Place de la Co <            150 m ×1.08, max grade 2.5%, h -0.2..1.2
+pass  quai B Quai d'Orsay >              213 m ×1.02, max grade 7.0%, h -1.2..2.0
+pass  quai B Quai d'Orsay <              213 m ×1.02, max grade 7.0%, h -1.2..2.0
+FAIL  lower quai #1 PROM DES BERGE       300 m ×1.01, max grade 10.7%, h -3.9..-2.0
+      [height]; grade 11%
+FAIL  lower quai #2 PORT DES CHAMP       299 m ×1.01, max grade 13.6%, h -3.9..-0.3
+      [height]; grade 14%; crosses 2.1 m under the deck (< 3)
+  at: step 48.862741,2.319123 3.0 m
+  at: step 48.865184,2.319023 4.9 m
+  at: step 48.864160,2.319830 1.6 m
+  at: step 48.864119,2.319797 2.0 m
+  at: step 48.862482,2.319536 1.5 m
+  at: step 48.864016,2.320065 2.3 m
+  at: step 48.862702,2.319247 7.5 m
+  at: step 48.864052,2.319945 2.5 m
+  at: step 48.863984,2.320168 2.3 m
+  at: step 48.863975,2.320195 1.8 m
+  at: step 48.863167,2.315215 1.2 m
+  at: step 48.864110,2.320742 6.4 m
+
+== Pont Alexandre III (205 m, ends h 1.1 / 1.7) ==
+pass  deck A>B                           205 m ×1.00, max grade 1.8%, h 1.1..2.1
+pass  deck B>A                           205 m ×1.00, max grade 1.8%, h 1.1..2.1
+pass  quai A Cours la Reine >            300 m ×1.00, max grade 2.5%, h -0.2..1.1
+pass  quai A Cours la Reine <            300 m ×1.00, max grade 2.5%, h -0.2..1.1
+pass  quai B Quai d'Orsay >              300 m ×1.00, max grade 3.4%, h 0.1..1.7
+pass  quai B Quai d'Orsay <              300 m ×1.00, max grade 3.4%, h 0.1..1.7
+FAIL  lower quai #1 PORT DES INVAL       300 m ×1.00, max grade 22.5%, h -3.9..1.7
+      [height]; grade 22%
+FAIL  lower quai #2 PORT DES CHAMP       303 m ×1.01, max grade 19.0%, h -3.5..1.0
+      [height]; grade 19%; crosses 2.0 m under the deck (< 3)
+  at: step 48.864831,2.314099 5.0 m
+  at: step 48.862838,2.310430 1.2 m
+  at: step 48.863005,2.313467 2.1 m
+  at: step 48.863167,2.315215 1.2 m
+  at: step 48.862915,2.313687 2.9 m
+  at: step 48.863178,2.315801 1.3 m
+  at: step 48.863008,2.313605 5.5 m
+
+== Pont des Invalides (154 m, ends h 0.3 / -2.2) ==
+pass  deck A>B                           154 m ×1.00, max grade 7.6%, h -2.2..0.7
+pass  deck B>A                           154 m ×1.00, max grade 7.6%, h -2.2..0.7
+pass  quai A residential >               11 m ×1.00, max grade 0.0%, h -0.8..0.3
+pass  quai A residential <               11 m ×1.00, max grade 0.0%, h -0.8..0.3
+pass  quai B residential >               26 m ×1.00, max grade 0.2%, h 1.1..1.2
+pass  quai B residential <               26 m ×1.00, max grade 0.2%, h 1.1..1.2
+FAIL  lower quai #1 PROM GISELE HA       300 m ×1.00, max grade 2.1%, h -3.9..-3.2
+      [height]; crosses 3.0 m under the deck (< 3)
+FAIL  lower quai #2 unnamed              300 m ×1.00, max grade 12.4%, h -4.0..0.1
+      [height]; grade 12%; crosses 0.5 m under the deck (< 3)
+  at: step 48.864831,2.314099 5.0 m
+  at: step 48.862838,2.310430 1.2 m
+  at: step 48.863005,2.313467 2.1 m
+  at: step 48.862915,2.313687 2.9 m
+  at: step 48.863008,2.313605 5.5 m
+  at: deckEnd 48.862838,2.310430 dip/hump 2.9 m within 40 m
+
+== Passerelle Debilly (162 m, ends h -1.5 / 0.3) ==
+pass  deck A>B                           174 m ×1.07, max grade 7.7%, h -2.5..0.7
+pass  deck B>A                           174 m ×1.07, max grade 6.7%, h -2.5..0.7
+pass  quai A Port Debilly >              56 m ×1.06, max grade 2.7%, h -2.7..-1.5
+pass  quai A Port Debilly <              56 m ×1.06, max grade 2.7%, h -2.7..-1.5
+FAIL  quai B Port de la Bou >            300 m ×1.01, max grade 8.4%, h -4.6..-2.6
+      [height]; grade 8%
+FAIL  quai B Port de la Bou <            300 m ×1.01, max grade 8.4%, h -4.6..-2.6
+      [height]; grade 8%
+FAIL  lower quai #1 PORT DE LA BOU       300 m ×1.01, max grade 8.4%, h -4.6..-2.6
+      [height]; grade 8%
+  at: deckEnd 48.862002,2.297375 dip/hump 3.6 m within 40 m
+
+== Pont de Sully (306 m, ends h 2.3 / 1.8) ==
+pass  deck A>B                           306 m ×1.00, max grade 3.9%, h 1.8..3.1
+pass  deck B>A                           306 m ×1.00, max grade 3.9%, h 1.8..3.1
+FAIL  quai A Carrefour du P >            26 m ×1.00, max grade 0.0%, h 1.6..1.6
+      [height]; touches Pont de Sully
+FAIL  quai A Carrefour du P <            26 m ×1.00, max grade 0.0%, h 1.6..1.6
+      [height]; touches Pont de Sully
+FAIL  quai B Parc Rives de  >            300 m ×1.03, max grade 12.2%, h -3.9..-1.9
+      [height]; grade 12%
+FAIL  quai B Parc Rives de  <            300 m ×1.03, max grade 12.2%, h -3.9..-1.9
+      [height]; grade 12%
+  info: lower quai PORT DE LA TOURNELLE: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  info: lower quai VOI GEORGES POMPIDOU: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.850073,2.354963 5.2 m
+  at: step 48.849927,2.354832 2.1 m
+  at: step 48.849914,2.355077 2.5 m
+  at: step 48.850029,2.354711 3.6 m
+  at: step 48.849462,2.356921 6.9 m
+  at: step 48.849539,2.356484 2.4 m
+  at: step 48.849579,2.356507 3.6 m
+  at: step 48.849188,2.357687 3.5 m
+  at: step 48.849322,2.357030 3.8 m
+  at: step 48.848020,2.358230 2.0 m
+  at: step 48.849376,2.357126 5.3 m
+  at: step 48.849967,2.355122 3.7 m
+
+== Pont de la Tournelle (150 m, ends h 2.6 / 3.0) ==
+pass  deck A>B                           150 m ×1.00, max grade 4.4%, h 2.6..4.4
+pass  deck B>A                           150 m ×1.00, max grade 4.4%, h 2.6..4.4
+pass  quai A Quai de la Tou >            300 m ×1.00, max grade 4.4%, h 0.7..2.6
+pass  quai A Quai de la Tou <            300 m ×1.00, max grade 4.4%, h 0.7..2.6
+FAIL  quai B Quai de Béthun >            150 m ×1.00, max grade 10.0%, h -1.1..3.0
+      [height]; grade 10%
+FAIL  quai B Quai de Béthun <            150 m ×1.00, max grade 10.0%, h -1.1..3.0
+      [height]; grade 10%
+  info: lower quai PORT DE LA TOURNELLE: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.850073,2.354963 5.2 m
+  at: step 48.849927,2.354832 2.1 m
+  at: step 48.849914,2.355077 2.5 m
+  at: step 48.850029,2.354711 3.6 m
+  at: step 48.849462,2.356921 6.9 m
+  at: step 48.849539,2.356484 2.4 m
+  at: step 48.849579,2.356507 3.6 m
+  at: step 48.849188,2.357687 3.5 m
+  at: step 48.849322,2.357030 3.8 m
+  at: step 48.849376,2.357126 5.3 m
+  at: step 48.849967,2.355122 3.7 m
+  at: step 48.850083,2.354750 4.7 m
+
+== Pont Marie (100 m, ends h 2.5 / 3.6) ==
+pass  deck A>B                           100 m ×1.00, max grade 4.3%, h 1.8..3.6
+pass  deck B>A                           100 m ×1.00, max grade 4.3%, h 1.8..3.6
+pass  quai A Quai de Bourbo >            150 m ×1.00, max grade 7.5%, h 0.5..3.2
+pass  quai A Quai de Bourbo <            150 m ×1.00, max grade 7.5%, h 0.5..3.2
+FAIL  quai B Parc Rives de  >            150 m ×1.03, max grade 49.1%, h -3.9..9.6
+      [height]; grade 49%
+FAIL  quai B Parc Rives de  <            150 m ×1.03, max grade 56.1%, h -3.9..9.6
+      [height]; grade 56%
+  info: lower quai VOI GEORGES POMPIDOU: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.852548,2.356736 1.3 m
+  at: step 48.853442,2.353902 1.4 m
+  at: step 48.852956,2.353286 5.5 m
+  at: step 48.852880,2.353301 2.8 m
+  at: step 48.852774,2.353322 5.3 m
+  at: step 48.852895,2.353602 2.8 m
+  at: step 48.852964,2.353568 2.9 m
+  at: step 48.854229,2.354803 2.2 m
+  at: step 48.853475,2.353935 2.0 m
+  at: step 48.852891,2.353362 5.4 m
+  at: step 48.854227,2.354974 1.2 m
+  at: step 48.854300,2.354715 2.3 m
+
+== Pont au Change (118 m, ends h 2.1 / 3.3) ==
+pass  deck A>B                           120 m ×1.02, max grade 4.3%, h 2.1..3.8
+pass  deck B>A                           120 m ×1.02, max grade 4.3%, h 2.1..3.8
+pass  quai A Quai de la Cor >            150 m ×1.00, max grade 3.4%, h 2.1..3.3
+pass  quai A Quai de la Cor <            150 m ×1.00, max grade 3.4%, h 2.1..3.3
+pass  quai B residential >               27 m ×1.00, max grade 0.0%, h 3.3..3.3
+pass  quai B residential <               27 m ×1.00, max grade 0.0%, h 3.3..3.3
+FAIL  lower quai #1 VOI GEORGES PO       331 m ×1.10, max grade 37.9%, h -3.8..3.3
+      [height]; grade 38%; crosses 0.0/0.0 m under the deck (< 3)
+  at: step 48.856629,2.348904 7.3 m
+  at: step 48.856813,2.349010 2.0 m
+  at: step 48.854267,2.344849 4.3 m
+  at: step 48.855921,2.350631 3.8 m
+  at: step 48.854404,2.344749 3.1 m
+  at: step 48.854295,2.345040 2.8 m
+  at: step 48.855103,2.350169 2.1 m
+  at: step 48.853574,2.347269 5.8 m
+  at: step 48.856769,2.348770 5.1 m
+  at: step 48.854419,2.345000 1.6 m
+  at: step 48.854340,2.344689 1.4 m
+  at: step 48.854321,2.344730 3.0 m
+
+== Pont Saint-Michel (73 m, ends h 2.1 / 2.2) ==
+pass  deck A>B                           73 m ×1.00, max grade 3.6%, h 1.9..2.7
+pass  deck B>A                           73 m ×1.00, max grade 3.6%, h 1.9..2.7
+FAIL  quai A Quai des Grand >            150 m ×1.00, max grade 8.8%, h -0.3..2.1
+      [height]; grade 9%
+FAIL  quai A Quai des Grand <            150 m ×1.00, max grade 8.8%, h -0.3..2.1
+      [height]; grade 9%
+pass  quai B Quai du Marché >            150 m ×1.00, max grade 2.6%, h 1.9..2.9
+pass  quai B Quai du Marché <            150 m ×1.00, max grade 2.6%, h 1.9..2.9
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.853932,2.343925 2.0 m
+  at: step 48.853476,2.347049 9.2 m
+  at: step 48.853136,2.346648 7.1 m
+  at: step 48.853699,2.344559 3.6 m
+  at: step 48.853143,2.346861 8.1 m
+  at: step 48.853114,2.346836 2.8 m
+  at: step 48.854267,2.344849 4.3 m
+  at: step 48.852981,2.346744 3.2 m
+  at: step 48.853854,2.344438 5.5 m
+  at: step 48.852996,2.346930 6.3 m
+  at: step 48.854404,2.344749 3.1 m
+  at: step 48.854295,2.345040 2.8 m
+
+== Pont Louis-Philippe (121 m, ends h 1.8 / 1.9) ==
+pass  deck A>B                           121 m ×1.00, max grade 4.3%, h 1.8..3.3
+pass  deck B>A                           121 m ×1.00, max grade 4.3%, h 1.8..3.3
+pass  quai A Quai de l'Hôte >            300 m ×1.01, max grade 2.6%, h 0.8..2.7
+pass  quai A Quai de l'Hôte <            300 m ×1.01, max grade 2.6%, h 0.8..2.7
+pass  quai B Quai de Bourbo >            233 m ×1.25, max grade 7.3%, h 0.3..2.3
+pass  quai B Quai de Bourbo <            233 m ×1.25, max grade 7.3%, h 0.3..2.3
+FAIL  lower quai #1 VOI GEORGES PO       312 m ×1.04, max grade 23.3%, h -3.9..1.8
+      [height]; grade 23%; crosses 0.0/0.0 m under the deck (< 3)
+  at: step 48.852548,2.356736 1.3 m
+  at: step 48.853442,2.353902 1.4 m
+  at: step 48.852956,2.353286 5.5 m
+  at: step 48.852880,2.353301 2.8 m
+  at: step 48.852774,2.353322 5.3 m
+  at: step 48.852895,2.353602 2.8 m
+  at: step 48.852964,2.353568 2.9 m
+  at: step 48.852646,2.352207 1.4 m
+  at: step 48.855194,2.352828 1.7 m
+  at: step 48.854229,2.354803 2.2 m
+  at: step 48.853475,2.353935 2.0 m
+  at: step 48.852891,2.353362 5.4 m
+
+== Pont Saint-Louis (84 m, ends h 2.7 / 4.9) ==
+FAIL  deck A>B                           84 m ×1.00, max grade 15.8%, h 2.1..4.9
+      [height]; grade 16%
+FAIL  deck B>A                           84 m ×1.00, max grade 15.8%, h 2.1..4.9
+      [height]; grade 16%
+pass  quai A Quai aux Fleur >            150 m ×1.01, max grade 4.7%, h 0.3..2.2
+pass  quai A Quai aux Fleur <            150 m ×1.01, max grade 4.7%, h 0.3..2.2
+pass  quai B Rue Jean du Be >            12 m ×1.00, max grade 0.0%, h 1.9..2.1
+pass  quai B Rue Jean du Be <            12 m ×1.00, max grade 0.0%, h 1.9..2.1
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.852548,2.356736 1.3 m
+  at: step 48.853442,2.353902 1.4 m
+  at: step 48.852956,2.353286 5.5 m
+  at: step 48.852880,2.353301 2.8 m
+  at: step 48.852774,2.353322 5.3 m
+  at: step 48.852895,2.353602 2.8 m
+  at: step 48.852964,2.353568 2.9 m
+  at: step 48.852646,2.352207 1.4 m
+  at: step 48.855194,2.352828 1.7 m
+  at: step 48.854229,2.354803 2.2 m
+  at: step 48.853475,2.353935 2.0 m
+  at: step 48.852891,2.353362 5.4 m
+
+== Pont de l'Archevêché (82 m, ends h 0.8 / 1.9) ==
+pass  deck A>B                           82 m ×1.00, max grade 4.3%, h 0.8..2.0
+pass  deck B>A                           82 m ×1.00, max grade 4.3%, h 0.8..2.0
+pass  quai A Quai de la Tou >            224 m ×1.00, max grade 0.5%, h 0.6..0.8
+pass  quai A Quai de la Tou <            224 m ×1.00, max grade 0.5%, h 0.6..0.8
+  info: upper quai B: no cross way within 60 m (no leg)
+  info: lower quai PORT DE MONTEBELLO: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.850073,2.354963 5.2 m
+  at: step 48.849927,2.354832 2.1 m
+  at: step 48.850029,2.354711 3.6 m
+  at: step 48.850083,2.354750 4.7 m
+  at: step 48.853442,2.353902 1.4 m
+  at: step 48.852956,2.353286 5.5 m
+  at: step 48.852880,2.353301 2.8 m
+  at: step 48.852774,2.353322 5.3 m
+  at: step 48.852895,2.353602 2.8 m
+  at: step 48.852964,2.353568 2.9 m
+  at: step 48.852646,2.352207 1.4 m
+  at: step 48.853475,2.353935 2.0 m
+
+== Pont des Arts (168 m, ends h -0.9 / 1.2) ==
+FAIL  deck A>B                           249 m ×1.48, max grade 15.8%, h -3.8..1.2
+      [join]; detour ×1.48; grade 16%
+FAIL  deck B>A                           249 m ×1.48, max grade 15.8%, h -3.8..1.2
+      [join]; detour ×1.48; grade 16%
+pass  quai A Quai de Conti >             221 m ×1.02, max grade 1.6%, h 0.5..1.2
+pass  quai A Quai de Conti <             221 m ×1.02, max grade 1.6%, h 0.5..1.2
+pass  quai B Quai François  >            290 m ×1.00, max grade 1.6%, h -0.2..1.8
+pass  quai B Quai François  <            290 m ×1.00, max grade 1.6%, h -0.2..1.8
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.856459,2.339977 3.9 m
+  at: step 48.856323,2.340370 2.2 m
+  at: step 48.858840,2.340070 2.6 m
+
+== Pont du Carrousel (172 m, ends h 1.4 / 1.5) ==
+pass  deck A>B                           174 m ×1.01, max grade 4.7%, h 1.2..2.5
+pass  deck B>A                           174 m ×1.01, max grade 4.7%, h 1.2..2.5
+pass  quai A Place du Carro >            128 m ×1.01, max grade 2.8%, h 0.8..1.4
+pass  quai A Place du Carro <            128 m ×1.01, max grade 2.8%, h 0.8..1.4
+FAIL  quai B Quai Voltaire >             172 m ×1.14, max grade 6.8%, h 0.9..2.6
+      [height]; touches Pont du Carrousel
+FAIL  quai B Quai Voltaire <             172 m ×1.14, max grade 6.8%, h 0.9..2.6
+      [height]; touches Pont du Carrousel
+pass  lower quai #1 PORT DU LOUVRE       300 m ×1.00, max grade 0.8%, h -3.5..-1.2
+  at: step 48.859609,2.329426 2.4 m
+  at: step 48.859497,2.329462 1.1 m
+  at: step 48.858540,2.332362 3.1 m
+  at: step 48.858642,2.332624 5.7 m
+  at: step 48.858606,2.332410 4.6 m
+  at: step 48.858686,2.332422 5.4 m
+  at: step 48.858669,2.332982 2.8 m
+  at: step 48.858858,2.332202 2.5 m
+  at: step 48.859321,2.330246 2.7 m
+  at: step 48.859534,2.329490 1.4 m
+  at: step 48.859569,2.329611 1.3 m
+  at: step 48.859644,2.329320 2.9 m
+
+== Passerelle de l'Avre (471 m, ends h -2.5 / 19.4) ==
+FAIL  deck A>B                           483 m ×1.03, max grade 48.7%, h -2.5..19.4
+      [height]; grade 49%
+FAIL  deck B>A                           483 m ×1.03, max grade 48.7%, h -2.5..19.4
+      [height]; grade 49%
+pass  quai A residential >               12 m ×1.00, max grade 0.0%, h -2.5..-2.5
+pass  quai A residential <               12 m ×1.00, max grade 0.0%, h -2.5..-2.5
+pass  quai B Avenue du Maré >            199 m ×1.00, max grade 3.5%, h 17.4..19.8
+pass  quai B Avenue du Maré <            199 m ×1.00, max grade 3.5%, h 17.4..19.8
+pass  lower quai #1 BD SENARD            210 m ×1.01, max grade 7.0%, h -0.8..9.2
+pass  lower quai #2 AV BERNARD PAL       209 m ×1.00, max grade 1.5%, h -2.1..-1.2
+pass  lower quai #3 QU MARCEL DASS       305 m ×1.02, max grade 0.9%, h -3.2..-3.0
+pass  lower quai #4 R ALBERT 1ER         267 m ×1.10, max grade 1.6%, h -2.6..-1.6
+  at: step 48.854869,2.219541 1.4 m
+  at: step 48.850129,2.221025 2.0 m
+  at: step 48.854682,2.220355 4.4 m
+  at: step 48.854680,2.220403 3.6 m
+
+== Passerelle Jim-Morrison (120 m, ends h 3.9 / 2.6) ==
+FAIL  deck A>B                           138 m ×1.15, max grade 8.2%, h 1.2..4.9
+      [height]; grade 8%
+FAIL  deck B>A                           138 m ×1.15, max grade 8.2%, h 1.2..4.9
+      [height]; grade 8%
+pass  quai A Boulevard Bour >            300 m ×1.00, max grade 1.3%, h 3.8..4.0
+pass  quai A Boulevard Bour <            300 m ×1.00, max grade 1.3%, h 3.8..4.0
+pass  quai B Boulevard de l >            300 m ×1.00, max grade 2.8%, h 1.5..3.7
+pass  quai B Boulevard de l <            300 m ×1.00, max grade 2.8%, h 1.5..3.7
+FAIL  lower quai #1 unnamed              217 m ×1.03, max grade 1.6%, h 1.5..3.5
+      [height]; crosses 0.0 m under the deck (< 3)
+  at: step 48.846731,2.365531 4.7 m
+  at: step 48.846960,2.366327 1.8 m
+  at: step 48.847096,2.365872 1.2 m
+  at: step 48.846796,2.365342 1.2 m
+  at: step 48.849316,2.366634 1.0 m
+  at: step 48.847211,2.366075 5.2 m
+  at: step 48.847006,2.365993 1.7 m
+  at: step 48.847119,2.366196 7.3 m
+  at: step 48.847344,2.364695 4.5 m
+  at: step 48.847335,2.364674 1.0 m
+
+== Pont Charles de Gaulle (228 m, ends h 3.6 / 4.0) ==
+pass  deck A>B                           236 m ×1.03, max grade 1.8%, h 3.6..4.8
+pass  deck B>A                           236 m ×1.03, max grade 1.8%, h 3.6..4.8
+FAIL  quai A Avenue Pierre  >            150 m ×1.03, max grade 12.0%, h 3.6..9.0
+      [height]; grade 12%
+FAIL  quai A Avenue Pierre  <            150 m ×1.03, max grade 12.0%, h 3.6..9.0
+      [height]; grade 12%
+FAIL  quai B Quai de la Rap >            300 m ×1.01, max grade 25.7%, h -3.0..4.0
+      [height]; grade 26%
+FAIL  quai B Quai de la Rap <            300 m ×1.01, max grade 15.6%, h -3.0..4.0
+      [height]; grade 16%
+FAIL  lower quai #1 unnamed              227 m ×1.03, max grade 8.4%, h 0.8..4.0
+      [height]; grade 8%; crosses 0.0/0.0/-0.2 m under the deck (< 3)
+FAIL  lower quai #2 PORT D'AUSTERL       237 m ×0.95, max grade 23.6%, h -3.8..3.6
+      [height]; grade 24%; crosses 0.4 m under the deck (< 3)
+FAIL  lower quai #3 PORT DE LA RAP       302 m ×1.02, max grade 16.9%, h -3.3..0.8
+      [height]; grade 17%
+  at: step 48.843360,2.370311 1.6 m
+  at: step 48.843292,2.370200 2.4 m
+  at: step 48.845195,2.367796 2.8 m
+  at: step 48.843080,2.370347 1.0 m
+  at: step 48.843176,2.371030 1.5 m
+  at: step 48.842945,2.370849 3.4 m
+  at: step 48.842679,2.371026 3.5 m
+  at: step 48.843152,2.370253 1.8 m
+  at: step 48.843426,2.370473 2.9 m
+  at: step 48.842914,2.370583 2.6 m
+  at: step 48.844023,2.373341 1.3 m
+  at: step 48.843217,2.370755 2.9 m
+
+== Pont d'Austerlitz (190 m, ends h 3.9 / 4.0) ==
+pass  deck A>B                           190 m ×1.00, max grade 2.0%, h 3.9..5.1
+pass  deck B>A                           190 m ×1.00, max grade 2.0%, h 3.9..5.1
+FAIL  quai A Voie Mazas >                300 m ×1.00, max grade 22.1%, h -3.4..4.2
+      [height]; grade 22%
+FAIL  quai A Voie Mazas <                300 m ×1.00, max grade 22.1%, h -3.4..4.2
+      [height]; grade 22%
+FAIL  quai B residential >               10 m ×1.00, max grade 0.0%, h 4.0..4.0
+      [height]; touches Pont d'Austerlitz
+FAIL  quai B residential <               10 m ×1.00, max grade 0.0%, h 4.0..4.0
+      [height]; touches Pont d'Austerlitz
+FAIL  lower quai #1 unnamed              249 m ×1.05, max grade 6.5%, h 1.3..4.9
+      [height]; never crosses the bridge line
+FAIL  lower quai #2 VOI MAZAS            230 m ×1.00, max grade 21.9%, h -3.4..3.1
+      [height]; grade 22%; crosses 0.9 m under the deck (< 3)
+  at: step 48.846731,2.365531 4.7 m
+  at: step 48.846560,2.365376 2.0 m
+  at: step 48.846960,2.366327 1.8 m
+  at: step 48.847096,2.365872 1.2 m
+  at: step 48.846796,2.365342 1.2 m
+  at: step 48.845195,2.367796 2.8 m
+  at: step 48.844912,2.364439 1.3 m
+  at: step 48.847211,2.366075 5.2 m
+  at: step 48.847006,2.365993 1.7 m
+  at: step 48.847119,2.366196 7.3 m
+  at: step 48.846101,2.366492 2.0 m
+  at: step 48.847344,2.364695 4.5 m
+
+== Pont Morland (73 m, ends h 4.6 / 5.0) ==
+pass  deck A>B                           74 m ×1.02, max grade 2.2%, h 4.6..5.0
+pass  deck B>A                           74 m ×1.02, max grade 2.2%, h 4.6..5.0
+pass  quai A Boulevard Morl >            150 m ×1.05, max grade 1.9%, h 3.4..4.6
+pass  quai A Boulevard Morl <            150 m ×1.05, max grade 1.9%, h 3.4..4.6
+pass  quai B Boulevard de l >            32 m ×1.04, max grade 1.4%, h 3.9..4.1
+pass  quai B Boulevard de l <            32 m ×1.04, max grade 1.4%, h 3.9..4.1
+  info: lower quai PAS DE L'ARSENAL: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  at: step 48.846731,2.365531 4.7 m
+  at: step 48.846560,2.365376 2.0 m
+  at: step 48.846960,2.366327 1.8 m
+  at: step 48.847096,2.365872 1.2 m
+  at: step 48.846796,2.365342 1.2 m
+  at: step 48.845195,2.367796 2.8 m
+  at: step 48.844912,2.364439 1.3 m
+  at: step 48.849316,2.366634 1.0 m
+  at: step 48.847211,2.366075 5.2 m
+  at: step 48.847006,2.365993 1.7 m
+  at: step 48.847119,2.366196 7.3 m
+  at: step 48.846101,2.366492 2.0 m
+
+== Pont Mirabeau (219 m, ends h 0.2 / 0.3) ==
+pass  deck A>B                           220 m ×1.01, max grade 2.0%, h 0.2..1.4
+pass  deck B>A                           220 m ×1.01, max grade 2.0%, h 0.2..1.4
+FAIL  quai A residential >               28 m ×1.00, max grade 9.2%, h -2.4..0.2
+      [height]; grade 9%
+FAIL  quai A residential <               28 m ×1.00, max grade 9.2%, h -2.4..0.2
+      [height]; grade 9%
+pass  quai B Quai André Cit >            300 m ×1.02, max grade 3.9%, h -1.3..0.3
+pass  quai B Quai André Cit <            300 m ×1.02, max grade 3.9%, h -1.3..0.3
+pass  lower quai #1 unnamed              300 m ×1.00, max grade 6.5%, h -3.9..-2.4
+FAIL  lower quai #2 unnamed              298 m ×1.00, max grade 10.0%, h -4.6..0.3
+      [height]; grade 10%; crosses 0.1/0.1/0.1 m under the deck (< 3)
+  at: step 48.847822,2.279085 1.0 m
+
+== Pont de Bercy (186 m, ends h 2.3 / 1.0) ==
+pass  deck A>B                           205 m ×1.10, max grade 2.7%, h 1.0..2.9
+pass  deck B>A                           205 m ×1.10, max grade 2.7%, h 1.0..2.9
+pass  quai A Quai de la Gar >            150 m ×1.00, max grade 0.9%, h 2.1..2.3
+pass  quai A Quai de la Gar <            150 m ×1.00, max grade 0.9%, h 2.1..2.3
+FAIL  quai B Quai de Bercy >             150 m ×1.01, max grade 10.0%, h -2.0..3.0
+      [height]; grade 10%
+FAIL  quai B Quai de Bercy <             150 m ×1.01, max grade 10.0%, h -2.0..3.0
+      [height]; grade 10%
+FAIL  lower quai #1 unnamed              212 m ×1.02, max grade 12.2%, h 1.0..4.4
+      [height]; grade 12%; crosses 0.0/0.0/0.0/0.0 m under the deck (< 3)
+  at: step 48.837138,2.374092 1.2 m
+  at: step 48.837463,2.374049 5.9 m
+  at: step 48.837673,2.373537 1.9 m
+  at: step 48.838422,2.375784 3.3 m
+  at: step 48.837624,2.373862 6.0 m
+  at: step 48.838502,2.375775 1.8 m
+  at: step 48.838589,2.375623 3.5 m
+  at: step 48.837214,2.373850 2.1 m
+  at: step 48.837435,2.374082 5.8 m
+  at: step 48.837749,2.373941 6.0 m
+  at: step 48.836658,2.374818 2.8 m
+  at: step 48.837207,2.378373 2.2 m
+
+== Pont de Tolbiac (204 m, ends h 2.6 / 2.9) ==
+pass  deck A>B                           204 m ×1.00, max grade 2.0%, h 2.6..4.0
+pass  deck B>A                           204 m ×1.00, max grade 2.0%, h 2.6..4.0
+FAIL  quai A residential >               20 m ×1.00, max grade 0.0%, h 2.6..2.6
+      [height]; touches Pont de Tolbiac
+FAIL  quai A residential <               20 m ×1.00, max grade 0.0%, h 2.6..2.6
+      [height]; touches Pont de Tolbiac
+pass  quai B Quai Panhard e >            151 m ×1.01, max grade 3.3%, h 1.8..2.9
+pass  quai B Quai Panhard e <            151 m ×1.01, max grade 3.3%, h 1.8..2.9
+pass  lower quai #1 PORT DE BERCY        299 m ×1.00, max grade 2.6%, h -3.9..-3.4
+  info: lower quai PORT DE TOLBIAC: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.833596,2.381999 4.7 m
+  at: step 48.833807,2.382367 1.1 m
+  at: step 48.833636,2.382910 2.8 m
+  at: step 48.833434,2.382340 3.6 m
+  at: step 48.831425,2.381120 2.3 m
+  at: step 48.832745,2.379344 1.5 m
+  at: step 48.833028,2.382707 2.5 m
+  at: step 48.833633,2.382598 1.1 m
+  at: step 48.833418,2.382362 3.3 m
+  at: step 48.833432,2.382211 4.8 m
+  at: step 48.834023,2.382411 2.3 m
+  at: step 48.833409,2.382159 5.3 m
+
+== Passerelle du Parc de l'Europe (93 m, ends h -1.0 / -1.0) ==
+pass  deck A>B                           94 m ×1.00, max grade 3.2%, h -1.0..-0.3
+pass  deck B>A                           94 m ×1.00, max grade 3.2%, h -1.0..-0.3
+pass  quai A residential >               24 m ×1.00, max grade 0.0%, h -1.0..-1.0
+pass  quai A residential <               24 m ×1.00, max grade 0.0%, h -1.0..-1.0
+  info: upper quai B: no cross way within 60 m (no leg)
+  info: lower quai PROM DES CHARTREUX: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+
+== Pont Daydé (342 m, ends h 3.5 / -1.5) ==
+pass  deck A>B                           343 m ×1.00, max grade 3.6%, h -1.5..3.5
+pass  deck B>A                           343 m ×1.00, max grade 3.6%, h -1.5..3.5
+pass  lower quai #1 QU GEORGES GOR       300 m ×1.00, max grade 1.1%, h -2.5..-2.3
+  info: upper quai A: no cross way within 60 m (no leg)
+  info: upper quai B: no cross way within 60 m (no leg)
+  at: step 48.821739,2.232600 1.2 m
+  at: step 48.821276,2.234807 5.0 m
+  at: step 48.820847,2.234536 5.5 m
+  at: step 48.820805,2.234652 4.1 m
+  at: step 48.827436,2.238469 1.3 m
+  at: step 48.827379,2.238568 2.1 m
+
+== Passerelle Nord (346 m, ends h 2.8 / 0.1) ==
+FAIL  deck A>B                           393 m ×1.13, max grade 19.0%, h 0.1..4.3
+      [height]; grade 19%
+FAIL  deck B>A                           393 m ×1.13, max grade 19.0%, h 0.1..4.3
+      [height]; grade 19%
+pass  quai A Avenue du Géné >            300 m ×1.03, max grade 1.5%, h 2.6..4.1
+pass  quai A Avenue du Géné <            300 m ×1.03, max grade 1.5%, h 2.6..4.1
+FAIL  quai B service >                   300 m ×1.07, max grade 13.2%, h -2.9..3.0
+      [height]; grade 13%
+FAIL  quai B service <                   300 m ×1.07, max grade 13.2%, h -2.9..3.0
+      [height]; grade 13%
+FAIL  lower quai #1 QU GEORGES GOR       301 m ×1.01, max grade 17.5%, h -2.6..3.8
+      [height]; grade 18%; crosses -0.3 m under the deck (< 3)
+  info: lower quai Port de Boulogne Île Seguin: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  info: lower quai RPT DU PONT DE SEVRES: the road under the deck has no ride-graph way within 30 m 40..150 m along it on either side (no leg)
+  at: step 48.827356,2.230417 3.5 m
+  at: step 48.826148,2.233180 1.5 m
+  at: step 48.826358,2.232752 1.6 m
+  at: step 48.830496,2.227789 1.6 m
+  at: step 48.827484,2.230413 1.5 m
+  at: step 48.830514,2.228044 2.0 m
+  at: step 48.826305,2.232840 2.2 m
+  at: step 48.828742,2.230536 2.0 m
+  at: step 48.829170,2.228470 3.8 m
+  at: step 48.830505,2.227917 1.8 m
+  at: step 48.830501,2.227865 1.4 m
+  at: deckEnd 48.826245,2.229928 dip/hump 1.5 m within 40 m
+
+== Pont de Sèvres (353 m, ends h 4.1 / 0.9) ==
+pass  deck A>B                           355 m ×1.00, max grade 2.4%, h 0.9..4.1
+pass  deck B>A                           355 m ×1.00, max grade 2.4%, h 0.9..4.1
+pass  quai A residential >               48 m ×1.16, max grade 2.2%, h 3.6..4.1
+pass  quai A residential <               48 m ×1.16, max grade 1.5%, h 3.6..4.1
+FAIL  quai B trunk_link >                254 m ×1.05, max grade 14.4%, h -1.1..10.2
+      [height]; grade 14%
+FAIL  quai B trunk_link <                254 m ×1.05, max grade 14.4%, h -1.1..10.2
+      [height]; grade 14%
+FAIL  lower quai #1 QU ALPHONSE LE       283 m ×1.08, max grade 2.7%, h 3.6..4.1
+      [height]; never crosses the bridge line
+FAIL  lower quai #2 unnamed              198 m ×1.05, max grade 4.2%, h -1.4..0.2
+      [height]; crosses 2.2 m under the deck (< 3)
+FAIL  lower quai #3 unnamed              279 m ×1.32, max grade 14.4%, h -1.8..8.3
+      [height]; grade 14%; crosses 0.5 m under the deck (< 3)
+FAIL  lower quai #4 unnamed              370 m ×2.78, max grade 4.9%, h -1.2..0.8
+      [join]; detour ×2.78; crosses 2.2 m under the deck (< 3)
+pass  lower quai #5 unnamed              303 m ×1.03, max grade 4.1%, h -4.7..-2.0
+pass  slip A Quai Alphonse               151 m ×1.67, max grade 2.9%, h 3.6..4.1
+FAIL  slip A Quai Alphonse               132 m ×1.05, max grade 16.5%, h 4.0..9.4
+      [height]; grade 17%
+pass  slip A Quai Alphonse               14 m ×1.00, max grade 0.0%, h 4.1..4.1
+pass  slip A Quai Alphonse               175 m ×1.60, max grade 2.9%, h 3.6..4.1
+FAIL  slip B trunk_link                  480 m ×5.59, max grade 4.2%, h -1.4..0.9
+      [join]; detour ×5.59
+FAIL  slip B Rue de Saint-C              429 m ×3.55, max grade 4.2%, h -1.4..0.9
+      [join]; detour ×3.55
+pass  slip B Grande Rue                  63 m ×1.01, max grade 4.1%, h -0.0..0.9
+FAIL  slip B trunk_link                  506 m ×18.01, max grade 14.8%, h 0.9..14.3
+      [join]; detour ×18.01; grade 15%
+FAIL  slip B roundabout                  237 m ×1.88, max grade 3.9%, h -0.7..0.9
+      [join]; detour ×1.88
+FAIL  slip B trunk_link                  495 m ×10.76, max grade 14.8%, h 0.9..14.3
+      [join]; detour ×10.76; grade 15%
+pass  slip B Rue Troyon                  173 m ×1.62, max grade 2.9%, h 0.1..0.9
+FAIL  slip B trunk_link                  478 m ×7.99, max grade 14.8%, h 0.9..14.3
+      [join]; detour ×7.99; grade 15%
+pass  slip B Grande Rue                  58 m ×1.17, max grade 2.8%, h 0.3..0.9
+FAIL  slip B trunk_link                  398 m ×3.05, max grade 14.8%, h 0.9..14.3
+      [join]; detour ×3.05; grade 15%
+pass  slip B primary_link                51 m ×1.09, max grade 0.0%, h 0.9..0.9
+pass  slip B Grande Rue                  28 m ×0.99, max grade 0.0%, h 0.9..0.9
+FAIL  slip B trunk_link                  526 m ×18.72, max grade 14.8%, h 0.9..14.3
+      [join]; detour ×18.72; grade 15%
+FAIL  slip B Rue de Saint-C              456 m ×3.86, max grade 5.1%, h -1.2..0.9
+      [join]; detour ×3.86
+pass  slip A primary_link                143 m ×1.09, max grade 7.0%, h 2.1..4.1
+FAIL  slip A Quai Georges G              94 m ×1.08, max grade 16.2%, h 3.6..8.1
+      [height]; grade 16%
+  info: slip B troncon_de_route.46163: not rideable (no OSM ride edge within 20 m)
+  info: slip B troncon_de_route.46953: not rideable (no OSM ride edge within 20 m)
+  info: slip B troncon_de_route.46975: not rideable (no OSM ride edge within 20 m)
+  at: step 48.827356,2.230417 3.5 m
+  at: step 48.827429,2.225077 8.5 m
+  at: step 48.826954,2.224671 2.6 m
+  at: step 48.830496,2.227789 1.6 m
+  at: step 48.827484,2.230413 1.5 m
+  at: step 48.830514,2.228044 2.0 m
+  at: step 48.828742,2.230536 2.0 m
+  at: step 48.829170,2.228470 3.8 m
+  at: step 48.826899,2.224635 1.9 m
+  at: step 48.826849,2.224602 1.4 m
+  at: step 48.826862,2.224611 1.6 m
+  at: step 48.830505,2.227917 1.8 m
+
+== Passerelle Sud (132 m, ends h -1.6 / 1.4) ==
+FAIL  deck A>B                           154 m ×1.16, max grade 15.1%, h -2.4..1.4
+      [height]; grade 15%
+FAIL  deck B>A                           154 m ×1.16, max grade 15.1%, h -2.4..1.4
+      [height]; grade 15%
+pass  quai A service >                   256 m ×1.12, max grade 6.2%, h -2.3..0.4
+pass  quai A service <                   231 m ×1.01, max grade 6.2%, h -2.3..-0.7
+FAIL  quai B service >                   300 m ×1.01, max grade 13.2%, h -0.7..5.8
+      [height]; grade 13%
+FAIL  quai B service <                   300 m ×1.01, max grade 13.2%, h -0.7..5.8
+      [height]; grade 13%
+FAIL  lower quai #1 CHE DE HALAGE        313 m ×1.05, max grade 6.2%, h -2.3..-0.7
+      [height]; crosses 0.0/0.0 m under the deck (< 3)
+  at: step 48.826148,2.233180 1.5 m
+  at: step 48.826358,2.232752 1.6 m
+  at: step 48.821739,2.232600 1.2 m
+  at: step 48.826305,2.232840 2.2 m
+
+== Passerelle d'Alfortville (103 m, ends h 0.1 / 1.6) ==
+FAIL  deck A>B                           148 m ×1.44, max grade 3.1%, h -0.1..2.2
+      [join]; detour ×1.44
+FAIL  deck B>A                           148 m ×1.44, max grade 3.1%, h -0.1..2.2
+      [join]; detour ×1.44
+pass  quai A Quai d'Alfortv >            193 m ×1.00, max grade 1.5%, h -0.9..0.0
+pass  quai A Quai d'Alfortv <            193 m ×1.00, max grade 1.5%, h -0.9..0.0
+FAIL  quai B service >                   70 m ×1.00, max grade 1.7%, h 1.1..1.6
+      [height]; touches Passerelle d'Alfortville
+FAIL  quai B service <                   70 m ×1.00, max grade 1.4%, h 1.1..1.6
+      [height]; touches Passerelle d'Alfortville
+  info: lower quai CHEMIN(S) DE HALAGE: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.817668,2.412049 2.7 m
+  at: step 48.817650,2.412040 1.8 m
+
+== Pont de Saint-Cloud (159 m, ends h 4.0 / 1.6) ==
+pass  deck A>B                           159 m ×1.00, max grade 3.7%, h 1.6..4.1
+pass  deck B>A                           159 m ×1.00, max grade 3.7%, h 1.6..4.1
+FAIL  quai A Quai Carnot >               150 m ×1.06, max grade 10.0%, h -1.7..4.0
+      [height]; grade 10%
+FAIL  quai A Quai Carnot <               150 m ×1.06, max grade 10.0%, h -1.7..4.0
+      [height]; grade 10%
+pass  quai B Avenue du Maré >            147 m ×1.02, max grade 4.2%, h -0.1..1.6
+pass  quai B Avenue du Maré <            147 m ×1.02, max grade 4.2%, h -0.1..1.6
+FAIL  lower quai #1 QU ALPHONSE LE       300 m ×1.00, max grade 13.8%, h -3.3..0.6
+      [height]; grade 14%; never crosses the bridge line
+FAIL  lower quai #2 QU DU MARECHAL       301 m ×1.01, max grade 18.5%, h -2.2..4.0
+      [height]; grade 19%; never crosses the bridge line
+pass  slip B residential                 9 m ×1.00, max grade 0.0%, h 1.6..1.6
+pass  slip A Place Georges               10 m ×0.92, max grade 0.0%, h 4.0..4.0
+FAIL  slip A Quai Carnot                 43 m ×2.23, max grade 4.8%, h 2.4..4.0
+      [join]; detour ×2.23
+FAIL  slip A Avenue de la G              237 m ×2.80, max grade 12.3%, h 1.1..4.0
+      [join]; detour ×2.80; grade 12%
+FAIL  slip A Avenue de la G              247 m ×1.65, max grade 20.5%, h 1.1..8.4
+      [height]; grade 21%
+  at: step 48.841091,2.224727 1.1 m
+  at: step 48.841401,2.222023 5.1 m
+  at: step 48.841246,2.222133 3.6 m
+  at: step 48.841692,2.222291 2.2 m
+  at: step 48.841359,2.225089 3.1 m
+  at: step 48.842778,2.221555 1.4 m
+  at: step 48.843603,2.222622 2.9 m
+  at: step 48.841326,2.225238 1.5 m
+  at: step 48.841568,2.222492 4.6 m
+  at: step 48.841541,2.222574 6.5 m
+  at: step 48.841695,2.222379 2.9 m
+  at: step 48.843654,2.222205 5.7 m
+
+== Pont du Maréchal-Juin (70 m, ends h -0.9 / -0.8) ==
+pass  deck A>B                           70 m ×1.00, max grade 2.7%, h -0.9..-0.4
+pass  deck B>A                           70 m ×1.00, max grade 2.7%, h -0.9..-0.4
+FAIL  quai A Boulevard du P >            150 m ×1.00, max grade 10.1%, h -3.8..-0.9
+      [height]; grade 10%
+FAIL  quai A Boulevard du P <            150 m ×1.00, max grade 10.1%, h -3.8..-0.9
+      [height]; grade 10%
+pass  quai B Boulevard du G >            150 m ×1.00, max grade 3.9%, h -3.9..-1.0
+pass  quai B Boulevard du G <            150 m ×1.00, max grade 3.9%, h -3.9..-1.0
+  info: lower quai: no sol-0 road passes under the deck (no leg)
+  at: step 48.893596,2.267066 1.3 m
+  at: step 48.893842,2.267825 2.0 m
+  at: step 48.893822,2.267870 1.7 m
+  at: step 48.893910,2.267754 2.2 m
+
+== Pont d'Iéna (171 m, ends h 4.0 / 2.8) ==
+pass  deck A>B                           171 m ×1.00, max grade 1.9%, h 2.8..4.2
+pass  deck B>A                           171 m ×1.00, max grade 1.9%, h 2.8..4.2
+FAIL  quai A Avenue de New  >            153 m ×1.00, max grade 10.1%, h 1.5..4.4
+      [height]; grade 10%
+FAIL  quai A Avenue de New  <            153 m ×1.00, max grade 11.7%, h 1.5..4.4
+      [height]; grade 12%
+pass  quai B Quai Jacques C >            300 m ×1.00, max grade 1.8%, h 1.3..2.8
+pass  quai B Quai Jacques C <            300 m ×1.00, max grade 1.8%, h 1.3..2.8
+FAIL  lower quai #2 PORT DEBILLY         301 m ×1.00, max grade 11.7%, h 1.3..4.4
+      [height]; grade 12%; crosses 0.0/0.0/0.0/0.0/0.0/0.0 m under the deck (< 3)
+  info: lower quai PORT DE LA BOURDONNAIS: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.860927,2.291702 4.0 m
+  at: step 48.859951,2.290485 3.4 m
+  at: step 48.859916,2.290549 3.7 m
+  at: step 48.860895,2.291757 4.3 m
+  at: step 48.860265,2.291216 2.4 m
+  at: step 48.860322,2.291296 1.6 m
+  at: step 48.860372,2.291364 3.6 m
+  at: deckEnd 48.859091,2.293194 dip/hump 4.4 m within 40 m
+
+== Pont de l'Alma (159 m, ends h 1.8 / 1.4) ==
+pass  deck A>B                           159 m ×1.00, max grade 2.6%, h 1.4..2.7
+pass  deck B>A                           159 m ×1.00, max grade 2.6%, h 1.4..2.7
+pass  quai A Place de l'Alm >            76 m ×1.33, max grade 0.2%, h 1.6..1.6
+pass  quai A Place de l'Alm <            76 m ×1.33, max grade 0.3%, h 1.6..1.6
+pass  quai B Quai Branly >               150 m ×1.01, max grade 7.1%, h -0.9..1.4
+pass  quai B Quai Branly <               150 m ×1.01, max grade 7.1%, h -0.9..1.4
+FAIL  lower quai #1 PROM GISELE HA       300 m ×1.01, max grade 25.2%, h -4.2..0.7
+      [height]; grade 25%
+  at: step 48.864215,2.300805 5.7 m
+  at: step 48.862586,2.301937 1.7 m
+  at: step 48.862439,2.302148 1.0 m
+  at: step 48.864143,2.300826 5.7 m
+  at: step 48.862517,2.302143 1.6 m
+  at: step 48.862595,2.302019 2.1 m
+
+== Pont d'Issy (239 m, ends h 0.5 / 1.7) ==
+pass  deck A>B                           240 m ×1.01, max grade 2.6%, h 0.5..2.5
+pass  deck B>A                           240 m ×1.01, max grade 2.6%, h 0.5..2.5
+FAIL  quai A Quai du Point  >            227 m ×1.01, max grade 10.0%, h -2.8..0.8
+      [height]; grade 10%
+FAIL  quai A Quai du Point  <            227 m ×1.01, max grade 10.0%, h -2.8..0.8
+      [height]; grade 10%
+pass  quai B Quai de la Bat >            26 m ×1.01, max grade 0.0%, h 1.7..1.7
+pass  quai B Quai de la Bat <            26 m ×1.01, max grade 0.0%, h 1.7..1.7
+FAIL  lower quai #1 unnamed              293 m ×0.99, max grade 9.8%, h -1.9..1.7
+      [height]; grade 10%; crosses 0.0/0.0 m under the deck (< 3)
+  at: step 48.829497,2.260896 1.9 m
+  at: step 48.829957,2.261059 1.9 m
+  at: step 48.829179,2.262838 3.7 m
+  at: step 48.831006,2.258371 1.1 m
+  at: step 48.830914,2.258364 3.7 m
+  at: step 48.830842,2.258256 3.0 m
+  at: step 48.830825,2.258231 3.0 m
+  at: step 48.830772,2.258161 4.3 m
+  at: step 48.830831,2.257893 1.5 m
+  at: deckEnd 48.830969,2.258079 dip/hump 1.3 m within 40 m
+
+== Passerelle Léopold-Sédar-Senghor (168 m, ends h -0.2 / 0.4) ==
+FAIL  deck A>B                           185 m ×1.10, max grade 8.5%, h -2.4..0.8
+      [height]; grade 9%
+FAIL  deck B>A                           185 m ×1.10, max grade 8.5%, h -2.4..0.8
+      [height]; grade 9%
+pass  quai A Quai Anatole F >            167 m ×1.00, max grade 2.0%, h -0.7..0.0
+pass  quai A Quai Anatole F <            167 m ×1.00, max grade 2.0%, h -0.7..0.0
+pass  quai B Quai Aimé Césa >            170 m ×1.00, max grade 0.8%, h 0.3..1.0
+pass  quai B Quai Aimé Césa <            170 m ×1.00, max grade 0.8%, h 0.3..1.0
+pass  lower quai #1 PROM EDOUARD G       300 m ×1.00, max grade 1.2%, h -3.9..-3.7
+  info: lower quai PORT DES TUILERIES: the road under the deck has no ride-graph way within 30 m 40..150 m along it on one side (no leg)
+  at: step 48.862305,2.325160 1.3 m
+  at: step 48.862332,2.325080 1.1 m
+  at: step 48.860491,2.326405 1.9 m
+
+paris-centre (datum 32.94)
+bridge                     legs  | step deckEnd offGround grade wallGap railBridge trench | total
+Pont de la Tournelle       4/6   |   46       0        26    17      56          0      5 | 150
+Pont de Sully              2/6   |   44       0        28    24      48          0      5 | 149
+Pont Saint-Louis           4/6   |   32       2        24    17      52          0      3 | 130
+Pont Marie                 4/6   |   39       1        22    16      46          0      3 | 127
+Pont d'Iéna                4/7   |    7       1        23    72      22          0      0 | 125
+Pont Louis-Philippe        6/7   |   34       1        23    15      41          0      3 | 117
+Pont Saint-Michel          4/6   |   52       0        23     6      22          0      0 | 103
+Pont d'Arcole              2/7   |   29       1        30    10      29          0      0 | 99
+Pont Notre-Dame            6/7   |   34       0        32     9      23          0      0 | 98
+Pont de Tolbiac            5/7   |   14       0        27    34      18          0      5 | 98
+Pont National              6/10  |   25       0        20    37       7          4      1 | 94
+Pont de Saint-Cloud        6/13  |   16       0        30    45       2          0      0 | 93
+Passerelle Simone de Beauv 5/7   |   13       1        20    27      24          0      3 | 88
+Pont au Double             6/6   |   45       2        15     6      19          0      0 | 87
+Pont de l'Archevêché       4/4   |   21       1        12    11      39          0      3 | 87
+Pont au Change             6/7   |   29       1        26     8      21          0      0 | 85
+Pont Charles de Gaulle     2/9   |   21       1        24    21      14          2      2 | 85
+Pont de Bercy              4/7   |   19       0        19    21      26          0      0 | 85
+Pont d'Austerlitz          2/8   |   14       0        23    24      17          2      2 | 82
+Pont d'Issy                4/7   |    9       1        27    25      15          0      0 | 77
+Pont du Carrousel          5/7   |   22       2         7     8      36          0      0 | 75
+Pont Royal                 6/6   |   23       0        10    12      28          0      0 | 73
+Pont de Sèvres             14/31 |   13       0        19    32       8          0      0 | 72
+Pont de Neuilly            12/21 |    7       0        22    28      13          1      0 | 71
+Pont de la Concorde        6/8   |   18       1        18    11      22          0      0 | 70
+Pont du Garigliano         5/8   |    9       0        20    23      15          1      1 | 69
+Pont Neuf                  7/8   |   11       0        23    11      24          0      0 | 69
+Pont de Bir Hakeim         2/7   |   16       2         8    23      19          0      0 | 68
+Pont des Suicidés          1/3   |    2       2        10    54       0          0      0 | 68
+Pont Morland               6/6   |   15       1        14    18      18          0      1 | 67
+Passerelle Nord            2/7   |   11       1        16    24      11          0      0 | 63
+Pont de Grenelle - Cadets  2/8   |    8       0        13    13      24          0      0 | 58
+Pont Alexandre III         6/8   |    7       0        10    14      24          0      0 | 55
+Pont de l'Alma             6/7   |    6       0        13     9      25          0      0 | 53
+Passerelle Debilly         4/7   |    0       1        15    14      20          0      0 | 50
+Pont du Canal de l'Ourcq   6/6   |   25       0         2    20       0          0      2 | 49
+Pont de Courbevoie         4/7   |    9       0        16    16       6          0      0 | 47
+Pont des Invalides         6/8   |    5       1         9    13      19          0      0 | 47
+Pont de Puteaux            0/8   |    9       1        12    11      11          0      0 | 44
+Pont Nelson Mandela        4/12  |    4       0        18    17       3          0      0 | 42
+Pont Renault               5/5   |    5       0         8    21       7          0      0 | 41
+Passerelle Léopold-Sédar-S 5/7   |    3       0         6     8      23          0      0 | 40
+Pont des Arts              4/6   |    3       0         8     2      26          0      0 | 39
+Pont Seibert               3/7   |    4       1         8    22       3          0      0 | 38
+Passerelle des Ardennes    2/6   |   10       0         4    23       0          1      0 | 38
+Pont Daydé                 3/3   |    6       0         5    13      13          0      0 | 37
+Passerelle de l'Avre       8/10  |    4       0         5    19       7          0      0 | 35
+Pont de Suresnes           2/7   |    9       1         7    15       2          0      0 | 34
+Passerelle Sud             2/7   |    4       0         6    17       5          0      0 | 32
+Passerelle Jim-Morrison    4/7   |   10       0         2     5      12          0      0 | 29
+Pont Mirabeau              5/8   |    1       0         9     9       9          0      0 | 28
+Pont du Maréchal-Juin      4/6   |    4       0        10     6       5          0      0 | 25
+Pont de la Rue de l'Ourcq  2/8   |    5       0         2    11       0          1      0 | 19
+Pont Levant de la Rue de C 2/6   |   10       0         2     6       0          0      0 | 18
+Pont d'Ivry                6/7   |    0       0        10     1       5          0      1 | 17
+Passerelle Industrielle d' 5/8   |    0       0         4     5       5          0      1 | 15
+Passerelle des Grandes Ser 4/6   |    7       0         0     7       0          0      1 | 15
+Passerelle d'Alfortville   2/6   |    2       0         6     4       1          0      0 | 13
+Passerelle Emmanuelle Riva 4/6   |    7       1         0     3       0          0      0 | 11
+Passerelle Maria Schneider 5/6   |    7       0         0     3       0          0      0 | 10
+Passerelle Jane Birkin     4/6   |    7       1         0     2       0          0      0 | 10
+Passerelle du Parc de l'Eu 4/4   |    0       0         2     7       1          0      0 | 10
+TOTAL                      275/468 |  871      29       853  1025     991         12     42 | 3823

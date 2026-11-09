@@ -12,7 +12,7 @@
  * drawn separately, and a city is the case where that bites hardest.
  */
 import { Projection } from '../city/geo.ts'
-import { prepareTweaks } from '../city/terrain-tweaks.ts'
+import { levelPlanTweaks, prepareTweaks } from '../city/terrain-tweaks.ts'
 import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
 import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisPanel, stoneBench, sucette, treePit } from './paris/furniture.ts'
 import { WallaceFountains } from './paris/wallace.ts'
@@ -30,7 +30,9 @@ import { Clocks } from './clocks.ts'
 import { GardenTiles, GARDEN_TINT, insideRing as inGardenRing } from './garden.ts'
 import { MeshBuilder, buildBuilding, capPolygon, fronts, type StreetFacing, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
-import { inOutline } from './bridge-structures.ts'
+import { LID_SLAB_T, inOutline } from './bridge-structures.ts'
+/** the chase camera keeps under a lid's slab this far past its outline (the camera trails the rider into the mouth) */
+const LID_CAM_PAD = 3
 import { straightOutline } from '../city/bridge-axis.ts'
 import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
@@ -133,6 +135,34 @@ function pointInFlatRing(r: number[], x: number, z: number): boolean {
     if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
   }
   return o
+}
+
+/** ground shipped finer than this (a deck zone's) is draped in triangles AREA_FINE_EDGE m on a side */
+const AREA_FINE_BELOW = 2, AREA_FINE_EDGE = 1.5
+
+/**
+ * Split every triangle of `out` whose longest edge exceeds `maxEdge` (longest-edge bisection), every attribute interpolated: a
+ * pavement strip 10 m wide has a vertex only at each kerb, and draped across a deck zone's quai wall it was one slope from the lower
+ * quai to the upper (Pont National, 2026-11-07). Before draping, so the new vertices take the ground's own height.
+ */
+function subdivideBuilder(out: MeshBuilder, maxEdge: number): void {
+  const P = out.positions, N = out.normals, U = out.uvs, C = out.colors, I = out.indices.splice(0)
+  const mid = (a: number, b: number): number => {
+    const k = P.length / 3
+    for (let d = 0; d < 3; d++) { P.push((P[a * 3 + d] + P[b * 3 + d]) / 2); N.push((N[a * 3 + d] + N[b * 3 + d]) / 2) }
+    for (let d = 0; d < 2; d++) U.push((U[a * 2 + d] + U[b * 2 + d]) / 2)
+    for (let d = 0; d < 4; d++) C.push((C[a * 4 + d] + C[b * 4 + d]) / 2)
+    return k
+  }
+  const len = (a: number, b: number): number => Math.hypot(P[a * 3] - P[b * 3], P[a * 3 + 2] - P[b * 3 + 2])
+  const split = (a: number, b: number, c: number, depth: number): void => {
+    const ab = len(a, b), bc = len(b, c), ca = len(c, a), m = Math.max(ab, bc, ca)
+    if (m <= maxEdge || depth > 10) { out.indices.push(a, b, c); return }
+    if (m === ab) { const q = mid(a, b); split(a, q, c, depth + 1); split(q, b, c, depth + 1) }
+    else if (m === bc) { const q = mid(b, c); split(b, q, a, depth + 1); split(q, c, a, depth + 1) }
+    else { const q = mid(c, a); split(c, q, b, depth + 1); split(q, a, b, depth + 1) }
+  }
+  for (let i = 0; i < I.length; i += 3) split(I[i], I[i + 1], I[i + 2], 0)
 }
 
 function groundGrid(t: PackedTerrain | undefined | null): PackedTerrain | undefined {
@@ -1752,9 +1782,16 @@ export class City {
   stripedStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; cobbles: number }[] = []
   lanternStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; colour: [number, number, number] }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
-  private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
+  private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number; lid?: number }>()
   /** the spans a viaduct leaps with no supports under it (render/bridge-structures.ts `RAIL_ARCHES`) */
   private readonly railLeaps = new Map<number, { x: number; z: number }[]>()
+  /** told each bridge outline (padded) as it arrives: game.ts clears the trees from it */
+  private onBridgeOutline?: (ring: { x: number; z: number }[]) => void
+  /** every bridge outline grown by a crown's reach, those in already and each to come */
+  eachBridgeOutline(fn: (ring: { x: number; z: number }[]) => void): void {
+    this.onBridgeOutline = fn
+    for (const o of [...this.outlines.values(), ...this.bentOutlines.values()]) fn(padRing(o.ring, BRIDGE_TREE_PAD))
+  }
   private structured(e: PackedEdge): boolean {
     // (never a freeway: see bridge-structures.ts `FREEWAY`)
     if (freewayKind(e)) return false
@@ -1822,6 +1859,14 @@ export class City {
       for (let k = 0; k <= n; k++) if (this.trackNear(p[i - 2] + ((p[i] - p[i - 2]) * k) / n, p[i - 1] + ((p[i + 1] - p[i - 1]) * k) / n, e.width / 2 + 1)) return true
     }
     return false
+  }
+  /** the street level of a lid's slab over (x, z), give or take `pad` (render/bridge-structures.ts lidSlab), or null */
+  private lidOver(x: number, z: number, pad = 0): number | null {
+    for (const o of this.outlines.values()) {
+      if (o.lid === undefined || x < o.x0 - pad || x > o.x1 + pad || z < o.z0 - pad || z > o.z1 + pad) continue
+      if (inOutline(o.ring, x, z, pad)) return o.lid
+    }
+    return null
   }
   /** is this point on a bridge's outline, give or take a metre? */
   private onOutline(x: number, z: number): boolean {
@@ -1921,7 +1966,7 @@ export class City {
     this.terrain.cut = (x, z) => (this.off.has('grade') ? null : this.grade.cutAt(x, z))
     this.region = region(pkg.region)
     // the runtime pits in the fine ground (city/terrain-tweaks.ts), before any tile's block lands
-    if (pkg.origin) this.terrain.tweaks = prepareTweaks(this.region.terrainTweaks, new Projection(pkg.origin), (x, z) => this.terrain.rawHeightAt(x, z))
+    if (pkg.origin) this.terrain.tweaks = prepareTweaks([...levelPlanTweaks(this.region.levelPlans), ...(this.region.terrainTweaks ?? [])], new Projection(pkg.origin), (x, z) => this.terrain.rawHeightAt(x, z))
     const __tg0 = performance.now()
     distantGround(scene, this.terrain, pkg, this.roadAssets)
     distantSea(scene, pkg)
@@ -2055,7 +2100,9 @@ export class City {
       let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
       for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
       if (bent) this.bentOutlines.set(b.id, { ring, x0, x1, z0, z1 })
-      else this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
+      else this.outlines.set(b.id, { ring, x0, x1, z0, z1, lid: b.lid?.y })
+      // no tree grows through it (owner, 2026-11-07, Pont National): the outline and a crown's reach round it is a clearing
+      this.onBridgeOutline?.(padRing(ring, BRIDGE_TREE_PAD))
     }
     for (const p of t.pois ?? []) if (p.kind === 'shop' || p.kind === 'food') this.bucket(this.shopsIn, p.x, p.z, { x: p.x, z: p.z })
     for (const whole of t.edges) {
@@ -2731,6 +2778,9 @@ export class City {
    * Walter-Benjamin, which filled the screen as a grey curve (BUGS.md #16).
    */
   passageAt(x: number, z: number): number | null {
+    // (under a lid's slab, its soffit: at 3.5 m the camera sat in the slab, owner 2026-11-08)
+    const lid = this.lidOver(x, z, LID_CAM_PAD)
+    if (lid !== null) return lid - LID_SLAB_T - this.terrain.heightAt(x, z)
     const [cx, cz] = tileOf(x, z)
     let top: number | null = null
     for (let dz = -1; dz <= 1; dz++) {
@@ -3000,7 +3050,9 @@ export class City {
      * and no finer: the drape cannot show detail the grid does not carry, and every halving quadruples the
      * triangles. Taken from the tile's own block, which is where the step now lives (city/terrain.ts).
      */
-    const AREA_MAX_EDGE = Math.max(8, (this.terrain.stepIn(k) ?? 20) * 2)
+    // (a deck zone's tiles ship 1 m ground, tools/deck-zones.ts DZ_GROUND_STEP: there the drape follows it, or a quai's wall foot is an 8 m slope)
+    const stepK = this.terrain.stepIn(k) ?? 20
+    const AREA_MAX_EDGE = stepK < AREA_FINE_BELOW ? AREA_FINE_EDGE : Math.max(8, stepK * 2)
     for (const a of ordered) {
       if (a.kind === 'water') {
         /*
@@ -3009,8 +3061,10 @@ export class City {
          * certainly level. The level was taken from the whole ring when the area was cut into tiles, so a
          * river cut into many tiles is the same height in all of them.
          */
+        const i0 = water.indices.length
         capPolygonWithHoles(water, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           0.03 + (a.level ?? 0), [0, 0, 0], 0, 2.4, isShoreTile ? WATER_SHORE_MAX_EDGE : undefined)
+        if (isShoreTile) dropDryWater(water, i0, 0.03 + (a.level ?? 0), (x, z) => this.terrain.heightAt(x, z))
       }
       else {
         /*
@@ -3497,6 +3551,7 @@ export class City {
 
     if (corridor.triangles > 0 && !this.off.has('walks')) {
       const m = new Mesh(`corridor:${k}`, this.scene)
+      if (stepK < AREA_FINE_BELOW) subdivideBuilder(corridor, AREA_FINE_EDGE)
       this.terrain.drape(corridor.positions)
       corridor.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'concrete', 'corridor')
@@ -3620,6 +3675,7 @@ export class City {
     for (const [surface, out] of roads) {
       if (this.off.has('roads')) break
       const m = new Mesh(`road:${surface}:${k}`, this.scene)
+      if (stepK < AREA_FINE_BELOW) subdivideBuilder(out, AREA_FINE_EDGE)
       this.terrain.drape(out.positions)
       out.toVertexData().applyToMesh(m)
       m.material = surface === this.pkg.ground
@@ -4714,6 +4770,123 @@ export class City {
           }
         }
       }
+      /*
+       * TRENCH WALLS (owner, 2026-11-08: "concrete walls" for the open lid's trench, tools/tunnels.ts `lidTunnels`).
+       * The bake carves a cut flat for 8 m past the corridor and then banks it at 2:1 on a 4 m grid, so beside the
+       * trench road the ground was a wide grassy pit and a slope. Along a `trench` way, on each side, a concrete face
+       * rises from the corridor's edge to the ground beyond the bank (the highest raw ground within TRENCH_SCAN m,
+       * at most TRENCH_MAX over the road), a coping strip runs flat from its top out to where the ground meets it
+       * (covering the pit), and a parapet stands on the edge. Sampled at piece ENDS, so the top is continuous.
+       */
+      const TRENCH_MIN = 0.4
+      const TRENCH_SCAN = 14
+      const TRENCH_STEP = 0.5
+      // (the street's level over the trench: tools/tunnels.ts LID_CLEAR. Taller, to the top of a bank, stood 6 m over the road)
+      const TRENCH_MAX = 4.6
+      // a low concrete curb on the edge and a thin railing on it (owner, 2026-11-08: lower; the 1 m solid parapet was too heavy)
+      const TRENCH_PARAPET = 0.4
+      const TRENCH_RAIL = 1.1
+      const TRENCH_RAIL_T = 0.05
+      const TRENCH_POST_EVERY = 2
+      const RAIL: [number, number, number] = [0.16, 0.17, 0.18]
+      const TRENCH_PARAPET_MIN = 1.2
+      const TRENCH_T = 0.3
+      const TRENCH_PIECE = 2
+      const TRENCH_SMOOTH = 3
+      const CONCRETE: [number, number, number] = [0.5, 0.49, 0.47]
+      const COPING: [number, number, number] = [0.32, 0.3, 0.275]
+      for (const e of groundEdges) {
+        if (!e.trench || !e.heights) continue
+        const pts = unpackPoints(e.points)
+        const half = e.width / 2 + Math.max(e.walk, 0.6) + 0.3
+        type S = { x: number; z: number; nx: number; nz: number; h: number; top: number; w: number; brk: boolean; s: number }
+        for (const side of [-1, 1]) {
+          /*
+           * Out from the corridor's edge in TRENCH_STEP steps: the wall's top is where the bank ends — where the next
+           * street's corridor begins (its level), or where the ground stops rising — and the coping runs out to there.
+           * Another cut (the twin trench) ends the scan where it is: its floor is no bank.
+           */
+          const ss: S[] = []
+          let s0 = 0
+          for (let i = 1; i < pts.length; i++) {
+            const a = pts[i - 1], b = pts[i]
+            const l = Math.hypot(b.x - a.x, b.z - a.z)
+            s0 += l
+            if (l < 0.2) continue
+            const nx = (-(b.z - a.z) / l) * side, nz = ((b.x - a.x) / l) * side
+            const pieces = Math.max(1, Math.ceil(l / TRENCH_PIECE))
+            for (let j = 0; j <= pieces; j++) {
+              const t = j / pieces
+              const x = a.x + (b.x - a.x) * t + nx * half, z = a.z + (b.z - a.z) * t + nz * half
+              const h = e.heights[i - 1] + (e.heights[i] - e.heights[i - 1]) * t
+              let top = h, w = 0
+              // under a slab the wall is its abutment, up to the slab (the deck way over it is no street's bank)
+              const lid = this.lidOver(x + nx, z + nz)
+              if (lid !== null) top = lid
+              else for (let d = TRENCH_STEP; d <= TRENCH_SCAN; d += TRENCH_STEP) {
+                const qx = x + nx * d, qz = z + nz * d
+                const st = this.gradeAt(qx, qz)
+                if (st !== null) {
+                  if (this.terrain.cut?.(qx, qz) == null && st > top) { top = st; w = d }
+                  break
+                }
+                const g = this.terrain.rawHeightAt(qx, qz)
+                if (g > top + 0.05) { top = g; w = d } else if (top - h >= TRENCH_MIN) break
+              }
+              ss.push({ x, z, nx, nz, h, top: Math.min(top, h + TRENCH_MAX), w, brk: j === 0 && ss.length > 0, s: s0 - l + l * t })
+            }
+          }
+          /*
+           * SMOOTHED along the side (the first try, sampled per piece, stood in a sawtooth wherever the bank's top
+           * wavered): each sample's rise is the most within TRENCH_SMOOTH samples, then the mean of those, so the
+           * top runs level and the wall ends taper rather than step.
+           */
+          // (only as far along it as the bake walls it, `trenchTo`: tools/bake.ts LID_WALL_REACH)
+          const L = ss.length ? ss[ss.length - 1].s : 0, to = e.trenchTo
+          const rise0 = ss.map((q) => (to !== undefined && (to >= 0 ? q.s > to : L - q.s > -to) ? 0 : Math.max(0, q.top - q.h)))
+          const mx = rise0.map((_, k) => Math.max(...rise0.slice(Math.max(0, k - TRENCH_SMOOTH), k + TRENCH_SMOOTH + 1)))
+          const rise = mx.map((_, k) => { const sl = mx.slice(Math.max(0, k - TRENCH_SMOOTH), k + TRENCH_SMOOTH + 1); return sl.reduce((u, v) => u + v, 0) / sl.length })
+          const wd = ss.map((_, k) => Math.max(...ss.slice(Math.max(0, k - TRENCH_SMOOTH), k + TRENCH_SMOOTH + 1).map((q) => q.w)))
+          const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+          for (let k = 1; k < ss.length; k++) {
+            const p0 = ss[k - 1], p1 = ss[k]
+            if (p1.brk || Math.max(rise[k - 1], rise[k]) < TRENCH_MIN) continue
+            const nx = p1.nx, nz = p1.nz
+            const t0 = p0.h + rise[k - 1], t1 = p1.h + rise[k]
+            const inN: [number, number, number] = [-nx, 0, -nz]
+            // the face, seen from the road
+            walls.quad([[p1.x, p1.h - 0.3, p1.z], [p0.x, p0.h - 0.3, p0.z], [p0.x, t0, p0.z], [p1.x, t1, p1.z]], inN, UV, CONCRETE, 0)
+            // (under a slab the face is its abutment, and the slab is the top: no coping or parapet through it)
+            if (this.region.viaduct === 'paris' && this.onOutline((p0.x + p1.x) / 2 + nx, (p0.z + p1.z) / 2 + nz)) continue
+            // the coping strip, over the carve's pit to where the ground comes up to it
+            const w0 = Math.max(TRENCH_T, wd[k - 1]), w1 = Math.max(TRENCH_T, wd[k])
+            const f0 = { x: p0.x + p0.nx * w0, z: p0.z + p0.nz * w0 }, f1 = { x: p1.x + nx * w1, z: p1.z + nz * w1 }
+            walls.quad([[p0.x, t0, p0.z], [p1.x, t1, p1.z], [f1.x, t1, f1.z], [f0.x, t0, f0.z]], [0, 1, 0], UV, COPING, 0)
+            if (Math.min(rise[k - 1], rise[k]) >= TRENCH_PARAPET_MIN) {
+              const P = TRENCH_PARAPET
+              const o0 = { x: p0.x + nx * TRENCH_T, z: p0.z + nz * TRENCH_T }, o1 = { x: p1.x + nx * TRENCH_T, z: p1.z + nz * TRENCH_T }
+              walls.quad([[p1.x, t1, p1.z], [p0.x, t0, p0.z], [p0.x, t0 + P, p0.z], [p1.x, t1 + P, p1.z]], inN, UV, CONCRETE, 0)
+              walls.quad([[o0.x, t0, o0.z], [o1.x, t1, o1.z], [o1.x, t1 + P, o1.z], [o0.x, t0 + P, o0.z]], [nx, 0, nz], UV, CONCRETE, 0)
+              walls.quad([[p0.x, t0 + P, p0.z], [p1.x, t1 + P, p1.z], [o1.x, t1 + P, o1.z], [o0.x, t0 + P, o0.z]], [0, 1, 0], UV, CONCRETE, 0)
+              // the railing over the curb's middle: a top rail, and a post at each TRENCH_POST_EVERY m of the run
+              const R = TRENCH_RAIL, rt = TRENCH_RAIL_T, c = TRENCH_T / 2
+              const m0 = { x: p0.x + nx * c, z: p0.z + nz * c }, m1 = { x: p1.x + nx * c, z: p1.z + nz * c }
+              const ux = p1.x - p0.x, uz = p1.z - p0.z, ul = Math.hypot(ux, uz) || 1
+              const box = (ax: number, az: number, bx: number, bz: number, y0a: number, y0b: number, y1a: number, y1b: number, half: number): void => {
+                const ex = -(bz - az), ez = bx - ax, el = Math.hypot(ex, ez) || 1, sx = (ex / el) * half, sz = (ez / el) * half
+                walls.quad([[ax + sx, y0a, az + sz], [bx + sx, y0b, bz + sz], [bx + sx, y1b, bz + sz], [ax + sx, y1a, az + sz]], [ex / el, 0, ez / el], UV, RAIL, 0)
+                walls.quad([[bx - sx, y0b, bz - sz], [ax - sx, y0a, az - sz], [ax - sx, y1a, az - sz], [bx - sx, y1b, bz - sz]], [-ex / el, 0, -ez / el], UV, RAIL, 0)
+                walls.quad([[ax - sx, y1a, az - sz], [ax + sx, y1a, az + sz], [bx + sx, y1b, bz + sz], [bx - sx, y1b, bz - sz]], [0, 1, 0], UV, RAIL, 0)
+              }
+              box(m0.x, m0.z, m1.x, m1.z, t0 + R - rt, t1 + R - rt, t0 + R, t1 + R, rt)
+              if (Math.floor(p0.s / TRENCH_POST_EVERY) !== Math.floor(p1.s / TRENCH_POST_EVERY)) {
+                const qx = m1.x - (ux / ul) * rt, qz = m1.z - (uz / ul) * rt
+                box(qx, qz, qx + (ux / ul) * rt * 2, qz + (uz / ul) * rt * 2, t1 + P, t1 + P, t1 + R, t1 + R, rt)
+              }
+            }
+          }
+        }
+      }
       for (const [surface, out] of flat) {
         if (out.triangles === 0) continue
         const m = new Mesh(`flatroad:${surface}:${k}`, this.scene)
@@ -4851,7 +5024,8 @@ export class City {
       const railColour = hexRgb(this.region.elevatedRailColour)
       const [rtx, rtz] = k.split(',').map(Number)
       const railRect = { x0: rtx * TILE, z0: rtz * TILE, x1: (rtx + 1) * TILE, z1: (rtz + 1) * TILE }
-      const parisViaduct = this.region.viaduct === 'paris' ? { stations: this.viaductStations, leaps: [...this.railLeaps.values()] } : undefined
+      // (a track inside a bridge's own outline rides that bridge's deck — the tram and the Petite Ceinture on Pont National: the bridge holds it up, and a viaduct's columns stood beside both quais under it)
+      const parisViaduct = this.region.viaduct === 'paris' ? { stations: this.viaductStations, leaps: [...this.railLeaps.values(), ...[...this.outlines.values()].map((o) => o.ring)] } : undefined
       for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour, railRect, parisViaduct)
       if (decks.triangles > 0) {
         const m = new Mesh(`decks:${k}`, this.scene)
@@ -5509,3 +5683,50 @@ function clipToBox(ring: { x: number; z: number }[], x0: number, z0: number, x1:
 }
 
 /** a raised way any of whose segments climbs more than it runs (see the deck loop) */
+
+/** a crown's reach round a bridge's outline kept clear of trees (m) */
+export const BRIDGE_TREE_PAD = 4
+/** …and a tree whose crown (this many metres of radius per metre of height) would reach a bridge's outline goes too */
+export const BRIDGE_CROWN_REACH = 0.5
+/** a ring grown by `pad` metres: each vertex moved out along its two edges' outward normals (mitred, capped at 3× pad) */
+export function padRing(r: { x: number; z: number }[], pad: number): { x: number; z: number }[] {
+  const n = r.length
+  if (n < 3) return r
+  let a2 = 0
+  for (let i = 0; i < n; i++) { const p = r[i], q = r[(i + 1) % n]; a2 += p.x * q.z - q.x * p.z }
+  const sgn = a2 > 0 ? 1 : -1
+  return r.map((p, i) => {
+    const pr = r[(i + n - 1) % n], nx = r[(i + 1) % n]
+    const n1 = (() => { const dx = p.x - pr.x, dz = p.z - pr.z, l = Math.hypot(dx, dz) || 1; return { x: sgn * dz / l, z: -sgn * dx / l } })()
+    const n2 = (() => { const dx = nx.x - p.x, dz = nx.z - p.z, l = Math.hypot(dx, dz) || 1; return { x: sgn * dz / l, z: -sgn * dx / l } })()
+    let bx = n1.x + n2.x, bz = n1.z + n2.z
+    const bl = Math.hypot(bx, bz) || 1
+    bx /= bl; bz /= bl
+    const k = Math.min(3, 1 / Math.max(0.2, bx * n1.x + bz * n1.z))
+    return { x: p.x + bx * pad * k, z: p.z + bz * pad * k }
+  })
+}
+
+/** water this far under the ground is not drawn (m): the layers do not depth-test, so a river ring reaching under a lower quay painted its shelf, 3–5 m above it, as water (owner, 2026-11-08) */
+export const WATER_DRY_RISE = 1.5
+/** a water triangle half on dry ground is split down to this edge (m) before the dry part is dropped */
+export const WATER_DRY_EDGE = 1.5
+/** Drop the water triangles from `i0` on that lie over ground WATER_DRY_RISE above `y`, splitting the ones across the shore. */
+export function dropDryWater(out: MeshBuilder, i0: number, y: number, heightAt: (x: number, z: number) => number): void {
+  const P = out.positions, tris = out.indices.splice(i0)
+  const dry = (x: number, z: number) => heightAt(x, z) > y + WATER_DRY_RISE
+  const tint = [out.colors[0] ?? 0, out.colors[1] ?? 0, out.colors[2] ?? 0, out.colors[3] ?? 0]
+  const uvS = (() => { for (let v = 0; v < P.length / 3; v++) if (Math.abs(P[3 * v]) > 1e-3) return P[3 * v] / (out.uvs[2 * v] || 1); return 2.4 })()
+  const vert = (x: number, z: number): number => { const v = P.length / 3; P.push(x, y, z); out.normals.push(0, 1, 0); out.uvs.push(x / uvS, z / uvS); out.colors.push(tint[0], tint[1], tint[2], tint[3]); return v }
+  const walk = (a: number, b: number, c: number, depth: number): void => {
+    const ax = P[3 * a], az = P[3 * a + 2], bx = P[3 * b], bz = P[3 * b + 2], cx = P[3 * c], cz = P[3 * c + 2]
+    const d = [dry(ax, az), dry(bx, bz), dry(cx, cz), dry((ax + bx + cx) / 3, (az + bz + cz) / 3)]
+    if (!d.some(Boolean)) { out.indices.push(a, b, c); return }
+    const long = Math.max(Math.hypot(bx - ax, bz - az), Math.hypot(cx - bx, cz - bz), Math.hypot(ax - cx, az - cz))
+    if (long <= WATER_DRY_EDGE || depth > 6) { if (!d[3]) out.indices.push(a, b, c); return }
+    if (d.every(Boolean) && long <= 4 * WATER_DRY_EDGE) return
+    const ab = vert((ax + bx) / 2, (az + bz) / 2), bc = vert((bx + cx) / 2, (bz + cz) / 2), ca = vert((cx + ax) / 2, (cz + az) / 2)
+    walk(a, ab, ca, depth + 1); walk(ab, b, bc, depth + 1); walk(ca, bc, c, depth + 1); walk(ab, bc, ca, depth + 1)
+  }
+  for (let t = 0; t < tris.length; t += 3) walk(tris[t], tris[t + 1], tris[t + 2], 0)
+}

@@ -68,6 +68,8 @@ export interface CitySpec {
   live?: boolean
   /** a small test area cut from a real city (sf-mini): skips the landmark-manifest audit, which cannot apply */
   test?: boolean
+  /** metres above sea level of local 0, when not the ground at the centre: a test area borrows its parent city's (paris-centre's 32.94) */
+  datum?: number
   /**
    * The city's own register of its STREET trees, when it has one (owner, 2026-09-28: "for certain cities we will
    * have official tree data for streets only"): 'datasf' is San Francisco's Street Tree List (tools/sf-trees.ts).
@@ -474,6 +476,58 @@ export const CITIES: CitySpec[] = [
     centre: { lat: 48.8785, lon: 2.2825 }, radius: 350, wide: false, ground: 'grass',
     styles: [{ id: 'haussmann', weight: 1 }],
     note: 'A test area: the périphérique in its cut and tunnels under Porte Maillot, the avenue over it.',
+  },
+  /* A test of BRIDGEHEAD DECKS (owner, 2026-11-07: "create a new mini city around this area, so we can rebake repeatedly"): Pont National, both banks, the Quai de Bercy's two tiers and the flying slip road. */
+  {
+    id: 'pont-national-mini', live: false, test: true, region: 'paris',
+    name: 'Pont National test area (bridgehead decks)',
+    centre: { lat: 48.8285, lon: 2.3880 }, radius: 400, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Pont National and its quais (plans/bridgeheads/NOTES.md).',
+  },
+  /* The Seine band's staging (plans/bridgeheads/NOTES.md, 2026-11-08): Pont de Sully (lower quais both banks) and the control. */
+  {
+    id: 'sully-mini', live: false, test: true, region: 'paris',
+    name: 'Pont de Sully test area (Seine band)',
+    centre: { lat: 48.8503, lon: 2.3573 }, radius: 400, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Pont de Sully, its lower quais both banks (plans/bridgeheads/NOTES.md).',
+  },
+  {
+    id: 'garigliano-mini', live: false, test: true, region: 'paris',
+    name: 'Pont du Garigliano test area (Seine band control)',
+    centre: { lat: 48.8385, lon: 2.2700 }, radius: 400, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Pont du Garigliano, the Seine band control (plans/bridgeheads/NOTES.md).',
+  },
+  {
+    id: 'bercy-mini', live: false, test: true, region: 'paris',
+    name: 'Bercy test area (Passerelle Simone de Beauvoir)',
+    centre: { lat: 48.8357, lon: 2.3790 }, radius: 350, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Passerelle Simone de Beauvoir and the quais de Bercy (plans/bridgeheads/NOTES.md).',
+  },
+  /* The band's regressions on the first paris-centre band bake (plans/bridgeheads/NOTES.md, 2026-11-08). */
+  {
+    id: 'louvre-mini', live: false, test: true, region: 'paris',
+    name: 'Louvre test area (Seine band: Pont Neuf, Arts, Carrousel)',
+    centre: { lat: 48.8585, lon: 2.3400 }, radius: 450, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Pont Neuf, Pont des Arts, Pont du Carrousel, the Louvre quais, the tip of the Île de la Cité.',
+  },
+  {
+    id: 'marais-mini', live: false, test: true, region: 'paris',
+    name: 'Marais test area (Seine band: Pont Louis-Philippe)',
+    centre: { lat: 48.8540, lon: 2.3560 }, radius: 350, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Pont Louis-Philippe and the Voie Georges-Pompidou under it.',
+  },
+  {
+    id: 'sevres-mini', live: false, test: true, region: 'paris',
+    name: 'Sevres test area (Seine band: Pont de Sevres, Ile Seguin)',
+    centre: { lat: 48.8270, lon: 2.2290 }, radius: 450, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Pont de Sevres, Pont Renault, Passerelle Sud and the Ile Seguin.',
   },
   /* A test of SUNK ROAD-TUNNEL MOUTHS (tools/tunnels.ts `sinkRoadMouths`): the Voie Georges-Pompidou under the Place de l'Alma. */
   {

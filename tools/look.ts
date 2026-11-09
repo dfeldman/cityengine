@@ -5,6 +5,7 @@
  *   nice -n 20 node --experimental-strip-types tools/look.ts <out.png> [--fov=0.9] [--time=day|night|dusk|dawn]
  *       [--wait=20] [--keys=j,…] [--hide=birds,…] camLat,camLon,camY tgtLat,tgtLon,tgtY [cam tgt …]
  *
+ * (env CITY=paris-centre for Paris; W=, H= the viewport, e.g. W=480 H=360 for a lowres shot, W=240 H=180 tinyres.)
  * Heights are metres over the ground at each point. Each pair writes <out>-<k>.png. The game is loaded frozen with no
  * fog and a far plane of 7 km; the browser is closed at the end (never leave a headless Chrome behind).
  */
@@ -23,11 +24,11 @@ if (!out || rest.length < 2 || rest.length % 2) {
 const P = (s: string): number[] => s.split(',').map(Number)
 const browser = await pw.chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal'] })
 try {
-  const page = await (await browser.newContext({ viewport: { width: 1440, height: 1080 } })).newPage()
+  const page = await (await browser.newContext({ viewport: { width: Number(process.env.W ?? 1440), height: Number(process.env.H ?? 1080) } })).newPage()
   page.on('pageerror', (e: Error) => console.log('PAGEERROR', String(e.stack ?? e).slice(0, 600)))
   const [la, lo] = rest[0].split(',')
   const time = opt('time', 'day')
-  await page.goto(`http://localhost:5200/?city=san-francisco&at=${la},${lo}&freeze=1&fog=off&far=7000&time=${time}`)
+  await page.goto(`http://localhost:5200/?city=${process.env.CITY ?? 'san-francisco'}&at=${la},${lo}&freeze=1&fog=off&far=7000&time=${time}`)
   await page.waitForFunction('window.gameReady === true', null, { timeout: 240000 }).catch(() => console.log('(not ready in 4 min)'))
   await page.waitForTimeout(3000)
   // (keys to press once loaded: `--keys=j` turns on the large path lines)

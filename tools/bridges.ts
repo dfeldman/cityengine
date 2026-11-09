@@ -873,6 +873,8 @@ const ONE_DECK_GRADE = 0.045
 const RIVER_AREA = 300_000
 /** two levels on purpose, drawn from their own ways: the lens of the Passerelle Simone-de-Beauvoir (`ownLevelDeck`) */
 const OWN_LEVELS = /^Passerelle Simone/
+/** a bridge drawn with its own levels (ownLevelDecks): the Seine band holds it as the bridge pass left it (tools/deck-zones.ts) */
+export const ownLevels = (name?: string): boolean => !!name && OWN_LEVELS.test(name)
 
 /**
  * ONE BRIDGE, ONE DECK (the owner, 2026-10-30: "We should audit every seine bridge too"; tools/, the audit of the 54 crossings). A Seine bridge is

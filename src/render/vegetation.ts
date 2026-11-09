@@ -64,6 +64,9 @@ const MAX_LIGHT = 300
 /** past this a tree is drawn as its crown alone, in cities that ask (`farCrowns`) */
 const FAR_CROWN = 350
 
+/** the tallest tree a clearing's crown reach is reckoned for (m): bounds the box test, nothing is cut at it */
+const CLEAR_MAX_HEIGHT = 30
+
 export class Vegetation {
   private readonly scene: Scene
   private readonly base: string
@@ -180,11 +183,15 @@ export class Vegetation {
    * The park scatter planted Civic Center's promenade and its playgrounds full of trees (2026-10-03). A clearing that
    * arrives after a tile's trees takes them out of it too.
    */
-  private readonly clearings: { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }[] = []
-  clear(ring: { x: number; z: number }[]): void {
+  private readonly clearings: { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number; reach: number }[] = []
+  /**
+   * `reach` (crown radius per metre of tree height, 0 = the trunk alone): a tree whose crown would overhang the ring goes too,
+   * which a bridge wants (owner, 2026-11-08: a big crown stood over the Pont National's deck from the bank beside it).
+   */
+  clear(ring: { x: number; z: number }[], reach = 0): void {
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
-    const c = { ring, x0, x1, z0, z1 }
+    const c = { ring, x0, x1, z0, z1, reach }
     this.clearings.push(c)
     // (the trees already planted against THIS ring only: hundreds of footprints arrive, one at a time)
     for (const [k, ps] of this.byTile) {
@@ -203,9 +210,22 @@ export class Vegetation {
     }
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (const p of ps) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
-    const near = clearings.filter((c) => c.x1 >= x0 - 2 && c.x0 <= x1 + 2 && c.z1 >= z0 - 2 && c.z0 <= z1 + 2)
+    const near = clearings.filter((c) => c.x1 >= x0 - 2 - c.reach * CLEAR_MAX_HEIGHT && c.x0 <= x1 + 2 + c.reach * CLEAR_MAX_HEIGHT && c.z1 >= z0 - 2 - c.reach * CLEAR_MAX_HEIGHT && c.z0 <= z1 + 2 + c.reach * CLEAR_MAX_HEIGHT)
     if (near.length === 0) return ps
-    return ps.filter((p) => !near.some((c) => p.x >= c.x0 - 2 && p.x <= c.x1 + 2 && p.z >= c.z0 - 2 && p.z <= c.z1 + 2 && inside(c.ring, p.x, p.z)))
+    const edgeDist = (r: { x: number; z: number }[], x: number, z: number): number => {
+      let m = Infinity
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        const a = r[j], b = r[i], dx = b.x - a.x, dz = b.z - a.z, l2 = dx * dx + dz * dz
+        const t = l2 > 0 ? Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / l2)) : 0
+        m = Math.min(m, Math.hypot(x - a.x - t * dx, z - a.z - t * dz))
+      }
+      return m
+    }
+    return ps.filter((p) => !near.some((c) => {
+      const r = c.reach * p.height
+      if (p.x < c.x0 - 2 - r || p.x > c.x1 + 2 + r || p.z < c.z0 - 2 - r || p.z > c.z1 + 2 + r) return false
+      return inside(c.ring, p.x, p.z) || (r > 0 && edgeDist(c.ring, p.x, p.z) < r)
+    }))
   }
 
   /**
@@ -213,6 +233,8 @@ export class Vegetation {
    * and go with that layer's tile. The real tree models, not boxes (owner, 2026-11-05).
    */
   setTrees(key: string, ps: Planting[]): void {
+    // (a bridge's outline, a paved landmark: the clearings hold for these too — a lower quay's plane stood in the Pont National's deck)
+    ps = this.cleared(ps)
     if (ps.length === 0) { if (this.byTile.delete(key)) this.dirty = true; return }
     this.byTile.set(key, ps)
     this.seated.delete(key)
@@ -374,6 +396,9 @@ export class Vegetation {
         // the same group as the buildings: the ground layers clear depth, and anything left in group 0 is
         // either buried by the street or, where the street does not reach, shows through the grass
         m.renderingGroupId = 3
+        // hidden until `plant` gives it trees: a model no tile uses was drawn once at the origin, a whole plane tree standing at the
+        // Pont National's right-bank end in the mini city (owner, 2026-11-08: "a tree in the middle of the bridge")
+        m.setEnabled(false)
 
         /**
          * Foliage is an alpha CUTOUT, not alpha blending.

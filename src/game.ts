@@ -56,7 +56,7 @@ import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
 import { ambientOcclusion } from './render/depth.ts'
 import { colourGrade, GRADE, GRADE_NO_AO } from './render/grade.ts'
-import { City, setupGroundLayers } from './render/city.ts'
+import { City, setupGroundLayers, BRIDGE_CROWN_REACH } from './render/city.ts'
 import { Crowd, crowdLook } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
 import { OverheadLines } from './render/overhead.ts'
@@ -113,7 +113,7 @@ import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { BugReports, type BugPlace } from './ui/bugs.ts'
-import { telemetryBake, telemetryBug, telemetryEvent, telemetryReady, telemetryWorld } from './telemetry.ts'
+import { telemetryBake, telemetryBug, telemetryEvent, telemetryOptions, telemetryReady, telemetryWorld } from './telemetry.ts'
 import { autoReduced, recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
 import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
@@ -888,6 +888,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // ground landmarks pave, as trees clearings (render/vegetation.ts `clear`)
   const clearingsEarly: { x: number; z: number }[][] = []
   let treesReady = false
+  const bridgeRings = new Set<{ x: number; z: number }[]>()
+  city.eachBridgeOutline((ring) => { bridgeRings.add(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring, BRIDGE_CROWN_REACH) })
   let plantsClear: ((ring: { x: number; z: number }[]) => void) | null = null
   const landmarks = off.has('landmarks') ? null
     // (the sea's level, from the index: `deckAbove` — the piers — places by it; without it every pier fell through to
@@ -1460,7 +1462,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!off.has('trees')) city.addLayer(trees.layer())
   quays.plantWith((k, ps) => trees.setTrees(k, ps))
   treesReady = true
-  for (const r of clearingsEarly) trees.clear(r)
+  for (const r of clearingsEarly) trees.clear(r, bridgeRings.has(r) ? BRIDGE_CROWN_REACH : 0)
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
   // (`treesReady`: the shot tools wait for it — SF's forms are forty-odd models and take a while)
@@ -1799,6 +1801,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const jobLine = (job: Job, outcome: EndDelivery['outcome'], stars: number, dollars: number, seconds: number): void => {
     sessionJobs.push({ emoji: job.item?.emoji ?? '📦', what: job.item?.name ?? 'A parcel', from: job.source?.name ?? job.pickup.label,
       to: job.dropoff.label, stars, dollars, seconds, outcome })
+    telemetryEvent(`delivery:${outcome}`, { job: job.id, item: job.item?.name, stars, dollars, seconds: Math.round(seconds) })
   }
   const onDelivery = (events: DeliveryEvent[]): void => {
     for (const ev of events) {
@@ -1813,6 +1816,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         opts.platform?.endOffer()
       } else if (ev.kind === 'accepted') {
         acceptedJobs.add(ev.job.id)   // [#303 HOOK]
+        telemetryEvent('delivery:accept', { job: ev.job.id, item: ev.job.item?.name, from: ev.job.pickup.label, to: ev.job.dropoff.label })
         deliveryCard.hideOffer()
         opts.platform?.endOffer()
         const what = ev.job.item ? `${ev.job.item.emoji} ` : ''
@@ -2049,6 +2053,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const g = guide
       const summary = `${far(nav.travelled - tourFrom.m)} in ${clock(simSeconds - tourFrom.s)} · ${g.count} stops`
       sessionTours.push({ name: g.tour.name, stops: g.count })
+      telemetryEvent('tour:complete', { tour: g.tour.id, stops: g.count, m: Math.round(nav.travelled - tourFrom.m), s: Math.round(simSeconds - tourFrom.s) })
+      telemetryOptions({ tour: 'free' })
       // …and the end of the session on offer: on the card, and on the phone beside the d-pad (a trainer's rider may
       // have nothing else to press), until they choose
       const keepRiding = (): void => { tourEndOffered = false; hud.banner('Free ride', 'ride wherever you like') }
@@ -2075,11 +2081,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     tourCard?.hide()
     const t = await pickTour(toursFor(opts.city), { speedup: play.speedup, imperial: imperialNow(), touch: touchScreen(), platform: !!opts.platform, city: src.index?.name })
     tourPicking = false
-    if (!t) { endTour(); hud.banner('Free ride', 'ride wherever you like'); return }
+    if (!t) { endTour(); telemetryOptions({ tour: 'free' }); hud.banner('Free ride', 'ride wherever you like'); return }
     const jump = (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump
     if (!jump?.(t.stops[0].lat, t.stops[0].lon)) { hud.banner('Could not start the tour', 'its first stop is off the streets'); return }
     guide = new TourGuide(t, tourLocal)
     tourFrom = { m: nav.travelled, s: simSeconds }
+    telemetryOptions({ tour: t.id })
+    telemetryEvent('tour:start', { tour: t.id, name: t.name })
     hud.banner(t.name, `${guide.count} stops`)
   }
   // the navigator's steering state, for probes of the two input modes (read-only)
@@ -2251,6 +2259,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   function backOnStreet(pos: { edgeId: number; s: number; reversed: boolean }): void {
     nav.placeAt(pos)
     const p = nav.at()
+    // (the event's own position is where the rider got on or was carried from; `to` is where they are put down)
+    const to = proj.toLatLon(p)
+    telemetryEvent('transit:off', { to: { lat: to.lat, lon: to.lon }, street: nav.edge.name || undefined })
     city.update(p.x, p.z)
     camHeading = nav.heading()
   }
@@ -2290,6 +2301,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const v = transit.boardable
     if (!v) return
     if (transit.board(nav.position)) {
+      telemetryEvent('transit:on', { kind: v.kind, name: v.name })
       destination = null
       tour = null
       clearRoute()
@@ -2315,6 +2327,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const orbit = new OrbitLook(canvas)
   const proj = new Projection(pkg.origin)
   let frozen = false
+  /** what the ride was last paused by, for beacons' pause / unpause events ('' = riding) */
+  let pausedWas = ''
   // A and D nudge across the street at any time while riding (the arrows nudge only when the next junction is far,
   // and are turn requests near one); not while frozen, where WASD flies the camera
   addEventListener('keydown', (e) => {
@@ -3222,6 +3236,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (welcomePedal > 2 || welcomeFor > 20) closeWelcome()
       }
       // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
+      const pausedNow = controls.paused() ? 'paused' : frozen ? 'frozen' : menuHeld ? 'menu' : ''
+      if (pausedNow !== pausedWas) { telemetryEvent(pausedNow ? 'pause' : 'unpause', { why: pausedNow || pausedWas }); pausedWas = pausedNow }
       const hold = frozen || menuHeld || jumpWait() || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen() || tourPicking
         // (waiting at the gondola's station: the cabin is boarded, the track is not ridden; and in a lift)
         || (!riding && nav.edge.name === GONDOLA_NAME)
@@ -3938,6 +3954,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   w.__jump = (lat: number, lon: number, bearing?: number): boolean => {
     const where = nearestStart({ lat, lon })
     if (!where) return false
+    // (sent before the move: the event's position is where the jump was from)
+    telemetryEvent('jump', { to: { lat, lon }, aboard: transit.aboard?.kind })
     // off whatever was carrying the rider first: a jump made aboard the gondola or a streetcar left the rider on the
     // vehicle, which then held them where it was for good — the "freeze" on a shift-click on the map (2026-10-02)
     if (transit.aboard) transit.abandon(() => null)

@@ -1,3 +1,9 @@
+import { applySurveyPins } from './survey-pins.ts'
+import { applyLevelPlans } from './level-plans.ts'
+import { bdTopoZone } from './bdtopo-zones.ts'
+import { bandDeckZones, type BandBridgeShape } from './seine-band.ts'
+import type { DeckZoneSpec } from './deck-zones.ts'
+import { deckZonesOf, levelGroundGrid, applyDeckZoneRoutes, conformDeckRails, bdTopoRails, dedupeWalls, DZ_GROUND_STEP, DZ_SINK_MARGIN, DZ_BED, DZ_BED_TOL, DZ_BED_FOOT } from './deck-zones.ts'
 import './bake-lock.ts'
 /**
  * Heights (m) for untagged buildings whose neighbour guess is badly wrong, by OSM way id. Read off aerials.
@@ -41,7 +47,13 @@ import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, r
 import { applyStreetPaint, applyStreetWidths, markBrickSquares } from './street-paint.ts'
 import { Carriageways } from '../src/city/carriageways.ts'
 import { StreetGrade } from '../src/city/grade.ts'
-import { boreTunnels, sinkRoadMouths } from './tunnels.ts'
+import { boreTunnels, lidDeckIds, lidRoadIds, lidTunnels, sinkRoadMouths, type LidSlab } from './tunnels.ts'
+/** the lids' slabs, from the streets pass to the bridge outlines (filled by `lidTunnels`) */
+const lidSlabsOut: LidSlab[] = []
+const LID_SLAB_ID0 = 9e14
+/** how far along a lid road from its slab the trench is walled (m; render/city.ts TRENCH_*): the ramps are tunnels.ts LID_RAMP */
+const LID_WALL_REACH = Number(process.env.LID_WALL_REACH ?? 70)
+import { inRing as inRingTT } from '../src/city/terrain-tweaks.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
@@ -65,6 +77,7 @@ import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terr
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { PARIS_STANDS } from '../src/city/paris/stands.ts'
 import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
+import { layBikeRamps } from '../src/city/bike-ramps.ts'
 import { waterLookup } from '../src/render/watermask.ts'
 import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, handTrees, type Planting, type PlantReport } from '../src/city/plantings.ts'
 import { inside } from '../src/city/park-planting.ts'
@@ -140,7 +153,32 @@ const JUNCTION_MAX_STEP = 6
 /** …eased back to each way's own height over this far past JUNCTION_R */
 const JUNCTION_EASE = 30
 /** bridge ends this close are one bridgehead plate; its level is this quantile of its roads; a way above it comes down at most this far */
-const PLATE_MERGE = 30, PLATE_QUANTILE = 0.75, PLATE_MAX_DROP = 3
+const PLATE_MERGE = 30, PLATE_QUANTILE = Number(process.env.PLATE_QUANTILE ?? 0.75), PLATE_MAX_DROP = 3
+/** a plate needs this many road points in JUNCTION_R; a motorway/trunk way or slip road neither founds a plate nor counts in its level
+ *  (Pont Amont's trunk_link end founded its own plate on Quai de Bercy, beside Pont National's, and lifted the quay to 8.2) */
+const PLATE_MIN_ROADS = 8, PLATE_FREEWAY = /^(motorway|trunk)(_link)?$/
+/** …and a road with a node this near a bridge end is of its junction though OSM does not join them (Pont National's right end
+ *  joined only the Boulevard Poniatowski; Quai de Bercy, 14 m off, was left out of the plate and the level was one way's) */
+const PLATE_SEED_R = Number(process.env.PLATE_SEED_R ?? 15)
+/** …or any POINT of a road (distance to its segments) this near an end, its height there within PLATE_SEED_DH of the end's: Quai de
+ *  Bercy passes 8 m from Pont National's right end at its level with no node near (PLATE_SEED_SEG=0 off). Its level: that of the
+ *  roads the end's own joins gathered (the end's height is the lidar's, what a plate corrects). A way well under or over passes */
+const PLATE_SEED_SEG = Number(process.env.PLATE_SEED_SEG ?? PLATE_SEED_R), PLATE_SEED_DH = Number(process.env.PLATE_SEED_DH ?? 1.5)
+/** an underpass (tunnel / layer < 0) mouth this near a plate's centre: the ways into it are never of the plate (PLATE_MOUTH_R=0 off) */
+const PLATE_MOUTH_R = Number(process.env.PLATE_MOUTH_R ?? JUNCTION_R)
+/** (the lower-quay roads by name — Port, Voie, Berges: never of a plate, always cleared under a road deck; DECK_LOW_NAME env) */
+const DECK_LOW_NAME = new RegExp(process.env.DECK_LOW_NAME ?? '^(Port|Voie|Berges?) ')
+/** a deck clears an at-grade way passing under it (not joined to it, not of a plate) by this much, road / foot or service; short,
+ *  the deck is lifted, eased back at DECK_LIFT_GRADE, at most DECK_LIFT_MAX — or, within JUNCTION_R of a plated end (the street's
+ *  level), the way under is lowered, at most UNDER_MAX_DROP, eased at UNDER_GRADE (bake: deck clearance) */
+const DECK_CLEAR_ROAD = Number(process.env.DECK_CLEAR_ROAD ?? 4.2), DECK_CLEAR_FOOT = 3, DECK_LIFT_GRADE = 0.03, DECK_LIFT_MAX = 4
+const UNDER_MAX_DROP = 3, UNDER_GRADE = 0.06
+/** …a way less than this under the deck meets it there (an unjoined level crossing), it does not pass under; freeway decks are left be */
+const DECK_MIN_GAP = 1
+/** …except a lower-quay way (on the quay shelf found from the ground, or named Port / Voie / Berge) under a road deck: it never meets
+ *  the deck at level, whatever the gap (Pont Mirabeau's ends sag to the lidar's quay: Voie Georges Pompidou 1.0, Port de Javel 0.1
+ *  under them); cleared from DECK_LOW_MIN_GAP up, and lifted where a plated end could not lower it far enough. DECK_LOW=0 off */
+const DECK_LOW_MIN_GAP = -0.5
 /** a way whose own heights near a plate sit this far under it is a lower path (a quay walk), not of the junction; ways leaving it climb no steeper than PLATE_GRADE */
 const PLATE_LOW = 2.5, PLATE_GRADE = Number(process.env.PLATE_GRADE ?? 0.1)
 
@@ -463,7 +501,35 @@ async function bake(spec: CitySpec): Promise<void> {
   if (authored.ways.length) console.log(`  ${authored.ways.length} authored ways of the region's own`)
 
   const proj = new Projection(spec.centre)
-  const streetRegion = region(spec.region)
+  // BDTOPO_ZONES=1 (tools/bdtopo-zones.ts, pilot): each hand deck zone replaced in memory by its BD TOPO version, hand facts merged
+  // BDTOPO_BAND=1 (tools/seine-band.ts, 2026-11-08): ONE Seine band from BD TOPO (water + bridges), the hand zones as overrides on
+  //  top; `bandAt` (local x, z) stands the inference passes down inside it (plates, deck clearance, the lower-quay shelf, sunk
+  //  tunnel mouths, meetDecks)
+  const seine = process.env.BDTOPO_BAND === '1' ? await (async () => {
+    const r = region(spec.region), t0 = Date.now()
+    // (bandExclude by location: the excluded bridges' OSM outlines (bridgesQuery, cached; fetched again for the outlines below)
+    //  and their named bridge-tagged deck ways)
+    const exN = new Set((r.bandExclude ?? []).map((q) => q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()))
+    const isEx = (n?: string): boolean => !!n && exN.has(n.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase())
+    const osmB: BandBridgeShape[] = []
+    if (exN.size) {
+      const got = await overpassBox(bridgesQuery, spec).catch(() => null)
+      for (const w of got?.ways ?? []) if (isEx(w.tags?.name) && w.geometry) osmB.push({ name: w.tags.name!, pts: w.geometry.map((q) => proj.toLocal(q)), ring: true })
+      for (const rl of got?.relations ?? []) if (isEx(rl.tags?.name)) for (const g of outerRings(rl)) osmB.push({ name: rl.tags.name!, pts: g.map((q) => proj.toLocal(q)), ring: true })
+      for (const w of ways) if (w.tags.bridge && w.tags.bridge !== 'no' && isEx(w.tags.name) && w.geometry) osmB.push({ name: w.tags.name!, pts: w.geometry.map((q) => proj.toLocal(q)) })
+    }
+    const b = await bandDeckZones(spec.centre, spec.radius ?? 1000, r.deckZones ?? [], r.bandExclude ?? [], (lat, lon) => proj.toLocal({ lat, lon }), (t) => console.log(`  ${t}`), r.riverLevel, osmB)
+    console.log(`  timing: seine band built in ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+    return { region: { ...r, deckZones: b.zones }, band: b.band }
+  })() : null
+  const bandAt = (x: number, z: number): boolean => !!seine && seine.band.inside(x, z)
+  const bandAny = (e: { points: ArrayLike<number> }): boolean => { if (!seine) return false; for (let i = 0; i < e.points.length; i += 2) if (seine.band.inside(e.points[i], e.points[i + 1])) return true; return false }
+  const streetRegion = seine ? seine.region : process.env.BDTOPO_ZONES === '1' && region(spec.region).deckZones?.length ? await (async () => {
+    const r = region(spec.region), log: string[] = []
+    const dz = await Promise.all(r.deckZones!.map((z: DeckZoneSpec) => bdTopoZone(z, log)))
+    for (const t of log) console.log(`  ${t}`)
+    return { ...r, deckZones: dz }
+  })() : region(spec.region)
   /*
    * No driving aisles inside a surface CAR PARK (owner, 2026-10-17: "we should probably not draw roads inside parking lots
    * (since they are guesses from OSM and don't line up with the cars)"): the lot is laid out with its own stall rows and
@@ -1714,6 +1780,8 @@ async function bake(spec: CitySpec): Promise<void> {
   // the quay walls (render/quays.ts): the shelf runs LQ_UNDER_WALL under the wall's cap; a wall where the high side stands QW_MIN_DROP
 // over the low, its top read QW_TOP_AT out, its cap reaching (at most QW_CAP_MAX) to where the ground is within QW_CAP_EPS of the top
   const LQ_UNDER_WALL = 4, QW_MIN_DROP = 1.2, QW_TOP_AT = 9, QW_CAP_MAX = 6, QW_CAP_EPS = 0.25, QW_PIECE = 4, QW_SEEK = 40, QW_DUP = 2, QW_SPILL_MAX = 5, QW_SPILL_EPS = 0.1, QW_SMOOTH = 3, QW_TOP_FIND = 25
+  /** a wall whose ground QW_NEAR_AT behind it is this far under the street beyond tops out at that ground (a shelf's river edge) */
+  const QW_NEAR_AT = 3, QW_STREET_GAP = 2
   const QD_FAKE = process.env.QD_MODE !== 'lidar', LQ_H = 2.1, LQ_MARGIN = 3, LQ_FIND = 40, LQ_RAMP = 0.08, LQ_LOW_MAX = 4.5, LQ_DROP = 2.5, LQ_DROP_R = 25, LQ_UPPER_R = 60
   const LQ_NEAR = 30
   /*
@@ -2160,7 +2228,9 @@ async function bake(spec: CitySpec): Promise<void> {
           const st: S = { x, z, vx: -uz * side, vz: ux * side, l, top: -1, edge, street: 0, y: 0, ok: false }
           const at = (o: number): number => G(x + st.vx * o, z + st.vz * o)
           st.street = at(d)
-          for (let o = d; o < edge - LQ_BANK; o += 1) if (at(o) < st.street - LQ_TOP_FALL) { st.top = o; break }
+          // (the wall's top scanned back in from the water, not the first fall out from the street: a trench between them —
+          //  the Quai de Bercy's lid tunnel, 2026-11-07 — took the cycle track beyond it down to the shelf)
+          for (let o = Math.floor(edge - LQ_BANK); o >= d; o -= 1) if (at(o) >= st.street - LQ_TOP_FALL) { st.top = o + 1 < edge - LQ_BANK ? o + 1 : -1; break }
           st.y = at(edge - LQ_BANK)
           st.ok = st.top > 0 && st.street - st.y >= LQ_MIN_DROP && !nearBridge(x + st.vx * st.top, z + st.vz * st.top)
           ss.push(st)
@@ -2186,19 +2256,24 @@ async function bake(spec: CitySpec): Promise<void> {
       return n.filter((o) => o.ok).length >= LQ_VOTE * n.length && Number.isFinite(level[i]) && q.street - level[i] >= LQ_MIN_DROP
     })
     let posts = 0, kept2 = 0
+    // (a post whose ground is still up at the street's level is not the bank: on the 4 m grid the post nearest the wall's top
+    //  is often the cycle track along it — the Quai de Bercy's, 2026-11-07 — and it went down to the shelf)
+    const g0 = fineGround.slice()
     ss.forEach((st, i) => {
       if (!good[i]) return
       kept2++
       const y = level[i]
       // the slope's top for a sample that had none: where the ground first falls under the street, else a third of the way out
       let top = st.top
-      if (top <= 0) { top = st.edge / 3; for (let o = 1; o < st.edge; o += 1) if (G(st.x + st.vx * o, st.z + st.vz * o) < st.street - LQ_TOP_FALL) { top = o; break } }
+      if (top <= 0) { top = st.edge / 3; for (let o = Math.floor(st.edge); o >= 1; o -= 1) if (G(st.x + st.vx * o, st.z + st.vz * o) >= st.street - LQ_TOP_FALL) { top = o + 1; break } }
       const ux = st.vz, uz = -st.vx
       for (let o = top + 1; o <= st.edge + 2; o += 1) for (let a = -st.l / 2 - 1; a <= st.l / 2 + 1; a += 1) {
         const px = st.x + st.vx * o + ux * a, pz = st.z + st.vz * o + uz * a
         const c = Math.round((px - fx0) / FINE_STEP), r = Math.round((pz - fz0) / FINE_STEP)
         if (c < 0 || r < 0 || c >= fcols || r >= frows) continue
         const k = r * fcols + c
+        if (g0[k] >= st.street - LQ_TOP_FALL) continue
+        if (bandAt(px, pz)) continue // (the Seine band: no lower-quay shelf; BD TOPO's ground)
         if (fineGround[k] !== y) { fineGround[k] = y; posts++ }
         shelfPosts.push(px, pz)
       }
@@ -2329,7 +2404,8 @@ async function bake(spec: CitySpec): Promise<void> {
    * different datums the city would STEP at the edge of every loaded tile — and by the height of a house,
    * because the two grids disagree about the ground at the origin by whatever the fine detail there is.
    */
-  const datum = sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, 0, 0)
+  // a test area may borrow its parent city's datum (CitySpec `datum`), so its heights read the same as the parent's
+  const datum = spec.datum ?? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, 0, 0)
   const datumRaw = datum
   for (let i = 0; i < ground.length; i++) ground[i] = Math.round((ground[i] - datum) * 100) / 100
   for (let i = 0; i < fineGround.length; i++) fineGround[i] = Math.round((fineGround[i] - datum) * 100) / 100
@@ -2536,7 +2612,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * QD_REACH m of the water ships the bare-earth lidar at QD_STEP m, fetched at QD_PX pixels a 0.01° tile (≈0.7–1.1 m). Not in
    * the water: the survey interpolates across the river, and the fine ground (lowered under it) stands there.
    */
-  let quayDetail: { tiles: Set<string>; step: number; at: (x: number, z: number) => number | null } | undefined
+  let quayDetail: { tiles: Set<string>; step: number; at: (x: number, z: number) => number | null; stepOf?: (tx: number, tz: number) => number | undefined } | undefined
   // the quays' walls as lines, from the ground as finally shipped (below, at the package)
   // the lower quays' segment ends (nodeKey), found from the ground in the quay detail: the bridgehead plates leave them and their ramps alone
   const lowKeys = new Set<string>()
@@ -2822,6 +2898,7 @@ async function bake(spec: CitySpec): Promise<void> {
      */
     quayWallsOf = (G) => {
       const out: QuayWall[] = []
+      let shelfEdges = 0
       const capOf = (x: number, z: number, nx: number, nz: number, top: number): number => {
         for (let o = 0.5; o <= QW_CAP_MAX; o += 0.5) if (G(x + nx * o, z + nz * o) >= top - QW_CAP_EPS) return o + 0.3
         return QW_CAP_MAX
@@ -2851,7 +2928,10 @@ async function bake(spec: CitySpec): Promise<void> {
         // the top is the street's above it (its own heights, as ridden), else the ground QW_TOP_AT out
         // (only where the ground behind really rises: a street 25 m off does not make a wall in the middle of a lower quay)
         const rise = G(mx + nx * QW_TOP_AT, mz + nz * QW_TOP_AT)
-        const top = streetTop(mx, mz, nx, nz) ?? rise
+        // (…but not over a lower level between: a lower quay's river edge took the street's top 14 m on, past the street's own wall,
+        //  and its cap stood over the shelf at street height, a lid — owner, 2026-11-06, the Port de la Concorde, 48.863382, 2.321998)
+        const st = streetTop(mx, mz, nx, nz), near = G(mx + nx * QW_NEAR_AT, mz + nz * QW_NEAR_AT)
+        const top = st !== null && st - near > QW_STREET_GAP ? (shelfEdges++, near) : st ?? rise
         if (rise - low < QW_MIN_DROP || top - low < QW_MIN_DROP || inHouse(mx, mz)) { flush(); return }
         // the face goes out past the slope's foot: where the shipped ground is down to the floor (the water, the shelf), so no
         // ground stands proud in front of it — the 4 m posts put the slope across the river's outline, not behind it
@@ -2937,6 +3017,7 @@ async function bake(spec: CitySpec): Promise<void> {
         }
       }
       flush()
+      console.log(`  quay walls: ${shelfEdges} pieces topped at the shelf behind them, not the street beyond`)
       return out
     }
     let fakeLog = 0; if (QD_FAKE) console.log(`  lower roads: ${[...new Set(lowers.map((e) => e.name ?? '(unnamed)'))].join(', ')}`)
@@ -3140,6 +3221,9 @@ async function bake(spec: CitySpec): Promise<void> {
       for (let i = 0; i < e.points.length; i += 2) near = Math.min(near, Math.hypot(e.points[i] - tx, e.points[i + 1] - tz))
       if (near < 4) console.log(`  TRACE ${stage}: ${e.id} ${e.name ?? e.kind}${e.foot ? ' F' : ''}${e.bridge ? ' B' : ''}${e.ramp ? ' R' : ''} [${e.heights.map((h) => h.toFixed(1)).join(' ')}]`)
     }
+    // the fine ground there, a row of posts across x (−12…+12 m)
+    const c = Math.round((tx - fx0) / FINE_STEP), r = Math.round((tz - fz0) / FINE_STEP)
+    console.log(`  TRACE ${stage}: ground ${[-3, -2, -1, 0, 1, 2, 3].map((k) => fineGround[r * fcols + c + k]?.toFixed(1)).join(' ')}`)
   }
   trace('levelled')
   // …and one height where streets meet: every end at a node takes the highest of them, eased in over 12 m, so
@@ -3406,51 +3490,109 @@ async function bake(spec: CitySpec): Promise<void> {
    * (bridgeHeights) start from the street and not from the bank's lidar. The lower quays and the ways that join them (their
    * ramps) and steps keep their own heights: the rider chooses the ramp up or the quay under.
    */
+  // (the plates' ways and their bridge ends, for the deck clearance after bridgeHeights)
+  const plateWays = new Set<PackedEdge>(), plateEnds: { x: number; z: number }[] = []
   if (spec.region === 'paris' && process.env.PLATES !== '0') {
     const isRoad = (e: PackedEdge): boolean => !e.foot && /^(primary|secondary|trunk|tertiary|unclassified|residential|living_street)(_link)?$/.test(e.kind ?? '')
+    const levelRoad = (e: PackedEdge): boolean => isRoad(e) && !PLATE_FREEWAY.test(e.kind ?? '')
     const lowNames = new Set(streetRegion.lowerQuays ?? [])
     const lowNodes = new Set<number>()
     const isLow = (e: PackedEdge): boolean => { const p = unpackPoints(e.points); for (let i = 1; i < p.length; i++) if (lowKeys.has(quayNodeKey(p[i - 1])) && lowKeys.has(quayNodeKey(p[i]))) return true; return false }
-    for (const e of kept) if (lowNames.has(e.name ?? '') || isLow(e)) { lowNodes.add(e.a); lowNodes.add(e.b) }
+    // (regions.json lowerQuays names the UPPER quay streets that have a lower quay under them, not the lower quays: excluding them by
+    //  name left Quai de Bercy, Quai d'Orsay… out of their bridgeheads' plates. PLATE_LOW_NAMES=1 brings the old exclusion back)
+    for (const e of kept) if ((process.env.PLATE_LOW_NAMES === '1' && lowNames.has(e.name ?? '')) || isLow(e)) { lowNodes.add(e.a); lowNodes.add(e.b) }
     const flat = (e: PackedEdge): boolean => !e.bridge && !e.tunnel && (e.layer ?? 0) === 0 && !!e.heights && e.kind !== 'steps' && e.kind !== 'elevator'
       && !lowNodes.has(e.a) && !lowNodes.has(e.b)
-    const plates: { x: number; z: number; n: number; ends: { x: number; z: number; n: number }[] }[] = []
+    const plates: { x: number; z: number; n: number; ends: { x: number; z: number; n: number; h?: number }[] }[] = []
     for (const e of kept) {
-      if (!e.bridge || e.tunnel || !isRoad(e)) continue
+      if (!e.bridge || e.tunnel || !levelRoad(e)) continue
       const p = e.points
-      for (const c of [{ x: p[0], z: p[1], n: e.a }, { x: p[p.length - 2], z: p[p.length - 1], n: e.b }]) {
+      for (const c of [{ x: p[0], z: p[1], n: e.a, h: e.heights?.[0] }, { x: p[p.length - 2], z: p[p.length - 1], n: e.b, h: e.heights?.[e.heights.length - 1] }]) {
+        if (bandAt(c.x, c.z)) continue // (the Seine band: no bridgehead plates)
         const q = plates.find((t) => Math.hypot(t.x - c.x, t.z - c.z) < PLATE_MERGE)
         if (q) { q.ends.push(c); q.x = q.ends.reduce((s, t) => s + t.x, 0) / q.ends.length; q.z = q.ends.reduce((s, t) => s + t.z, 0) / q.ends.length }
         else plates.push({ ...c, ends: [c] })
       }
     }
+    // (a way into an UNDERPASS mouth near a plate runs at the level under the junction, not on it: Quai de Bercy dives under Pont
+    //  National's right bridgehead in three 40 m layer -1 tunnels, the IGN ground there 32.0 m against Bd Poniatowski's 38.4 —
+    //  plated, its mouths and the "short underpass ridden in the open" stood at the junction's 5.6 and the quay fell 6 m in 30 m)
+    const mouthNodes = new Set<number>()
+    if (PLATE_MOUTH_R > 0) for (const e of kept) if (e.tunnel || (e.layer ?? 0) < 0) for (const n of [e.a, e.b]) {
+      const p = e.points, q = n === e.a ? { x: p[0], z: p[1] } : { x: p[p.length - 2], z: p[p.length - 1] }
+      if (plates.some((c) => Math.hypot(q.x - c.x, q.z - c.z) < PLATE_MOUTH_R)) mouthNodes.add(n)
+    }
+    let mouthWays = 0
+    const flatP = (e: PackedEdge): boolean => flat(e) && !mouthNodes.has(e.a) && !mouthNodes.has(e.b)
+    for (const e of kept) if (flat(e) && !flatP(e)) mouthWays++
+    if (process.env.PLATE_DEBUG) console.log(`  [plate] ${mouthNodes.size} underpass mouths near plates, ${mouthWays} ways into them kept off the plates`)
     const atNode = new Map<number, PackedEdge[]>()
-    for (const e of kept) if (flat(e)) for (const n of [e.a, e.b]) (atNode.get(n) ?? atNode.set(n, []).get(n)!).push(e)
+    for (const e of kept) if (flatP(e)) for (const n of [e.a, e.b]) (atNode.get(n) ?? atNode.set(n, []).get(n)!).push(e)
     const nodeXZ = (e: PackedEdge, n: number): { x: number; z: number } => n === e.a ? { x: e.points[0], z: e.points[1] } : { x: e.points[e.points.length - 2], z: e.points[e.points.length - 1] }
     const reach = JUNCTION_R + JUNCTION_EASE
-    let levelled = 0, made = 0, landed = 0
+    const flatRoads = kept.filter((e) => flatP(e) && isRoad(e))
+    let levelled = 0, made = 0, landed = 0, segTotal = 0
     for (const c of plates) {
       // (the ways OF the junction, walked from its ends through joins within reach: a way passing under it, joined nowhere near — the
       //  périphérique under the Grande Armée at Porte Maillot — is not one of them)
-      const got = new Set<PackedEdge>(), seen = new Set<number>(c.ends.map((t) => t.n)), todo = [...seen]
-      while (todo.length) {
-        const n = todo.pop()!
-        for (const e of atNode.get(n) ?? []) {
-          got.add(e)
-          const m = n === e.a ? e.b : e.a, q = nodeXZ(e, m)
-          if (!seen.has(m) && Math.hypot(q.x - c.x, q.z - c.z) < reach) { seen.add(m); todo.push(m) }
+      const got = new Set<PackedEdge>(), seen = new Set<number>(c.ends.map((t) => t.n))
+      for (const [n, es] of atNode) if (!seen.has(n) && es.some(isRoad)) {
+        const q = nodeXZ(es[0], n)
+        if (c.ends.some((t) => Math.hypot(q.x - t.x, q.z - t.z) < PLATE_SEED_R)) seen.add(n)
+      }
+      const walk = (todo: number[]): void => {
+        while (todo.length) {
+          const n = todo.pop()!
+          for (const e of atNode.get(n) ?? []) {
+            got.add(e)
+            const m = n === e.a ? e.b : e.a, q = nodeXZ(e, m)
+            if (!seen.has(m) && Math.hypot(q.x - c.x, q.z - c.z) < reach) { seen.add(m); todo.push(m) }
+          }
         }
+      }
+      walk([...seen])
+      // (seeded by a segment: a road passing the end at the level of the ways joined to it is of the junction, its nodes within
+      //  reach walked on from. It never FOUNDS a plate — bake 3 let Quai d'Ivry under Pont National's elevated left end found one at
+      //  the quay's 1.8 — and a lower-quay road (DECK_LOW_NAME: Voie Georges Pompidou under Pont Mirabeau) is never of one)
+      let segSeeded = 0
+      const base = [...got].flatMap((e) => e.heights!.filter((_, i) => levelRoad(e) && Math.hypot(e.points[2 * i] - c.x, e.points[2 * i + 1] - c.z) < JUNCTION_R)).sort((x, y) => x - y)
+      if (PLATE_SEED_SEG > 0 && base.length >= PLATE_MIN_ROADS) {
+        const baseLevel = base[Math.floor(base.length * PLATE_QUANTILE)], more: number[] = []
+        for (const e of flatRoads) {
+          if (got.has(e) || DECK_LOW_NAME.test(e.name ?? '')) continue
+          const p = e.points, h = e.heights!
+          let hit = false
+          for (let i = 1; i < h.length && !hit; i++) {
+            const ax = p[2 * i - 2], az = p[2 * i - 1], rx = p[2 * i] - ax, rz = p[2 * i + 1] - az, L2 = rx * rx + rz * rz
+            for (const t of c.ends) {
+              const u = L2 > 0 ? Math.max(0, Math.min(1, ((t.x - ax) * rx + (t.z - az) * rz) / L2)) : 0
+              if (Math.hypot(ax + rx * u - t.x, az + rz * u - t.z) < PLATE_SEED_SEG && Math.abs(h[i - 1] + (h[i] - h[i - 1]) * u - baseLevel) < PLATE_SEED_DH) { hit = true; break }
+            }
+          }
+          if (!hit) continue
+          got.add(e); segSeeded++
+          for (const n of [e.a, e.b]) { const q = nodeXZ(e, n); if (!seen.has(n) && Math.hypot(q.x - c.x, q.z - c.z) < reach) { seen.add(n); more.push(n) } }
+        }
+        walk(more)
       }
       const pts: { e: PackedEdge; i: number; d: number }[] = []
       for (const e of got) for (let i = 0; i < e.heights!.length; i++) {
         const d = Math.hypot(e.points[2 * i] - c.x, e.points[2 * i + 1] - c.z)
         if (d < reach) pts.push({ e, i, d })
       }
-      const roads = pts.filter((q) => q.d < JUNCTION_R && isRoad(q.e)).map((q) => q.e.heights![q.i]).sort((a, b) => a - b)
-      if (roads.length < 8) continue
+      const roads = pts.filter((q) => q.d < JUNCTION_R && levelRoad(q.e)).map((q) => q.e.heights![q.i]).sort((a, b) => a - b)
+      if (roads.length < PLATE_MIN_ROADS) {
+        if (process.env.PLATE_DEBUG) console.log(`  [plate] ${Math.round(c.x)},${Math.round(c.z)} none: ${roads.length} road points (an elevated approach?), ways ${got.size}`)
+        continue
+      }
       const level = roads[Math.floor(roads.length * PLATE_QUANTILE)]
-      made++
-      if (process.env.PLATE_DEBUG) console.log(`  [plate] ${Math.round(c.x)},${Math.round(c.z)} level ${level.toFixed(2)} ends ${c.ends.map((t) => `${Math.round(t.x)},${Math.round(t.z)}`).join(' ')} ways ${got.size}`)
+      made++; segTotal += segSeeded
+      for (const e of got) plateWays.add(e)
+      for (const t of c.ends) plateEnds.push({ x: t.x, z: t.z })
+      if (process.env.PLATE_DEBUG) {
+        const qn = (f: number): string => roads[Math.floor(roads.length * f)].toFixed(1)
+        console.log(`  [plate] ${Math.round(c.x)},${Math.round(c.z)} level ${level.toFixed(2)} (q25 ${qn(0.25)} q50 ${qn(0.5)} q75 ${qn(0.75)} of ${roads.length}) ends ${c.ends.map((t) => `${Math.round(t.x)},${Math.round(t.z)}`).join(' ')} ways ${got.size}${segSeeded ? ` (${segSeeded} seeded by a segment)` : ''}`)
+      }
       // (a quay walk joined to the junction, its plate-side end well under it, stays down: the plate pulled their ends up to the
       //  street. The end, not the way's median: a street's carriageway and its sidewalk then agree)
       const low = new Set<PackedEdge>(), seen0 = new Set(c.ends.map((t) => t.n))
@@ -3488,7 +3630,7 @@ async function bake(spec: CitySpec): Promise<void> {
         if (onPlate.has(e.b)) { e.heights[e.heights.length - 1] = level; landed++ }
       }
     }
-    if (made) console.log(`  bridgehead plates: ${made} junctions at one level, ${levelled} way points on them, ${landed} bridge ends landed`)
+    if (made) console.log(`  bridgehead plates: ${made} junctions at one level, ${levelled} way points on them, ${landed} bridge ends landed, ${segTotal} ways seeded by a segment`)
   }
   /*
    * UNMARKED OVERPASSES (owner, 2026-11-06: "highway overpasses aren't modeled at all"; Porte Maillot, where the avenues cross the
@@ -3603,6 +3745,109 @@ async function bake(spec: CitySpec): Promise<void> {
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
   trace('decks')
+  /*
+   * DECK CLEARANCE (2026-11-07, Pont National: its left end, at the lidar's 4.0, stood 2.3 m over the Quai d'Ivry passing under it,
+   * drawn as a wall across the quay — the approach there is an elevated boulevard, so no plate levels that end). An at-grade way
+   * crossing under a deck, joined to no bridge and not one of a plate's own ways, is cleared by DECK_CLEAR_ROAD (DECK_CLEAR_FOOT
+   * for a footway, cycleway or service way). The deck comes up — lift only, eased along the decks and elevated ways it joins at
+   * DECK_LIFT_GRADE; but near a plated end (that end is the street) the way under goes down instead, eased at UNDER_GRADE.
+   * DECK_CLEAR=0 skips it; DECK_CLEAR_DEBUG=1 lists what moved.
+   */
+  if (spec.region === 'paris' && process.env.DECK_CLEAR !== '0') {
+    const aligned = (e: PackedEdge): boolean => !!e.heights && e.heights.length * 2 === e.points.length && !e.authored && !e.tunnel && e.kind !== 'steps' && e.kind !== 'elevator'
+    const decksC = kept.filter((e) => e.bridge && aligned(e) && !PLATE_FREEWAY.test(e.kind ?? ''))
+    const bridgeNode = new Set<number>(); for (const e of decksC) { bridgeNode.add(e.a); bridgeNode.add(e.b) }
+    const underC = kept.filter((e) => !e.bridge && (e.layer ?? 0) <= 0 && aligned(e) && !plateWays.has(e) && !bridgeNode.has(e.a) && !bridgeNode.has(e.b))
+    const C = 40, B = new Map<string, { e: PackedEdge; i: number }[]>()
+    for (const e of underC) for (let i = 1; i < e.heights!.length; i++) {
+      const p = e.points
+      for (let cx = Math.floor(Math.min(p[2 * i - 2], p[2 * i]) / C); cx <= Math.floor(Math.max(p[2 * i - 2], p[2 * i]) / C); cx++)
+        for (let cz = Math.floor(Math.min(p[2 * i - 1], p[2 * i + 1]) / C); cz <= Math.floor(Math.max(p[2 * i - 1], p[2 * i + 1]) / C); cz++) { const k = `${cx},${cz}`; (B.get(k) ?? B.set(k, []).get(k)!).push({ e, i }) }
+    }
+    const nearPlate = (x: number, z: number): boolean => plateEnds.some((t) => Math.hypot(t.x - x, t.z - z) < JUNCTION_R)
+    const lowMemo = new Map<PackedEdge, boolean>()
+    const lowUnder = (e: PackedEdge): boolean => {
+      if (process.env.DECK_LOW === '0') return false
+      let v = lowMemo.get(e)
+      if (v === undefined) {
+        v = DECK_LOW_NAME.test(e.name ?? '')
+        if (!v) { const q = unpackPoints(e.points); for (let i = 1; i < q.length && !v; i++) v = lowKeys.has(quayNodeKey(q[i - 1])) && lowKeys.has(quayNodeKey(q[i])) }
+        lowMemo.set(e, v)
+      }
+      return v
+    }
+    // the raise each point needs (deck) / the drop (way under), spread later
+    const up = new Map<PackedEdge, number[]>(), down = new Map<PackedEdge, number[]>()
+    const need = (m: Map<PackedEdge, number[]>, e: PackedEdge, i: number, v: number): void => { if (bandAt(e.points[2 * i], e.points[2 * i + 1])) return; const a = m.get(e) ?? m.set(e, e.heights!.map(() => 0)).get(e)!; a[i] = Math.max(a[i], v) }
+    const dbg: string[] = []
+    for (const d of decksC) {
+      const p = d.points, h = d.heights!
+      for (let i = 1; i < h.length; i++) {
+        const ax = p[2 * i - 2], az = p[2 * i - 1], rx = p[2 * i] - ax, rz = p[2 * i + 1] - az
+        const seen = new Set<{ e: PackedEdge; i: number }>()
+        for (let cx = Math.floor(Math.min(ax, ax + rx) / C); cx <= Math.floor(Math.max(ax, ax + rx) / C); cx++)
+          for (let cz = Math.floor(Math.min(az, az + rz) / C); cz <= Math.floor(Math.max(az, az + rz) / C); cz++) for (const g of B.get(`${cx},${cz}`) ?? []) {
+            if (seen.has(g)) continue
+            seen.add(g)
+            const l = g.e.points, lh = g.e.heights!, bx = l[2 * g.i - 2], bz = l[2 * g.i - 1], sx = l[2 * g.i] - bx, sz = l[2 * g.i + 1] - bz
+            const den = rx * sz - rz * sx
+            if (Math.abs(den) < 1e-9) continue
+            const t = ((bx - ax) * sz - (bz - az) * sx) / den, w = ((bx - ax) * rz - (bz - az) * rx) / den
+            if (t < 0 || t > 1 || w < 0 || w > 1) continue
+            const hu = h[i - 1] + (h[i] - h[i - 1]) * t, hl = lh[g.i - 1] + (lh[g.i] - lh[g.i - 1]) * w
+            const clear = !g.e.foot && g.e.kind !== 'service' && g.e.kind !== 'cycleway' && g.e.kind !== 'track' ? DECK_CLEAR_ROAD : DECK_CLEAR_FOOT
+            const gap = hu - hl
+            const low = lowUnder(g.e) && !d.foot && d.kind !== 'footway' && d.kind !== 'cycleway' && d.kind !== 'path'
+            if (gap < (low ? DECK_LOW_MIN_GAP : DECK_MIN_GAP) || gap >= clear) continue
+            const short = clear - gap
+            if (nearPlate(ax + rx * t, az + rz * t) && (!low || short <= UNDER_MAX_DROP)) {
+              if (short > UNDER_MAX_DROP) continue
+              need(down, g.e, g.i - 1, short); need(down, g.e, g.i, short)
+              if (process.env.DECK_CLEAR_DEBUG) dbg.push(`${g.e.name ?? g.e.kind} down ${short.toFixed(1)} under ${d.name ?? d.kind} at ${Math.round(ax + rx * t)},${Math.round(az + rz * t)}`)
+            } else {
+              if (short > DECK_LIFT_MAX) continue
+              need(up, d, i - 1, short); need(up, d, i, short)
+              if (process.env.DECK_CLEAR_DEBUG) dbg.push(`${d.name ?? d.kind} up ${short.toFixed(1)} over ${g.e.name ?? g.e.kind}${low && gap < DECK_MIN_GAP ? ' (lower quay)' : ''} at ${Math.round(ax + rx * t)},${Math.round(az + rz * t)}`)
+            }
+          }
+      }
+    }
+    // spread each need along its way and on through the ways joined to it (of the same kind: decks and elevated ways / ways at
+    //  grade), falling off by grade × distance; then applied, up or down
+    const spread = (m: Map<PackedEdge, number[]>, pool: PackedEdge[], grade: number): number => {
+      const at = new Map<number, PackedEdge[]>()
+      for (const e of pool) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
+      const seg = (e: PackedEdge, i: number): number => Math.hypot(e.points[2 * i] - e.points[2 * i - 2], e.points[2 * i + 1] - e.points[2 * i - 1])
+      for (let pass = 0; pass < 6; pass++) {
+        let moved = false
+        for (const [e, a] of [...m]) {
+          for (let i = 1; i < a.length; i++) a[i] = Math.max(a[i], a[i - 1] - grade * seg(e, i))
+          for (let i = a.length - 2; i >= 0; i--) a[i] = Math.max(a[i], a[i + 1] - grade * seg(e, i + 1))
+          for (const [n, v] of [[e.a, a[0]], [e.b, a[a.length - 1]]] as const) {
+            if (v <= 0.05) continue
+            for (const o of at.get(n) ?? []) {
+              if (o === e) continue
+              const b = m.get(o) ?? m.set(o, o.heights!.map(() => 0)).get(o)!, k = o.a === n ? 0 : b.length - 1
+              if (b[k] < v - 0.01) { b[k] = v; moved = true }
+            }
+          }
+        }
+        if (!moved) break
+      }
+      let n = 0
+      for (const a of m.values()) for (const v of a) if (v > 0.05) n++
+      return n
+    }
+    const lifted = spread(up, kept.filter((e) => (e.bridge || (e.layer ?? 0) > 0) && aligned(e)), DECK_LIFT_GRADE)
+    const lowered = spread(down, kept.filter((e) => !e.bridge && (e.layer ?? 0) <= 0 && aligned(e) && !plateWays.has(e)), UNDER_GRADE)
+    for (const [e, a] of up) e.heights = e.heights!.map((v, i) => Math.round((v + a[i]) * 100) / 100)
+    for (const [e, a] of down) e.heights = e.heights!.map((v, i) => Math.round((v - a[i]) * 100) / 100)
+    if (lifted || lowered) {
+      const met = meetDecks(kept.filter((e) => !e.authored && !bandAny(e)), true, true)
+      console.log(`  deck clearance: ${lifted} deck points lifted over the ways under them, ${lowered} points of ways under a plated end lowered; ${met.length} ways met the lifted decks`)
+    }
+    if (process.env.DECK_CLEAR_DEBUG) console.log(dbg.map((t) => `    ${t}`).join('\n'))
+  }
   // the walks over the bay off the sea bed: onto their piers' decks, or a float (tools/bridges.ts `liftWalksOffTheSea`)
   if (seaLevel !== null) {
     const piers: { ring: { x: number; z: number }[]; floating: boolean }[] = []
@@ -3641,9 +3886,26 @@ async function bake(spec: CitySpec): Promise<void> {
       return (x: number, z: number): number => zonesAt(lidar, x, z).length ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z) : NaN
     })())
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
+  trace('bores')
+  // a mouth inside a deck zone, or within DZ_SINK_MARGIN of its ring, is left to the zone (tools/deck-zones.ts)
+  const dzRings = (streetRegion.deckZones ?? []).map((z: { ring: [number, number][] }) => z.ring.flatMap(([lat, lon]) => { const q = proj.toLocal({ lat, lon }); return [q.x, q.z] }))
+  const nearDz = (x: number, z: number): boolean => bandAt(x, z) || dzRings.filter((r: number[]) => r.length).some((r: number[]) => {
+    if (inRingTT(r, x, z)) return true
+    for (let i = 0; i < r.length; i += 2) {
+      const j = (i + 2) % r.length, dx = r[j] - r[i], dz = r[j + 1] - r[i + 1]
+      const t = Math.max(0, Math.min(1, ((x - r[i]) * dx + (z - r[i + 1]) * dz) / (dx * dx + dz * dz || 1)))
+      if (Math.hypot(r[i] + dx * t - x, r[i + 1] + dz * t - z) < DZ_SINK_MARGIN) return true
+    }
+    return false
+  })
+  // short covered trenches under a street: ridden through as low bores, the ground filled to the street (tools/tunnels.ts `lidTunnels`)
+  {
+    const drop = spec.region !== 'paris' || process.env.LIDS === '0' ? new Set<number>() : lidTunnels(kept, (name, why) => console.log(`  ${name}: ${why}`), nearDz, lidSlabsOut, groundFine)
+    if (drop.size) { const k = kept.filter((e) => !drop.has(e.id)); kept.length = 0; for (const e of k) kept.push(e); console.log(`  ${drop.size} near-miss joins at lid mouths dropped`) }
+  }
   // road tunnels no bore takes, with a street over the mouth: the mouth sunk under it, the road ramped down (tools/tunnels.ts)
   {
-    const drop = sinkRoadMouths(kept, (name, why) => console.log(`  ${name}: ${why}`))
+    const drop = sinkRoadMouths(kept, (name, why) => console.log(`  ${name}: ${why}`), nearDz)
     if (drop.size) { const k = kept.filter((e) => !drop.has(e.id)); kept.length = 0; for (const e of k) kept.push(e); console.log(`  ${drop.size} near-miss joins at sunk mouths dropped`) }
   }
   /*
@@ -3677,6 +3939,7 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     if (n) console.log(`  short road underpasses ridden in the open: ${n}`)
   }
+  trace('underpasses')
   /*
    * …and a ROAD that ends at a node only footways use, metres above or below it, is a false link between levels:
    * Geary's main lanes, in their cut, each ran a few metres on to a node of the Fillmore overpass's sidewalks
@@ -3715,10 +3978,11 @@ async function bake(spec: CitySpec): Promise<void> {
    * ground is brought down to it. What it changed is kept (`decks-undo.json`), for `--decks`.
    */
   const deckWork = conformWithUndo(spec.region ?? spec.id, spec.centre, kept, groundAt)
+  trace('conformed')
   if (deckWork) console.log(`  bridge decks: ${describe(deckWork.report)}`)
   // …and the ways meeting a deck the model moved meet it again (tools/bridges.ts `meetDecks`: Pont au Change, the Alma)
   if (deckWork) {
-    const met = meetDecks(kept.filter((e) => !e.authored), false, spec.region === 'paris')
+    const met = meetDecks(kept.filter((e) => !e.authored && !bandAny(e)), false, spec.region === 'paris')
     if (met.length) console.log(`  ${met.length} ways met their modelled bridge's conformed deck`)
   }
   /*
@@ -3764,6 +4028,7 @@ async function bake(spec: CitySpec): Promise<void> {
         let lowered = 0
         for (const e of cuts) {
           const pts = unpackPoints(e.points)
+          const lid = lidRoadIds.has(e.id)
           const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
           const reach = half + MARGIN
           for (let i = 1; i < pts.length; i++) {
@@ -3806,6 +4071,9 @@ async function bake(spec: CitySpec): Promise<void> {
               // (and under the road itself the ground IS the road: a dip in the lidar under a cut road left it 1.5 m
               //  over a hole — Broadway's trench, 2026-10-15, tools/air-paths.ts)
               else if (d <= half && h[k] < level - 0.3) { h[k] = level - 0.3; lowered++ }
+              // (an open lid's road and ramps: the ground beside them, out to the margin, IS their level — lidar's trench
+              //  is deeper than the ramp laid into it, and the posts left below it stood as spikes and made the ramp a deck)
+              else if (lid && d <= reach && h[k] < level) { h[k] = level; lowered++ }
             }
           }
         }
@@ -3857,7 +4125,7 @@ async function bake(spec: CitySpec): Promise<void> {
               const d = Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
               if (d > reach) continue
               const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt
-              let want = level + OVER - Math.max(0, d - half) * 2
+              let want = level + (e.lid ?? OVER) - Math.max(0, d - half) * 2
               /*
                * …never over a street standing on the cover (owner, 2026-10-29, Broadway at Mason: "cars all get
                * submerged here"). The streets were levelled before the fill, so where one runs over a shallow bore (surface
@@ -3916,7 +4184,7 @@ async function bake(spec: CitySpec): Promise<void> {
         }
         let lowered = 0, unramped = 0
         for (const b of kept) {
-          if (!b.bridge || b.tunnel || !b.heights || ['motorway', 'trunk', 'motorway_link', 'trunk_link'].includes(b.kind ?? '')) continue
+          if (!b.bridge || b.tunnel || !b.heights || lidDeckIds.has(b.id) || ['motorway', 'trunk', 'motorway_link', 'trunk_link'].includes(b.kind ?? '')) continue
           const pts = unpackPoints(b.points)
           // (a bridge had no heights of its own before the lifting: then the ground at its two ends, the fine ground,
           //  which inside a lidar zone has the banks as they are)
@@ -3956,6 +4224,7 @@ async function bake(spec: CitySpec): Promise<void> {
       }
       const nf = carve(fineGround, fx0, fz0, FINE_STEP, fcols, frows)
       const nc = carve(ground, tx0, tz0, STEP, cols, rows)
+      trace('carved')
       // the tiles the cuts touch ship the fine ground, so the cutting keeps its sides
       for (const e of [...cuts, ...boreEdges]) for (const q of unpackPoints(e.points)) {
         for (const [dx, dz] of [[0, 0], [30, 0], [-30, 0], [0, 30], [0, -30]]) {
@@ -4567,7 +4836,7 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it), ${inserted} vertices added on humps`)
     // (the lift can take a deck's end up from the way that met it, so they meet once more: the Alma's and the Carrousel's cycleways)
-    const met = meetDecks(kept.filter((e) => !e.authored), true, spec.region === 'paris')
+    const met = meetDecks(kept.filter((e) => !e.authored && !bandAny(e)), true, spec.region === 'paris')
     if (met.length) console.log(`  ${met.length} ways met their decks again after the lift`)
   }
   /*
@@ -4758,6 +5027,118 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     if (grounded) console.log(`  raised buildings with nothing under them, grounded: ${grounded}`)
   }
+  /*
+   * SURVEY PINS (2026-11-07, Pont National's right bank: Quai de Bercy dives under the bridgehead in three 40 m layer -1 tunnels, the
+   * IGN bare earth 31.9–32.4 m all along it, Bd Poniatowski on its embankment at 37–38. The bake's ground there is the embankment, the
+   * tunnels were ridden in the open at the min of their end streets — both stood at the junction's 5.6 — and the quay fell 6 m in 30 m.)
+   * A region's `surveyPins` names a ring, the ways in it (`ways`: a name regex; `kinds`: a kind regex for unnamed ones) and a few
+   * surveyed points [lat, lon, IGN m]: every such way's points in the ring take the points' inverse-distance height less `datum`
+   * (bake height = IGN − datum, ≈ 32.8 by Pont National), eased back to its own over `fade` m outside the ring. Last, so no pass undoes
+   * it. SURVEY_PINS=0 off.
+   */
+  // DECK ZONES (tools/deck-zones.ts): a bridgehead's ground as authored flat levels — last over the ground (the quay detail's lidar
+  // included), then its routes after the pins and the level plans below. DECK_ZONES=0 off.
+  const tDz0 = Date.now()
+  const deckZones = process.env.DECK_ZONES === '0' ? [] : deckZonesOf(streetRegion.deckZones, (lat, lon) => proj.toLocal({ lat, lon }), datumRaw)
+  if (deckZones.length) {
+    for (const zn of deckZones) {
+      const n = zn.markRiver((x, z) => { const c = Math.round((x - fx0) / FINE_STEP), r = Math.round((z - fz0) / FINE_STEP); return c >= 0 && r >= 0 && c < fcols && r < frows ? fineGround[r * fcols + c] : Infinity })
+      console.log(`  deck zone ${zn.spec.name}: ${n} outline segments on the river`)
+    }
+    const nf = levelGroundGrid(deckZones, fineGround, fcols, frows, fx0, fz0, FINE_STEP), nc = levelGroundGrid(deckZones, ground, cols, rows, tx0, tz0, STEP)
+    if (quayDetail) {
+      const at0 = quayDetail.at
+      quayDetail.at = (x, z) => { let v = at0(x, z); if (v === null) return null; for (const zn of deckZones) { const y = zn.groundAt(x, z, v); if (y !== null) v = y } return v } // (in order, as levelGroundGrid: a hand zone over the band)
+      // (the tiles a zone touches ship at DZ_GROUND_STEP: a 4 m grid draws each wall's foot as a 4 m grey wedge in front of it)
+      const zt = new Set<string>()
+      for (const zn of deckZones) {
+        const [x0, z0, x1, z1] = zn.box()
+        for (let tz = Math.floor(z0 / TILE); tz <= Math.floor(z1 / TILE); tz++) for (let tx = Math.floor(x0 / TILE); tx <= Math.floor(x1 / TILE); tx++) zt.add(`${tx},${tz}`)
+      }
+      quayDetail.stepOf = (tx, tz) => zt.has(`${tx},${tz}`) ? DZ_GROUND_STEP : undefined
+      console.log(`  deck zones: ${[...zt].filter((k) => quayDetail!.tiles.has(k)).length} of ${zt.size} touched tiles ship ground at ${DZ_GROUND_STEP} m`)
+    }
+    shipped = new GroundModel({
+      coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+      fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+      fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE, detail: quayDetail,
+    })
+    for (const [k2, b] of shipped.blocks) {
+      if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+    }
+    console.log(`  deck zones: ${deckZones.map((z) => z.spec.name).join(', ')}: ${nf} fine and ${nc} coarse posts laid as levels`)
+  }
+  if (process.env.SURVEY_PINS !== '0') for (const t of applySurveyPins(kept, streetRegion.surveyPins ?? [], (lat, lon) => proj.toLocal({ lat, lon })).log) console.log(`  ${t}`)
+  // LEVEL PLANS (tools/level-plans.ts): authored flat tiers and graded ramps, after the pins. LEVEL_PLANS=0 off.
+  if (process.env.LEVEL_PLANS !== '0') for (const t of applyLevelPlans(kept, streetRegion.levelPlans ?? [], (lat, lon) => proj.toLocal({ lat, lon })).log) console.log(`  ${t}`)
+  trace('pre-zones')
+  const tDz1 = Date.now()
+  for (const t of applyDeckZoneRoutes(kept, deckZones, (lat, lon) => proj.toLocal({ lat, lon }), true).log) console.log(`  ${t}`)
+  if (deckZones.length) console.log(`  timing: deck zones ground ${((tDz1 - tDz0) / 1000).toFixed(1)} s, routes ${((Date.now() - tDz1) / 1000).toFixed(1)} s`)
+  trace('zones')
+  // THE ROAD BED in the band (deck-zones.ts DZ_BED): after the routes, the ground inside a car road's corridor is raised to the way
+  if (DZ_BED && deckZones.some((z) => z.shape)) {
+    const sg = new StreetGrade()
+    for (const e of kept) if ((DZ_BED_FOOT || !e.foot) && e.heights?.length && deckZones.some((z) => z.shape && e.points.some((_, i) => i % 2 === 0 && z.bandW(e.points[i], e.points[i + 1]) > 0))) sg.add(e)
+    const bed = (x: number, z: number, v: number): number => { const w = sg.at(x, z); return w !== null && v < w - DZ_BED_TOL ? w - DZ_BED_TOL : v }
+    let nb = 0
+    const grid = (h: ArrayLike<number> & { [i: number]: number }, cols: number, rows: number, x0: number, z0: number, step: number) => {
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const i = r * cols + c, y = bed(x0 + c * step, z0 + r * step, h[i]); if (y !== h[i]) { h[i] = y; nb++ } }
+    }
+    grid(fineGround, fcols, frows, fx0, fz0, FINE_STEP); grid(ground, cols, rows, tx0, tz0, STEP)
+    if (quayDetail) { const at1 = quayDetail.at; quayDetail.at = (x, z) => { const v = at1(x, z); return v === null ? null : bed(x, z, v) } }
+    shipped = new GroundModel({
+      coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+      fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+      fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE, detail: quayDetail,
+    })
+    for (const [k2, b] of shipped.blocks) {
+      if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+    }
+    console.log(`  road bed: ${nb} grid posts raised to the car roads over them in the band (detail posts on demand)`)
+  }
+  if (deckZones.length) for (const t of conformDeckRails(rails, kept, deckZones)) console.log(`  ${t}`)
+  if (deckZones.some((z) => z.rOf)) for (const t of bdTopoRails(rails, deckZones, (x, z) => shipped.heightAt(x, z))) console.log(`  ${t}`)
+  // (an open lid's road is in its cut, never a structure: deck-conform and the zones judged it on the lidar before the carve)
+  for (const e of kept) if (lidRoadIds.has(e.id) && e.ramp) delete e.ramp
+  /*
+   * TRENCH WALLS, by distance from the slab along the lid roads: a node inside a slab is 0, and a lid road is walled out to
+   * LID_WALL_REACH m from it (render/city.ts). A ramp's chain walks on along the quay at its own grade, where the ground
+   * rising beside it is a hillside, not a bank (the Quai de Bercy's, 60 m of 4 m walls along the park). Neither a height
+   * rule (under the way's higher end: a side street meets the ramp halfway down) nor what the lid pass lowered (the ways
+   * stood on the old tunnel's and embankment's profiles before it) told the two apart.
+   */
+  if (lidSlabsOut.length) {
+    const inRing = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+      let o = false
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) o = !o
+      return o
+    }
+    const roads = kept.filter((e) => lidRoadIds.has(e.id) && e.cut && e.heights)
+    const lenOf = new Map(roads.map((e) => { const p = unpackPoints(e.points); let l = 0; for (let i = 1; i < p.length; i++) l += Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z); return [e.id, l] as const }))
+    const dist = new Map<number, number>()
+    for (const e of roads) {
+      const p = unpackPoints(e.points)
+      for (const [n, q] of [[e.a, p[0]], [e.b, p[p.length - 1]]] as const) if (lidSlabsOut.some((s) => inRing(s.ring, q.x, q.z))) dist.set(n, 0)
+    }
+    for (let changed = true; changed;) {
+      changed = false
+      for (const e of roads) {
+        const l = lenOf.get(e.id)!, da = dist.get(e.a) ?? Infinity, db = dist.get(e.b) ?? Infinity
+        if (da + l < db) { dist.set(e.b, da + l); changed = true }
+        if (db + l < da) { dist.set(e.a, db + l); changed = true }
+      }
+    }
+    let walled = 0
+    for (const e of roads) {
+      const l = lenOf.get(e.id)!, da = dist.get(e.a) ?? Infinity, db = dist.get(e.b) ?? Infinity
+      if (Math.min(da, db) >= LID_WALL_REACH) continue
+      e.trench = true
+      walled++
+      if (Math.max(da, db) > LID_WALL_REACH) e.trenchTo = da <= db ? Math.min(l, LID_WALL_REACH - da) : -Math.min(l, LID_WALL_REACH - db)
+    }
+    console.log(`  lid tunnels: ${walled} trench ways walled, to ${LID_WALL_REACH} m from the slab`)
+  }
   trace('final')
   const pkg: CityPackage = {
     id: spec.id, name: spec.name, origin: spec.centre, radius: spec.radius, ground: spec.ground, region: spec.region,
@@ -4766,7 +5147,13 @@ async function bake(spec: CitySpec): Promise<void> {
     ...(regionsOf(spec).length ? { detail: detailOutlines(spec, (g) => proj.toLocal(g)) } : {}),
     start: { edgeId: start.e.id, s: 0 },
     edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, fringe, roundabouts,
-    ...(quayWallsOf ? { quayWalls: (() => { const w = quayWallsOf((x, z) => shipped.heightAt(x, z)); console.log(`  quay walls: ${w.length} pieces`); return w })() } : {}),
+    ...(quayWallsOf ? { quayWalls: (() => {
+      const city = quayWallsOf((x, z) => shipped.heightAt(x, z)).filter((q) => !deckZones.some((z) => z.near((q.ax + q.bx) / 2, (q.az + q.bz) / 2, 3)))
+      // (deduped ACROSS the zones, 2026-11-08: a hand zone's BD TOPO override and the Seine band under it draw the same BD TOPO wall lines; per zone, 116 pairs z-fought at Pont National)
+      const zone = dedupeWalls(deckZones.flatMap((z) => { const v = z.walls(), rv = z.riverWalls((x, zz) => shipped.heightAt(x, zz)); console.log(`  deck zone ${z.spec.name}: ${v.length} wall pieces between levels, ${rv.length} on the river`); return [...v, ...rv] }))
+      // (a zone's wall out in its band, on a line the city already walls: the city's stands)
+      const zk = zone.filter((q) => { const mx = (q.ax + q.bx) / 2, mz = (q.az + q.bz) / 2; return deckZones.some((z) => !z.shape && z.inside(mx, mz)) || !city.some((o) => Math.hypot((o.ax + o.bx) / 2 - mx, (o.az + o.bz) / 2 - mz) < 1.5) })
+      const w = [...city, ...zk]; console.log(`  quay walls: ${w.length} pieces (${zone.length - zk.length} zone pieces in a band dropped for the city's)`); return w })() } : {}),
     ...(sportsCourts.length ? { courts: sportsCourts } : {}),
     ...(spec.skyline ? {
       skyline: spec.skyline.map((s) => {
@@ -4894,6 +5281,8 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     for (const w of got?.ways ?? []) if (w.geometry && w.geometry.length >= 4) ring(w.geometry, w.id, w.tags?.name)
     for (const r of got?.relations ?? []) for (const g of outerRings(r)) ring(g, r.id, r.tags?.name)
+    // the lids' slabs (tools/tunnels.ts `lidSlabs`), ids clear of OSM's
+    lidSlabsOut.forEach((l, i) => out.push({ id: LID_SLAB_ID0 + i, ring: packPoints(l.ring), lid: { dx: Math.round(l.dir.x * 1000) / 1000, dz: Math.round(l.dir.z * 1000) / 1000, y: l.y } }))
     pkg.bridges = out
     console.log(`  ${out.length} bridge outlines (${out.filter((b) => b.name).length} named)`)
     /*
@@ -4949,6 +5338,31 @@ async function bake(spec: CitySpec): Promise<void> {
     for (let i = 0; i < pkg.trees.length; i += 2) if (!gardenClears.some((r) => inside(r, pkg.trees[i], pkg.trees[i + 1]))) kept.push(pkg.trees[i], pkg.trees[i + 1])
     pkg.trees = kept
   }
+  let underDeck: (x: number, z: number) => boolean = () => false
+  // no tree grows through a bridge (owner, 2026-11-07: "a stray tree going right through the bridge", Pont National 48.828518, 2.387919):
+  // none within a deck way's half-width + TREE_DECK_PAD (a crown's reach) of it, filed by 20 m cell
+  {
+    const TREE_DECK_PAD = 4, C = 20, segs = new Map<string, [number, number, number, number, number][]>()
+    for (const e of pkg.edges) {
+      if (!e.bridge) continue
+      const r = (e.width ?? 6) / 2 + TREE_DECK_PAD
+      for (let i = 2; i < e.points.length; i += 2) {
+        const ax = e.points[i - 2], az = e.points[i - 1], bx = e.points[i], bz = e.points[i + 1]
+        for (let cx = Math.floor((Math.min(ax, bx) - r) / C); cx <= Math.floor((Math.max(ax, bx) + r) / C); cx++)
+          for (let cz = Math.floor((Math.min(az, bz) - r) / C); cz <= Math.floor((Math.max(az, bz) + r) / C); cz++) {
+            const k = `${cx},${cz}`; (segs.get(k) ?? segs.set(k, []).get(k)!).push([ax, az, bx, bz, r])
+          }
+      }
+    }
+    underDeck = (x: number, z: number): boolean => (segs.get(`${Math.floor(x / C)},${Math.floor(z / C)}`) ?? []).some(([ax, az, bx, bz, r]) => {
+      const dx = bx - ax, dz = bz - az, t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)))
+      return Math.hypot(ax + dx * t - x, az + dz * t - z) < r
+    })
+    const kept: number[] = []
+    for (let i = 0; i < pkg.trees.length; i += 2) if (!underDeck(pkg.trees[i], pkg.trees[i + 1])) kept.push(pkg.trees[i], pkg.trees[i + 1])
+    if (kept.length < pkg.trees.length) console.log(`  trees: ${(pkg.trees.length - kept.length) / 2} mapped under bridge decks taken out`)
+    pkg.trees = kept
+  }
   const mappedNear = new Set<string>()
   for (let i = 0; i < pkg.trees.length; i += 2) mappedNear.add(`${Math.floor(pkg.trees[i] / 5)},${Math.floor(pkg.trees[i + 1] / 5)}`)
   // …and no row tree stands in the water or within GARDEN_TREE_WATER_MARGIN of it (the Grand Canal's allées are drawn on a straight
@@ -4982,6 +5396,15 @@ async function bake(spec: CitySpec): Promise<void> {
   })
   pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted, [...rowed, ...handTreesOf(spec.id, (lat, lon) => proj.toLocal({ lat, lon }))]))
   logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
+  { const n0 = pkg.plantings.length, kept: number[] = []
+    for (let i = 0; i < n0; i += 5) if (!underDeck(pkg.plantings[i], pkg.plantings[i + 1])) kept.push(...pkg.plantings.slice(i, i + 5))
+    pkg.plantings = kept
+    if (kept.length < n0) console.log(`  plantings: ${(n0 - kept.length) / 5} under bridge decks taken out`) }
+  {
+    // the declared bike ramps beside bridgeheads' stairs (src/city/bike-ramps.ts; `--rides` lays them again without a bake)
+    const pj = new Projection(pkg.origin), r = layBikeRamps(pkg.edges, spec.region ?? spec.id, (lat, lon) => pj.toLocal({ lat, lon }))
+    for (const t of r.log) console.log(`  bike ramp: ${t}`)
+  }
   await mkdir(workDir(spec.id), { recursive: true })
   // (bake-private: what the secondary tools read — tools/bake-files.ts; never published)
   const file = packageFile(spec.id)
@@ -5605,8 +6028,72 @@ async function main(): Promise<void> {
         const o = openElevatedWalks(pkg.edges, region(spec.region).elevatedWalks ?? [], (lon) => proj.toLocal({ lat: pkg.origin.lat, lon }).x)
         if (o.opened) { console.log(`  elevated walks ridden: ${o.opened} ways, ${o.flights} flights up, ${o.ramped} ways ramped down`); opened += o.opened }
       }
-      if (opened) { console.log(`  ${opened} more trails opened to bikes`); await writeFile(packageFile(spec.id), JSON.stringify(pkg)) }
+      if (opened) console.log(`  ${opened} more trails opened to bikes`)
+      // the declared bike ramps, laid again: the package, the tiles they (and the last ones) lie in, then v3
+      const old = new Map(pkg.edges.filter((e) => e.bikeRamp).map((e) => [e.id, e]))
+      const r = layBikeRamps(pkg.edges, spec.region ?? spec.id, (lat, lon) => proj.toLocal({ lat, lon }))
+      for (const t of r.log) console.log(`  bike ramp: ${t}`)
+      const ramps = r.removed.length + r.added.length > 0
+      // the survey pins again (tools/survey-pins.ts): the ways they move rewritten in their tiles
+      const pins = process.env.SURVEY_PINS === '0' ? { moved: new Set<PackedEdge>(), log: [] } : applySurveyPins(pkg.edges, region(spec.region).surveyPins ?? [], (lat, lon) => proj.toLocal({ lat, lon }))
+      for (const t of pins.log) console.log(`  ${t}`)
+      // the level plans again (tools/level-plans.ts), after the pins: their ways join the pins' in the tile rewrite
+      if (process.env.LEVEL_PLANS !== '0') {
+        const lp = applyLevelPlans(pkg.edges, region(spec.region).levelPlans ?? [], (lat, lon) => proj.toLocal({ lat, lon }))
+        for (const t of lp.log) console.log(`  ${t}`)
+        for (const e of lp.moved) pins.moved.add(e)
+      }
+      // the deck zones again (tools/deck-zones.ts): re-pinned and re-graded only (ground, walls and laid routes need the full bake)
+      if (process.env.DECK_ZONES !== '0' && (region(spec.region).deckZones?.length || process.env.BDTOPO_BAND === '1')) {
+        if (spec.datum === undefined) console.log('  deck zones: skipped (--rides needs the CitySpec datum)')
+        else {
+          // (BDTOPO_BAND=1: the Seine band again, from BD TOPO's cached pages, the hand zones over it: the same zones as the bake)
+          const r = region(spec.region), toL = (lat: number, lon: number) => proj.toLocal({ lat, lon })
+          // (the excluded bridges' shapes from the package: its outlines and its named bridge edges; the bake used OSM's ways)
+          const osmB: BandBridgeShape[] = [...(pkg.bridges ?? []).filter((q) => q.name).map((q) => ({ name: q.name!, pts: unpackPoints(q.ring), ring: true })),
+            ...pkg.edges.filter((e) => e.bridge && e.name).map((e) => ({ name: e.name!, pts: unpackPoints(e.points) }))]
+          const specs = process.env.BDTOPO_BAND === '1' ? (await bandDeckZones(spec.centre, spec.radius ?? 1000, r.deckZones ?? [], r.bandExclude ?? [], toL, (t) => console.log(`  ${t}`), r.riverLevel, osmB)).zones : r.deckZones
+          const dz = applyDeckZoneRoutes(pkg.edges, deckZonesOf(specs, toL, spec.datum), toL, false)
+          for (const t of dz.log) console.log(`  ${t}`)
+          for (const e of dz.moved) pins.moved.add(e)
+        }
+      }
+      if (pins.moved.size) {
+        const { existsSync, writeFileSync } = await import('node:fs')
+        const byTile = new Map<string, PackedEdge[]>()
+        for (const e of pins.moved) for (const k of tilesOfLine(e.points)) (byTile.get(k) ?? byTile.set(k, []).get(k)!).push(e)
+        for (const [k, es] of byTile) {
+          const [tx, tz] = k.split(',').map(Number)
+          const f = resolve(workDir(spec.id), 'tiles', `${tx}_${tz}.json`)
+          if (!existsSync(f)) continue
+          const t = JSON.parse(readFileSync(f, 'utf8')) as { edges: PackedEdge[] }
+          const ids = new Map(es.map((e) => [e.id, e]))
+          t.edges = t.edges.map((e) => { const m = ids.get(e.id); return m ? { ...e, heights: m.heights, ramp: m.ramp } : e })
+          writeFileSync(f, JSON.stringify(t))
+        }
+        console.log(`  survey pins: ${pins.moved.size} ways, ${byTile.size} tiles rewritten`)
+      }
+      if (opened || ramps || pins.moved.size) await writeFile(packageFile(spec.id), JSON.stringify(pkg))
+      if (ramps) {
+        const { existsSync, writeFileSync } = await import('node:fs')
+        const tiles = new Set<string>()
+        for (const e of [...old.values(), ...r.added]) for (const k of tilesOfLine(e.points)) tiles.add(k)
+        for (const k of tiles) {
+          const [tx, tz] = k.split(',').map(Number)
+          const f = resolve(workDir(spec.id), 'tiles', `${tx}_${tz}.json`)
+          if (!existsSync(f)) continue
+          const t = JSON.parse(readFileSync(f, 'utf8')) as { edges: PackedEdge[] }
+          t.edges = t.edges.filter((e) => !e.bikeRamp)
+          for (const e of r.added) if (tilesOfLine(e.points).has(k)) t.edges.push(e)
+          writeFileSync(f, JSON.stringify(t))
+        }
+        console.log(`  bike ramps: ${r.removed.length} stripped, ${r.added.length} laid, ${tiles.size} tiles rewritten`)
+      }
       await writeRides(pkg)
+      if (ramps || pins.moved.size) {
+        const { execFileSync } = await import('node:child_process')
+        execFileSync('node', ['--max-old-space-size=8192', '--experimental-strip-types', 'tools/map-v3.ts', spec.id], { stdio: 'inherit', cwd: resolve(import.meta.dirname, '..') })
+      }
       // (shipped files rewritten: a new bake number, so no phone pairs the new ride graph with the old one's tiles)
       console.log(`  bake ${recordBake(spec.id)}`)
     }

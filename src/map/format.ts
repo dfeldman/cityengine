@@ -206,6 +206,8 @@ export interface Way {
   width?: number
   walk?: number
   layer?: number
+  /** a `trench` way's walls end this many dm from end a (negative: from end b); absent, it is walled all along */
+  trenchTo?: number
   service?: string
   /** v2 junction node ids at the two ends, while refs are derived from them */
   a?: number
@@ -213,8 +215,9 @@ export interface Way {
 }
 
 /** Street flag bits (MAP-FORMAT §5.5). */
+// `trench`: an open lid's road, walled in concrete (tools/tunnels.ts, render/city.ts TRENCH_*); its way's `trenchTo` limits the walls to that many dm from end a (or, negative, from end b)
 // `bore`: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts, render/tunnels.ts)
-export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512, authored: 1024, busRight: 2048, busLeft: 4096, paintTransit: 8192, paintBike: 16384 } as const
+export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512, authored: 1024, busRight: 2048, busLeft: 4096, paintTransit: 8192, paintBike: 16384, trench: 32768 } as const
 /** Rail flag bits. */
 export const RF = { bridge: 1, cable: 2, light: 4, funicular: 8, disused: 16 } as const
 

@@ -62,6 +62,9 @@ const BAND = 1.0
 const TALLEST = 4
 /** the generic wing walls: how long, and how far they splay back from the portal face */
 const WING = 7
+/** a lid tunnel's vault: this much rise over the springing line, this much slab between its crown and the street over it */
+const LID_RISE = 1.2
+const LID_SLAB = 0.5
 const SPLAY = (35 * Math.PI) / 180
 
 /**
@@ -322,7 +325,9 @@ export class Tunnels {
       const L = cum[cum.length - 1]
       const name = chain.find((e) => e.name)?.name ?? ''
       // (a style may be for one LAYER of a name: the two roadways of a double-deck tunnel are two tunnels here)
-      const style = this.styles[`${name}#${chain[0].layer ?? 0}`] ?? this.styles[name] ?? {}
+      // (a LID TUNNEL, a short covered trench under a street — tools/tunnels.ts `lidTunnels` — is low: its crown under the street over it)
+      const lid = chain[0].lid
+      const style = this.styles[`${name}#${chain[0].layer ?? 0}`] ?? this.styles[name] ?? (lid ? { spring: Math.max(1.6, lid - LID_RISE - LID_SLAB), crown: lid - LID_SLAB } : {})
       const road = Math.max(...chain.map((e) => e.width)) / 2
       const walk = Math.min(1.8, Math.max(...chain.map((e) => e.walk ?? 0)))
       const section = sectionFor(style, road, walk)

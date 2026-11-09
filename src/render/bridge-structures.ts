@@ -154,6 +154,10 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
   'Pont Morland': { kind: 'stone', arches: 1, rise: 0.6, shape: 'segment', parapet: 'stone', lamps: 'lantern' },
 }
 
+/** a pier on the quay wall where a bridge leaves the water (m), and the clearance an arch over dry quais springs at above the highest (m) */
+const BANK_PIER = 2.5, DRY_CLEAR = 2.6
+/** …the bank pier's land face stands this far out in the river from its edge, so the lower quai's path runs under the arch, not into its foot (owner, 2026-11-08, Pont National) */
+const BANK_PIER_OUT = 5
 const DEFAULT_OVER_WATER: StructureStyle = { kind: 'stone', span: 28, rise: 0.55, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' }
 /** a bridge over a road or a quay only: a plain stone-faced slab, as the ways drew it before */
 const DEFAULT_OVER_LAND: StructureStyle = { kind: 'girder', parapet: 'stone', lamps: 'none', iron: [0.66, 0.62, 0.55] }
@@ -264,6 +268,13 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
         // a bridge a landmark hand-models is drawn once, by the landmark (City.coverRaised, BUGS.md #136)
         if (covered?.(b.id)) continue
         const ring = unpackPoints(b.ring)
+        if (b.lid) {
+          let cx = 0, cz = 0
+          for (const q of ring) { cx += q.x; cz += q.z }
+          cx /= ring.length; cz /= ring.length
+          if (cx >= rect.x0 && cx < rect.x1 && cz >= rect.z0 && cz < rect.z1) lidSlab(out, ring, b.lid)
+          continue
+        }
         if (b.name && RAIL_ARCHES.has(b.name)) {
           let ax = 0, az = 0
           for (const q of ring) { ax += q.x; az += q.z }
@@ -291,6 +302,47 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
       m.freezeWorldMatrix()
       return [m]
     },
+  }
+}
+
+/** a lid's slab: this thick, its top this far under the street (the ways on it draw their own surfaces), its parapets this high */
+/** the slab's depth (0.9 read as a 2 m band with its parapet, and the chase camera sat in it: owner 2026-11-08) */
+export const LID_SLAB_T = 0.5
+const LID_TOP_SINK = 0.06
+const LID_PARAPET = 1.0
+const LID_PARAPET_T = 0.3
+const LID_CONCRETE: Rgb = [0.5, 0.49, 0.47]
+const LID_SOFFIT: Rgb = [0.36, 0.36, 0.35]
+/** the top, paved like the plaza round it: this material brightens an upward face ≈ 1.8×, and the plaza reads (145, 137, 125) */
+const LID_TOP: Rgb = [0.32, 0.3, 0.275]
+
+/**
+ * A LID's slab (tools/tunnels.ts `lidSlabs`; owner, 2026-11-08: "redesign this as an overpass"). The street over an
+ * open trench is one flat slab, not a deck per way: a concrete top just under the ways on it (which draw only their
+ * surfaces, City.structured), a dark soffit under it, its edges as fascia, and a parapet along each MOUTH (an edge
+ * across the trench, where the road below comes out) — nothing along the long sides, which meet the street's ground.
+ */
+function lidSlab(out: MeshBuilder, ring: P[], lid: { dx: number; dz: number; y: number }): void {
+  const top = lid.y - LID_TOP_SINK
+  const bot = lid.y - LID_SLAB_T
+  let cx = 0, cz = 0
+  for (const q of ring) { cx += q.x; cz += q.z }
+  cx /= ring.length; cz /= ring.length
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    out.quad([[cx, top, cz], [a.x, top, a.z], [b.x, top, b.z], [cx, top, cz]], [0, 1, 0], UV, LID_TOP, FIXED)
+    out.quad([[cx, bot, cz], [a.x, bot, a.z], [b.x, bot, b.z], [cx, bot, cz]], [0, -1, 0], UV, LID_SOFFIT, FIXED)
+    const ex = b.x - a.x, ez = b.z - a.z, el = Math.hypot(ex, ez) || 1
+    // the outward normal (anticlockwise ring: right of the edge's direction)
+    let nx = ez / el, nz = -ex / el
+    if (((a.x + b.x) / 2 - cx) * nx + ((a.z + b.z) / 2 - cz) * nz < 0) { nx = -nx; nz = -nz }
+    out.quad([[a.x, bot, a.z], [b.x, bot, b.z], [b.x, top, b.z], [a.x, top, a.z]], [nx, 0, nz], UV, LID_CONCRETE, FIXED)
+    // a mouth: across the trench
+    if (Math.abs((ex * lid.dx + ez * lid.dz) / el) > 0.5) continue
+    const ix = -nx * LID_PARAPET_T, iz = -nz * LID_PARAPET_T, py = lid.y + LID_PARAPET
+    out.quad([[a.x, bot, a.z], [b.x, bot, b.z], [b.x, py, b.z], [a.x, py, a.z]], [nx, 0, nz], UV, LID_CONCRETE, FIXED)
+    out.quad([[a.x + ix, top, a.z + iz], [b.x + ix, top, b.z + iz], [b.x + ix, py, b.z + iz], [a.x + ix, py, a.z + iz]], [-nx, 0, -nz], UV, LID_CONCRETE, FIXED)
+    out.quad([[a.x, py, a.z], [b.x, py, b.z], [b.x + ix, py, b.z + iz], [a.x + ix, py, a.z + iz]], [0, 1, 0], UV, LID_CONCRETE, FIXED)
   }
 }
 
@@ -456,14 +508,25 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   const wetUnder = (s: number): boolean => { const p = W(s, 0); return wetAt(p.x, p.z) !== null }
 
   // the stretches it stands clear over, where the arches go (gaps under 6 m closed)
-  const open: { a: number; b: number }[] = []
+  // …and broken at the river's edge (owner, 2026-11-07, Pont National: "the lower quai still hits the bridge"): a pier stands on the
+  // quay wall, so the quais get their own arch, sprung high enough to clear them, not one sprung from the water that came down on them
+  const open: { a: number; b: number; wet: boolean }[] = []
   let overWater = false
   for (let s = 0; s <= L; s += 1) {
-    if (wetUnder(s)) overWater = true
+    const wet = wetUnder(s)
+    if (wet) overWater = true
     if (top(s) - under(s) < 3.4) continue
     const last = open[open.length - 1]
-    if (last && s - last.b <= 6) last.b = s
-    else open.push({ a: s, b: s })
+    if (last && s - last.b <= 6 && last.wet === wet) last.b = s
+    else if (last && s - last.b <= 1) { last.b = s - BANK_PIER / 2; open.push({ a: s + BANK_PIER / 2, b: s + BANK_PIER / 2, wet }) }
+    else open.push({ a: s, b: s, wet })
+  }
+  // the pier between a dry span and a wet one moved out into the river, off the lower quai's path
+  for (let k = 1; k < open.length; k++) {
+    const p = open[k - 1], q = open[k]
+    if (p.wet === q.wet) continue
+    // (its land face BANK_PIER_OUT past the river's first metre, the arch over the quais run on to it)
+    if (q.wet) { p.b = q.a + BANK_PIER_OUT; q.a = p.b + BANK_PIER } else { q.a = p.b - BANK_PIER_OUT; p.b = q.a - BANK_PIER }
   }
   const style = styleFor(b, styles) ?? (overWater ? waterDefault : DEFAULT_OVER_LAND)
   const stone = style.stone ?? LIMESTONE
@@ -485,9 +548,12 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
       const pierW = m > 1 ? Math.max(1.8, Math.min(6, (len / m) * (style.pier ?? 0.14))) : 0
       const span = (len - (m - 1) * pierW) / m
       if (span < 3) return
-      let low = Infinity
-      for (let s = q.a; s <= q.b; s += 1) low = Math.min(low, under(s))
-      const spring = low + 0.4
+      let low = Infinity, high = -Infinity
+      for (let s = q.a; s <= q.b; s += 1) { low = Math.min(low, under(s)); high = Math.max(high, under(s)) }
+      let deckLow = Infinity
+      for (let s = q.a; s <= q.b; s += 1) deckLow = Math.min(deckLow, top(s))
+      // over dry quais: sprung DRY_CLEAR over the highest of them (held 2 m under the deck), so a path near either end still clears it
+      const spring = q.wet ? low + 0.4 : Math.max(low + 0.4, Math.min(high + DRY_CLEAR, deckLow - 2))
       // (each arch its share of the clear length, where they are not all alike)
       const shares = style.spans?.length === m ? style.spans : null
       const sum = shares ? shares.reduce((t, v) => t + v, 0) : m

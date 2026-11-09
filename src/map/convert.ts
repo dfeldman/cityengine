@@ -165,6 +165,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (e.ramp) flags |= SF.ramp
     if (e.bore) flags |= SF.bore
     if (e.cut) flags |= SF.cut
+    if (e.trench) flags |= SF.trench
     if (e.authored) flags |= SF.authored
     if (e.crossing) flags |= SF.crossing
     if (e.park) flags |= SF.park
@@ -182,6 +183,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     }
     if (e.name !== undefined) w.name = dict.id('names', e.name)
     if (e.layer !== undefined) w.layer = e.layer
+    if (e.trenchTo !== undefined) w.trenchTo = Math.round(e.trenchTo * 10)
     if (e.service !== undefined) w.service = e.service
     addWay(w)
   }

@@ -3,8 +3,9 @@
  * rider is and the frame rate, every loading stage (ui/loading.ts), `ready` once the rider is on the street, uncaught
  * errors, and the B-key bug reports (ui/bugs.ts) with a screenshot. Separate from Dandyhorse: nothing here goes to it.
  *
- * Off unless an endpoint is given: `VITE_BEACONS_URL` at build time, or `?beacons=<url>` (`?beacons=1` = the beacons
- * dev server on this host, port 5310; `?beacons=0` turns a built-in endpoint off).
+ * Endpoint: `?beacons=<url>`, else `VITE_BEACONS_URL` at build time, else (dev server only) the local beacons ingest on
+ * this host, port 5310. Production builds without VITE_BEACONS_URL send nothing. `?beacons=1` forces the local one;
+ * `?beacons=0` turns any endpoint off.
  */
 import { Beacons, type BeaconsClient } from './vendor/beacons/beacons.js'
 
@@ -28,7 +29,10 @@ function endpoint(params: URLSearchParams): string | null {
   if (p === '0') return null
   if (p === '1') return `${location.protocol}//${location.hostname}:${DEV_PORT}/v1/beacon`
   if (p && /^https?:\/\//.test(p)) return p
-  return (import.meta.env.VITE_BEACONS_URL as string | undefined) || null
+  const built = import.meta.env.VITE_BEACONS_URL as string | undefined
+  if (built) return built
+  // dev builds default to the local beacons server (UI on :5311), so local debugging needs no flag
+  return import.meta.env.DEV ? `${location.protocol}//${location.hostname}:${DEV_PORT}/v1/beacon` : null
 }
 
 /** At page start, so the boot's own stages and errors are caught. */
@@ -36,7 +40,7 @@ export function startTelemetry(canvas: HTMLCanvasElement, params: URLSearchParam
   const url = endpoint(params)
   if (!url || client) return
   client = Beacons.init({
-    endpoint: url, appId: 'cityengine', appVersion: __GIT_REV__, interval: BEACON_INTERVAL, canvas,
+    endpoint: url, appId: 'cityengine', appVersion: typeof __GIT_REV__ === 'string' ? __GIT_REV__ : 'dev', interval: BEACON_INTERVAL, canvas,
     beforeScreenshot: () => render?.(),
     getState: () => {
       let w: Where | null = null

@@ -20,10 +20,25 @@ import type { Planting } from '../city/plantings.ts'
 
 type Rgb = [number, number, number]
 const FIXED = 0
-const STONE: Rgb = [0.74, 0.7, 0.62]
-const CAP: Rgb = [0.8, 0.77, 0.7]
+// (warm Paris limestone, darker than first drawn: at 0.8 the walls' top faces lit near-white and the faces read as flat grey
+//  panels — owner, 2026-11-08, Port de Bercy: "it also needs better walls")
+const STONE: Rgb = [0.72, 0.66, 0.56]
+const CAP: Rgb = [0.76, 0.7, 0.6]
 const GREEN: Rgb = [0.13, 0.29, 0.2]
-const BERGE_WALL: Rgb = [0.8, 0.77, 0.7]
+const BERGE_WALL: Rgb = [0.74, 0.68, 0.57]
+/** what the walls' TOP faces are given: the material lights an upward face far brighter than a wall, and at the faces' own tint the
+ *  tops glared cream over faces in shade (boxAt's `top`) */
+const STONE_TOP: Rgb = [0.36, 0.34, 0.29]
+/** the projecting band under a quay wall's top (the cordon), a shade darker, QW_CORDON_OUT proud of the face and QW_CORDON_H tall */
+const CORDON: Rgb = [0.58, 0.53, 0.44]
+const QW_CORDON_OUT = 0.15
+const QW_CORDON_H = 0.35
+/** a wall standing in the river is stained dark to QW_STAIN_H over the water */
+const STAIN: Rgb = [0.4, 0.38, 0.33]
+const QW_STAIN_H = 1.2
+/** the parapet's coping: QW_COPING_HW half-wide (the parapet is 0.22), QW_COPING_H tall */
+const QW_COPING_HW = 0.32
+const QW_COPING_H = 0.16
 const SETTS: Rgb = [0.56, 0.55, 0.53]
 const ASHLAR = 1
 const SETT = 22
@@ -83,8 +98,12 @@ const BERGE_BOXES = false
  * at their ends so a bend shows no slot. The street's parapet stands QW_PARAPET_IN in from the first wall out from the street.
  */
 const QW_THICK = 0.6
+const QW_DECK_TOE = 1.1
 const QW_CAP_UP = 0.08
 const QW_CAP_T = 0.3
+/** the cap out over the slope behind a wall to the baked `cap` width: off, the wall's own thickness only — the ground is the 1 m survey now and
+ *  a flat slab metres wide at the wall's top stood through it in a sawtooth (owner, 2026-11-08: "just the wall … with low tesselation") */
+const QW_CAP_WIDE = false
 const QW_OVERLAP = 0.15
 const QW_PARAPET_IN = 0.3
 /** a wall this tall or more carries a parapet: the street's, over the river or a lower quay; not a lower quay's edge at the water */
@@ -101,6 +120,8 @@ function hash01(a: number, b: number): number {
 }
 /** how near a probe must be to a wall's line, and how squarely the wall must face away from the street */
 const QW_FIND = 0.5
+/** the river outline's own wall is not drawn within this of a shipped quay wall (m): those are the banks there */
+const QW_RING_SKIP = 25
 const QW_FACING = 0.5
 
 interface WallIndex {
@@ -155,7 +176,7 @@ function inside(ring: P[], x: number, z: number): boolean {
 }
 
 /** An upright box of half-extents (hl along the direction u, hw across it, full height h) at p, on the ground y. */
-function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: number, hw: number, h: number, c: Rgb, sid = FIXED): void {
+function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: number, hw: number, h: number, c: Rgb, sid = FIXED, top: Rgb = c): void {
   const vx = -uz
   const vz = ux
   const corner = (a: number, b: number, yy: number): [number, number, number] => [p.x + ux * a * hl + vx * b * hw, yy, p.z + uz * a * hl + vz * b * hw]
@@ -164,7 +185,7 @@ function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: nu
     [1, -1, 1, 1, [ux, 0, uz]], [-1, 1, -1, -1, [-ux, 0, -uz]], [1, 1, -1, 1, [vx, 0, vz]], [-1, -1, 1, -1, [-vx, 0, -vz]],
   ]
   for (const [a0, b0, a1, b1, n] of sides) out.quad([corner(a0, b0, y), corner(a1, b1, y), corner(a1, b1, y + h), corner(a0, b0, y + h)], n, uv, c, sid)
-  out.quad([corner(-1, -1, y + h), corner(1, -1, y + h), corner(1, 1, y + h), corner(-1, 1, y + h)].reverse() as [number, number, number][], [0, 1, 0], uv, c, sid)
+  out.quad([corner(-1, -1, y + h), corner(1, -1, y + h), corner(1, 1, y + h), corner(-1, 1, y + h)].reverse() as [number, number, number][], [0, 1, 0], uv, top, sid)
 }
 
 /**
@@ -345,7 +366,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
           const lx = v.z, lz = -v.x
           if (BERGE_BOXES) boxAt(out, hc, capY - 0.25, lx, lz, l / 2 + 0.02, (wall - c0) / 2, 0.25, PAVE)
           const wp = { x: mx - uz * side * (wall - 0.3), z: mz + ux * side * (wall - 0.3) }
-          boxAt(out, wp, footY - 0.3, ux, uz, l / 2 + 0.02, 0.3, capY - footY + 0.3, BERGE_WALL, ASHLAR)
+          boxAt(out, wp, footY - 0.3, ux, uz, l / 2 + 0.02, 0.3, capY - footY + 0.3, BERGE_WALL, ASHLAR, STONE_TOP)
           // a flight of stairs down the wall's face, along it, every BERGE_STAIR_PITCH metres
           if (Math.floor(st.run / BERGE_STAIR_PITCH) !== Math.floor((st.run - l) / BERGE_STAIR_PITCH)) {
             const n = Math.ceil((capY - footY) / BERGE_STAIR_RISE)
@@ -353,7 +374,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
             for (let k = 0; k < n; k++) {
               const along = (k - n) * BERGE_STAIR_TREAD
               const sp = { x: mx - uz * side * so + ux * along, z: mz + ux * side * so + uz * along }
-              boxAt(out, sp, footY - 0.1, ux, uz, BERGE_STAIR_TREAD / 2, BERGE_STAIR_W / 2, (k + 1) * (capY - footY) / n + 0.1, BERGE_WALL, ASHLAR)
+              boxAt(out, sp, footY - 0.1, ux, uz, BERGE_STAIR_TREAD / 2, BERGE_STAIR_W / 2, (k + 1) * (capY - footY) / n + 0.1, BERGE_WALL, ASHLAR, STONE_TOP)
             }
           }
           const ap = Math.min(BERGE_APRON, edge - foot - 0.6)
@@ -379,8 +400,8 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
       const y = Number.isNaN(capY) ? terrain.heightAt(cx, cz) + 0.15 : capY + 0.03
       // the parapet: a stone wall 0.45 m thick and 1 m high, with a paler coping (a shipped wall carries its own)
       if (!walls) {
-        boxAt(out, { x: cx, z: cz }, y - 0.3, ux, uz, l / 2 + 0.02, 0.22, 1.2, STONE)
-        boxAt(out, { x: cx, z: cz }, y + 0.9, ux, uz, l / 2 + 0.02, 0.27, 0.1, CAP)
+        boxAt(out, { x: cx, z: cz }, y - 0.3, ux, uz, l / 2 + 0.02, 0.22, 1.2, STONE, FIXED, STONE_TOP)
+        boxAt(out, { x: cx, z: cz }, y + 0.9, ux, uz, l / 2 + 0.02, 0.27, 0.1, CAP, FIXED, STONE_TOP)
       } else if (!st.wall) continue
       metres += l
       // the booksellers' boxes: two metres long, in fours with a gap, lids a little sloped (drawn as boxes)
@@ -407,12 +428,26 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
     const mx = (w.ax + w.bx) / 2, mz = (w.az + w.bz) / 2
     const top = w.top + QW_CAP_UP
     // the face runs on under a bridge's mouth (the abutment stands on it); its cap, parapet, stairs and trees do not
-    boxAt(out, { x: mx + nx * QW_THICK / 2, z: mz + nz * QW_THICK / 2 }, w.low - 0.3, ux, uz, len / 2 + QW_OVERLAP, QW_THICK / 2, top - w.low + 0.3, BERGE_WALL, ASHLAR)
+    // (a deck zone's wall stands QW_DECK_TOE out on its low side too: the ground's last 1 m step is inside the stone, not a slope in front of it)
+    const toe = w.parapet !== undefined ? QW_DECK_TOE : 0
+    boxAt(out, { x: mx + nx * (QW_THICK - toe) / 2, z: mz + nz * (QW_THICK - toe) / 2 }, w.low - 0.3, ux, uz, len / 2 + QW_OVERLAP, (QW_THICK + toe) / 2, top - w.low + 0.3, BERGE_WALL, ASHLAR, STONE_TOP)
+    // the cordon under the top, on the face's low side; and a river wall's water stain along its foot
+    if (top - w.low > 1.5) boxAt(out, { x: mx - nx * (toe + QW_CORDON_OUT / 2), z: mz - nz * (toe + QW_CORDON_OUT / 2) }, top - QW_CORDON_H - 0.25, ux, uz, len / 2 + QW_OVERLAP, QW_CORDON_OUT / 2 + 0.02, QW_CORDON_H, CORDON, ASHLAR, STONE_TOP)
+    if (wet(mx - nx * (toe + 1.5), mz - nz * (toe + 1.5))) boxAt(out, { x: mx - nx * (toe + 0.03), z: mz - nz * (toe + 0.03) }, w.low - 0.3, ux, uz, len / 2 + QW_OVERLAP, 0.03, QW_STAIN_H + 0.3, STAIN)
     if (inMouth(mx, mz)) continue
-    const c = Math.max(w.cap, QW_THICK)
+    const c = QW_CAP_WIDE ? Math.max(w.cap, QW_THICK) : QW_THICK
     boxAt(out, { x: mx + nx * c / 2, z: mz + nz * c / 2 }, top - QW_CAP_T, ux, uz, len / 2 + QW_OVERLAP, c / 2, QW_CAP_T, PAVE)
     // a lower quay's wall (dry ground at its foot): now and then a flight of stairs down its face, and a tree out on the paving
     const shelf = !wet(mx - nx * QW_SHELF_PROBE, mz - nz * QW_SHELF_PROBE)
+    // (a deck zone's wall has its parapet given, and no stairs or trees: the zone says what links its levels)
+    if (w.parapet !== undefined) {
+      if (w.parapet > 0) {
+        const pc = { x: mx + nx * QW_PARAPET_IN, z: mz + nz * QW_PARAPET_IN }
+        boxAt(out, pc, top - 0.05, ux, uz, len / 2 + QW_OVERLAP, 0.22, w.parapet, STONE, FIXED, STONE_TOP)
+        boxAt(out, pc, top + w.parapet - 0.1, ux, uz, len / 2 + QW_OVERLAP, QW_COPING_HW, QW_COPING_H, CAP, FIXED, STONE_TOP)
+      }
+      continue
+    }
     if (shelf && w.top - w.low >= BERGE_MIN_DROP) {
       const rnd = hash01(Math.round(mx * 10), Math.round(mz * 10))
       if (rnd < len / BERGE_STAIR_PITCH) {
@@ -420,7 +455,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
         for (let k = 0; k < n; k++) {
           const along = (k + 0.5) * BERGE_STAIR_TREAD - len / 2
           const sp = { x: mx + ux * along - nx * (BERGE_STAIR_W / 2), z: mz + uz * along - nz * (BERGE_STAIR_W / 2) }
-          boxAt(out, sp, w.low - 0.1, ux, uz, BERGE_STAIR_TREAD / 2, BERGE_STAIR_W / 2, (k + 1) * (top - w.low) / n + 0.1, BERGE_WALL, ASHLAR)
+          boxAt(out, sp, w.low - 0.1, ux, uz, BERGE_STAIR_TREAD / 2, BERGE_STAIR_W / 2, (k + 1) * (top - w.low) / n + 0.1, BERGE_WALL, ASHLAR, STONE_TOP)
         }
       }
       const rt = hash01(Math.round(mz * 10) + 7, Math.round(mx * 10) + 3)
@@ -434,8 +469,8 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
     // the parapet on a wall a street stands over (not the lower quay's own low edge at the water)
     if (w.top - w.low >= QW_PARAPET_DROP) {
       const pc = { x: mx + nx * QW_PARAPET_IN, z: mz + nz * QW_PARAPET_IN }
-      boxAt(out, pc, top - 0.05, ux, uz, len / 2 + QW_OVERLAP, 0.22, 1.05, STONE)
-      boxAt(out, pc, top + 0.95, ux, uz, len / 2 + QW_OVERLAP, 0.27, 0.1, CAP)
+      boxAt(out, pc, top - 0.05, ux, uz, len / 2 + QW_OVERLAP, 0.22, 1.05, STONE, FIXED, STONE_TOP)
+      boxAt(out, pc, top + 0.95, ux, uz, len / 2 + QW_OVERLAP, QW_COPING_HW, QW_COPING_H, CAP, FIXED, STONE_TOP)
     }
   }
   if (PLAGES) for (const e of edges) {
@@ -518,6 +553,9 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
               continue
             }
           }
+          // (the bake's own walls stand near: the outline is OSM's, and at a lower quay it runs under the shelf to the land wall, where
+          //  this stood from the river's level up through the bank in a sawtooth — owner, 2026-11-08: "the old wall version")
+          if (walls && walls.inRect({ x0: (p0.x + p1.x) / 2 - QW_RING_SKIP, z0: (p0.z + p1.z) / 2 - QW_RING_SKIP, x1: (p0.x + p1.x) / 2 + QW_RING_SKIP, z1: (p0.z + p1.z) / 2 + QW_RING_SKIP }).length) continue
           // the wall's top is the bank's, a few metres in: at the outline itself the 1 m ground is partway up its own ramp
           const nx = (p1.z - p0.z) / (len / n), nz = -(p1.x - p0.x) / (len / n)
           const bankTop = (q: Point): number => {

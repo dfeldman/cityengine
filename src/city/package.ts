@@ -63,11 +63,20 @@ export interface PackedEdge {
    * mouth to mouth. Ridden and driven like a street, drawn as a tunnel (render/tunnels.ts), never as a street.
    */
   bore?: boolean
+  /** a bore that is a LID TUNNEL (tools/tunnels.ts `lidTunnels`): its clearance, road to the street over it — drawn low, the ground filled only to the street */
+  lid?: number
   /**
    * A street in a CUT, running down into a tunnel mouth (tools/tunnels.ts): below the ground beside it, so what is
    * drawn along it follows it rather than the ground (city/grade.ts `cutAt`).
    */
   cut?: boolean
+  /**
+   * An OPEN LID's road (tools/tunnels.ts `lidTunnels`): a cut with concrete walls up to the street level beside it,
+   * and a coping strip over the ground the carve left between wall and bank (render/city.ts, TRENCH_*).
+   */
+  trench?: boolean
+  /** a `trench` way that runs out of the trench: its walls end this far along it (m) from end a, or (negative) from end b */
+  trenchTo?: number
   /**
    * A way the REGION drew, not OSM (src/city/sf/bridges.ts `BAY_BIKEWAY`): its heights are fixed, and a model draws
    * it, so nothing else does (render/city.ts).
@@ -81,6 +90,10 @@ export interface PackedEdge {
   passage?: boolean
   /** a way the bake lifted onto a bridge's deck (tools/bridges.ts): drawn as a structure, like the bridge */
   ramp?: true
+  /** a bike ramp the region declared beside a bridgehead's stairs (city/bike-ramps.ts), not OSM: re-laid by every bake and `--rides` */
+  bikeRamp?: true
+  /** never on the BIKE ride graph (tools/deck-zones.ts, the Seine band: motorway/trunk ways and their links, road tunnels) */
+  noBike?: true
 }
 
 export type RoofShape = 'flat' | 'gabled' | 'hipped' | 'pyramidal' | 'skillion' | 'mansard' | 'dome'
@@ -328,6 +341,11 @@ export interface PackedBridge {
   /** the outline, flattened x,z */
   ring: number[]
   name?: string
+  /**
+   * A LID's slab, not a bridge in OSM (tools/tunnels.ts `lidSlabs`): the street over an open trench, drawn as one flat
+   * slab (render/bridge-structures.ts `lidSlab`). `dx,dz` along the trench, `y` the street on it.
+   */
+  lid?: { dx: number; dz: number; y: number }
 }
 
 /**
@@ -377,7 +395,11 @@ export interface DetailOutline { name: string; margin: number; rings?: number[][
  * A piece of quay wall (tools/bake.ts, the quays' walls): a vertical face along a→b from `low` up to `top`, its high side to the
  * LEFT of a→b, with a paved cap `cap` metres deep on that side at `top` over the slope the 4 m ground draws behind it.
  */
-export interface QuayWall { ax: number; az: number; bx: number; bz: number; top: number; low: number; cap: number }
+export interface QuayWall {
+  ax: number; az: number; bx: number; bz: number; top: number; low: number; cap: number
+  /** a deck zone's wall (tools/deck-zones.ts): its parapet's height in metres (0: none), and no stairs or trees of its own */
+  parapet?: number
+}
 
 export interface CityPackage {
   /** the Seine's quay walls (render/quays.ts), Paris only */

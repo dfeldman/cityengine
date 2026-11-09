@@ -89,6 +89,8 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
       if (f & SF.ramp) e.ramp = true
       if (f & SF.bore) e.bore = true
       if (f & SF.cut) e.cut = true
+      if (f & SF.trench) e.trench = true
+      if (w.trenchTo !== undefined) e.trenchTo = w.trenchTo / 10
       if (f & SF.authored) e.authored = true
       if (f & SF.crossing) e.crossing = true
       if (f & SF.park) e.park = true

@@ -17,7 +17,7 @@ import { resolve } from 'node:path'
 
 const WMS = 'https://data.geopf.fr/wms-r/wms'
 const LAYER = 'IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93'
-const DIR = resolve(import.meta.dirname, 'cache', 'ign-mnt')
+const DIR_MNT = resolve(import.meta.dirname, 'cache', 'ign-mnt')
 const TILE_DEG = 0.01
 const TILE_PX = 256
 
@@ -55,12 +55,15 @@ function readFloatTiff(buf: Buffer): { w: number; h: number; data: Float32Array 
 
 const key = (lat0: number, lon0: number): string => `${lat0.toFixed(2)}_${lon0.toFixed(2)}`
 
-async function fetchTile(lat0: number, lon0: number, tilePx = TILE_PX): Promise<Grid | null> {
+/** the surface model (MNS: roofs, decks, viaducts) beside the bare-earth MNT, same grid; cached in its own directory */
+export const MNS_LAYER = 'IGNF_LIDAR-HD_MNS_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93'
+async function fetchTile(lat0: number, lon0: number, tilePx = TILE_PX, layer = LAYER): Promise<Grid | null> {
+  const DIR = layer === LAYER ? DIR_MNT : resolve(import.meta.dirname, 'cache', 'ign-mns-grid')
   const file = resolve(DIR, tilePx === TILE_PX ? `${key(lat0, lon0)}.tif` : `${key(lat0, lon0)}@${tilePx}.tif`)
   if (!existsSync(file)) {
     mkdirSync(DIR, { recursive: true })
     const q = new URLSearchParams({
-      SERVICE: 'WMS', VERSION: '1.3.0', REQUEST: 'GetMap', LAYERS: LAYER, STYLES: '', CRS: 'EPSG:4326',
+      SERVICE: 'WMS', VERSION: '1.3.0', REQUEST: 'GetMap', LAYERS: layer, STYLES: '', CRS: 'EPSG:4326',
       BBOX: `${lat0},${lon0},${lat0 + TILE_DEG},${lon0 + TILE_DEG}`, WIDTH: String(tilePx), HEIGHT: String(tilePx), FORMAT: 'image/geotiff',
     })
     for (let attempt = 0; ; attempt++) {
@@ -84,7 +87,7 @@ async function fetchTile(lat0: number, lon0: number, tilePx = TILE_PX): Promise<
  * terrarium's mean sea level), or null where the survey has no value (outside its coverage, a withheld zone, a hole).
  */
 /** `tilePx` pixels a 0.01° tile: the default 256 is ≈3–4 m; 1024 (the river's quays, bake.ts) ≈0.7–1.1 m, the survey's own. */
-export async function ignLidar(box: { south: number; north: number; west: number; east: number }, tilePx = TILE_PX):
+export async function ignLidar(box: { south: number; north: number; west: number; east: number }, tilePx = TILE_PX, layer = LAYER):
   Promise<{ at: (lat: number, lon: number) => number | null; tiles: number }> {
   const grids = new Map<string, Grid>()
   const la0 = Math.floor(box.south / TILE_DEG) * TILE_DEG, lo0 = Math.floor(box.west / TILE_DEG) * TILE_DEG
@@ -96,7 +99,7 @@ export async function ignLidar(box: { south: number; north: number; west: number
   for (let lat = la0; lat < box.north; lat += TILE_DEG) {
     for (let lon = lo0; lon < box.east; lon += TILE_DEG) {
       const a = +lat.toFixed(2), b = +lon.toFixed(2)
-      jobs.push((async () => { await slot(); try { const g = await fetchTile(a, b, tilePx); if (g) grids.set(key(a, b), g) } finally { free() } })())
+      jobs.push((async () => { await slot(); try { const g = await fetchTile(a, b, tilePx, layer); if (g) grids.set(key(a, b), g) } finally { free() } })())
     }
   }
   await Promise.all(jobs)

@@ -110,6 +110,8 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       // dropped the only way off the roof was the gondola, a forty-second wait for the cabin)
       if (k0(e) !== 'steps' && !e.authored && e.heights && e.heights.some((h, i) => i > 0 && Math.abs(h - e.heights![i - 1]) > Math.max(1.5,
         Math.hypot(e.points[i].x - e.points[i - 1].x, e.points[i].z - e.points[i - 1].z)))) return false
+      // the Seine band's highway-type ways (tools/deck-zones.ts `noBike`): a bike never rides them, ridden or not
+      if (mode === 'bike' && e.noBike) return false
       const k = e.kind ?? 'residential'
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
       // an unnamed service road on a bridge is a garage's own ramp or a loading bridge — San Francisco's beside the
@@ -1279,6 +1281,13 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
         const k = Math.min(e.points.length - 1, Math.max(0, Math.round((sAt / Math.max(1e-6, e.length)) * (e.points.length - 1))))
         return e.heights[k]
       }
+      // (never a link steeper than SIDE_LINK_MAX_GRADE: at a bridgehead the side path is on the quay and the road on the
+      //  plate above it — the Pont National's Quai de Bercy track was carried 5.4 m up in 18 m, a 30 % wall)
+      //  (the run is to where the link lands — the road's junction when that is near, not the foot of the perpendicular: on a
+      //  steep street, Montmartre's Rue des Saules, the junction 14 m along stood 2 m off a link 1 m long, and 17 tracks dead-ended)
+      const sq = q.s < 15 ? 0 : q.s > piece.length - 15 ? piece.length : q.s, hq = hAt(piece, sq), at = pointAt(piece.points, sq)
+      const run = Math.max(q.d, Math.hypot(at.x - from.at.x, at.z - from.at.z))
+      if (from.h !== undefined && hq !== undefined && Math.abs(from.h - hq) > Math.max(SIDE_LINK_MAX_GRADE * run, SIDE_LINK_MIN_RISE)) continue
       let target: number
       // onto the road's own junction when one is near: a second junction a few metres from it is a question
       // asked twice
@@ -1823,6 +1832,9 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   es = pruneStubs(pruneDeadEndPockets(es, keep))
   // …a street ridden straight through its stretch, its cross streets meeting it one node each (straightCorridor)
   for (const c of overrides?.corridors ?? []) es = pruneStubs(largest(straightCorridor(es, c, ids, overrides!.heightAt)))
+  // the bridges' ends joined to the street junction beside them at the same level (stitchBridgeheads)
+  // (RIDE_STITCH=0 turns it off, for a city-wide before/after: see plans/bridgeheads/NOTES.md)
+  if (mode === 'bike' && (typeof process === 'undefined' || process.env?.RIDE_STITCH !== '0')) es = stitchBridgeheads(es, ids, blocked)
   // and last of all, no edge doubling back on itself (BUGS.md #194), and every edge meeting its junction
   es = despike(snapEnds(es))
   // …and every ordinary junction's approaches straight, its streets meeting where their lines cross (city/junction-shape.ts)
@@ -1830,6 +1842,72 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   // …and NO SHARP TURN NEAR ANY JUNCTION, whatever made it (below)
   if (overrides?.straighten !== false) es = smoothApproaches(es)
   return buildGraph(es) as RideGraph
+}
+
+/** a side path's link across to its road (dropSidePaths) climbs no steeper than this */
+export const SIDE_LINK_MAX_GRADE = typeof process !== 'undefined' && process.env?.SIDE_LINK_MAX_GRADE ? Number(process.env.SIDE_LINK_MAX_GRADE) : 0.12
+/** …but any rise under this is height noise between a kerbed track and its road, and allowed */
+export const SIDE_LINK_MIN_RISE = 1.5
+/** a bridge's end is stitched to street nodes this near, climbing no steeper than STITCH_GRADE, at most STITCH_MAX of them */
+export const STITCH_R = 25, STITCH_GRADE = 0.08, STITCH_MAX = 2
+/** …never to a node this near the bridge's own line (a quay passing under the deck's end) */
+export const STITCH_UNDER = 6
+/** …nor to one the graph already reaches from it within this far */
+export const STITCH_PATH = 60
+
+/**
+ * BRIDGEHEADS STITCHED (plans/bridgeheads, 2026-11-07). OSM lands a bridge on one node of its junction; the quay's
+ * carriageways meet the junction at nodes of their own 10–20 m away, and after the passes above nothing joins them —
+ * at the Pont National's right bank every quay-to-deck ride went 700 m round by Rue Robert-Etlin. Each end of a
+ * bridge edge (where it meets a non-bridge edge) is joined by a short straight link to the nearest street nodes within
+ * STITCH_R at nearly its height, not already its neighbours, and not under the deck itself.
+ */
+const DEBUG_AT = typeof process !== 'undefined' && process.env?.STITCH_DEBUG ? process.env.STITCH_DEBUG.split(',').map(Number) : null
+export function stitchBridgeheads(edges: RideEdge[], ids: Ids, blocked?: (a: Point, b: Point) => boolean): RideEdge[] {
+  const nodeAt = new Map<number, { p: Point; h?: number }>()
+  const adj = new Map<number, Map<number, number>>()
+  const surfaceAt = new Map<number, RideEdge['surface']>()
+  const onBridge = new Set<number>(), offBridge = new Set<number>()
+  for (const e of edges) {
+    nodeAt.set(e.a, { p: e.points[0], h: e.heights?.[0] })
+    nodeAt.set(e.b, { p: e.points[e.points.length - 1], h: e.heights?.[e.heights.length - 1] })
+    ;(adj.get(e.a) ?? adj.set(e.a, new Map()).get(e.a)!).set(e.b, Math.min(e.length, adj.get(e.a)?.get(e.b) ?? Infinity))
+    ;(adj.get(e.b) ?? adj.set(e.b, new Map()).get(e.b)!).set(e.a, Math.min(e.length, adj.get(e.b)?.get(e.a) ?? Infinity))
+    for (const n of [e.a, e.b]) { (e.bridge ? onBridge : offBridge).add(n); if (!e.bridge) surfaceAt.set(n, e.surface) }
+  }
+  const bridges = edges.filter((e) => e.bridge)
+  const underDeck = (p: Point): boolean => bridges.some((e) => { const q = project(e.points, p); return q.d < STITCH_UNDER && q.s > 1 && q.s < e.length - 1 })
+  const out = [...edges]
+  for (const n of onBridge) {
+    if (!offBridge.has(n)) continue
+    const me = nodeAt.get(n)!
+    if (me.h === undefined) continue
+    // (the nodes already within STITCH_PATH of it along the graph: those it reaches anyway)
+    const dist = new Map<number, number>([[n, 0]]), open = [n]
+    while (open.length) {
+      const x = open.pop()!
+      for (const [k, l] of adj.get(x) ?? []) {
+        const d = dist.get(x)! + l
+        if (d <= STITCH_PATH && d < (dist.get(k) ?? Infinity)) { dist.set(k, d); open.push(k) }
+      }
+    }
+    const near = new Set(dist.keys())
+    const cand: { m: number; d: number }[] = []
+    const dbg = DEBUG_AT && Math.hypot(me.p.x - DEBUG_AT[0], me.p.z - DEBUG_AT[1]) < 60
+    for (const [m, o] of nodeAt) {
+      if (dbg && distance(me.p, o.p) < STITCH_R + 10) console.log(`  [stitch] ${n} h${me.h.toFixed(1)} → ${m} ${distance(me.p, o.p).toFixed(0)} m h${o.h?.toFixed(1)} near ${near.has(m)} bridge ${onBridge.has(m)} under ${underDeck(o.p)}`)
+      if (near.has(m) || onBridge.has(m) || o.h === undefined) continue
+      const d = distance(me.p, o.p)
+      if (d > STITCH_R || Math.abs(o.h - me.h) > STITCH_GRADE * d + 0.3 || underDeck(o.p) || blocked?.(me.p, o.p)) continue
+      cand.push({ m, d })
+    }
+    for (const { m, d } of cand.sort((x, y) => x.d - y.d).slice(0, STITCH_MAX)) {
+      const o = nodeAt.get(m)!
+      out.push({ id: ids.nextEdge(), a: n, b: m, points: [me.p, o.p], length: d, surface: surfaceAt.get(m)!, width: 4, walk: 0,
+        name: undefined, foot: false, kind: 'residential', oneway: false, over: [], heights: [me.h, o.h!] })
+    }
+  }
+  return out
 }
 
 /** A stretch of one street ridden as ONE straight path (RideOverrides.corridors; local frame). */
