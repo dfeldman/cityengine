@@ -34,6 +34,46 @@ export const DZ_RIVER_REACH = 10, DZ_RIVER_PROBE = 4
 export const DZ_RIVER_PARAPET = 0.7, DZ_LEVEL_PARAPET = 1.0, DZ_PARAPET_MIN = 1.5
 /** the ground step shipped on the tiles a deck zone touches (the quays' detail is QD_STEP): fine enough that a wall's foot is a wall */
 export const DZ_GROUND_STEP = 1
+/** (2026-11-09) a zone's ground is shipped on its 1 m detail posts even where the quay detail has none (bake.ts quayDetail.at) */
+/** (2026-11-09) a band wall line with no BD TOPO road in sight of a side reads that side off the lidar MNT, and so does the band's ground
+ *  there (bake.ts quayDetail.at): 1209 of the band's 1886 wall pieces on pont-national-mini had been dropped for want of a road */
+export const DZ_WALL_MNT = process.env.DZ_WALL_MNT !== '0'
+/** BD TOPO walls as runs (DeckZone.runWalls): on; Chaikin passes, and the sharpest bend (degrees) they round; the sides read this far out;
+ *  a run holds while the sides differ by KEEP, gaps up to GAP m are filled, runs under RUN_MIN m dropped, top/low smoothed over ±SMOOTH m */
+export const DZ_WALL_RUNS = process.env.DZ_WALL_RUNS !== '0', DZ_WALL_CHAIKIN = Number(process.env.DZ_WALL_CHAIKIN ?? 3), DZ_WALL_CORNER = 50, DZ_WALL_READ = 2.4
+export const DZ_WALL_SHIPPED = true
+export const DZ_WALL_KEEP = 0.4, DZ_WALL_GAP = 8, DZ_WALL_RUN_MIN = 6, DZ_WALL_SMOOTH = 6
+/** Chaikin corner cutting of an open polyline (flat x, z), ends kept; a vertex bending more than `maxDeg` is kept sharp */
+export function chaikin(r: number[], passes: number, maxDeg: number): number[] {
+  let p = r
+  for (let it = 0; it < passes; it++) {
+    if (p.length < 6) return p
+    const q = [p[0], p[1]]
+    for (let i = 2; i + 3 < p.length; i += 2) {
+      const ax = p[i - 2], az = p[i - 1], bx = p[i], bz = p[i + 1], cx = p[i + 2], cz = p[i + 3]
+      const a1 = Math.atan2(bz - az, bx - ax), a2 = Math.atan2(cz - bz, cx - bx)
+      let d = Math.abs(a2 - a1) * 180 / Math.PI; if (d > 180) d = 360 - d
+      if (d > maxDeg) { q.push(bx, bz); continue }
+      q.push(bx + (ax - bx) * 0.25, bz + (az - bz) * 0.25, bx + (cx - bx) * 0.25, bz + (cz - bz) * 0.25)
+    }
+    q.push(p[p.length - 2], p[p.length - 1]); p = q
+  }
+  return p
+}
+/** a run's values: nulls filled linearly from their neighbours, then a ±w moving average */
+export function smoothRun(v: (number | null)[], w: number): number[] {
+  const n = v.length, f = v.slice()
+  const idx = f.map((x, i) => (x === null ? -1 : i)).filter((i) => i >= 0)
+  if (!idx.length) return f.map(() => 0)
+  for (let i = 0; i < n; i++) if (f[i] === null) {
+    const a = [...idx].reverse().find((j) => j < i), b = idx.find((j) => j > i)
+    f[i] = a === undefined ? f[b!] : b === undefined ? f[a] : f[a]! + (f[b]! - f[a]!) * (i - a) / (b - a)
+  }
+  const g = f as number[], o: number[] = []
+  for (let i = 0; i < n; i++) { let s = 0, c = 0; for (let j = Math.max(0, i - w); j <= Math.min(n - 1, i + w); j++) { s += g[j]; c++ } o.push(s / c) }
+  return o
+}
+export const DZ_DETAIL_SEED = process.env.DZ_DETAIL_SEED !== '0'
 /** a road-tunnel mouth this near a zone's ring is not sunk under the street over it (tools/tunnels.ts sinkRoadMouths) */
 export const DZ_SINK_MARGIN = 30
 /** BD TOPO mode: a way's end moved to a junction's height is eased back along it over this many m */
@@ -92,6 +132,9 @@ const FOOT_KIND = /^(footway|cycleway|path|pedestrian|bridleway)$/
  *  2.3 m over it: traffic rides the way, the road surface drapes the ground. After the routes, posts inside a car road's corridor
  *  (StreetGrade: half-width + walk) are RAISED to the way less DZ_BED_TOL; never lowered (the lower-quai ramps run under the ground). */
 export const DZ_BED = true, DZ_BED_TOL = 0.15, DZ_BED_FOOT = false
+/** (2026-11-10) the band's ground never stands more than DZ_MNT_CAP m over the lidar MNT (null: off); and in the band every way's corridor
+ *  (foot ways too) is LOWERED to the way where the ground stands DZ_BED_DOWN m over it: no way under the ground (bake.ts) */
+export const DZ_MNT_CAP: number | null = 1.0, DZ_BED_DOWN = 0.15
 export const DZ_BAND_NO_BIKE = /^(motorway|trunk)(_link)?$/
 export const DZ_BAND_NO_BIKE_TUNNEL_OK = /^(footway|cycleway|path|pedestrian|steps)$/
 export const DZ_LAY_STEP = 4, DZ_ID0 = 9.7e14, DZ_NODE0 = 9.71e14
@@ -173,6 +216,12 @@ export class DeckZone {
   }
   readonly shape: DeckZoneSpec['shape'] | null = null
   readonly mOf: ((x: number, z: number) => number | null) | null = null
+  /** (the band, DZ_WALL_MNT) the lidar MNT at a post in the band that no road is in sight of and that is not the riverbed: null elsewhere */
+  mntAt(x: number, z: number, h: number): number | null {
+    if (!DZ_WALL_MNT || !this.shape || !this.mOf || h < (this.shape.riverbed ? this.shape.riverbed(x, z) - this.datum : this.floor)) return null
+    if (this.bandW(x, z) <= 0) return null
+    const m = this.mOf(x, z); return m === null ? null : m - this.datum
+  }
   inside(x: number, z: number): boolean { return this.shape ? this.shape.inside(x, z) : inRing(this.ring, x, z) }
   /** the band's weight at a point: 1 inside and out to band[0] m, easing to 0 over band[1] m more (0 with no band) */
   bandW(x: number, z: number): number {
@@ -206,7 +255,11 @@ export class DeckZone {
       if (h < (this.shape.riverbed ? this.shape.riverbed(x, z) - this.datum : this.floor) || !this.gOf) return null
       const w = this.bandW(x, z); if (w <= 0) return null
       const g = this.gOf(x, z); if (g === null) return null
-      return g - this.datum + (h - (g - this.datum)) * (1 - w)
+      const y = g - this.datum + (h - (g - this.datum)) * (1 - w)
+      // (DZ_MNT_CAP, 2026-11-10: the BD TOPO blend plateaus at the height of ramps BD TOPO calls ground — the A4 Bretelles at 5.4–6.0 by
+      //  Pont National, over an MNT of 3.0 — and stood 3 m over the lidar's open ground, over the bike path beside them)
+      if (DZ_MNT_CAP !== null && this.mOf) { const m = this.mOf(x, z); if (m !== null && y > m - this.datum + DZ_MNT_CAP) return m - this.datum + DZ_MNT_CAP }
+      return y
     }
     if (this.inside(x, z)) return this.levelAt(x, z)
     if (h < this.floor) return null
@@ -270,12 +323,97 @@ export class DeckZone {
     }
     return out
   }
+  /** THE BD TOPO WALLS AS RUNS (DZ_WALL_RUNS, 2026-11-09; owner: "they stop and start too often and dont curve with the quai"). Each line
+   *  is smoothed (Chaikin, corners under DZ_WALL_CORNER only) and cut into DZ_WALL_STEP pieces; each piece's sides are read
+   *  DZ_WALL_READ m out (the ground the renderer reads beside the stone, city/wall-ground.ts); a run starts where they differ by
+   *  DZ_WALL_MIN and carries on while they differ by DZ_WALL_KEEP the same way; gaps up to DZ_WALL_GAP m between runs facing the same
+   *  way are filled, runs under DZ_WALL_RUN_MIN m dropped, and top and low smoothed along each run over ±DZ_WALL_SMOOTH m. */
+  private runWalls(tally: (k: string, x: number, z: number) => void, shipped?: (x: number, z: number) => number): QuayWall[] {
+    const out: QuayWall[] = []
+    // (DZ_WALL_SHIPPED: the sides off the ground as shipped — the band's, a hand zone's over it, the road bed — not the BD TOPO blend alone:
+    //  a wall measured on the blend stood where the shipped ground had no step, or none where it had)
+    const side = (x: number, z: number, exact: boolean): number | null => {
+      if (DZ_WALL_SHIPPED && shipped) return shipped(x, z)
+      const g = this.gOf!(x, z, exact) ?? (DZ_WALL_MNT && this.mOf ? this.mOf(x, z) : null)
+      return g === null ? null : g - this.datum
+    }
+    for (const raw of this.lines) {
+      const r = chaikin(raw, DZ_WALL_CHAIKIN, DZ_WALL_CORNER)
+      // the pieces along the whole line, evenly
+      const cum = [0]; for (let i = 2; i < r.length; i += 2) cum.push(cum[cum.length - 1] + Math.hypot(r[i] - r[i - 2], r[i + 1] - r[i - 1]))
+      const L = cum[cum.length - 1], n = Math.max(1, Math.round(L / DZ_WALL_STEP))
+      if (L < 0.5) continue
+      let seg = 0
+      const at = (d: number): [number, number] => {
+        while (seg < cum.length - 2 && cum[seg + 1] < d) seg++
+        const t = (d - cum[seg]) / ((cum[seg + 1] - cum[seg]) || 1)
+        return [r[seg * 2] + (r[seg * 2 + 2] - r[seg * 2]) * t, r[seg * 2 + 1] + (r[seg * 2 + 3] - r[seg * 2 + 1]) * t]
+      }
+      const P: { ax: number; az: number; bx: number; bz: number; mx: number; mz: number; ok: boolean; yl: number; yr: number }[] = []
+      let prev = at(0)
+      for (let k = 0; k < n; k++) {
+        const b = at(L * (k + 1) / n), [ax, az] = prev, [bx, bz] = b; prev = b
+        const len = Math.hypot(bx - ax, bz - az) || 1, ux = (bx - ax) / len, uz = (bz - az) / len
+        const mx = (ax + bx) / 2, mz = (az + bz) / 2, lx = mx - uz * DZ_WALL_READ, lz = mz + ux * DZ_WALL_READ, rx = mx + uz * DZ_WALL_READ, rz = mz - ux * DZ_WALL_READ
+        let ok = true, yl = 0, yr = 0
+        if (!(this.inside(lx, lz) && this.inside(rx, rz)) && !(this.distOut(lx, lz) < this.band[0] && this.distOut(rx, rz) < this.band[0])) { tally('outside', mx, mz); ok = false }
+        else {
+          const l = this.shape || !this.inside(lx, lz) ? side(lx, lz, true) : this.levelAt(lx, lz, true), q = this.shape || !this.inside(rx, rz) ? side(rx, rz, true) : this.levelAt(rx, rz, true)
+          if (l === null || q === null) { tally('noGround', mx, mz); ok = false } else { yl = l; yr = q }
+        }
+        P.push({ ax, az, bx, bz, mx, mz, ok, yl, yr })
+      }
+      // hysteresis: +1 high on the right, −1 on the left, 0 none
+      const dir = new Array<number>(n).fill(0)
+      for (let k = 0, cur = 0; k < n; k++) {
+        const p = P[k], d = p.ok ? p.yr - p.yl : 0
+        if (cur && p.ok && d * cur >= DZ_WALL_KEEP) dir[k] = cur
+        else { cur = p.ok && Math.abs(d) >= DZ_WALL_MIN ? Math.sign(d) : 0; dir[k] = cur }
+      }
+      // (backwards too: a run's start eases in as its end does)
+      for (let k = n - 1, cur = 0; k >= 0; k--) {
+        const p = P[k], d = p.ok ? p.yr - p.yl : 0
+        if (dir[k]) { cur = dir[k]; continue }
+        if (cur && p.ok && d * cur >= DZ_WALL_KEEP) dir[k] = cur; else cur = 0
+      }
+      // fill short gaps between runs facing the same way
+      const gapN = Math.round(DZ_WALL_GAP / (L / n))
+      for (let k = 0; k < n; k++) {
+        if (dir[k] || k === 0 || !dir[k - 1]) continue
+        let e = k; while (e < n && !dir[e]) e++
+        if (e < n && e - k <= gapN && dir[e] === dir[k - 1]) { for (let j = k; j < e; j++) { dir[j] = dir[k - 1]; P[j].ok = false } }
+        k = e - 1
+      }
+      // the runs: drop the short, smooth top and low, emit
+      const runN = Math.round(DZ_WALL_RUN_MIN / (L / n)), sm = Math.max(0, Math.round(DZ_WALL_SMOOTH / (L / n)))
+      for (let k = 0; k < n; k++) {
+        if (!dir[k]) continue
+        let e = k; while (e < n && dir[e] === dir[k]) e++
+        const D = dir[k]
+        if (e - k < Math.max(1, runN)) { for (let j = k; j < e; j++) tally('short', P[j].mx, P[j].mz); k = e - 1; continue }
+        // top and low per piece (gap pieces: none yet), then filled across the gaps and smoothed
+        const top: (number | null)[] = [], low: (number | null)[] = []
+        for (let j = k; j < e; j++) { const p = P[j]; top.push(p.ok ? Math.max(p.yl, p.yr) : null); low.push(p.ok ? Math.min(p.yl, p.yr) : null) }
+        const T = smoothRun(top, sm), Lo = smoothRun(low, sm)
+        for (let j = k; j < e; j++) {
+          const p = P[j], t = T[j - k], lo = Math.min(Lo[j - k], t - DZ_WALL_KEEP), parapet = t - lo >= DZ_PARAPET_MIN ? DZ_LEVEL_PARAPET : 0
+          tally('kept', p.mx, p.mz)
+          if (D > 0) out.push({ ax: r2(p.ax), az: r2(p.az), bx: r2(p.bx), bz: r2(p.bz), top: r2(t), low: r2(lo), cap: DZ_WALL_CAP, parapet })
+          else out.push({ ax: r2(p.bx), az: r2(p.bz), bx: r2(p.ax), bz: r2(p.az), top: r2(t), low: r2(lo), cap: DZ_WALL_CAP, parapet })
+        }
+        k = e - 1
+      }
+    }
+    return out
+  }
   /** The walls between levels: along every ringed level's outline, where the two sides inside the zone differ by DZ_WALL_MIN;
    *  the low side on the LEFT of a → b (render/quays.ts: the water's side). */
-  walls(): QuayWall[] {
+  walls(why?: { near: (x: number, z: number) => boolean; n: Record<string, number> } | null, shipped?: (x: number, z: number) => number): QuayWall[] {
     const out: QuayWall[] = []
+    const tally = (k: string, x: number, z: number): void => { if (why && why.near(x, z)) why.n[k] = (why.n[k] ?? 0) + 1 }
     // BD TOPO mode: walls along the Quai / Mur lines (open polylines) where the ground either side differs
-    if (this.gOf) for (const r of this.lines) {
+    if (this.gOf && DZ_WALL_RUNS) out.push(...this.runWalls(tally, shipped))
+    else if (this.gOf) for (const r of this.lines) {
       for (let i = 0; i + 3 < r.length; i += 2) {
         const L = Math.hypot(r[i + 2] - r[i], r[i + 3] - r[i + 1]), n = Math.max(1, Math.round(L / DZ_WALL_STEP))
         const ux = (r[i + 2] - r[i]) / (L || 1), uz = (r[i + 3] - r[i + 1]) / (L || 1)
@@ -284,10 +422,11 @@ export class DeckZone {
           const bx = r[i] + (r[i + 2] - r[i]) * (k + 1) / n, bz = r[i + 1] + (r[i + 3] - r[i + 1]) * (k + 1) / n
           const mx = (ax + bx) / 2, mz = (az + bz) / 2, lx = mx - uz * DZ_WALL_PROBE, lz = mz + ux * DZ_WALL_PROBE, rx = mx + uz * DZ_WALL_PROBE, rz = mz - ux * DZ_WALL_PROBE
           // (inside the ring, or out in the band's full part: a wall line just past the ring stands too)
-          if (!(this.inside(lx, lz) && this.inside(rx, rz)) && !(this.distOut(lx, lz) < this.band[0] && this.distOut(rx, rz) < this.band[0])) continue
+          if (!(this.inside(lx, lz) && this.inside(rx, rz)) && !(this.distOut(lx, lz) < this.band[0] && this.distOut(rx, rz) < this.band[0])) { tally('outside', mx, mz); continue }
           let yl = this.levelAt(lx, lz, true), yr = this.levelAt(rx, rz, true)
-          if (this.shape || !this.inside(lx, lz) || !this.inside(rx, rz)) { const gl = this.gOf(lx, lz, true), gr = this.gOf(rx, rz, true); if (gl === null || gr === null) continue; yl = gl - this.datum; yr = gr - this.datum }
-          if (Math.abs(yl - yr) < DZ_WALL_MIN) continue
+          if (this.shape || !this.inside(lx, lz) || !this.inside(rx, rz)) { const gl = this.gOf(lx, lz, true) ?? (DZ_WALL_MNT && this.mOf ? this.mOf(lx, lz) : null), gr = this.gOf(rx, rz, true) ?? (DZ_WALL_MNT && this.mOf ? this.mOf(rx, rz) : null); if (gl === null || gr === null) { tally('noGround', mx, mz); continue } yl = gl - this.datum; yr = gr - this.datum }
+          if (Math.abs(yl - yr) < DZ_WALL_MIN) { tally('flat', mx, mz); continue }
+          tally('kept', mx, mz)
           const top = Math.max(yl, yr), low = Math.min(yl, yr), parapet = top - low >= DZ_PARAPET_MIN ? DZ_LEVEL_PARAPET : 0
           if (yl < yr) out.push({ ax: r2(ax), az: r2(az), bx: r2(bx), bz: r2(bz), top: r2(top), low: r2(low), cap: DZ_WALL_CAP, parapet })
           else out.push({ ax: r2(bx), az: r2(bz), bx: r2(ax), bz: r2(az), top: r2(top), low: r2(low), cap: DZ_WALL_CAP, parapet })
@@ -852,7 +991,55 @@ export const DZ_RAIL_FOOT_DROP = 1.5
 
 /** wall pieces from two rings (or a river wall and a level wall) along the same line z-fight: keep the first within DZ_WALL_SAME */
 export const DZ_WALL_SAME = 1.0
-export function dedupeWalls(ws: QuayWall[]): QuayWall[] {
+/** (`bySegment`, the band, 2026-11-09) a piece is the same wall as a kept one when its middle lies within DZ_WALL_SAME of the kept
+ *  piece's SEGMENT and it runs within DZ_WALL_SAME_DEG of it: two coincident BD TOPO lines (a Quai and a Mur on one wall) cut at
+ *  different phases kept every other piece of the second by middles alone — 2 m pieces 4 m apart z-fighting along the first */
+export const DZ_WALL_SAME_DEG = 25
+/** the pieces near a segment-wise: does a piece lie (its middle within `r` of a filed piece's segment, within DZ_WALL_SAME_DEG of it)? */
+export function wallNear(ws: QuayWall[], r: number): (w: QuayWall) => boolean {
+  const C = 4, grid = new Map<string, QuayWall[]>(), cos = Math.cos(DZ_WALL_SAME_DEG * Math.PI / 180)
+  for (const w of ws) for (const [x, z] of [[w.ax, w.az], [(w.ax + w.bx) / 2, (w.az + w.bz) / 2], [w.bx, w.bz]]) {
+    const key = `${Math.floor(x / C)},${Math.floor(z / C)}`, l = grid.get(key); if (!l) grid.set(key, [w]); else if (l[l.length - 1] !== w) l.push(w)
+  }
+  return (w) => {
+    const mx = (w.ax + w.bx) / 2, mz = (w.az + w.bz) / 2, L = Math.hypot(w.bx - w.ax, w.bz - w.az) || 1, cx = Math.floor(mx / C), cz = Math.floor(mz / C)
+    for (let i = cx - 1; i <= cx + 1; i++) for (let j = cz - 1; j <= cz + 1; j++) for (const k of grid.get(`${i},${j}`) ?? []) {
+      const dx = k.bx - k.ax, dz = k.bz - k.az, kl = Math.hypot(dx, dz) || 1
+      if (Math.abs((dx * (w.bx - w.ax) + dz * (w.bz - w.az)) / (kl * L)) < cos) continue
+      const t = ((mx - k.ax) * dx + (mz - k.az) * dz) / (kl * kl)
+      if (t < -0.25 || t > 1.25) continue
+      const tc = Math.max(0, Math.min(1, t))
+      if (Math.hypot(k.ax + dx * tc - mx, k.az + dz * tc - mz) < r) return true
+    }
+    return false
+  }
+}
+/** (the band) a city quay wall piece this near a zone's wall, segment-wise, yields to it (bake.ts): the zone's walls are cut on the
+ *  band's own ground; the old midpoint test kept every other zone piece beside a city wall (4 m and 2 m pieces), both drawn */
+export const DZ_WALL_YIELD = 1.5
+/** (the band) a city piece within DZ_WALL_PAIR m of a zone wall, parallel, whose top stands DZ_WALL_TOP_TOL m over the shipped ground behind it, goes too */
+export const DZ_WALL_PAIR = 6, DZ_WALL_TOP_TOL = 1.0
+export function dedupeWalls(ws: QuayWall[], bySegment = false): QuayWall[] {
+  if (bySegment) {
+    const C = 4, grid = new Map<string, QuayWall[]>(), kept: QuayWall[] = [], cos = Math.cos(DZ_WALL_SAME_DEG * Math.PI / 180)
+    for (const w of ws) {
+      const mx = (w.ax + w.bx) / 2, mz = (w.az + w.bz) / 2, L = Math.hypot(w.bx - w.ax, w.bz - w.az) || 1
+      const cx = Math.floor(mx / C), cz = Math.floor(mz / C)
+      let dup = false
+      for (let i = cx - 1; i <= cx + 1 && !dup; i++) for (let j = cz - 1; j <= cz + 1 && !dup; j++) for (const k of grid.get(`${i},${j}`) ?? []) {
+        const dx = k.bx - k.ax, dz = k.bz - k.az, kl = Math.hypot(dx, dz) || 1
+        if (Math.abs((dx * (w.bx - w.ax) + dz * (w.bz - w.az)) / (kl * L)) < cos) continue
+        const t = ((mx - k.ax) * dx + (mz - k.az) * dz) / (kl * kl)
+        if (t < 0 || t > 1) continue // (the next piece along the same line: its middle projects past this one's end)
+        if (Math.hypot(k.ax + dx * t - mx, k.az + dz * t - mz) < DZ_WALL_SAME) { dup = true; break }
+      }
+      if (dup) continue
+      kept.push(w)
+      // filed under every cell its segment's ends and middle touch
+      for (const [x, z] of [[w.ax, w.az], [mx, mz], [w.bx, w.bz]]) { const key = `${Math.floor(x / C)},${Math.floor(z / C)}`; const l = grid.get(key); if (!l) grid.set(key, [w]); else if (l[l.length - 1] !== w) l.push(w) }
+    }
+    return kept
+  }
   const kept: QuayWall[] = []
   for (const w of ws) {
     const mx = (w.ax + w.bx) / 2, mz = (w.az + w.bz) / 2

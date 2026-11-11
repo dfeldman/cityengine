@@ -379,13 +379,14 @@ export async function bdTopoZone(hand: DeckZoneSpec, log: string[], sb?: SeineBa
     // a bridge way matches BD TOPO's bridges (sol 1), any other way the rest (the Périphérique slip's OSM deck stood 2.8 m high)
     const segs = segIndex(btSegs(roads, toLocal)), onBridge = (s: BtSeg) => btSol(s.f) === '1', offBridge = (s: BtSeg) => btSol(s.f) !== '1'
     // (2026-11-08, the band's unmatched ways: a ground way never takes a TUNNEL troncon's z (sol −1: the Tunnel des Tuileries' 30 NGF
-    //  under the upper quai's 34); only a way OSM itself puts below grade may)
+    //  under the upper quai's 34); only a way OSM itself puts below grade may — or one in a cut: an open lid's trench road, 2026-11-10,
+    //  which took the Avenue des Terroirs' +2.5 over the Quai de Bercy's −4.6 and humped 7 m)
     const atGrade = (s: BtSeg) => btSol(s.f) !== '1' && btSol(s.f) !== '-1'
     // (the others for the mutual-nearest rule, indexed once per edge list: rebuilt only when ways are added)
     let idxOf: PackedEdge[] | null = null, idxN = -1, idx: { br: EdgeIndex; gr: EdgeIndex } | null = null
     return (e, edges) => {
       if (idxOf !== edges || idxN !== edges.length) { idxOf = edges; idxN = edges.length; idx = { br: edgeIndex(edges.filter((o) => !!o.bridge)), gr: edgeIndex(edges.filter((o) => !o.bridge)) } }
-      const m = btMatchEdge(e, segs, e.bridge ? onBridge : e.tunnel || (e.layer ?? 0) < 0 || !BT_GROUND_NO_TUNNEL ? offBridge : atGrade, e.bridge ? idx!.br : idx!.gr), n = m.length, z: (number | null)[] = m.map((v) => v?.z ?? null)
+      const m = btMatchEdge(e, segs, e.bridge ? onBridge : e.tunnel || (e.layer ?? 0) < 0 || e.cut || !BT_GROUND_NO_TUNNEL ? offBridge : atGrade, e.bridge ? idx!.br : idx!.gr), n = m.length, z: (number | null)[] = m.map((v) => v?.z ?? null)
       const k = z.filter((v) => v !== null).length
       if (k < Math.max(1, BT_WAY_FRAC * n)) return null
       // unmatched vertices: interpolated along the way between matched ones, held at the ends

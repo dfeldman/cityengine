@@ -55,6 +55,8 @@ import { areaPalettes, handLook } from '../city/hand-looks.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
+import { WallGround, WG_ON, refineAtWalls } from '../city/wall-ground.ts'
+import { wallsFirst } from './depth-copies.ts'
 import { Carriageways } from '../city/carriageways.ts'
 import { bartEntrance, sfTrashCan, chainBollard, streetBanners } from './sf/furniture.ts'
 import { waterLookup } from './watermask.ts'
@@ -164,6 +166,8 @@ function subdivideBuilder(out: MeshBuilder, maxEdge: number): void {
   }
   for (let i = 0; i < I.length; i += 3) split(I[i], I[i + 1], I[i + 2], 0)
 }
+
+// (refineAtWalls, wallTrianglesAdded: city/wall-ground.ts)
 
 function groundGrid(t: PackedTerrain | undefined | null): PackedTerrain | undefined {
   if (!t || GROUND_STRIDE === 1) return t ?? undefined
@@ -1208,7 +1212,8 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   const terrain = new Terrain(t)
   // one level per river, as the bake gave its pieces (city/package.ts waterLevels)
   const levels = waterLevels(wholeWater(pkg), (x, z) => terrain.heightAt(x, z), drop)
-  water.forEach((w, k) => { w.level = levels[k] })
+  const lifts = wholeWater(pkg).map((a) => (a.river ? RIVER_LIFT : 0))
+  water.forEach((w, k) => { w.level = levels[k] + lifts[k] })
   // the LOWEST level of every body at a point: OSM maps the Seine twice over in places (a riverbank and a
   // natural=water polygon, with different lowest banks), and taking the first put the occluder above the lower
   // water along their boundary — shards of ground across the river (BUGS.md #36)
@@ -1967,6 +1972,30 @@ export class City {
     this.region = region(pkg.region)
     // the runtime pits in the fine ground (city/terrain-tweaks.ts), before any tile's block lands
     if (pkg.origin) this.terrain.tweaks = prepareTweaks([...levelPlanTweaks(this.region.levelPlans), ...(this.region.terrainTweaks ?? [])], new Projection(pkg.origin), (x, z) => this.terrain.rawHeightAt(x, z))
+    // the ground at the quay walls read side by side (city/wall-ground.ts), after the tweaks have read it as shipped
+    if (WG_ON && pkg.quayWalls?.length) this.terrain.walls = new WallGround(pkg.quayWalls)
+    if (pkg.quayWalls?.length) this.waterWalls = new WallGround(pkg.quayWalls, WATER_WALL_LAND)
+    // (RIVER_CLAMP, 2026-11-11: inside a river's outline the ground is held RIVER_CLAMP under the sheet, except on a quay wall's land side —
+    //  the lidar's banks and shoals stood through the Seine wherever the dry cut opened a hole in it; owner: "grass poking above the water")
+    if (RIVER_CLAMP !== null) {
+      const ww = wholeWater(pkg), rivers = ww.map((a, i) => ({ a, i })).filter(({ a }) => a.river)
+      if (rivers.length) {
+        const lv = waterLevels(ww, (x, z) => this.terrain.heightAt(x, z), this.region.riverDrop ?? 0)
+        const look = waterLookup(rivers.map(({ a, i }) => {
+          const ring = unpackPoints(a.ring)
+          let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+          for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+          return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: (a.level ?? lv[i]) + 0.03 + RIVER_LIFT - RIVER_CLAMP! }
+        }))
+        const W = this.waterWalls
+        this.terrain.river = (x, z, h) => {
+          const top = look(x, z)
+          if (top === null || h <= top) return h
+          if (W && (W.signed(x, z, WATER_WALL_STEP) ?? -1) > 0) return h
+          return top
+        }
+      }
+    }
     const __tg0 = performance.now()
     distantGround(scene, this.terrain, pkg, this.roadAssets)
     distantSea(scene, pkg)
@@ -2036,7 +2065,7 @@ export class City {
       for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
         if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
       }
-      if (o) return a.level + 0.03
+      if (o) return a.level + 0.03 + (a.river ? RIVER_LIFT : 0)
     }
     return null
   }
@@ -2054,6 +2083,8 @@ export class City {
    * tile coming back is ingested light: just what was let go, put back.
    */
   private readonly light = new Set<string>()
+  /** the quay walls with a long reach inland, for the water's cut (dropDryWater) */
+  private waterWalls: WallGround | null = null
   forget(k: string): void {
     if (!this.ingested.has(k) || this.light.has(k)) return
     this.buildingsIn.delete(k)
@@ -3063,8 +3094,8 @@ export class City {
          */
         const i0 = water.indices.length
         capPolygonWithHoles(water, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.03 + (a.level ?? 0), [0, 0, 0], 0, 2.4, isShoreTile ? WATER_SHORE_MAX_EDGE : undefined)
-        if (isShoreTile) dropDryWater(water, i0, 0.03 + (a.level ?? 0), (x, z) => this.terrain.heightAt(x, z))
+          0.03 + (a.level ?? 0) + (a.river ? RIVER_LIFT : 0), [0, 0, 0], 0, 2.4, isShoreTile ? WATER_SHORE_MAX_EDGE : undefined)
+        if (isShoreTile) dropDryWater(water, i0, 0.03 + (a.level ?? 0) + (a.river ? RIVER_LIFT : 0), (x, z) => this.terrain.heightAt(x, z), this.waterWalls ? (x, z) => this.waterWalls!.signed(x, z, Math.max(WATER_WALL_STEP, this.terrain.stepAt(x, z))) : undefined)
       }
       else {
         /*
@@ -3552,6 +3583,7 @@ export class City {
     if (corridor.triangles > 0 && !this.off.has('walks')) {
       const m = new Mesh(`corridor:${k}`, this.scene)
       if (stepK < AREA_FINE_BELOW) subdivideBuilder(corridor, AREA_FINE_EDGE)
+      refineAtWalls(corridor, this.terrain)
       this.terrain.drape(corridor.positions)
       corridor.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'concrete', 'corridor')
@@ -3563,6 +3595,7 @@ export class City {
       const m = new Mesh(`trail:${page}:${k}`, this.scene)
       // (on the park's own ground, as the park's grass is: on the streets' levelled ground a trail over a hill in Golden Gate
       //  Park stood up to 1.5 m in the air, its walkers with it — owner, 2026-10-06, at 37.767296, −122.4729)
+      refineAtWalls(out, this.terrain)
       this.terrain.drapeRaw(out.positions)
       out.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, page, 'trail')
@@ -3574,6 +3607,7 @@ export class City {
       if (builder.triangles === 0 || this.off.has(name)) continue
       const m = new Mesh(`${name}:${k}`, this.scene)
       // the parks and squares on the raw ground, the pavements at their streets' level (BUGS.md #38)
+      refineAtWalls(builder, this.terrain)
       if (name === 'areas') this.terrain.drapeRaw(builder.positions)
       else this.terrain.drape(builder.positions)
       builder.toVertexData().applyToMesh(m)
@@ -3595,6 +3629,7 @@ export class City {
     if (sandOut.triangles > 0 && !this.off.has('areas')) {
       // (named under `areas:` so the ground group draws it with the areas, before the corridor and the paths on it)
       const m = new Mesh(`areas:sand:${k}`, this.scene)
+      refineAtWalls(sandOut, this.terrain)
       this.terrain.drapeRaw(sandOut.positions)
       sandOut.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'sand', 'beach')
@@ -3609,6 +3644,7 @@ export class City {
     for (const [surface, b] of pagedOut) {
       if (b.triangles === 0 || this.off.has('areas')) continue
       const m = new Mesh(`areas:${surface}:${k}`, this.scene)
+      refineAtWalls(b, this.terrain)
       this.terrain.drapeRaw(b.positions)
       b.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, surface, `square-${surface}`)
@@ -3676,7 +3712,37 @@ export class City {
       if (this.off.has('roads')) break
       const m = new Mesh(`road:${surface}:${k}`, this.scene)
       if (stepK < AREA_FINE_BELOW) subdivideBuilder(out, AREA_FINE_EDGE)
+      const marked: number[] | undefined = surface === this.pkg.ground && WT_OCCLUDE ? [] : undefined
+      refineAtWalls(out, this.terrain, marked)
       this.terrain.drape(out.positions)
+      // (the base ground's triangles at a wall or a drop again, depth only, WT_OCC_SINK under it, in the building group: the depth is
+      //  cleared before that group, the coarse ground occluder sinks to the bottom of a drop, and a trench's far face drew over the near
+      //  ground — owner, 2026-11-10, the Quai de Bercy underpass)
+      if (marked?.length) {
+        const occ = new MeshBuilder()
+        for (const t of marked) {
+          const v = [out.indices[t], out.indices[t + 1], out.indices[t + 2]].map((i) => [out.positions[i * 3], out.positions[i * 3 + 1] - WT_OCC_SINK, out.positions[i * 3 + 2]] as [number, number, number])
+          // (not the drop's own ramp: a triangle steeper than WT_OCC_GRADE is the step between two posts, standing in front of the
+          //  trench wall's face; as depth it hid the face and left the bare ramp — owner, 2026-11-10, 48.829999,2.386548)
+          let steep = false
+          for (let q = 0; q < 3 && !steep; q++) { const a0 = v[q], b0 = v[(q + 1) % 3], l = Math.hypot(a0[0] - b0[0], a0[2] - b0[2]) || 1e-6; if (Math.abs(a0[1] - b0[1]) > WT_OCC_GRADE * l) steep = true }
+          if (steep) continue
+          const b0 = occ.positions.length / 3
+          for (const q of v) { occ.positions.push(q[0], q[1], q[2]); occ.normals.push(0, 1, 0); occ.uvs.push(0, 0); occ.colors.push(0.5, 0.5, 0.5, 0) }
+          occ.indices.push(b0, b0 + 1, b0 + 2)
+        }
+        if (occ.indices.length) {
+        const om = new Mesh(`ground:occluder:drop:${k}`, this.scene)
+        occ.toVertexData().applyToMesh(om)
+        om.material = (this.scene.getMaterialByName('occluder') as StandardMaterial | null) ?? (() => { const mm = new StandardMaterial('occluder', this.scene); mm.disableColorWrite = true; mm.disableLighting = true; mm.backFaceCulling = false; return mm })()
+        om.renderingGroupId = GROUP.building
+        om.isPickable = false
+        meshes.push(om)
+        // (and at the start of the areas' and the carriageway's groups, as the coarse occluder is: the depth is cleared before each, and
+        //  the trench road below the near quai drew over the ground strip in front of it, its dashes showing through — owner, 2026-11-10)
+        for (const g of [GROUP.areas, GROUP.road]) { const c = om.clone(`ground:occluder:drop:${g}:${k}`); if (c) { c.renderingGroupId = g; c.isPickable = false; meshes.push(c) } }
+        }
+      }
       out.toVertexData().applyToMesh(m)
       m.material = surface === this.pkg.ground
         ? roadMaterial(this.scene, surface, this.roadAssets)
@@ -4907,6 +4973,8 @@ export class City {
         m.renderingGroupId = GROUP.building
         m.isPickable = false
         meshes.push(m)
+        // (in the base group with the ground, and depth copies after each clear: render/depth-copies.ts)
+        meshes.push(...wallsFirst(this.scene, m, `retaining:${k}`))
       }
     }
 
@@ -5709,22 +5777,65 @@ export function padRing(r: { x: number; z: number }[], pad: number): { x: number
 
 /** water this far under the ground is not drawn (m): the layers do not depth-test, so a river ring reaching under a lower quay painted its shelf, 3–5 m above it, as water (owner, 2026-11-08) */
 export const WATER_DRY_RISE = 1.5
-/** a water triangle half on dry ground is split down to this edge (m) before the dry part is dropped */
-export const WATER_DRY_EDGE = 1.5
-/** Drop the water triangles from `i0` on that lie over ground WATER_DRY_RISE above `y`, splitting the ones across the shore. */
-export function dropDryWater(out: MeshBuilder, i0: number, y: number, heightAt: (x: number, z: number) => number): void {
+/** a river's sheet (PackedArea river) is drawn this far over its baked level (m): BD TOPO quais and the lidar disagree by a metre or so, and lidar ground poked up through the water along both banks (owner, 2026-11-10, a quick fix) */
+export const RIVER_LIFT = 0.2
+/** inside a river's outline, and not on a quay wall's land side, the ground stands no higher than this under the sheet (m; null: off) */
+export const RIVER_CLAMP: number | null = 0.3
+/** a quay wall's reach for the water's cut is read as over ground shipped at WATER_WALL_STEP m at least (city/wall-ground.ts) */
+export const WATER_WALL_STEP = 4
+/** the base ground's refined triangles drawn again as depth only in the building group, this far under it (m) */
+export const WT_OCCLUDE = true, WT_OCC_SINK = 0.05, WT_OCC_GRADE = 1.0
+/** …and runs this far inland of the stone (m): a river ring reaching over the quay stops at the wall, whatever the ground there */
+export const WATER_WALL_LAND = 30
+/** the shore cut: a water triangle is looked at in WATER_SAMPLES² points (a 16 m one missed land 4 m deep at its four), split while its
+ *  points disagree down to WATER_CLIP_EDGE m, and the last ones CLIPPED along the shore (its line found by WATER_CLIP_ITERS bisections
+ *  per edge), not dropped whole: the edge is a line, not 1.5 m steps (owner, 2026-11-10: a jagged silver strip over the grass) */
+export const WATER_SAMPLES = 5, WATER_CLIP_EDGE = 2, WATER_CLIP_ITERS = 6
+/**
+ * Cut the water triangles from `i0` on to the wet part. Wet is: on a quay wall's water side within its reach (`wallSide`, signed
+ * metres from the wall's step, + on the land side) whatever the ground — the wall is the water's edge, and a river ring reaching over
+ * the quay stops there; elsewhere, ground no more than WATER_DRY_RISE over `y`.
+ */
+export function dropDryWater(out: MeshBuilder, i0: number, y: number, heightAt: (x: number, z: number) => number, wallSide?: (x: number, z: number) => number | null): void {
   const P = out.positions, tris = out.indices.splice(i0)
-  const dry = (x: number, z: number) => heightAt(x, z) > y + WATER_DRY_RISE
+  // f < 0 wet, > 0 dry, near-linear across the shore so its zero can be found along an edge
+  const f = (x: number, z: number): number => { const w = wallSide ? wallSide(x, z) : null; return w !== null ? w : heightAt(x, z) - y - WATER_DRY_RISE }
   const tint = [out.colors[0] ?? 0, out.colors[1] ?? 0, out.colors[2] ?? 0, out.colors[3] ?? 0]
   const uvS = (() => { for (let v = 0; v < P.length / 3; v++) if (Math.abs(P[3 * v]) > 1e-3) return P[3 * v] / (out.uvs[2 * v] || 1); return 2.4 })()
   const vert = (x: number, z: number): number => { const v = P.length / 3; P.push(x, y, z); out.normals.push(0, 1, 0); out.uvs.push(x / uvS, z / uvS); out.colors.push(tint[0], tint[1], tint[2], tint[3]); return v }
+  const zero = (ax: number, az: number, fa: number, bx: number, bz: number): [number, number] => {
+    // bisection on f from a (sign of fa) to b (the other sign)
+    let lo = 0, hi = 1
+    for (let k = 0; k < WATER_CLIP_ITERS; k++) { const t = (lo + hi) / 2, v = f(ax + (bx - ax) * t, az + (bz - az) * t); if ((v > 0) === (fa > 0)) lo = t; else hi = t }
+    const t = (lo + hi) / 2
+    return [ax + (bx - ax) * t, az + (bz - az) * t]
+  }
+  const clip = (a: number, b: number, c: number): void => {
+    const vs = [a, b, c], fs = vs.map((v) => f(P[3 * v], P[3 * v + 2]))
+    if (fs.every((v) => v <= 0)) { out.indices.push(a, b, c); return }
+    if (fs.every((v) => v > 0)) return
+    const poly: number[] = []
+    for (let i = 0; i < 3; i++) {
+      const j = (i + 1) % 3, p = vs[i], q = vs[j]
+      if (fs[i] <= 0) poly.push(p)
+      if ((fs[i] <= 0) !== (fs[j] <= 0)) { const [x, z] = zero(P[3 * p], P[3 * p + 2], fs[i], P[3 * q], P[3 * q + 2]); poly.push(vert(x, z)) }
+    }
+    for (let i = 1; i + 1 < poly.length; i++) out.indices.push(poly[0], poly[i], poly[i + 1])
+  }
   const walk = (a: number, b: number, c: number, depth: number): void => {
     const ax = P[3 * a], az = P[3 * a + 2], bx = P[3 * b], bz = P[3 * b + 2], cx = P[3 * c], cz = P[3 * c + 2]
-    const d = [dry(ax, az), dry(bx, bz), dry(cx, cz), dry((ax + bx + cx) / 3, (az + bz + cz) / 3)]
-    if (!d.some(Boolean)) { out.indices.push(a, b, c); return }
     const long = Math.max(Math.hypot(bx - ax, bz - az), Math.hypot(cx - bx, cz - bz), Math.hypot(ax - cx, az - cz))
-    if (long <= WATER_DRY_EDGE || depth > 6) { if (!d[3]) out.indices.push(a, b, c); return }
-    if (d.every(Boolean) && long <= 4 * WATER_DRY_EDGE) return
+    if (long <= WATER_CLIP_EDGE || depth > 9) { clip(a, b, c); return }
+    // barycentric samples on a WATER_SAMPLES grid
+    let wet = false, dry = false
+    const n = WATER_SAMPLES
+    for (let i = 0; i <= n && !(wet && dry); i++) for (let j = 0; i + j <= n; j++) {
+      const u = i / n, v = j / n, x = ax + (bx - ax) * u + (cx - ax) * v, z = az + (bz - az) * u + (cz - az) * v
+      if (f(x, z) > 0) dry = true; else wet = true
+      if (wet && dry) break
+    }
+    if (!dry) { out.indices.push(a, b, c); return }
+    if (!wet && long <= 4 * WATER_CLIP_EDGE) return
     const ab = vert((ax + bx) / 2, (az + bz) / 2), bc = vert((bx + cx) / 2, (bz + cz) / 2), ca = vert((cx + ax) / 2, (cz + az) / 2)
     walk(a, ab, ca, depth + 1); walk(ab, b, bc, depth + 1); walk(ca, bc, c, depth + 1); walk(ab, bc, ca, depth + 1)
   }

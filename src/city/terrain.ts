@@ -1,3 +1,4 @@
+import type { WallGround } from './wall-ground.ts'
 import { applyTweaks, type TerrainTweak } from './terrain-tweaks.ts'
 /**
  * The ground is not flat, and for a training game that is not a cosmetic point.
@@ -202,8 +203,22 @@ export class Terrain {
     return this.grass ? this.grass(x, z, raw) : raw
   }
 
+  /** the quay walls (city/wall-ground.ts): near one, the ground is read on the point's own side of it, clear of the post cell it cuts */
+  walls: WallGround | null = null
+
+  /** the post spacing of the ground shipped at a point (the tile's block, else the coarse grid's) */
+  stepAt(x: number, z: number): number {
+    const b = this.blocks.size > 0 ? this.blocks.get(Terrain.at(Math.floor(x / this.tile), Math.floor(z / this.tile))) : undefined
+    return b ? b.step : this.t?.step ?? Infinity
+  }
+
+  /** inside a river: the ground held under the water's sheet (render/city.ts RIVER_CLAMP) */
+  river: ((x: number, z: number, h: number) => number) | null = null
+
   rawHeightAt(x: number, z: number): number {
-    const h = this.dataHeightAt(x, z)
+    const q = this.walls ? this.walls.readAt(x, z, this.stepAt(x, z)) : null
+    let h = q ? this.dataHeightAt(q[0], q[1]) : this.dataHeightAt(x, z)
+    if (this.river) h = this.river(x, z, h)
     return this.shore ? this.shore(x, z, h) : h
   }
 

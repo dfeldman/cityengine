@@ -491,7 +491,7 @@ function audit(br: Bridge): Audits {
     if (e.bridge || e.tunnel || (e as { ramp?: boolean }).ramp || (e as { raised?: boolean }).raised) continue
     const m = btMatchEdge(packedById.get(e.id)!, rsegs, (s) => btSol(s.f) === '0', packedNear)
     if (m.filter(Boolean).length < Math.ceil(e.points.length / 2)) continue
-    if (e.points.some((p, i) => { const gr = ground(p); return m[i] && gr !== null && e.heights![i] - gr > OFF_DH })) offGround++
+    if (e.points.some((p, i) => { const gr = ground(p); return m[i] && gr !== null && e.heights![i] - gr > OFF_DH })) { offGround++; if (process.env.SB_DEBUG) console.log(`  offGround edge ${e.id} ${e.name ?? ''}`) }
   }
   // 4 grade
   let grade = 0

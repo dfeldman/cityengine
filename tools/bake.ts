@@ -1,9 +1,9 @@
 import { applySurveyPins } from './survey-pins.ts'
 import { applyLevelPlans } from './level-plans.ts'
-import { bdTopoZone } from './bdtopo-zones.ts'
+import { bdTopoZone, fetchBdTopo, fillNoZ, btSegs, segIndex, btMatchEdge, btSol, edgeIndex } from './bdtopo-zones.ts'
 import { bandDeckZones, type BandBridgeShape } from './seine-band.ts'
 import type { DeckZoneSpec } from './deck-zones.ts'
-import { deckZonesOf, levelGroundGrid, applyDeckZoneRoutes, conformDeckRails, bdTopoRails, dedupeWalls, DZ_GROUND_STEP, DZ_SINK_MARGIN, DZ_BED, DZ_BED_TOL, DZ_BED_FOOT } from './deck-zones.ts'
+import { deckZonesOf, levelGroundGrid, applyDeckZoneRoutes, conformDeckRails, bdTopoRails, dedupeWalls, wallNear, DZ_WALL_YIELD, DZ_WALL_PAIR, DZ_WALL_TOP_TOL, DZ_GROUND_STEP, DZ_DETAIL_SEED, DZ_SINK_MARGIN, DZ_BED, DZ_BED_TOL, DZ_BED_FOOT, DZ_BED_DOWN } from './deck-zones.ts'
 import './bake-lock.ts'
 /**
  * Heights (m) for untagged buildings whose neighbour guess is badly wrong, by OSM way id. Read off aerials.
@@ -47,7 +47,11 @@ import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, r
 import { applyStreetPaint, applyStreetWidths, markBrickSquares } from './street-paint.ts'
 import { Carriageways } from '../src/city/carriageways.ts'
 import { StreetGrade } from '../src/city/grade.ts'
-import { boreTunnels, lidDeckIds, lidRoadIds, lidTunnels, sinkRoadMouths, type LidSlab } from './tunnels.ts'
+import { boreTunnels, lidDeckIds, lidRoadIds, lidTunnels, sinkRoadMouths, LID_MAX, type LidSlab } from './tunnels.ts'
+/** the band (BDTOPO_BAND=1): an untagged OSM road matched to BD TOPO sol −1 over this share of its vertices is an underpass (BAND_BT_UNDERPASS) */
+const BAND_BT_UNDER_FRAC = Number(process.env.BAND_BT_UNDER_FRAC ?? 0.7)
+/** the band: after the zones lay their ground, it is cut back to the open lids' roads within their corridors, this far under the road (LID_RECUT=0 off) */
+const LID_RECUT = process.env.LID_RECUT !== '0', LID_RECUT_UNDER = 0.05
 /** the lids' slabs, from the streets pass to the bridge outlines (filled by `lidTunnels`) */
 const lidSlabsOut: LidSlab[] = []
 const LID_SLAB_ID0 = 9e14
@@ -3900,7 +3904,34 @@ async function bake(spec: CitySpec): Promise<void> {
   })
   // short covered trenches under a street: ridden through as low bores, the ground filled to the street (tools/tunnels.ts `lidTunnels`)
   {
-    const drop = spec.region !== 'paris' || process.env.LIDS === '0' ? new Set<number>() : lidTunnels(kept, (name, why) => console.log(`  ${name}: ${why}`), nearDz, lidSlabsOut, groundFine)
+    /*
+     * THE BAND'S UNDERPASSES (2026-11-10, owner at 48.8305, 2.3863: the Quai de Bercy under the Avenue des Terroirs de France
+     * "no deck, and the lower level has a steep rise and drop"). In the band a lid's mouths were "left to the zone", which has no
+     * lids: the 60 m short-underpass rule below opened the road, the zone gave it BD TOPO's −4.6 and its ground (sol 0 only)
+     * stayed at the street's +2, and the road was draped up over it. BAND_LIDS (default on): in the band only hand rings skip a
+     * lid; the zone's ground is cut back over the lid roads after it is laid (LID_RECUT, below). BAND_BT_UNDERPASS: an OSM road
+     * no tunnel tag marks, at most LID_MAX long, matched over BAND_BT_UNDER_FRAC of its vertices to BD TOPO sol −1, is a
+     * tunnel for `lidTunnels` (and back to an open road if no lid took it).
+     */
+    const bandLids = !!seine && process.env.BAND_LIDS !== '0'
+    const lidSkip = bandLids ? (x: number, z: number): boolean => dzRings.filter((r: number[]) => r.length).some((r: number[]) => inRingTT(r, x, z)) : nearDz
+    const btTagged: PackedEdge[] = []
+    if (bandLids && process.env.BAND_BT_UNDERPASS !== '0') {
+      const [S, W, N, E] = seine!.band.boxLL
+      const fs = (await fetchBdTopo('troncon_de_route', S, W, N, E)).filter((f) => btSol(f) === '-1'); fillNoZ(fs)
+      const segs = segIndex(btSegs(fs, (lat, lon) => proj.toLocal({ lat, lon }))), others = edgeIndex(kept.filter((o) => !o.bridge))
+      for (const e of kept) {
+        if (e.tunnel || e.bridge || e.foot || !e.heights?.length || !/^(motorway|trunk|primary|secondary|tertiary|unclassified|residential)(_link)?$/.test(e.kind ?? '') || !bandAny(e)) continue
+        const p = unpackPoints(e.points); let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z)
+        if (L > LID_MAX) continue
+        const m = btMatchEdge(e, segs, undefined, others)
+        if (m.filter((v) => v).length < BAND_BT_UNDER_FRAC * m.length) continue
+        e.tunnel = true; btTagged.push(e)
+      }
+      console.log(`  band underpasses: ${btTagged.length} OSM roads BD TOPO has under ground (sol −1) made tunnels for the lids${btTagged.length ? ` (${[...new Set(btTagged.map((e) => e.name ?? e.id))].join(', ')})` : ''}`)
+    }
+    const drop = spec.region !== 'paris' || process.env.LIDS === '0' ? new Set<number>() : lidTunnels(kept, (name, why) => console.log(`  ${name}: ${why}`), lidSkip, lidSlabsOut, groundFine)
+    for (const e of btTagged) if (e.tunnel && !e.bore) delete e.tunnel
     if (drop.size) { const k = kept.filter((e) => !drop.has(e.id)); kept.length = 0; for (const e of k) kept.push(e); console.log(`  ${drop.size} near-miss joins at lid mouths dropped`) }
   }
   // road tunnels no bore takes, with a street over the mouth: the mouth sunk under it, the road ramped down (tools/tunnels.ts)
@@ -5045,10 +5076,19 @@ async function bake(spec: CitySpec): Promise<void> {
       const n = zn.markRiver((x, z) => { const c = Math.round((x - fx0) / FINE_STEP), r = Math.round((z - fz0) / FINE_STEP); return c >= 0 && r >= 0 && c < fcols && r < frows ? fineGround[r * fcols + c] : Infinity })
       console.log(`  deck zone ${zn.spec.name}: ${n} outline segments on the river`)
     }
+    const fine0 = DZ_DETAIL_SEED && deckZones.some((z) => z.shape) ? Float64Array.from(fineGround) : null // (the fine grid before the zones level it: what a zone's own blend starts from)
     const nf = levelGroundGrid(deckZones, fineGround, fcols, frows, fx0, fz0, FINE_STEP), nc = levelGroundGrid(deckZones, ground, cols, rows, tx0, tz0, STEP)
     if (quayDetail) {
       const at0 = quayDetail.at
-      quayDetail.at = (x, z) => { let v = at0(x, z); if (v === null) return null; for (const zn of deckZones) { const y = zn.groundAt(x, z, v); if (y !== null) v = y } return v } // (in order, as levelGroundGrid: a hand zone over the band)
+      // (DZ_DETAIL_SEED, 2026-11-09: where the quay detail has nothing — Quai de Bercy's upper tier, 60 m+ from the water — the zones still
+      //  speak, from the fine grid before levelling; before, those 1 m posts were the 4 m levelled grid resampled: a 6 m wall smeared over 6 m)
+      quayDetail.at = (x, z) => {
+        let v = at0(x, z), any = v !== null
+        if (v === null) { if (!fine0) return null; v = sampleGridF(fine0, fcols, frows, fx0, fz0, FINE_STEP, x, z) }
+        for (const zn of deckZones) { const y = zn.groundAt(x, z, v); if (y !== null) { v = y; any = true } }
+        if (!any && fine0) for (const zn of deckZones) { const y = zn.mntAt(x, z, v); if (y !== null) { v = y; any = true; break } }
+        return any ? v : null
+      } // (in order, as levelGroundGrid: a hand zone over the band)
       // (the tiles a zone touches ship at DZ_GROUND_STEP: a 4 m grid draws each wall's foot as a 4 m grey wedge in front of it)
       const zt = new Set<string>()
       for (const zn of deckZones) {
@@ -5080,10 +5120,15 @@ async function bake(spec: CitySpec): Promise<void> {
   if (DZ_BED && deckZones.some((z) => z.shape)) {
     const sg = new StreetGrade()
     for (const e of kept) if ((DZ_BED_FOOT || !e.foot) && e.heights?.length && deckZones.some((z) => z.shape && e.points.some((_, i) => i % 2 === 0 && z.bandW(e.points[i], e.points[i + 1]) > 0))) sg.add(e)
-    const bed = (x: number, z: number, v: number): number => { const w = sg.at(x, z); return w !== null && v < w - DZ_BED_TOL ? w - DZ_BED_TOL : v }
+    // (DZ_BED_DOWN, 2026-11-10: and every way's corridor, foot ways too, LOWERED to it where the ground stands over it — a bike path under
+    //  the ground by the A4 ramps, the lower-quai ramps; not bridges, tunnels or layer < 0; not on the 20 m grid, too coarse to cut a corridor)
+    const sgD = new StreetGrade()
+    if (DZ_BED_DOWN !== null) for (const e of kept) if (e.heights?.length && (e.layer ?? 0) >= 0 && deckZones.some((z) => z.shape && e.points.some((_, i) => i % 2 === 0 && z.bandW(e.points[i], e.points[i + 1]) > 0))) sgD.add(e)
+    const bedUp = (x: number, z: number, v: number): number => { const w = sg.at(x, z); return w !== null && v < w - DZ_BED_TOL ? w - DZ_BED_TOL : v }
+    const bed = (x: number, z: number, v: number, down = true): number => { const u = bedUp(x, z, v); if (!down || DZ_BED_DOWN === null) return u; const w = sgD.at(x, z); return w !== null && u > w + DZ_BED_DOWN ? w + DZ_BED_DOWN : u }
     let nb = 0
     const grid = (h: ArrayLike<number> & { [i: number]: number }, cols: number, rows: number, x0: number, z0: number, step: number) => {
-      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const i = r * cols + c, y = bed(x0 + c * step, z0 + r * step, h[i]); if (y !== h[i]) { h[i] = y; nb++ } }
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const i = r * cols + c, y = bed(x0 + c * step, z0 + r * step, h[i], step <= FINE_STEP); if (y !== h[i]) { h[i] = y; nb++ } }
     }
     grid(fineGround, fcols, frows, fx0, fz0, FINE_STEP); grid(ground, cols, rows, tx0, tz0, STEP)
     if (quayDetail) { const at1 = quayDetail.at; quayDetail.at = (x, z) => { const v = at1(x, z); return v === null ? null : bed(x, z, v) } }
@@ -5096,6 +5141,28 @@ async function bake(spec: CitySpec): Promise<void> {
       if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
     }
     console.log(`  road bed: ${nb} grid posts raised to the car roads over them in the band (detail posts on demand)`)
+  }
+  // LID_RECUT (2026-11-10): the open lids' trenches again, after the zones' ground and the road bed refilled them from BD TOPO's sol-0
+  //  blend (the lid's own carve runs before the zones): inside each lid road's corridor the ground goes down to the road
+  if (LID_RECUT && deckZones.some((z) => z.shape) && lidRoadIds.size) {
+    const sg = new StreetGrade()
+    for (const e of kept) if (lidRoadIds.has(e.id) && !e.bridge && e.heights?.length) sg.add(e)
+    const cut = (x: number, z: number, v: number): number => { const w = sg.at(x, z); return w !== null && v > w - LID_RECUT_UNDER ? w - LID_RECUT_UNDER : v }
+    let nr = 0
+    const grid = (h: ArrayLike<number> & { [i: number]: number }, cols: number, rows: number, x0: number, z0: number, step: number) => {
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const i = r * cols + c, y = cut(x0 + c * step, z0 + r * step, h[i]); if (y !== h[i]) { h[i] = y; nr++ } }
+    }
+    grid(fineGround, fcols, frows, fx0, fz0, FINE_STEP); grid(ground, cols, rows, tx0, tz0, STEP)
+    if (quayDetail) { const at2 = quayDetail.at; quayDetail.at = (x, z) => { const v = at2(x, z); return v === null ? null : cut(x, z, v) } }
+    shipped = new GroundModel({
+      coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+      fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+      fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE, detail: quayDetail,
+    })
+    for (const [k2, b] of shipped.blocks) {
+      if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+    }
+    console.log(`  lid recut: ${nr} grid posts cut back down to the open lids' roads in the band (detail posts on demand)`)
   }
   if (deckZones.length) for (const t of conformDeckRails(rails, kept, deckZones)) console.log(`  ${t}`)
   if (deckZones.some((z) => z.rOf)) for (const t of bdTopoRails(rails, deckZones, (x, z) => shipped.heightAt(x, z))) console.log(`  ${t}`)
@@ -5150,8 +5217,19 @@ async function bake(spec: CitySpec): Promise<void> {
     ...(quayWallsOf ? { quayWalls: (() => {
       const city = quayWallsOf((x, z) => shipped.heightAt(x, z)).filter((q) => !deckZones.some((z) => z.near((q.ax + q.bx) / 2, (q.az + q.bz) / 2, 3)))
       // (deduped ACROSS the zones, 2026-11-08: a hand zone's BD TOPO override and the Seine band under it draw the same BD TOPO wall lines; per zone, 116 pairs z-fought at Pont National)
-      const zone = dedupeWalls(deckZones.flatMap((z) => { const v = z.walls(), rv = z.riverWalls((x, zz) => shipped.heightAt(x, zz)); console.log(`  deck zone ${z.spec.name}: ${v.length} wall pieces between levels, ${rv.length} on the river`); return [...v, ...rv] }))
+      const zone = dedupeWalls(deckZones.flatMap((z) => { const v = z.walls(null, (x, zz) => shipped.heightAt(x, zz)), rv = z.riverWalls((x, zz) => shipped.heightAt(x, zz)); console.log(`  deck zone ${z.spec.name}: ${v.length} wall pieces between levels, ${rv.length} on the river`); return [...v, ...rv] }), deckZones.some((z) => z.shape))
       // (a zone's wall out in its band, on a line the city already walls: the city's stands)
+      // (the band, 2026-11-09: a city piece along a zone wall, segment-wise within DZ_WALL_YIELD, yields to it; the old midpoint test
+      //  below dropped every other 2 m zone piece beside a 4 m city piece, and both were drawn)
+      if (deckZones.some((z) => z.shape)) {
+        // (DZ_WALL_PAIR, 2026-11-10: and a city piece parallel to a zone wall within DZ_WALL_PAIR whose top stands DZ_WALL_TOP_TOL over the
+        //  shipped ground just behind it — a second wall out in the river 5 m off the BD TOPO Quai, the owner's "double wall")
+        const nearZone = wallNear(zone, DZ_WALL_YIELD), pairZone = wallNear(zone, DZ_WALL_PAIR)
+        const proud = (q: QuayWall): boolean => { const L = Math.hypot(q.bx - q.ax, q.bz - q.az) || 1, s = 0.6 + 1.5; return q.top - shipped.heightAt((q.ax + q.bx) / 2 + (q.bz - q.az) / L * s, (q.az + q.bz) / 2 - (q.bx - q.ax) / L * s) > DZ_WALL_TOP_TOL }
+        let paired = 0
+        const ck = city.filter((q) => { if (nearZone(q)) return false; if (pairZone(q) && proud(q)) { paired++; return false } return true })
+        const w = [...ck, ...zone]; console.log(`  quay walls: ${w.length} pieces (${city.length - ck.length - paired} city pieces along a zone wall dropped for it, ${paired} beside one standing over no ground)`); return w
+      }
       const zk = zone.filter((q) => { const mx = (q.ax + q.bx) / 2, mz = (q.az + q.bz) / 2; return deckZones.some((z) => !z.shape && z.inside(mx, mz)) || !city.some((o) => Math.hypot((o.ax + o.bx) / 2 - mx, (o.az + o.bz) / 2 - mz) < 1.5) })
       const w = [...city, ...zk]; console.log(`  quay walls: ${w.length} pieces (${zone.length - zk.length} zone pieces in a band dropped for the city's)`); return w })() } : {}),
     ...(sportsCourts.length ? { courts: sportsCourts } : {}),

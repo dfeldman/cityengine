@@ -33,7 +33,8 @@ if (at) {
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: VIEWPORT })
 await page.goto(`${process.env.SHOTS_BASE ?? 'http://localhost:5200'}/?city=${city}${place}&dev=1${arg('without') ? `&without=${arg('without')}` : ''}${arg('extra') ? `&${arg('extra')}` : ''}`)
-await page.waitForFunction('window.riderReady === true', null, { timeout: 90_000 })
+// (or the city idle with its ground answering: the rider's own model can hang headless, 2026-11-11, and no shot was written)
+await page.waitForFunction('window.riderReady === true || (!!window.__heightAt && !!window.__cityIdle && window.__cityIdle())', null, { timeout: 120_000 })
 // the tiles round the rider, and the landmarks on them, arrive after the rider does
 await page.waitForFunction('window.__cityIdle && window.__cityIdle()', null, { timeout: 90_000 }).catch(() => {})
 await page.waitForTimeout(3000)

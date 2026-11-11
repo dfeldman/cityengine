@@ -1150,6 +1150,9 @@ function apart(e: RideEdge, r: RideEdge): boolean {
   return false
 }
 
+/** how far past its reach a turn lane's end may lie from the street it bypasses (m) */
+export const SLIP_END_SLACK = 2
+
 export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: Point, b: Point) => boolean, oneDeck = false): RideEdge[] {
   /*
    * A side path is a way that runs ALONGSIDE a street rather than being one: a pedestrian way or a cycle track
@@ -1191,6 +1194,9 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
     const be = bearing(e.points[0], e.points[e.points.length - 1])
     const samples = resample(e.points, undefined, Math.max(3, Math.ceil(e.length / 3))).pts
     for (const r of near) {
+      // (never beside itself — the grid holds every road, the slip among them, and an unnamed link always ran "alongside" itself — nor
+      //  beside another turn lane: two slips side by side each took the other out)
+      if (r === e || (slip(e) && slip(r))) continue
       // a named pedestrian way only beside ITS street (a pedestrian avenue is a street of its own); a cycle
       // track beside any — OSM's names lag (the Quai Branly track beside the renamed Quai Jacques Chirac)
       if (e.kind === 'pedestrian' && e.name !== r.name) continue
@@ -1213,6 +1219,9 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
         const d = Math.abs(angleDiff(be, rb))
         if (Math.min(d, Math.PI - d) < (25 * Math.PI) / 180 || e.length < 25) alongside++
       }
+      // (a turn lane bypasses its street: BOTH its ends lie on it. The Quai de Bercy's only link to the Pont National junction,
+      //  21 m of unnamed primary_link, counted as "alongside" the Périphérique slip road it shares one end with, and went — owner, 2026-11-10)
+      if (slip(e) && (project(r.points, e.points[0]).d >= reach + SLIP_END_SLACK || project(r.points, e.points[e.points.length - 1]).d >= reach + SLIP_END_SLACK)) continue
       if (alongside >= 0.7 * samples.length) return r
     }
     return null

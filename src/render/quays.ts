@@ -15,7 +15,9 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPoints, waterLevels, wholeWater, type CityPackage, type QuayWall } from '../city/package.ts'
 import type { TileLayer } from './city.ts'
 import { waterMaterial } from './water-material.ts'
+import { wallsFirst } from './depth-copies.ts'
 import type { Terrain } from '../city/terrain.ts'
+import { WG_THICK, WG_TOE } from '../city/wall-ground.ts'
 import type { Planting } from '../city/plantings.ts'
 
 type Rgb = [number, number, number]
@@ -97,14 +99,48 @@ const BERGE_BOXES = false
  * from under the low side to QW_CAP_UP over the top; a cap QW_CAP_T thick over the slope behind it; pieces overlap by QW_OVERLAP
  * at their ends so a bend shows no slot. The street's parapet stands QW_PARAPET_IN in from the first wall out from the street.
  */
-const QW_THICK = 0.6
-const QW_DECK_TOE = 1.1
+const QW_THICK = WG_THICK
+const QW_DECK_TOE = WG_TOE
 const QW_CAP_UP = 0.08
 const QW_CAP_T = 0.3
 /** the cap out over the slope behind a wall to the baked `cap` width: off, the wall's own thickness only — the ground is the 1 m survey now and
  *  a flat slab metres wide at the wall's top stood through it in a sawtooth (owner, 2026-11-08: "just the wall … with low tesselation") */
 const QW_CAP_WIDE = false
 const QW_OVERLAP = 0.15
+/** at a bend a piece runs on past its end by the stone's thickness × tan(half the turn), at most QW_MITRE_MAX m, so the outside of the
+ *  bend shows no slot (2026-11-09: the band's walls are smoothed lines of 2 m pieces; a corner kept sharp opened 0.8 m on its outside) */
+const QW_MITRE = true, QW_MITRE_MAX = 2
+/** a piece's top slopes from end to end, meeting its neighbours' (owner, 2026-11-10: the wall down a tunnel mouth went up in steps); not across a step over QW_SLOPE_MAX m */
+const QW_SLOPE = true, QW_SLOPE_MAX = 1.5
+/** each piece's run-on past its a and b ends: QW_OVERLAP, and the mitre where another piece meets it end to end */
+function wallJoints(ws: QuayWall[]): Map<QuayWall, [number, number, number, number]> {
+  const key = (x: number, z: number): string => `${Math.round(x * 5)},${Math.round(z * 5)}`
+  const at = new Map<string, QuayWall[]>()
+  for (const w of ws) for (const k of [key(w.ax, w.az), key(w.bx, w.bz)]) { const l = at.get(k); if (l) l.push(w); else at.set(k, [w]) }
+  const out = new Map<QuayWall, [number, number, number, number]>()
+  // the top at an end: the mean of this piece's and the one meeting it there (within QW_SLOPE_MAX), so a run's top is a line, not stairs
+  const topAt = (w: QuayWall, x: number, z: number): number => {
+    if (!QW_SLOPE) return w.top
+    const o = (at.get(key(x, z)) ?? []).filter((v) => v !== w && Math.abs(v.top - w.top) <= QW_SLOPE_MAX)
+    return o.length ? (w.top + o.reduce((t, v) => t + v.top, 0) / o.length) / 2 : w.top
+  }
+  for (const w of ws) {
+    const len = Math.hypot(w.bx - w.ax, w.bz - w.az) || 1, ux = (w.bx - w.ax) / len, uz = (w.bz - w.az) / len
+    const thick = QW_THICK + (w.parapet !== undefined ? QW_DECK_TOE : 0)
+    const ext = (x: number, z: number): number => {
+      let best = 0
+      for (const o of at.get(key(x, z)) ?? []) {
+        if (o === w) continue
+        const ol = Math.hypot(o.bx - o.ax, o.bz - o.az) || 1, c = Math.abs(((o.bx - o.ax) * ux + (o.bz - o.az) * uz) / ol)
+        const half = Math.acos(Math.min(1, c)) / 2
+        best = Math.max(best, Math.min(QW_MITRE_MAX, thick * Math.tan(half)))
+      }
+      return QW_OVERLAP + best
+    }
+    out.set(w, [...(QW_MITRE ? [ext(w.ax, w.az), ext(w.bx, w.bz)] : [QW_OVERLAP, QW_OVERLAP]), topAt(w, w.ax, w.az), topAt(w, w.bx, w.bz)] as [number, number, number, number])
+  }
+  return out
+}
 const QW_PARAPET_IN = 0.3
 /** a wall this tall or more carries a parapet: the street's, over the river or a lower quay; not a lower quay's edge at the water */
 const QW_PARAPET_DROP = 3.2
@@ -129,9 +165,12 @@ interface WallIndex {
   near(x: number, z: number, dx: number, dz: number): QuayWall | null
   /** the pieces whose middles lie in the rect */
   inRect(r: { x0: number; z0: number; x1: number; z1: number }): QuayWall[]
+  /** a piece's run-on past its a and b ends (wallJoints) */
+  ends(w: QuayWall): [number, number, number, number]
 }
 
 function wallIndex(ws: QuayWall[]): WallIndex {
+  const joints = wallJoints(ws)
   const C = 25, m = new Map<string, QuayWall[]>()
   for (const w of ws) {
     for (let cx = Math.floor((Math.min(w.ax, w.bx) - QW_FIND) / C); cx <= Math.floor((Math.max(w.ax, w.bx) + QW_FIND) / C); cx++)
@@ -141,6 +180,7 @@ function wallIndex(ws: QuayWall[]): WallIndex {
       }
   }
   return {
+    ends: (w) => joints.get(w) ?? [QW_OVERLAP, QW_OVERLAP, w.top, w.top],
     near(x, z, dx, dz) {
       for (const w of m.get(`${Math.floor(x / C)},${Math.floor(z / C)}`) ?? []) {
         const vx = w.bx - w.ax, vz = w.bz - w.az, L2 = vx * vx + vz * vz || 1, L = Math.sqrt(L2)
@@ -176,10 +216,11 @@ function inside(ring: P[], x: number, z: number): boolean {
 }
 
 /** An upright box of half-extents (hl along the direction u, hw across it, full height h) at p, on the ground y. */
-function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: number, hw: number, h: number, c: Rgb, sid = FIXED, top: Rgb = c): void {
+/** `rise`: the box's top (and, with `whole`, its foot too) stands `rise` higher at its +u end than its middle, and as much lower at its −u end */
+function boxAt(out: MeshBuilder, p: P, y: number, ux: number, uz: number, hl: number, hw: number, h: number, c: Rgb, sid = FIXED, top: Rgb = c, rise = 0, whole = false): void {
   const vx = -uz
   const vz = ux
-  const corner = (a: number, b: number, yy: number): [number, number, number] => [p.x + ux * a * hl + vx * b * hw, yy, p.z + uz * a * hl + vz * b * hw]
+  const corner = (a: number, b: number, yy: number): [number, number, number] => [p.x + ux * a * hl + vx * b * hw, yy + (yy > y || whole ? rise * a : 0), p.z + uz * a * hl + vz * b * hw]
   const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
   const sides: [number, number, number, number, [number, number, number]][] = [
     [1, -1, 1, 1, [ux, 0, uz]], [-1, 1, -1, -1, [-ux, 0, -uz]], [1, 1, -1, 1, [vx, 0, vz]], [-1, -1, 1, -1, [-vx, 0, -vz]],
@@ -425,26 +466,29 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
     const len = Math.hypot(w.bx - w.ax, w.bz - w.az)
     if (len < 0.2) continue
     const ux = (w.bx - w.ax) / len, uz = (w.bz - w.az) / len, nx = uz, nz = -ux
-    const mx = (w.ax + w.bx) / 2, mz = (w.az + w.bz) / 2
-    const top = w.top + QW_CAP_UP
+    const [ea, eb, ta, tb] = walls.ends(w), half = (len + ea + eb) / 2
+    const mx = (w.ax + w.bx) / 2 + ux * (eb - ea) / 2, mz = (w.az + w.bz) / 2 + uz * (eb - ea) / 2
+    // the top along the piece: ta at a, tb at b (the box's middle is shifted by the run-ons); r its rise over the box's half-length
+    const slope = (tb - ta) / len, r = slope * half
+    const top = (ta + tb) / 2 + slope * (eb - ea) / 2 + QW_CAP_UP
     // the face runs on under a bridge's mouth (the abutment stands on it); its cap, parapet, stairs and trees do not
     // (a deck zone's wall stands QW_DECK_TOE out on its low side too: the ground's last 1 m step is inside the stone, not a slope in front of it)
     const toe = w.parapet !== undefined ? QW_DECK_TOE : 0
-    boxAt(out, { x: mx + nx * (QW_THICK - toe) / 2, z: mz + nz * (QW_THICK - toe) / 2 }, w.low - 0.3, ux, uz, len / 2 + QW_OVERLAP, (QW_THICK + toe) / 2, top - w.low + 0.3, BERGE_WALL, ASHLAR, STONE_TOP)
+    boxAt(out, { x: mx + nx * (QW_THICK - toe) / 2, z: mz + nz * (QW_THICK - toe) / 2 }, w.low - 0.3, ux, uz, half, (QW_THICK + toe) / 2, top - w.low + 0.3, BERGE_WALL, ASHLAR, STONE_TOP, r)
     // the cordon under the top, on the face's low side; and a river wall's water stain along its foot
-    if (top - w.low > 1.5) boxAt(out, { x: mx - nx * (toe + QW_CORDON_OUT / 2), z: mz - nz * (toe + QW_CORDON_OUT / 2) }, top - QW_CORDON_H - 0.25, ux, uz, len / 2 + QW_OVERLAP, QW_CORDON_OUT / 2 + 0.02, QW_CORDON_H, CORDON, ASHLAR, STONE_TOP)
-    if (wet(mx - nx * (toe + 1.5), mz - nz * (toe + 1.5))) boxAt(out, { x: mx - nx * (toe + 0.03), z: mz - nz * (toe + 0.03) }, w.low - 0.3, ux, uz, len / 2 + QW_OVERLAP, 0.03, QW_STAIN_H + 0.3, STAIN)
+    if (top - w.low > 1.5) boxAt(out, { x: mx - nx * (toe + QW_CORDON_OUT / 2), z: mz - nz * (toe + QW_CORDON_OUT / 2) }, top - QW_CORDON_H - 0.25, ux, uz, half, QW_CORDON_OUT / 2 + 0.02, QW_CORDON_H, CORDON, ASHLAR, STONE_TOP, r, true)
+    if (wet(mx - nx * (toe + 1.5), mz - nz * (toe + 1.5))) boxAt(out, { x: mx - nx * (toe + 0.03), z: mz - nz * (toe + 0.03) }, w.low - 0.3, ux, uz, half, 0.03, QW_STAIN_H + 0.3, STAIN)
     if (inMouth(mx, mz)) continue
     const c = QW_CAP_WIDE ? Math.max(w.cap, QW_THICK) : QW_THICK
-    boxAt(out, { x: mx + nx * c / 2, z: mz + nz * c / 2 }, top - QW_CAP_T, ux, uz, len / 2 + QW_OVERLAP, c / 2, QW_CAP_T, PAVE)
+    boxAt(out, { x: mx + nx * c / 2, z: mz + nz * c / 2 }, top - QW_CAP_T, ux, uz, half, c / 2, QW_CAP_T, PAVE, FIXED, PAVE, r, true)
     // a lower quay's wall (dry ground at its foot): now and then a flight of stairs down its face, and a tree out on the paving
     const shelf = !wet(mx - nx * QW_SHELF_PROBE, mz - nz * QW_SHELF_PROBE)
     // (a deck zone's wall has its parapet given, and no stairs or trees: the zone says what links its levels)
     if (w.parapet !== undefined) {
       if (w.parapet > 0) {
         const pc = { x: mx + nx * QW_PARAPET_IN, z: mz + nz * QW_PARAPET_IN }
-        boxAt(out, pc, top - 0.05, ux, uz, len / 2 + QW_OVERLAP, 0.22, w.parapet, STONE, FIXED, STONE_TOP)
-        boxAt(out, pc, top + w.parapet - 0.1, ux, uz, len / 2 + QW_OVERLAP, QW_COPING_HW, QW_COPING_H, CAP, FIXED, STONE_TOP)
+        boxAt(out, pc, top - 0.05, ux, uz, half, 0.22, w.parapet, STONE, FIXED, STONE_TOP, r, true)
+        boxAt(out, pc, top + w.parapet - 0.1, ux, uz, half, QW_COPING_HW, QW_COPING_H, CAP, FIXED, STONE_TOP, r, true)
       }
       continue
     }
@@ -469,8 +513,8 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
     // the parapet on a wall a street stands over (not the lower quay's own low edge at the water)
     if (w.top - w.low >= QW_PARAPET_DROP) {
       const pc = { x: mx + nx * QW_PARAPET_IN, z: mz + nz * QW_PARAPET_IN }
-      boxAt(out, pc, top - 0.05, ux, uz, len / 2 + QW_OVERLAP, 0.22, 1.05, STONE, FIXED, STONE_TOP)
-      boxAt(out, pc, top + 0.95, ux, uz, len / 2 + QW_OVERLAP, QW_COPING_HW, QW_COPING_H, CAP, FIXED, STONE_TOP)
+      boxAt(out, pc, top - 0.05, ux, uz, half, 0.22, 1.05, STONE, FIXED, STONE_TOP, r, true)
+      boxAt(out, pc, top + 0.95, ux, uz, half, QW_COPING_HW, QW_COPING_H, CAP, FIXED, STONE_TOP, r, true)
     }
   }
   if (PLAGES) for (const e of edges) {
@@ -597,5 +641,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
   m.freezeWorldMatrix()
   void metres
   for (const e of extra) e.parent = m
+  // (in the base group with the ground, and depth copies after each clear: render/depth-copies.ts)
+  for (const c of wallsFirst(scene, m, name)) c.parent = m
   return m
 }

@@ -609,3 +609,113 @@ Pont au Change 6/7→4/7, Pont d'Issy 4/7→2/7, Carrousel 5/7→4/7. The 11 of 
 Passerelle Sud back to default; Louis-Philippe 6→7/7. Audit worse >10 vs default: Courbevoie only (+14).
 Open: Pont au Change, Issy, Carrousel causes; Sèvres/Saint-Cloud; rail building-passage rule (Pont National left bank); left-bank quay walls;
 wallGap flat; Courbevoie audits. Owner to ride and B-key.
+
+## Seine band round 7: quay walls — ground step, runs, curves (2026-11-09, subagent; nothing committed; BDTOPO_BAND=1 for the bake parts)
+Owner: walls "not tesselated finely enough … stop and start too often … dont curve with the quai". New audit `tools/wall-probe.ts <city>
+[lat,lon,R]` (zone walls; CITYW=1 the city's; WG=0 ground as shipped; PROFILE/SLOT/WEDGE/SHORT print samples).
+- **Fault 1 was mostly DATA, then mesh.** BD TOPO's `exact` ground steps cleanly at the wall line, but at Quai de Bercy's upper tier the
+  1 m detail posts were the 4 m levelled fine grid resampled (quayDetail.at returned null wherever the lidar quay detail had nothing,
+  > QD_BAND from the water, and the zones never spoke): a 7 m wall smeared over ±3 m. Fix bake.ts `DZ_DETAIL_SEED` (band only): seed
+  from the pre-level fine grid and let the zones speak. Then the renderer: the 1 m bilinear cell the wall line cuts, and the base plane's
+  6 m triangles. New `src/city/wall-ground.ts` (WG_CLEAR 1.5, WG_CLEAR_CELLS 1.45, WG_MAX_STEP 4): Terrain.rawHeightAt reads the ground
+  on the point's own side, clear of that cell (high side flat to the stone, low side flat to the toe, step mid-stone);
+  render/city.ts `refineAtWalls` (WT_NEAR_EDGE 1, WT_EDGE 0.2) splits draped triangles within a wall's reach, and across its step down
+  to 0.2 m, before every ground drape; water's dry-cut goes to 0.4 m near walls. Applies to every shipped wall, any bake (render only).
+- **Fault 2 (stop/start): three causes.** (a) 1209 of 1886 band pieces on pont-national dropped for `noGround` (no BD TOPO road in
+  sight): now read off the shipped ground (`DZ_WALL_SHIPPED`; `DZ_WALL_MNT` seeds band posts with no road in sight from the lidar MNT).
+  (b) the city-vs-zone yield compared MIDPOINTS (4 m vs 2 m pieces): every other zone piece was dropped beside a city wall, both drawn —
+  louvre 74 of 95 runs were 1–3 pieces. Band: a city piece within `DZ_WALL_YIELD` 1.5 m of a zone piece SEGMENT yields to it.
+  (c) per-piece decisions: `DeckZone.runWalls` (DZ_WALL_RUNS): sides read DZ_WALL_READ 2.4 m out, start at DZ_WALL_MIN, hold to
+  DZ_WALL_KEEP 0.4, gaps ≤ DZ_WALL_GAP 8 m filled, runs < DZ_WALL_RUN_MIN 6 m dropped, top/low smoothed ±DZ_WALL_SMOOTH 6 m.
+  dedupeWalls(…, bySegment) in the band.
+- **Fault 3 (curves):** `chaikin` (DZ_WALL_CHAIKIN 3 passes, corners > DZ_WALL_CORNER 50° kept sharp) before cutting; quays.ts
+  `QW_MITRE` (≤ QW_MITRE_MAX 2 m): a piece runs on past a bend by thickness × tan(turn/2). Louvre kinks 20–50°: 21 → 8.
+- Numbers (zone walls, base = all four off → new): pont-national 852 pieces/23 runs/gaps 2/slot 734/wedge 616 → 1901/33/7/256/338;
+  sully 742/53 (26 of ≤3)/107/465/131 → 2810/38 (0)/4/255/476; louvre 587/95 (74)/361/402/32 → 2785/22 (0)/2/192/523. (new wedge is
+  mostly river walls whose low is the riverbed under water.) Scoreboard legs/step/offGround/grade unchanged (9/10, 24/27, 11/14);
+  wallGap 12→11, 192→107, 44→8; totals 42→41, 316→231, 74→38.
+- Left-bank spot 48.8270,2.3855: no BD TOPO wall line within 80 m and no city wall: nothing there to draw (2 lines within 200 m were
+  the noGround drops, now kept). Open: poke ~10 % (ground over a smoothed top on banks; the lidar-MNT walls on slopes); top/low jumps
+  where separate lines meet; city walls (quayWallsOf) still stand proud of the bank behind (slot 834 on PN, a design of that system);
+  parallel walls < 3 m apart (the side read crosses the other wall); 54 PN pieces on 20 m tiles get no side read. game.ts now hands `quayWalls` to
+  City (it never had them: the ground fix needs them). Water: on pont-national 415 of 420 river walls have the water polygon 2 m
+  out from the toe (wall-probe WATER=1). Seen: one lowres headless shot from the river (continuous face, water to the stone); the
+  upper-tier shots were blocked by buildings; refineAtWalls' triangle cost (`wallTrianglesAdded`) not yet read in a browser.
+  paris-centre not rebaked. Minis left baked with the band.
+- **Round 7b (2026-11-10, owner's two shots).** (1) Road beside a wall, ground "missing" in steps: it was the RIVER's sheet. The
+  water renders in the areas group, after the base ground, and `dropDryWater` kept it over any ground under 1.5 m above it. Before,
+  the old ramp up to the wall had made that strip "dry". Near a wall (reach at 4 m spacing) it is now dry from `WATER_WALL_RISE` 0.25.
+  With that rule, water lying over dry low-side ground went 1673 → 0 on bercy and 4703 → 0 on sully (wall-probe WATERCOVER=1).
+  (2) Tunnel-mouth wall in steps: a QuayWall (quays.ts, it has the cordon), not a trench wall (city.ts TRENCH_*: coping and railing, no
+  cordon, its top already smoothed ±TRENCH_SMOOTH). Each piece was a flat-topped box. `QW_SLOPE` (QW_SLOPE_MAX 1.5) slopes each piece's
+  face, cordon, cap and parapet from its a-end top to its b-end top, each the mean with the piece that meets it there.
+  (3) Steep drops anywhere: refineAtWalls (moved to city/wall-ground.ts, `WT_TUNE`) also splits triangles across any drop of ≥ 0.5 m
+  steeper than 1:1, found from heightAt with cut and grade included, long edges scanned every 1 m. It splits down to 0.4 m, but no
+  finer than half the post spacing unless a street's level (cut or grade) is involved. Wall step: WT_NEAR_EDGE 4, WT_EDGE 0.4.
+  Base-plane cost (`tools/wall-tess-cost.ts`): bercy-mini band +9.2 %, san-francisco +11.1 % (+24 a tile; +167 % before the
+  post-spacing floor), paris-centre +7.4 % (+238 a tile; +6.7 % of it the drop rule). Wall-probe: no browser shot of these two fixes. Trench and mouth walls stand on the cut's edge, so the drop rule finds them;
+  their lines are not fed in explicitly.
+
+## Seine band round 8: the Quai de Bercy underpass at Av des Terroirs de France (2026-11-10, subagent; nothing committed; BDTOPO_BAND=1 only)
+Owner at 48.830478,2.386256: upper roads with no deck, the lower Quai de Bercy rising to meet them. **BD TOPO was right** (sol −1 at
+−4.6, approaches ramping +2.1 → −4.6); OSM too (w24675958/60 tunnel=yes layer=−1).
+- **Cause.** In the band `lidTunnels` skipped every lid whose mouth is `bandAt` ("left to the zone"; the zone has no lids). The ways then
+  fell to the < 60 m "short road underpasses ridden in the open" rule (tunnel, layer deleted, no cut). The zone gave them BD TOPO's −4.6,
+  but its ground is the sol-0 blend (+2 over the underpass) and DZ_BED only raises; the renderer drapes roads at max(raw, grade) outside
+  a `cut`, so the −4.6 ribbon was drawn on the +2 ground: the rise and drop.
+- **Fix (bake.ts, band only).** `BAND_LIDS` (default on): in the band only hand rings skip a lid. `BAND_BT_UNDERPASS`: an untagged OSM road
+  ≤ LID_MAX matched over `BAND_BT_UNDER_FRAC` 0.7 of its vertices to sol −1 is a tunnel for lidTunnels (reverted if no lid takes it; here
+  3 tagged, the Quai de Bercy links). `LID_RECUT`: after the zones' ground and the road bed, the ground inside each lid road's corridor goes to
+  the road −0.05 (fine, coarse, detail). bdtopo-zones.ts btz: a `cut` way may match sol −1 (the trench road had matched the Av's +2.5 and humped 7 m).
+- Probe after: edges 82/85 −4.7…−4.5 with ground −4.7; Av des Terroirs and footways over it are lid decks (br1 L1) at 2.1–2.4; 1 slab,
+  18 decks, 9 trench ways walled. Scoreboard 9/10, total 41 → 41 (step 11→10, trench 2→0, offGround 9→11, wallGap 11→12;
+  `SB_DEBUG=1` lists offGround edges). One lowres shot from above: slab over the trench.
+- Open: the two lids by Pont National itself stay in the hand zone "Pont National right bank" (left to it); lid decks keep the pre-zone
+  street level (here 0.1 m off BD TOPO); the median between the carriageways sits at −2.8; paris-centre not rebaked.
+- **Round 7c (2026-11-10).** (1) A bike path under the ground at the A4 ramps (48.825530,2.391815): BD TOPO calls the Bretelles ground
+  (z up to 6.0 over an MNT of 3.0), and the lidar veto only touched way heights, so the band's ground blend plateaued up at them.
+  `DZ_MNT_CAP` 1.0: the band's groundAt never stands more than 1 m over the MNT. `DZ_BED_DOWN` 0.15 (bake.ts road bed): the corridor of
+  every band way, foot ways included, is now LOWERED to the way where the ground stands over it. This leaves out bridges, tunnels,
+  layer < 0 and the 20 m grid. New `tools/ground-audit.ts`, pont-national-mini: open-ground posts more than 1.5 m over the MNT
+  676 → 238; way vertices under the ground 283 → 23 (89 → 14 ways). The spot itself already read 3.3 over an MNT of 3.0 on the mini;
+  the paris-centre 6.0 is from its older band bake.
+  (2) The double walls (48.827302,2.389219; 48.828900,2.384785): a city river wall (quayWallsOf, low = the riverbed) standing about 5 m
+  out in the water, parallel to the band's BD TOPO Quai wall. `DZ_WALL_PAIR` 6 / `DZ_WALL_TOP_TOL` 1.0: in the band, a city piece
+  parallel to a zone wall within 6 m whose top stands more than 1 m over the shipped ground just behind it is dropped. That dropped
+  430 pieces on pont-national and 390 on bercy, and both spots now have one wall. paris-centre not rebaked.
+- **Round 7d (2026-11-10).** (1) A silver strip of river over the grass behind the quay wall: `dropDryWater` sampled a 16 m
+  triangle at only 4 points and kept it whole when they all read wet. It also cut in 1.5 m steps and judged by height alone.
+  Rewritten: samples on a 5×5 barycentric grid, splits down to WATER_CLIP_EDGE 2 m, and CLIPS along the shore line, found by
+  bisection of a signed function. Near a quay wall that function is the signed distance to the wall's step, the MOST landward of
+  every wall in reach (`WallGround.signed`; a separate index with WATER_WALL_LAND 30 m of inland reach). So the wall is the water's
+  edge whatever the heights, and the river side of a wall is never cut. RIVER_LIFT 1.0 → 0.2. Lowres shot at 48.827344,2.386451:
+  no water behind the wall. A zigzag edge between the grass and the quai road there is a separate, unexamined fault.
+  (2) The trench's far face showing through the near ground: retaining walls (city.ts) and quay walls (quays.ts) draw in
+  GROUP.building. Depth is cleared before that group, and the coarse ground occluder (4 m, lowest within a cell) sinks to the floor
+  of a drop. Now the base ground's triangles that refineAtWalls split are drawn again as depth only in the building group,
+  WT_OCC_SINK 0.05 m under the ground (`WT_OCCLUDE`). The lowres shot at the underpass shows nothing wrong, but it was too small to
+  confirm the fix.
+- **Round 7e (2026-11-10, trench at 48.829999,2.386548; the owner says it was bad before round 7).** Not water: the spot is outside
+  every river ring and there is no quay wall within reach. It is LAYERING. The ground layers clear depth before each group (areas 1,
+  road 2, walk/building 3), so only the coarse ground occluder (4 m, each post at the lowest ground within a cell) hides a later group
+  behind the ground. At a drop that occluder sinks to the trench floor. The trench road (group 2) then drew over the near ground strip
+  (group 0), dashes and all, and the trench face (group 3) over both. WT_OCCLUDE (round 7d) put the refined ground into the building
+  group only, and its steep ramp triangles hid the face and left the bare ramp. Now: the depth-only copy leaves out triangles steeper
+  than WT_OCC_GRADE 1.0, and goes into the areas and road groups too, as the coarse occluder does. NOT VERIFIED: three headless
+  shots at the spot produced no file, and 48.830574,2.385851 was not rechecked.
+- **Round 7f (2026-11-11).** Headless shots wrote no file because `window.riderReady` never came (the rider's own build hangs
+  headless; the page itself loads). tools/look-at.ts now also accepts the city idle with __heightAt answering. Use
+  `--from=x,z,h`: `--height/--pitch` aims 8 m over the target. Root cause of the trench and quay faults: walls drew in the building
+  group, after the depth clears, so the real ground never hid them and they hid nothing later. New `src/render/depth-copies.ts`
+  (`WALLS_FIRST`): the quays mesh (quays.ts) and the retaining walls (city.ts) draw in the BASE group with the ground, and again as
+  depth only, first in the areas, road and building groups (the water's group is areas). Cost: those two meshes are drawn three more
+  times as depth only, with no new pass. WT_OCCLUDE kept (ground in front of a later group at a drop); the coarse occluder kept
+  (everything else). Shots, scratchpad: before tr-b.png, tr-b-noocc.png, tr-d.png, tr-e.png; after tr-b2.png, tr-e2.png (ground
+  strip solid, no face through it), qw-a2.png (no water behind the quay wall at 48.827344,2.386451).
+- **Round 7g (2026-11-11), ground through the Seine.** `RIVER_CLAMP` 0.3 (render/city.ts; Terrain.river): inside a river outline,
+  and not on a quay wall's land side (WallGround.signed, the water's 30 m reach), the ground is held 0.3 m under the sheet
+  (level + 0.03 + RIVER_LIFT). The dry cut never opens a hole there, and the outline is the shore. Banks outside the outline are
+  untouched. RIVER_LIFT stays 0.2. Samples every 2 m inside the outline with ground over the sheet: pont-national 2063/36938 → 0,
+  bercy 823/37786 → 0; 2633 and 1515 samples on a wall's land side are left alone. Shots (scratchpad): rv1/rv2-before|after at the two
+  owner spots (no poking at those angles before or after), rv3-before|after under the viaduct at local 120,-200 (grass slope into the
+  river before, gone after).
