@@ -13,7 +13,7 @@ import { cap, edges, onWall, type P, type V } from './maison-tunisie.ts'
 
 const STONE: Rgb = hex('#cdc6b6'), RUST: Rgb = hex('#b9b09e'), CORNICE: Rgb = hex('#e6dcc6')
 const TILE: Rgb = hex('#a65a40'), GLASS: Rgb = hex('#2e3439'), FRAME: Rgb = hex('#ece6d8')
-const stoneTag = surfaceTag('stone'), glassTag = surfaceTag('glass')
+const stoneTag = surfaceTag('ashlar'), glassTag = surfaceTag('glass')
 
 const GF = 4.2, FL = 3.2, STOREYS = 5                 // rusticated ground storey, then four more
 const EAVE = GF + (STOREYS - 1) * FL                  // 17.0

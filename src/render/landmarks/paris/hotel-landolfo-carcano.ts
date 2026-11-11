@@ -70,7 +70,6 @@ const SLATE: Rgb = hex('#4a5570')
 const SLATE_HI: Rgb = hex('#58647f')
 const GLASS: Rgb = [0.15, 0.18, 0.2]
 const IRON: Rgb = [0.05, 0.05, 0.06]
-const DOOR: Rgb = hex('#2e3a33')
 const BRICK: Rgb = hex('#9c6a52')
 const COURT: Rgb = hex('#a9a08c')
 

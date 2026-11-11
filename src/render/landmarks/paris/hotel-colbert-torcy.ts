@@ -69,7 +69,6 @@ const GLASS: Rgb = [0.17, 0.21, 0.27]
 const GLASS_HALL: Rgb = hex('#7d98a0')
 const DOOR: Rgb = hex('#2a4a9c')
 const DOOR_D: Rgb = hex('#1d3678')
-const IRON: Rgb = [0.07, 0.07, 0.08]
 const COURT_PAVE: Rgb = hex('#aa9f89')
 const CHIMNEY: Rgb = hex('#c9bda4')
 
@@ -150,7 +149,7 @@ const STREET: Face = { o: [0, 0], t: [1, 0], n: [0, -1] }
 /** The street front: wall bands, quoins, the pavilions' arched windows, five bays between, the gate. */
 function streetFront(q: MeshBuilder): void {
   const f = STREET, W = LOT_W
-  const gc = W / 2, bodyS = PAV_W, bodyE = W - PAV_W
+  const gc = W / 2, bodyS = PAV_W
   // the smooth plastered walls with a plinth, the string course and the cornice
   rect(q, f, 0, W, 0, 0.7, 0.04, STONE_D)
   ledge(q, f, 0, W, STRING - 0.25, STRING + 0.18, 0.28, STONE_L)

@@ -56,7 +56,6 @@ const STONE_D: Rgb = hex('#b8a984')
 const STONE_L: Rgb = hex('#e6dcc0')
 const COURT_STONE: Rgb = hex('#c9b78c')
 const SLATE: Rgb = hex('#6a6f77')
-const SLATE_HI: Rgb = hex('#7b8088')
 const GLASS: Rgb = [0.2, 0.24, 0.3]
 const FRAME: Rgb = hex('#e9e6dc')
 const DOOR: Rgb = hex('#2d4a78')

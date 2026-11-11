@@ -49,7 +49,6 @@ export const STRING = 5.9
 const STONE: Rgb = hex('#d9cba0')
 const STONE_D: Rgb = hex('#c4b588')
 const STONE_L: Rgb = hex('#e6dbb8')
-const WALL_LO: Rgb = hex('#d1be93')
 const SLATE: Rgb = hex('#454c59')
 const SLATE_HI: Rgb = hex('#535b69')
 const GLASS: Rgb = [0.3, 0.34, 0.4]

@@ -78,6 +78,10 @@ export class Balloon implements Ride {
       m.material = cartoonMaterial(scene)
       m.isPickable = false
       m.alwaysSelectAsActiveMesh = true
+      // the buildings' group, as the ferris wheels: left in group 0 (the coarse ground and the skyline, whose
+      // depth is cleared before the city draws) everything drew over it, so a balloon near by read as a giant
+      // far off on the horizon
+      m.renderingGroupId = 3
       m.thinInstanceSetBuffer('matrix', buf, 16, false)
       m.thinInstanceSetBuffer('instColor', new Float32Array(4), 4, true)
       return m

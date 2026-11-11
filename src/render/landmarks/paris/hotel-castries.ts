@@ -187,17 +187,6 @@ function balconyWin(q: MeshBuilder, f: Face, s: number, y0: number, y1: number, 
   obox(q, f, s - w / 2 - 0.2, s + w / 2 + 0.2, y0 - 0.02, y0 + 0.9, d + 0.02, d + 0.2, IRON)
   rect(q, f, s - w / 2 - 0.15, s + w / 2 + 0.15, y0 + 0.08, y0 + 0.82, d + 0.22, shade(GLASS, 1.6))
 }
-/** An oval (oeil-de-boeuf) dormer on the mansard: a stone ring, glass, its cheeks. */
-function oval(q: MeshBuilder, f: Face, s: number, y: number, d: number, rw: number, rh: number): void {
-  const N = 10
-  for (let i = 0; i < N; i++) {
-    const a0 = (2 * Math.PI * i) / N, a1 = (2 * Math.PI * (i + 1)) / N
-    const p = (a: number, k: number): P => [s + Math.cos(a) * rw * k, y + Math.sin(a) * rh * k]
-    tri(q, f, p(a0, 1.25), p(a1, 1.25), [s, y], d, STONE_L)
-    tri(q, f, p(a0, 0.82), p(a1, 0.82), [s, y], d + 0.04, GLASS)
-  }
-  obox(q, f, s - rw * 1.25, s + rw * 1.25, y - rh * 1.3, y + rh * 1.3, d - 0.9, d - 0.02, SLATE)
-}
 
 // ---- masses
 function skirt(q: MeshBuilder, lower: Pt[], upper: Pt[], y0: number, y1: number, col: Rgb): void {
@@ -250,7 +239,7 @@ function windowFace(q: MeshBuilder, f: Face, eave: number, bay: number, rows: [n
 
 const along = (f: Face, p: P): number => (p[0] - f.o[0]) * f.t[0] + (p[1] - f.o[1]) * f.t[1]
 
-const flatPoly = (q: MeshBuilder, poly: P[], y: number, col: Rgb): void => buildRoof(q, toPts(poly), { shape: 'flat', y, height: 0, colour: col })
+const flatPoly = (q: MeshBuilder, poly: P[], y: number, col: Rgb): void => { buildRoof(q, toPts(poly), { shape: 'flat', y, height: 0, colour: col }) }
 
 /** A flat-roofed block with plain stone walls. */
 function flatMass(q: MeshBuilder, poly: P[], h: number): void {

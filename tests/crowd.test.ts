@@ -213,6 +213,26 @@ describe('walking along the pavement, not across the road', () => {
     }
     expect([...tracked.values()].every((t) => t.reached), 'everyone started on the first edge reached the third').toBe(true)
   })
+
+  it('turns the corner at a T-junction rather than pacing a short block back and forth (owner: runners doing basketball drills)', () => {
+    // a 20 m block between two cross streets: nothing straight on at either end, only left or right
+    const g = buildGraph([
+      road(1, 0, 1, [[0, 0], [0, 20]]),
+      road(2, 0, 2, [[0, 0], [-100, 0]]), road(3, 0, 3, [[0, 0], [100, 0]]),
+      road(4, 1, 4, [[0, 20], [-100, 20]]), road(5, 1, 5, [[0, 20], [100, 20]]),
+    ])
+    const crowd = new Crowd(g, 'busy')
+    const near = [...g.edges.values()]
+    crowd.update(0.01, { x: 0, z: 10 }, near)
+    const starters = crowd.all.filter((w) => w.edgeId === 1 && w.leader === undefined)
+    expect(starters.length).toBeGreaterThan(0)
+    const left = new Set<number>()
+    for (let step = 0; step < 300; step++) {
+      crowd.update(0.1, { x: 0, z: 10 }, near)
+      for (const w of crowd.all) if (w.edgeId !== 1) left.add(w.id)
+    }
+    for (const w of starters) expect(left.has(w.id), `walker ${w.id} (${w.kind}) never left the short block`).toBe(true)
+  })
 })
 
 describe('strangers in company', () => {

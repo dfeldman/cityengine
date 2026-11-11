@@ -20,7 +20,7 @@ const brick = surfaceTag('brick')
 export const G = 3.4, FL = 3.0, LEVELS = 3, EAVES = G + (LEVELS - 1) * FL
 const WIN_W = 1.1, WIN_H = 1.7, BAY = 3.2, FRAME = 0.14, PLINTH = 0.8
 const ROOF_H = 7, GABLE_W = 6.5, GABLE_H = 5.5, GABLE_PROUD = 0.5, COPE_BACK = 0.15
-const TURRET_R = 1.4, TURRET_ROOF = 4.5
+const TURRET_ROOF = 4.5
 
 export type Face = '-z' | '+z' | '-x' | '+x'
 export type Box = [number, number, number, number]   // x0, x1, z0, z1

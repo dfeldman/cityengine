@@ -137,6 +137,10 @@ const pick = <T>(r: () => number, a: readonly T[]): T => a[Math.floor(r() * a.le
 let nextWalkerId = 1
 /** after the first frame, walkers are only created further away than people are drawn (crowd-baked.ts) */
 const SPAWN_BEYOND = 120
+/** at an edge's end: an exit within this of dead ahead is "straight on" */
+const STRAIGHT_ON = (35 * Math.PI) / 180
+/** with nothing straight on, any exit sharper than this is a U-turn in all but name, so they turn round instead */
+const MAX_TURN = (150 * Math.PI) / 180
 
 export function rng(seed: number): () => number {
   let a = (seed ^ 0x2545f491) >>> 0
@@ -429,7 +433,20 @@ export class Crowd {
       const side = w.side * w.dir * (ne.a === node ? 1 : -1)
       return !(this.median(ne) & (side > 0 ? 1 : 2))
     })
-    const next = xs.length > 0 && Math.abs(xs[0].angle) < (35 * Math.PI) / 180 ? xs[0] : null
+    /*
+     * No way straight on: turn the corner rather than turn round. Turning round whenever the street did not go
+     * straight on had runners doing shuttle drills on a few metres of pavement between two T-junctions, or
+     * between two corners whose straight-on was a crossing. Left or right is the walker's habit at that node
+     * (stable, so a group's members agree). Only a dead end — nothing short of a U-turn — sends them back.
+     */
+    let next = xs.length > 0 && Math.abs(xs[0].angle) < STRAIGHT_ON ? xs[0] : null
+    if (!next) {
+      const turns = xs.filter((x) => Math.abs(x.angle) < MAX_TURN)
+      if (turns.length > 0) {
+        const left = ((Math.imul(w.id, 0x9e3779b1) ^ node) & 1) === 0
+        next = turns.find((x) => (x.angle < 0) === left) ?? turns[0]
+      }
+    }
     if (!next) {
       w.dir = (-w.dir) as 1 | -1
       w.s = Math.max(0, Math.min(e.length, w.s))

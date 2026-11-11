@@ -173,7 +173,6 @@ function courses(q: MeshBuilder, f: Face, s0: number, s1: number, d: number): vo
 }
 
 function frontWall(q: MeshBuilder): void {
-  const f = FRONT()
   const S = (u: number): number => u - U0
   // body
   block(q, U0, U1, FRONT_V - BLOCK_DEPTH, FRONT_V, 0, EAVE, STONE)

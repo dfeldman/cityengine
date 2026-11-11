@@ -1,61 +1,5 @@
 [
  {
-  "id": "P108",
-  "kind": "périphérique",
-  "name": "Rue du Général de Langle de Cary",
-  "at": {
-   "x": 4464.507538077433,
-   "z": -3667.0557013338707
-  },
-  "along": [
-   {
-    "x": 4501.571145653188,
-    "z": -3726.4382660601477
-   },
-   {
-    "x": 4427.443930501679,
-    "z": -3607.6731366075937
-   }
-  ],
-  "steepest": 1.3673639928694643,
-  "steepWay": "trunk_link",
-  "over": 4,
-  "detour": 22.3,
-  "thumb": "thumbs/P108.jpg",
-  "ll": {
-   "lat": 48.827558278157746,
-   "lon": 2.392960150119038
-  }
- },
- {
-  "id": "P107",
-  "kind": "périphérique",
-  "name": "Quai de Bercy",
-  "at": {
-   "x": 4236.877599233983,
-   "z": -3738.2378098885792
-  },
-  "along": [
-   {
-    "x": 4191.209703970853,
-    "z": -3685.186482457159
-   },
-   {
-    "x": 4282.545494497113,
-    "z": -3791.2891373199996
-   }
-  ],
-  "steepest": 1.2780631842543428,
-  "steepWay": "Quai de Bercy",
-  "over": 4,
-  "detour": 22,
-  "thumb": "thumbs/P107.jpg",
-  "ll": {
-   "lat": 48.826918838397035,
-   "lon": 2.389852000983857
-  }
- },
- {
   "id": "P165",
   "kind": "périphérique",
   "name": "Rue Hélène et François Missoffe",
@@ -73,8 +17,8 @@
     "z": 4494.664823895264
    }
   ],
-  "steepest": 0.0961298630318922,
-  "steepWay": "Rue Hélène et François Missoffe",
+  "steepest": 0.052387540927071694,
+  "steepWay": "Rue Émile Borel",
   "over": 0,
   "detour": 16.5,
   "thumb": "thumbs/P165.jpg",
@@ -84,31 +28,31 @@
   }
  },
  {
-  "id": "P120",
-  "kind": "périphérique",
-  "name": "Avenue Ernest Renan",
+  "id": "B028",
+  "kind": "bridge end",
+  "name": "Autoroute de Normandie",
   "at": {
-   "x": -3433.203560009358,
-   "z": -3324.53235046401
+   "x": -8229.13,
+   "z": -2293.03
   },
   "along": [
    {
-    "x": -3383.9865175566215,
-    "z": -3274.7560234379475
+    "x": -8205.83,
+    "z": -2261.12
    },
    {
-    "x": -3482.420602462095,
-    "z": -3374.3086774900726
+    "x": -8270.409392721236,
+    "z": -2349.5632799027785
    }
   ],
-  "steepest": 2.4164371808363017,
-  "steepWay": "Avenue Ernest Renan",
-  "over": 7,
-  "detour": 9.6,
-  "thumb": "thumbs/P120.jpg",
+  "steepest": 0.14787102874241653,
+  "steepWay": "Rue d'Orléans",
+  "over": 0,
+  "detour": 14.6,
+  "thumb": "thumbs/B028.jpg",
   "ll": {
-   "lat": 48.830635217770286,
-   "lon": 2.2851216819274285
+   "lat": 48.83990136104055,
+   "lon": 2.219636207158224
   }
  },
  {
@@ -129,9 +73,9 @@
     "z": 3882.217855924927
    }
   ],
-  "steepest": 0.908390126045811,
+  "steepest": 1.5416758534455433,
   "steepWay": "footway (foot)",
-  "over": 10,
+  "over": 21,
   "detour": 10.6,
   "thumb": "thumbs/P166.jpg",
   "ll": {
@@ -140,31 +84,31 @@
   }
  },
  {
-  "id": "B077",
-  "kind": "bridge end",
-  "name": "Pont de la Concorde",
+  "id": "P120",
+  "kind": "périphérique",
+  "name": "Avenue Ernest Renan",
   "at": {
-   "x": -942.68,
-   "z": 250.25
+   "x": -3433.203560009358,
+   "z": -3324.53235046401
   },
   "along": [
    {
-    "x": -923.94,
-    "z": 288.91
+    "x": -3383.9865175566215,
+    "z": -3274.7560234379475
    },
    {
-    "x": -973.2135486956124,
-    "z": 187.26029922239144
+    "x": -3482.420602462095,
+    "z": -3374.3086774900726
    }
   ],
-  "steepest": 6.6175648033881185,
-  "steepWay": "footway (foot)",
-  "over": 15,
-  "detour": 2.9,
-  "thumb": "thumbs/B077.jpg",
+  "steepest": 2.413925291874933,
+  "steepWay": "Avenue Ernest Renan",
+  "over": 7,
+  "detour": 9.6,
+  "thumb": "thumbs/P120.jpg",
   "ll": {
-   "lat": 48.862748033998514,
-   "lon": 2.3191282747707125
+   "lat": 48.830635217770286,
+   "lon": 2.2851216819274285
   }
  },
  {
@@ -185,7 +129,7 @@
     "z": 4295.198495742474
    }
   ],
-  "steepest": 0.028563023251305743,
+  "steepest": 0.030880850341201384,
   "steepWay": "footway (foot)",
   "over": 0,
   "detour": 10.6,
@@ -224,34 +168,6 @@
   }
  },
  {
-  "id": "B028",
-  "kind": "bridge end",
-  "name": "Autoroute de Normandie",
-  "at": {
-   "x": -8229.13,
-   "z": -2293.03
-  },
-  "along": [
-   {
-    "x": -8205.83,
-    "z": -2261.12
-   },
-   {
-    "x": -8270.409392721236,
-    "z": -2349.5632799027785
-   }
-  ],
-  "steepest": 0.12638332393484256,
-  "steepWay": "Rue d'Orléans",
-  "over": 0,
-  "detour": 9.2,
-  "thumb": "thumbs/B028.jpg",
-  "ll": {
-   "lat": 48.83990136104055,
-   "lon": 2.219636207158224
-  }
- },
- {
   "id": "P091",
   "kind": "périphérique",
   "name": "Rue Louis Pergaud",
@@ -269,7 +185,7 @@
     "z": -4813.025045453397
    }
   ],
-  "steepest": 0.27824793857798835,
+  "steepest": 0.2810444002722399,
   "steepWay": "footway (foot)",
   "over": 4,
   "detour": 8.1,
@@ -280,59 +196,31 @@
   }
  },
  {
-  "id": "B035",
+  "id": "B033",
   "kind": "bridge end",
   "name": "Pont de Bercy",
   "at": {
-   "x": 3079.55,
-   "z": -2564.44
+   "x": 3066.05,
+   "z": -2574.9
   },
   "along": [
    {
-    "x": 3109.8,
-    "z": -2539.03
+    "x": 3097.7,
+    "z": -2549.19
    },
    {
-    "x": 3025.9506594647273,
-    "z": -2609.463446049629
+    "x": 3011.7172944029903,
+    "z": -2619.0356670110314
    }
   ],
-  "steepest": 1.9503397770663538,
+  "steepest": 0.4999539979964648,
   "steepWay": "footway (foot)",
-  "over": 33,
+  "over": 43,
   "detour": 3.3,
-  "thumb": "thumbs/B035.jpg",
+  "thumb": "thumbs/B033.jpg",
   "ll": {
-   "lat": 48.83746324352793,
-   "lon": 2.374049392614516
-  }
- },
- {
-  "id": "B010",
-  "kind": "bridge end",
-  "name": "Pont de Sèvres",
-  "at": {
-   "x": -7814.47,
-   "z": -3626.48
-  },
-  "along": [
-   {
-    "x": -7779.15,
-    "z": -3609.88
-   },
-   {
-    "x": -7877.8219353154855,
-    "z": -3656.254692135816
-   }
-  ],
-  "steepest": 0.8057711413844126,
-  "steepWay": "footway (foot)",
-  "over": 10,
-  "detour": 6.7,
-  "thumb": "thumbs/B010.jpg",
-  "ll": {
-   "lat": 48.82792277588447,
-   "lon": 2.2252981386552073
+   "lat": 48.83736927974921,
+   "lon": 2.3738650582798577
   }
  },
  {
@@ -353,7 +241,7 @@
     "z": 788.9311368565751
    }
   ],
-  "steepest": 0.45363331704653553,
+  "steepest": 0.2640973290420247,
   "steepWay": "footway (foot)",
   "over": 1,
   "detour": 7.6,
@@ -361,34 +249,6 @@
   "ll": {
    "lat": 48.867866625995354,
    "lon": 2.2694803615021435
-  }
- },
- {
-  "id": "B049",
-  "kind": "bridge end",
-  "name": "Pont de Bir Hakeim",
-  "at": {
-   "x": -3323.47,
-   "z": -440.36
-  },
-  "along": [
-   {
-    "x": -3302.72,
-    "z": -471.95
-   },
-   {
-    "x": -3361.9006250109733,
-    "z": -381.852846067631
-   }
-  ],
-  "steepest": 0.6593402187373418,
-  "steepWay": "Voie Georges Pompidou",
-  "over": 17,
-  "detour": 5.6,
-  "thumb": "thumbs/B049.jpg",
-  "ll": {
-   "lat": 48.85654417881485,
-   "lon": 2.286620027318093
   }
  },
  {
@@ -420,31 +280,59 @@
   }
  },
  {
-  "id": "B064",
+  "id": "B054",
   "kind": "bridge end",
-  "name": "Petit-Pont - Cardinal Lustiger",
+  "name": "Pont du Carrousel",
   "at": {
-   "x": 1088.35,
-   "z": -819
+   "x": 30.91,
+   "z": -201.96
   },
   "along": [
    {
-    "x": 1102.13,
-    "z": -781.92
+    "x": 53,
+    "z": -164.88
    },
    {
-    "x": 1063.9653916244395,
-    "z": -884.6154773995477
+    "x": -4.916107576176227,
+    "z": -262.0972597974022
    }
   ],
-  "steepest": 3.299457394503457,
+  "steepest": 1.2011416270764121,
   "steepWay": "footway (foot)",
-  "over": 30,
-  "detour": 1,
-  "thumb": "thumbs/B064.jpg",
+  "over": 17,
+  "detour": 4.7,
+  "thumb": "thumbs/B054.jpg",
   "ll": {
-   "lat": 48.85314279782306,
-   "lon": 2.3468607609722225
+   "lat": 48.8586857624522,
+   "lon": 2.332422057354391
+  }
+ },
+ {
+  "id": "B051",
+  "kind": "bridge end",
+  "name": "Pont de Bir Hakeim",
+  "at": {
+   "x": -3191.41,
+   "z": -642.52
+  },
+  "along": [
+   {
+    "x": -3211.96,
+    "z": -610.78
+   },
+   {
+    "x": -3153.36629231829,
+    "z": -701.2794784339396
+   }
+  ],
+  "steepest": 0.8901555784336845,
+  "steepWay": "footway (foot)",
+  "over": 52,
+  "detour": 1.1,
+  "thumb": "thumbs/B051.jpg",
+  "ll": {
+   "lat": 48.854728144636475,
+   "lon": 2.288423226742903
   }
  },
  {
@@ -465,8 +353,8 @@
     "z": 953.7810176930918
    }
   ],
-  "steepest": 0.1531644071717691,
-  "steepWay": "track (foot)",
+  "steepest": 0.19480043178379955,
+  "steepWay": "Boulevard Périphérique Intérieur",
   "over": 2,
   "detour": 7,
   "thumb": "thumbs/P137.jpg",
@@ -504,31 +392,31 @@
   }
  },
  {
-  "id": "B031",
+  "id": "B010",
   "kind": "bridge end",
-  "name": "Pont du Garigliano",
+  "name": "Pont de Sèvres",
   "at": {
-   "x": -4574.71,
-   "z": -2415.78
+   "x": -7814.47,
+   "z": -3626.48
   },
   "along": [
    {
-    "x": -4607.14,
-    "z": -2393.42
+    "x": -7779.15,
+    "z": -3609.88
    },
    {
-    "x": -4517.08052314909,
-    "z": -2455.5146624232607
+    "x": -7877.8219353154855,
+    "z": -3656.254692135816
    }
   ],
-  "steepest": 1.6725487773854157,
-  "steepWay": "Quai André Citroën",
-  "over": 23,
-  "detour": 3.3,
-  "thumb": "thumbs/B031.jpg",
+  "steepest": 0.3366982378337199,
+  "steepWay": "path (foot) (bridge)",
+  "over": 2,
+  "detour": 6.7,
+  "thumb": "thumbs/B010.jpg",
   "ll": {
-   "lat": 48.8387986790293,
-   "lon": 2.269535101918283
+   "lat": 48.82792277588447,
+   "lon": 2.2252981386552073
   }
  },
  {
@@ -536,195 +424,55 @@
   "kind": "bridge end",
   "name": "Pont de Bir Hakeim",
   "at": {
-   "x": -3191.41,
-   "z": -642.52
+   "x": -3323.47,
+   "z": -440.36
   },
   "along": [
    {
-    "x": -3211.96,
-    "z": -610.78
+    "x": -3302.72,
+    "z": -471.95
    },
    {
-    "x": -3153.36629231829,
-    "z": -701.2794784339396
+    "x": -3361.9006250109733,
+    "z": -381.852846067631
    }
   ],
-  "steepest": 1.2196221569560801,
-  "steepWay": "footway (foot)",
-  "over": 41,
-  "detour": 1.1,
+  "steepest": 0.4063732807594674,
+  "steepWay": "Voie Georges Pompidou",
+  "over": 11,
+  "detour": 5.6,
   "thumb": "thumbs/B050.jpg",
   "ll": {
-   "lat": 48.854728144636475,
-   "lon": 2.288423226742903
+   "lat": 48.85654417881485,
+   "lon": 2.286620027318093
   }
  },
  {
-  "id": "B041",
-  "kind": "bridge end",
-  "name": "Pont de Grenelle - Cadets de Saumur",
-  "at": {
-   "x": -3719.21,
-   "z": -1215.35
-  },
-  "along": [
-   {
-    "x": -3746.82,
-    "z": -1189.5
-   },
-   {
-    "x": -3668.110663222116,
-    "z": -1263.1920085370625
-   }
-  ],
-  "steepest": 4.11156727872063,
-  "steepWay": "footway (foot)",
-  "over": 12,
-  "detour": 1.2,
-  "thumb": "thumbs/B041.jpg",
-  "ll": {
-   "lat": 48.849582325194454,
-   "lon": 2.2812164369775343
-  }
- },
- {
-  "id": "P102",
+  "id": "P139",
   "kind": "périphérique",
-  "name": "Avenue de la Porte de Montrouge (bridge)",
+  "name": "secondary_link (bridge)",
   "at": {
-   "x": -803.6607059882199,
-   "z": -4390.177622709424
+   "x": 5954.03391057546,
+   "z": 392.2253753444941
   },
   "along": [
    {
-    "x": -744.7421202296214,
-    "z": -4352.380794109571
+    "x": 5887.010437461308,
+    "z": 412.42077213972016
    },
    {
-    "x": -862.5792917468184,
-    "z": -4427.974451309277
+    "x": 6021.057383689612,
+    "z": 372.0299785492681
    }
   ],
-  "steepest": 0.5186151336693319,
-  "steepWay": "footway (foot)",
-  "over": 18,
-  "detour": 4.4,
-  "thumb": "thumbs/P102.jpg",
+  "steepest": 0.6445275956090757,
+  "steepWay": "footway (foot) (bridge)",
+  "over": 4,
+  "detour": 6,
+  "thumb": "thumbs/P139.jpg",
   "ll": {
-   "lat": 48.82106236341521,
-   "lon": 2.321026499145993
-  }
- },
- {
-  "id": "P169",
-  "kind": "périphérique",
-  "name": "footway",
-  "at": {
-   "x": -3190.0976157693535,
-   "z": -3489.3476065192654
-  },
-  "along": [
-   {
-    "x": -3192.3516010033823,
-    "z": -3419.383904855011
-   },
-   {
-    "x": -3187.843630535325,
-    "z": -3559.3113081835195
-   }
-  ],
-  "steepest": 0.007629747918967202,
-  "steepWay": "Boulevard Périphérique Extérieur (bridge)",
-  "over": 0,
-  "detour": 6.7,
-  "thumb": "thumbs/P169.jpg",
-  "ll": {
-   "lat": 48.82915465713458,
-   "lon": 2.28844114655579
-  }
- },
- {
-  "id": "B043",
-  "kind": "bridge end",
-  "name": "Pont d'Austerlitz",
-  "at": {
-   "x": 2567.52,
-   "z": -1665.24
-  },
-  "along": [
-   {
-    "x": 2537.11,
-    "z": -1691.12
-   },
-   {
-    "x": 2620.8284936296704,
-    "z": -1619.8725611596228
-   }
-  ],
-  "steepest": 1.476284214945289,
-  "steepWay": "footway (foot)",
-  "over": 19,
-  "detour": 3.3,
-  "thumb": "thumbs/B043.jpg",
-  "ll": {
-   "lat": 48.84554089456273,
-   "lon": 2.367057932660818
-  }
- },
- {
-  "id": "B061",
-  "kind": "bridge end",
-  "name": "Pont Saint-Michel",
-  "at": {
-   "x": 910.33,
-   "z": -740.74
-  },
-  "along": [
-   {
-    "x": 930.65,
-    "z": -709.56
-   },
-   {
-    "x": 872.1107646223865,
-    "z": -799.3854605843502
-   }
-  ],
-  "steepest": 1.0282011946778686,
-  "steepWay": "footway (foot)",
-  "over": 23,
-  "detour": 3.3,
-  "thumb": "thumbs/B061.jpg",
-  "ll": {
-   "lat": 48.853845819364416,
-   "lon": 2.344430005545866
-  }
- },
- {
-  "id": "B053",
-  "kind": "bridge end",
-  "name": "Pont du Carrousel",
-  "at": {
-   "x": 36.63,
-   "z": -195.98
-  },
-  "along": [
-   {
-    "x": 55.76,
-    "z": -157.62
-   },
-   {
-    "x": 5.390386029620036,
-    "z": -258.62252963427994
-   }
-  ],
-  "steepest": 1.2619531833164068,
-  "steepWay": "footway (foot)",
-  "over": 6,
-  "detour": 4.7,
-  "thumb": "thumbs/B053.jpg",
-  "ll": {
-   "lat": 48.85873948170619,
-   "lon": 2.332500160494705
+   "lat": 48.86402342049492,
+   "lon": 2.4132987318101438
   }
  },
  {
@@ -745,9 +493,9 @@
     "z": -1466.1694708106793
    }
   ],
-  "steepest": 0.15707174426581666,
-  "steepWay": "footway (foot)",
-  "over": 1,
+  "steepest": 0.17520225114499355,
+  "steepWay": "Boulevard Périphérique Intérieur",
+  "over": 3,
   "detour": 6.3,
   "thumb": "thumbs/P174.jpg",
   "ll": {
@@ -756,143 +504,115 @@
   }
  },
  {
-  "id": "B045",
-  "kind": "bridge end",
-  "name": "Pont de Sully",
-  "at": {
-   "x": 1828.77,
-   "z": -1227.31
-  },
-  "along": [
-   {
-    "x": 1864.48,
-    "z": -1210.8
-   },
-   {
-    "x": 1765.2321250317543,
-    "z": -1256.685813937993
-   }
-  ],
-  "steepest": 2.9114336562283367,
-  "steepWay": "footway (foot)",
-  "over": 21,
-  "detour": 1.2,
-  "thumb": "thumbs/B045.jpg",
-  "ll": {
-   "lat": 48.84947488668647,
-   "lon": 2.3569707482364786
-  }
- },
- {
-  "id": "P095",
+  "id": "P169",
   "kind": "périphérique",
-  "name": "Avenue de la Porte de Choisy (bridge)",
+  "name": "footway",
   "at": {
-   "x": 2535.11347048079,
-   "z": -4785.602480108975
+   "x": -3190.0976157693535,
+   "z": -3489.3476065192654
   },
   "along": [
    {
-    "x": 2499.0705778215984,
-    "z": -4725.5948981817055
+    "x": -3192.3516010033823,
+    "z": -3419.383904855011
    },
    {
-    "x": 2571.1563631399817,
-    "z": -4845.610062036245
+    "x": -3187.843630535325,
+    "z": -3559.3113081835195
    }
   ],
-  "steepest": 1.4828206202775933,
-  "steepWay": "footway (foot)",
-  "over": 20,
-  "detour": 3,
-  "thumb": "thumbs/P095.jpg",
+  "steepest": 0.007629747918967654,
+  "steepWay": "Boulevard Périphérique Extérieur (bridge)",
+  "over": 0,
+  "detour": 6.7,
+  "thumb": "thumbs/P169.jpg",
   "ll": {
-   "lat": 48.81751020148398,
-   "lon": 2.366615441101003
+   "lat": 48.82915465713458,
+   "lon": 2.28844114655579
   }
  },
  {
-  "id": "B037",
+  "id": "B043",
   "kind": "bridge end",
-  "name": "Pont de Saint-Cloud",
+  "name": "Pont de la Tournelle",
   "at": {
-   "x": -7856.92,
-   "z": -2141.02
+   "x": 1681.74,
+   "z": -1160.73
   },
   "along": [
    {
-    "x": -7894.92,
-    "z": -2137.16
+    "x": 1703.49,
+    "z": -1123.99
    },
    {
-    "x": -7787.278368947583,
-    "z": -2148.094123575325
+    "x": 1646.0803514867494,
+    "z": -1220.9661143161761
    }
   ],
-  "steepest": 1.0417902251112177,
-  "steepWay": "Avenue du Maréchal de Lattre de Tassigny",
+  "steepest": 1.068458634279321,
+  "steepWay": "footway (foot)",
+  "over": 22,
+  "detour": 3.2,
+  "thumb": "thumbs/B043.jpg",
+  "ll": {
+   "lat": 48.85007298500264,
+   "lon": 2.3549631425161257
+  }
+ },
+ {
+  "id": "B062",
+  "kind": "bridge end",
+  "name": "Pont Saint-Michel",
+  "at": {
+   "x": 910.33,
+   "z": -740.74
+  },
+  "along": [
+   {
+    "x": 930.65,
+    "z": -709.56
+   },
+   {
+    "x": 872.1107646223865,
+    "z": -799.3854605843502
+   }
+  ],
+  "steepest": 1.0553886685125733,
+  "steepWay": "footway (foot)",
   "over": 21,
   "detour": 3.3,
-  "thumb": "thumbs/B037.jpg",
+  "thumb": "thumbs/B062.jpg",
   "ll": {
-   "lat": 48.841266890103945,
-   "lon": 2.2247185095806716
+   "lat": 48.853845819364416,
+   "lon": 2.344430005545866
   }
  },
  {
-  "id": "B023",
+  "id": "B077",
   "kind": "bridge end",
-  "name": "bridge",
+  "name": "Pont de la Concorde",
   "at": {
-   "x": 4165.78,
-   "z": -3634.26
+   "x": -942.68,
+   "z": 250.25
   },
   "along": [
    {
-    "x": 4203.8,
-    "z": -3641.34
+    "x": -923.94,
+    "z": 288.91
    },
    {
-    "x": 4096.963016896758,
-    "z": -3621.445054172253
+    "x": -973.2135486956124,
+    "z": 187.26029922239144
    }
   ],
-  "steepest": 1.3349523616059662,
-  "steepWay": "motorway_link",
-  "over": 9,
-  "detour": 3.9,
-  "thumb": "thumbs/B023.jpg",
+  "steepest": 1.8770989193055236,
+  "steepWay": "footway (foot)",
+  "over": 16,
+  "detour": 2.9,
+  "thumb": "thumbs/B077.jpg",
   "ll": {
-   "lat": 48.82785288695536,
-   "lon": 2.3888812062689992
-  }
- },
- {
-  "id": "P158",
-  "kind": "périphérique",
-  "name": "Tunnel Chaumont Pantin (tunnel)",
-  "at": {
-   "x": 4758.59064000134,
-   "z": 2903.9461025409114
-  },
-  "along": [
-   {
-    "x": 4742.5704633626265,
-    "z": 2835.8039427537105
-   },
-   {
-    "x": 4774.610816640054,
-    "z": 2972.0882623281123
-   }
-  ],
-  "steepest": 0.4240020641769938,
-  "steepWay": "Avenue de la Porte Chaumont",
-  "over": 3,
-  "detour": 5.4,
-  "thumb": "thumbs/P158.jpg",
-  "ll": {
-   "lat": 48.88658659168172,
-   "lon": 2.3969756770025414
+   "lat": 48.862748033998514,
+   "lon": 2.3191282747707125
   }
  },
  {
@@ -913,7 +633,7 @@
     "z": -3108.2613638715056
    }
   ],
-  "steepest": 0.19034817706709195,
+  "steepest": 0.22868218494865922,
   "steepWay": "Boulevard Périphérique Intérieur",
   "over": 2,
   "detour": 5.7,
@@ -921,6 +641,34 @@
   "ll": {
    "lat": 48.83207257247512,
    "lon": 2.4052943071408945
+  }
+ },
+ {
+  "id": "P102",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Montrouge (bridge)",
+  "at": {
+   "x": -803.6607059882199,
+   "z": -4390.177622709424
+  },
+  "along": [
+   {
+    "x": -744.7421202296214,
+    "z": -4352.380794109571
+   },
+   {
+    "x": -862.5792917468184,
+    "z": -4427.974451309277
+   }
+  ],
+  "steepest": 0.47263797134590524,
+  "steepWay": "footway (foot)",
+  "over": 12,
+  "detour": 4.4,
+  "thumb": "thumbs/P102.jpg",
+  "ll": {
+   "lat": 48.82106236341521,
+   "lon": 2.321026499145993
   }
  },
  {
@@ -941,14 +689,42 @@
     "z": 5.924778831124099
    }
   ],
-  "steepest": 0.19833547273083385,
-  "steepWay": "trunk_link",
+  "steepest": 0.2199116126302127,
+  "steepWay": "Boulevard Périphérique Extérieur",
   "over": 3,
   "detour": 5.5,
   "thumb": "thumbs/P136.jpg",
   "ll": {
    "lat": 48.86053172348425,
    "lon": 2.2634631898571027
+  }
+ },
+ {
+  "id": "B044",
+  "kind": "bridge end",
+  "name": "Pont d'Austerlitz",
+  "at": {
+   "x": 2567.52,
+   "z": -1665.24
+  },
+  "along": [
+   {
+    "x": 2537.11,
+    "z": -1691.12
+   },
+   {
+    "x": 2620.8284936296704,
+    "z": -1619.8725611596228
+   }
+  ],
+  "steepest": 0.7932085648696701,
+  "steepWay": "Voie Mazas (foot)",
+  "over": 19,
+  "detour": 3.3,
+  "thumb": "thumbs/B044.jpg",
+  "ll": {
+   "lat": 48.84554089456273,
+   "lon": 2.367057932660818
   }
  },
  {
@@ -969,8 +745,8 @@
     "z": -4413.163010412973
    }
   ],
-  "steepest": 0.1429785449627807,
-  "steepWay": "footway (foot)",
+  "steepest": 0.11267588171400968,
+  "steepWay": "service",
   "over": 0,
   "detour": 5.8,
   "thumb": "thumbs/B004.jpg",
@@ -980,231 +756,91 @@
   }
  },
  {
-  "id": "B079",
+  "id": "B064",
   "kind": "bridge end",
-  "name": "Pont de Puteaux",
+  "name": "Pont Notre-Dame",
   "at": {
-   "x": -6281.24,
-   "z": 1759.94
+   "x": 1238.01,
+   "z": -430.92
   },
   "along": [
    {
-    "x": -6316.66,
-    "z": 1782.86
+    "x": 1224.17,
+    "z": -467.32
    },
    {
-    "x": -6222.470979320268,
-    "z": 1721.9110346137936
+    "x": 1262.8878085280421,
+    "z": -365.48992554763464
    }
   ],
-  "steepest": 1.3535327307191911,
+  "steepest": 1.0737713581153885,
   "steepWay": "footway (foot)",
-  "over": 13,
-  "detour": 3.2,
-  "thumb": "thumbs/B079.jpg",
+  "over": 15,
+  "detour": 3.3,
+  "thumb": "thumbs/B064.jpg",
   "ll": {
-   "lat": 48.876309810011335,
-   "lon": 2.246233466946144
+   "lat": 48.856628979777675,
+   "lon": 2.3489042777518456
   }
  },
  {
-  "id": "B034",
+  "id": "B065",
   "kind": "bridge end",
-  "name": "Pont de Tolbiac",
+  "name": "Petit-Pont - Cardinal Lustiger",
   "at": {
-   "x": 3666.42,
-   "z": -3006.81
+   "x": 1088.35,
+   "z": -819
   },
   "along": [
    {
-    "x": 3638.4,
-    "z": -3030.2
+    "x": 1102.13,
+    "z": -781.92
    },
    {
-    "x": 3720.1577426081926,
-    "z": -2961.951834418072
+    "x": 1063.9653916244395,
+    "z": -884.6154773995477
    }
   ],
-  "steepest": 2.537753397730955,
+  "steepest": 1.7339406617128506,
   "steepWay": "footway (foot)",
-  "over": 17,
+  "over": 26,
   "detour": 1,
-  "thumb": "thumbs/B034.jpg",
+  "thumb": "thumbs/B065.jpg",
   "ll": {
-   "lat": 48.83348936620557,
-   "lon": 2.3820627475019767
+   "lat": 48.85314279782306,
+   "lon": 2.3468607609722225
   }
  },
  {
-  "id": "B024",
-  "kind": "bridge end",
-  "name": "bridge",
+  "id": "P158",
+  "kind": "périphérique",
+  "name": "Tunnel Chaumont Pantin (tunnel)",
   "at": {
-   "x": 4287.56,
-   "z": -3633.28
+   "x": 4758.59064000134,
+   "z": 2903.9461025409114
   },
   "along": [
    {
-    "x": 4269.12,
-    "z": -3666.82
+    "x": 4742.5704633626265,
+    "z": 2835.8039427537105
    },
    {
-    "x": 4321.284483155945,
-    "z": -3571.939481287942
+    "x": 4774.610816640054,
+    "z": 2972.0882623281123
    }
   ],
-  "steepest": 0.3915933532386211,
-  "steepWay": "secondary_link",
-  "over": 8,
-  "detour": 4.5,
-  "thumb": "thumbs/B024.jpg",
+  "steepest": 0.13007274385169842,
+  "steepWay": "primary",
+  "over": 0,
+  "detour": 5.4,
+  "thumb": "thumbs/P158.jpg",
   "ll": {
-   "lat": 48.82786169044515,
-   "lon": 2.390544038511566
+   "lat": 48.88658659168172,
+   "lon": 2.3969756770025414
   }
  },
  {
-  "id": "B083",
-  "kind": "bridge end",
-  "name": "Pont de Courbevoie",
-  "at": {
-   "x": -4939.82,
-   "z": 4009.64
-  },
-  "along": [
-   {
-    "x": -4917.75,
-    "z": 3976.52
-   },
-   {
-    "x": -4978.636836541735,
-    "z": 4067.89163689453
-   }
-  ],
-  "steepest": 0.6364790290578174,
-  "steepWay": "footway (foot)",
-  "over": 17,
-  "detour": 3.3,
-  "thumb": "thumbs/B083.jpg",
-  "ll": {
-   "lat": 48.896519208958175,
-   "lon": 2.26454974570147
-  }
- },
- {
-  "id": "B033",
-  "kind": "bridge end",
-  "name": "Pont de Tolbiac",
-  "at": {
-   "x": 3519.56,
-   "z": -3130.18
-  },
-  "along": [
-   {
-    "x": 3549.27,
-    "z": -3105.18
-   },
-   {
-    "x": 3465.9993900140826,
-    "z": -3175.249513619923
-   }
-  ],
-  "steepest": 1.9194595583436918,
-  "steepWay": "footway (foot)",
-  "over": 4,
-  "detour": 3.3,
-  "thumb": "thumbs/B033.jpg",
-  "ll": {
-   "lat": 48.83238111463955,
-   "lon": 2.3800574630288014
-  }
- },
- {
-  "id": "B040",
-  "kind": "bridge end",
-  "name": "Pont Mirabeau",
-  "at": {
-   "x": -4040.01,
-   "z": -1599.47
-  },
-  "along": [
-   {
-    "x": -4071.06,
-    "z": -1579.68
-   },
-   {
-    "x": -3980.980326303023,
-    "z": -1637.0930995962378
-   }
-  ],
-  "steepest": 1.5024015886738333,
-  "steepWay": "footway (foot)",
-  "over": 25,
-  "detour": 1.2,
-  "thumb": "thumbs/B040.jpg",
-  "ll": {
-   "lat": 48.84613171652509,
-   "lon": 2.2768361070102547
-  }
- },
- {
-  "id": "B059",
-  "kind": "bridge end",
-  "name": "Pont de l'Archevêché",
-  "at": {
-   "x": 1418.12,
-   "z": -1032.09
-  },
-  "along": [
-   {
-    "x": 1432.71,
-    "z": -996.88
-   },
-   {
-    "x": 1391.3234743644284,
-    "z": -1096.7579689944114
-   }
-  ],
-  "steepest": 0.9495547368241205,
-  "steepWay": "footway (foot)",
-  "over": 12,
-  "detour": 3.3,
-  "thumb": "thumbs/B059.jpg",
-  "ll": {
-   "lat": 48.851228577784134,
-   "lon": 2.3513635708640863
-  }
- },
- {
-  "id": "B017",
-  "kind": "bridge end",
-  "name": "Pont d'Issy",
-  "at": {
-   "x": -5408.1,
-   "z": -3304.2
-  },
-  "along": [
-   {
-    "x": -5372.43,
-    "z": -3326.98
-   },
-   {
-    "x": -5467.09561573275,
-    "z": -3266.5235176228753
-   }
-  ],
-  "steepest": 1.1478633220837948,
-  "steepWay": "footway (foot)",
-  "over": 28,
-  "detour": 1.1,
-  "thumb": "thumbs/B017.jpg",
-  "ll": {
-   "lat": 48.83081786638213,
-   "lon": 2.2581556655360155
-  }
- },
- {
-  "id": "B066",
+  "id": "B067",
   "kind": "bridge end",
   "name": "Pont Marie",
   "at": {
@@ -1221,11 +857,11 @@
     "z": -748.2009288491973
    }
   ],
-  "steepest": 1.1389043316177057,
+  "steepest": 1.0167567682580263,
   "steepWay": "footway (foot)",
-  "over": 10,
+  "over": 12,
   "detour": 3.3,
-  "thumb": "thumbs/B066.jpg",
+  "thumb": "thumbs/B067.jpg",
   "ll": {
    "lat": 48.85322903609034,
    "lon": 2.3577228323218833
@@ -1249,7 +885,7 @@
     "z": 2508.1136879961145
    }
   ],
-  "steepest": 0.3523709371382769,
+  "steepest": 0.3757208185149097,
   "steepWay": "Boulevard Périphérique Extérieur",
   "over": 5,
   "detour": 4.5,
@@ -1288,259 +924,63 @@
   }
  },
  {
-  "id": "B062",
+  "id": "B031",
   "kind": "bridge end",
-  "name": "Pont Neuf",
+  "name": "Pont du Garigliano",
   "at": {
-   "x": 760.15,
-   "z": -236.15
+   "x": -4574.71,
+   "z": -2415.78
   },
   "along": [
    {
-    "x": 741.21,
-    "z": -271.58
+    "x": -4607.14,
+    "z": -2393.42
    },
    {
-    "x": 793.1508484647787,
-    "z": -174.41715622454518
+    "x": -4517.08052314909,
+    "z": -2455.5146624232607
    }
   ],
-  "steepest": 1.3393844160087245,
-  "steepWay": "footway (foot)",
-  "over": 7,
-  "detour": 3.3,
-  "thumb": "thumbs/B062.jpg",
-  "ll": {
-   "lat": 48.858378628456556,
-   "lon": 2.3423793884807598
-  }
- },
- {
-  "id": "B063",
-  "kind": "bridge end",
-  "name": "Pont Notre-Dame",
-  "at": {
-   "x": 1238.01,
-   "z": -430.92
-  },
-  "along": [
-   {
-    "x": 1224.17,
-    "z": -467.32
-   },
-   {
-    "x": 1262.8878085280421,
-    "z": -365.48992554763464
-   }
-  ],
-  "steepest": 0.8187821646256062,
-  "steepWay": "footway (foot)",
-  "over": 12,
-  "detour": 3.3,
-  "thumb": "thumbs/B063.jpg",
-  "ll": {
-   "lat": 48.856628979777675,
-   "lon": 2.3489042777518456
-  }
- },
- {
-  "id": "B081",
-  "kind": "bridge end",
-  "name": "Pont de Neuilly",
-  "at": {
-   "x": -5797.34,
-   "z": 2958
-  },
-  "along": [
-   {
-    "x": -5761.95,
-    "z": 2940.7
-   },
-   {
-    "x": -5860.228151735595,
-    "z": 2988.7421595090645
-   }
-  ],
-  "steepest": 0.868644973055454,
-  "steepWay": "Quai du Président Paul Doumer",
+  "steepest": 0.8567690710389526,
+  "steepWay": "Quai d'Issy-les-Moulineaux",
   "over": 11,
   "detour": 3.3,
-  "thumb": "thumbs/B081.jpg",
+  "thumb": "thumbs/B031.jpg",
   "ll": {
-   "lat": 48.887072166104254,
-   "lon": 2.2528408287639956
+   "lat": 48.8387986790293,
+   "lon": 2.269535101918283
   }
  },
  {
-  "id": "P139",
-  "kind": "périphérique",
-  "name": "secondary_link (bridge)",
-  "at": {
-   "x": 5954.03391057546,
-   "z": 392.2253753444941
-  },
-  "along": [
-   {
-    "x": 5887.010437461308,
-    "z": 412.42077213972016
-   },
-   {
-    "x": 6021.057383689612,
-    "z": 372.0299785492681
-   }
-  ],
-  "steepest": 1.1559667201579733,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 10,
-  "detour": 3.1,
-  "thumb": "thumbs/P139.jpg",
-  "ll": {
-   "lat": 48.86402342049492,
-   "lon": 2.4132987318101438
-  }
- },
- {
-  "id": "B046",
+  "id": "B057",
   "kind": "bridge end",
-  "name": "Pont Charles de Gaulle",
+  "name": "Pont Royal",
   "at": {
-   "x": 2636.39,
-   "z": -2061.76
+   "x": -174.6,
+   "z": -103.47
   },
   "along": [
    {
-    "x": 2667.26,
-    "z": -2037.31
+    "x": -163.87,
+    "z": -65.04
    },
    {
-    "x": 2581.5165256980963,
-    "z": -2105.2214981108373
+    "x": -193.424633532757,
+    "z": -170.89131096587636
    }
   ],
-  "steepest": 0.7887291979277896,
-  "steepWay": "service",
-  "over": 13,
-  "detour": 3.1,
-  "thumb": "thumbs/B046.jpg",
-  "ll": {
-   "lat": 48.84197889479814,
-   "lon": 2.3679983108554765
-  }
- },
- {
-  "id": "B018",
-  "kind": "bridge end",
-  "name": "Boulevard Périphérique Extérieur",
-  "at": {
-   "x": 4270.38,
-   "z": -3740.81
-  },
-  "along": [
-   {
-    "x": 4234.38,
-    "z": -3759.33
-   },
-   {
-    "x": 4332.626127200143,
-    "z": -3708.7878256737044
-   }
-  ],
-  "steepest": 1.2780631842543428,
-  "steepWay": "Quai de Bercy",
-  "over": 6,
-  "detour": 3.3,
-  "thumb": "thumbs/B018.jpg",
-  "ll": {
-   "lat": 48.826895732020134,
-   "lon": 2.39030945600272
-  }
- },
- {
-  "id": "B075",
-  "kind": "bridge end",
-  "name": "Pont des Invalides",
-  "at": {
-   "x": -1579.71,
-   "z": 267.87
-  },
-  "along": [
-   {
-    "x": -1580.94,
-    "z": 306.44
-   },
-   {
-    "x": -1577.4788293356578,
-    "z": 197.90556705391964
-   }
-  ],
-  "steepest": 1.0424933826313718,
+  "steepest": 0.45261432587999567,
   "steepWay": "footway (foot)",
-  "over": 8,
+  "over": 15,
   "detour": 3.3,
-  "thumb": "thumbs/B075.jpg",
+  "thumb": "thumbs/B057.jpg",
   "ll": {
-   "lat": 48.86290631715157,
-   "lon": 2.310430015422033
+   "lat": 48.85957051317553,
+   "lon": 2.32961594260509
   }
  },
  {
-  "id": "B009",
-  "kind": "bridge end",
-  "name": "Pont de Sèvres",
-  "at": {
-   "x": -7592.79,
-   "z": -3510.76
-  },
-  "along": [
-   {
-    "x": -7627.82,
-    "z": -3527.16
-   },
-   {
-    "x": -7529.393754139845,
-    "z": -3481.0797707077786
-   }
-  ],
-  "steepest": 1.7394412450003747,
-  "steepWay": "Quai Alphonse Le Gallo",
-  "over": 19,
-  "detour": 1,
-  "thumb": "thumbs/B009.jpg",
-  "ll": {
-   "lat": 48.82896230633125,
-   "lon": 2.228325044974243
-  }
- },
- {
-  "id": "P093",
-  "kind": "périphérique",
-  "name": "Rue de la Poterne des Peupliers",
-  "at": {
-   "x": 1565.0577235255118,
-   "z": -4755.458687342205
-  },
-  "along": [
-   {
-    "x": 1565.363397466965,
-    "z": -4825.458019935034
-   },
-   {
-    "x": 1564.7520495840588,
-    "z": -4685.459354749376
-   }
-  ],
-  "steepest": 1.282053692305644,
-  "steepWay": "Rue Jacques Destrée",
-  "over": 9,
-  "detour": 2.9,
-  "thumb": "thumbs/P093.jpg",
-  "ll": {
-   "lat": 48.81778098778162,
-   "lon": 2.353369916604992
-  }
- },
- {
-  "id": "B065",
+  "id": "B066",
   "kind": "bridge end",
   "name": "Pont au Change",
   "at": {
@@ -1557,14 +997,42 @@
     "z": -312.0118575129374
    }
   ],
-  "steepest": 2.7718343613266287,
+  "steepest": 2.678333963936938,
   "steepWay": "footway (foot) (bridge)",
-  "over": 8,
+  "over": 10,
   "detour": 1.5,
-  "thumb": "thumbs/B065.jpg",
+  "thumb": "thumbs/B066.jpg",
   "ll": {
    "lat": 48.857115237840965,
    "lon": 2.34713985680929
+  }
+ },
+ {
+  "id": "B024",
+  "kind": "bridge end",
+  "name": "bridge",
+  "at": {
+   "x": 4287.56,
+   "z": -3633.28
+  },
+  "along": [
+   {
+    "x": 4269.12,
+    "z": -3666.82
+   },
+   {
+    "x": 4321.284483155945,
+    "z": -3571.939481287942
+   }
+  ],
+  "steepest": 0.25727925435542043,
+  "steepWay": "Quai de Bercy",
+  "over": 7,
+  "detour": 4.2,
+  "thumb": "thumbs/B024.jpg",
+  "ll": {
+   "lat": 48.82786169044515,
+   "lon": 2.390544038511566
   }
  },
  {
@@ -1585,10 +1053,10 @@
     "z": -4559.979206519457
    }
   ],
-  "steepest": 0.7681204046990524,
-  "steepWay": "Avenue de la Porte d'Orléans",
+  "steepest": 0.9060103205012692,
+  "steepWay": "footway (foot)",
   "over": 13,
-  "detour": 3,
+  "detour": 2.9,
   "thumb": "thumbs/P087.jpg",
   "ll": {
    "lat": 48.82016440430035,
@@ -1596,143 +1064,59 @@
   }
  },
  {
-  "id": "B071",
+  "id": "B081",
   "kind": "bridge end",
-  "name": "Pont de l'Alma",
+  "name": "Pont de Neuilly",
   "at": {
-   "x": -2203.72,
-   "z": 259.22
+   "x": -5797.34,
+   "z": 2958
   },
   "along": [
    {
-    "x": -2206.24,
-    "z": 299.08
+    "x": -5761.95,
+    "z": 2940.7
    },
    {
-    "x": -2199.3033285478596,
-    "z": 189.3594745705141
+    "x": -5860.228151735595,
+    "z": 2988.7421595090645
    }
   ],
-  "steepest": 1.063671240904904,
-  "steepWay": "Promenade Gisèle Halimi (foot)",
-  "over": 7,
+  "steepest": 0.8386563143153202,
+  "steepWay": "Quai de Dion Bouton",
+  "over": 9,
   "detour": 3.3,
-  "thumb": "thumbs/B071.jpg",
+  "thumb": "thumbs/B081.jpg",
   "ll": {
-   "lat": 48.8628286128795,
-   "lon": 2.3019095362983353
+   "lat": 48.887072166104254,
+   "lon": 2.2528408287639956
   }
  },
  {
-  "id": "B047",
+  "id": "B048",
   "kind": "bridge end",
   "name": "Pont Charles de Gaulle",
   "at": {
-   "x": 2799.94,
-   "z": -1932.25
+   "x": 2801.54,
+   "z": -1931.14
   },
   "along": [
    {
-    "x": 2766.05,
-    "z": -1959.09
+    "x": 2772.22,
+    "z": -1954.2
    },
    {
-    "x": 2854.8149983620597,
-    "z": -1888.7904262013078
+    "x": 2856.5614395514517,
+    "z": -1887.8659755778833
    }
   ],
-  "steepest": 1.3837094493433268,
-  "steepWay": "Quai de la Rapée",
-  "over": 21,
-  "detour": 1.2,
-  "thumb": "thumbs/B047.jpg",
-  "ll": {
-   "lat": 48.8431423029226,
-   "lon": 2.37023148718387
-  }
- },
- {
-  "id": "P118",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte de Sèvres",
-  "at": {
-   "x": -4021.5415038100764,
-   "z": -2976.113184400217
-  },
-  "along": [
-   {
-    "x": -4049.015720094539,
-    "z": -3040.496159164937
-   },
-   {
-    "x": -3994.0672875256137,
-    "z": -2911.730209635497
-   }
-  ],
-  "steepest": 1.4749966224379598,
-  "steepWay": "Rue Henri Farman",
-  "over": 12,
-  "detour": 2.3,
-  "thumb": "thumbs/P118.jpg",
-  "ll": {
-   "lat": 48.83376512039184,
-   "lon": 2.27708828315524
-  }
- },
- {
-  "id": "B068",
-  "kind": "bridge end",
-  "name": "Pont de la Tournelle",
-  "at": {
-   "x": 1687.49,
-   "z": -1151.28
-  },
-  "along": [
-   {
-    "x": 1707.49,
-    "z": -1117.17
-   },
-   {
-    "x": 1652.0837289221,
-    "z": -1211.6653953233583
-   }
-  ],
-  "steepest": 0.8623475792256396,
+  "steepest": 1.0418501921765755,
   "steepWay": "footway (foot)",
-  "over": 8,
-  "detour": 3.3,
-  "thumb": "thumbs/B068.jpg",
-  "ll": {
-   "lat": 48.85015787579699,
-   "lon": 2.355041655288295
-  }
- },
- {
-  "id": "P128",
-  "kind": "périphérique",
-  "name": "Avenue Courteline",
-  "at": {
-   "x": 5992.118369516302,
-   "z": -1844.455715926196
-  },
-  "along": [
-   {
-    "x": 5922.657484692901,
-    "z": -1835.7847598341475
-   },
-   {
-    "x": 6061.579254339703,
-    "z": -1853.1266720182446
-   }
-  ],
-  "steepest": 1.1406064161167893,
-  "steepWay": "Boulevard Périphérique Intérieur",
   "over": 23,
-  "detour": 1,
-  "thumb": "thumbs/P128.jpg",
+  "detour": 1.2,
+  "thumb": "thumbs/B048.jpg",
   "ll": {
-   "lat": 48.84393097239502,
-   "lon": 2.413818752061971
+   "lat": 48.843152274222255,
+   "lon": 2.370253334216126
   }
  },
  {
@@ -1753,9 +1137,9 @@
     "z": -3518.191295935186
    }
   ],
-  "steepest": 0.7155834565577623,
+  "steepest": 0.8406013868065183,
   "steepWay": "Quai de Bercy",
-  "over": 9,
+  "over": 7,
   "detour": 3.3,
   "thumb": "thumbs/B020.jpg",
   "ll": {
@@ -1764,7 +1148,35 @@
   }
  },
  {
-  "id": "B051",
+  "id": "P128",
+  "kind": "périphérique",
+  "name": "Avenue Courteline",
+  "at": {
+   "x": 5992.118369516302,
+   "z": -1844.455715926196
+  },
+  "along": [
+   {
+    "x": 5922.657484692901,
+    "z": -1835.7847598341475
+   },
+   {
+    "x": 6061.579254339703,
+    "z": -1853.1266720182446
+   }
+  ],
+  "steepest": 1.13360883074184,
+  "steepWay": "Boulevard Périphérique Intérieur",
+  "over": 22,
+  "detour": 1,
+  "thumb": "thumbs/P128.jpg",
+  "ll": {
+   "lat": 48.84393097239502,
+   "lon": 2.413818752061971
+  }
+ },
+ {
+  "id": "B052",
   "kind": "bridge end",
   "name": "Pont d'Iéna",
   "at": {
@@ -1781,11 +1193,11 @@
     "z": -173.41519939327227
    }
   ],
-  "steepest": 0.6786550027329604,
+  "steepest": 0.6907259415167482,
   "steepWay": "footway (foot)",
-  "over": 10,
+  "over": 9,
   "detour": 3.2,
-  "thumb": "thumbs/B051.jpg",
+  "thumb": "thumbs/B052.jpg",
   "ll": {
    "lat": 48.85937881269389,
    "lon": 2.2929197556129934
@@ -1794,225 +1206,113 @@
  {
   "id": "B036",
   "kind": "bridge end",
-  "name": "Pont de Bercy",
+  "name": "Pont de Tolbiac",
   "at": {
-   "x": 3209.51,
-   "z": -2455.27
+   "x": 3510.02,
+   "z": -3137.56
   },
   "along": [
    {
-    "x": 3176.34,
-    "z": -2483.12
+    "x": 3543.33,
+    "z": -3110.18
    },
    {
-    "x": 3263.119527623674,
-    "z": -2410.258684223114
+    "x": 3455.943668333005,
+    "z": -3182.0094134206643
    }
   ],
-  "steepest": 1.0545399505652149,
+  "steepest": 1.1799275207134383,
   "steepWay": "footway (foot)",
-  "over": 23,
-  "detour": 1,
+  "over": 4,
+  "detour": 3.2,
   "thumb": "thumbs/B036.jpg",
   "ll": {
-   "lat": 48.8384439343236,
-   "lon": 2.3758239178094898
+   "lat": 48.83231481897158,
+   "lon": 2.3799272000989764
   }
  },
  {
-  "id": "B016",
+  "id": "B018",
   "kind": "bridge end",
-  "name": "Pont d'Issy",
+  "name": "Boulevard Périphérique Extérieur",
   "at": {
-   "x": -5225.86,
-   "z": -3420.32
+   "x": 4270.38,
+   "z": -3740.81
   },
   "along": [
    {
-    "x": -5259.47,
-    "z": -3398.92
+    "x": 4234.38,
+    "z": -3759.33
    },
    {
-    "x": -5166.813101890197,
-    "z": -3457.9160612778865
+    "x": 4332.626127200143,
+    "z": -3708.7878256737044
    }
   ],
-  "steepest": 0.535333199907734,
-  "steepWay": "Quai de la Bataille de Stalingrad",
-  "over": 10,
+  "steepest": 1.118004635936494,
+  "steepWay": "primary_link",
+  "over": 3,
   "detour": 3.3,
-  "thumb": "thumbs/B016.jpg",
+  "thumb": "thumbs/B018.jpg",
   "ll": {
-   "lat": 48.8297747426742,
-   "lon": 2.2606440425099463
+   "lat": 48.826895732020134,
+   "lon": 2.39030945600272
   }
  },
  {
-  "id": "P148",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte du Pré Saint-Gervais",
-  "at": {
-   "x": 5141.179951656881,
-   "z": 2344.7621940081294
-  },
-  "along": [
-   {
-    "x": 5104.54779578195,
-    "z": 2285.1125070353146
-   },
-   {
-    "x": 5177.812107531811,
-    "z": 2404.4118809809443
-   }
-  ],
-  "steepest": 1.1285024739849618,
-  "steepWay": "Avenue de la Porte du Pré Saint-Gervais",
-  "over": 9,
-  "detour": 2.8,
-  "thumb": "thumbs/P148.jpg",
-  "ll": {
-   "lat": 48.881563357165035,
-   "lon": 2.4021997026478212
-  }
- },
- {
-  "id": "B025",
+  "id": "B063",
   "kind": "bridge end",
-  "name": "Boulevard Périphérique Intérieur",
+  "name": "Pont Neuf",
   "at": {
-   "x": 4020.43,
-   "z": -3850.67
+   "x": 766.37,
+   "z": -224.58
   },
   "along": [
    {
-    "x": 4054.86,
-    "z": -3831.34
+    "x": 748.3,
+    "z": -258.31
    },
    {
-    "x": 3959.391798856701,
-    "z": -3884.938615396455
+    "x": 799.4260065187743,
+    "z": -162.87667405211656
    }
   ],
-  "steepest": 0.7726610511192734,
-  "steepWay": "Rue Jean-Baptiste Berlier",
+  "steepest": 0.46124067336384117,
+  "steepWay": "footway (foot)",
   "over": 7,
-  "detour": 3.3,
-  "thumb": "thumbs/B025.jpg",
+  "detour": 3.5,
+  "thumb": "thumbs/B063.jpg",
   "ll": {
-   "lat": 48.825908842848996,
-   "lon": 2.3868965399325153
+   "lat": 48.85848256353493,
+   "lon": 2.3424643188186542
   }
  },
  {
-  "id": "B056",
+  "id": "B035",
   "kind": "bridge end",
-  "name": "Pont Royal",
+  "name": "Pont de Tolbiac",
   "at": {
-   "x": -174.6,
-   "z": -103.47
+   "x": 3669.43,
+   "z": -3004.28
   },
   "along": [
    {
-    "x": -163.87,
-    "z": -65.04
+    "x": 3638.4,
+    "z": -3030.2
    },
    {
-    "x": -193.424633532757,
-    "z": -170.89131096587636
+    "x": 3723.152945328379,
+    "z": -2959.4041139893147
    }
   ],
-  "steepest": 0.5687639573537926,
+  "steepest": 1.6571668362232197,
   "steepWay": "footway (foot)",
-  "over": 9,
-  "detour": 3.3,
-  "thumb": "thumbs/B056.jpg",
-  "ll": {
-   "lat": 48.85957051317553,
-   "lon": 2.32961594260509
-  }
- },
- {
-  "id": "B055",
-  "kind": "bridge end",
-  "name": "Pont Royal",
-  "at": {
-   "x": -131.44,
-   "z": 21.54
-  },
-  "along": [
-   {
-    "x": -140.59,
-    "z": -17.53
-   },
-   {
-    "x": -115.47823464729255,
-    "z": 89.69586582844582
-   }
-  ],
-  "steepest": 1.8501237797821488,
-  "steepWay": "footway (foot)",
-  "over": 14,
-  "detour": 1.4,
-  "thumb": "thumbs/B055.jpg",
-  "ll": {
-   "lat": 48.8606934971122,
-   "lon": 2.3302052663001893
-  }
- },
- {
-  "id": "P152",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte des Ternes (bridge)",
-  "at": {
-   "x": -3636.8502432063083,
-   "z": 2324.9892481284846
-  },
-  "along": [
-   {
-    "x": -3703.4106225791447,
-    "z": 2346.662178196754
-   },
-   {
-    "x": -3570.289863833472,
-    "z": 2303.316318060215
-   }
-  ],
-  "steepest": 1.121871997059369,
-  "steepWay": "footway (foot) (bridge)",
-  "over": 21,
+  "over": 15,
   "detour": 1,
-  "thumb": "thumbs/P152.jpg",
+  "thumb": "thumbs/B035.jpg",
   "ll": {
-   "lat": 48.881385733770074,
-   "lon": 2.2823410096420647
-  }
- },
- {
-  "id": "B048",
-  "kind": "bridge end",
-  "name": "Voie Mazas",
-  "at": {
-   "x": 2448.57,
-   "z": -1538.09
-  },
-  "along": [
-   {
-    "x": 2435.84,
-    "z": -1508.64
-   },
-   {
-    "x": 2476.344341436385,
-    "z": -1602.344073472233
-   }
-  ],
-  "steepest": 1.970000000000045,
-  "steepWay": "footway (foot)",
-  "over": 12,
-  "detour": 1,
-  "thumb": "thumbs/B048.jpg",
-  "ll": {
-   "lat": 48.84668310244649,
-   "lon": 2.3654337423565535
+   "lat": 48.83351209358226,
+   "lon": 2.382103847231408
   }
  },
  {
@@ -2044,143 +1344,59 @@
   }
  },
  {
-  "id": "B026",
+  "id": "B046",
+  "kind": "bridge end",
+  "name": "Pont de Sully",
+  "at": {
+   "x": 1828.77,
+   "z": -1227.31
+  },
+  "along": [
+   {
+    "x": 1864.48,
+    "z": -1210.8
+   },
+   {
+    "x": 1765.2321250317543,
+    "z": -1256.685813937993
+   }
+  ],
+  "steepest": 1.2332332647365072,
+  "steepWay": "footway (foot)",
+  "over": 19,
+  "detour": 1.2,
+  "thumb": "thumbs/B046.jpg",
+  "ll": {
+   "lat": 48.84947488668647,
+   "lon": 2.3569707482364786
+  }
+ },
+ {
+  "id": "B023",
   "kind": "bridge end",
   "name": "bridge",
   "at": {
-   "x": 5062.91,
-   "z": -4464.88
+   "x": 4165.78,
+   "z": -3634.26
   },
   "along": [
    {
-    "x": 5026.03,
-    "z": -4477.24
+    "x": 4203.8,
+    "z": -3641.34
    },
    {
-    "x": 5129.281749718239,
-    "z": -4442.636105571653
+    "x": 4096.963016896758,
+    "z": -3621.445054172253
    }
   ],
-  "steepest": 0.25104617470909313,
-  "steepWay": "Chemin de l'Ancienne Écluse",
-  "over": 5,
-  "detour": 3.9,
-  "thumb": "thumbs/B026.jpg",
+  "steepest": 0.3254151691799608,
+  "steepWay": "primary_link",
+  "over": 8,
+  "detour": 3.5,
+  "thumb": "thumbs/B023.jpg",
   "ll": {
-   "lat": 48.820391300542404,
-   "lon": 2.4011309737987556
-  }
- },
- {
-  "id": "B039",
-  "kind": "bridge end",
-  "name": "Pont Mirabeau",
-  "at": {
-   "x": -4205.96,
-   "z": -1493.93
-  },
-  "along": [
-   {
-    "x": -4173.36,
-    "z": -1514.67
-   },
-   {
-    "x": -4265.020779638576,
-    "z": -1456.3557493955816
-   }
-  ],
-  "steepest": 0.6265260075526047,
-  "steepWay": "footway (foot)",
-  "over": 7,
-  "detour": 3.3,
-  "thumb": "thumbs/B039.jpg",
-  "ll": {
-   "lat": 48.84707979847595,
-   "lon": 2.2745701601334773
-  }
- },
- {
-  "id": "P098",
-  "kind": "périphérique",
-  "name": "Rue Julia Bartet",
-  "at": {
-   "x": -2178.222945322418,
-   "z": -3917.533067460491
-  },
-  "along": [
-   {
-    "x": -2161.955210206299,
-    "z": -3849.4495834559852
-   },
-   {
-    "x": -2194.4906804385373,
-    "z": -3985.616551464997
-   }
-  ],
-  "steepest": 0.6013298951674709,
-  "steepWay": "footway (foot)",
-  "over": 12,
-  "detour": 2.8,
-  "thumb": "thumbs/P098.jpg",
-  "ll": {
-   "lat": 48.82530820169457,
-   "lon": 2.3022576831583152
-  }
- },
- {
-  "id": "B030",
-  "kind": "bridge end",
-  "name": "Boulevard Périphérique Extérieur",
-  "at": {
-   "x": -4450.98,
-   "z": -2811.59
-  },
-  "along": [
-   {
-    "x": -4488.96,
-    "z": -2810.84
-   },
-   {
-    "x": -4380.993644375318,
-    "z": -2812.972037038402
-   }
-  ],
-  "steepest": 0.6931330022008185,
-  "steepWay": "trunk_link",
-  "over": 6,
-  "detour": 3.3,
-  "thumb": "thumbs/B030.jpg",
-  "ll": {
-   "lat": 48.835243057303224,
-   "lon": 2.271224560231411
-  }
- },
- {
-  "id": "B022",
-  "kind": "bridge end",
-  "name": "bridge",
-  "at": {
-   "x": 4296.5,
-   "z": -3532.29
-  },
-  "along": [
-   {
-    "x": 4292.63,
-    "z": -3568.81
-   },
-   {
-    "x": 4303.876551368015,
-    "z": -3462.679752981942
-   }
-  ],
-  "steepest": 0.3915933532386211,
-  "steepWay": "secondary_link",
-  "over": 5,
-  "detour": 3.7,
-  "thumb": "thumbs/B022.jpg",
-  "ll": {
-   "lat": 48.82876889905057,
-   "lon": 2.390666108804295
+   "lat": 48.82785288695536,
+   "lon": 2.3888812062689992
   }
  },
  {
@@ -2212,115 +1428,199 @@
   }
  },
  {
-  "id": "P159",
-  "kind": "périphérique",
-  "name": "primary (tunnel)",
-  "at": {
-   "x": 4648.682818683865,
-   "z": 3522.7407774001713
-  },
-  "along": [
-   {
-    "x": 4692.228946138033,
-    "z": 3467.9344384990427
-   },
-   {
-    "x": 4605.136691229696,
-    "z": 3577.5471163013
-   }
-  ],
-  "steepest": 0.7918277664500561,
-  "steepWay": "Boulevard Sérurier",
-  "over": 5,
-  "detour": 3.2,
-  "thumb": "thumbs/P159.jpg",
-  "ll": {
-   "lat": 48.892145318823296,
-   "lon": 2.3954749521791143
-  }
- },
- {
-  "id": "B086",
+  "id": "B075",
   "kind": "bridge end",
-  "name": "Pont de Levallois",
+  "name": "Pont des Invalides",
   "at": {
-   "x": -3915.54,
-   "z": 4307.4
+   "x": -1579.71,
+   "z": 267.87
   },
   "along": [
    {
-    "x": -3938.36,
-    "z": 4339.28
+    "x": -1580.94,
+    "z": 306.44
    },
    {
-    "x": -3874.795923030274,
-    "z": 4250.4797031641165
+    "x": -1577.4788293356578,
+    "z": 197.90556705391964
    }
   ],
-  "steepest": 0.47165225033718583,
-  "steepWay": "unclassified",
-  "over": 7,
-  "detour": 3.3,
-  "thumb": "thumbs/B086.jpg",
-  "ll": {
-   "lat": 48.899194032548166,
-   "lon": 2.2785356695758012
-  }
- },
- {
-  "id": "B078",
-  "kind": "bridge end",
-  "name": "Pont de la Concorde",
-  "at": {
-   "x": -874.82,
-   "z": 389.87
-  },
-  "along": [
-   {
-    "x": -890.73,
-    "z": 357.1
-   },
-   {
-    "x": -844.247384485811,
-    "z": 452.84074861093495
-   }
-  ],
-  "steepest": 1.4710507978602592,
+  "steepest": 0.6623558584063737,
   "steepWay": "footway (foot)",
-  "over": 15,
-  "detour": 1.2,
-  "thumb": "thumbs/B078.jpg",
+  "over": 6,
+  "detour": 3.3,
+  "thumb": "thumbs/B075.jpg",
   "ll": {
-   "lat": 48.8640022617982,
-   "lon": 2.32005486202626
+   "lat": 48.86290631715157,
+   "lon": 2.310430015422033
   }
  },
  {
-  "id": "B069",
-  "kind": "bridge end",
-  "name": "Pont de Suresnes",
+  "id": "P098",
+  "kind": "périphérique",
+  "name": "Rue Julia Bartet",
   "at": {
-   "x": -7404.16,
-   "z": 668.41
+   "x": -2178.222945322418,
+   "z": -3917.533067460491
   },
   "along": [
    {
-    "x": -7440.91,
-    "z": 683.08
+    "x": -2161.955210206299,
+    "z": -3849.4495834559852
    },
    {
-    "x": -7339.1483474865545,
-    "z": 642.4584097313673
+    "x": -2194.4906804385373,
+    "z": -3985.616551464997
    }
   ],
-  "steepest": 0.44628056009352557,
-  "steepWay": "path (foot)",
+  "steepest": 0.6141241482561379,
+  "steepWay": "footway (foot)",
+  "over": 11,
+  "detour": 2.8,
+  "thumb": "thumbs/P098.jpg",
+  "ll": {
+   "lat": 48.82530820169457,
+   "lon": 2.3022576831583152
+  }
+ },
+ {
+  "id": "B060",
+  "kind": "bridge end",
+  "name": "Pont de l'Archevêché",
+  "at": {
+   "x": 1418.12,
+   "z": -1032.09
+  },
+  "along": [
+   {
+    "x": 1432.71,
+    "z": -996.88
+   },
+   {
+    "x": 1391.3234743644284,
+    "z": -1096.7579689944114
+   }
+  ],
+  "steepest": 0.4933226475203415,
+  "steepWay": "Port de la Tournelle (foot)",
   "over": 7,
   "detour": 3.3,
-  "thumb": "thumbs/B069.jpg",
+  "thumb": "thumbs/B060.jpg",
   "ll": {
-   "lat": 48.866504429190584,
-   "lon": 2.2309006735332453
+   "lat": 48.851228577784134,
+   "lon": 2.3513635708640863
+  }
+ },
+ {
+  "id": "P110",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Charenton",
+  "at": {
+   "x": 5067.913126710674,
+   "z": -3448.4527019803572
+  },
+  "along": [
+   {
+    "x": 5022.154129649689,
+    "z": -3395.4799336179926
+   },
+   {
+    "x": 5113.672123771659,
+    "z": -3501.425470342722
+   }
+  ],
+  "steepest": 0.6759130994430629,
+  "steepWay": "Voie AI/12",
+  "over": 10,
+  "detour": 2.8,
+  "thumb": "thumbs/P110.jpg",
+  "ll": {
+   "lat": 48.82952202231248,
+   "lon": 2.401199288467898
+  }
+ },
+ {
+  "id": "B039",
+  "kind": "bridge end",
+  "name": "Pont Mirabeau",
+  "at": {
+   "x": -4205.96,
+   "z": -1493.93
+  },
+  "along": [
+   {
+    "x": -4173.36,
+    "z": -1514.67
+   },
+   {
+    "x": -4265.020779638576,
+    "z": -1456.3557493955816
+   }
+  ],
+  "steepest": 0.6085599225970186,
+  "steepWay": "footway (foot)",
+  "over": 5,
+  "detour": 3.3,
+  "thumb": "thumbs/B039.jpg",
+  "ll": {
+   "lat": 48.84707979847595,
+   "lon": 2.2745701601334773
+  }
+ },
+ {
+  "id": "B037",
+  "kind": "bridge end",
+  "name": "Pont de Saint-Cloud",
+  "at": {
+   "x": -7856.92,
+   "z": -2141.02
+  },
+  "along": [
+   {
+    "x": -7894.92,
+    "z": -2137.16
+   },
+   {
+    "x": -7787.278368947583,
+    "z": -2148.094123575325
+   }
+  ],
+  "steepest": 0.5756833406292886,
+  "steepWay": "footway (foot)",
+  "over": 4,
+  "detour": 3.4,
+  "thumb": "thumbs/B037.jpg",
+  "ll": {
+   "lat": 48.841266890103945,
+   "lon": 2.2247185095806716
+  }
+ },
+ {
+  "id": "B026",
+  "kind": "bridge end",
+  "name": "bridge",
+  "at": {
+   "x": 5062.91,
+   "z": -4464.88
+  },
+  "along": [
+   {
+    "x": 5026.03,
+    "z": -4477.24
+   },
+   {
+    "x": 5129.281749718239,
+    "z": -4442.636105571653
+   }
+  ],
+  "steepest": 0.27381662960947756,
+  "steepWay": "secondary_link (bridge)",
+  "over": 2,
+  "detour": 3.9,
+  "thumb": "thumbs/B026.jpg",
+  "ll": {
+   "lat": 48.820391300542404,
+   "lon": 2.4011309737987556
   }
  },
  {
@@ -2341,70 +1641,14 @@
     "z": -753.3381425527089
    }
   ],
-  "steepest": 0.7570753417318604,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 8,
+  "steepest": 0.832156319661725,
+  "steepWay": "footway (foot)",
+  "over": 7,
   "detour": 2.8,
   "thumb": "thumbs/P133.jpg",
   "ll": {
    "lat": 48.853506758806006,
    "lon": 2.414058690455502
-  }
- },
- {
-  "id": "B000",
-  "kind": "bridge end",
-  "name": "Pont Nelson Mandela",
-  "at": {
-   "x": 4934.96,
-   "z": -4614.68
-  },
-  "along": [
-   {
-    "x": 4958.88,
-    "z": -4578.57
-   },
-   {
-    "x": 4896.302710721258,
-    "z": -4673.037638622717
-   }
-  ],
-  "steepest": 0.6090862147208606,
-  "steepWay": "Quai Jean Compagnon",
-  "over": 5,
-  "detour": 3.2,
-  "thumb": "thumbs/B000.jpg",
-  "ll": {
-   "lat": 48.8190456242468,
-   "lon": 2.3993838939380527
-  }
- },
- {
-  "id": "B006",
-  "kind": "bridge end",
-  "name": "Pont d'Ivry",
-  "at": {
-   "x": 5654.66,
-   "z": -5115.23
-  },
-  "along": [
-   {
-    "x": 5691.75,
-    "z": -5115.08
-   },
-   {
-    "x": 5584.660572442102,
-    "z": -5115.5130928588205
-   }
-  ],
-  "steepest": 0.47872916924673564,
-  "steepWay": "Quai Auguste Deshaies",
-  "over": 5,
-  "detour": 3.3,
-  "thumb": "thumbs/B006.jpg",
-  "ll": {
-   "lat": 48.814549107092134,
-   "lon": 2.4092109621345967
   }
  },
  {
@@ -2425,9 +1669,9 @@
     "z": 1945.6830308552783
    }
   ],
-  "steepest": 0.477881758903393,
-  "steepWay": "footway (foot)",
-  "over": 23,
+  "steepest": 0.4949381365991728,
+  "steepWay": "service",
+  "over": 22,
   "detour": 1,
   "thumb": "thumbs/P143.jpg",
   "ll": {
@@ -2436,199 +1680,87 @@
   }
  },
  {
-  "id": "P104",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte de Châtillon (bridge)",
+  "id": "B022",
+  "kind": "bridge end",
+  "name": "bridge",
   "at": {
-   "x": -1277.7206473409408,
-   "z": -4221.82729014577
+   "x": 4296.5,
+   "z": -3532.29
   },
   "along": [
    {
-    "x": -1222.0313294474,
-    "z": -4179.416208191261
+    "x": 4292.63,
+    "z": -3568.81
    },
    {
-    "x": -1333.4099652344817,
-    "z": -4264.23837210028
+    "x": 4303.876551368015,
+    "z": -3462.679752981942
    }
   ],
-  "steepest": 0.37055322019020026,
+  "steepest": 0.17288380819045499,
+  "steepWay": "trunk_link",
+  "over": 3,
+  "detour": 3.7,
+  "thumb": "thumbs/B022.jpg",
+  "ll": {
+   "lat": 48.82876889905057,
+   "lon": 2.390666108804295
+  }
+ },
+ {
+  "id": "B034",
+  "kind": "bridge end",
+  "name": "Pont de Bercy",
+  "at": {
+   "x": 3209.51,
+   "z": -2455.27
+  },
+  "along": [
+   {
+    "x": 3176.34,
+    "z": -2483.12
+   },
+   {
+    "x": 3263.119527623674,
+    "z": -2410.258684223114
+   }
+  ],
+  "steepest": 0.9456940740942579,
   "steepWay": "footway (foot)",
+  "over": 17,
+  "detour": 1,
+  "thumb": "thumbs/B034.jpg",
+  "ll": {
+   "lat": 48.8384439343236,
+   "lon": 2.3758239178094898
+  }
+ },
+ {
+  "id": "P180",
+  "kind": "périphérique",
+  "name": "footway",
+  "at": {
+   "x": 5579.696624735032,
+   "z": 2038.23908016819
+  },
+  "along": [
+   {
+    "x": 5643.11761287207,
+    "z": 2067.8664030935183
+   },
+   {
+    "x": 5516.275636597994,
+    "z": 2008.6117572428616
+   }
+  ],
+  "steepest": 0.299140232222636,
+  "steepWay": "Boulevard Périphérique Intérieur",
   "over": 11,
-  "detour": 2.8,
-  "thumb": "thumbs/P104.jpg",
+  "detour": 2.7,
+  "thumb": "thumbs/P180.jpg",
   "ll": {
-   "lat": 48.82257468018349,
-   "lon": 2.3145534973773074
-  }
- },
- {
-  "id": "B042",
-  "kind": "bridge end",
-  "name": "Pont de Grenelle - Cadets de Saumur",
-  "at": {
-   "x": -3881.78,
-   "z": -1061.4
-  },
-  "along": [
-   {
-    "x": -3853.3,
-    "z": -1088.68
-   },
-   {
-    "x": -3932.3309952418977,
-    "z": -1012.9789624227893
-   }
-  ],
-  "steepest": 0.7535128733448757,
-  "steepWay": "Voie Georges Pompidou",
-  "over": 2,
-  "detour": 3.3,
-  "thumb": "thumbs/B042.jpg",
-  "ll": {
-   "lat": 48.85096528157436,
-   "lon": 2.2789966419563976
-  }
- },
- {
-  "id": "P096",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte d'Ivry (bridge)",
-  "at": {
-   "x": 3022.8660618150197,
-   "z": -4559.736833143098
-  },
-  "along": [
-   {
-    "x": 3078.501367624939,
-    "z": -4602.218743969199
-   },
-   {
-    "x": 2967.2307560051004,
-    "z": -4517.254922316997
-   }
-  ],
-  "steepest": 0.6255897147850066,
-  "steepWay": "footway (foot) (bridge)",
-  "over": 21,
-  "detour": 1.3,
-  "thumb": "thumbs/P096.jpg",
-  "ll": {
-   "lat": 48.81953918711225,
-   "lon": 2.3732754077233214
-  }
- },
- {
-  "id": "B074",
-  "kind": "bridge end",
-  "name": "Pont Alexandre III",
-  "at": {
-   "x": -1345.77,
-   "z": 424.26
-  },
-  "along": [
-   {
-    "x": -1348.8,
-    "z": 386.01
-   },
-   {
-    "x": -1340.2422185967612,
-    "z": 494.04139890227196
-   }
-  ],
-  "steepest": 0.3007153605097408,
-  "steepWay": "footway (foot)",
-  "over": 6,
-  "detour": 3.3,
-  "thumb": "thumbs/B074.jpg",
-  "ll": {
-   "lat": 48.86431119242441,
-   "lon": 2.3136243246257284
-  }
- },
- {
-  "id": "P144",
-  "kind": "périphérique",
-  "name": "Rue du Général Anselin",
-  "at": {
-   "x": -3989.0010398479885,
-   "z": 1719.762012594204
-  },
-  "along": [
-   {
-    "x": -4020.676731225928,
-    "z": 1782.1851699617189
-   },
-   {
-    "x": -3957.325348470049,
-    "z": 1657.338855226689
-   }
-  ],
-  "steepest": 1.034399526813648,
-  "steepWay": "primary_link",
-  "over": 16,
-  "detour": 1,
-  "thumb": "thumbs/P144.jpg",
-  "ll": {
-   "lat": 48.87594888500962,
-   "lon": 2.277532603508863
-  }
- },
- {
-  "id": "B084",
-  "kind": "bridge end",
-  "name": "Pont du Maréchal-Juin",
-  "at": {
-   "x": -4724.51,
-   "z": 3708.17
-  },
-  "along": [
-   {
-    "x": -4746.17,
-    "z": 3739.25
-   },
-   {
-    "x": -4684.486774919755,
-    "z": 3650.7405523779307
-   }
-  ],
-  "steepest": 0.6322845750008241,
-  "steepWay": "footway (foot)",
-  "over": 20,
-  "detour": 1,
-  "thumb": "thumbs/B084.jpg",
-  "ll": {
-   "lat": 48.89381105787113,
-   "lon": 2.2674896735233374
-  }
- },
- {
-  "id": "B082",
-  "kind": "bridge end",
-  "name": "Pont de Neuilly",
-  "at": {
-   "x": -5563.78,
-   "z": 2843.85
-  },
-  "along": [
-   {
-    "x": -5599.17,
-    "z": 2861.15
-   },
-   {
-    "x": -5500.891848264405,
-    "z": 2813.1078404909354
-   }
-  ],
-  "steepest": 1.1017891921349066,
-  "steepWay": "primary",
-  "over": 15,
-  "detour": 1,
-  "thumb": "thumbs/B082.jpg",
-  "ll": {
-   "lat": 48.88604673920744,
-   "lon": 2.25602994929753
+   "lat": 48.87880981318405,
+   "lon": 2.408187382586213
   }
  },
  {
@@ -2660,91 +1792,35 @@
   }
  },
  {
-  "id": "P180",
-  "kind": "périphérique",
-  "name": "footway",
-  "at": {
-   "x": 5579.696624735032,
-   "z": 2038.23908016819
-  },
-  "along": [
-   {
-    "x": 5643.11761287207,
-    "z": 2067.8664030935183
-   },
-   {
-    "x": 5516.275636597994,
-    "z": 2008.6117572428616
-   }
-  ],
-  "steepest": 0.2647258692235728,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 11,
-  "detour": 2.7,
-  "thumb": "thumbs/P180.jpg",
-  "ll": {
-   "lat": 48.87880981318405,
-   "lon": 2.408187382586213
-  }
- },
- {
-  "id": "B003",
+  "id": "B071",
   "kind": "bridge end",
-  "name": "Pont Nelson Mandela",
+  "name": "Pont de l'Alma",
   "at": {
-   "x": 4843.06,
-   "z": -4544.37
+   "x": -2203.72,
+   "z": 259.22
   },
   "along": [
    {
-    "x": 4862.27,
-    "z": -4506.17
+    "x": -2206.24,
+    "z": 299.08
    },
    {
-    "x": 4811.611065272834,
-    "z": -4606.907704663078
+    "x": -2199.3033285478596,
+    "z": 189.3594745705141
    }
   ],
-  "steepest": 0.8148248512944213,
-  "steepWay": "footway (foot)",
-  "over": 16,
-  "detour": 1,
-  "thumb": "thumbs/B003.jpg",
+  "steepest": 0.429463505717473,
+  "steepWay": "Promenade Gisèle Halimi (foot)",
+  "over": 3,
+  "detour": 3.3,
+  "thumb": "thumbs/B071.jpg",
   "ll": {
-   "lat": 48.81967722972306,
-   "lon": 2.3981290550228627
+   "lat": 48.8628286128795,
+   "lon": 2.3019095362983353
   }
  },
  {
-  "id": "P145",
-  "kind": "périphérique",
-  "name": "primary",
-  "at": {
-   "x": -3683.935039622632,
-   "z": 2138.954429637833
-  },
-  "along": [
-   {
-    "x": -3619.539133379363,
-    "z": 2111.5105367086553
-   },
-   {
-    "x": -3748.3309458659005,
-    "z": 2166.398322567011
-   }
-  ],
-  "steepest": 0.7037607129045782,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 15,
-  "detour": 1.7,
-  "thumb": "thumbs/P145.jpg",
-  "ll": {
-   "lat": 48.87971455456179,
-   "lon": 2.2816980952257753
-  }
- },
- {
-  "id": "B060",
+  "id": "B061",
   "kind": "bridge end",
   "name": "Pont Louis-Philippe",
   "at": {
@@ -2761,14 +1837,126 @@
     "z": -640.2156592179371
    }
   ],
-  "steepest": 0.8844215857665607,
+  "steepest": 1.3026231115517608,
   "steepWay": "footway (foot)",
-  "over": 15,
+  "over": 12,
   "detour": 1,
-  "thumb": "thumbs/B060.jpg",
+  "thumb": "thumbs/B061.jpg",
   "ll": {
    "lat": 48.85422005751178,
    "lon": 2.3547946472798533
+  }
+ },
+ {
+  "id": "B079",
+  "kind": "bridge end",
+  "name": "Pont de Puteaux",
+  "at": {
+   "x": -6281.24,
+   "z": 1759.94
+  },
+  "along": [
+   {
+    "x": -6316.66,
+    "z": 1782.86
+   },
+   {
+    "x": -6222.470979320268,
+    "z": 1721.9110346137936
+   }
+  ],
+  "steepest": 0.5825907257480061,
+  "steepWay": "footway (foot)",
+  "over": 2,
+  "detour": 3.2,
+  "thumb": "thumbs/B079.jpg",
+  "ll": {
+   "lat": 48.876309810011335,
+   "lon": 2.246233466946144
+  }
+ },
+ {
+  "id": "P148",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte du Pré Saint-Gervais",
+  "at": {
+   "x": 5141.179951656881,
+   "z": 2344.7621940081294
+  },
+  "along": [
+   {
+    "x": 5104.54779578195,
+    "z": 2285.1125070353146
+   },
+   {
+    "x": 5177.812107531811,
+    "z": 2404.4118809809443
+   }
+  ],
+  "steepest": 0.38102577679331834,
+  "steepWay": "footway (foot)",
+  "over": 8,
+  "detour": 2.8,
+  "thumb": "thumbs/P148.jpg",
+  "ll": {
+   "lat": 48.881563357165035,
+   "lon": 2.4021997026478212
+  }
+ },
+ {
+  "id": "B069",
+  "kind": "bridge end",
+  "name": "Pont de Suresnes",
+  "at": {
+   "x": -7404.16,
+   "z": 668.41
+  },
+  "along": [
+   {
+    "x": -7440.91,
+    "z": 683.08
+   },
+   {
+    "x": -7339.1483474865545,
+    "z": 642.4584097313673
+   }
+  ],
+  "steepest": 0.31239443356333313,
+  "steepWay": "footway (foot)",
+  "over": 3,
+  "detour": 3.3,
+  "thumb": "thumbs/B069.jpg",
+  "ll": {
+   "lat": 48.866504429190584,
+   "lon": 2.2309006735332453
+  }
+ },
+ {
+  "id": "B025",
+  "kind": "bridge end",
+  "name": "Boulevard Périphérique Intérieur",
+  "at": {
+   "x": 4020.43,
+   "z": -3850.67
+  },
+  "along": [
+   {
+    "x": 4054.86,
+    "z": -3831.34
+   },
+   {
+    "x": 3959.391798856701,
+    "z": -3884.938615396455
+   }
+  ],
+  "steepest": 0.29812582359794937,
+  "steepWay": "trunk_link",
+  "over": 3,
+  "detour": 3.3,
+  "thumb": "thumbs/B025.jpg",
+  "ll": {
+   "lat": 48.825908842848996,
+   "lon": 2.3868965399325153
   }
  },
  {
@@ -2800,87 +1988,59 @@
   }
  },
  {
-  "id": "B032",
-  "kind": "bridge end",
-  "name": "Pont du Garigliano",
-  "at": {
-   "x": -4744.06,
-   "z": -2298.71
-  },
-  "along": [
-   {
-    "x": -4711.46,
-    "z": -2321.26
-   },
-   {
-    "x": -4801.62934221315,
-    "z": -2258.8882617513336
-   }
-  ],
-  "steepest": 0.7042276387636478,
-  "steepWay": "Quai Louis Blériot",
-  "over": 16,
-  "detour": 1,
-  "thumb": "thumbs/B032.jpg",
-  "ll": {
-   "lat": 48.83985033673242,
-   "lon": 2.2672227300979624
-  }
- },
- {
-  "id": "P155",
+  "id": "P103",
   "kind": "périphérique",
-  "name": "Boulevard d'Aurelle de Paladines (bridge)",
+  "name": "Rue de la Légion Étrangère (bridge)",
   "at": {
-   "x": -3580.1210908030334,
-   "z": 2412.0318607816453
+   "x": -571.9405001248799,
+   "z": -4458.914993907378
   },
   "along": [
    {
-    "x": -3544.720725823166,
-    "z": 2351.643002874808
+    "x": -543.1539950424003,
+    "z": -4395.107963533474
    },
    {
-    "x": -3615.521455782901,
-    "z": 2472.4207186884823
+    "x": -600.7270052073595,
+    "z": -4522.722024281282
    }
   ],
-  "steepest": 0.8711307413862835,
-  "steepWay": "Boulevard Périphérique Extérieur",
-  "over": 14,
+  "steepest": 0.2901269583225073,
+  "steepWay": "primary",
+  "over": 20,
   "detour": 1,
-  "thumb": "thumbs/P155.jpg",
+  "thumb": "thumbs/P103.jpg",
   "ll": {
-   "lat": 48.88216765086324,
-   "lon": 2.2831156119060623
+   "lat": 48.82044488510383,
+   "lon": 2.3241904984033726
   }
  },
  {
-  "id": "B057",
-  "kind": "bridge end",
-  "name": "Pont d'Arcole",
+  "id": "P145",
+  "kind": "périphérique",
+  "name": "primary",
   "at": {
-   "x": 1374.99,
-   "z": -510.72
+   "x": -3683.935039622632,
+   "z": 2138.954429637833
   },
   "along": [
    {
-    "x": 1364.03,
-    "z": -549.7
+    "x": -3619.539133379363,
+    "z": 2111.5105367086553
    },
    {
-    "x": 1393.9371839749454,
-    "z": -443.3330263372841
+    "x": -3748.3309458659005,
+    "z": 2166.398322567011
    }
   ],
-  "steepest": 1.401408347858854,
-  "steepWay": "footway (foot)",
-  "over": 8,
-  "detour": 1,
-  "thumb": "thumbs/B057.jpg",
+  "steepest": 0.6837958699852995,
+  "steepWay": "Boulevard Périphérique Intérieur",
+  "over": 14,
+  "detour": 1.7,
+  "thumb": "thumbs/P145.jpg",
   "ll": {
-   "lat": 48.855912124180946,
-   "lon": 2.350774656800842
+   "lat": 48.87971455456179,
+   "lon": 2.2816980952257753
   }
  },
  {
@@ -2901,9 +2061,9 @@
     "z": 3328.0503547235267
    }
   ],
-  "steepest": 0.2781021625134524,
-  "steepWay": "Boulevard Périphérique Extérieur",
-  "over": 9,
+  "steepest": 0.26147953866073115,
+  "steepWay": "footway (foot)",
+  "over": 10,
   "detour": 2.5,
   "thumb": "thumbs/P184.jpg",
   "ll": {
@@ -2912,59 +2072,115 @@
   }
  },
  {
-  "id": "P110",
+  "id": "P140",
   "kind": "périphérique",
-  "name": "Avenue de la Porte de Charenton",
+  "name": "primary",
   "at": {
-   "x": 5067.913126710674,
-   "z": -3448.4527019803572
+   "x": -3836.5624803331793,
+   "z": 1868.2278929507945
   },
   "along": [
    {
-    "x": 5022.154129649689,
-    "z": -3395.4799336179926
+    "x": -3901.755638817615,
+    "z": 1893.720089537657
    },
    {
-    "x": 5113.672123771659,
-    "z": -3501.425470342722
+    "x": -3771.3693218487438,
+    "z": 1842.735696363932
    }
   ],
-  "steepest": 0.2675198665163552,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 6,
-  "detour": 2.8,
-  "thumb": "thumbs/P110.jpg",
+  "steepest": 0.8588304647306364,
+  "steepWay": "trunk_link",
+  "over": 14,
+  "detour": 1.4,
+  "thumb": "thumbs/P140.jpg",
   "ll": {
-   "lat": 48.82952202231248,
-   "lon": 2.401199288467898
+   "lat": 48.877282576704566,
+   "lon": 2.2796140598380767
   }
  },
  {
-  "id": "B080",
+  "id": "B078",
   "kind": "bridge end",
-  "name": "Pont de Puteaux",
+  "name": "Pont de la Concorde",
   "at": {
-   "x": -6539.54,
-   "z": 1967.72
+   "x": -874.82,
+   "z": 389.87
   },
   "along": [
    {
-    "x": -6514.88,
-    "z": 1940.07
+    "x": -890.73,
+    "z": 357.1
    },
    {
-    "x": -6586.1321860606995,
-    "z": 2019.9614413859836
+    "x": -844.247384485811,
+    "z": 452.84074861093495
    }
   ],
-  "steepest": 1.1574338951378913,
+  "steepest": 1.2447313859527742,
   "steepWay": "footway (foot)",
   "over": 10,
-  "detour": 1,
-  "thumb": "thumbs/B080.jpg",
+  "detour": 1.2,
+  "thumb": "thumbs/B078.jpg",
   "ll": {
-   "lat": 48.878176329508676,
-   "lon": 2.242706536676355
+   "lat": 48.8640022617982,
+   "lon": 2.32005486202626
+  }
+ },
+ {
+  "id": "B074",
+  "kind": "bridge end",
+  "name": "Pont Alexandre III",
+  "at": {
+   "x": -1345.77,
+   "z": 424.26
+  },
+  "along": [
+   {
+    "x": -1348.8,
+    "z": 386.01
+   },
+   {
+    "x": -1340.2422185967612,
+    "z": 494.04139890227196
+   }
+  ],
+  "steepest": 0.1928488137896925,
+  "steepWay": "Port des Champs-Élysées",
+  "over": 2,
+  "detour": 3.3,
+  "thumb": "thumbs/B074.jpg",
+  "ll": {
+   "lat": 48.86431119242441,
+   "lon": 2.3136243246257284
+  }
+ },
+ {
+  "id": "B042",
+  "kind": "bridge end",
+  "name": "Pont de Grenelle - Cadets de Saumur",
+  "at": {
+   "x": -3881.78,
+   "z": -1061.4
+  },
+  "along": [
+   {
+    "x": -3853.3,
+    "z": -1088.68
+   },
+   {
+    "x": -3932.3309952418977,
+    "z": -1012.9789624227893
+   }
+  ],
+  "steepest": 0.1898944006013316,
+  "steepWay": "Voie Georges Pompidou",
+  "over": 2,
+  "detour": 3.3,
+  "thumb": "thumbs/B042.jpg",
+  "ll": {
+   "lat": 48.85096528157436,
+   "lon": 2.2789966419563976
   }
  },
  {
@@ -2985,9 +2201,9 @@
     "z": -3637.3034788078203
    }
   ],
-  "steepest": 0.9666558471481518,
+  "steepest": 0.9554482431232459,
   "steepWay": "Boulevard Périphérique Extérieur",
-  "over": 11,
+  "over": 12,
   "detour": 1.3,
   "thumb": "thumbs/P097.jpg",
   "ll": {
@@ -3015,7 +2231,7 @@
   ],
   "steepest": 0.4431852879172091,
   "steepWay": "footway (foot)",
-  "over": 3,
+  "over": 4,
   "detour": 2.8,
   "thumb": "thumbs/P141.jpg",
   "ll": {
@@ -3024,227 +2240,367 @@
   }
  },
  {
-  "id": "B021",
+  "id": "B086",
   "kind": "bridge end",
-  "name": "Pont National",
+  "name": "Pont de Levallois",
   "at": {
-   "x": 3932.89,
-   "z": -3702.98
+   "x": -3915.54,
+   "z": 4307.4
   },
   "along": [
    {
-    "x": 3962.66,
-    "z": -3681.11
+    "x": -3938.36,
+    "z": 4339.28
    },
    {
-    "x": 3876.4766124134053,
-    "z": -3744.4230899065774
+    "x": -3874.795923030274,
+    "z": 4250.4797031641165
    }
   ],
-  "steepest": 1.1242975334937193,
+  "steepest": 0.23508446871958602,
+  "steepWay": "Quai Charles Pasqua",
+  "over": 1,
+  "detour": 3.3,
+  "thumb": "thumbs/B086.jpg",
+  "ll": {
+   "lat": 48.899194032548166,
+   "lon": 2.2785356695758012
+  }
+ },
+ {
+  "id": "B016",
+  "kind": "bridge end",
+  "name": "Pont d'Issy",
+  "at": {
+   "x": -5225.86,
+   "z": -3420.32
+  },
+  "along": [
+   {
+    "x": -5259.47,
+    "z": -3398.92
+   },
+   {
+    "x": -5166.813101890197,
+    "z": -3457.9160612778865
+   }
+  ],
+  "steepest": 0.22686302903648542,
   "steepWay": "footway (foot)",
-  "over": 9,
+  "over": 1,
+  "detour": 3.3,
+  "thumb": "thumbs/B016.jpg",
+  "ll": {
+   "lat": 48.8297747426742,
+   "lon": 2.2606440425099463
+  }
+ },
+ {
+  "id": "P144",
+  "kind": "périphérique",
+  "name": "Rue du Général Anselin",
+  "at": {
+   "x": -3989.0010398479885,
+   "z": 1719.762012594204
+  },
+  "along": [
+   {
+    "x": -4020.676731225928,
+    "z": 1782.1851699617189
+   },
+   {
+    "x": -3957.325348470049,
+    "z": 1657.338855226689
+   }
+  ],
+  "steepest": 0.7044070397319936,
+  "steepWay": "primary_link",
+  "over": 14,
   "detour": 1,
-  "thumb": "thumbs/B021.jpg",
+  "thumb": "thumbs/P144.jpg",
   "ll": {
-   "lat": 48.82723556469211,
-   "lon": 2.385701234180222
+   "lat": 48.87594888500962,
+   "lon": 2.277532603508863
   }
  },
  {
-  "id": "P092",
-  "kind": "périphérique",
-  "name": "Avenue Pierre de Coubertin",
+  "id": "B030",
+  "kind": "bridge end",
+  "name": "Boulevard Périphérique Extérieur",
   "at": {
-   "x": 881.3645454209912,
-   "z": -4898.079532428801
+   "x": -4450.98,
+   "z": -2811.59
   },
   "along": [
    {
-    "x": 884.4999822929685,
-    "z": -4828.1497888598315
+    "x": -4488.96,
+    "z": -2810.84
    },
    {
-    "x": 878.229108549014,
-    "z": -4968.009275997771
+    "x": -4380.993644375318,
+    "z": -2812.972037038402
    }
   ],
-  "steepest": 0.9240213596634449,
-  "steepWay": "Place Mazagran",
-  "over": 11,
-  "detour": 1.1,
-  "thumb": "thumbs/P092.jpg",
+  "steepest": 0.16653421902256105,
+  "steepWay": "trunk_link",
+  "over": 1,
+  "detour": 3.3,
+  "thumb": "thumbs/B030.jpg",
   "ll": {
-   "lat": 48.816499802931865,
-   "lon": 2.3440344997830596
+   "lat": 48.835243057303224,
+   "lon": 2.271224560231411
   }
  },
  {
-  "id": "P140",
-  "kind": "périphérique",
-  "name": "primary",
+  "id": "B047",
+  "kind": "bridge end",
+  "name": "Pont Charles de Gaulle",
   "at": {
-   "x": -3836.5624803331793,
-   "z": 1868.2278929507945
+   "x": 2636.39,
+   "z": -2061.76
   },
   "along": [
    {
-    "x": -3901.755638817615,
-    "z": 1893.720089537657
+    "x": 2667.26,
+    "z": -2037.31
    },
    {
-    "x": -3771.3693218487438,
-    "z": 1842.735696363932
+    "x": 2581.5165256980963,
+    "z": -2105.2214981108373
    }
   ],
-  "steepest": 0.7113844358618154,
-  "steepWay": "Boulevard Périphérique Intérieur",
+  "steepest": 0.2568800186127978,
+  "steepWay": "service",
+  "over": 2,
+  "detour": 3.1,
+  "thumb": "thumbs/B047.jpg",
+  "ll": {
+   "lat": 48.84197889479814,
+   "lon": 2.3679983108554765
+  }
+ },
+ {
+  "id": "B000",
+  "kind": "bridge end",
+  "name": "Pont Nelson Mandela",
+  "at": {
+   "x": 4934.96,
+   "z": -4614.68
+  },
+  "along": [
+   {
+    "x": 4958.88,
+    "z": -4578.57
+   },
+   {
+    "x": 4896.302710721258,
+    "z": -4673.037638622717
+   }
+  ],
+  "steepest": 0.2550000000000094,
+  "steepWay": "primary_link",
+  "over": 1,
+  "detour": 3.2,
+  "thumb": "thumbs/B000.jpg",
+  "ll": {
+   "lat": 48.8190456242468,
+   "lon": 2.3993838939380527
+  }
+ },
+ {
+  "id": "P159",
+  "kind": "périphérique",
+  "name": "primary (tunnel)",
+  "at": {
+   "x": 4648.682818683865,
+   "z": 3522.7407774001713
+  },
+  "along": [
+   {
+    "x": 4692.228946138033,
+    "z": 3467.9344384990427
+   },
+   {
+    "x": 4605.136691229696,
+    "z": 3577.5471163013
+   }
+  ],
+  "steepest": 0.21820027256709854,
+  "steepWay": "trunk_link",
+  "over": 1,
+  "detour": 3.2,
+  "thumb": "thumbs/P159.jpg",
+  "ll": {
+   "lat": 48.892145318823296,
+   "lon": 2.3954749521791143
+  }
+ },
+ {
+  "id": "B056",
+  "kind": "bridge end",
+  "name": "Pont Royal",
+  "at": {
+   "x": -131.44,
+   "z": 21.54
+  },
+  "along": [
+   {
+    "x": -140.59,
+    "z": -17.53
+   },
+   {
+    "x": -115.47823464729255,
+    "z": 89.69586582844582
+   }
+  ],
+  "steepest": 0.6864852633322528,
+  "steepWay": "footway (foot)",
   "over": 13,
   "detour": 1.4,
-  "thumb": "thumbs/P140.jpg",
+  "thumb": "thumbs/B056.jpg",
   "ll": {
-   "lat": 48.877282576704566,
-   "lon": 2.2796140598380767
+   "lat": 48.8606934971122,
+   "lon": 2.3302052663001893
   }
  },
  {
-  "id": "B067",
+  "id": "B059",
   "kind": "bridge end",
-  "name": "Pont de Sully",
+  "name": "Pont Neuf",
   "at": {
-   "x": 2144.5,
-   "z": -1082.89
+   "x": 625.85,
+   "z": -476.12
   },
   "along": [
    {
-    "x": 2109.97,
-    "z": -1098.54
+    "x": 645.12,
+    "z": -444.05
    },
    {
-    "x": 2208.2572324153602,
-    "z": -1053.9933684535079
+    "x": 589.7967849678915,
+    "z": -536.1213806995185
    }
   ],
-  "steepest": 0.8614213610140585,
-  "steepWay": "footway (foot)",
-  "over": 11,
-  "detour": 1,
-  "thumb": "thumbs/B067.jpg",
-  "ll": {
-   "lat": 48.8507722336198,
-   "lon": 2.361281850420298
-  }
- },
- {
-  "id": "B008",
-  "kind": "bridge end",
-  "name": "Pont de Sèvres",
-  "at": {
-   "x": -7900.43,
-   "z": -3665.91
-  },
-  "along": [
-   {
-    "x": -7866.28,
-    "z": -3642
-   },
-   {
-    "x": -7957.772289894383,
-    "z": -3706.0579985761246
-   }
-  ],
-  "steepest": 1.1599466368133495,
-  "steepWay": "Grande Rue",
-  "over": 8,
-  "detour": 1.1,
-  "thumb": "thumbs/B008.jpg",
-  "ll": {
-   "lat": 48.827568570167934,
-   "lon": 2.2241244068472668
-  }
- },
- {
-  "id": "B038",
-  "kind": "bridge end",
-  "name": "Pont de Saint-Cloud",
-  "at": {
-   "x": -8019.8,
-   "z": -2119.13
-  },
-  "along": [
-   {
-    "x": -7980.59,
-    "z": -2127.88
-   },
-   {
-    "x": -8088.11953786136,
-    "z": -2103.8839924435883
-   }
-  ],
-  "steepest": 0.7314649909794234,
-  "steepWay": "Quai Carnot",
+  "steepest": 0.7635662959490895,
+  "steepWay": "Rue Guénégaud",
   "over": 12,
   "detour": 1,
-  "thumb": "thumbs/B038.jpg",
+  "thumb": "thumbs/B059.jpg",
   "ll": {
-   "lat": 48.84146353131964,
-   "lon": 2.2224944816970353
+   "lat": 48.85622294126925,
+   "lon": 2.340545603210792
   }
  },
  {
-  "id": "P138",
-  "kind": "périphérique",
-  "name": "Avenue Ibsen (bridge)",
+  "id": "B083",
+  "kind": "bridge end",
+  "name": "Pont de Courbevoie",
   "at": {
-   "x": 5963.555275972554,
-   "z": 738.8295910973567
+   "x": -4939.82,
+   "z": 4009.64
   },
   "along": [
    {
-    "x": 6001.842551617776,
-    "z": 797.4306535763493
+    "x": -4917.75,
+    "z": 3976.52
    },
    {
-    "x": 5925.268000327333,
-    "z": 680.2285286183641
+    "x": -4978.636836541735,
+    "z": 4067.89163689453
    }
   ],
-  "steepest": 1.027105109790211,
-  "steepWay": "trunk_link",
+  "steepest": 0.11326644581177178,
+  "steepWay": "footway (foot)",
+  "over": 0,
+  "detour": 3.3,
+  "thumb": "thumbs/B083.jpg",
+  "ll": {
+   "lat": 48.896519208958175,
+   "lon": 2.26454974570147
+  }
+ },
+ {
+  "id": "B073",
+  "kind": "bridge end",
+  "name": "Pont Alexandre III",
+  "at": {
+   "x": -1357.56,
+   "z": 275.34
+  },
+  "along": [
+   {
+    "x": -1354.25,
+    "z": 317.15
+   },
+   {
+    "x": -1363.084451167251,
+    "z": 205.55833737076293
+   }
+  ],
+  "steepest": 1.011173343413216,
+  "steepWay": "footway (foot)",
   "over": 9,
   "detour": 1,
-  "thumb": "thumbs/P138.jpg",
+  "thumb": "thumbs/B073.jpg",
   "ll": {
-   "lat": 48.86713701914043,
-   "lon": 2.413428740295737
+   "lat": 48.862973421303295,
+   "lon": 2.313463339306794
   }
  },
  {
-  "id": "P090",
-  "kind": "périphérique",
-  "name": "Passerelle du Cambodge (bridge)",
+  "id": "B006",
+  "kind": "bridge end",
+  "name": "Pont d'Ivry",
   "at": {
-   "x": 356.4071453496679,
-   "z": -4862.1257574321835
+   "x": 5654.66,
+   "z": -5115.23
   },
   "along": [
    {
-    "x": 378.69093533161265,
-    "z": -4795.767391689494
+    "x": 5691.75,
+    "z": -5115.08
    },
    {
-    "x": 334.1233553677232,
-    "z": -4928.484123174873
+    "x": 5584.660572442102,
+    "z": -5115.5130928588205
    }
   ],
-  "steepest": 0.69071358972724,
-  "steepWay": "footway (foot)",
-  "over": 11,
-  "detour": 1.6,
-  "thumb": "thumbs/P090.jpg",
+  "steepest": 0.06954128482507288,
+  "steepWay": "Quai Henri Pourchasse",
+  "over": 0,
+  "detour": 3.3,
+  "thumb": "thumbs/B006.jpg",
   "ll": {
-   "lat": 48.816822781187874,
-   "lon": 2.3368665240003983
+   "lat": 48.814549107092134,
+   "lon": 2.4092109621345967
+  }
+ },
+ {
+  "id": "B049",
+  "kind": "bridge end",
+  "name": "Voie Mazas",
+  "at": {
+   "x": 2448.57,
+   "z": -1538.09
+  },
+  "along": [
+   {
+    "x": 2435.84,
+    "z": -1508.64
+   },
+   {
+    "x": 2476.344341436385,
+    "z": -1602.344073472233
+   }
+  ],
+  "steepest": 0.9387607430251204,
+  "steepWay": "footway (foot)",
+  "over": 9,
+  "detour": 1,
+  "thumb": "thumbs/B049.jpg",
+  "ll": {
+   "lat": 48.84668310244649,
+   "lon": 2.3654337423565535
   }
  },
  {
@@ -3265,8 +2621,8 @@
     "z": -3892.691848590793
    }
   ],
-  "steepest": 0.03459239226561841,
-  "steepWay": "Pont Daydé (bridge)",
+  "steepest": 0.03686221392896011,
+  "steepWay": "Pont Daydé (foot) (bridge)",
   "over": 0,
   "detour": 3.3,
   "thumb": "thumbs/B014.jpg",
@@ -3276,104 +2632,143 @@
   }
  },
  {
-  "id": "B054",
+  "id": "B009",
   "kind": "bridge end",
-  "name": "Pont du Carrousel",
+  "name": "Pont de Sèvres",
   "at": {
-   "x": 92.51,
-   "z": -61.04
+   "x": -7592.79,
+   "z": -3510.76
   },
   "along": [
    {
-    "x": 77.81,
-    "z": -99.49
+    "x": -7627.82,
+    "z": -3527.16
    },
    {
-    "x": 117.50744084322933,
-    "z": 4.344462613752889
+    "x": -7529.393754139845,
+    "z": -3481.0797707077786
    }
   ],
-  "steepest": 0.8207055971892643,
+  "steepest": 0.9919796182448882,
+  "steepWay": "Quai Alphonse Le Gallo",
+  "over": 8,
+  "detour": 1,
+  "thumb": "thumbs/B009.jpg",
+  "ll": {
+   "lat": 48.82896230633125,
+   "lon": 2.228325044974243
+  }
+ },
+ {
+  "id": "P093",
+  "kind": "périphérique",
+  "name": "Rue de la Poterne des Peupliers",
+  "at": {
+   "x": 1565.0577235255118,
+   "z": -4755.458687342205
+  },
+  "along": [
+   {
+    "x": 1565.363397466965,
+    "z": -4825.458019935034
+   },
+   {
+    "x": 1564.7520495840588,
+    "z": -4685.459354749376
+   }
+  ],
+  "steepest": 0.185699686419992,
   "steepWay": "footway (foot)",
-  "over": 10,
-  "detour": 1,
-  "thumb": "thumbs/B054.jpg",
+  "over": 3,
+  "detour": 2.8,
+  "thumb": "thumbs/P093.jpg",
   "ll": {
-   "lat": 48.859951668350575,
-   "lon": 2.3332631680962375
+   "lat": 48.81778098778162,
+   "lon": 2.353369916604992
   }
  },
  {
-  "id": "P190",
+  "id": "P095",
   "kind": "périphérique",
-  "name": "motorway (bridge)",
+  "name": "Avenue de la Porte de Choisy (bridge)",
   "at": {
-   "x": 5945.931506021675,
-   "z": 657.5765086765856
-  },
-  "steepest": 1.2094547419650268,
-  "steepWay": "Boulevard Périphérique Extérieur",
-  "over": 6,
-  "thumb": "thumbs/P190.jpg",
-  "ll": {
-   "lat": 48.866407110282225,
-   "lon": 2.4131880983766214
-  }
- },
- {
-  "id": "P103",
-  "kind": "périphérique",
-  "name": "Rue de la Légion Étrangère (bridge)",
-  "at": {
-   "x": -571.9405001248799,
-   "z": -4458.914993907378
+   "x": 2535.11347048079,
+   "z": -4785.602480108975
   },
   "along": [
    {
-    "x": -543.1539950424003,
-    "z": -4395.107963533474
+    "x": 2499.0705778215984,
+    "z": -4725.5948981817055
    },
    {
-    "x": -600.7270052073595,
-    "z": -4522.722024281282
+    "x": 2571.1563631399817,
+    "z": -4845.610062036245
    }
   ],
-  "steepest": 0.5550406549227558,
+  "steepest": 0.15298319174217417,
   "steepWay": "footway (foot)",
-  "over": 12,
-  "detour": 1,
-  "thumb": "thumbs/P103.jpg",
+  "over": 1,
+  "detour": 3,
+  "thumb": "thumbs/P095.jpg",
   "ll": {
-   "lat": 48.82044488510383,
-   "lon": 2.3241904984033726
+   "lat": 48.81751020148398,
+   "lon": 2.366615441101003
   }
  },
  {
-  "id": "P116",
+  "id": "P131",
   "kind": "périphérique",
-  "name": "Rue Pégoud",
+  "name": "Route des Lacs à Passy",
   "at": {
-   "x": -4764.290661078548,
-   "z": -2861.636675158167
+   "x": -5197.628791868769,
+   "z": -241.17929309924358
   },
   "along": [
    {
-    "x": -4763.33315832834,
-    "z": -2931.630126198127
+    "x": -5263.494550017959,
+    "z": -217.479041973307
    },
    {
-    "x": -4765.248163828755,
-    "z": -2791.6432241182065
+    "x": -5131.76303371958,
+    "z": -264.87954422518015
    }
   ],
-  "steepest": 0.6358372191298678,
-  "steepWay": "Rue Pégoud",
-  "over": 11,
-  "detour": 1,
-  "thumb": "thumbs/P116.jpg",
+  "steepest": 0.31093841550443313,
+  "steepWay": "Route des Lacs à Passy",
+  "over": 1,
+  "detour": 2.8,
+  "thumb": "thumbs/P131.jpg",
   "ll": {
-   "lat": 48.83479348037108,
-   "lon": 2.266946492657251
+   "lat": 48.85833344954796,
+   "lon": 2.26102952258161
+  }
+ },
+ {
+  "id": "P090",
+  "kind": "périphérique",
+  "name": "Passerelle du Cambodge (bridge)",
+  "at": {
+   "x": 356.4071453496679,
+   "z": -4862.1257574321835
+  },
+  "along": [
+   {
+    "x": 378.69093533161265,
+    "z": -4795.767391689494
+   },
+   {
+    "x": 334.1233553677232,
+    "z": -4928.484123174873
+   }
+  ],
+  "steepest": 0.30598707639273337,
+  "steepWay": "footway (foot)",
+  "over": 13,
+  "detour": 1.6,
+  "thumb": "thumbs/P090.jpg",
+  "ll": {
+   "lat": 48.816822781187874,
+   "lon": 2.3368665240003983
   }
  },
  {
@@ -3405,34 +2800,6 @@
   }
  },
  {
-  "id": "B058",
-  "kind": "bridge end",
-  "name": "Pont Neuf",
-  "at": {
-   "x": 625.85,
-   "z": -476.12
-  },
-  "along": [
-   {
-    "x": 645.12,
-    "z": -444.05
-   },
-   {
-    "x": 589.7967849678915,
-    "z": -536.1213806995185
-   }
-  ],
-  "steepest": 0.589082216149325,
-  "steepWay": "footway (foot)",
-  "over": 11,
-  "detour": 1,
-  "thumb": "thumbs/B058.jpg",
-  "ll": {
-   "lat": 48.85622294126925,
-   "lon": 2.340545603210792
-  }
- },
- {
   "id": "P150",
   "kind": "périphérique",
   "name": "Rue de Courcelles",
@@ -3450,7 +2817,7 @@
     "z": 3084.8764006718234
    }
   ],
-  "steepest": 0.2785605983027078,
+  "steepest": 0.2825977084230369,
   "steepWay": "footway (foot)",
   "over": 1,
   "detour": 2.8,
@@ -3458,6 +2825,230 @@
   "ll": {
    "lat": 48.88873086669521,
    "lon": 2.2935538871662473
+  }
+ },
+ {
+  "id": "P104",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Châtillon (bridge)",
+  "at": {
+   "x": -1277.7206473409408,
+   "z": -4221.82729014577
+  },
+  "along": [
+   {
+    "x": -1222.0313294474,
+    "z": -4179.416208191261
+   },
+   {
+    "x": -1333.4099652344817,
+    "z": -4264.23837210028
+   }
+  ],
+  "steepest": 0.26940955874469646,
+  "steepWay": "footway (foot)",
+  "over": 1,
+  "detour": 2.8,
+  "thumb": "thumbs/P104.jpg",
+  "ll": {
+   "lat": 48.82257468018349,
+   "lon": 2.3145534973773074
+  }
+ },
+ {
+  "id": "B053",
+  "kind": "bridge end",
+  "name": "Pont d'Iéna",
+  "at": {
+   "x": -2976.05,
+   "z": -14.27
+  },
+  "along": [
+   {
+    "x": -2945.29,
+    "z": -44.16
+   },
+   {
+    "x": -3026.25233142676,
+    "z": 34.51243453660091
+   }
+  ],
+  "steepest": 0.9512422191143112,
+  "steepWay": "footway (foot)",
+  "over": 7,
+  "detour": 1,
+  "thumb": "thumbs/B053.jpg",
+  "ll": {
+   "lat": 48.86037181040896,
+   "lon": 2.2913638372845284
+  }
+ },
+ {
+  "id": "P114",
+  "kind": "périphérique",
+  "name": "Avenue Georges Lafont",
+  "at": {
+   "x": -5559.70036652888,
+   "z": -2648.077587247204
+  },
+  "along": [
+   {
+    "x": -5523.640734021257,
+    "z": -2588.0800631031602
+   },
+   {
+    "x": -5595.759999036503,
+    "z": -2708.075111391248
+   }
+  ],
+  "steepest": 0.24948596475096052,
+  "steepWay": "trunk_link",
+  "over": 1,
+  "detour": 2.8,
+  "thumb": "thumbs/P114.jpg",
+  "ll": {
+   "lat": 48.83671191429842,
+   "lon": 2.256085654225052
+  }
+ },
+ {
+  "id": "B084",
+  "kind": "bridge end",
+  "name": "Pont du Maréchal-Juin",
+  "at": {
+   "x": -4724.51,
+   "z": 3708.17
+  },
+  "along": [
+   {
+    "x": -4746.17,
+    "z": 3739.25
+   },
+   {
+    "x": -4684.486774919755,
+    "z": 3650.7405523779307
+   }
+  ],
+  "steepest": 1.4574299400627506,
+  "steepWay": "footway (foot)",
+  "over": 1,
+  "detour": 1,
+  "thumb": "thumbs/B084.jpg",
+  "ll": {
+   "lat": 48.89381105787113,
+   "lon": 2.2674896735233374
+  }
+ },
+ {
+  "id": "B055",
+  "kind": "bridge end",
+  "name": "Pont du Carrousel",
+  "at": {
+   "x": 92.51,
+   "z": -61.04
+  },
+  "along": [
+   {
+    "x": 77.81,
+    "z": -99.49
+   },
+   {
+    "x": 117.50744084322933,
+    "z": 4.344462613752889
+   }
+  ],
+  "steepest": 0.6558860446446553,
+  "steepWay": "Pont du Carrousel",
+  "over": 9,
+  "detour": 1,
+  "thumb": "thumbs/B055.jpg",
+  "ll": {
+   "lat": 48.859951668350575,
+   "lon": 2.3332631680962375
+  }
+ },
+ {
+  "id": "B045",
+  "kind": "bridge end",
+  "name": "Pont d'Austerlitz",
+  "at": {
+   "x": 2423.07,
+   "z": -1788.19
+  },
+  "along": [
+   {
+    "x": 2452.64,
+    "z": -1763.02
+   },
+   {
+    "x": 2369.76583965662,
+    "z": -1833.5625301265777
+   }
+  ],
+  "steepest": 0.7556199443870699,
+  "steepWay": "Place Valhubert",
+  "over": 8,
+  "detour": 1,
+  "thumb": "thumbs/B045.jpg",
+  "ll": {
+   "lat": 48.8444364159209,
+   "lon": 2.365085555279977
+  }
+ },
+ {
+  "id": "P100",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Vanves",
+  "at": {
+   "x": -2047.0367382328654,
+   "z": -3975.3811246903383
+  },
+  "along": [
+   {
+    "x": -2057.843119852019,
+    "z": -4044.5419670529154
+   },
+   {
+    "x": -2036.230356613712,
+    "z": -3906.220282327761
+   }
+  ],
+  "steepest": 0.1531545791780308,
+  "steepWay": "Boulevard Périphérique Intérieur",
+  "over": 1,
+  "detour": 2.8,
+  "thumb": "thumbs/P100.jpg",
+  "ll": {
+   "lat": 48.824788543754906,
+   "lon": 2.3040489514694382
+  }
+ },
+ {
+  "id": "B003",
+  "kind": "bridge end",
+  "name": "Pont Nelson Mandela",
+  "at": {
+   "x": 4843.06,
+   "z": -4544.37
+  },
+  "along": [
+   {
+    "x": 4862.27,
+    "z": -4506.17
+   },
+   {
+    "x": 4811.611065272834,
+    "z": -4606.907704663078
+   }
+  ],
+  "steepest": 0.23850250942396128,
+  "steepWay": "Quai Jean Compagnon",
+  "over": 13,
+  "detour": 1,
+  "thumb": "thumbs/B003.jpg",
+  "ll": {
+   "lat": 48.81967722972306,
+   "lon": 2.3981290550228627
   }
  },
  {
@@ -3478,143 +3069,14 @@
     "z": -1241.601146596598
    }
   ],
-  "steepest": 0.30815413082904725,
+  "steepest": 0.33554560912496445,
   "steepWay": "Rue de Lagny (bridge)",
-  "over": 4,
+  "over": 3,
   "detour": 2.4,
   "thumb": "thumbs/P175.jpg",
   "ll": {
    "lat": 48.8493559042183,
    "lon": 2.4149423943528845
-  }
- },
- {
-  "id": "P101",
-  "kind": "périphérique",
-  "name": "Avenue Georges Lafenestre (bridge)",
-  "at": {
-   "x": -1696.9828873689178,
-   "z": -4079.5987367066814
-  },
-  "along": [
-   {
-    "x": -1642.443440026841,
-    "z": -4035.718801843229
-   },
-   {
-    "x": -1751.5223347109945,
-    "z": -4123.478671570134
-   }
-  ],
-  "steepest": 0.8052315424410939,
-  "steepWay": "footway (foot) (bridge)",
-  "over": 8,
-  "detour": 1,
-  "thumb": "thumbs/P101.jpg",
-  "ll": {
-   "lat": 48.82385234101742,
-   "lon": 2.3088287250763617
-  }
- },
- {
-  "id": "P105",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte de Vitry",
-  "at": {
-   "x": 3440.891521948226,
-   "z": -4341.922916120794
-  },
-  "along": [
-   {
-    "x": 3470.810789804883,
-    "z": -4405.206700860027
-   },
-   {
-    "x": 3410.972254091569,
-    "z": -4278.639131381561
-   }
-  ],
-  "steepest": 0.16115324776804268,
-  "steepWay": "Avenue Pierre Semard",
-  "over": 1,
-  "detour": 2.8,
-  "thumb": "thumbs/P105.jpg",
-  "ll": {
-   "lat": 48.8214958428198,
-   "lon": 2.3789832925428582
-  }
- },
- {
-  "id": "P131",
-  "kind": "périphérique",
-  "name": "Route des Lacs à Passy",
-  "at": {
-   "x": -5197.628791868769,
-   "z": -241.17929309924358
-  },
-  "along": [
-   {
-    "x": -5263.494550017959,
-    "z": -217.479041973307
-   },
-   {
-    "x": -5131.76303371958,
-    "z": -264.87954422518015
-   }
-  ],
-  "steepest": 0.15663415142620074,
-  "steepWay": "trunk_link",
-  "over": 1,
-  "detour": 2.8,
-  "thumb": "thumbs/P131.jpg",
-  "ll": {
-   "lat": 48.85833344954796,
-   "lon": 2.26102952258161
-  }
- },
- {
-  "id": "P187",
-  "kind": "périphérique",
-  "name": "trunk_link (bridge)",
-  "at": {
-   "x": 2371.194472236356,
-   "z": -4890.1441520838325
-  },
-  "steepest": 0.8479593107802581,
-  "steepWay": "Boulevard Périphérique Extérieur",
-  "over": 7,
-  "thumb": "thumbs/P187.jpg",
-  "ll": {
-   "lat": 48.816571087666354,
-   "lon": 2.3643772263247667
-  }
- },
- {
-  "id": "B052",
-  "kind": "bridge end",
-  "name": "Pont d'Iéna",
-  "at": {
-   "x": -2974.35,
-   "z": -15.92
-  },
-  "along": [
-   {
-    "x": -2945.29,
-    "z": -44.16
-   },
-   {
-    "x": -3024.550675357509,
-    "z": 32.86413875072479
-   }
-  ],
-  "steepest": 0.4179875509318467,
-  "steepWay": "footway (foot)",
-  "over": 11,
-  "detour": 1,
-  "thumb": "thumbs/B052.jpg",
-  "ll": {
-   "lat": 48.86035698820677,
-   "lon": 2.2913870497563003
   }
  },
  {
@@ -3646,31 +3108,59 @@
   }
  },
  {
-  "id": "B012",
+  "id": "B068",
   "kind": "bridge end",
-  "name": "Boulevard des Îles",
+  "name": "Pont de Sully",
   "at": {
-   "x": -6107.23,
-   "z": -3954.03
+   "x": 2144.5,
+   "z": -1082.89
   },
   "along": [
    {
-    "x": -6093.66,
-    "z": -3992.35
+    "x": 2109.97,
+    "z": -1098.54
    },
    {
-    "x": -6130.596749898628,
-    "z": -3888.045191148455
+    "x": 2208.2572324153602,
+    "z": -1053.9933684535079
    }
   ],
-  "steepest": 0.492720233573814,
-  "steepWay": "primary",
-  "over": 10,
-  "detour": 1.1,
-  "thumb": "thumbs/B012.jpg",
+  "steepest": 0.6521663030351196,
+  "steepWay": "footway (foot)",
+  "over": 8,
+  "detour": 1,
+  "thumb": "thumbs/B068.jpg",
   "ll": {
-   "lat": 48.82498034417133,
-   "lon": 2.2486094682479094
+   "lat": 48.8507722336198,
+   "lon": 2.361281850420298
+  }
+ },
+ {
+  "id": "P105",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Vitry",
+  "at": {
+   "x": 3440.891521948226,
+   "z": -4341.922916120794
+  },
+  "along": [
+   {
+    "x": 3470.810789804883,
+    "z": -4405.206700860027
+   },
+   {
+    "x": 3410.972254091569,
+    "z": -4278.639131381561
+   }
+  ],
+  "steepest": 0.14307775587589078,
+  "steepWay": "footway (foot)",
+  "over": 0,
+  "detour": 2.8,
+  "thumb": "thumbs/P105.jpg",
+  "ll": {
+   "lat": 48.8214958428198,
+   "lon": 2.3789832925428582
   }
  },
  {
@@ -3691,9 +3181,9 @@
     "z": -1586.2873513632367
    }
   ],
-  "steepest": 0.4607850943179615,
+  "steepest": 0.6201453636064581,
   "steepWay": "footway (foot)",
-  "over": 10,
+  "over": 8,
   "detour": 0.9,
   "thumb": "thumbs/P130.jpg",
   "ll": {
@@ -3702,87 +3192,59 @@
   }
  },
  {
-  "id": "P163",
+  "id": "P107",
   "kind": "périphérique",
-  "name": "Avenue de la Porte d'Asnières (bridge)",
+  "name": "Quai de Bercy",
   "at": {
-   "x": -2236.5229726711514,
-   "z": 3508.1206713143783
+   "x": 4236.877599233983,
+   "z": -3738.2378098885792
   },
   "along": [
    {
-    "x": -2191.5187631569897,
-    "z": 3454.5051779751816
+    "x": 4191.209703970853,
+    "z": -3685.186482457159
    },
    {
-    "x": -2281.527182185313,
-    "z": 3561.736164653575
+    "x": 4282.545494497113,
+    "z": -3791.2891373199996
    }
   ],
-  "steepest": 0.5489479401047755,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 9,
-  "detour": 1,
-  "thumb": "thumbs/P163.jpg",
+  "steepest": 1.118004635936494,
+  "steepWay": "primary_link",
+  "over": 3,
+  "detour": 1.1,
+  "thumb": "thumbs/P107.jpg",
   "ll": {
-   "lat": 48.892013984175776,
-   "lon": 2.3014616315470655
+   "lat": 48.826918838397035,
+   "lon": 2.389852000983857
   }
  },
  {
-  "id": "P100",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte de Vanves",
+  "id": "B017",
+  "kind": "bridge end",
+  "name": "Pont d'Issy",
   "at": {
-   "x": -2047.0367382328654,
-   "z": -3975.3811246903383
+   "x": -5408.1,
+   "z": -3304.2
   },
   "along": [
    {
-    "x": -2057.843119852019,
-    "z": -4044.5419670529154
+    "x": -5372.43,
+    "z": -3326.98
    },
    {
-    "x": -2036.230356613712,
-    "z": -3906.220282327761
+    "x": -5467.09561573275,
+    "z": -3266.5235176228753
    }
   ],
-  "steepest": 0.14562238675943928,
-  "steepWay": "Boulevard Périphérique Intérieur",
-  "over": 0,
-  "detour": 2.8,
-  "thumb": "thumbs/P100.jpg",
+  "steepest": 0.7916960557648344,
+  "steepWay": "footway (foot)",
+  "over": 6,
+  "detour": 1.1,
+  "thumb": "thumbs/B017.jpg",
   "ll": {
-   "lat": 48.824788543754906,
-   "lon": 2.3040489514694382
-  }
- },
- {
-  "id": "P114",
-  "kind": "périphérique",
-  "name": "Avenue Georges Lafont",
-  "at": {
-   "x": -5559.70036652888,
-   "z": -2648.077587247204
-  },
-  "along": [
-   {
-    "x": -5523.640734021257,
-    "z": -2588.0800631031602
-   },
-   {
-    "x": -5595.759999036503,
-    "z": -2708.075111391248
-   }
-  ],
-  "steepest": 0.13083969299741702,
-  "steepWay": "trunk_link",
-  "over": 0,
-  "detour": 2.8,
-  "thumb": "thumbs/P114.jpg",
-  "ll": {
-   "lat": 48.83671191429842,
-   "lon": 2.256085654225052
+   "lat": 48.83081786638213,
+   "lon": 2.2581556655360155
   }
  },
  {
@@ -3814,328 +3276,115 @@
   }
  },
  {
-  "id": "B070",
-  "kind": "bridge end",
-  "name": "Pont de Suresnes",
+  "id": "P125",
+  "kind": "périphérique",
+  "name": "Boulevard d'Auteuil",
   "at": {
-   "x": -7573.58,
-   "z": 735.9
+   "x": -5651.188667123775,
+   "z": -1703.2318326288655
   },
   "along": [
    {
-    "x": -7536.59,
-    "z": 721.22
+    "x": -5721.186945996545,
+    "z": -1702.740961108019
    },
    {
-    "x": -7638.6434882669655,
-    "z": 761.721357333308
+    "x": -5581.190388251006,
+    "z": -1703.722704149712
    }
   ],
-  "steepest": 0.6448926693853929,
-  "steepWay": "primary_link",
+  "steepest": 0.45999425010781,
+  "steepWay": "footway (foot)",
+  "over": 8,
+  "detour": 1,
+  "thumb": "thumbs/P125.jpg",
+  "ll": {
+   "lat": 48.84519960812351,
+   "lon": 2.2548364368162264
+  }
+ },
+ {
+  "id": "P152",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte des Ternes (bridge)",
+  "at": {
+   "x": -3636.8502432063083,
+   "z": 2324.9892481284846
+  },
+  "along": [
+   {
+    "x": -3703.4106225791447,
+    "z": 2346.662178196754
+   },
+   {
+    "x": -3570.289863833472,
+    "z": 2303.316318060215
+   }
+  ],
+  "steepest": 0.5135450923559015,
+  "steepWay": "footway (foot) (bridge)",
   "over": 7,
   "detour": 1,
-  "thumb": "thumbs/B070.jpg",
+  "thumb": "thumbs/P152.jpg",
   "ll": {
-   "lat": 48.867110702175836,
-   "lon": 2.2285873459052636
+   "lat": 48.881385733770074,
+   "lon": 2.2823410096420647
   }
  },
  {
-  "id": "B011",
+  "id": "B058",
   "kind": "bridge end",
-  "name": "Pont Renault",
+  "name": "Pont d'Arcole",
   "at": {
-   "x": -7194.37,
-   "z": -3748.16
+   "x": 1401.31,
+   "z": -510.36
   },
   "along": [
    {
-    "x": -7216.54,
-    "z": -3777.86
+    "x": 1370.9,
+    "z": -535.39
    },
    {
-    "x": -7152.497030002697,
-    "z": -3692.06495223636
+    "x": 1455.356914229709,
+    "z": -465.87482199376444
    }
   ],
-  "steepest": 0.9136125353815286,
-  "steepWay": "footway (foot)",
-  "over": 4,
-  "detour": 1.2,
-  "thumb": "thumbs/B011.jpg",
-  "ll": {
-   "lat": 48.82682970584675,
-   "lon": 2.2337652290938306
-  }
- },
- {
-  "id": "P121",
-  "kind": "périphérique",
-  "name": "Rue Édouard Lartet",
-  "at": {
-   "x": 5971.932183690004,
-   "z": -2302.3877478500517
-  },
-  "along": [
-   {
-    "x": 6040.743177802053,
-    "z": -2315.2348132469297
-   },
-   {
-    "x": 5903.121189577956,
-    "z": -2289.5406824531738
-   }
-  ],
-  "steepest": 0.4953154120452801,
-  "steepWay": "Rue Édouard Lartet",
-  "over": 8,
+  "steepest": 0.7075445494965361,
+  "steepWay": "Parc Rives de Seine - Georges Pompidou",
+  "over": 5,
   "detour": 0.6,
-  "thumb": "thumbs/P121.jpg",
+  "thumb": "thumbs/B058.jpg",
   "ll": {
-   "lat": 48.83981729896137,
-   "lon": 2.4135431219039285
+   "lat": 48.85591535811597,
+   "lon": 2.3511340404814494
   }
  },
  {
-  "id": "B073",
+  "id": "B038",
   "kind": "bridge end",
-  "name": "Pont Alexandre III",
+  "name": "Pont de Saint-Cloud",
   "at": {
-   "x": -1357.56,
-   "z": 275.34
+   "x": -8019.8,
+   "z": -2119.13
   },
   "along": [
    {
-    "x": -1354.25,
-    "z": 317.15
+    "x": -7980.59,
+    "z": -2127.88
    },
    {
-    "x": -1363.084451167251,
-    "z": 205.55833737076293
+    "x": -8088.11953786136,
+    "z": -2103.8839924435883
    }
   ],
-  "steepest": 0.48078626169047767,
-  "steepWay": "Pont Alexandre III (foot)",
-  "over": 8,
-  "detour": 1,
-  "thumb": "thumbs/B073.jpg",
-  "ll": {
-   "lat": 48.862973421303295,
-   "lon": 2.313463339306794
-  }
- },
- {
-  "id": "P109",
-  "kind": "périphérique",
-  "name": "Quai d'Ivry",
-  "at": {
-   "x": 4045.8246967554865,
-   "z": -3836.534975281182
-  },
-  "along": [
-   {
-    "x": 3998.2852889539813,
-    "z": -3785.153999172488
-   },
-   {
-    "x": 4093.3641045569916,
-    "z": -3887.915951389876
-   }
-  ],
-  "steepest": 0.7726610511192734,
-  "steepWay": "Rue Jean-Baptiste Berlier",
+  "steepest": 0.6678183137335435,
+  "steepWay": "footway (foot)",
   "over": 5,
   "detour": 1,
-  "thumb": "thumbs/P109.jpg",
+  "thumb": "thumbs/B038.jpg",
   "ll": {
-   "lat": 48.82603581993646,
-   "lon": 2.387243289156979
-  }
- },
- {
-  "id": "B013",
-  "kind": "bridge end",
-  "name": "Boulevard des Îles",
-  "at": {
-   "x": -6001.8,
-   "z": -4302.29
-  },
-  "along": [
-   {
-    "x": -6015.51,
-    "z": -4261.74
-   },
-   {
-    "x": -5979.379713276688,
-    "z": -4368.602372474859
-   }
-  ],
-  "steepest": 0.520900157287197,
-  "steepWay": "Quai de la Bataille de Stalingrad",
-  "over": 7,
-  "detour": 1.1,
-  "thumb": "thumbs/B013.jpg",
-  "ll": {
-   "lat": 48.82185187136285,
-   "lon": 2.2500490511296127
-  }
- },
- {
-  "id": "P117",
-  "kind": "périphérique",
-  "name": "Voie AD/15",
-  "at": {
-   "x": -4863.384202519033,
-   "z": -2866.737450436871
-  },
-  "along": [
-   {
-    "x": -4880.847267088664,
-    "z": -2798.9507159246014
-   },
-   {
-    "x": -4845.921137949403,
-    "z": -2934.5241849491404
-   }
-  ],
-  "steepest": 0.1942239146795267,
-  "steepWay": "Quai d'Issy-les-Moulineaux",
-  "over": 3,
-  "detour": 2.2,
-  "thumb": "thumbs/P117.jpg",
-  "ll": {
-   "lat": 48.83474765932715,
-   "lon": 2.2655934302846332
-  }
- },
- {
-  "id": "B007",
-  "kind": "bridge end",
-  "name": "Pont d'Ivry",
-  "at": {
-   "x": 5798.38,
-   "z": -5115.89
-  },
-  "along": [
-   {
-    "x": 5759.56,
-    "z": -5115.28
-   },
-   {
-    "x": 5868.371359552499,
-    "z": -5116.989812708065
-   }
-  ],
-  "steepest": 0.4289133694825878,
-  "steepWay": "Quai Blanqui",
-  "over": 7,
-  "detour": 1,
-  "thumb": "thumbs/B007.jpg",
-  "ll": {
-   "lat": 48.81454317821126,
-   "lon": 2.4111733718069703
-  }
- },
- {
-  "id": "B029",
-  "kind": "bridge end",
-  "name": "Boulevard Périphérique Extérieur",
-  "at": {
-   "x": -5117.23,
-   "z": -2843.9
-  },
-  "along": [
-   {
-    "x": -5078.34,
-    "z": -2847.59
-   },
-   {
-    "x": -5186.917014277526,
-    "z": -2837.2878867913582
-   }
-  ],
-  "steepest": 0.45754474124617955,
-  "steepWay": "footway (foot)",
-  "over": 6,
-  "detour": 1,
-  "thumb": "thumbs/B029.jpg",
-  "ll": {
-   "lat": 48.83495281163493,
-   "lon": 2.262127319456161
-  }
- },
- {
-  "id": "P129",
-  "kind": "périphérique",
-  "name": "Rond-Point de la Porte de Vincennes",
-  "at": {
-   "x": 6056.173972292683,
-   "z": -1494.7290838634146
-  },
-  "along": [
-   {
-    "x": 6125.5787222432045,
-    "z": -1503.8384572944228
-   },
-   {
-    "x": 5986.769222342162,
-    "z": -1485.6197104324065
-   }
-  ],
-  "steepest": 0.4330077286037021,
-  "steepWay": "footway (foot)",
-  "over": 6,
-  "detour": 1.3,
-  "thumb": "thumbs/P129.jpg",
-  "ll": {
-   "lat": 48.847072620183475,
-   "lon": 2.414693392574482
-  }
- },
- {
-  "id": "P094",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte d'Italie (bridge)",
-  "at": {
-   "x": 2097.930698148389,
-   "z": -4945.9782533281295
-  },
-  "along": [
-   {
-    "x": 2110.213469732462,
-    "z": -5014.892210711329
-   },
-   {
-    "x": 2085.6479265643165,
-    "z": -4877.06429594493
-   }
-  ],
-  "steepest": 0.6210220405754511,
-  "steepWay": "footway (foot)",
-  "over": 4,
-  "detour": 1,
-  "thumb": "thumbs/P094.jpg",
-  "ll": {
-   "lat": 48.816069521401126,
-   "lon": 2.360645974770498
-  }
- },
- {
-  "id": "P188",
-  "kind": "périphérique",
-  "name": "trunk_link",
-  "at": {
-   "x": -4488.446777346434,
-   "z": -2810.8281937955203
-  },
-  "steepest": 0.6931330022008185,
-  "steepWay": "trunk_link",
-  "over": 3,
-  "thumb": "thumbs/P188.jpg",
-  "ll": {
-   "lat": 48.8352499007248,
-   "lon": 2.270712974048157
+   "lat": 48.84146353131964,
+   "lon": 2.2224944816970353
   }
  },
  {
@@ -4156,9 +3405,9 @@
     "z": -2786.413401083846
    }
   ],
-  "steepest": 0.45754474124617955,
+  "steepest": 0.2580317892652184,
   "steepWay": "footway (foot)",
-  "over": 5,
+  "over": 9,
   "detour": 1,
   "thumb": "thumbs/P113.jpg",
   "ll": {
@@ -4167,132 +3416,255 @@
   }
  },
  {
-  "id": "P186",
+  "id": "P129",
   "kind": "périphérique",
-  "name": "Tunnel d'Italie (tunnel)",
+  "name": "Rond-Point de la Porte de Vincennes",
   "at": {
-   "x": 1846.5314832261022,
-   "z": -4907.983736213236
+   "x": 6056.173972292683,
+   "z": -1494.7290838634146
   },
-  "steepest": 0.5696845778710866,
-  "steepWay": "primary",
+  "along": [
+   {
+    "x": 6125.5787222432045,
+    "z": -1503.8384572944228
+   },
+   {
+    "x": 5986.769222342162,
+    "z": -1485.6197104324065
+   }
+  ],
+  "steepest": 0.5168201091856842,
+  "steepWay": "footway (foot)",
+  "over": 6,
+  "detour": 1.3,
+  "thumb": "thumbs/P129.jpg",
+  "ll": {
+   "lat": 48.847072620183475,
+   "lon": 2.414693392574482
+  }
+ },
+ {
+  "id": "P155",
+  "kind": "périphérique",
+  "name": "Boulevard d'Aurelle de Paladines (bridge)",
+  "at": {
+   "x": -3580.1210908030334,
+   "z": 2412.0318607816453
+  },
+  "along": [
+   {
+    "x": -3544.720725823166,
+    "z": 2351.643002874808
+   },
+   {
+    "x": -3615.521455782901,
+    "z": 2472.4207186884823
+   }
+  ],
+  "steepest": 0.27852080464249324,
+  "steepWay": "footway (foot)",
+  "over": 7,
+  "detour": 1,
+  "thumb": "thumbs/P155.jpg",
+  "ll": {
+   "lat": 48.88216765086324,
+   "lon": 2.2831156119060623
+  }
+ },
+ {
+  "id": "P092",
+  "kind": "périphérique",
+  "name": "Avenue Pierre de Coubertin",
+  "at": {
+   "x": 881.3645454209912,
+   "z": -4898.079532428801
+  },
+  "along": [
+   {
+    "x": 884.4999822929685,
+    "z": -4828.1497888598315
+   },
+   {
+    "x": 878.229108549014,
+    "z": -4968.009275997771
+   }
+  ],
+  "steepest": 0.3680646200604742,
+  "steepWay": "footway (foot)",
+  "over": 6,
+  "detour": 1.1,
+  "thumb": "thumbs/P092.jpg",
+  "ll": {
+   "lat": 48.816499802931865,
+   "lon": 2.3440344997830596
+  }
+ },
+ {
+  "id": "P101",
+  "kind": "périphérique",
+  "name": "Avenue Georges Lafenestre (bridge)",
+  "at": {
+   "x": -1696.9828873689178,
+   "z": -4079.5987367066814
+  },
+  "along": [
+   {
+    "x": -1642.443440026841,
+    "z": -4035.718801843229
+   },
+   {
+    "x": -1751.5223347109945,
+    "z": -4123.478671570134
+   }
+  ],
+  "steepest": 0.582907875451741,
+  "steepWay": "footway (foot) (bridge)",
   "over": 3,
-  "thumb": "thumbs/P186.jpg",
-  "ll": {
-   "lat": 48.8164108319555,
-   "lon": 2.357213270547073
-  }
- },
- {
-  "id": "P125",
-  "kind": "périphérique",
-  "name": "Boulevard d'Auteuil",
-  "at": {
-   "x": -5651.188667123775,
-   "z": -1703.2318326288655
-  },
-  "along": [
-   {
-    "x": -5721.186945996545,
-    "z": -1702.740961108019
-   },
-   {
-    "x": -5581.190388251006,
-    "z": -1703.722704149712
-   }
-  ],
-  "steepest": 0.3076896478808652,
-  "steepWay": "footway (foot)",
-  "over": 5,
   "detour": 1,
-  "thumb": "thumbs/P125.jpg",
+  "thumb": "thumbs/P101.jpg",
   "ll": {
-   "lat": 48.84519960812351,
-   "lon": 2.2548364368162264
+   "lat": 48.82385234101742,
+   "lon": 2.3088287250763617
   }
  },
  {
-  "id": "P119",
-  "kind": "périphérique",
-  "name": "Rue de la Porte d'Issy",
-  "at": {
-   "x": -3741.227709265323,
-   "z": -3149.9491938384913
-  },
-  "along": [
-   {
-    "x": -3787.238264828855,
-    "z": -3202.7036133380475
-   },
-   {
-    "x": -3695.217153701791,
-    "z": -3097.194774338935
-   }
-  ],
-  "steepest": 0.2759176379887245,
-  "steepWay": "footway (foot)",
-  "over": 5,
-  "detour": 1,
-  "thumb": "thumbs/P119.jpg",
-  "ll": {
-   "lat": 48.83220352494975,
-   "lon": 2.280915798474711
-  }
- },
- {
-  "id": "B044",
+  "id": "B029",
   "kind": "bridge end",
-  "name": "Pont d'Austerlitz",
+  "name": "Boulevard Périphérique Extérieur",
   "at": {
-   "x": 2423.07,
-   "z": -1788.19
+   "x": -5117.23,
+   "z": -2843.9
   },
   "along": [
    {
-    "x": 2452.64,
-    "z": -1763.02
+    "x": -5078.34,
+    "z": -2847.59
    },
    {
-    "x": 2369.76583965662,
-    "z": -1833.5625301265777
+    "x": -5186.917014277526,
+    "z": -2837.2878867913582
    }
   ],
-  "steepest": 0.4967863253617567,
-  "steepWay": "Bretelle de contournement de la place Valhubert",
-  "over": 2,
+  "steepest": 0.2580317892652184,
+  "steepWay": "footway (foot)",
+  "over": 6,
   "detour": 1,
-  "thumb": "thumbs/B044.jpg",
+  "thumb": "thumbs/B029.jpg",
   "ll": {
-   "lat": 48.8444364159209,
-   "lon": 2.365085555279977
+   "lat": 48.83495281163493,
+   "lon": 2.262127319456161
   }
  },
  {
-  "id": "P162",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte de Clichy",
+  "id": "B001",
+  "kind": "bridge end",
+  "name": "Pont Nelson Mandela",
   "at": {
-   "x": -1631.0940066949713,
-   "z": 4009.3643630115885
+   "x": 5082.55,
+   "z": -4390.17
   },
   "along": [
    {
-    "x": -1673.626132530431,
-    "z": 4064.9612898323817
+    "x": 5060.55,
+    "z": -4422.18
    },
    {
-    "x": -1588.5618808595116,
-    "z": 3953.7674361907953
+    "x": 5122.198603683451,
+    "z": -4332.481281640578
    }
   ],
-  "steepest": 0.2960217322753647,
-  "steepWay": "Avenue de la Porte de Clichy",
-  "over": 4,
-  "detour": 1.2,
-  "thumb": "thumbs/P162.jpg",
+  "steepest": 0.3219150910920246,
+  "steepWay": "footway (foot)",
+  "over": 5,
+  "detour": 1,
+  "thumb": "thumbs/B001.jpg",
   "ll": {
-   "lat": 48.896516732868974,
-   "lon": 2.3097283978897236
+   "lat": 48.82106243189117,
+   "lon": 2.401399146119695
+  }
+ },
+ {
+  "id": "P116",
+  "kind": "périphérique",
+  "name": "Rue Pégoud",
+  "at": {
+   "x": -4764.290661078548,
+   "z": -2861.636675158167
+  },
+  "along": [
+   {
+    "x": -4763.33315832834,
+    "z": -2931.630126198127
+   },
+   {
+    "x": -4765.248163828755,
+    "z": -2791.6432241182065
+   }
+  ],
+  "steepest": 0.3045449391456812,
+  "steepWay": "footway (foot)",
+  "over": 5,
+  "detour": 1,
+  "thumb": "thumbs/P116.jpg",
+  "ll": {
+   "lat": 48.83479348037108,
+   "lon": 2.266946492657251
+  }
+ },
+ {
+  "id": "P117",
+  "kind": "périphérique",
+  "name": "Voie AD/15",
+  "at": {
+   "x": -4863.384202519033,
+   "z": -2866.737450436871
+  },
+  "along": [
+   {
+    "x": -4880.847267088664,
+    "z": -2798.9507159246014
+   },
+   {
+    "x": -4845.921137949403,
+    "z": -2934.5241849491404
+   }
+  ],
+  "steepest": 0.08463339350972644,
+  "steepWay": "Quai d'Issy-les-Moulineaux",
+  "over": 0,
+  "detour": 2.2,
+  "thumb": "thumbs/P117.jpg",
+  "ll": {
+   "lat": 48.83474765932715,
+   "lon": 2.2655934302846332
+  }
+ },
+ {
+  "id": "B008",
+  "kind": "bridge end",
+  "name": "Pont de Sèvres",
+  "at": {
+   "x": -7900.43,
+   "z": -3665.91
+  },
+  "along": [
+   {
+    "x": -7866.28,
+    "z": -3642
+   },
+   {
+    "x": -7957.772289894383,
+    "z": -3706.0579985761246
+   }
+  ],
+  "steepest": 0.4429940987869297,
+  "steepWay": "footway (foot)",
+  "over": 3,
+  "detour": 1.1,
+  "thumb": "thumbs/B008.jpg",
+  "ll": {
+   "lat": 48.827568570167934,
+   "lon": 2.2241244068472668
   }
  },
  {
@@ -4313,9 +3685,9 @@
     "z": 2859.337190613633
    }
   ],
-  "steepest": 0.345024799548757,
+  "steepest": 0.3425246198418819,
   "steepWay": "footway (foot)",
-  "over": 3,
+  "over": 4,
   "detour": 1,
   "thumb": "thumbs/P153.jpg",
   "ll": {
@@ -4324,59 +3696,143 @@
   }
  },
  {
-  "id": "B072",
-  "kind": "bridge end",
-  "name": "Pont de l'Alma",
+  "id": "P127",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte d'Auteuil",
   "at": {
-   "x": -2212.72,
-   "z": 401.3
+   "x": -5750.061340749691,
+   "z": -1396.3537190500012
   },
   "along": [
    {
-    "x": -2210.28,
-    "z": 362.85
+    "x": -5820.060606538295,
+    "z": -1396.033111725779
    },
    {
-    "x": -2217.1532152199984,
-    "z": 471.1594775446623
+    "x": -5680.062074961087,
+    "z": -1396.6743263742235
    }
   ],
-  "steepest": 0.24287212246283457,
-  "steepWay": "Avenue de New York",
-  "over": 4,
-  "detour": 1.2,
-  "thumb": "thumbs/B072.jpg",
+  "steepest": 0.6200465052319198,
+  "steepWay": "trunk_link",
+  "over": 1,
+  "detour": 1,
+  "thumb": "thumbs/P127.jpg",
   "ll": {
-   "lat": 48.864104939235176,
-   "lon": 2.301786646741897
+   "lat": 48.8479563411214,
+   "lon": 2.253486390260027
   }
  },
  {
-  "id": "P173",
-  "kind": "périphérique",
-  "name": "footway",
+  "id": "B032",
+  "kind": "bridge end",
+  "name": "Pont du Garigliano",
   "at": {
-   "x": -5739.935820895523,
-   "z": -734.5880597014929
+   "x": -4744.06,
+   "z": -2298.71
   },
   "along": [
    {
-    "x": -5729.352994564821,
-    "z": -665.3926567699816
+    "x": -4711.46,
+    "z": -2321.26
    },
    {
-    "x": -5750.518647226225,
-    "z": -803.7834626330041
+    "x": -4801.62934221315,
+    "z": -2258.8882617513336
    }
   ],
-  "steepest": 0.33197609858132127,
-  "steepWay": "Boulevard Périphérique Intérieur",
+  "steepest": 0.3887932640826815,
+  "steepWay": "Boulevard Exelmans",
+  "over": 3,
+  "detour": 1.1,
+  "thumb": "thumbs/B032.jpg",
+  "ll": {
+   "lat": 48.83985033673242,
+   "lon": 2.2672227300979624
+  }
+ },
+ {
+  "id": "B012",
+  "kind": "bridge end",
+  "name": "Boulevard des Îles",
+  "at": {
+   "x": -6107.23,
+   "z": -3954.03
+  },
+  "along": [
+   {
+    "x": -6093.66,
+    "z": -3992.35
+   },
+   {
+    "x": -6130.596749898628,
+    "z": -3888.045191148455
+   }
+  ],
+  "steepest": 0.47414730159619484,
+  "steepWay": "primary",
+  "over": 2,
+  "detour": 1.1,
+  "thumb": "thumbs/B012.jpg",
+  "ll": {
+   "lat": 48.82498034417133,
+   "lon": 2.2486094682479094
+  }
+ },
+ {
+  "id": "P138",
+  "kind": "périphérique",
+  "name": "Avenue Ibsen (bridge)",
+  "at": {
+   "x": 5963.555275972554,
+   "z": 738.8295910973567
+  },
+  "along": [
+   {
+    "x": 6001.842551617776,
+    "z": 797.4306535763493
+   },
+   {
+    "x": 5925.268000327333,
+    "z": 680.2285286183641
+   }
+  ],
+  "steepest": 0.37188485626033235,
+  "steepWay": "service (bridge)",
   "over": 3,
   "detour": 1,
-  "thumb": "thumbs/P173.jpg",
+  "thumb": "thumbs/P138.jpg",
   "ll": {
-   "lat": 48.85390108318439,
-   "lon": 2.253624648109315
+   "lat": 48.86713701914043,
+   "lon": 2.413428740295737
+  }
+ },
+ {
+  "id": "B080",
+  "kind": "bridge end",
+  "name": "Pont de Puteaux",
+  "at": {
+   "x": -6539.54,
+   "z": 1967.72
+  },
+  "along": [
+   {
+    "x": -6514.88,
+    "z": 1940.07
+   },
+   {
+    "x": -6586.1321860606995,
+    "z": 2019.9614413859836
+   }
+  ],
+  "steepest": 0.5326992068221303,
+  "steepWay": "D 7 Quai Gallieni",
+  "over": 1,
+  "detour": 1,
+  "thumb": "thumbs/B080.jpg",
+  "ll": {
+   "lat": 48.878176329508676,
+   "lon": 2.242706536676355
   }
  },
  {
@@ -4408,132 +3864,255 @@
   }
  },
  {
-  "id": "P192",
-  "kind": "périphérique",
-  "name": "trunk_link",
+  "id": "B041",
+  "kind": "bridge end",
+  "name": "Pont de Grenelle - Cadets de Saumur",
   "at": {
-   "x": 3838.969246711838,
-   "z": 4433.825874850538
-  },
-  "steepest": 0.4116557953345475,
-  "steepWay": "trunk_link",
-  "over": 2,
-  "thumb": "thumbs/P192.jpg",
-  "ll": {
-   "lat": 48.90032973550503,
-   "lon": 2.3844188031011146
-  }
- },
- {
-  "id": "P106",
-  "kind": "périphérique",
-  "name": "Rue Bruneseau",
-  "at": {
-   "x": 3809.5395300574023,
-   "z": -3985.262125149814
+   "x": -3719.21,
+   "z": -1215.35
   },
   "along": [
    {
-    "x": 3757.5596494075958,
-    "z": -3938.378311230382
+    "x": -3746.82,
+    "z": -1189.5
    },
    {
-    "x": 3861.519410707209,
-    "z": -4032.1459390692457
+    "x": -3668.110663222116,
+    "z": -1263.1920085370625
    }
   ],
-  "steepest": 0.3934008928529735,
-  "steepWay": "Rue Bruneseau",
+  "steepest": 0.20601150564542584,
+  "steepWay": "Port de Javel",
+  "over": 4,
+  "detour": 1,
+  "thumb": "thumbs/B041.jpg",
+  "ll": {
+   "lat": 48.849582325194454,
+   "lon": 2.2812164369775343
+  }
+ },
+ {
+  "id": "P173",
+  "kind": "périphérique",
+  "name": "footway",
+  "at": {
+   "x": -5739.935820895523,
+   "z": -734.5880597014929
+  },
+  "along": [
+   {
+    "x": -5729.352994564821,
+    "z": -665.3926567699816
+   },
+   {
+    "x": -5750.518647226225,
+    "z": -803.7834626330041
+   }
+  ],
+  "steepest": 0.3019782583480703,
+  "steepWay": "Boulevard Périphérique Intérieur",
+  "over": 3,
+  "detour": 1,
+  "thumb": "thumbs/P173.jpg",
+  "ll": {
+   "lat": 48.85390108318439,
+   "lon": 2.253624648109315
+  }
+ },
+ {
+  "id": "P115",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Saint-Cloud",
+  "at": {
+   "x": -5685.348023919079,
+   "z": -2431.438027004142
+  },
+  "along": [
+   {
+    "x": -5615.988171648091,
+    "z": -2440.883178826462
+   },
+   {
+    "x": -5754.7078761900675,
+    "z": -2421.992875181822
+   }
+  ],
+  "steepest": 0.2981772506405284,
+  "steepWay": "footway (foot)",
+  "over": 3,
+  "detour": 1.2,
+  "thumb": "thumbs/P115.jpg",
+  "ll": {
+   "lat": 48.83865802057953,
+   "lon": 2.254370011460137
+  }
+ },
+ {
+  "id": "B021",
+  "kind": "bridge end",
+  "name": "Pont National",
+  "at": {
+   "x": 3932.89,
+   "z": -3702.98
+  },
+  "along": [
+   {
+    "x": 3962.66,
+    "z": -3681.11
+   },
+   {
+    "x": 3876.4766124134053,
+    "z": -3744.4230899065774
+   }
+  ],
+  "steepest": 0.25129231735122837,
+  "steepWay": "service",
+  "over": 3,
+  "detour": 1,
+  "thumb": "thumbs/B021.jpg",
+  "ll": {
+   "lat": 48.82723556469211,
+   "lon": 2.385701234180222
+  }
+ },
+ {
+  "id": "P109",
+  "kind": "périphérique",
+  "name": "Quai d'Ivry",
+  "at": {
+   "x": 4045.8246967554865,
+   "z": -3836.534975281182
+  },
+  "along": [
+   {
+    "x": 3998.2852889539813,
+    "z": -3785.153999172488
+   },
+   {
+    "x": 4093.3641045569916,
+    "z": -3887.915951389876
+   }
+  ],
+  "steepest": 0.22722578464549326,
+  "steepWay": "Boulevard Périphérique Intérieur",
+  "over": 3,
+  "detour": 1,
+  "thumb": "thumbs/P109.jpg",
+  "ll": {
+   "lat": 48.82603581993646,
+   "lon": 2.387243289156979
+  }
+ },
+ {
+  "id": "P121",
+  "kind": "périphérique",
+  "name": "Rue Édouard Lartet",
+  "at": {
+   "x": 5971.932183690004,
+   "z": -2302.3877478500517
+  },
+  "along": [
+   {
+    "x": 6040.743177802053,
+    "z": -2315.2348132469297
+   },
+   {
+    "x": 5903.121189577956,
+    "z": -2289.5406824531738
+   }
+  ],
+  "steepest": 0.21627284198504204,
+  "steepWay": "footway (foot)",
+  "over": 3,
+  "detour": 0.6,
+  "thumb": "thumbs/P121.jpg",
+  "ll": {
+   "lat": 48.83981729896137,
+   "lon": 2.4135431219039285
+  }
+ },
+ {
+  "id": "P094",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte d'Italie (bridge)",
+  "at": {
+   "x": 2097.930698148389,
+   "z": -4945.9782533281295
+  },
+  "along": [
+   {
+    "x": 2110.213469732462,
+    "z": -5014.892210711329
+   },
+   {
+    "x": 2085.6479265643165,
+    "z": -4877.06429594493
+   }
+  ],
+  "steepest": 0.20655840155383806,
+  "steepWay": "motorway_link",
+  "over": 3,
+  "detour": 1,
+  "thumb": "thumbs/P094.jpg",
+  "ll": {
+   "lat": 48.816069521401126,
+   "lon": 2.360645974770498
+  }
+ },
+ {
+  "id": "B007",
+  "kind": "bridge end",
+  "name": "Pont d'Ivry",
+  "at": {
+   "x": 5798.38,
+   "z": -5115.89
+  },
+  "along": [
+   {
+    "x": 5759.56,
+    "z": -5115.28
+   },
+   {
+    "x": 5868.371359552499,
+    "z": -5116.989812708065
+   }
+  ],
+  "steepest": 0.304088367604251,
+  "steepWay": "footway (foot)",
   "over": 2,
   "detour": 1,
-  "thumb": "thumbs/P106.jpg",
+  "thumb": "thumbs/B007.jpg",
   "ll": {
-   "lat": 48.824699781217554,
-   "lon": 2.3840169581204727
+   "lat": 48.81454317821126,
+   "lon": 2.4111733718069703
   }
  },
  {
-  "id": "P112",
-  "kind": "périphérique",
-  "name": "Passerelle périphérique (bridge)",
+  "id": "B082",
+  "kind": "bridge end",
+  "name": "Pont de Neuilly",
   "at": {
-   "x": -5640.80350877193,
-   "z": -2572.7701349527665
+   "x": -5563.78,
+   "z": 2843.85
   },
   "along": [
    {
-    "x": -5703.985766456172,
-    "z": -2602.903211694481
+    "x": -5599.17,
+    "z": 2861.15
    },
    {
-    "x": -5577.621251087688,
-    "z": -2542.637058211052
+    "x": -5500.891848264405,
+    "z": 2813.1078404909354
    }
   ],
-  "steepest": 0.3619799892613103,
+  "steepest": 0.2698720005895294,
   "steepWay": "footway (foot)",
   "over": 2,
-  "detour": 1.4,
-  "thumb": "thumbs/P112.jpg",
+  "detour": 1,
+  "thumb": "thumbs/B082.jpg",
   "ll": {
-   "lat": 48.83738841265246,
-   "lon": 2.25497823987216
-  }
- },
- {
-  "id": "B002",
-  "kind": "bridge end",
-  "name": "Pont Nelson Mandela",
-  "at": {
-   "x": 4954.49,
-   "z": -4317.5
-  },
-  "along": [
-   {
-    "x": 4935.22,
-    "z": -4356.06
-   },
-   {
-    "x": 4985.781960057283,
-    "z": -4254.883602500836
-   }
-  ],
-  "steepest": 0.44923693367637646,
-  "steepWay": "footway (foot)",
-  "over": 1,
-  "detour": 1.3,
-  "thumb": "thumbs/B002.jpg",
-  "ll": {
-   "lat": 48.82171523760814,
-   "lon": 2.399650564275525
-  }
- },
- {
-  "id": "B015",
-  "kind": "bridge end",
-  "name": "Passerelle du Parc de l'Europe",
-  "at": {
-   "x": -5451.12,
-   "z": -3917.46
-  },
-  "along": [
-   {
-    "x": -5479.47,
-    "z": -3891.25
-   },
-   {
-    "x": -5399.720614191544,
-    "z": -3964.9795027174473
-   }
-  ],
-  "steepest": 0.3853864220074916,
-  "steepWay": "service",
-  "over": 1,
-  "detour": 1.1,
-  "thumb": "thumbs/B015.jpg",
-  "ll": {
-   "lat": 48.825308858070734,
-   "lon": 2.2575682534562387
+   "lat": 48.88604673920744,
+   "lon": 2.25602994929753
   }
  },
  {
@@ -4582,7 +4161,7 @@
     "z": -1310.054287985271
    }
   ],
-  "steepest": 0.2521508010148468,
+  "steepest": 0.24844920348623956,
   "steepWay": "Autoroute de Normandie",
   "over": 2,
   "detour": 1.1,
@@ -4610,7 +4189,7 @@
     "z": -3814.8530087596723
    }
   ],
-  "steepest": 0.31572375756908333,
+  "steepest": 0.3302956233030398,
   "steepWay": "footway (foot)",
   "over": 1,
   "detour": 0.9,
@@ -4618,62 +4197,6 @@
   "ll": {
    "lat": 48.82561096227203,
    "lon": 2.3004274491881054
-  }
- },
- {
-  "id": "P115",
-  "kind": "périphérique",
-  "name": "Avenue de la Porte de Saint-Cloud",
-  "at": {
-   "x": -5685.348023919079,
-   "z": -2431.438027004142
-  },
-  "along": [
-   {
-    "x": -5615.988171648091,
-    "z": -2440.883178826462
-   },
-   {
-    "x": -5754.7078761900675,
-    "z": -2421.992875181822
-   }
-  ],
-  "steepest": 0.2981772506405284,
-  "steepWay": "footway (foot)",
-  "over": 1,
-  "detour": 1.2,
-  "thumb": "thumbs/P115.jpg",
-  "ll": {
-   "lat": 48.83865802057953,
-   "lon": 2.254370011460137
-  }
- },
- {
-  "id": "B001",
-  "kind": "bridge end",
-  "name": "Pont Nelson Mandela",
-  "at": {
-   "x": 5082.55,
-   "z": -4390.17
-  },
-  "along": [
-   {
-    "x": 5060.55,
-    "z": -4422.18
-   },
-   {
-    "x": 5122.198603683451,
-    "z": -4332.481281640578
-   }
-  ],
-  "steepest": 0.19357163010311787,
-  "steepWay": "secondary_link (bridge)",
-  "over": 2,
-  "detour": 1,
-  "thumb": "thumbs/B001.jpg",
-  "ll": {
-   "lat": 48.82106243189117,
-   "lon": 2.401399146119695
   }
  },
  {
@@ -4694,9 +4217,9 @@
     "z": 4328.011816251134
    }
   ],
-  "steepest": 0.2847382393353482,
-  "steepWay": "footway (foot)",
-  "over": 1,
+  "steepest": 0.208050472904521,
+  "steepWay": "Rue du Chemin de Fer",
+  "over": 2,
   "detour": 1,
   "thumb": "thumbs/P168.jpg",
   "ll": {
@@ -4705,31 +4228,160 @@
   }
  },
  {
-  "id": "P127",
+  "id": "P119",
   "kind": "périphérique",
-  "name": "Avenue de la Porte d'Auteuil",
+  "name": "Rue de la Porte d'Issy",
   "at": {
-   "x": -5750.061340749691,
-   "z": -1396.3537190500012
+   "x": -3741.227709265323,
+   "z": -3149.9491938384913
   },
   "along": [
    {
-    "x": -5820.060606538295,
-    "z": -1396.033111725779
+    "x": -3787.238264828855,
+    "z": -3202.7036133380475
    },
    {
-    "x": -5680.062074961087,
-    "z": -1396.6743263742235
+    "x": -3695.217153701791,
+    "z": -3097.194774338935
    }
   ],
-  "steepest": 0.2800210023628023,
+  "steepest": 0.20558569105042215,
+  "steepWay": "footway (foot)",
+  "over": 2,
+  "detour": 1,
+  "thumb": "thumbs/P119.jpg",
+  "ll": {
+   "lat": 48.83220352494975,
+   "lon": 2.280915798474711
+  }
+ },
+ {
+  "id": "B070",
+  "kind": "bridge end",
+  "name": "Pont de Suresnes",
+  "at": {
+   "x": -7573.58,
+   "z": 735.9
+  },
+  "along": [
+   {
+    "x": -7536.59,
+    "z": 721.22
+   },
+   {
+    "x": -7638.6434882669655,
+    "z": 761.721357333308
+   }
+  ],
+  "steepest": 0.1847247670922146,
+  "steepWay": "footway (foot)",
+  "over": 2,
+  "detour": 1,
+  "thumb": "thumbs/B070.jpg",
+  "ll": {
+   "lat": 48.867110702175836,
+   "lon": 2.2285873459052636
+  }
+ },
+ {
+  "id": "P123",
+  "kind": "périphérique",
+  "name": "Avenue Daumesnil",
+  "at": {
+   "x": 5701.098131950053,
+   "z": -2914.52536000497
+  },
+  "along": [
+   {
+    "x": 5641.588681106703,
+    "z": -2877.6658258201364
+   },
+   {
+    "x": 5760.607582793404,
+    "z": -2951.3848941898036
+   }
+  ],
+  "steepest": 0.17216001704183037,
+  "steepWay": "footway (foot)",
+  "over": 2,
+  "detour": 1,
+  "thumb": "thumbs/P123.jpg",
+  "ll": {
+   "lat": 48.83431837323154,
+   "lon": 2.4098450467387282
+  }
+ },
+ {
+  "id": "P187",
+  "kind": "périphérique",
+  "name": "trunk_link (bridge)",
+  "at": {
+   "x": 2371.194472236356,
+   "z": -4890.1441520838325
+  },
+  "steepest": 0.16374334076743965,
   "steepWay": "trunk_link",
+  "over": 2,
+  "thumb": "thumbs/P187.jpg",
+  "ll": {
+   "lat": 48.816571087666354,
+   "lon": 2.3643772263247667
+  }
+ },
+ {
+  "id": "P112",
+  "kind": "périphérique",
+  "name": "Passerelle périphérique (bridge)",
+  "at": {
+   "x": -5640.80350877193,
+   "z": -2572.7701349527665
+  },
+  "along": [
+   {
+    "x": -5703.985766456172,
+    "z": -2602.903211694481
+   },
+   {
+    "x": -5577.621251087688,
+    "z": -2542.637058211052
+   }
+  ],
+  "steepest": 0.16036765387404966,
+  "steepWay": "footway (foot)",
+  "over": 2,
+  "detour": 1.4,
+  "thumb": "thumbs/P112.jpg",
+  "ll": {
+   "lat": 48.83738841265246,
+   "lon": 2.25497823987216
+  }
+ },
+ {
+  "id": "P154",
+  "kind": "périphérique",
+  "name": "Rue du Caporal Peugeot",
+  "at": {
+   "x": -3085.9926937860346,
+   "z": 2925.899122357463
+  },
+  "along": [
+   {
+    "x": -3048.4426447808282,
+    "z": 2866.82295271431
+   },
+   {
+    "x": -3123.542742791241,
+    "z": 2984.9752920006163
+   }
+  ],
+  "steepest": 0.24740458752813244,
+  "steepWay": "Boulevard Périphérique Extérieur",
   "over": 1,
   "detour": 1,
-  "thumb": "thumbs/P127.jpg",
+  "thumb": "thumbs/P154.jpg",
   "ll": {
-   "lat": 48.8479563411214,
-   "lon": 2.253486390260027
+   "lat": 48.886783799014054,
+   "lon": 2.2898626362986354
   }
  },
  {
@@ -4761,31 +4413,48 @@
   }
  },
  {
-  "id": "P154",
+  "id": "P108",
   "kind": "périphérique",
-  "name": "Rue du Caporal Peugeot",
+  "name": "Rue du Général de Langle de Cary",
   "at": {
-   "x": -3085.9926937860346,
-   "z": 2925.899122357463
+   "x": 4464.507538077433,
+   "z": -3667.0557013338707
   },
   "along": [
    {
-    "x": -3048.4426447808282,
-    "z": 2866.82295271431
+    "x": 4501.571145653188,
+    "z": -3726.4382660601477
    },
    {
-    "x": -3123.542742791241,
-    "z": 2984.9752920006163
+    "x": 4427.443930501679,
+    "z": -3607.6731366075937
    }
   ],
-  "steepest": 0.21407547210983477,
-  "steepWay": "Boulevard Périphérique Extérieur",
+  "steepest": 0.21024051093178062,
+  "steepWay": "trunk_link",
   "over": 1,
-  "detour": 1,
-  "thumb": "thumbs/P154.jpg",
+  "detour": 0.9,
+  "thumb": "thumbs/P108.jpg",
   "ll": {
-   "lat": 48.886783799014054,
-   "lon": 2.2898626362986354
+   "lat": 48.827558278157746,
+   "lon": 2.392960150119038
+  }
+ },
+ {
+  "id": "P190",
+  "kind": "périphérique",
+  "name": "motorway (bridge)",
+  "at": {
+   "x": 5945.931506021675,
+   "z": 657.5765086765856
+  },
+  "steepest": 0.17410638113782168,
+  "steepWay": "motorway_link",
+  "over": 1,
+  "thumb": "thumbs/P190.jpg",
+  "ll": {
+   "lat": 48.866407110282225,
+   "lon": 2.4131880983766214
   }
  },
  {
@@ -4806,7 +4475,7 @@
     "z": 4109.046334082602
    }
   ],
-  "steepest": 0.18008556096699552,
+  "steepest": 0.16007605419288443,
   "steepWay": "Rue de la Clôture",
   "over": 1,
   "detour": 1,
@@ -4834,7 +4503,7 @@
     "z": -4620.290435377401
    }
   ],
-  "steepest": 0.16304058352627956,
+  "steepest": 0.1587500418545347,
   "steepWay": "Boulevard Périphérique Intérieur",
   "over": 1,
   "detour": 1,
@@ -4845,87 +4514,20 @@
   }
  },
  {
-  "id": "P123",
+  "id": "P186",
   "kind": "périphérique",
-  "name": "Avenue Daumesnil",
+  "name": "Tunnel d'Italie (tunnel)",
   "at": {
-   "x": 5701.098131950053,
-   "z": -2914.52536000497
+   "x": 1846.5314832261022,
+   "z": -4907.983736213236
   },
-  "along": [
-   {
-    "x": 5641.588681106703,
-    "z": -2877.6658258201364
-   },
-   {
-    "x": 5760.607582793404,
-    "z": -2951.3848941898036
-   }
-  ],
-  "steepest": 0.15531827624426003,
-  "steepWay": "footway (foot)",
+  "steepest": 0.1541374283392376,
+  "steepWay": "Boulevard du Général de Gaulle",
   "over": 1,
-  "detour": 1,
-  "thumb": "thumbs/P123.jpg",
+  "thumb": "thumbs/P186.jpg",
   "ll": {
-   "lat": 48.83431837323154,
-   "lon": 2.4098450467387282
-  }
- },
- {
-  "id": "P111",
-  "kind": "périphérique",
-  "name": "primary_link",
-  "at": {
-   "x": -5484.405469863168,
-   "z": -2716.3442799703466
-  },
-  "along": [
-   {
-    "x": -5441.927772275615,
-    "z": -2660.705757275541
-   },
-   {
-    "x": -5526.883167450721,
-    "z": -2771.982802665152
-   }
-  ],
-  "steepest": 0.15061360628689743,
-  "steepWay": "footway (foot)",
-  "over": 1,
-  "detour": 1.1,
-  "thumb": "thumbs/P111.jpg",
-  "ll": {
-   "lat": 48.83609866416372,
-   "lon": 2.2571137604976457
-  }
- },
- {
-  "id": "B005",
-  "kind": "bridge end",
-  "name": "bridge",
-  "at": {
-   "x": 4870.75,
-   "z": -4293.66
-  },
-  "along": [
-   {
-    "x": 4904.11,
-    "z": -4314.13
-   },
-   {
-    "x": 4811.086684223473,
-    "z": -4257.050045745038
-   }
-  ],
-  "steepest": 0.1470471710541139,
-  "steepWay": "secondary",
-  "over": 0,
-  "detour": 1,
-  "thumb": "thumbs/B005.jpg",
-  "ll": {
-   "lat": 48.82192939597188,
-   "lon": 2.3985071452248388
+   "lat": 48.8164108319555,
+   "lon": 2.357213270547073
   }
  },
  {
@@ -4943,6 +4545,163 @@
   "ll": {
    "lat": 48.84924504285389,
    "lon": 2.2524032421258333
+  }
+ },
+ {
+  "id": "P178",
+  "kind": "périphérique",
+  "name": "path",
+  "at": {
+   "x": -4934.7444334057745,
+   "z": 213.5354907896099
+  },
+  "along": [
+   {
+    "x": -5003.828987543395,
+    "z": 224.81930129875434
+   },
+   {
+    "x": -4865.659879268154,
+    "z": 202.25168028046545
+   }
+  ],
+  "steepest": 0.141302076487587,
+  "steepWay": "Boulevard Périphérique Extérieur",
+  "over": 0,
+  "detour": 1.1,
+  "thumb": "thumbs/P178.jpg",
+  "ll": {
+   "lat": 48.86241822195078,
+   "lon": 2.2646190494934078
+  }
+ },
+ {
+  "id": "B076",
+  "kind": "bridge end",
+  "name": "Pont des Invalides",
+  "at": {
+   "x": -1584.4,
+   "z": 414.42
+  },
+  "along": [
+   {
+    "x": -1583.17,
+    "z": 375.85
+   },
+   {
+    "x": -1586.6311706643423,
+    "z": 484.3844329460804
+   }
+  ],
+  "steepest": 0.1397003389480194,
+  "steepWay": "Port de la Conférence",
+  "over": 0,
+  "detour": 1,
+  "thumb": "thumbs/B076.jpg",
+  "ll": {
+   "lat": 48.86422279820045,
+   "lon": 2.3103659763087334
+  }
+ },
+ {
+  "id": "P188",
+  "kind": "périphérique",
+  "name": "trunk_link",
+  "at": {
+   "x": -4488.446777346434,
+   "z": -2810.8281937955203
+  },
+  "steepest": 0.13877851585211376,
+  "steepWay": "trunk_link",
+  "over": 0,
+  "thumb": "thumbs/P188.jpg",
+  "ll": {
+   "lat": 48.8352499007248,
+   "lon": 2.270712974048157
+  }
+ },
+ {
+  "id": "P118",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Sèvres",
+  "at": {
+   "x": -4021.5415038100764,
+   "z": -2976.113184400217
+  },
+  "along": [
+   {
+    "x": -4049.015720094539,
+    "z": -3040.496159164937
+   },
+   {
+    "x": -3994.0672875256137,
+    "z": -2911.730209635497
+   }
+  ],
+  "steepest": 0.13790461097758894,
+  "steepWay": "Boulevard Périphérique Intérieur (bridge)",
+  "over": 0,
+  "detour": 1.4,
+  "thumb": "thumbs/P118.jpg",
+  "ll": {
+   "lat": 48.83376512039184,
+   "lon": 2.27708828315524
+  }
+ },
+ {
+  "id": "P134",
+  "kind": "périphérique",
+  "name": "Voie BG/16",
+  "at": {
+   "x": -4802.775786973225,
+   "z": 406.6452397431015
+  },
+  "along": [
+   {
+    "x": -4771.639253980367,
+    "z": 469.3390696881982
+   },
+   {
+    "x": -4833.912319966083,
+    "z": 343.9514097980048
+   }
+  ],
+  "steepest": 0.13664199742179614,
+  "steepWay": "footway (foot)",
+  "over": 0,
+  "detour": 1,
+  "thumb": "thumbs/P134.jpg",
+  "ll": {
+   "lat": 48.86415295634076,
+   "lon": 2.2664210015405084
+  }
+ },
+ {
+  "id": "B040",
+  "kind": "bridge end",
+  "name": "Pont Mirabeau",
+  "at": {
+   "x": -4040.01,
+   "z": -1599.47
+  },
+  "along": [
+   {
+    "x": -4071.06,
+    "z": -1579.68
+   },
+   {
+    "x": -3980.980326303023,
+    "z": -1637.0930995962378
+   }
+  ],
+  "steepest": 0.13426133003476834,
+  "steepWay": "Port de Javel-Haut",
+  "over": 0,
+  "detour": 1,
+  "thumb": "thumbs/B040.jpg",
+  "ll": {
+   "lat": 48.84613171652509,
+   "lon": 2.2768361070102547
   }
  },
  {
@@ -4974,59 +4733,87 @@
   }
  },
  {
-  "id": "P178",
+  "id": "P096",
   "kind": "périphérique",
-  "name": "path",
+  "name": "Avenue de la Porte d'Ivry (bridge)",
   "at": {
-   "x": -4934.7444334057745,
-   "z": 213.5354907896099
+   "x": 3022.8660618150197,
+   "z": -4559.736833143098
   },
   "along": [
    {
-    "x": -5003.828987543395,
-    "z": 224.81930129875434
+    "x": 3078.501367624939,
+    "z": -4602.218743969199
    },
    {
-    "x": -4865.659879268154,
-    "z": 202.25168028046545
+    "x": 2967.2307560051004,
+    "z": -4517.254922316997
    }
   ],
-  "steepest": 0.11214884777910789,
-  "steepWay": "Boulevard Périphérique Intérieur",
+  "steepest": 0.12777531299998798,
+  "steepWay": "trunk_link",
   "over": 0,
-  "detour": 1.1,
-  "thumb": "thumbs/P178.jpg",
+  "detour": 1.3,
+  "thumb": "thumbs/P096.jpg",
   "ll": {
-   "lat": 48.86241822195078,
-   "lon": 2.2646190494934078
+   "lat": 48.81953918711225,
+   "lon": 2.3732754077233214
   }
  },
  {
-  "id": "B076",
-  "kind": "bridge end",
-  "name": "Pont des Invalides",
+  "id": "P162",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte de Clichy",
   "at": {
-   "x": -1584.4,
-   "z": 414.42
+   "x": -1631.0940066949713,
+   "z": 4009.3643630115885
   },
   "along": [
    {
-    "x": -1583.17,
-    "z": 375.85
+    "x": -1673.626132530431,
+    "z": 4064.9612898323817
    },
    {
-    "x": -1586.6311706643423,
-    "z": 484.3844329460804
+    "x": -1588.5618808595116,
+    "z": 3953.7674361907953
    }
   ],
-  "steepest": 0.10767762885514653,
-  "steepWay": "Cours Albert-Iᵉʳ",
+  "steepest": 0.12729886756050232,
+  "steepWay": "Avenue de la Porte de Clichy",
+  "over": 0,
+  "detour": 1.2,
+  "thumb": "thumbs/P162.jpg",
+  "ll": {
+   "lat": 48.896516732868974,
+   "lon": 2.3097283978897236
+  }
+ },
+ {
+  "id": "P106",
+  "kind": "périphérique",
+  "name": "Rue Bruneseau",
+  "at": {
+   "x": 3809.5395300574023,
+   "z": -3985.262125149814
+  },
+  "along": [
+   {
+    "x": 3757.5596494075958,
+    "z": -3938.378311230382
+   },
+   {
+    "x": 3861.519410707209,
+    "z": -4032.1459390692457
+   }
+  ],
+  "steepest": 0.11995242500143491,
+  "steepWay": "footway (foot)",
   "over": 0,
   "detour": 1,
-  "thumb": "thumbs/B076.jpg",
+  "thumb": "thumbs/P106.jpg",
   "ll": {
-   "lat": 48.86422279820045,
-   "lon": 2.3103659763087334
+   "lat": 48.824699781217554,
+   "lon": 2.3840169581204727
   }
  },
  {
@@ -5047,7 +4834,7 @@
     "z": 1373.5023798823865
    }
   ],
-  "steepest": 0.10667106466046318,
+  "steepest": 0.11520474983330055,
   "steepWay": "footway (foot)",
   "over": 0,
   "detour": 1,
@@ -5058,31 +4845,31 @@
   }
  },
  {
-  "id": "P134",
+  "id": "P111",
   "kind": "périphérique",
-  "name": "Voie BG/16",
+  "name": "primary_link",
   "at": {
-   "x": -4802.775786973225,
-   "z": 406.6452397431015
+   "x": -5484.405469863168,
+   "z": -2716.3442799703466
   },
   "along": [
    {
-    "x": -4771.639253980367,
-    "z": 469.3390696881982
+    "x": -5441.927772275615,
+    "z": -2660.705757275541
    },
    {
-    "x": -4833.912319966083,
-    "z": 343.9514097980048
+    "x": -5526.883167450721,
+    "z": -2771.982802665152
    }
   ],
-  "steepest": 0.10663704937700234,
+  "steepest": 0.10733041774708858,
   "steepWay": "footway (foot)",
   "over": 0,
-  "detour": 1,
-  "thumb": "thumbs/P134.jpg",
+  "detour": 1.1,
+  "thumb": "thumbs/P111.jpg",
   "ll": {
-   "lat": 48.86415295634076,
-   "lon": 2.2664210015405084
+   "lat": 48.83609866416372,
+   "lon": 2.2571137604976457
   }
  },
  {
@@ -5114,6 +4901,135 @@
   }
  },
  {
+  "id": "B002",
+  "kind": "bridge end",
+  "name": "Pont Nelson Mandela",
+  "at": {
+   "x": 4954.49,
+   "z": -4317.5
+  },
+  "along": [
+   {
+    "x": 4935.22,
+    "z": -4356.06
+   },
+   {
+    "x": 4985.781960057283,
+    "z": -4254.883602500836
+   }
+  ],
+  "steepest": 0.10089011455712829,
+  "steepWay": "Quai de Bercy",
+  "over": 0,
+  "detour": 1.3,
+  "thumb": "thumbs/B002.jpg",
+  "ll": {
+   "lat": 48.82171523760814,
+   "lon": 2.399650564275525
+  }
+ },
+ {
+  "id": "P163",
+  "kind": "périphérique",
+  "name": "Avenue de la Porte d'Asnières (bridge)",
+  "at": {
+   "x": -2236.5229726711514,
+   "z": 3508.1206713143783
+  },
+  "along": [
+   {
+    "x": -2191.5187631569897,
+    "z": 3454.5051779751816
+   },
+   {
+    "x": -2281.527182185313,
+    "z": 3561.736164653575
+   }
+  ],
+  "steepest": 0.09490144014142508,
+  "steepWay": "trunk_link",
+  "over": 0,
+  "detour": 1,
+  "thumb": "thumbs/P163.jpg",
+  "ll": {
+   "lat": 48.892013984175776,
+   "lon": 2.3014616315470655
+  }
+ },
+ {
+  "id": "B072",
+  "kind": "bridge end",
+  "name": "Pont de l'Alma",
+  "at": {
+   "x": -2212.72,
+   "z": 401.3
+  },
+  "along": [
+   {
+    "x": -2210.28,
+    "z": 362.85
+   },
+   {
+    "x": -2217.1532152199984,
+    "z": 471.1594775446623
+   }
+  ],
+  "steepest": 0.08518285830876844,
+  "steepWay": "footway (foot)",
+  "over": 0,
+  "detour": 1.2,
+  "thumb": "thumbs/B072.jpg",
+  "ll": {
+   "lat": 48.864104939235176,
+   "lon": 2.301786646741897
+  }
+ },
+ {
+  "id": "B013",
+  "kind": "bridge end",
+  "name": "Boulevard des Îles",
+  "at": {
+   "x": -6001.8,
+   "z": -4302.29
+  },
+  "along": [
+   {
+    "x": -6015.51,
+    "z": -4261.74
+   },
+   {
+    "x": -5979.379713276688,
+    "z": -4368.602372474859
+   }
+  ],
+  "steepest": 0.07774597127436886,
+  "steepWay": "Quai de la Bataille de Stalingrad",
+  "over": 0,
+  "detour": 1.1,
+  "thumb": "thumbs/B013.jpg",
+  "ll": {
+   "lat": 48.82185187136285,
+   "lon": 2.2500490511296127
+  }
+ },
+ {
+  "id": "P192",
+  "kind": "périphérique",
+  "name": "trunk_link",
+  "at": {
+   "x": 3838.969246711838,
+   "z": 4433.825874850538
+  },
+  "steepest": 0.07594594466981136,
+  "steepWay": "trunk_link",
+  "over": 0,
+  "thumb": "thumbs/P192.jpg",
+  "ll": {
+   "lat": 48.90032973550503,
+   "lon": 2.3844188031011146
+  }
+ },
+ {
   "id": "P146",
   "kind": "périphérique",
   "name": "Rue Léon Frapié",
@@ -5142,6 +5058,34 @@
   }
  },
  {
+  "id": "B011",
+  "kind": "bridge end",
+  "name": "Pont Renault",
+  "at": {
+   "x": -7194.37,
+   "z": -3748.16
+  },
+  "along": [
+   {
+    "x": -7216.54,
+    "z": -3777.86
+   },
+   {
+    "x": -7152.497030002697,
+    "z": -3692.06495223636
+   }
+  ],
+  "steepest": 0.06995616225424141,
+  "steepWay": "Passerelle Constant-Lemaître (foot) (bridge)",
+  "over": 0,
+  "detour": 1.2,
+  "thumb": "thumbs/B011.jpg",
+  "ll": {
+   "lat": 48.82682970584675,
+   "lon": 2.2337652290938306
+  }
+ },
+ {
   "id": "P089",
   "kind": "périphérique",
   "name": "Passerelle des Arts et Métiers (bridge)",
@@ -5159,7 +5103,7 @@
     "z": -4715.447791007766
    }
   ],
-  "steepest": 0.06931488998148574,
+  "steepest": 0.06744151457658108,
   "steepWay": "footway (foot)",
   "over": 0,
   "detour": 1.3,
@@ -5167,6 +5111,62 @@
   "ll": {
    "lat": 48.817694584267855,
    "lon": 2.3340457694332932
+  }
+ },
+ {
+  "id": "B015",
+  "kind": "bridge end",
+  "name": "Passerelle du Parc de l'Europe",
+  "at": {
+   "x": -5451.12,
+   "z": -3917.46
+  },
+  "along": [
+   {
+    "x": -5479.47,
+    "z": -3891.25
+   },
+   {
+    "x": -5399.720614191544,
+    "z": -3964.9795027174473
+   }
+  ],
+  "steepest": 0.055804899885324874,
+  "steepWay": "footway (foot)",
+  "over": 0,
+  "detour": 1.1,
+  "thumb": "thumbs/B015.jpg",
+  "ll": {
+   "lat": 48.825308858070734,
+   "lon": 2.2575682534562387
+  }
+ },
+ {
+  "id": "B005",
+  "kind": "bridge end",
+  "name": "bridge",
+  "at": {
+   "x": 4870.75,
+   "z": -4293.66
+  },
+  "along": [
+   {
+    "x": 4904.11,
+    "z": -4314.13
+   },
+   {
+    "x": 4811.086684223473,
+    "z": -4257.050045745038
+   }
+  ],
+  "steepest": 0.042144356549731324,
+  "steepWay": "secondary_link",
+  "over": 0,
+  "detour": 1,
+  "thumb": "thumbs/B005.jpg",
+  "ll": {
+   "lat": 48.82192939597188,
+   "lon": 2.3985071452248388
   }
  },
  {
@@ -5204,7 +5204,7 @@
     "z": 3235.6071183539084
    }
   ],
-  "steepest": 0.034472477106015274,
+  "steepest": 0.0323024459754872,
   "steepWay": "footway (foot)",
   "over": 0,
   "detour": 1.1,
@@ -5316,7 +5316,7 @@
     "z": 4674.27377681643
    }
   ],
-  "steepest": 0.018743715916685593,
+  "steepest": 0.02109386028892104,
   "steepWay": "footway (foot) (bridge)",
   "over": 0,
   "detour": 0.4,

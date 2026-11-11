@@ -15,7 +15,7 @@ import { hex, type Rgb } from '../../kit.ts'
 
 const RENDER: Rgb = hex('#ece6d6'), CORE: Rgb = hex('#d8c49a'), GLASS: Rgb = hex('#3f4a52'), FRAME: Rgb = hex('#f4f2ec')
 const ROOF: Rgb = hex('#8e8b85'), BAND: Rgb = hex('#e2dccb')
-const plaster = surfaceTag('render'), glassTag = surfaceTag('glass')
+const plaster = surfaceTag('stucco'), glassTag = surfaceTag('glass')
 
 const STOREYS = 5, GF = 3.4, FL = 2.9     // ground storey, upper storeys
 const BAY = 3.0, WIN_W = 2.55, WIN_H = 1.45, SILL = 0.85, GF_WIN_H = 2.2
