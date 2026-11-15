@@ -48,7 +48,7 @@ import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts
 import { bridgeStructuresLayer, PARIS_BRIDGES, STEEL_OVER_WATER } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { parisHousesLayer } from './render/paris-houses.ts'
-import { boatsLayer } from './render/boats.ts'
+import { boatsLayer, type LocalPort } from './render/boats.ts'
 import { RiverTraffic, riverLine } from './render/river-traffic.ts'
 import { regionKit } from './render/region-kits.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
@@ -863,7 +863,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // the posters on the Morris columns, from the region's poster library (PARIS_EXPAND §6 item 9)
   if (!off.has('furniture')) city.addLayer(postersLayer(scene, city.terrain, pkg.region))
   // the péniches moored along the river (render/boats.ts)
-  city.addLayer(boatsLayer(scene))
+  {
+    // …drawn from the region's boat library, with the ports it fills (render/paris/ports.ts), when it has them
+    const moor = regionKit(pkg.region).moorings
+    const proj = new Projection(pkg.origin)
+    const ports: LocalPort[] = (moor ?? []).map((p, i) => {
+      const q = proj.toLocal({ lat: p.at[0], lon: p.at[1] })
+      const b = (p.bearing * Math.PI) / 180
+      return { name: p.name, x: q.x, z: q.z, side: p.bank === 'L' ? 1 : -1, ux: Math.sin(b), uz: Math.cos(b), len: p.len, per100: p.per100, mix: Object.entries(p.mix) as LocalPort['mix'], raft: p.raft ?? 0, seed: 7001 + i * 31 }
+    })
+    city.addLayer(boatsLayer(scene, city.terrain, moor !== undefined, ports))
+  }
   // …and the boats under way on it (render/river-traffic.ts)
   let river: RiverTraffic | null = null
   // (a river line is a region with a river fleet — Paris and the Seine; San Francisco's boats run the bay's routes, below,

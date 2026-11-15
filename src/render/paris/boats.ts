@@ -3,9 +3,11 @@
  * their glass saloons and open top decks full of people, the Batobus under its glass roof, and a sand barge
  * low in the water with its cargo heaped in the hold.
  */
-import type { MeshBuilder } from '../buildings.ts'
+import { MeshBuilder } from '../buildings.ts'
 import { box, prism, wedge, type Rgb } from '../models.ts'
 import { DARK, F, GLASS, LAUNCH, SHIRTS, WHITE, bow, passengers, rnd, type BoatKind } from '../river-traffic.ts'
+import { MOORED } from './moored.ts'
+import { containerShip } from '../ships.ts'
 
 /** A bateau-mouche: long and low, a glass saloon over most of it, and an open top deck with benches. */
 function bateauMoucheBoat(out: MeshBuilder, seed: number): { L: number; B: number } {
@@ -74,5 +76,47 @@ const MOUCHE: BoatKind = { name: 'bateauMouche', build: bateauMoucheBoat, speed:
 const BATOBUS: BoatKind = { name: 'batobus', build: batobusBoat, speed: 4.2, lane: 20 }
 const BARGE: BoatKind = { name: 'barge', build: bargeBoat, speed: 2.8, lane: 20 }
 
-/** the order they are spread along the river in: mostly sightseeing boats, some work */
-export const PARIS_FLEET: BoatKind[] = [MOUCHE, MOUCHE, BATOBUS, BARGE, MOUCHE, LAUNCH, BATOBUS, BARGE, MOUCHE, LAUNCH]
+/** a library boat under way (render/paris/moored.ts builds whole lengths; a fleet kind returns halves) */
+const underWay = (name: string, kind: keyof typeof MOORED, L: number, B: number, speed: number, lane: number, hideEnds?: number): BoatKind =>
+  ({ name, speed, lane, hideEnds, build: (out, seed) => { MOORED[kind](out, L, B, seed); return { L: L / 2, B: B / 2 } } })
+
+/** append a boat built in its own frame, `dz` forward */
+function append(out: MeshBuilder, part: MeshBuilder, dz: number): void {
+  const base = out.positions.length / 3
+  for (let k = 0; k < part.positions.length; k += 3) out.positions.push(part.positions[k], part.positions[k + 1], part.positions[k + 2] + dz)
+  for (const v of part.normals) out.normals.push(v)
+  for (const v of part.uvs) out.uvs.push(v)
+  for (const v of part.colors) out.colors.push(v)
+  for (const idx of part.indices) out.indices.push(base + idx)
+}
+
+/** A PUSH CONVOY: a pusher behind one or two loaded barges, rigid as one boat. */
+function convoyBoat(out: MeshBuilder, seed: number): { L: number; B: number } {
+  const n = rnd(seed)() > 0.5 ? 2 : 1
+  const bl = 38
+  const B = 9.5
+  const L = n * bl + 15
+  for (let i = 0; i < n; i++) {
+    const part = new MeshBuilder()
+    MOORED.workBarge(part, bl, B, seed + i)
+    append(out, part, L / 2 - bl / 2 - i * bl)
+  }
+  const part = new MeshBuilder()
+  MOORED.pusher(part, 15, B, seed)
+  append(out, part, -L / 2 + 7.5)
+  return { L: L / 2, B: B / 2 }
+}
+
+const PENICHE = underWay('peniche', 'workBarge', 38.5, 5.05, 3.0, 22)
+const DUTCH = underWay('dutch', 'dutch', 22, 4.4, 3.4, 22)
+const CRUISER = underWay('cruiser', 'cruiser', 11, 3.4, 5, 18)
+const RIVER_CRUISE = underWay('riverCruise', 'hotel', 110, 11.4, 3.0, 24, 220)
+const CONVOY: BoatKind = { name: 'convoy', build: convoyBoat, speed: 2.4, lane: 24, hideEnds: 200 }
+const CONTAINERS: BoatKind = { name: 'containerBarge', speed: 2.6, lane: 24, hideEnds: 220, build: (out, seed) => { containerShip(out, 110, 11.4, seed); return { L: 55, B: 5.7 } } }
+
+/**
+ * the order they are spread along the river in: mostly sightseeing boats, then the work (péniches, a push
+ * convoy, a container barge), river cruise ships (common in Paris: owner, 2026-11-15), pleasure boats
+ */
+export const PARIS_FLEET: BoatKind[] = [MOUCHE, MOUCHE, BATOBUS, BARGE, MOUCHE, LAUNCH, RIVER_CRUISE, PENICHE, BATOBUS, MOUCHE, DUTCH, CONVOY,
+  MOUCHE, CRUISER, BARGE, RIVER_CRUISE, LAUNCH, PENICHE, CONTAINERS, MOUCHE, BATOBUS, CRUISER]

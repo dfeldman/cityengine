@@ -33,6 +33,30 @@ import { fitCourt, type CourtSport } from './city/sports.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, setTimeOfDay, type TimeOfDay } from './render/facade-material.ts'
 import { Water } from './render/water.ts'
+import { MOORED, MOORED_SIZES, type MooredKind } from './render/paris/moored.ts'
+import { NAMED_BOATS } from './render/paris/named-boats.ts'
+import { containerShip, cruiseShip, SHIP_SIZES } from './render/ships.ts'
+
+/** every moored kind at seeds 1–6, and the famous boats at their real sizes (name → L, B) */
+const NAMED_SIZES: Record<string, [string, number, number]> = {
+  Batofar: ['Le Bateau phare', 41, 7.6], Asile: ['Asile Flottant', 70, 8], PetitBain: ['Petit Bain', 40, 10.5], DameDeCanton: ['La Dame De Canton', 25, 7],
+  OffParisSeine: ['Off Paris Seine', 82, 20], Fluctuart: ['Fluctuart', 40, 11.4], AnnetteK: ['Annette K', 108, 16.7], BrigadeFluviale: ['Brigade fluviale', 30, 8],
+  CentreDeSecours: ['Centre de Secours La Monnaie', 28, 8], Ilot: ["L'île prairie", 12, 6],
+}
+const BOAT_MODELS: Record<string, (o: MeshBuilder) => void> = {}
+for (const k of Object.keys(MOORED) as MooredKind[]) for (let s = 1; s <= 6; s++) {
+  const z = MOORED_SIZES[k]
+  BOAT_MODELS[`boat_${k}_${s}`] = (o) => { MOORED[k](o, (z.L[0] + z.L[1]) / 2, z.B, s * 7919) }
+}
+// the big ships at each size, seeds 1–3: `?model=ship_panamax_2`, `?model=ship_cruiseMega_1`
+for (const [k, z] of Object.entries(SHIP_SIZES)) for (let s = 1; s <= 3; s++) {
+  BOAT_MODELS[`ship_${k}_${s}`] = (o) => { (k.startsWith('cruise') || k === 'expedition' ? cruiseShip : containerShip)(o, z.L, z.B, s * 7919) }
+}
+BOAT_MODELS.ship_classic_1 = (o) => { cruiseShip(o, 270, 32, 11, 'classic') }
+for (const [key, [name, L, B]] of Object.entries(NAMED_SIZES)) {
+  const n = NAMED_BOATS.find((e) => e.re.test(name))
+  if (n?.build) BOAT_MODELS[`boat_${key}`] = (o) => { n.build!(o, L, B, 1) }
+}
 
 export async function modelShowcase(canvas: HTMLCanvasElement, name: string, size: number, time: TimeOfDay = 'day'): Promise<void> {
   // (the hour first: the landmark material reads it when it is made)
@@ -57,6 +81,8 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     sanisette: (o) => parisStreetModel('sanisette', 1)!(o),
     bikeRack: (o) => bikeParking(6, 11)(o), bikeRackEmpty: (o) => bikeParking(6, 4)(o),
     cageBin: (o) => parisStreetModel('litter', 1)!(o), litterHoop: (o) => parisStreetModel('litter', 7)!(o), laPosteBox, parisPanel: (o) => parisPanel(o, 2),
+    // the moored boat library (render/paris/moored.ts, named-boats.ts): `?model=boat_peniche_3` (kind, seed), `?model=boat_Batofar`
+    ...BOAT_MODELS,
     sucette: (o) => sucette(o, 4), sucetteTall: (o) => sucette(o, 1), cafeBoard: (o) => cafeBoard(o, 2), cafeBoardPoster: (o) => cafeBoard(o, 3), stoneBench, jardiniere: (o) => jardiniere(o, 2), jardiniereConcrete: (o) => jardiniere(o, 7), boxwoodPot: (o) => boxwoodPot(o, 1),
   }
   /*
