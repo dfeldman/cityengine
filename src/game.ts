@@ -1293,19 +1293,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const life = new Life(scene, pkg as unknown as CityPackage, peopled, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'), regionKit(pkg.region).cars)
   /** seconds to the next refresh of the parked cars round the rider (city/parking.ts) */
   let parkClock = 0
-  /** the parked cars now standing (the car parks' and the kerb bays'): solid, as the standing traffic is */
-  let parkedSolid: { x: number; z: number; heading: number }[] = []
   /*
-   * …and the parked cars the stall valve has let the rider through (owner, 2026-11-04: "if a parked car blocks your
-   * route you are stuck forever"): keyed by position, as the list is rebuilt each refresh. A car is solid again once
-   * the rider is PARKED_FORGET metres clear of it.
+   * The parked cars (the car parks' and the kerb bays') are solid, as the standing traffic is, and the rider's planners
+   * steer round them: they are handed to the traffic each refresh (sim/traffic.ts `setParked`), which owns them from
+   * there — the weave, the side fence, the hold, the solid step and the stall valve (owner, 2026-11-04: "if a parked
+   * car blocks your route you are stuck forever"). Only those within PARKED_NEAR metres: the planners look 40 at most.
    */
-  const parkedPassed = new Map<string, { x: number; z: number }>()
-  const PARKED_PASS_R = 10
-  const PARKED_FORGET = 25
-  const parkedKey = (s: { x: number; z: number }): string => `${s.x.toFixed(1)},${s.z.toFixed(1)}`
-  const parkedInside = (b: ReturnType<typeof boxOf>): boolean => parkedSolid.some((s) =>
-    parkedPassed.has(parkedKey(s)) && Math.hypot(s.x - b.x, s.z - b.z) < 4 && overlap(b, boxOf(s.x, s.z, s.heading, SIZE.car)))
+  const PARKED_NEAR = 80
+  /** metres of air between the rider and the parked cars they ride past: a door opening (Navigator `capHome`) */
+  const DOOR_CLEAR = 0.6
+  traffic.parkedPlan = !off.has('parkplan')
   /*
    * SALESFORCE PARK'S GONDOLA (docs/SALESFORCE-PARK.md; the owner, 2026-10-02: "the gondola should be like a cable car
    * or streetcar"): a transit line of one cabin, shuttling between Salesforce Plaza and the park, boarded like the
@@ -3285,13 +3282,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         stallFrom = lastRider ? { ...lastRider.at } : null
       } else stalled += dt
       if (stalled > STALL_LIMIT && lastRider) {
-        let n = traffic.squeezeAround(lastRider)
-        for (const p of parkedSolid) {
-          const k = parkedKey(p)
-          if (parkedPassed.has(k) || Math.hypot(p.x - lastRider.at.x, p.z - lastRider.at.z) > PARKED_PASS_R) continue
-          parkedPassed.set(k, { x: p.x, z: p.z })
-          n++
-        }
+        const n = traffic.squeezeAround(lastRider)
         if (n > 0) hud.note('squeezing through…')
         stalled = 0
       }
@@ -3312,7 +3303,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // stopped (held behind a car, or against one): edge sideways round it, slowly (Navigator.sidestep)
       if (!opts.freeze && !hold && lastRider && state.speed < 0.3) nav.sidestep(dt)
       // inside a vehicle the rider was let through: very slowly (the last resort above)
-      if (lastRider && (traffic.creeping(lastRider.box) || parkedInside(lastRider.box))) ride.cap(1.5)
+      if (lastRider && traffic.creeping(lastRider.box)) ride.cap(1.5)
       if (before && lastRider && crossed.length === 0) {
         const riderBox = (): ReturnType<typeof boxOf> => {
           const p = nav.smoothed()
@@ -3320,12 +3311,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         }
         const blocked = (): ReturnType<typeof traffic.solidAt> | 'cyclist' | null => {
           const b = riderBox()
-          /*
-           * …and the PARKED cars (owner, 2026-10-30: "being able to go through parked cars, but not moving cars, is very odd
-           * since it is not usually obvious which is which"): the kerb bays' and the car parks' cars are solid too.
-           */
-          const parked = parkedSolid.find((s) => !parkedPassed.has(parkedKey(s)) && Math.hypot(s.x - b.x, s.z - b.z) < 4 && overlap(b, boxOf(s.x, s.z, s.heading, SIZE.car)))
-          if (parked) return { kind: 'car', speed: 0, heading: parked.heading, why: 'parked', inBox: false } as unknown as ReturnType<typeof traffic.solidAt>
+          // (the PARKED cars too, owner 2026-10-30: "being able to go through parked cars, but not moving cars, is very odd
+          // since it is not usually obvious which is which" — they are the traffic's now, `setParked`)
           return traffic.solidAt(lastRider!, b) ?? (cyclistInside(b, lastRider!.box) ? 'cyclist' : null)
         }
         const wall = blocked()
@@ -3498,6 +3485,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           const reach = { left: Math.max(room.left, side.left), right: Math.min(room.right, side.right) }
           // aiming for the rider's own line — the right-hand side (Navigator `preferShift`) — round whatever stands
           // (last frame's choice, where it is now: the weave holds it rather than dither between two — `weave`)
+          // (resting door-clear of the parked cars on the right, not in their row: Navigator `capHome`)
+          const parkLine = off.has('parkline') ? null : traffic.parkedLine(riderNow, nav.nudged)
+          nav.capHome(parkLine === null ? null : nav.nudged + parkLine - SIZE.bike.wid / 2 - DOOR_CLEAR)
           weaveShift = traffic.weave(riderNow, reach.left, reach.right, nav.preferShift, weaveAt === null || off.has('weavehold') ? null : weaveAt - nav.nudged)
           // steering by hand (fast input): the rider goes where they steer, and is held judged from there
           if (nav.fast && lastAxis !== 0) weaveShift = 0
@@ -3506,7 +3496,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           // and never across into the side of a car beside them, however they steer
           if (off.has('fence')) nav.fence(null, null)
           else nav.fence(Number.isFinite(side.left) ? nav.nudged + side.left : null, Number.isFinite(side.right) ? nav.nudged + side.right : null)
-        }
+        } else nav.capHome(null)
         // the streetcars and cable cars where Life last drew them (render/life.ts `transitBodies`): obstacles to the
         // traffic and the rider; and none of them stops for a rider who is aboard one
         traffic.setTransit(off.has('tramobstacles') ? [] : life.transitBodies)
@@ -3609,8 +3599,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const focus = frozen ? (held ? held.to : orbit.look) : at
         // the car parks' parked cars, refreshed once a second round the rider (city/parking.ts)
         parkClock -= dt
-        if (parkClock <= 0) { parkClock = 1; const st = city.parkedNear(focus.x, focus.z, 260); life.park(st, city.terrain); parkedSolid = st
-          for (const [k, p] of parkedPassed) if (Math.hypot(p.x - focus.x, p.z - focus.z) > PARKED_FORGET) parkedPassed.delete(k) }
+        if (parkClock <= 0) { parkClock = 1; const st = city.parkedNear(focus.x, focus.z, 260); life.park(st, city.terrain)
+          traffic.setParked(st.filter((p) => Math.hypot(p.x - focus.x, p.z - focus.z) < PARKED_NEAR)) }
         life.balls = courtPlayers.balls
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
         cableRiders?.update(dt, life.transitBodies, focus)
@@ -3881,7 +3871,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   ;(window as unknown as { __ride?: unknown }).__ride = () => ({
     hold: holdWhy, speed: lastState?.speed ?? 0, lead: lastLead, stalled,
     x: lastAt.x, z: lastAt.z, y: lastY, terrain: city.terrain.heightAt(lastAt.x, lastAt.z), edge: nav.mapEdgeId(),
-    elevation: nav.elevation().y,
+    elevation: nav.elevation().y, limit: ride.limit, surface: nav.edge.surface, foot: nav.edge.foot, grade: lastState?.grade ?? 0,
+    junction: nav.next()?.ahead ?? null, speedup: ride.speedup, sim: simSeconds, travelled: nav.travelled,
   })
   /*
    * Views (tools/views.ts, views/<city>.json): `__view(from, to)` holds the camera at [lat, lon, metres above

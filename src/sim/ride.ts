@@ -103,6 +103,8 @@ export class Ride {
   get speed(): number { return this.v }
 
   /** no faster than `world` m/s (the world's speed, the speedup counted): creeping through a car (game.ts) */
+  /** what held the speed down on the last step (probes): 'corner', 'leader', 'surface', 'top' or '' */
+  limit = ''
   cap(world: number): void { this.v = Math.min(this.v, world / this.speedup) }
 
   /** Stop dead — a collision (sim/traffic.ts), or a standing car in the way (game.ts): the rider simply stops. */
@@ -149,6 +151,7 @@ export class Ride {
      * still hold in the world: a corner taken at √(a·r) world speed, the car ahead never passed through.
      */
     const k = this.speedup
+    this.limit = ''
     if (k !== 1) {
       cornerRadius /= k * k
       distanceToCorner /= k
@@ -198,6 +201,7 @@ export class Ride {
         const needed = (this.v * this.v - vMax * vMax) / (2 * this.cfg.brakeDecel)
         if (distanceToCorner <= needed + 3) {
           this.v = Math.max(vMax, this.v - this.cfg.brakeDecel * dt)
+          this.limit = 'corner'
           this.braking = true
         }
       }
@@ -210,6 +214,7 @@ export class Ride {
         this.v = Math.max(leader.speed, this.v - this.cfg.brakeDecel * 2 * dt)
         if (leader.gap < 0.5) this.v = Math.min(this.v, leader.speed)
         this.braking = true
+        this.limit = 'leader'
       }
     }
 
@@ -226,6 +231,7 @@ export class Ride {
     if (this.v > top) {
       const over = Math.min(1, (this.v - top) / ((this.cfg.topBand * share) / k))
       this.v = Math.max(top, this.v - this.cfg.brakeDecel * over * dt)
+      this.limit = share < 1 ? 'surface' : 'top'
       if (over > 0.25) this.braking = true
     }
 

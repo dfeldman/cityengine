@@ -417,8 +417,18 @@ export class Navigator {
     const commit = this.commitDistance(this.speed)
     const turning = !!j && !j.passThrough && (this.fast ? this.isCommitted : j.ahead < 2 * commit + 4)
     // a left turn is made from the middle of the road, as a cyclist does; a right one from the right
-    return turning && this.requested === 'left' ? 0 : this.home
+    return turning && this.requested === 'left' ? 0 : Math.min(this.home, this.homeCap ?? Infinity)
   }
+
+  /**
+   * THE PARKING LANE (owner, 2026-11-15, Paris: "parked cars are so present, and roads so narrow"): `home` is 1.2 m
+   * from the kerb, which on a street with kerb bays is through the parked cars. The game sets this each frame to the
+   * line just clear of the parked cars on the right (an offset, metres right of the line; sim/traffic.ts
+   * `parkedLine`), and the rider rests there instead, door-clear. Null: no parked cars, `home` as ever. Never left
+   * of the line itself — a narrow street keeps its rider in the street's middle at worst.
+   */
+  capHome(at: number | null): void { this.homeCap = at === null ? null : Math.max(0, at) }
+  private homeCap: number | null = null
 
   /**
    * Drift across the carriageway (item H): 1.5 m a press, eased over about a second, never nearer the kerb

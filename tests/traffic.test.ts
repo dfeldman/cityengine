@@ -208,3 +208,29 @@ describe('weaving past stopped traffic (Traffic.weave)', () => {
   })
 })
 
+
+describe('the parked cars (Traffic.setParked, parkedLine)', () => {
+  const street = () => buildGraph([{ id: 1, a: 0, b: 1, points: [{ x: 0, z: 0 }, { x: 0, z: 400 }], length: 400, surface: 'asphalt', width: 9, walk: 2, foot: false }])
+  // riding the old `home` line, 1.2 m in from the right kerb (+x is right, heading north)
+  const rider = (x = 3.3): RiderNow => ({ at: { x, z: 100 }, heading: 0, speed: 5, edgeId: 1, s: 100, dir: 1, grade: 0, box: boxOf(x, 100, 0, SIZE.bike) })
+
+  it('weaves out round a kerb bay car on the rider’s line, and holds them short of it otherwise', () => {
+    const t = new Traffic(street(), 'none')
+    t.setParked([{ x: 3.5, z: 110, heading: 0, id: 1, kerb: true }])
+    const shift = t.weave(rider(), -7, 0.4)
+    expect(shift).not.toBeNull()
+    expect(3.3 + shift!).toBeLessThan(3.5 - SIZE.car.wid / 2 - SIZE.bike.wid / 2)
+    expect(t.leaderFor(rider(), 0, true)).not.toBeNull()
+    expect(t.leaderFor(rider(), shift!, true)).toBeNull()
+  })
+
+  it('finds the parking line from kerb bay cars only, and not with the planners off', () => {
+    const t = new Traffic(street(), 'none')
+    t.setParked([{ x: 3.5, z: 120, heading: 0, id: 1, kerb: true }, { x: 2.5, z: 105, heading: Math.PI / 2, id: 2 }])
+    const line = t.parkedLine(rider(), 3.3)
+    expect(line).not.toBeNull()
+    expect(3.3 + line!).toBeCloseTo(3.5 - SIZE.car.wid / 2, 5)
+    t.parkedPlan = false
+    expect(t.weave(rider(), -7, 0.4, 0)).toBe(0)
+  })
+})

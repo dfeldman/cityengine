@@ -194,6 +194,13 @@ const CHOOSE = 40
  * one-lane street — waiting cycle after cycle (92 s in the crossroads test).
  */
 const PATIENCE = 8
+/** metres the view must be clear of a parked car the rider was let through before it is solid again (`setParked`) */
+const PARKED_FORGET = 25
+/** the parking line (`parkedLine`): metres behind and ahead of the rider it looks along, and how far right of them a
+ * of the street's line a parked car must stand to count */
+export const PARK_LINE_BACK = 10
+export const PARK_LINE_AHEAD = 30
+export const PARK_LINE_MIN = 0.8
 
 /**
  * How far the straight run ahead must reach before a bus is spawned on a street, as a multiple of the populated
@@ -370,8 +377,39 @@ export class Traffic {
   get tramViews(): Vehicle[] { return [...this.trams.values()] }
   /** the streets near the rider, from the last `update` (what a tram is matched to: `setTransit`) */
   private streets: Edge[] = []
-  /** the traffic and the trams, for the loops about the rider */
-  private *withTrams(): Iterable<Vehicle> { yield* this.vehicles; yield* this.trams.values() }
+  /**
+   * THE PARKED CARS (owner, 2026-11-15: in Paris "the cars are so dense, and parked cars are so present, and roads so
+   * narrow, that it is hard to navigate"): the kerb bays' and the car parks' cars near the rider (city.parkedNear),
+   * as standing vehicles the rider's planners see — the weave steers round them, `alongside` fences them, `leaderFor`
+   * holds the rider short of one, `solidAt` stops them in it and the valves (`squeezeAround`, the never-stuck hold) let
+   * them through it. Never in `this.vehicles`: nothing drives them, and the traffic does not see them (its lanes are
+   * clear of the bays). A car let through stays let through across refreshes (keyed by the stall's id) until the
+   * view is PARKED_FORGET metres clear of it.
+   */
+  setParked(stalls: readonly { x: number; z: number; heading: number; id: number; y?: number; kerb?: boolean }[]): void {
+    const seen = new Set<number>()
+    for (const s of stalls) {
+      seen.add(s.id)
+      let v = this.parked.get(s.id)
+      if (!v) {
+        v = { id: -1, kind: 'car', edgeId: -1, s: 0, dir: 1, speed: 0, cruise: 0, lane: 0, colour: [1, 1, 1], waiting: false,
+          at: { x: s.x, z: s.z }, heading: s.heading, driver: { a: 1, b: 2, T: 1, s0: 2 }, why: 'parked' } as Vehicle
+        this.parked.set(s.id, v)
+      }
+      v.at = { x: s.x, z: s.z }
+      v.heading = s.heading
+      v.y = s.y
+      v.why = s.kerb ? 'parked kerb' : 'parked'
+      if (v.passed && this.view && Math.hypot(v.at.x - this.view.at.x, v.at.z - this.view.at.z) > PARKED_FORGET) v.passed = undefined
+    }
+    for (const id of [...this.parked.keys()]) if (!seen.has(id)) this.parked.delete(id)
+  }
+  private readonly parked = new Map<number, Vehicle>()
+  /** false (`?without=parkplan`): the parked cars are solid and the valves open them, but the planners do not see them — the old way, to compare */
+  parkedPlan = true
+  private *plannable(): Iterable<Vehicle> { yield* this.vehicles; yield* this.trams.values(); if (this.parkedPlan) yield* this.parked.values() }
+  /** the traffic, the trams and the parked cars, for the loops about the rider */
+  private *withTrams(): Iterable<Vehicle> { yield* this.vehicles; yield* this.trams.values(); yield* this.parked.values() }
 
   update(dt: number, rider: RiderNow | Point, edgesNear: Iterable<Edge>): Collision[] {
     if (this.cfg.density === 0 || dt <= 0) return []
@@ -501,6 +539,31 @@ export class Traffic {
     return false
   }
 
+  /**
+   * THE PARKING LINE (Navigator `capHome`): how far right of the rider (metres) the nearest inner side of the parked
+   * cars on their right is, over PARK_LINE_BACK behind to PARK_LINE_AHEAD ahead — a long window, so a gap in the row
+   * (a bus stop's zigzag, a Vélib' row, one empty bay) does not draw the rider into it and out again. Only cars right
+   * of the street's line (`nudged`: where the rider is across it) — the rider may be riding in the row's line now.
+   * Null: none.
+   */
+  parkedLine(rider: RiderNow, nudged: number): number | null {
+    const fx = Math.sin(rider.heading), fz = Math.cos(rider.heading)
+    const rx = Math.cos(rider.heading), rz = -Math.sin(rider.heading)
+    let best: number | null = null
+    for (const v of this.parked.values()) {
+      // (the kerb bays' cars only: a car park's beside the street, nose to it, is no line to ride along)
+      if (v.why !== 'parked kerb') continue
+      const dx = v.at.x - rider.at.x, dz = v.at.z - rider.at.z
+      const f = dx * fx + dz * fz
+      const l = dx * rx + dz * rz
+      if (f < -PARK_LINE_BACK || f > PARK_LINE_AHEAD || l + nudged <= PARK_LINE_MIN || this.otherLevel(rider, v)) continue
+      // its inner side: half its width across the rider's line (its heading may not quite agree with theirs)
+      const inner = l - Math.abs(Math.cos(v.heading - rider.heading)) * SIZE.car.wid / 2 - Math.abs(Math.sin(v.heading - rider.heading)) * SIZE.car.len / 2
+      if (best === null || inner < best) best = inner
+    }
+    return best
+  }
+
   alongside(rider: RiderNow): { left: number; right: number } {
     const fx = Math.sin(rider.heading)
     const fz = Math.cos(rider.heading)
@@ -510,7 +573,7 @@ export class Traffic {
     const reach = SIZE.bike.len / 2 + 0.3
     let left = -Infinity
     let right = Infinity
-    for (const v of this.withTrams()) {
+    for (const v of this.plannable()) {
       if (v.passed || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 16 || this.otherLevel(rider, v)) continue
       const b = this.boxOf(v)
       const bf = [Math.sin(b.heading), Math.cos(b.heading)]
@@ -541,7 +604,7 @@ export class Traffic {
     // only occasionally have to wait for them"); must stay above `leaderFor`'s lane tolerance (0.15)
     const margin = SIZE.bike.wid / 2 + 0.2
     const blocked: [number, number][] = []
-    for (const v of this.withTrams()) {
+    for (const v of this.plannable()) {
       if (Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > look + 14 || this.otherLevel(rider, v)) continue
       // standing traffic, and traffic crawling the rider's way (a jam creeping at walking pace holds nobody on a
       // bike); cross traffic that is moving is the rider's own judgement
@@ -628,7 +691,7 @@ export class Traffic {
      */
     const fx = Math.sin(rider.heading)
     const fz = Math.cos(rider.heading)
-    for (const v of this.withTrams()) {
+    for (const v of this.plannable()) {
       // …never by a vehicle that is itself waiting for the rider: a car and a rider face to face on a narrow street
       // each waited for the other for ever (owner, 2026-09-29)
       // (a car standing face to face, waiting for the rider, used to be left out here so the two did not wait for each
