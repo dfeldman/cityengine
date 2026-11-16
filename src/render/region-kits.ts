@@ -7,7 +7,7 @@ import type { RegionStock } from './rolling-stock.ts'
 import type { BoatKind } from './river-traffic.ts'
 import { PARIS_STOCK } from './paris/trains.ts'
 import { PARIS_FLEET } from './paris/boats.ts'
-import { PARIS_PORTS, type PortStretch } from './paris/ports.ts'
+import PARIS_HAND_BOATS from './paris/hand-boats.json'
 import { parisFlora } from './paris/flora.ts'
 import { PARIS_CARS } from './paris/cars.ts'
 import type { CarKit } from './street-fleet.ts'
@@ -16,6 +16,9 @@ import { sfFlora } from './sf/flora.ts'
 import { SF_ROUTES, type BayRoute } from './sf/boats.ts'
 import { SF_BOATS } from './sf/moored.ts'
 import { PARIS_BOATS, type BoatLibrary } from './boats.ts'
+
+/** a traced tile of hand-placed boats: each boat stern (a) to bow (b) in lat/lon, its beam (m) and kind */
+export interface HandTile { name: string; frame: number[]; up: number; boats: { a: [number, number]; b: [number, number]; w: number; kind: string }[] }
 import type { Flora } from './flora.ts'
 
 export interface RegionKit {
@@ -23,8 +26,8 @@ export interface RegionKit {
   fleet?: BoatKind[]
   /** boats on open water with no river: each route a [lat, lon] line its own fleet runs along and back */
   routes?: BayRoute[]
-  /** its moored boats drawn from the boat library (render/boats.ts), and the ports where it fills in the ones OSM leaves out */
-  moorings?: PortStretch[]
+  /** its moored boats OSM leaves out, hand-traced off aerials (tools/boat-trace.ts), drawn from the boat library (render/boats.ts) */
+  moorings?: HandTile[]
   /** its moored-boat library (render/boats.ts `BoatLibrary`); without one, OSM's boats are plain péniches */
   boats?: BoatLibrary
   /** what it plants, given the city's local-metre → lat/lon */
@@ -34,7 +37,7 @@ export interface RegionKit {
 }
 
 const KITS: Record<string, RegionKit> = {
-  paris: { stock: PARIS_STOCK, fleet: PARIS_FLEET, moorings: PARIS_PORTS, boats: PARIS_BOATS, flora: parisFlora, cars: PARIS_CARS },
+  paris: { stock: PARIS_STOCK, fleet: PARIS_FLEET, moorings: PARIS_HAND_BOATS as HandTile[], boats: PARIS_BOATS, flora: parisFlora, cars: PARIS_CARS },
   'san-francisco': { stock: SF_STOCK, flora: sfFlora, routes: SF_ROUTES, boats: SF_BOATS },
 }
 

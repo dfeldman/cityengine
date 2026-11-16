@@ -48,7 +48,7 @@ import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts
 import { bridgeStructuresLayer, PARIS_BRIDGES, STEEL_OVER_WATER } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { parisHousesLayer } from './render/paris-houses.ts'
-import { boatsLayer, type LocalPort } from './render/boats.ts'
+import { boatsLayer, type LocalHandBoat } from './render/boats.ts'
 import { RiverTraffic, riverLine } from './render/river-traffic.ts'
 import { regionKit } from './render/region-kits.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
@@ -866,15 +866,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!off.has('furniture')) city.addLayer(postersLayer(scene, city.terrain, pkg.region))
   // the péniches moored along the river (render/boats.ts)
   {
-    // …drawn from the region's boat library, with the ports it fills (render/paris/ports.ts), when it has them
-    const moor = regionKit(pkg.region).moorings
+    // …drawn from the region's boat library, with the boats hand-placed off aerials (render/paris/hand-boats.json), when it has them
     const proj = new Projection(pkg.origin)
-    const ports: LocalPort[] = (moor ?? []).map((p, i) => {
-      const q = proj.toLocal({ lat: p.at[0], lon: p.at[1] })
-      const b = (p.bearing * Math.PI) / 180
-      return { name: p.name, x: q.x, z: q.z, side: p.bank === 'L' ? 1 : -1, ux: Math.sin(b), uz: Math.cos(b), len: p.len, per100: p.per100, mix: Object.entries(p.mix) as LocalPort['mix'], raft: p.raft ?? 0, seed: 7001 + i * 31 }
-    })
-    city.addLayer(boatsLayer(scene, city.terrain, regionKit(pkg.region).boats ?? null, ports))
+    const hand: LocalHandBoat[] = (regionKit(pkg.region).moorings ?? []).flatMap((t, i) => t.boats.map((h, j) => {
+      const a = proj.toLocal({ lat: h.a[0], lon: h.a[1] }), b = proj.toLocal({ lat: h.b[0], lon: h.b[1] })
+      return { ax: a.x, az: a.z, bx: b.x, bz: b.z, w: h.w, kind: h.kind, seed: 7001 + i * 131 + j * 17 }
+    }))
+    city.addLayer(boatsLayer(scene, city.terrain, regionKit(pkg.region).boats ?? null, hand))
   }
   // …and the boats under way on it (render/river-traffic.ts)
   let river: RiverTraffic | null = null

@@ -4,8 +4,8 @@
  * Two sources. The OSM boats (`building=boat|houseboat|ship`), each fitted to its own footprint — its long axis,
  * length and beam — and drawn as the KIND its name or its size says (render/paris/named-boats.ts for the famous
  * ones; a péniche, a Dutch barge, a cruiser, a bar barge, a tour boat, a hotel ship, a floating home otherwise).
- * And the PORTS (render/paris/ports.ts): stretches of bank where boats lie that OSM does not map, filled with
- * boats of the stretch's mix, each snapped to the real bank, kept afloat and clear of the OSM boats and the bridges.
+ * And the HAND-PLACED boats (render/paris/hand-boats.json, traced off IGN aerials with tools/boat-trace.ts): the many
+ * OSM does not map, each where it lies in the photo, as the kind the tracer saw; one inside an OSM boat is left to it.
  *
  * A boat floats at the level of the water it lies in. Most have a gangway to the quay, and many houseboats a
  * shore hut beside them — a store, a letterbox, a gate (owner, 2026-11-15) — where the quay is low enough.
@@ -31,29 +31,23 @@ const HULLS: Rgb[] = [[0.08, 0.09, 0.1], [0.1, 0.16, 0.26], [0.12, 0.24, 0.17], 
 const CABINS: Rgb[] = [[0.9, 0.87, 0.8], [0.72, 0.52, 0.33], [0.85, 0.82, 0.74], [0.95, 0.94, 0.9], [0.55, 0.36, 0.22], [0.68, 0.7, 0.72]]
 
 // ── tunables ─────────────────────────────────────────────────────────────────────────────────────────────
-/** how far a port boat's line point may be from the bank it snaps to, m */
-const SNAP = 95
-/** the gap between a boat's side and the bank, and between rafted boats */
-const BANK_GAP = 0.7
-const RAFT_GAP = 0.5
-/** the share of port boats that lie bow downstream */
-const REVERSED = 0.2
+/** how far a hand boat may be from a bank and still take its water level (and a gangway, within 25 m) */
+const HAND_BANK = 60
+/** a traced beam more than this share off its kind's is a misread: the kind's is used */
+const BEAM_TRUST = 0.4
+/** a hand boat over the quay is pushed out up to this far, in these steps, m */
+const PUSH_MAX = 12
+const PUSH_STEP = 0.5
+/** where a hull is tested afloat: along (share of length) and across (share of beam) */
+const HULL_SAMPLES: [number, number][] = [[0, 0], [0.47, 0.5], [0.47, -0.5], [-0.47, 0.5], [-0.47, -0.5], [0, 0.5], [0, -0.5]]
 /** a shore hut only where the quay is between these heights above the water (a low port, not the high quay) */
 const HUT_RISE: [number, number] = [0.4, 4.8]
 /** how far in from the water's edge the hut's face stands */
 const HUT_SETBACK = 1.6
 /** a gangway only where the quay is no higher than this above the deck */
 const GANGWAY_MAX_RISE = 5.5
-/** no port boat this near a landmark's centre (a modelled boat — the Piscine Joséphine Baker) */
-const LANDMARK_CLEAR = 45
-
-/** why port boats were not placed, by reason (window.__boatStats, for tools/boat-stats.ts) */
-const STATS: Record<string, number> = {}
-const tally = (k: string): true => { STATS[k] = (STATS[k] ?? 0) + 1; return true }
-;(globalThis as { __boatStats?: Record<string, number> }).__boatStats = STATS
-
-/** a port stretch in local metres: its line, its unit direction (upstream), and the rest of its data */
-export interface LocalPort { name: string; x: number; z: number; side: 1 | -1; ux: number; uz: number; len: number; per100: number; mix: [string, number][]; raft: number; seed: number }
+/** a hand-placed boat in local metres: stern (a) to bow (b), its beam, its kind, its seed */
+export interface LocalHandBoat { ax: number; az: number; bx: number; bz: number; w: number; kind: string; seed: number }
 
 /** A region's moored boats: its builders by kind, their sizes (for the ports), what an OSM boat is, and who gets a hut. */
 export interface BoatLibrary {
@@ -188,13 +182,14 @@ function banksOf(water: TileArea[]): Edge[] {
   return out
 }
 
-export function boatsLayer(scene: Scene, terrain?: Terrain, lib: BoatLibrary | null = null, ports: LocalPort[] = []): TileLayer {
+export function boatsLayer(scene: Scene, terrain?: Terrain, lib: BoatLibrary | null = null, hand: LocalHandBoat[] = []): TileLayer {
   return {
     name: 'boats',
     build(near, rect) {
       const boats = (near.tile.boats ?? []) as PackedBoat[]
-      const myPorts = lib ? ports.filter((p) => Math.abs(p.x - (rect.x0 + rect.x1) / 2) < p.len / 2 + TILE && Math.abs(p.z - (rect.z0 + rect.z1) / 2) < p.len / 2 + TILE) : []
-      if (boats.length === 0 && myPorts.length === 0) return []
+      // a hand boat is this tile's when its centre is in the tile
+      const myHand = lib ? hand.filter((h) => { const x = (h.ax + h.bx) / 2, z = (h.az + h.bz) / 2; return x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1 }) : []
+      if (boats.length === 0 && myHand.length === 0) return []
       const water = near.around.areas.filter((a): a is TileArea => a.kind === 'water' && (a as TileArea).level !== undefined)
       if (water.length === 0) return []
       const wet = (x: number, z: number): boolean => water.some((w) => inside(w.ring, x, z) && !((w as { holes?: number[][] }).holes ?? []).some((h) => inside(h, x, z)))
@@ -276,75 +271,37 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, lib: BoatLibrary | n
         if (lib && bank && bank.d < 25) ashore(bank, f.cx, f.cz, f.beam, f.len, deck, level, kind, b.id)
       }
 
-      // ── the ports: the boats OSM does not map ──
-      const placed: { cx: number; cz: number; ux: number; uz: number; L: number; B: number }[] = []
-      const clash = (cx: number, cz: number, ux: number, uz: number, L: number, B: number): boolean => {
-        // a sample of points over the boat's rectangle: none in an OSM boat, a bridge or a landmark's clearing; all afloat
-        for (const [u, v] of [[0, 0], [0.48, 0.45], [0.48, -0.45], [-0.48, 0.45], [-0.48, -0.45], [0.25, 0], [-0.25, 0]]) {
-          const x = cx + ux * u * L + uz * v * B, z = cz + uz * u * L - ux * v * B
-          if (!wet(x, z)) return tally('dry')
-          if (osmAround.some((r) => Math.abs(r[0] - x) < 150 && Math.abs(r[1] - z) < 150 && inside(r, x, z))) return tally('osm')
-          if ((near.around.bridges ?? []).some((br) => inside(br.ring, x, z))) return tally('bridge')
-        }
-        for (const [u] of [[0.5], [-0.5]]) {
-          const x = cx + ux * (u * L + Math.sign(u) * 4), z = cz + uz * (u * L + Math.sign(u) * 4)
-          if ((near.around.bridges ?? []).some((br) => inside(br.ring, x, z))) return tally('bridgeEnd')
-        }
-        if (near.around.landmarks.some((lm) => Math.hypot(lm.x - cx, lm.z - cz) < LANDMARK_CLEAR)) return tally('landmark')
-        // nor over another port boat (rough: centres closer than the boats' half-lengths along the bank, and abreast)
-        const hit = placed.some((p) => Math.abs((p.cx - cx) * ux + (p.cz - cz) * uz) < (p.L + L) / 2 && Math.abs((p.cx - cx) * uz - (p.cz - cz) * ux) < (p.B + B) / 2)
-        return hit && tally('overlap')
-      }
-      for (const p of myPorts) {
-        const r = rnd(p.seed)
-        const total = p.mix.reduce((a, [, w]) => a + w, 0)
-        const pickKind = (): string => { let t = r() * total; for (const [k, w] of p.mix) { t -= w; if (t <= 0) return k } return p.mix[0][0] }
-        const pitch = 100 / p.per100
-        for (let s = -p.len / 2, n = 0; s < p.len / 2; n++) {
-          // every draw is made whether or not this tile builds the boat, so each tile sees the same sequence
-          const kind = pickKind()
-          const size = lib!.sizes[kind]
-          const L = size.L[0] + r() * (size.L[1] - size.L[0])
-          const B = size.B * (0.95 + r() * 0.1)
-          const gap = Math.max(1.2, pitch - L) * (0.5 + r())
-          const flip = r() < REVERSED
-          const raft = r() < p.raft
-          const rk = pickKind()
-          const rL = r()
-          const rTurn = r() < 0.3
-          const seed = (p.seed * 7919 + n * 104729) >>> 0
-          const lx = p.x + p.ux * (s + L / 2), lz = p.z + p.uz * (s + L / 2)
-          s += L + gap
-          if (lx < rect.x0 || lx >= rect.x1 || lz < rect.z0 || lz >= rect.z1) continue
-          tally('slot'); tally(`${p.name}:slot`)
-          const bank = bankNear(lx, lz, SNAP, { ux: p.ux, uz: p.uz, side: p.side })
-          if (!bank) { tally('noBank'); continue }
-          // along the bank, bow upstream (the stretch's direction) unless this one lies the other way
-          let ux = bank.tx, uz = bank.tz
-          if (ux * p.ux + uz * p.uz < 0) { ux = -ux; uz = -uz }
-          if (flip) { ux = -ux; uz = -uz }
-          const off = B / 2 + BANK_GAP
-          const cx = bank.px + bank.nx * off, cz = bank.pz + bank.nz * off
-          if (clash(cx, cz, ux, uz, L, B)) continue
-          placed.push({ cx, cz, ux, uz, L, B })
-          tally('placed'); tally(`${p.name}`)
-          const part = new MeshBuilder()
-          const deck = lib!.build[kind](part, L, B, seed)
-          place(out, part, cx, bank.level + 0.05, cz, Math.atan2(ux, uz))
-          ashore(bank, cx, cz, B, L, deck, bank.level, kind, seed)
-          if (raft && rk !== 'hotel' && rk !== 'tourBoat') {
-            // a second boat tied outside the first, two abreast as they lie at the crowded ports
-            const rs = lib!.sizes[rk]
-            const L2 = Math.min(L, rs.L[0] + rL * (rs.L[1] - rs.L[0]))
-            const off2 = off + B / 2 + RAFT_GAP + rs.B / 2
-            const c2x = bank.px + bank.nx * off2, c2z = bank.pz + bank.nz * off2
-            if (clash(c2x, c2z, ux, uz, L2, rs.B)) continue
-            placed.push({ cx: c2x, cz: c2z, ux, uz, L: L2, B: rs.B })
-            const p2 = new MeshBuilder()
-            lib!.build[rk](p2, L2, rs.B, seed + 1)
-            place(out, p2, c2x, bank.level + 0.05, c2z, Math.atan2(ux, uz) + (rTurn ? Math.PI : 0))
+      // ── the hand-placed boats: the ones OSM does not map, traced off IGN aerials (render/paris/hand-boats.json) ──
+      for (const h of myHand) {
+        const cx0 = (h.ax + h.bx) / 2, cz0 = (h.az + h.bz) / 2
+        const L0 = Math.hypot(h.bx - h.ax, h.bz - h.az)
+        if (L0 < 3) continue
+        const ux = (h.bx - h.ax) / L0, uz = (h.bz - h.az) / L0
+        // the OSM boat there is drawn already, with its name
+        if (osmAround.some((r) => Math.abs(r[0] - cx0) < 150 && Math.abs(r[1] - cz0) < 150 && inside(r, cx0, cz0))) continue
+        // and a modelled boat (the Piscine Joséphine Baker) is its landmark's
+        if (near.around.landmarks.some((lm) => Math.abs((lm.x - cx0) * ux + (lm.z - cz0) * uz) < L0 / 2 && Math.abs((lm.x - cx0) * uz - (lm.z - cz0) * ux) < h.w / 2 + 2)) continue
+        // afloat, or it was a misread roof on the quay
+        if (!wet(cx0, cz0)) continue
+        const bank = bankNear(cx0, cz0, HAND_BANK)
+        const size = lib!.sizes[h.kind]
+        const B = size && Math.abs(h.w / size.B - 1) > BEAM_TRUST ? size.B : h.w
+        // OSM's water edge is not the photo's: a hull over the quay is pushed out from the bank, the least that floats it
+        const afloat = (x: number, z: number): boolean => HULL_SAMPLES.every(([u, v]) => wet(x + ux * u * L0 + uz * v * B, z + uz * u * L0 - ux * v * B))
+        let cx = cx0, cz = cz0
+        if (bank && !afloat(cx, cz)) {
+          for (let d = PUSH_STEP; d <= PUSH_MAX; d += PUSH_STEP) {
+            if (afloat(cx0 + bank.nx * d, cz0 + bank.nz * d)) { cx = cx0 + bank.nx * d; cz = cz0 + bank.nz * d; break }
           }
         }
+        const w = water.find((a) => inside(a.ring, cx, cz))
+        const level = w?.level ?? bank?.level
+        if (level === undefined) continue
+        const L = Math.max(6, Math.min(L0, 140))
+        const part = new MeshBuilder()
+        const deck = lib!.build[h.kind](part, L, Math.max(2.2, Math.min(B, 24)), h.seed)
+        place(out, part, cx, level + 0.05, cz, Math.atan2(ux, uz))
+        if (bank && bank.d < 25) ashore(bank, cx, cz, B, L, deck, level, h.kind, h.seed)
       }
       if (out.triangles === 0) return []
       const m = new Mesh(`boats:${near.key}`, scene)

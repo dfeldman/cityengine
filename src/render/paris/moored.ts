@@ -1,7 +1,7 @@
 /**
  * The Seine's moored boats, by KIND (render/moored.ts is the shared hull and deck kit). A kind builds one boat
  * fitted to length L and beam B (whole metres, not halves), local +z forward, waterline at y = 0, and returns
- * its main deck's height. `MOORED_SIZES` is what a gap-filled boat of each kind measures (render/paris/ports.ts).
+ * its main deck's height. `MOORED_SIZES` is what a boat of each kind measures (a hand-placed boat's traced beam is checked against it).
  */
 import type { MeshBuilder } from '../buildings.ts'
 import { box, prism, strut, wedge, EMIT, type Rgb } from '../models.ts'
@@ -13,7 +13,7 @@ import {
 export type MooredKind = 'peniche' | 'dutch' | 'cruiser' | 'venue' | 'tourBoat' | 'hotel' | 'workBarge' | 'pusher' | 'pontoon' | 'police' | 'floatHome'
 export type Builder = (out: MeshBuilder, L: number, B: number, seed: number) => number
 
-/** a gap-filled boat's [min, max] length and its beam, by kind */
+/** a boat's [min, max] length and its beam, by kind */
 export const MOORED_SIZES: Record<MooredKind, { L: [number, number]; B: number }> = {
   peniche: { L: [30, 38.5], B: 5.05 },
   dutch: { L: [16, 27], B: 4.4 },
