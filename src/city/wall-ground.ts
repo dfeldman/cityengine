@@ -123,7 +123,20 @@ export const WT_TUNE = { drop: true, dropMin: 0.5, dropGrade: 1.0, dropEdge: 0.4
 export let wallTrianglesAdded = 0
 /** `marked`: the triangles split here (out.indices offsets of their first corner) are pushed to it — render/city.ts draws them again as
  *  depth only in the building group, so ground at a drop hides the walls behind it */
+/** how many triangles `refineAtWallsSteps` looks at between pauses (render/city.ts spreads a tile build over frames) */
+export const REFINE_SLICE = 256
+
+/** refineAtWallsSteps run through at once */
 export function refineAtWalls(out: Mesh3, terrain: Terrain, marked?: number[]): number {
+  const g = refineAtWallsSteps(out, terrain, marked)
+  for (;;) { const r = g.next(); if (r.done) return r.value }
+}
+
+/**
+ * The refinement in steps: it pauses every REFINE_SLICE triangles looked at, so a tile build can stop between frames. On
+ * the Seine band's metre ground one tile's refinement ran for seconds in a single frame (2026-11-16).
+ */
+export function* refineAtWallsSteps(out: Mesh3, terrain: Terrain, marked?: number[]): Generator<void, number, void> {
   const W = terrain.walls
   const D = WT_TUNE
   if (!WT_ON || ((!W || !D.walls) && !D.drop) || out.indices.length === 0 || terrain.flat) return 0
@@ -136,8 +149,15 @@ export function refineAtWalls(out: Mesh3, terrain: Terrain, marked?: number[]): 
     return k
   }
   const side = (x: number, z: number): number => W && D.walls ? W.side(x, z, terrain.stepAt(x, z)) : 0
-  const hs = new Map<number, number>()
-  const hOf = (v: number): number => { let h = hs.get(v); if (h === undefined) { h = terrain.heightAt(P[v * 3], P[v * 3 + 2]); hs.set(v, h) } return h }
+  // (each vertex's ground height, NaN until asked: a typed array, not a Map — the Map of a Seine-band tile's ground was garbage enough
+  //  to put collector pauses into the build, 2026-11-16)
+  let hs = new Float64Array(Math.max(1024, P.length / 3 * 2)).fill(NaN)
+  const hOf = (v: number): number => {
+    if (v >= hs.length) { const g = new Float64Array(Math.max(v + 1, hs.length * 2)).fill(NaN); g.set(hs); hs = g }
+    let h = hs[v]
+    if (h !== h) { h = terrain.heightAt(P[v * 3], P[v * 3 + 2]); hs[v] = h }
+    return h
+  }
   // (a long edge is scanned every D.dropScan m: a drop between two samples that steep, a trench thinner than the triangle)
   // (no finer than half the ground's own post spacing — a bilinear surface has nothing finer to show — unless the drop is a street's
   //  level against the ground: a cut's or a grade's edge is sharp at any spacing)
@@ -157,26 +177,40 @@ export function refineAtWalls(out: Mesh3, terrain: Terrain, marked?: number[]): 
     return false
   }
   const len = (a: number, b: number): number => Math.hypot(P[a * 3] - P[b * 3], P[a * 3 + 2] - P[b * 3 + 2])
+  // (a stack, not recursion, so the refinement can pause between any two splits)
+  const stack: number[] = []
+  let lo = false, hi = false
+  const look = (x: number, z: number): void => { const v = side(x, z); if (v < 0) lo = true; else if (v > 0) hi = true }
   const split = (a: number, b: number, c: number, depth: number): void => {
     const ab = len(a, b), bc = len(b, c), ca = len(c, a), m = Math.max(ab, bc, ca)
     if (m > WT_EDGE && depth < 16) {
       // the sides at the corners, the edges' middles and the centre: a wall's reach is ~4 m across, a triangle here up to ~6 m
-      const xs = [P[a * 3], P[b * 3], P[c * 3]], zs = [P[a * 3 + 2], P[b * 3 + 2], P[c * 3 + 2]]
-      let lo = false, hi = false
-      const look = (x: number, z: number): void => { const v = side(x, z); if (v < 0) lo = true; else if (v > 0) hi = true }
-      for (let i = 0; i < 3; i++) { look(xs[i], zs[i]); look((xs[i] + xs[(i + 1) % 3]) / 2, (zs[i] + zs[(i + 1) % 3]) / 2) }
-      look((xs[0] + xs[1] + xs[2]) / 3, (zs[0] + zs[1] + zs[2]) / 3)
+      // (no arrays or closures per triangle: this runs for every triangle of the Seine band's ground)
+      const x0 = P[a * 3], z0 = P[a * 3 + 2], x1 = P[b * 3], z1 = P[b * 3 + 2], x2 = P[c * 3], z2 = P[c * 3 + 2]
+      lo = false; hi = false
+      look(x0, z0); look((x0 + x1) / 2, (z0 + z1) / 2)
+      look(x1, z1); look((x1 + x2) / 2, (z1 + z2) / 2)
+      look(x2, z2); look((x2 + x0) / 2, (z2 + z0) / 2)
+      look((x0 + x1 + x2) / 3, (z0 + z1 + z2) / 3)
       if ((lo && hi) || ((lo || hi) && m > WT_NEAR_EDGE) || (D.drop && m > D.dropEdge && (steep(a, b, ab) || steep(b, c, bc) || steep(c, a, ca)))) {
-        if (m === ab) { const q = mid(a, b); split(a, q, c, depth + 1); split(q, b, c, depth + 1) }
-        else if (m === bc) { const q = mid(b, c); split(b, q, a, depth + 1); split(q, c, a, depth + 1) }
-        else { const q = mid(c, a); split(c, q, b, depth + 1); split(q, a, b, depth + 1) }
+        if (m === ab) { const q = mid(a, b); stack.push(q, b, c, depth + 1, a, q, c, depth + 1) }
+        else if (m === bc) { const q = mid(b, c); stack.push(q, c, a, depth + 1, b, q, a, depth + 1) }
+        else { const q = mid(c, a); stack.push(q, a, b, depth + 1, c, q, b, depth + 1) }
         return
       }
     }
     if (marked && depth > 0) marked.push(out.indices.length)
     out.indices.push(a, b, c)
   }
-  for (let i = 0; i < I.length; i += 3) split(I[i], I[i + 1], I[i + 2], 0)
+  let t = 0
+  for (let i = 0; i < I.length; i += 3) {
+    stack.push(I[i], I[i + 1], I[i + 2], 0)
+    while (stack.length) {
+      const depth = stack.pop()!, c = stack.pop()!, b = stack.pop()!, a = stack.pop()!
+      split(a, b, c, depth)
+      if (++t % REFINE_SLICE === 0) yield
+    }
+  }
   const added = out.indices.length / 3 - n0
   wallTrianglesAdded += added
   return added

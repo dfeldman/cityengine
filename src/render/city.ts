@@ -55,7 +55,7 @@ import { areaPalettes, handLook } from '../city/hand-looks.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
-import { WallGround, WG_ON, refineAtWalls } from '../city/wall-ground.ts'
+import { WallGround, WG_ON, refineAtWallsSteps } from '../city/wall-ground.ts'
 import { wallsFirst } from './depth-copies.ts'
 import { Carriageways } from '../city/carriageways.ts'
 import { bartEntrance, sfTrashCan, chainBollard, streetBanners } from './sf/furniture.ts'
@@ -98,6 +98,18 @@ let BUILD_MS = 7
 
 /** Per device (tier.ts `buildMs`). Lower where the collector cannot keep up. */
 export function setBuildBudget(ms: number): void { BUILD_MS = Math.max(0.5, ms) }
+/** a tile build is spread across frames (CityRenderer.stepJob); the layers and the mid ring still get this much of a frame it ran in */
+const LAYER_RESERVE_MS = 2
+/** …and a tile within this many of the rider's is built at up to JOB_NEAR_MS a frame, the rider's own (missing only when the builds
+ *  fall behind) at up to JOB_OWN_MS: ground missing under the wheels is worse than a hitch, but not than a freeze of seconds */
+const JOB_NEAR_RING = 1, JOB_NEAR_MS = 20, JOB_OWN_MS = 60
+/** tiles in hand at once, the nearest carried on first: a nearer tile ready starts while farther ones wait, up to this many */
+const MAX_JOBS = 3
+/** a tile being built across frames (CityRenderer.stepJob) */
+type Job = {
+  k: string; gen: Generator<string | void, void, void>; meshes: Mesh[]; hidden: Mesh[]; seen: number; spent: number; at: string; t0: number
+  ctx: { streets: StreetIndex | undefined; mainStreets: StreetIndex | undefined; awningStreets: StreetIndex | undefined; nearEdges: PackedEdge[] }
+}
 /** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). Per device: `setRings`. */
 export let MID = 6
 import { onSurface, steeperThanWall, waterLevels, wholeWater } from '../city/package.ts'
@@ -142,12 +154,15 @@ function pointInFlatRing(r: number[], x: number, z: number): boolean {
 /** ground shipped finer than this (a deck zone's) is draped in triangles AREA_FINE_EDGE m on a side */
 const AREA_FINE_BELOW = 2, AREA_FINE_EDGE = 1.5
 
+/** how many of a builder's own triangles `subdivideSteps` splits between pauses (a tile is built across frames) */
+const SUBDIVIDE_SLICE = 64
+
 /**
  * Split every triangle of `out` whose longest edge exceeds `maxEdge` (longest-edge bisection), every attribute interpolated: a
  * pavement strip 10 m wide has a vertex only at each kerb, and draped across a deck zone's quai wall it was one slope from the lower
- * quai to the upper (Pont National, 2026-11-07). Before draping, so the new vertices take the ground's own height.
+ * quai to the upper (Pont National, 2026-11-07). Before draping, so the new vertices take the ground's own height. In steps, pausing every SUBDIVIDE_SLICE triangles.
  */
-function subdivideBuilder(out: MeshBuilder, maxEdge: number): void {
+function* subdivideSteps(out: MeshBuilder, maxEdge: number): Generator<void, void, void> {
   const P = out.positions, N = out.normals, U = out.uvs, C = out.colors, I = out.indices.splice(0)
   const mid = (a: number, b: number): number => {
     const k = P.length / 3
@@ -164,7 +179,7 @@ function subdivideBuilder(out: MeshBuilder, maxEdge: number): void {
     else if (m === bc) { const q = mid(b, c); split(b, q, a, depth + 1); split(q, c, a, depth + 1) }
     else { const q = mid(c, a); split(c, q, b, depth + 1); split(q, a, b, depth + 1) }
   }
-  for (let i = 0; i < I.length; i += 3) split(I[i], I[i + 1], I[i + 2], 0)
+  for (let i = 0, t = 0; i < I.length; i += 3) { split(I[i], I[i + 1], I[i + 2], 0); if (++t % SUBDIVIDE_SLICE === 0) yield }
 }
 
 // (refineAtWalls, wallTrianglesAdded: city/wall-ground.ts)
@@ -1026,6 +1041,8 @@ function distantSea(scene: Scene, pkg: CityPackage): Mesh | null {
   return m
 }
 
+/** a coarse post beside a river post stands this far over the river's clamp (m): just under the water's sheet, never through it */
+export const DISTANT_BANK_LIFT = 0
 function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets: string): Mesh | null {
   const t = groundGrid(pkg.terrain)
   if (!t) return null
@@ -1049,8 +1066,6 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
   /*
    * In 800 m chunks, one vertex per grid point (BUGS.md #242, the iPhone's memory). It was one mesh of four
    * vertices a cell — 3.8 million in San Francisco, 198 MB of vertex buffers, drawn whole every frame — built
-/** a coarse post beside a river post stands this far over the river's clamp (m): just under the water's sheet, never through it */
-export const DISTANT_BANK_LIFT = 0
    * in one set of JS number arrays. The normal and colour are the same everywhere, so a point shared by four
    * cells is the same vertex; the uvs are world metres from the grid's corner rather than each cell's own
    * 0..step, which is the same page wherever `ROAD_PAGE_METRES` divides the step and seamless where it does not.
@@ -1063,6 +1078,28 @@ export const DISTANT_BANK_LIFT = 0
     const z = t.z0 + r * t.step
     return !(box && (x + step < box.x0 - boxMargin || x > box.x1 + boxMargin
       || z + step < box.z0 - boxMargin || z > box.z1 + boxMargin))
+  }
+  /*
+   * UNDER THE RIVER (2026-11-15, owner: "ground still peeks out over the seine", "on both sides of the island"): this coarse mesh is
+   * drawn under the tiles' own ground everywhere, and a 20 m cell spanning a bank sloped from the bank down to the riverbed through
+   * the water's sheet — straight-edged green patches standing out of the Seine. A post in the river takes the river's clamp
+   * (Terrain.river), and a post beside one goes down to it too, so no cell crosses the water above its sheet.
+   */
+  const rc = terrain.river
+  const clampAt = (c: number, r: number): number => {
+    const h = t.heights[r * t.cols + c]
+    return rc ? rc(t.x0 + c * t.step, t.z0 + r * t.step, h) : h
+  }
+  const distantY = (c: number, r: number): number => {
+    const own = clampAt(c, r)
+    if (!rc) return own
+    let y = own
+    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+      if ((!dr && !dc) || c + dc < 0 || r + dr < 0 || c + dc >= t.cols || r + dr >= t.rows) continue
+      const raw = t.heights[(r + dr) * t.cols + c + dc], cl = clampAt(c + dc, r + dr)
+      if (cl < raw - 0.01) y = Math.min(y, cl + DISTANT_BANK_LIFT)
+    }
+    return y
   }
   let cells = 0
   for (let r0 = 0; r0 + stride < t.rows; r0 += per * stride) {
@@ -1087,28 +1124,6 @@ export const DISTANT_BANK_LIFT = 0
           // MeshBuilder.quad's winding for these corners facing up
           const a = v(c, r), b = v(c + stride, r), cc = v(c + stride, r + stride), d = v(c, r + stride)
           idx.push(a, b, cc, a, cc, d)
-  /*
-   * UNDER THE RIVER (2026-11-15, owner: "ground still peeks out over the seine", "on both sides of the island"): this coarse mesh is
-   * drawn under the tiles' own ground everywhere, and a 20 m cell spanning a bank sloped from the bank down to the riverbed through
-   * the water's sheet — straight-edged green patches standing out of the Seine. A post in the river takes the river's clamp
-   * (Terrain.river), and a post beside one goes down to it too, so no cell crosses the water above its sheet.
-   */
-  const rc = terrain.river
-  const clampAt = (c: number, r: number): number => {
-    const h = t.heights[r * t.cols + c]
-    return rc ? rc(t.x0 + c * t.step, t.z0 + r * t.step, h) : h
-  }
-  const distantY = (c: number, r: number): number => {
-    const own = clampAt(c, r)
-    if (!rc) return own
-    let y = own
-    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
-      if ((!dr && !dc) || c + dc < 0 || r + dr < 0 || c + dc >= t.cols || r + dr >= t.rows) continue
-      const raw = t.heights[(r + dr) * t.cols + c + dc], cl = clampAt(c + dc, r + dr)
-      if (cl < raw - 0.01) y = Math.min(y, cl + DISTANT_BANK_LIFT)
-    }
-    return y
-  }
           cells++
         }
       }
@@ -1356,11 +1371,16 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
     for (const k of o) idx[ni++] = v[k]
   }
   const meshes = new Map<string, Mesh[]>()
-  const build = (kx: number, kz: number, useFine: boolean): void => {
+  /*
+   * A generator, yielding after every cell, so a rebuild is spread over frames within `update`'s budget (2026-11-16, the
+   * performance audit: a chunk over the Seine's 1 m ground took 150 ms on average and up to 850 ms, inside one frame, each
+   * time a tile arrived — the hitches while riding). The chunk's old meshes stay up until the new ones replace them. Only
+   * one build runs at a time: the buffers and `heightOf` are shared, so `heightOf` is set again after every yield.
+   */
+  const build = function* (kx: number, kz: number, useFine: boolean): Generator<void, void, void> {
     const ck = `${kx},${kz}`
-    for (const m of meshes.get(ck) ?? []) m.dispose()
-    meshes.delete(ck)
-    heightOf = useFine && fine ? (x, z) => fine.grassHeightAt(x, z) : (x, z) => terrain.heightAt(x, z)
+    const setH = (): void => { heightOf = useFine && fine ? (x, z) => fine.grassHeightAt(x, z) : (x, z) => terrain.heightAt(x, z) }
+    setH()
     np = 0
     ni = 0
     // this chunk's cells: the same `floor(x / CHUNK)` test as ever, over a window a cell wider than the chunk
@@ -1376,6 +1396,8 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
         const z = t.z0 + r * t.step
         if (box && (x < box.x0 - margin || x > box.x1 + margin || z < box.z0 - margin || z > box.z1 + margin)) continue
         if (Math.floor(x / CHUNK) !== kx || Math.floor(z / CHUNK) !== kz) continue
+        yield
+        setH()
         // does the cell straddle a bank? sample its corners and centre
         const probes = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.5]].map(([u, v]) => wetAt(x + u * t.step, z + v * t.step))
         const allDry = probes.every((p) => p === null)
@@ -1386,11 +1408,41 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
           const n = Math.max(1, Math.round(t.step / Math.max(fs, OCC_MIN_STEP)))
           const sub = t.step / n
           // (coarser than the ground: each post at the lowest ground within a cell of it, so no chord stands proud)
-          const low = fs < sub ? (px: number, pz: number): number => {
+          const k = Math.round(sub / fs)
+          const slow = (px: number, pz: number): number => {
             let m = Infinity
-            const k = Math.round(sub / fs)
             for (let a = -k; a <= k; a++) for (let b = -k; b <= k; b++) m = Math.min(m, heightOf(px + a * fs, pz + b * fs))
             return m - OCC_SINK
+          }
+          /*
+           * The same minimum, read off one sampling of the cell (and k posts round it) at the ground's step, min-filtered
+           * along x then z: a post's (2k+1)² window overlapped its neighbours' by more than half, and every sample is a
+           * grassAt walk over the streets nearby — 81 per post, the occluder's whole cost over the 1 m quays. Exact when
+           * the posts fall on the sampling (sub a whole number of steps); otherwise the per-post walk.
+           */
+          let lowGrid: Float64Array | null = null
+          const M = n * k + 2 * k + 1
+          const fast = Math.abs(sub / fs - k) < 1e-6
+          const low = fs < sub ? (px: number, pz: number): number => {
+            if (!fast) return slow(px, pz)
+            if (!lowGrid) {
+              const g = new Float64Array(M * M)
+              for (let j = 0; j < M; j++) for (let i = 0; i < M; i++) g[j * M + i] = heightOf(x + (i - k) * fs, z + (j - k) * fs)
+              const hx = new Float64Array(M * M)
+              for (let j = 0; j < M; j++) for (let i = k; i < M - k; i++) {
+                let m = Infinity
+                for (let a = -k; a <= k; a++) m = Math.min(m, g[j * M + i + a])
+                hx[j * M + i] = m
+              }
+              lowGrid = new Float64Array(M * M)
+              for (let j = k; j < M - k; j++) for (let i = k; i < M - k; i++) {
+                let m = Infinity
+                for (let b = -k; b <= k; b++) m = Math.min(m, hx[(j + b) * M + i])
+                lowGrid[j * M + i] = m
+              }
+            }
+            const i = k + Math.round((px - x) / fs), j = k + Math.round((pz - z) / fs)
+            return lowGrid[j * M + i] - OCC_SINK
           } : null
           const lat = new Int32Array((n + 1) * (n + 1)).fill(-1)
           const pt = new Array<[number, number, number] | null>((n + 1) * (n + 1)).fill(null)
@@ -1470,6 +1522,9 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
         }
       }
     }
+    // the chunk's old meshes go only now, as the new ones are ready
+    for (const m of meshes.get(ck) ?? []) m.dispose()
+    meshes.delete(ck)
     if (ni === 0) return
     const vd = new VertexData()
     vd.positions = pos.slice(0, np)
@@ -1512,16 +1567,18 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
       made.push(m)
     }
   }
-  for (const [kx, kz] of keys) build(kx, kz, false)
+  for (const [kx, kz] of keys) for (const _ of build(kx, kz, false)) { /* drained: the first build is whole */ }
   plog('groundOccluder quads', built, 'chunks', keys.length, 'shared corners', shared)
   const known = new Set(keys.map(([kx, kz]) => `${kx},${kz}`))
   // chunk → when it was last marked: rebuilt once its tiles have stopped arriving (a chunk is sixteen tiles, and was
   // rebuilt for each of them)
   const dirty = new Map<string, number>()
   const SETTLE = 500
-  // what the rebuilds cost (`window.__occluderStats()`): a chunk is rebuilt whole, inside a frame
-  const stats = { builds: 0, ms: 0, worst: 0 }
-  ;(window as unknown as Record<string, unknown>).__occluderStats = () => ({ ...stats, pending: dirty.size })
+  // what the rebuilds cost (`window.__occluderStats()`): `worst` a whole chunk's CPU, `slice` the most one frame spent on them
+  const stats = { builds: 0, ms: 0, worst: 0, slice: 0 }
+  // the rebuild under way, resumed frame by frame
+  let job: { gen: Generator<void, void, void>; spent: number } | null = null
+  ;(window as unknown as Record<string, unknown>).__occluderStats = () => ({ ...stats, pending: dirty.size + (job ? 1 : 0) })
   /*
    * The order within each group, stated rather than left to creation order: the occluder first, since
    * everything after has to test against it; then, in the ground's group, parks BEFORE the pavement and
@@ -1554,18 +1611,30 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
     },
     update(ms) {
       const t0 = performance.now()
-      for (const [k, at] of dirty) {
-        if (ms !== Infinity && t0 - at < SETTLE) continue
-        dirty.delete(k)
-        const [kx, kz] = k.split(',').map(Number)
+      const end = t0 + ms
+      for (;;) {
+        if (!job) {
+          let next: string | null = null
+          for (const [k, at] of dirty) if (ms === Infinity || t0 - at >= SETTLE) { next = k; break }
+          if (next === null) break
+          dirty.delete(next)
+          const [kx, kz] = next.split(',').map(Number)
+          job = { gen: build(kx, kz, true), spent: 0 }
+        }
         const t1 = performance.now()
-        build(kx, kz, true)
-        const took = performance.now() - t1
-        stats.builds++
-        stats.ms += took
-        stats.worst = Math.max(stats.worst, took)
-        if (performance.now() - t0 > ms) break
+        let done = false
+        do done = !!job.gen.next().done
+        while (!done && performance.now() < end)
+        job.spent += performance.now() - t1
+        if (done) {
+          stats.builds++
+          stats.ms += job.spent
+          stats.worst = Math.max(stats.worst, job.spent)
+          job = null
+        }
+        if (performance.now() >= end) break
       }
+      if (ms !== Infinity) stats.slice = Math.max(stats.slice, performance.now() - t0)
     },
   }
 }
@@ -2548,6 +2617,8 @@ export class City {
 
   /** drop a built tile so `update()` builds it again — the same disposal as going out of range */
   private rebuild(k: string): boolean {
+    const job = this.jobs.find((j) => j.k === k)
+    if (job) { this.abortJob(job); return true }
     const t = this.tiles.get(k)
     if (!t) return false
     this.buildStats.rebuilds++
@@ -2901,11 +2972,27 @@ export class City {
     }
     todo.sort((a, b) => dist(a) - dist(b))
     let waiting = 0
+    // the tiles being built across frames: dropped if the rider has left them behind; the nearest, in hand or ready, carried on first
+    for (const job of [...this.jobs]) if (dist(job.k) > VIEW + 1) this.abortJob(job)
+    const limit = (k: string): number => first ? Infinity : dist(k) === 0 ? Math.max(BUILD_MS, JOB_OWN_MS) : dist(k) <= JOB_NEAR_RING ? Math.max(BUILD_MS, JOB_NEAR_MS) : BUILD_MS
+    const ready: string[] = []
     for (const k of todo) {
-      if (!this.ready(k)) { if (this.exists?.(k) ?? true) waiting++; continue }
-      if (spent()) { waiting++; continue }
-      this.build(k)
+      if (this.tiles.has(k) || this.jobs.some((job) => job.k === k)) continue
+      if (this.ready(k)) ready.push(k)
+      else if (this.exists?.(k) ?? true) waiting++
     }
+    for (;;) {
+      let job = this.jobs.reduce<Job | null>((a, b) => !a || dist(b.k) < dist(a.k) ? b : a, null)
+      if (ready.length && (!job || (dist(ready[0]) < dist(job.k) && this.jobs.length < MAX_JOBS))) job = this.startJob(ready.shift()!)
+      if (!job) break
+      const lim = limit(job.k)
+      if (performance.now() - t0 > lim) break
+      this.stepJob(job, lim === Infinity, () => performance.now() - t0 > lim)
+    }
+    waiting += this.jobs.length + ready.length
+    // (a tile still in hand has had the frame; the layers and the mid ring get LAYER_RESERVE_MS of their own)
+    const tl = performance.now()
+    const layerSpent = this.jobs.length ? (): boolean => !first && performance.now() - tl > LAYER_RESERVE_MS : spent
     for (const [k, t] of this.tiles) {
       if (dist(k) > VIEW + 1) {
         for (const m of t.meshes) m.dispose()
@@ -2926,7 +3013,7 @@ export class City {
         const d = dist(k)
         const have = t.layers.get(layer.name)
         if (!have && d <= range) {
-          if (spent()) { waiting++; continue }
+          if (layerSpent()) { waiting++; continue }
           t.layers.set(layer.name, this.buildLayer(k, layer))
         } else if (have && d > range + 1) {
           for (const m of have) m.dispose()
@@ -2952,7 +3039,7 @@ export class City {
         if (this.mid.has(k)) continue
         const t = this.source.get(k)
         if (!t) continue
-        if (spent()) { waiting++; continue }
+        if (layerSpent()) { waiting++; continue }
         this.mid.set(k, this.midBuild(t))
       }
     }
@@ -2981,12 +3068,81 @@ export class City {
     return meshes
   }
 
-  /** how many tiles were built, and how many of those had been dropped to be built again (tools/fly-soak.ts) */
-  readonly buildStats = { builds: 0, rebuilds: 0, keys: new Map<string, number>() }
-  private build(k: string): void {
+  /**
+   * how many tiles were built, and how many of those had been dropped to be built again (tools/fly-soak.ts); `ms`/`worst` are build
+   * time, all of it and the longest tile; `slice` the longest a build held one frame; `wait` the longest from start to whole, in wall time;
+   * `aborted` builds dropped half done; `step`/`stepAt`/`slow` the longest stretches between two pauses and where (a pause missing)
+   */
+  readonly buildStats = { builds: 0, rebuilds: 0, keys: new Map<string, number>(), ms: 0, worst: 0, slice: 0, aborted: 0, wait: 0, step: 0, stepAt: '', slow: {} as Record<string, number> }
+
+  /*
+   * A TILE IS BUILT ACROSS FRAMES (2026-11-16). On the Seine band's metre ground one tile's build — most of it the wall refinement —
+   * ran 1–5 s in a single frame. `buildSteps` pauses between its phases, buildings and slices of refinement, and `update` carries the
+   * tiles in hand on, the nearest first, within BUILD_MS a frame (more near the rider: JOB_NEAR_MS). A tile's meshes are hidden until it
+   * is whole, so the mid ring's massing stands in for it till then. The build keeps per-tile state on `this` (streets, nearEdges),
+   * swapped in and out with each tile's turn (`tileCtx`).
+   */
+  private readonly jobs: Job[] = []
+
+  private startJob(k: string): Job {
     this.buildStats.builds++
     this.buildStats.keys.set(k, (this.buildStats.keys.get(k) ?? 0) + 1)
     const meshes: Mesh[] = []
+    const job: Job = { k, gen: this.buildSteps(k, meshes), meshes, hidden: [], seen: 0, spent: 0, at: 'start', t0: performance.now(), ctx: this.tileCtx() }
+    this.jobs.push(job)
+    return job
+  }
+
+  /** the per-tile state a build keeps on `this`, swapped in and out as the tiles in hand take turns */
+  private tileCtx(): Job['ctx'] { return { streets: this.streets, mainStreets: this.mainStreets, awningStreets: this.awningStreets, nearEdges: this.nearEdges } }
+
+  /** carry a tile in hand on until it is done or `spent` (`whole`: built outright) */
+  private stepJob(j: Job, whole: boolean, spent: () => boolean): void {
+    ;({ streets: this.streets, mainStreets: this.mainStreets, awningStreets: this.awningStreets, nearEdges: this.nearEdges } = j.ctx)
+    const t1 = performance.now()
+    let done = false
+    do {
+      const s0 = performance.now()
+      const r = j.gen.next()
+      done = !!r.done
+      // (the longest stretch between two pauses, named by the pause it ran from: where a pause is missing)
+      const ds = performance.now() - s0
+      if (ds > this.buildStats.step) { this.buildStats.step = ds; this.buildStats.stepAt = `${j.at} → ${r.value ?? (done ? 'end' : 'pause')}` }
+      if (ds > 30) { const at = `${j.at} → ${r.value ?? (done ? 'end' : 'pause')}`; this.buildStats.slow[at] = (this.buildStats.slow[at] ?? 0) + 1 }
+      if (typeof r.value === 'string') j.at = r.value
+    } while (!done && (whole || !spent()))
+    j.ctx = this.tileCtx()
+    const dt = performance.now() - t1
+    j.spent += dt
+    if (!whole) this.buildStats.slice = Math.max(this.buildStats.slice, dt)
+    if (done) {
+      for (const m of j.hidden) m.setEnabled(true)
+      this.buildStats.ms += j.spent
+      this.buildStats.worst = Math.max(this.buildStats.worst, j.spent)
+      this.buildStats.wait = Math.max(this.buildStats.wait, performance.now() - j.t0)
+      this.jobs.splice(this.jobs.indexOf(j), 1)
+      return
+    }
+    for (; j.seen < j.meshes.length; j.seen++) {
+      const m = j.meshes[j.seen]
+      if (m.isEnabled(false)) { m.setEnabled(false); j.hidden.push(m) }
+    }
+  }
+
+  /** drop a tile in hand half built — the same disposal as `rebuild` */
+  private abortJob(j: Job): void {
+    this.jobs.splice(this.jobs.indexOf(j), 1)
+    this.buildStats.aborted++
+    j.gen.return()
+    // (and the mesh made but not yet handed over — a ground layer is made, then refined and draped over several pauses)
+    const keep = new Set<unknown>(this.mid.get(j.k) ?? []), tail = `:${j.k}`
+    for (const m of [...j.meshes, ...this.scene.meshes.filter((m) => m.name.endsWith(tail) && !keep.has(m))]) if (!m.isDisposed()) m.dispose()
+    this.wallace?.release(j.k)
+    this.nearCache.delete(j.k)
+    this.heads.delete(j.k)
+  }
+
+  private *buildSteps(k: string, meshes: Mesh[]): Generator<string | void, void, void> {
     this.coverEdges(k)
     this.decksNear(k)
     const lights = this.lightsIn(k)
@@ -3047,7 +3203,9 @@ export class City {
      * over it. The base is the only ground drawn where no area covers it; flat cells keep one quad.
      */
     const raw = (x: number, z: number): number => this.terrain.rawHeightAt(x, z)
+    yield
     for (let r = 0; r < N; r++) {
+      yield
       for (let c = 0; c < N; c++) {
         const x0 = tx * TILE + (c * TILE) / N
         const z0 = tz * TILE + (r * TILE) / N
@@ -3108,7 +3266,9 @@ export class City {
     // (a deck zone's tiles ship 1 m ground, tools/deck-zones.ts DZ_GROUND_STEP: there the drape follows it, or a quai's wall foot is an 8 m slope)
     const stepK = this.terrain.stepIn(k) ?? 20
     const AREA_MAX_EDGE = stepK < AREA_FINE_BELOW ? AREA_FINE_EDGE : Math.max(8, stepK * 2)
+    yield
     for (const a of ordered) {
+      yield
       if (a.kind === 'water') {
         /*
          * Flat, at the level of its lowest bank. Draped like the ground, a river followed every bump in
@@ -3208,7 +3368,9 @@ export class City {
       }
     }
     // the paving landmarks asked for (`paveGround`), clipped to this tile, over every area
+    yield
     for (const g of this.pavedGrounds) {
+      yield
       const bx0 = ktx * TILE, bz0 = ktz * TILE
       if (g.x1 < bx0 || g.x0 > bx0 + TILE || g.z1 < bz0 || g.z0 > bz0 + TILE) continue
       const piece = clipToBox(g.ring, bx0, bz0, bx0 + TILE, bz0 + TILE)
@@ -3221,7 +3383,9 @@ export class City {
      * deferred rock system (docs/SCOPE-GOLDEN-GATE.md) is for natural outcrops, which is a different thing.
      */
     const armoured = areasHere.some((a) => a.kind === 'sand')
+    yield
     for (const wall of armoured ? this.revetments(k) : []) {
+      yield
       revetmentBand(wall, 0.025,
         (x, y, z, c) => {
           const i = areas.positions.length / 3
@@ -3286,7 +3450,9 @@ export class City {
       const m = pts[Math.floor(pts.length / 2)]
       return busways.some((b) => b.name === e.name && b.pts.some((q) => Math.hypot(q.x - m.x, q.z - m.z) < e.width / 2 + 12))
     }
+    yield 'ground edges'
     for (const e of groundEdges) {
+      yield 'ground edge'
       const pts = unpackPoints(e.points)
       if (pts.length < 2) continue
       // A little wider than the corridor strictly is, so that two parallel ways — a service road beside a
@@ -3445,7 +3611,9 @@ export class City {
       }
     }
 
+    yield
     for (const id of pads) {
+      yield
       const n = this.nodes.get(id)
       if (!n || n.arms.length < 2) continue
       /*
@@ -3499,7 +3667,9 @@ export class City {
 
     // Markings are their own geometry: the road surface is one painted layer with no notion of which street
     // any given square metre belongs to.
+    yield 'ground edges 2'
     for (const e of groundEdges) {
+      yield 'ground edge 2'
       // (a painted busway is narrower than any marked road: it is let through for its paint, and only that)
       if (e.foot || (e.width < 5.4 && !(e.paint && e.kind === 'busway'))) continue
       const full = unpackPoints(e.points)
@@ -3606,34 +3776,43 @@ export class City {
 
     if (corridor.triangles > 0 && !this.off.has('walks')) {
       const m = new Mesh(`corridor:${k}`, this.scene)
-      if (stepK < AREA_FINE_BELOW) subdivideBuilder(corridor, AREA_FINE_EDGE)
-      refineAtWalls(corridor, this.terrain)
-      this.terrain.drape(corridor.positions)
+      if (stepK < AREA_FINE_BELOW) yield* subdivideSteps(corridor, AREA_FINE_EDGE)
+      yield 'subdivided'
+      yield* refineAtWallsSteps(corridor, this.terrain)
+      yield 'refined'
+      yield* this.terrain.drapeSteps(corridor.positions)
+      yield 'corridor draped'
       corridor.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'concrete', 'corridor')
       m.renderingGroupId = GROUP.corridor
       meshes.push(m)
     }
+    yield 'trails'
     for (const [page, out] of trails) {
+      yield
       if (out.triangles === 0 || this.off.has('walks')) continue
       const m = new Mesh(`trail:${page}:${k}`, this.scene)
       // (on the park's own ground, as the park's grass is: on the streets' levelled ground a trail over a hill in Golden Gate
       //  Park stood up to 1.5 m in the air, its walkers with it — owner, 2026-10-06, at 37.767296, −122.4729)
-      refineAtWalls(out, this.terrain)
-      this.terrain.drapeRaw(out.positions)
+      yield* refineAtWallsSteps(out, this.terrain)
+      yield 'refined'
+      yield* this.terrain.drapeSteps(out.positions, true)
       out.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, page, 'trail')
       m.renderingGroupId = GROUP.corridor
       meshes.push(m)
     }
 
+    yield
     for (const [builder, group, name] of [[areas, GROUP.areas, 'areas'], [walks, GROUP.walk, 'walks']] as const) {
+      yield
       if (builder.triangles === 0 || this.off.has(name)) continue
       const m = new Mesh(`${name}:${k}`, this.scene)
       // the parks and squares on the raw ground, the pavements at their streets' level (BUGS.md #38)
-      refineAtWalls(builder, this.terrain)
-      if (name === 'areas') this.terrain.drapeRaw(builder.positions)
-      else this.terrain.drape(builder.positions)
+      yield* refineAtWallsSteps(builder, this.terrain)
+      yield 'refined'
+      if (name === 'areas') yield* this.terrain.drapeSteps(builder.positions, true)
+      else yield* this.terrain.drapeSteps(builder.positions)
       builder.toVertexData().applyToMesh(m)
       // the concrete page is a neutral grain; the vertex tint does the rest. Its own material instance, not
       // the buildings' one, so that culling can be turned off for flat ground without affecting walls.
@@ -3653,8 +3832,9 @@ export class City {
     if (sandOut.triangles > 0 && !this.off.has('areas')) {
       // (named under `areas:` so the ground group draws it with the areas, before the corridor and the paths on it)
       const m = new Mesh(`areas:sand:${k}`, this.scene)
-      refineAtWalls(sandOut, this.terrain)
-      this.terrain.drapeRaw(sandOut.positions)
+      yield* refineAtWallsSteps(sandOut, this.terrain)
+      yield 'refined'
+      yield* this.terrain.drapeSteps(sandOut.positions, true)
       sandOut.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'sand', 'beach')
       m.renderingGroupId = GROUP.areas
@@ -3665,11 +3845,14 @@ export class City {
      * made is the order they are drawn, and OSM often maps plain paving on the very outline a square re-lays in setts or
      * brick — made first, the square would be painted over by it.
      */
+    yield
     for (const [surface, b] of pagedOut) {
+      yield
       if (b.triangles === 0 || this.off.has('areas')) continue
       const m = new Mesh(`areas:${surface}:${k}`, this.scene)
-      refineAtWalls(b, this.terrain)
-      this.terrain.drapeRaw(b.positions)
+      yield* refineAtWallsSteps(b, this.terrain)
+      yield 'refined'
+      yield* this.terrain.drapeSteps(b.positions, true)
       b.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, surface, `square-${surface}`)
       m.renderingGroupId = GROUP.areas
@@ -3688,7 +3871,7 @@ export class City {
     if (!this.off.has('courts')) for (const c of this.courtsIn.get(k) ?? []) court(courts, c, courtGlass)
     if (courts.triangles > 0) {
       const m = new Mesh(`courts:${k}`, this.scene)
-      this.terrain.drapeRaw(courts.positions)
+      yield* this.terrain.drapeSteps(courts.positions, true)
       courts.toVertexData().applyToMesh(m)
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
       m.renderingGroupId = GROUP.walk
@@ -3696,7 +3879,7 @@ export class City {
     }
     if (courtGlass.triangles > 0) {
       const m = new Mesh(`courtGlass:${k}`, this.scene)
-      this.terrain.drapeRaw(courtGlass.positions)
+      yield* this.terrain.drapeSteps(courtGlass.positions, true)
       courtGlass.toVertexData().applyToMesh(m)
       m.material = courtGlassMaterial(this.scene)
       m.renderingGroupId = GROUP.walk
@@ -3705,7 +3888,9 @@ export class City {
     }
     // a car park's stall lines: white, down each side of every stall (city/parking.ts)
     this.stallCache.delete(k)
+    yield
     for (const st of this.stallsIn(k)) {
+      yield
       if (st.kerb) continue
       const vx = -st.uz, vz = st.ux
       for (const side of [-1.3, 1.3]) {
@@ -3715,7 +3900,7 @@ export class City {
     }
     if (markings.triangles > 0 && !this.off.has('roads')) {
       const m = new Mesh(`markings:${k}`, this.scene)
-      this.terrain.drape(markings.positions)
+      yield* this.terrain.drapeSteps(markings.positions)
       markings.toVertexData().applyToMesh(m)
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
       /*
@@ -3732,13 +3917,17 @@ export class City {
       meshes.push(m)
     }
 
+    yield
     for (const [surface, out] of roads) {
+      yield
       if (this.off.has('roads')) break
       const m = new Mesh(`road:${surface}:${k}`, this.scene)
-      if (stepK < AREA_FINE_BELOW) subdivideBuilder(out, AREA_FINE_EDGE)
+      if (stepK < AREA_FINE_BELOW) yield* subdivideSteps(out, AREA_FINE_EDGE)
+      yield 'subdivided'
       const marked: number[] | undefined = surface === this.pkg.ground && WT_OCCLUDE ? [] : undefined
-      refineAtWalls(out, this.terrain, marked)
-      this.terrain.drape(out.positions)
+      yield* refineAtWallsSteps(out, this.terrain, marked)
+      yield 'refined'
+      yield* this.terrain.drapeSteps(out.positions)
       // (the base ground's triangles at a wall or a drop again, depth only, WT_OCC_SINK under it, in the building group: the depth is
       //  cleared before that group, the coarse ground occluder sinks to the bottom of a drop, and a trench's far face drew over the near
       //  ground — owner, 2026-11-10, the Quai de Bercy underpass)
@@ -3823,7 +4012,9 @@ export class City {
      * lamppost in the frame stands in the grass between the carriageway and the detached trail. Roads only
      * — nobody lights a dirt trail through a wood.
      */
+    yield
     for (const e of groundEdges) {
+      yield 'ground edge 3'
       if (!e.park || e.foot || this.off.has('furniture')) continue
       if (!this.region.furniture.lampPosts) continue
       const pts = unpackPoints(e.points)
@@ -3854,7 +4045,9 @@ export class City {
      * to keep clear — not the whole flight, which climbs away from the street anyway.
      */
     const stairMouths: { x: number; z: number }[] = []
+    yield
     for (const e of groundEdges) {
+      yield 'ground edge 4'
       if (e.kind !== 'steps') continue
       const q = unpackPoints(e.points)
       if (q.length > 0) stairMouths.push(q[0], q[q.length - 1])
@@ -3867,7 +4060,9 @@ export class City {
     const flights: { a: { x: number; z: number }; b: { x: number; z: number }; clear: number }[] = []
     const elevated = new Set((this.region.elevatedWalks ?? []).map((w) => w.name))
     const deckSegs: typeof flights = []
+    yield
     for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+      yield
       for (const e of this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []) {
         // (and a walk on a viaduct's roof, its whole width: the street beside it put its jardinières and lamps on the Coulée
         // Verte's path, 8 m up, as the ground there is the deck — 2026-11-05)
@@ -3900,7 +4095,9 @@ export class City {
     // (from this tile and its neighbours: the other way of the pair is often in the next tile)
     const around: typeof groundEdges = []
     for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) around.push(...(this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []))
+    yield
     for (const o of around) {
+      yield
       if (o.foot || !o.name) continue
       const l = twins.get(o.name) ?? []
       l.push({ id: o.id, pts: unpackPoints(o.points) })
@@ -3920,7 +4117,9 @@ export class City {
       const mine = segDist(own, x, z)
       return (twins.get(e.name) ?? []).some((o) => o.id !== e.id && segDist(o.pts, x, z) < mine + 1)
     }
+    yield 'ground edges 3'
     for (const e of groundEdges) {
+      yield 'ground edge 5'
       if (e.foot) continue
       if (e.walk < 1.2) continue
       const walk = e.walk
@@ -4157,7 +4356,9 @@ export class City {
      * LANTERN STRINGS across a street (Region `lanternStreets`: Grant Avenue in Chinatown): a wire from wall to wall at
      * about seven metres, sagging a little, every nine metres, with red paper lanterns hung along it.
      */
+    yield 'lanterns'
     for (const ls of this.lanternStretches) {
+      yield
       const dx = ls.b.x - ls.a.x, dz = ls.b.z - ls.a.z, LL = Math.hypot(dx, dz) || 1
       for (const e of groundEdges) {
         if (e.foot || e.name !== ls.street) continue
@@ -4595,7 +4796,9 @@ export class City {
      * roads merely cross and starts being a place that is controlled — which is most of what separates a
      * city street from a road through a field.
      */
+    yield 'pads'
     for (const id of pads) {
+      yield
       const n = this.nodes.get(id)
       if (!n) continue
       const drive = n.arms.filter((a) => !a.foot && a.half >= 3)
@@ -5161,7 +5364,9 @@ export class City {
       }
       return false
     }
+    yield 'points'
     for (const f of this.pointsIn.get(k) ?? []) {
+      yield
       /*
        * Paris's street (render/paris/street.ts): nothing in a building (OSM's sculptures are many in courtyards, some indoors
        * untagged) nor in a lane. A street market is a row of stalls along its street, wherever each stall finds room.
@@ -5427,7 +5632,9 @@ export class City {
     const byStyleSpans = new Map<StyleId, [number, number][]>()
     const byStyle = new Map<StyleId, MeshBuilder>()
     const sunOff = shadowOffset(DAYLIGHT.sun)
+    yield 'buildings'
     for (const b of this.buildingsIn.get(k) ?? []) {
+      yield 'building'
       // a `building:part` of a bridge a landmark draws itself (BUGS.md #211)
       if (this.coversBuilding(b)) continue
       // a suburban house is drawn by its own layer (render/paris-houses.ts), where the game has added it
@@ -5607,7 +5814,7 @@ export class City {
 
     if (shadows.triangles > 0) {
       const m = new Mesh(`shadow:${k}`, this.scene)
-      this.terrain.drape(shadows.positions)
+      yield* this.terrain.drapeSteps(shadows.positions)
       shadows.toVertexData().applyToMesh(m)
       m.material = shadowMaterial(this.scene)
       // after the ground and its markings, before nothing: a shadow multiplies whatever it lands on
@@ -5615,7 +5822,9 @@ export class City {
       m.isPickable = false
       meshes.push(m)
     }
+    yield
     for (const [style, out] of byStyle) {
+      yield 'style'
       if (this.off.has('buildings')) break
       const m = new Mesh(`b:${style}:${k}`, this.scene)
       out.toVertexData().applyToMesh(m)
@@ -5630,7 +5839,9 @@ export class City {
      * keeps after upload is dead weight — and in the Marais it was 1.2 GB of plain JS number arrays for the
      * buildings alone (9 M vertices), enough to run the tab out of memory.
      */
+    yield
     for (const m of meshes) {
+      yield
       m.isPickable = this.pickable
       if (!this.pickable) m.geometry?.clearCachedData()
     }
@@ -5815,6 +6026,14 @@ export const WATER_WALL_LAND = 30
  *  points disagree down to WATER_CLIP_EDGE m, and the last ones CLIPPED along the shore (its line found by WATER_CLIP_ITERS bisections
  *  per edge), not dropped whole: the edge is a line, not 1.5 m steps (owner, 2026-11-10: a jagged silver strip over the grass) */
 export const WATER_SAMPLES = 5, WATER_CLIP_EDGE = 2, WATER_CLIP_ITERS = 6
+/** …but ground WATER_BED_WET m or more under the sheet is the riverbed, wet on any side of a wall: short wall pieces round the Vert-Galant's
+ *  tip and the Pont d'Iéna's bank faced their high side out to the river, and their 30 m land reach cut straight-edged wedges out of the
+ *  water — the bed showed as lawn (owner, 2026-11-15: "lots of grass visible in the water", "a poly over the ground… a tesselation issue") */
+export const WATER_BED_WET = 0.8
+/** clip each tile's pavements and carriageways to its own square (render/clip-mesh.ts) */
+export const TILE_CLIP = true
+/** the paved strip along a quay wall's foot on its low side (m; 0: none) */
+export const WALL_FOOT_PAVE = 2.5
 /**
  * Cut the water triangles from `i0` on to the wet part. Wet is: on a quay wall's water side within its reach (`wallSide`, signed
  * metres from the wall's step, + on the land side) whatever the ground — the wall is the water's edge, and a river ring reaching over
@@ -5845,10 +6064,6 @@ export function dropDryWater(out: MeshBuilder, i0: number, y: number, heightAt: 
     for (let i = 0; i < 3; i++) {
       const j = (i + 1) % 3, p = vs[i], q = vs[j]
       if (fs[i] <= 0) poly.push(p)
-/** …but ground WATER_BED_WET m or more under the sheet is the riverbed, wet on any side of a wall: short wall pieces round the Vert-Galant's
- *  tip and the Pont d'Iéna's bank faced their high side out to the river, and their 30 m land reach cut straight-edged wedges out of the
- *  water — the bed showed as lawn (owner, 2026-11-15: "lots of grass visible in the water", "a poly over the ground… a tesselation issue") */
-export const WATER_BED_WET = 0.8
       if ((fs[i] <= 0) !== (fs[j] <= 0)) { const [x, z] = zero(P[3 * p], P[3 * p + 2], fs[i], P[3 * q], P[3 * q + 2]); poly.push(vert(x, z)) }
     }
     for (let i = 1; i + 1 < poly.length; i++) out.indices.push(poly[0], poly[i], poly[i + 1])

@@ -11,8 +11,8 @@
  */
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
-import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
-import { shareMaterials } from './shared-materials.ts'
+import { ImportMeshAsync } from '@babylonjs/core/Loading/sceneLoader'
+import { heldMaterials, shareMaterials } from './shared-materials.ts'
 import '@babylonjs/loaders/glTF/2.0'
 import type { Scene } from '@babylonjs/core/scene'
 import { Carriageways } from '../city/carriageways.ts'
@@ -354,7 +354,10 @@ export class Plants {
 
   /** One library file, imported and made ready to instance: its LOD0 parts, flipped, cut out, hidden. */
   private async importModel(file: string, base = this.base): Promise<Mesh[]> {
-    const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(base, file), this.scene)
+    // (its materials' dirty marking held off while they are set up: shared-materials.ts heldMaterials)
+    const held = heldMaterials()
+    const [root, name] = assetRootAndFile(base, file)
+    const r = await ImportMeshAsync(name, this.scene, { rootUrl: root, ...held.options }).catch((e: unknown) => { held.release(this.scene); throw e })
     const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
     // (LOD0, the full plant: LOD1's thinned leaf cards read at rider height as a few broken twigs lying on the lawn —
     //  Embarcadero survey, 2026-10-06 — and LOD0 is at most a thousand triangles a shrub)
@@ -374,6 +377,7 @@ export class Plants {
     }
     // (one bark and one leaf for the whole library, not one per file: render/shared-materials.ts)
     shareMaterials(this.scene, parts)
+    held.release(this.scene)
     return parts
   }
 

@@ -15,6 +15,7 @@ import type { Material } from '@babylonjs/core/Materials/material'
 import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture'
 import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh'
 import type { Scene } from '@babylonjs/core/scene'
+import { Constants } from '@babylonjs/core/Engines/constants'
 
 const known = new WeakMap<Scene, Map<string, Material>>()
 
@@ -43,5 +44,30 @@ export function shareMaterials(scene: Scene, meshes: AbstractMesh[]): void {
     const textures: BaseTexture[] = mat.getActiveTextures()
     mat.dispose(false, false)
     for (const t of textures) if (!scene.materials.some((q) => q.hasTexture(t))) t.dispose()
+  }
+}
+
+/**
+ * A glTF import with the dirty marking of ITS materials held off while they are set up (2026-11-16, the performance
+ * audit). Babylon marks a material's submeshes dirty on every texture or mode it is given — `_markAllSubMeshesAsDirty`,
+ * a walk over all of the scene's meshes, ~7,000 in Paris — and the glTF loader gives each material its maps one by one,
+ * and the plants then set three modes more: ~20 ms a frame while tiles brought plants, most of it on materials
+ * `shareMaterials` then threw away. `held.options` goes to the import (the loader names each material it makes);
+ * `release` marks each one still alive once, whole. Only this import's materials: nothing another module makes is held.
+ */
+export function heldMaterials(): { options: { pluginOptions: { gltf: { onMaterialLoaded: (m: Material) => void } } }; release: (scene: Scene) => void } {
+  const made: Material[] = []
+  return {
+    options: { pluginOptions: { gltf: { onMaterialLoaded: (m) => { m.blockDirtyMechanism = true; made.push(m) } } } },
+    release(scene) {
+      const alive = new Set(scene.materials)
+      for (const m of made) {
+        if (!m.blockDirtyMechanism) continue
+        // (the setter's own markDirty only resets readiness, not the defines; markAsDirty walks the meshes once)
+        ;(m as unknown as { _blockDirtyMechanism: boolean })._blockDirtyMechanism = false
+        if (alive.has(m)) m.markAsDirty(Constants.MATERIAL_AllDirtyFlag)
+      }
+      made.length = 0
+    },
   }
 }

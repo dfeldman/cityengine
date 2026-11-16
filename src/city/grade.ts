@@ -31,10 +31,33 @@ export const GRASS_DROP = 0.12
 /** how fast the cap rises away from the corridor (m per m), back to the raw ground by the margin */
 export const GRASS_SLOPE = 0.5
 
+/** File a segment in every 10 m cell within `reach` of it: the cells its box covers, less those whose nearest point is farther (a
+ *  diagonal street's box is mostly cells it never reaches) */
+function file(cells: Map<number, Seg[]>, sg: Seg, reach: number): void {
+  const x0 = Math.floor((Math.min(sg.ax, sg.bx) - reach) / 10)
+  const x1 = Math.floor((Math.max(sg.ax, sg.bx) + reach) / 10)
+  const z0 = Math.floor((Math.min(sg.az, sg.bz) - reach) / 10)
+  const z1 = Math.floor((Math.max(sg.az, sg.bz) + reach) / 10)
+  const dx = sg.bx - sg.ax, dz = sg.bz - sg.az, l2 = dx * dx + dz * dz || 1e-9, far = (reach + 5 * Math.SQRT2) ** 2
+  for (let gx = x0; gx <= x1; gx++) for (let gz = z0; gz <= z1; gz++) {
+    const cx = gx * 10 + 5, cz = gz * 10 + 5
+    const t = Math.max(0, Math.min(1, ((cx - sg.ax) * dx + (cz - sg.az) * dz) / l2))
+    const ex = cx - sg.ax - dx * t, ez = cz - sg.az - dz * t
+    if (ex * ex + ez * ez > far) continue
+    const k = cellKey(gx, gz)
+    const list = cells.get(k)
+    if (list) list.push(sg)
+    else cells.set(k, [sg])
+  }
+}
+
 export class StreetGrade {
   /** each segment of each street at grade, with its heights at both ends and its half-width, in 10 m cells */
   // (keyed by number: a string key built per query was half this class's cost, every wheel of every car every frame)
   private readonly cells = new Map<number, Seg[]>()
+  /** …and filed only as far as its corridor (`at`, `cutAt`, `deckAt`): the wide cells carry GRASS_MARGIN more, which `nearest` scanned
+   *  for nothing — a third of a Seine-band tile's build (2026-11-16) */
+  private readonly tight = new Map<number, Seg[]>()
   private readonly seen = new Set<number>()
   /** how many ramp edges end at each point: where ramps chain, the corridor stays round (no notch in the fill) */
   private readonly rampEnds = new Map<string, number>()
@@ -43,6 +66,7 @@ export class StreetGrade {
   add(e: Pick<PackedEdge, 'id' | 'points' | 'heights' | 'bridge' | 'tunnel' | 'foot' | 'width' | 'walk' | 'cut' | 'ramp'>): void {
     if (this.seen.has(e.id) || !e.heights || e.bridge || e.tunnel) return
     this.seen.add(e.id)
+    this.lastX = NaN
     const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
     for (let i = 2; i < e.points.length; i += 2) {
       const sg: Seg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half, cut: !!e.cut, road: e.foot ? 0 : e.width / 2 }
@@ -55,17 +79,8 @@ export class StreetGrade {
       if (e.ramp) { sg.squareA = i === 2; sg.squareB = i === e.points.length - 2 }
       if (e.ramp && i === 2) this.rampEnds.set(endKey(sg.ax, sg.az), (this.rampEnds.get(endKey(sg.ax, sg.az)) ?? 0) + 1)
       if (e.ramp && i === e.points.length - 2) this.rampEnds.set(endKey(sg.bx, sg.bz), (this.rampEnds.get(endKey(sg.bx, sg.bz)) ?? 0) + 1)
-      const reach = half + GRASS_MARGIN
-      const x0 = Math.floor((Math.min(sg.ax, sg.bx) - reach) / 10)
-      const x1 = Math.floor((Math.max(sg.ax, sg.bx) + reach) / 10)
-      const z0 = Math.floor((Math.min(sg.az, sg.bz) - reach) / 10)
-      const z1 = Math.floor((Math.max(sg.az, sg.bz) + reach) / 10)
-      for (let gx = x0; gx <= x1; gx++) for (let gz = z0; gz <= z1; gz++) {
-        const k = cellKey(gx, gz)
-        const list = this.cells.get(k)
-        if (list) list.push(sg)
-        else this.cells.set(k, [sg])
-      }
+      file(this.cells, sg, half + GRASS_MARGIN)
+      file(this.tight, sg, half)
     }
   }
 
@@ -89,7 +104,7 @@ export class StreetGrade {
    * Sacramento at Stockton: "submerged cars"). Cars stand on this. Null off every carriageway.
    */
   deckAt(x: number, z: number): number | null {
-    const list = this.cells.get(cellKey(Math.floor(x / 10), Math.floor(z / 10)))
+    const list = this.tight.get(cellKey(Math.floor(x / 10), Math.floor(z / 10)))
     if (!list) return null
     let best: number | null = null
     for (const sg of list) {
@@ -128,8 +143,21 @@ export class StreetGrade {
     return h
   }
 
+  // (the last question and its answer: Terrain.heightAt asks `cutAt` then `at` at the same point, and that pair was the hottest
+  //  code of a Seine-band tile build, 2026-11-16 — `add` forgets it)
+  private lastX = NaN
+  private lastZ = NaN
+  private last: { h: number; cut: boolean } | null = null
+
   private nearest(x: number, z: number): { h: number; cut: boolean } | null {
-    const list = this.cells.get(cellKey(Math.floor(x / 10), Math.floor(z / 10)))
+    if (x === this.lastX && z === this.lastZ) return this.last
+    this.lastX = x
+    this.lastZ = z
+    return (this.last = this.nearestNow(x, z))
+  }
+
+  private nearestNow(x: number, z: number): { h: number; cut: boolean } | null {
+    const list = this.tight.get(cellKey(Math.floor(x / 10), Math.floor(z / 10)))
     if (!list) return null
     let bestH = 0
     let bestCut = false

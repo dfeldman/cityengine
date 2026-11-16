@@ -22,6 +22,9 @@ import { applyTweaks, type TerrainTweak } from './terrain-tweaks.ts'
  * interesting and large coordinates cost float precision.
  */
 
+/** how many vertices `Terrain.drapeSteps` drapes between pauses */
+export const DRAPE_SLICE = 128
+
 export interface PackedTerrain {
   /** south-west corner of the grid, in local metres */
   x0: number
@@ -269,6 +272,15 @@ export class Terrain {
     if (this.flat) return
     for (let i = 0; i < positions.length; i += 3) {
       positions[i + 1] += this.heightAt(positions[i], positions[i + 2])
+    }
+  }
+
+  /** `drape` (or, `raw`, `drapeRaw`) in steps, pausing every DRAPE_SLICE vertices: render/city.ts builds a tile across frames */
+  *drapeSteps(positions: number[], raw = false): Generator<void, void, void> {
+    if (this.flat) return
+    for (let i = 0, t = 0; i < positions.length; i += 3) {
+      positions[i + 1] += raw ? this.grassHeightAt(positions[i], positions[i + 2]) : this.heightAt(positions[i], positions[i + 2])
+      if (++t % DRAPE_SLICE === 0) yield
     }
   }
 

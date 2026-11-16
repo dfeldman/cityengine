@@ -8,7 +8,7 @@ const { chromium } = require('playwright')
 const arg = (n, f = '') => { const h = process.argv.slice(2).find((a) => a.startsWith(`--${n}=`)); return h ? h.slice(n.length + 3) : f }
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist', '--disable-gpu-vsync', '--disable-frame-rate-limit'] })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
-await page.goto(`${arg('url', 'http://localhost:5200')}/?city=san-francisco&at=${arg('at', '37.788,-122.4075')}&freeze=1${arg('q') ? '&' + arg('q') : ''}`)
+await page.goto(`${arg('url', 'http://localhost:5200')}/?city=${arg('city', 'san-francisco')}&at=${arg('at', '37.788,-122.4075')}&freeze=1${arg('q') ? '&' + arg('q') : ''}`)
 await page.waitForFunction('window.gameReady === true', null, { timeout: 240_000 })
 await page.waitForTimeout(Number(arg('settle', '20000')))
 const cdp = await page.context().newCDPSession(page)
