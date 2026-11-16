@@ -24,6 +24,7 @@ the bake of the tiles on disk, since the raw tiles' dictionaries then disagree w
 | `custom.json` | hand-made things from the landmark catalogues (`public/landmarks/<region>.json`, `<region>/*.json`): procedural/kit builders, GLB statues (`-statues.json`), fountains (`-fountains.json`). A builder named by OSM id is tied to the bake building carrying `b<id>`; one at a lat/lon with a `size` gets that rectangle turned by `front`. **Approximate**: `src/render/landmarks.ts` fits them more cleverly; `approx` says how each was placed |
 | `restyles.json` | per OSM id, the render-time restyle (`restyleInfo` in `src/city/hand-looks.ts`: Panoramax labels and hand entries). The bake doesn't carry restyles; the prep asks the renderer's own functions. SF street-photo labels apply only under `?looks=labels`, so SF normally has none |
 | `legacy.json` | index geometry the tiles don't hold: quay walls (`top`/`low`/`cap`), garden hedges, topiary, beds/lawns/gravel, formal rings |
+| `issues.json` | the prep's checks (below): `{k, m, x, z, t?, i?}`, at most `ISSUE_CAP` per kind; complete counts in `meta.issueCount` |
 | `chunk/<cx>_<cy>.json` | `CHUNK`×`CHUNK` tiles (8 = 1.6 km): streets with a height, Δground and **level** per segment, footprints, areas, items (plants and furniture), places, decks, boats, courts, ride-graph edges (bike + run) |
 
 Every chunk record keeps its tile key and index, so clicking it loads the **raw** tile and shows the real object: every
@@ -42,6 +43,21 @@ the node table), else its node's z. The ground is the tile's fine ground; where 
 and the segment is drawn faded (its class is less trustworthy). The node table in the inspector shows node z, way z,
 Δground and the class for every vertex.
 
+## Issues (the prep's checks; the **issues** tab and an ✕ layer, `i` toggles)
+
+- **junction tear**: two ways (neither bridge/tunnel/trench, not rail) share a node but stand more than `JUNCTION_TOL`
+  (0.7 m) apart there — a step in the road, or a crossing that shouldn't share a node. The purest multi-level bug.
+- **level blip**: a raised/buried run shorter than `FLIP_RUN_M` (25 m) between grade segments — usually the ground or a
+  node z, not a structure.
+- **z override no-op**: a way's `z` override changes its nodes' z by less than `Z_NOOP_M` (5 cm).
+- **unknown level on fine ground**: a node with no ground under it although its tile ships fine ground (a lookup bug).
+- **steep ride**: bike ride-graph grade over a `RIDE_SLOPE_WIN_M` (10 m) window above `RIDE_STEEP_PCT` (15 %).
+- **ride island (bike/run)**: every ride-graph component but the biggest. Minis clip the graph, so expect some at
+  their edges.
+
+The tab lists counts per kind (toggle each), then every issue nearest the view first; clicking one goes there and
+inspects it, with a link to the way it names. "tiles coloured by → issues" in the layers tab shows where they cluster.
+
 ## Viewer (`devmaps.html`, `src/devmaps/`)
 
 - **far** (< 0.25 px/m): coarse terrain, major roads, tile grid coloured by content, detail regions, zones, water,
@@ -57,7 +73,17 @@ and the segment is drawn faded (its class is less trustworthy). The node table i
 - Coordinates: the status bar shows lat,lon, local x,z, the tile, and the coarse ground (v2 and above sea level).
   Right-click or `c` copies lat,lon at the cursor; `x` copies x,z; the inspector's coordinates copy on click.
   The view lives in the URL hash (`#city=…&ll=lat,lon&s=px/m`): paste it into a bug note.
-- `m` measures (click points: each leg's length and bearing, and the running total); `Esc` clears.
+- `m` measures (click points: each leg's length, bearing, running total, and Δh/grade on the ground); `m` again or
+  `Enter` finishes and shows the ground profile along the line; `Esc` clears.
+- **Elevation profiles**: a way's inspector starts with its height against the ground along it; a ride edge's too.
+- **Streets coloured by** level, **slope** (%), **Δground** (m, buried magenta ← grade grey → raised orange), kind or
+  role (`v` cycles), with a legend at the top right. **Tiles coloured by** issues, bytes, ways, buildings, items,
+  trees, areas, fine terrain, or unknown keys (a heatmap on the tile grid, the value in each tile's label).
+- **Hover**: the status bar's ▸ shows what is under the cursor (skipped when the view holds more than
+  `HOVER_MAX_CHUNKS` chunks).
+- **Links**: the inspector's *copy link* gives a URL that reopens the view with that entity selected
+  (`&sel=type|tile|index`); *copy JSON* copies the raw bake object.
+- Keys: `?` help, arrows pan, `+`/`-` zoom, double-click zooms in, `f` fits the city, `s` satellite, `l` labels.
 - Buildings can be coloured by kind, by **restyle** (the look's wall colour; pink outline = applied, dashed = label
   present but not applied; grey fill = a look with a style and no colour, e.g. a confidence-1 label in Paris proper,
   which only forces Haussmann; everything else light grey), by **style** (the applied restyle's, else the bake's;

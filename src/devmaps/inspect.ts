@@ -90,3 +90,44 @@ export function itemRow(tile: Record<string, unknown>, i: number, c: Ctx): Recor
     raw: D.slice(o, o + ITEM_STRIDE),
   }
 }
+
+/** px size of the inline elevation profiles */
+const PROFILE_W = 360, PROFILE_H = 110
+/** the profile's steepest grade is measured over at least this run (m) */
+const PROFILE_SLOPE_M = 5
+/**
+ * An elevation profile as inline SVG: distance along (m) against height (v2 m). Each series is drawn as a line (NaN = gap);
+ * the first is the subject (the way, the route), the others its references (the ground). Also returns climb / descent.
+ */
+export function profileSvg(dist: number[], series: { v: number[]; col: string; label: string }[]): string {
+  const all = series.flatMap((s) => s.v).filter(Number.isFinite)
+  if (dist.length < 2 || !all.length) return ''
+  let lo = Math.min(...all), hi = Math.max(...all)
+  if (hi - lo < 2) { const m = (hi + lo) / 2; lo = m - 1; hi = m + 1 }
+  const L = dist[dist.length - 1] || 1, pl = 34, pb = 14
+  const X = (d: number): number => pl + (d / L) * (PROFILE_W - pl - 4), Y = (v: number): number => 4 + (1 - (v - lo) / (hi - lo)) * (PROFILE_H - pb - 6)
+  const lines = series.map((s) => {
+    let d = '', pen = false
+    s.v.forEach((v, i) => { if (!Number.isFinite(v)) { pen = false; return } d += `${pen ? 'L' : 'M'}${X(dist[i]).toFixed(1)},${Y(v).toFixed(1)}`; pen = true })
+    return `<path d="${d}" fill="none" stroke="${s.col}" stroke-width="${s === series[0] ? 2 : 1.2}"${s === series[0] ? '' : ' stroke-dasharray="3,2"'}/>`
+  }).join('')
+  let up = 0, down = 0, steep = 0
+  const v0 = series[0].v
+  for (let i = 1; i < v0.length; i++) {
+    const dv = v0[i] - v0[i - 1]
+    if (!Number.isFinite(dv)) continue
+    if (dv > 0) up += dv; else down -= dv
+  }
+  // steepest grade over at least PROFILE_SLOPE_M (two pointers, so dense samples and long segments both work)
+  for (let i = 0, j = 0; i < v0.length; i++) {
+    while (j < v0.length && dist[j] - dist[i] < PROFILE_SLOPE_M) j++
+    if (j >= v0.length) break
+    const g = Math.abs(v0[j] - v0[i]) / (dist[j] - dist[i]); if (Number.isFinite(g)) steep = Math.max(steep, g)
+  }
+  const ax = `<text x="2" y="10" fill="#aaa" font-size="9">${hi.toFixed(1)}</text><text x="2" y="${PROFILE_H - pb}" fill="#aaa" font-size="9">${lo.toFixed(1)}</text><text x="${PROFILE_W - 40}" y="${PROFILE_H - 2}" fill="#aaa" font-size="9">${L.toFixed(0)} m</text>`
+  const legend = series.map((s) => `<span style="color:${s.col}">— ${s.label}</span>`).join(' ')
+  return `<div><svg width="${PROFILE_W}" height="${PROFILE_H}" style="background:#111;display:block">${ax}${lines}</svg>`
+    + `<div class="muted">${legend} · ↑${up.toFixed(1)} m ↓${down.toFixed(1)} m · steepest ${(steep * 100).toFixed(0)}% over ${PROFILE_SLOPE_M} m</div></div>`
+}
+/** cumulative distance along a flat [x,z,…] polyline */
+export const along = (p: number[]): number[] => { const d = [0]; for (let i = 2; i < p.length; i += 2) d.push(d[d.length - 1] + Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1])); return d }

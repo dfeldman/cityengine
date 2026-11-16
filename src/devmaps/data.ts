@@ -41,7 +41,10 @@ export interface Meta {
   tiles: ({ key: string; tx: number; ty: number; bytes: number; buildings: number; edges: number } & Record<string, number | string>)[]
   chunks: string[]; census: Record<string, Record<string, number>>; tours: Tour[]; levelCount: number[]
   legacyCensus: Record<string, unknown>; quayWalls: number; garden: Record<string, number>
+  issueCount?: Record<string, number>; issueTol?: Record<string, number>
 }
+/** a diagnostic from the prep (tools/devmaps-prep.ts issue checks) */
+export interface Issue { k: string; m: string; x: number; z: number; t?: string; i?: number }
 
 class LRU<V> {
   private m = new Map<string, V>()
@@ -61,6 +64,7 @@ export class CityData {
   custom: Custom[] = []
   restyles: Record<string, unknown> = {}
   legacy: Legacy = { quay: [], hedges: [], flats: [], topiary: [], formal: [] }
+  issues: Issue[] = []
   /** "tile|index" of every bake building a catalogue entry builds */
   customBldg = new Map<string, Custom>()
   private chunks = new LRU<Chunk>(CHUNK_CACHE)
@@ -81,6 +85,7 @@ export class CityData {
     try { this.custom = await (await fetch(`${base}/custom.json`)).json() } catch { this.custom = [] }
     try { this.restyles = await (await fetch(`${base}/restyles.json`)).json() } catch { /* prepped before restyles */ }
     try { this.legacy = await (await fetch(`${base}/legacy.json`)).json() } catch { /* prepped before legacy.json */ }
+    try { this.issues = await (await fetch(`${base}/issues.json`)).json() } catch { /* prepped before issues.json */ }
     for (const c of this.custom) if (c.bld) this.customBldg.set(`${c.bld.t}|${c.bld.i}`, c)
     for (const t of this.meta.tiles) this.tileSet.add(t.key)
     for (const c of this.meta.chunks) this.chunkSet.add(c)
@@ -103,6 +108,8 @@ export class CityData {
     return undefined
   }
   loadedChunks(): IterableIterator<Chunk> { return this.chunks.values() }
+  /** the raw tile if it is loaded already (never fetches) */
+  peekTile(key: string): Record<string, unknown> | undefined { return this.tiles.get(key) }
 
   /** the raw bake tile (key "tx,ty"), or undefined while it loads */
   tile(key: string): Record<string, unknown> | undefined {

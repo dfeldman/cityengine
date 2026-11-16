@@ -24,16 +24,26 @@
   table { border-collapse: collapse; font-size: 11px; } td, th { border: 1px solid #333; padding: 0 3px; text-align: right; } th { color: #8ab; }
   a { color: #7bf; } .hit { cursor: pointer; padding: 1px 2px; } .hit:hover { background: #333; }
   .warn { color: #fa6; } .muted { color: #888; }
+  #help { position: absolute; left: 40px; top: 40px; background: rgba(20,20,20,0.95); border: 1px solid #555; padding: 10px 14px; display: none; z-index: 6; max-width: 560px; }
+  #help kbd { color: #fc6; }
   #toast { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); background: #35507a; padding: 4px 10px; display: none; z-index: 5; }
 </style>
 </head>
 <body>
 <canvas id="map"></canvas>
 <div id="toast"></div>
+<div id="help"><b>devmaps keys</b> (click to close)<br>
+<kbd>?</kbd> this help · <kbd>m</kbd> measure (click points; <kbd>m</kbd>/<kbd>Enter</kbd> finishes: ground profile) · <kbd>Esc</kbd> clear<br>
+<kbd>c</kbd> copy lat,lon at cursor (also right-click) · <kbd>x</kbd> copy x,z<br>
+<kbd>←↑→↓</kbd> pan · <kbd>+</kbd>/<kbd>-</kbd> zoom · double-click zoom in · <kbd>f</kbd> fit the city<br>
+<kbd>s</kbd> satellite on/off · <kbd>l</kbd> labels · <kbd>i</kbd> issues · <kbd>v</kbd> cycle street colours (level, slope, Δground, kind, role) · <kbd>u</kbd> unique builders only<br>
+<br><b>go box</b>: <code>lat,lon</code> · <code>x,z</code> · <code>way 123</code> / <code>node 123</code> / <code>relation 123</code> (OSM overlay) · <code>type:busstop</code> · any name or ref (<code>b123</code>)<br>
+<b>inspector</b>: copy JSON copies the raw bake object; copy link reopens this view with the entity selected.<br>
+<b>status bar</b>: ▸ is what is under the cursor.</div>
 <div id="side">
   <div class="bar">
     <select id="city"></select>
-    <input id="goto" type="text" placeholder="lat,lon | x,z | way 123 | search…">
+    <input id="goto" type="text" placeholder="lat,lon | x,z | way 123 | search… (? = help)">
     <button id="gobtn">go</button>
   </div>
   <div class="bar">
@@ -44,12 +54,13 @@
     <label>sat <input id="satop" type="range" min="0" max="100" value="0" style="width:60px"></label>
     <label>data <input id="dataop" type="range" min="10" max="100" value="100" style="width:60px"></label>
   </div>
-  <div class="bar tabs"><button data-p="inspect" class="on">inspect</button><button data-p="layers">layers</button><button data-p="find">find</button><button data-p="builders">builders</button><button data-p="tours">tours</button><button data-p="info">city</button></div>
+  <div class="bar tabs"><button data-p="inspect" class="on">inspect</button><button data-p="layers">layers</button><button data-p="find">find</button><button data-p="builders">builders</button><button data-p="issues">issues</button><button data-p="tours">tours</button><button data-p="info">city</button></div>
   <div id="panes">
     <div class="pane on" id="p-inspect"><div class="muted">Click the map. Every entity under the cursor is listed; pick one to see all its fields. Right-click copies lat,lon.</div></div>
     <div class="pane" id="p-layers"></div>
     <div class="pane" id="p-find"></div>
     <div class="pane" id="p-builders"></div>
+    <div class="pane" id="p-issues"></div>
     <div class="pane" id="p-tours"></div>
     <div class="pane" id="p-info"></div>
   </div>

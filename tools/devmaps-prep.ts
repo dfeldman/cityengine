@@ -38,6 +38,20 @@ const EPS_MAJOR = 4
 const MAJOR_KINDS = new Set(['motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link', 'secondary'])
 /** a tour stop further than this from the ride graph is not on this city: the tour is skipped */
 const TOUR_STOP_REACH = 200
+// ---- issue checks (issues.json; the viewer's issues tab) ----
+/** two ways sharing a node whose heights there differ by more than this (m): a tear at a junction */
+const JUNCTION_TOL = 0.7
+/** a run of raised/buried segments between grade ones shorter than this (m) is a blip, likely a ground or z artefact */
+const FLIP_RUN_M = 25
+/** a way z override whose largest change to its nodes' z is under this (m) does nothing */
+const Z_NOOP_M = 0.05
+/** ride slope is measured over this window (m), and flagged above this grade (%) */
+const RIDE_SLOPE_WIN_M = 10
+const RIDE_STEEP_PCT = 15
+/** ride-graph components smaller than the biggest are islands; report those with at least this many edges */
+const ISLAND_MIN_EDGES = 1
+/** at most this many records per issue kind are written (the counts are always complete) */
+const ISSUE_CAP = 4000
 
 const ROOT = resolve(import.meta.dirname, '..')
 const CITIES = resolve(ROOT, 'public/cities')
@@ -76,6 +90,7 @@ function simplify(p: number[], eps: number): number[] {
 
 /** level class codes — the viewer's palette indexes these (tools/level-map.ts colours) */
 const LV = { grade: 0, raised: 1, buried: 2, bridge: 3, tunnel: 4, trench: 5, unknown: 6 } as const
+const LV_NAMES = Object.keys(LV)
 
 function prep(city: string): void {
   const t0 = Date.now()
@@ -107,6 +122,11 @@ function prep(city: string): void {
     for (const k of Object.keys(o)) c[k] = (c[k] ?? 0) + 1
   }
   const levelCount = [0, 0, 0, 0, 0, 0, 0]
+  const issues: Record<string, unknown>[] = [], issueCount: Record<string, number> = {}
+  const issue = (k: string, m: string, x: number, z: number, t?: string, i?: number): void => {
+    issueCount[k] = (issueCount[k] ?? 0) + 1
+    if (issueCount[k] <= ISSUE_CAP) issues.push({ k, m, x: r1(x), z: r1(z), ...(t ? { t, i } : {}) })
+  }
   /** OSM id → the bake building that carries it as `b<id>` (for the landmark catalogue's footprints) */
   const byOsm = new Map<number, { t: string; i: number; x: number; z: number; k: string }>()
   /** OSM id → the render-time restyle (src/city/hand-looks.ts restyleInfo; SF street-photo labels via appearance.ts lookFor) */
@@ -150,6 +170,9 @@ function prep(city: string): void {
     const st: Record<string, number> = { bytes: 0 }
     const bump = (k: string, n = 1): void => { st[k] = (st[k] ?? 0) + n }
 
+    /** node → the ways through it (not bridges/tunnels) and their height there: junction tears */
+    const nodeUse = new Map<number, { wi: number; h: number }[]>()
+    let unknownOnFine = 0
     tile.ways.forEach((w0, wi) => {
       const w = w0 as Way & Record<string, unknown>
       see('way', w)
@@ -179,6 +202,25 @@ function prep(city: string): void {
         }
         lv.push(c); levelCount[c]++
       }
+      // ---- issues ----
+      if (fixed < 0 && !isRail) w.nodes.forEach((n, j) => { let u = nodeUse.get(n); if (!u) nodeUse.set(n, (u = [])); u.push({ wi, h: hz[j] }) })
+      if (fixed < 0) {
+        const segLen = (j: number): number => Math.hypot(p[2 * j + 2] - p[2 * j], p[2 * j + 3] - p[2 * j + 1])
+        for (let j = 0; j < lv.length;) {
+          if (lv[j] !== LV.raised && lv[j] !== LV.buried) { j++; continue }
+          let e = j, len = 0
+          while (e < lv.length && lv[e] === lv[j]) len += segLen(e++)
+          if (j > 0 && e < lv.length && lv[j - 1] === LV.grade && lv[e] === LV.grade && len < FLIP_RUN_M)
+            issue('level blip', `${kind}${w.name != null ? ' ' + names[w.name] : ''}: ${LV_NAMES[lv[j]]} for ${len.toFixed(0)} m between grade (Δground ${dz.slice(j, e + 1).map((v) => v.toFixed(1)).join(' ')})`, p[2 * j], p[2 * j + 1], key, wi)
+          j = e
+        }
+      }
+      if (w.z) {
+        let mx = 0
+        w.nodes.forEach((n, j) => { mx = Math.max(mx, Math.abs((w.z![j] - N[3 * n + 2]) / 100)) })
+        if (mx < Z_NOOP_M) issue('z override no-op', `${kind}: way z equals its nodes' z (max change ${(mx * 100).toFixed(0)} cm)`, p[0], p[1], key, wi)
+      }
+      if (g && g.cols && lv.includes(LV.unknown)) unknownOnFine++
       const rec: Record<string, unknown> = { t: key, i: wi, r: w.role, k: kind, f: fl, p, h: hz, d: dz, lv }
       if (!g || !g.cols) rec.gc = 1 // levels judged against the COARSE ground: this tile ships none of its own
       if (w.layer) rec.L = w.layer
@@ -190,6 +232,16 @@ function prep(city: string): void {
       if (w.name != null) search.push([names[w.name], kind, p[0], p[1], key, w.ref ?? ''])
     })
 
+    for (const [n, u] of nodeUse) {
+      if (u.length < 2) continue
+      let lo = u[0], hi = u[0]
+      for (const q of u) { if (q.h < lo.h) lo = q; if (q.h > hi.h) hi = q }
+      if (hi.h - lo.h > JUNCTION_TOL) {
+        const wn = (q: { wi: number }): string => { const w = tile.ways[q.wi]; return `#${q.wi} ${w.kind != null ? kinds[w.kind] : w.role}${w.name != null ? ' ' + names[w.name] : ''}` }
+        issue('junction tear', `node ${n}: ${(hi.h - lo.h).toFixed(1)} m between ${wn(lo)} (${lo.h}) and ${wn(hi)} (${hi.h})`, X(n), Z(n), key, hi.wi)
+      }
+    }
+    if (unknownOnFine) issue('unknown level on fine ground', `${unknownOnFine} ways with no ground under some node although the tile ships fine ground`, ox + T / 2, oy + T / 2, key)
     for (const [bi, b] of tile.buildings.entries()) {
       see('building', b as unknown as Record<string, unknown>)
       bump('building.' + b.kind)
@@ -292,8 +344,33 @@ function prep(city: string): void {
     const f = resolve(dir, `ride-${mode}.json`)
     if (!existsSync(f)) continue
     const rf = JSON.parse(readFileSync(f, 'utf8')) as RideFile
+    // islands: union-find on the edges' end nodes; every component but the biggest
+    const par = new Map<number, number>()
+    const find = (a: number): number => { let r = a; while (par.has(r) && par.get(r) !== r) r = par.get(r)!; par.set(a, r); return r }
+    for (const e of rf.edges) if (e) { const a = find(e.a), b = find(e.b); par.set(a, a); par.set(b, b); if (a !== b) par.set(a, b) }
+    const comp = new Map<number, { n: number; len: number; x: number; z: number }>()
+    for (const e of rf.edges) if (e) {
+      const r = find(e.a), c = comp.get(r) ?? { n: 0, len: 0, x: e.points[0], z: e.points[1] }
+      c.n++; for (let i = 2; i < e.points.length; i += 2) c.len += Math.hypot(e.points[i] - e.points[i - 2], e.points[i + 1] - e.points[i - 1])
+      comp.set(r, c)
+    }
+    const comps = [...comp.values()].sort((a, b) => b.n - a.n)
+    for (const c of comps.slice(1)) if (c.n >= ISLAND_MIN_EDGES) issue(`ride island (${mode})`, `${c.n} edges, ${c.len.toFixed(0)} m, cut off from the main graph (${comps[0].n} edges)`, c.x, c.z)
     for (const e of rf.edges) {
       if (!e) continue
+      // steepest grade over a RIDE_SLOPE_WIN_M window
+      if (mode === 'bike' && e.heights) {
+        const P = e.points, Hh = e.heights, run = [0]
+        for (let i = 2; i < P.length; i += 2) run.push(run[run.length - 1] + Math.hypot(P[i] - P[i - 2], P[i + 1] - P[i - 1]))
+        let best = 0, at = 0
+        for (let i = 0, j = 0; i < run.length; i++) {
+          while (j < run.length && run[j] - run[i] < RIDE_SLOPE_WIN_M) j++
+          if (j >= run.length) break
+          const sl = Math.abs(Hh[j] - Hh[i]) / (run[j] - run[i])
+          if (sl > best) { best = sl; at = i }
+        }
+        if (best * 100 > RIDE_STEEP_PCT) issue('steep ride', `${(best * 100).toFixed(0)}% over ${RIDE_SLOPE_WIN_M} m on ${(e as { kind?: string }).kind ?? ''} ${(e as { name?: string }).name ?? ''} (edge ${e.id})`, P[2 * at], P[2 * at + 1])
+      }
       const mid = e.points.length >> 1 & ~1
       const tx = Math.floor(e.points[mid] / T), ty = Math.floor(e.points[mid + 1] / T)
       const { points, heights, over, ...rest } = e as unknown as Record<string, unknown> & { points: number[]; heights?: number[]; over: number[] }
@@ -392,11 +469,12 @@ function prep(city: string): void {
     landmarks: L.landmarks, walls: L.walls ?? [], roundabouts: L.roundabouts ?? [],
     quayWalls: (L.quayWalls ?? []).length, garden: Object.fromEntries(Object.entries(L.garden ?? {}).map(([k, v]) => [k, (v as unknown[]).length])),
     tiles: idx.tiles.map((t) => ({ ...t, ...tileStats[t.key] })),
-    chunks: [...chunks.keys()], census, tours, levelCount,
+    chunks: [...chunks.keys()], census, tours, levelCount, issueCount, issueTol: { JUNCTION_TOL, FLIP_RUN_M, Z_NOOP_M, RIDE_SLOPE_WIN_M, RIDE_STEEP_PCT, ISLAND_MIN_EDGES, ISSUE_CAP },
     legacyCensus: Object.fromEntries(Object.entries(L).map(([k, v]) => [k, Array.isArray(v) ? v.length : Object.keys(v as object)])),
   }
   writeFileSync(resolve(out, 'meta.json'), JSON.stringify(meta))
   writeFileSync(resolve(out, 'major.json'), JSON.stringify(major))
+  writeFileSync(resolve(out, 'issues.json'), JSON.stringify(issues))
   writeFileSync(resolve(out, 'custom.json'), JSON.stringify(custom))
   writeFileSync(resolve(out, 'restyles.json'), JSON.stringify(restyles))
   // the index's legacy geometry the viewer draws (v2 metres): quay walls (ax,az,bx,bz,top,low,cap), and the gardens
@@ -410,7 +488,7 @@ function prep(city: string): void {
   }))
   writeFileSync(resolve(out, 'search.json'), JSON.stringify(search))
   for (const [k, c] of chunks) writeFileSync(resolve(out, 'chunk', k + '.json'), JSON.stringify(c))
-  console.log(`${city}: ${keys.length} tiles, ${chunks.size} chunks, ${tours.length} tours, ${search.length} names, ${((Date.now() - t0) / 1000).toFixed(1)} s`)
+  console.log(`${city}: ${keys.length} tiles, ${chunks.size} chunks, ${tours.length} tours, ${search.length} names, ${issues.length} issues (${Object.entries(issueCount).map(([k, n]) => k + " " + n).join(", ")}), ${((Date.now() - t0) / 1000).toFixed(1)} s`)
 }
 
 interface Custom { kind: 'builder' | 'statue' | 'fountain'; name: string; src: string; x: number; z: number; proc?: string; model?: string; rect?: number[]; bld?: { t: string; i: number; k: string }; approx?: string; entry: Record<string, unknown> }

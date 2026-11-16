@@ -5,7 +5,8 @@
  *   near (s ≥ NEAR_S): the raw bake tiles too — fine ground, way nodes; clicking always inspects the raw object
  */
 import { CityData, type Chunk, type Street } from './data.ts'
-import { tree, wayTable, itemRow, refLinks, osm, fmt, type Ctx } from './inspect.ts'
+import { tree, wayTable, itemRow, refLinks, osm, fmt, profileSvg, along, type Ctx } from './inspect.ts'
+import type { Issue } from './data.ts'
 
 // ---- tunables ----
 const MID_S = 0.25
@@ -25,6 +26,17 @@ const MAX_VIEW_TILES = 80
 const HIT_PX = 6
 const SAT_URL = (z: number, x: number, y: number): string => `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`
 const SAT_MAX_Z = 19
+/** hover preview (status bar): at most this often (ms), and only while the view holds at most this many chunks */
+const HOVER_MS = 120
+const HOVER_MAX_CHUNKS = 8
+/** street slope colours: grade (%) breakpoints → colour */
+const SLOPE_STOPS: [number, string][] = [[0, '#2a9d4a'], [4, '#9acd32'], [8, '#ffd000'], [12, '#ff8c00'], [16, '#e02020'], [25, '#7a00a0']]
+/** Δground colour: this many metres saturates (buried magenta ← grade grey → raised orange) */
+const DGROUND_SAT = 6
+/** a measure line's ground profile: about this many samples */
+const PROFILE_SAMPLES = 200
+/** pan step for the arrow keys (fraction of the view) and zoom step for +/- */
+const PAN_STEP = 0.25, ZOOM_STEP = 1.6
 /** level colours: tools/level-map.ts (grade black, raised orange, buried magenta, bridge blue, tunnel green) */
 const LV_COL = ['#141414', '#ff8c00', '#dc00dc', '#1e50e6', '#14a03c', '#00a0a0', '#999999']
 const LV_NAME = ['grade', 'raised', 'buried', 'bridge', 'tunnel', 'trench', 'unknown']
@@ -45,7 +57,9 @@ const ctx = canvas.getContext('2d')!
 let data: CityData
 const cam = { cx: 0, cz: 0, s: 0.05 }
 const layers = new Map<string, boolean>()
-let colourMode: 'level' | 'kind' | 'role' = 'level'
+let colourMode: 'level' | 'kind' | 'role' | 'slope' | 'dground' = 'level'
+/** what the tile grid's fill shows (a per-tile stat prefix, 'issues', or nothing) */
+let tileStat = ''
 /** restyle mode: draw only the restyles the renderer applies (confidence-1 labels never are) */
 let hideUnapplied = false
 let bldgMode: 'kind' | 'restyle' | 'height' | 'style' | 'archetype' = 'kind'
@@ -90,6 +104,34 @@ function coarseAt(x: number, z: number): number | null {
   const c = Math.round((x - t.x0) / t.step), r = Math.round((z - t.z0) / t.step)
   if (c < 0 || r < 0 || c >= t.cols || r >= t.rows) return null
   return coarse[r * t.cols + c] / 10
+}
+
+/** ground (v2 m): the tile's own fine ground where that tile is loaded, else the coarse grid */
+function groundAt(x: number, z: number): number | null {
+  const T = data.meta.index.tile, tx = Math.floor(x / T), ty = Math.floor(z / T)
+  const t = data.peekTile(`${tx},${ty}`), g = t?.terrain as { step: number; cols: number; z: number[] } | undefined
+  if (!g || !g.cols) return coarseAt(x, z)
+  const n = g.cols, fx = Math.max(0, Math.min(n - 1.001, (x - tx * T) / g.step)), fy = Math.max(0, Math.min(n - 1.001, (z - ty * T) / g.step))
+  const i = Math.floor(fx), j = Math.floor(fy), u = fx - i, v = fy - j
+  return data.v2(g.z[j * n + i] * (1 - u) * (1 - v) + g.z[j * n + i + 1] * u * (1 - v) + g.z[(j + 1) * n + i] * (1 - u) * v + g.z[(j + 1) * n + i + 1] * u * v)
+}
+const issueCol = (k: string): string => hue('issue' + k).replace('45%)', '50%)')
+let hoverText = ''
+/** the tile grid's heat value for one tile (per the tiles select) and the max over the city, for scaling */
+let tileMax = 1
+let issuesByTile = new Map<string, number>()
+function tileVal(t: CityData['meta']['tiles'][number]): number {
+  if (tileStat === 'issues') return issuesByTile.get(t.key) ?? 0
+  if (tileStat === 'bytes') return (t.bytes as number) ?? 0
+  let n = 0
+  for (const [k, v] of Object.entries(t)) if (k.startsWith(tileStat) && typeof v === 'number') n += v
+  return n
+}
+function setTileStat(v: string): void {
+  tileStat = v; tileMax = 1
+  if (v) for (const t of data.meta.tiles) tileMax = Math.max(tileMax, tileVal(t))
+  if (v) layers.set('grid', true)
+  redraw()
 }
 
 // ---------------------------------------------------------------- drawing
@@ -172,8 +214,19 @@ function fineImage(key: string, t: Record<string, unknown>): HTMLCanvasElement |
   return c
 }
 
+const ramp = (v: number, stops: [number, string][]): string => { for (let i = stops.length - 1; i >= 0; i--) if (v >= stops[i][0]) return stops[i][1]; return stops[0][1] }
 function streetColour(s: Street, seg: number): string {
   if (colourMode === 'level') return LV_COL[s.lv[seg]]
+  if (colourMode === 'slope') {
+    const len = Math.hypot(s.p[2 * seg + 2] - s.p[2 * seg], s.p[2 * seg + 3] - s.p[2 * seg + 1])
+    return len < 0.5 ? '#888' : ramp((Math.abs(s.h[seg + 1] - s.h[seg]) / len) * 100, SLOPE_STOPS)
+  }
+  if (colourMode === 'dground') {
+    const d = ((s.d[seg] ?? NaN) + (s.d[seg + 1] ?? NaN)) / 2
+    if (!Number.isFinite(d)) return '#bbb'
+    const k = Math.min(1, Math.abs(d) / DGROUND_SAT)
+    return Math.abs(d) < 0.7 ? '#777' : d > 0 ? `hsl(30,100%,${60 - 30 * k}%)` : `hsl(300,100%,${60 - 30 * k}%)`
+  }
   if (colourMode === 'kind') return KIND_COL[s.k] ?? hue(s.k)
   return hue(s.r)
 }
@@ -328,10 +381,10 @@ function render(): void {
       if (n > 4000 && cam.s < 0.02) break
       if (t.tx < v.tx0 || t.tx > v.tx1 || t.ty < v.ty0 || t.ty > v.ty1) continue
       const x = sx(t.tx * T), y = sy((t.ty + 1) * T), d = T * cam.s
-      ctx.fillStyle = t.buildings ? 'rgba(200,120,40,0.07)' : t.edges ? 'rgba(40,120,200,0.07)' : 'rgba(0,0,0,0.04)'
-      if (chunks.length === 0) ctx.fillRect(x, y, d, d)
+      if (tileStat) { const v = tileVal(t) / tileMax; if (v > 0) { ctx.fillStyle = `hsla(${240 - 240 * Math.min(1, v)},90%,50%,${0.15 + 0.35 * Math.min(1, v)})`; ctx.fillRect(x, y, d, d) } }
+      else { ctx.fillStyle = t.buildings ? 'rgba(200,120,40,0.07)' : t.edges ? 'rgba(40,120,200,0.07)' : 'rgba(0,0,0,0.04)'; if (chunks.length === 0) ctx.fillRect(x, y, d, d) }
       ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.strokeRect(x, y, d, d)
-      if (d > 70) { ctx.fillStyle = '#555'; ctx.fillText(`${t.key}${t['terrain.step1'] ? ' fine' : ''}`, x + 3, y + 11) }
+      if (d > 70) { ctx.fillStyle = '#555'; ctx.fillText(`${t.key}${t['terrain.step1'] ? ' fine' : ''}${tileStat ? ' · ' + tileVal(t) : ''}`, x + 3, y + 11) }
     }
   }
   if (on('detail')) for (const d of m.index.detail ?? []) {
@@ -364,6 +417,15 @@ function render(): void {
       if (s.name && on('labels')) { ctx.fillStyle = col; ctx.fillText(s.name, sx(s.x) + 9, sy(s.z) - 6) }
     })
   })
+  // issues (the prep's checks)
+  if (on('issues')) for (const q of data.issues) {
+    if (!on('issue:' + q.k)) continue
+    const x = sx(q.x), y = sy(q.z)
+    if (x < -10 || y < -10 || x > W() + 10 || y > H() + 10) continue
+    ctx.strokeStyle = issueCol(q.k); ctx.lineWidth = 2.5
+    ctx.beginPath(); ctx.moveTo(x - 5, y - 5); ctx.lineTo(x + 5, y + 5); ctx.moveTo(x + 5, y - 5); ctx.lineTo(x - 5, y + 5); ctx.stroke()
+    if (cam.s > LABEL_S && on('labels')) { ctx.fillStyle = issueCol(q.k); ctx.fillText(q.k, x + 7, y - 4) }
+  }
   // custom builds: catalogue builders (diamond; rectangle when placed by lat/lon + size), GLB statues (star), fountains (ring)
   for (const c of data.custom) {
     if (!customShown(c)) continue
@@ -407,10 +469,19 @@ function render(): void {
     for (let i = 2; i < p.length; i += 2) {
       const d = Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]); tot += d
       const brg = ((Math.atan2(p[i] - p[i - 2], p[i + 1] - p[i - 1]) * 180) / Math.PI + 360) % 360
-      ctx.fillStyle = '#fff'; ctx.fillRect(sx((p[i] + p[i - 2]) / 2) + 2, sy((p[i + 1] + p[i - 1]) / 2) - 11, 120, 13)
-      ctx.fillStyle = '#000'; ctx.fillText(`${fmt(d, 1)} m  ${brg.toFixed(0)}°  Σ${fmt(tot, 1)}`, sx((p[i] + p[i - 2]) / 2) + 4, sy((p[i + 1] + p[i - 1]) / 2) - 1)
+      const ga = groundAt(p[i - 2], p[i - 1]), gb = groundAt(p[i], p[i + 1]), dh = ga != null && gb != null ? gb - ga : null
+      const t = `${fmt(d, 1)} m  ${brg.toFixed(0)}°  Σ${fmt(tot, 1)}${dh != null ? `  Δh ${dh >= 0 ? '+' : ''}${dh.toFixed(1)} (${d > 0 ? ((dh / d) * 100).toFixed(1) : '0'}%)` : ''}`
+      ctx.fillStyle = '#fff'; ctx.fillRect(sx((p[i] + p[i - 2]) / 2) + 2, sy((p[i + 1] + p[i - 1]) / 2) - 11, ctx.measureText(t).width + 4, 13)
+      ctx.fillStyle = '#000'; ctx.fillText(t, sx((p[i] + p[i - 2]) / 2) + 4, sy((p[i + 1] + p[i - 1]) / 2) - 1)
     }
     for (let i = 0; i < p.length; i += 2) ctx.fillRect(sx(p[i]) - 2, sy(p[i + 1]) - 2, 4, 4)
+  }
+  if (chunks.length && (colourMode === 'slope' || colourMode === 'dground' || colourMode === 'level')) {
+    const leg: [string, string][] = colourMode === 'slope' ? SLOPE_STOPS.map(([v, c]) => [c, `${v}%+`])
+      : colourMode === 'dground' ? [['hsl(300,100%,30%)', `≤−${DGROUND_SAT} m`], ['hsl(300,100%,55%)', 'buried'], ['#777', 'grade'], ['hsl(30,100%,55%)', 'raised'], ['hsl(30,100%,30%)', `≥${DGROUND_SAT} m`]]
+      : LV_NAME.map((n, i) => [LV_COL[i], n])
+    ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(W() - 92, 6, 86, leg.length * 13 + 6)
+    leg.forEach(([c, t], i) => { ctx.fillStyle = c; ctx.fillRect(W() - 86, 11 + i * 13, 14, 6); ctx.fillStyle = '#222'; ctx.fillText(t, W() - 68, 18 + i * 13) })
   }
   // scale bar
   const target = 120 / cam.s, pow = 10 ** Math.floor(Math.log10(target)), len = [1, 2, 5, 10].map((k) => k * pow).filter((v) => v <= target).pop()!
@@ -420,12 +491,12 @@ function render(): void {
 
 function status(): void {
   const q = data.proj.toLatLon({ x: mouse.x, z: mouse.z }), T = data.meta.index.tile
-  const g = coarseAt(mouse.x, mouse.z), msl = g != null ? data.msl(g) : null
+  const g = groundAt(mouse.x, mouse.z), msl = g != null ? data.msl(g) : null
   const lod = cam.s >= NEAR_S ? 'near' : cam.s >= MID_S ? 'mid' : 'far'
   const bakeWarn = data.liveBake && data.meta.index.bake && data.liveBake !== data.meta.index.bake ? `<span class="warn">prep is from bake ${data.meta.index.bake}, tiles are ${data.liveBake}: re-run devmaps:prep</span>` : ''
   $('status').innerHTML = `<span>${q.lat.toFixed(6)},${q.lon.toFixed(6)}</span><span>x ${mouse.x.toFixed(1)} z ${mouse.z.toFixed(1)}</span>`
     + `<span>tile ${Math.floor(mouse.x / T)},${Math.floor(mouse.z / T)}</span><span>ground ${g != null ? g.toFixed(1) + ' (v2)' + (msl != null ? ' / ' + msl.toFixed(1) + ' msl' : '') : '—'}</span>`
-    + `<span>${cam.s.toFixed(3)} px/m · ${lod}</span><span>${data.pendingCount ? 'loading ' + data.pendingCount : ''}</span>${bakeWarn}`
+    + `<span>${cam.s.toFixed(3)} px/m · ${lod}</span><span>${data.pendingCount ? 'loading ' + data.pendingCount : ''}</span>${bakeWarn}${hoverText ? `<span style="color:#9cf">▸ ${hoverText.replace(/</g, '&lt;')}</span>` : ''}`
 }
 
 // ---------------------------------------------------------------- hit testing + inspector
@@ -471,6 +542,7 @@ function hitTest(x: number, z: number): Hit[] {
     if (on('garden:topiary')) for (let i = 0; i < lg.topiary.length; i += 4) { const t = lg.topiary; const d = Math.hypot(t[i] - x, t[i + 1] - z); if (d < tol) hits.push({ type: 'topiary', label: ['cone', 'ball', 'cube'][t[i + 3]] ?? String(t[i + 3]), d, geom: { pt: [t[i], t[i + 1]] }, obj: { x: t[i], z: t[i + 1], height: t[i + 2], shape: t[i + 3] } }) }
     if (on('garden:flats')) for (const f of lg.flats) if (inside(x, z, f.ring)) hits.push({ type: 'garden flat', label: f.kind, d: 6.5, geom: { rings: [f.ring] }, obj: f })
   }
+  if (on('issues')) for (const q of data.issues) { if (!on('issue:' + q.k)) continue; const d = Math.hypot(q.x - x, q.z - z); if (d < tol * 1.5) hits.push({ type: 'issue', label: `${q.k}: ${q.m}`, d: Math.min(d, 1), geom: { pt: [q.x, q.z] }, obj: q }) }
   for (const l of m.landmarks) { const d = Math.hypot(l.x - x, l.z - z); if (on('landmarks') && d < tol * 1.5) hits.push({ type: 'landmark', label: l.name, d, geom: { pt: [l.x, l.z] }, obj: l }) }
   m.tours.forEach((t) => { if (!tourOn.has(t.id) || !on('tours')) return; t.stops.forEach((s, i) => { const d = Math.hypot(s.x - x, s.z - z); if (d < tol * 1.5) hits.push({ type: 'tour stop', label: `${t.name} #${i + 1} ${s.name ?? ''}`, d, geom: { pt: [s.x, s.z] }, obj: { tour: t.id, stop: i + 1, ...s } }) }) })
   for (const w of m.water) if (on('water') && inside(x, z, w.ring)) hits.push({ type: 'water', label: w.kind, d: 7, geom: { rings: [w.ring] }, obj: w })
@@ -495,6 +567,7 @@ function header(h: Hit, x: number, z: number): string {
 
 async function inspect(h: Hit): Promise<void> {
   selected = h.geom; redraw()
+  lastRaw = h.obj; lastHit = h; saveHash()
   const el = $('p-inspect'), cx: Ctx = { data, what: h.type }
   const [x, z] = h.geom.pt ?? (h.geom.pts ? [h.geom.pts[0], h.geom.pts[1]] : h.geom.rings ? [h.geom.rings[0][0], h.geom.rings[0][1]] : [mouse.x, mouse.z])
   let body = ''
@@ -503,12 +576,16 @@ async function inspect(h: Hit): Promise<void> {
     if (!t) { el.innerHTML = header(h, x, z) + '<div class="warn">tile not loaded</div>'; return }
     const ways = t.ways as Record<string, unknown>[]
     if (h.type === 'way') {
-      const w = ways[h.i!], s = h.obj as Street
-      body = `<div>${w.ref ? refLinks(String(w.ref)) : ''}</div>` + tree(w, { ...cx, what: w.role === 'rail' ? 'rail' : 'way' }) + wayTable(t, w as unknown as { nodes: number[]; z?: number[] }, cx, s)
-    } else if (h.type === 'item') body = tree(itemRow(t, h.i!, cx), cx)
+      const w = ways[h.i!], s = h.obj as Street | undefined
+      lastRaw = w
+      const st = s ?? findStreet(h.t, h.i!)
+      const prof = st ? profileSvg(along(st.p), [{ v: st.h, col: '#ffb000', label: 'way' }, { v: st.h.map((v, j) => v - (st.d[j] ?? NaN)), col: '#7c7', label: 'ground' }]) : ''
+      body = `<div>${w.ref ? refLinks(String(w.ref)) : ''}</div>` + prof + tree(w, { ...cx, what: w.role === 'rail' ? 'rail' : 'way' }) + wayTable(t, w as unknown as { nodes: number[]; z?: number[] }, cx, st)
+    } else if (h.type === 'item') { lastRaw = itemRow(t, h.i!, cx); body = tree(lastRaw, cx) }
     else {
       const coll = ({ building: 'buildings', area: 'areas', deck: 'decks', place: 'places', boat: 'boats', court: 'courts' } as Record<string, string>)[h.type]
       const o = (t[coll] as Record<string, unknown>[])[h.i!]
+      lastRaw = o
       body = tree(o, { ...cx, what: h.type })
       if (o && typeof o.way === 'number') body += `<details><summary>its way #${o.way}</summary>${tree(ways[o.way], { ...cx, what: 'way' })}</details>`
       const om = h.type === 'building' && o ? /^b(\d+)$/.exec(String(o.ref)) : null
@@ -519,25 +596,57 @@ async function inspect(h: Hit): Promise<void> {
     const t = h.t ? await data.tileNow(h.t) : undefined
     body = `<details open><summary>prep stats</summary>${tree(h.obj ?? {}, cx)}</details>`
     if (t) {
+      lastRaw = t
       body += `<details open><summary>raw tile fields</summary>${Object.entries(t).map(([k, v]) => `<div class="kv"><span class="k">${k}</span>: ${Array.isArray(v) ? `[${v.length}]` : typeof v === 'object' && v ? `{${Object.keys(v).length} keys}` : JSON.stringify(v)}</div>`).join('')}</details>`
       body += `<details><summary>whole raw tile</summary>${tree(t, { ...cx, what: 'tile' })}</details>`
     }
   } else if (h.type === 'ride') {
     const r = h.obj as { a: Record<string, unknown>; p: number[]; h?: number[] }
-    body = tree({ ...r.a, heights: r.h, points: r.p }, { ...cx, what: 'ride' })
+    body = (r.h ? profileSvg(along(r.p), [{ v: r.h, col: '#ff4090', label: 'ride edge' }, { v: groundLine(r.p), col: '#7c7', label: 'ground' }]) : '') + tree({ ...r.a, heights: r.h, points: r.p }, { ...cx, what: 'ride' })
   } else if (h.type.startsWith('custom')) {
     const c = h.obj as import('./data.ts').Custom
+    lastRaw = c.entry
     body = `<div>from <b>${c.src}</b> · placed by ${c.approx ?? '?'}${c.bld ? ` · builds bake building <a href="#" id="custbld">${c.bld.t} #${c.bld.i} (${c.bld.k})</a>` : ''}</div>`
       + `<div class="muted">position/rectangle approximate the renderer's fit (src/render/landmarks.ts)</div>` + tree(c.entry, { ...cx, what: 'catalogue' })
-    el.innerHTML = header(h, x, z) + body
+    el.innerHTML = header(h, x, z) + actions(h) + body
     $('custbld')?.addEventListener('click', (e) => { e.preventDefault(); void inspect({ type: 'building', label: c.name, d: 0, t: c.bld!.t, i: c.bld!.i, geom: h.geom }) })
+    showPane('inspect'); return
+  } else if (h.type === 'issue') {
+    const q = h.obj as Issue
+    body = `<div class="warn">${q.k}</div><div>${q.m.replace(/</g, '&lt;')}</div>${q.t != null && q.i != null ? `<div><a href="#" id="issway">inspect way #${q.i} in tile ${q.t}</a></div>` : q.t ? `<div><a href="#" id="issway">inspect tile ${q.t}</a></div>` : ''}<div class="muted">${issueHelp[q.k.replace(/ \(.*/, '')] ?? ''}</div>`
+    el.innerHTML = header(h, x, z) + body + actions(h)
+    $('issway')?.addEventListener('click', (e) => {
+      e.preventDefault()
+      const st = q.i != null ? findStreet(q.t!, q.i) : undefined
+      void inspect(q.i != null ? { type: 'way', label: `way #${q.i}`, d: 0, t: q.t, i: q.i, geom: st ? { pts: st.p } : h.geom, obj: st } : { type: 'tile', label: q.t!, d: 0, t: q.t, geom: h.geom, obj: data.meta.tiles.find((tt) => tt.key === q.t) })
+    })
     showPane('inspect'); return
   } else if (h.type === 'landmark') {
     const l = h.obj as { id: number }
     body = `<div>${osm('way', l.id)} ${osm('node', l.id)} ${osm('relation', l.id)}</div>` + tree(l, cx)
   } else body = tree(h.obj, cx)
-  el.innerHTML = header(h, x, z) + body
+  el.innerHTML = header(h, x, z) + actions(h) + body
   showPane('inspect')
+}
+
+/** copy-JSON / copy-link line under the inspector header */
+let lastRaw: unknown = null
+let lastHit: Hit | null = null
+const actions = (h: Hit): string => `<div class="muted"><a href="#" data-act="json">copy JSON</a> · <a href="#" data-act="link" title="a link that reopens this view with this entity selected">copy link</a>${h.t && h.i != null ? ` · <span title="tile key | index">${h.type} ${h.t}|${h.i}</span>` : ''}</div>`
+/** the street record (chunk) for a raw way, if its chunk is loaded */
+function findStreet(t: string, i: number): Street | undefined {
+  for (const c of data.loadedChunks()) for (const s of c.streets) if (s.t === t && s.i === i) return s
+  return undefined
+}
+/** ground along a polyline's own points */
+const groundLine = (p: number[]): number[] => { const out: number[] = []; for (let i = 0; i < p.length; i += 2) out.push(groundAt(p[i], p[i + 1]) ?? NaN); return out }
+const issueHelp: Record<string, string> = {
+  'junction tear': 'Two ways share this node but stand at different heights there (neither is a bridge/tunnel): a step in the road, or a crossing that should not share a node.',
+  'level blip': 'A short raised/buried run between grade segments: usually the ground (coarse or fine) or a node z, not a real structure.',
+  'z override no-op': 'The way carries a per-node z override that changes nothing: the multi-level pass decided a height equal to the node\'s own.',
+  'unknown level on fine ground': 'Some node has no ground under it though the tile ships fine ground: a lookup bug, not missing data.',
+  'steep ride': 'Ride-graph grade over a window: real hills, or a height spike (check the profile).',
+  'ride island': 'A ride-graph component cut off from the biggest: unreachable while riding. Minis clip the graph, so some islands are expected at their edges.',
 }
 
 function listHits(hits: Hit[]): void {
@@ -697,7 +806,8 @@ function buildLayers(): void {
   $('p-layers').innerHTML =
     `<div class="bar">buildings coloured by <select id="bmode"><option value="kind">kind</option><option value="restyle">restyle (wall colour; pink = applied)</option><option value="height">height</option><option value="style">style</option><option value="archetype">archetype</option></select> <span class="muted">${Object.keys(data.restyles).length} restyled</span> <label><input type="checkbox" id="hideun" ${hideUnapplied ? 'checked' : ''}> hide confidence-1 and unapplied restyles</label></div>`
     + `<details><summary>style / archetype colours</summary><div class="muted">style = the applied restyle's, else the bake's; labels end in ? on generic buildings (guessed)</div>${m.dict.styles.map((n) => `<span style="white-space:nowrap"><i style="display:inline-block;width:10px;height:10px;background:${nameCol(n)}"></i> ${n}</span>`).join(' ')}<br>${m.dict.archetypes.map((n) => `<span style="white-space:nowrap"><i style="display:inline-block;width:10px;height:10px;background:${nameCol(n)}"></i> ${n}</span>`).join(' ')}</details>`
-    + `<div class="bar">streets coloured by <select id="cmode"><option value="level">level</option><option value="kind">kind</option><option value="role">role</option></select></div>`
+    + `<div class="bar">streets coloured by <select id="cmode"><option value="level">level</option><option value="slope">slope (%)</option><option value="dground">Δground (m)</option><option value="kind">kind</option><option value="role">role</option></select></div>`
+    + `<div class="bar">tiles coloured by <select id="tmode"><option value="">nothing</option><option value="issues">issues</option><option value="bytes">bytes</option><option value="way.">ways</option><option value="building.">buildings</option><option value="item.">items</option><option value="item.tree">trees</option><option value="area.">areas</option><option value="terrain.step">fine terrain</option><option value="other.">unknown keys</option></select></div>`
     + `<details open><summary>base</summary>${box('sat', 'satellite (use the slider)')}${box('terrain', 'coarse terrain')}${box('fineTerrain', 'fine terrain (near)')}${box('grid', 'tile grid')}${box('detail', 'detail squares (the box)', '#d02020')}${box('box', 'bounding box', '#800')}${box('zones', `zones <span class="muted">${m.zones.length}</span>`)}${box('water', `water (index) <span class="muted">${m.water.length}</span>`)}${box('river', 'river centreline')}${box('major', 'major roads (far)')}${box('labels', 'labels')}${box('nodes', 'way nodes (near; red = OSM node)')}</details>`
     + group('street levels', 'lvl:', lvl, (k) => LV_COL[LV_NAME.indexOf(k)])
     + group('ways by role', 'streets:', sum('way.'), () => '')
@@ -712,6 +822,8 @@ function buildLayers(): void {
   const el = $('p-layers')
   $<HTMLSelectElement>('cmode').value = colourMode
   $<HTMLSelectElement>('bmode').value = bldgMode
+  $<HTMLSelectElement>('tmode').value = tileStat
+  $<HTMLSelectElement>('tmode').onchange = (e) => setTileStat((e.target as HTMLSelectElement).value)
   $<HTMLInputElement>('hideun').onchange = (e) => { hideUnapplied = (e.target as HTMLInputElement).checked; redraw() }
   $<HTMLSelectElement>('bmode').onchange = (e) => { bldgMode = (e.target as HTMLSelectElement).value as typeof bldgMode; redraw() }
   $<HTMLSelectElement>('cmode').onchange = (e) => { colourMode = (e.target as HTMLSelectElement).value as typeof colourMode; redraw() }
@@ -775,6 +887,29 @@ function buildBuilders(filter = ''): void {
   }))
 }
 
+/** the issues tab: per-kind counts with toggles, then every issue nearest the view first */
+function buildIssues(): void {
+  const cnt = data.meta.issueCount ?? {}, kinds = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])
+  const el = $('p-issues')
+  if (!data.meta.issueCount) { el.innerHTML = `<div class="warn">prepped before the issue checks: re-run npm run devmaps:prep -- --city=${data.id}</div>`; return }
+  const shown = data.issues.filter((q) => on('issue:' + q.k))
+  shown.sort((a, b) => Math.hypot(a.x - cam.cx, a.z - cam.cz) - Math.hypot(b.x - cam.cx, b.z - cam.cz))
+  const tol = data.meta.issueTol ?? {}
+  el.innerHTML = `<div class="bar"><label><input type="checkbox" data-l="issues" ${on('issues') ? 'checked' : ''}> show on map</label> <button id="issref" title="re-sort by distance from the view">nearest the view</button></div>`
+    + kinds.map((k) => `<label class="lay"><input type="checkbox" data-l="issue:${k}" ${on('issue:' + k) ? 'checked' : ''}><i style="background:${issueCol(k)}"></i>${k} <b>${cnt[k]}</b>${cnt[k] > (tol.ISSUE_CAP ?? Infinity) ? ` <span class="muted">(first ${tol.ISSUE_CAP} kept)</span>` : ''}</label>`).join('')
+    + (kinds.length ? '' : '<div class="muted">no issues found</div>')
+    + `<details><summary>what the checks are</summary>${Object.entries(issueHelp).map(([k, v]) => `<div><b>${k}</b>: ${v}</div>`).join('')}<div class="muted">tunables (tools/devmaps-prep.ts): ${Object.entries(tol).map(([k, v]) => `${k} ${v}`).join(', ')}</div></details>`
+    + `<div class="muted">${shown.length} shown, nearest the view first</div>`
+    + shown.slice(0, 600).map((q) => `<div class="hit" data-iss="${data.issues.indexOf(q)}"><i style="display:inline-block;width:9px;height:9px;background:${issueCol(q.k)}"></i> ${q.m.replace(/</g, '&lt;')} <span class="muted">${Math.hypot(q.x - cam.cx, q.z - cam.cz).toFixed(0)} m</span></div>`).join('')
+  el.querySelectorAll<HTMLInputElement>('[data-l]').forEach((i) => i.addEventListener('change', () => { layers.set(i.dataset.l!, i.checked); redraw(); if (i.dataset.l !== 'issues') buildIssues() }))
+  $('issref').onclick = buildIssues
+  el.querySelectorAll<HTMLElement>('[data-iss]').forEach((d) => d.addEventListener('click', () => {
+    const q = data.issues[Number(d.dataset.iss)]
+    layers.set('issues', true); goTo(q.x, q.z, Math.max(cam.s, 4))
+    void inspect({ type: 'issue', label: q.k, d: 0, geom: { pt: [q.x, q.z] }, obj: q })
+  }))
+}
+
 function buildTours(): void {
   const m = data.meta
   $('p-tours').innerHTML = m.tours.length ? m.tours.map((t, ti) => `<details><summary><input type="checkbox" data-t="${t.id}" ${tourOn.has(t.id) ? 'checked' : ''}> <span style="color:${TOUR_COL[ti % TOUR_COL.length]}">■</span> ${t.name} <span class="muted">${t.legs.reduce((a, l) => a + Math.max(0, l.km), 0).toFixed(1)} km${t.partial ? ' (partly on this city)' : ''}</span> <a href="#" data-fit="${t.id}">fit</a></summary>`
@@ -815,10 +950,43 @@ function fit(p: number[]): void {
 let hashTimer = 0
 function saveHash(): void {
   clearTimeout(hashTimer)
-  hashTimer = window.setTimeout(() => { const q = data.proj.toLatLon({ x: cam.cx, z: cam.cz }); history.replaceState(null, '', `#city=${data.id}&ll=${q.lat.toFixed(6)},${q.lon.toFixed(6)}&s=${cam.s.toFixed(4)}`) }, 300)
+  hashTimer = window.setTimeout(() => { history.replaceState(null, '', hashNow()) }, 300)
+}
+const hashNow = (): string => {
+  const q = data.proj.toLatLon({ x: cam.cx, z: cam.cz }), h = lastHit
+  const sel = h && h.t && (h.i != null || h.type === 'tile') && SEL_COLL[h.type] !== undefined ? `&sel=${h.type}|${h.t}|${h.i ?? ''}` : ''
+  return `#city=${data.id}&ll=${q.lat.toFixed(6)},${q.lon.toFixed(6)}&s=${cam.s.toFixed(4)}${sel}`
+}
+/** hit type → its chunk collection (for restoring a selection from the hash) */
+const SEL_COLL: Record<string, keyof Chunk | null> = { way: 'streets', building: 'buildings', area: 'areas', deck: 'decks', place: 'places', boat: 'boats', court: 'courts', item: 'items', tile: null }
+/** reopen `type|tile|index` from a link: wait for its chunk, rebuild the hit, inspect it */
+async function restoreSel(sel: string): Promise<void> {
+  const [type, t, si] = sel.split('|'), i = Number(si)
+  if (!(type in SEL_COLL) || !t) return
+  const T = data.meta.index.tile, [tx, ty] = t.split(',').map(Number)
+  if (type === 'tile') { void inspect({ type, label: t, d: 0, t, geom: { rings: [[tx * T, ty * T, (tx + 1) * T, ty * T, (tx + 1) * T, (ty + 1) * T, tx * T, (ty + 1) * T]] }, obj: data.meta.tiles.find((q) => q.key === t) }); return }
+  const C = data.meta.chunk, ck = `${Math.floor(tx / C)}_${Math.floor(ty / C)}`
+  let c: Chunk | undefined
+  for (let k = 0; k < 100 && !(c = data.chunk(ck)); k++) await new Promise((r) => setTimeout(r, 50))
+  if (!c) return
+  if (type === 'item') {
+    const it = c.items.find((q) => q.t === t)
+    if (it) void inspect({ type, label: data.meta.dict.items[it.d[3 * i + 2]], d: 0, t, i, geom: { pt: [it.d[3 * i], it.d[3 * i + 1]] } })
+    return
+  }
+  const rec = (c[SEL_COLL[type]!] as unknown as { t: string; i: number; p?: number[]; rs?: number[][]; x?: number; z?: number }[]).find((q) => q.t === t && q.i === i)
+  if (!rec) return
+  const geom: Geom = type === 'way' ? { pts: rec.p } : rec.rs ? { rings: rec.rs } : rec.p ? { rings: [rec.p] } : { pt: [rec.x!, rec.z!] }
+  void inspect({ type, label: `${type} ${t}|${i}`, d: 0, t, i, geom, obj: rec })
 }
 const hashParams = (): URLSearchParams => new URLSearchParams(location.hash.slice(1))
 
+/** fit the city's detail regions (else its box) */
+function loadView(): void {
+  const rings = (data.meta.index.detail ?? []).flatMap((d) => d.rings?.flat() ?? d.line ?? [])
+  const b = data.meta.index.box
+  fit(rings.length ? rings : b ? [b.x0, b.z0, b.x1, b.z1] : [-1000, -1000, 1000, 1000])
+}
 async function loadCity(id: string, keepView = false): Promise<void> {
   const next = new CityData(id)
   next.onLoad = redraw
@@ -833,14 +1001,14 @@ async function loadCity(id: string, keepView = false): Promise<void> {
   $('p-find').innerHTML = ''; $('p-inspect').innerHTML = `<div class="muted">${id}: click the map.</div>`
   setTimeout(() => { if (data === next) void next.search() }, SEARCH_PREFETCH_MS) // warm the name index (Paris: ~28 MB)
   const hp = hashParams()
+  issuesByTile = new Map()
+  { const T = data.meta.index.tile; for (const q of data.issues) { const k = q.t ?? `${Math.floor(q.x / T)},${Math.floor(q.z / T)}`; issuesByTile.set(k, (issuesByTile.get(k) ?? 0) + 1) } }
+  lastHit = null; buildIssues(); if (tileStat) setTileStat(tileStat)
   if (keepView && hp.get('ll')) {
     const [la, lo] = hp.get('ll')!.split(',').map(Number), p = data.proj.toLocal({ lat: la, lon: lo })
     goTo(p.x, p.z, Number(hp.get('s')) || 0.05)
-  } else {
-    const rings = (data.meta.index.detail ?? []).flatMap((d) => d.rings?.flat() ?? d.line ?? [])
-    const b = data.meta.index.box
-    fit(rings.length ? rings : b ? [b.x0, b.z0, b.x1, b.z1] : [-1000, -1000, 1000, 1000])
-  }
+    if (hp.get('sel')) void restoreSel(hp.get('sel')!)
+  } else loadView()
   $<HTMLSelectElement>('city').value = id
   redraw()
 }
@@ -869,8 +1037,20 @@ canvas.addEventListener('mousemove', (e) => {
     cam.cx = drag.cx - (e.offsetX - drag.x) / cam.s; cam.cz = drag.cz + (e.offsetY - drag.y) / cam.s; saveHash()
     redraw()
   } else if (measuring) redraw()
-  else status()
+  else { status(); hover() }
 })
+let hoverAt = 0, hoverTimer = 0
+/** the top hit under the cursor, in the status bar (throttled; skipped over big views) */
+function hover(): void {
+  clearTimeout(hoverTimer)
+  const now = performance.now()
+  if (now - hoverAt < HOVER_MS) { hoverTimer = window.setTimeout(hover, HOVER_MS); return }
+  hoverAt = now
+  if (viewChunks().length > HOVER_MAX_CHUNKS) { hoverText = ''; return }
+  const h = hitTest(mouse.x, mouse.z).find((q) => q.type !== 'tile' && q.type !== 'zone' && q.type !== 'detail')
+  const t = h ? `${h.type} · ${h.label}` : ''
+  if (t !== hoverText) { hoverText = t; status() }
+}
 canvas.addEventListener('wheel', (e) => {
   e.preventDefault()
   const x = wx(e.offsetX), z = wz(e.offsetY), k = Math.exp(-e.deltaY * 0.0015)
@@ -883,11 +1063,37 @@ window.addEventListener('keydown', (e) => {
   if ((e.target as HTMLElement).tagName === 'INPUT') return
   if (e.key === 'm') toggleMeasure()
   if (e.key === 'u') toggleUnique()
-  if (e.key === 'Escape') { measure.length = 0; measuring = false; $('measure').classList.remove('on'); selected = null; redraw() }
+  if (e.key === 'Escape') { measure.length = 0; measuring = false; $('measure').classList.remove('on'); selected = null; lastHit = null; $('help').style.display = 'none'; saveHash(); redraw() }
   if (e.key === 'c') copy(llStr(mouse.x, mouse.z))
   if (e.key === 'x') copy(`${mouse.x.toFixed(1)},${mouse.z.toFixed(1)}`)
+  if (e.key === 'Enter' && measuring) toggleMeasure()
+  if (e.key === '?') $('help').style.display = $('help').style.display === 'block' ? 'none' : 'block'
+  if (e.key === 'f') loadView()
+  if (e.key === 'l') { layers.set('labels', !on('labels')); buildLayers(); redraw() }
+  if (e.key === 'i') { layers.set('issues', !on('issues')); buildIssues(); redraw(); toast(on('issues') ? 'issues shown' : 'issues hidden') }
+  if (e.key === 's') { const sl = $<HTMLInputElement>('satop'); sl.value = Number(sl.value) > 0 ? '0' : '70'; layers.set('sat', true); redraw() }
+  if (e.key === 'v') { const order = ['level', 'slope', 'dground', 'kind', 'role'] as const; colourMode = order[(order.indexOf(colourMode) + 1) % order.length]; buildLayers(); redraw(); toast('streets by ' + colourMode) }
+  const pan: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }
+  if (pan[e.key]) { e.preventDefault(); goTo(cam.cx + pan[e.key][0] * PAN_STEP * W() / cam.s, cam.cz + pan[e.key][1] * PAN_STEP * H() / cam.s) }
+  if (e.key === '+' || e.key === '=') goTo(cam.cx, cam.cz, Math.min(200, cam.s * ZOOM_STEP))
+  if (e.key === '-') goTo(cam.cx, cam.cz, Math.max(0.002, cam.s / ZOOM_STEP))
 })
-const toggleMeasure = (): void => { measuring = !measuring; if (measuring) measure.length = 0; $('measure').classList.toggle('on', measuring); redraw() }
+canvas.addEventListener('dblclick', (e) => { const x = wx(e.offsetX), z = wz(e.offsetY); cam.s = Math.min(200, cam.s * 4); cam.cx = x - (e.offsetX - W() / 2) / cam.s; cam.cz = z + (e.offsetY - H() / 2) / cam.s; redraw(); saveHash() })
+$('help').onclick = () => ($('help').style.display = 'none')
+const toggleMeasure = (): void => { measuring = !measuring; if (measuring) measure.length = 0; else if (measure.length > 1) measureProfile(); $('measure').classList.toggle('on', measuring); redraw() }
+/** the ground along the finished measure line (fine ground where its tiles are loaded, else coarse) */
+function measureProfile(): void {
+  const p = measure.flatMap((q) => [q.x, q.z]), d = along(p), L = d[d.length - 1]
+  const step = Math.max(0.5, L / PROFILE_SAMPLES), pts: number[] = [], dist: number[] = []
+  for (let i = 2; i < p.length; i += 2) {
+    const seg = d[i / 2] - d[i / 2 - 1], n = Math.max(1, Math.ceil(seg / step))
+    for (let k = i === 2 ? 0 : 1; k <= n; k++) { const u = k / n; pts.push(p[i - 2] + (p[i] - p[i - 2]) * u, p[i - 1] + (p[i + 1] - p[i - 1]) * u); dist.push(d[i / 2 - 1] + seg * u) }
+  }
+  const legs = measure.slice(1).map((q, i) => `${i + 1}: ${fmt(d[i + 1] - d[i], 1)} m`).join(' · ')
+  $('p-inspect').innerHTML = `<div><b>measure</b> ${fmt(L, 1)} m in ${measure.length - 1} legs <a href="#" data-copy="${measure.map((q) => llStr(q.x, q.z)).join(' ')}">copy points (lat,lon)</a></div><div class="muted">${legs}</div>`
+    + profileSvg(dist, [{ v: groundLine(pts), col: '#7c7', label: 'ground' }])
+  showPane('inspect')
+}
 $('measure').onclick = toggleMeasure
 $('gobtn').onclick = () => parseGoto($<HTMLInputElement>('goto').value)
 $<HTMLInputElement>('goto').addEventListener('keydown', (e) => { if (e.key === 'Enter') parseGoto((e.target as HTMLInputElement).value) })
@@ -902,6 +1108,13 @@ document.addEventListener('click', (e) => {
   // every external link opens a new tab (a target=_blank link can navigate the app's browser pane in place)
   const ext = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[target=_blank]')
   if (ext) { e.preventDefault(); window.open(ext.href, '_blank', 'noopener'); return }
+  const act = (e.target as HTMLElement).closest<HTMLElement>('[data-act]')
+  if (act) {
+    e.preventDefault()
+    if (act.dataset.act === 'json') { void navigator.clipboard.writeText(JSON.stringify(lastRaw, null, 1)); toast('copied JSON') }
+    else { clearTimeout(hashTimer); history.replaceState(null, '', hashNow()); copy(location.href) }
+    return
+  }
   const a = (e.target as HTMLElement).closest<HTMLElement>('[data-copy],[data-ll]')
   if (a) { e.preventDefault(); copy(a.dataset.copy ?? a.dataset.ll!) }
 })
@@ -912,6 +1125,7 @@ window.addEventListener('hashchange', () => {
   if (id && id !== data?.id) { void loadCity(id, true); return }
   const ll = hp.get('ll')
   if (ll) { const [la, lo] = ll.split(',').map(Number), p = data.proj.toLocal({ lat: la, lon: lo }); goTo(p.x, p.z, Number(hp.get('s')) || cam.s) }
+  if (hp.get('sel')) void restoreSel(hp.get('sel')!)
 })
 
 const frame = (): void => { if (dirty && data?.meta) render(); requestAnimationFrame(frame) }
