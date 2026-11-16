@@ -1,21 +1,21 @@
 {
  "paris-seine": {
-  "km": 6.6,
-  "climb": 29,
-  "descent": 30,
-  "steepest": 0.9
+  "km": 7.3,
+  "climb": 46,
+  "descent": 70,
+  "steepest": 2.1
  },
  "paris-right-bank": {
-  "km": 8.4,
-  "climb": 11,
-  "descent": 32,
-  "steepest": 0.4
+  "km": 8.8,
+  "climb": 17,
+  "descent": 31,
+  "steepest": 0.5
  },
  "paris-montmartre": {
-  "km": 6.4,
-  "climb": 99,
-  "descent": 96,
-  "steepest": 5.2
+  "km": 6.8,
+  "climb": 100,
+  "descent": 99,
+  "steepest": 7.3
  },
  "paris-bois": {
   "km": 8.9,
@@ -24,45 +24,45 @@
   "steepest": 0.5
  },
  "paris-eiffel-louvre": {
-  "km": 5.7,
-  "climb": 42,
-  "descent": 44,
-  "steepest": 2.4
+  "km": 5.8,
+  "climb": 60,
+  "descent": 62,
+  "steepest": 2.1
  },
  "paris-plantee": {
-  "km": 3.3,
-  "climb": 25,
-  "descent": 14,
-  "steepest": 1
+  "km": 3.5,
+  "climb": 27,
+  "descent": 16,
+  "steepest": 1.1
  },
  "paris-canal": {
   "km": 3.3,
-  "climb": 23,
+  "climb": 22,
   "descent": 9,
   "steepest": 1.4
  },
  "paris-latin": {
-  "km": 3.4,
-  "climb": 29,
-  "descent": 28,
-  "steepest": 2.4
+  "km": 3.3,
+  "climb": 24,
+  "descent": 25,
+  "steepest": 2.3
  },
  "paris-axe": {
-  "km": 9.5,
-  "climb": 82,
-  "descent": 53,
-  "steepest": 1.7
+  "km": 9.4,
+  "climb": 68,
+  "descent": 40,
+  "steepest": 1.5
  },
  "paris-versailles": {
-  "km": 17.8,
-  "climb": 234,
-  "descent": 128,
-  "steepest": 1.9
+  "km": 18,
+  "climb": 213,
+  "descent": 116,
+  "steepest": 2.1
  },
  "versailles-park": {
   "km": 7.8,
   "climb": 27,
-  "descent": 52,
+  "descent": 51,
   "steepest": 0.9
  },
  "race-tdf-finale": {
@@ -78,15 +78,15 @@
   "steepest": 7.3
  },
  "race-olympic-marathon": {
-  "km": 42.4,
-  "climb": 430,
-  "descent": 426,
-  "steepest": 1.9
+  "km": 40.2,
+  "climb": 388,
+  "descent": 382,
+  "steepest": 2.1
  },
  "paris-defense-etoile": {
-  "km": 5.9,
-  "climb": 60,
-  "descent": 67,
+  "km": 5.8,
+  "climb": 49,
+  "descent": 56,
   "steepest": 1.6
  }
 }

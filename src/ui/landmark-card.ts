@@ -8,6 +8,22 @@
  */
 export interface LandmarkInfo { kind: string; year?: string; text: string }
 
+/** the region's landmark notes (the first of `names` that has a file), by landmark name */
+export async function loadLandmarkNotes(base: string, names: string[]): Promise<Record<string, LandmarkInfo>> {
+  for (const n of names) {
+    try {
+      const r = await fetch(new URL(`landmarks/${n}-info.json`, base).href)
+      const t = await r.text()
+      if (r.ok && t.trimStart().startsWith('{')) return JSON.parse(t) as Record<string, LandmarkInfo>
+    } catch { /* the next */ }
+  }
+  return {}
+}
+
+/** a placed landmark's key in the notes: its name, or its name before " — " */
+export const noteKey = (info: Record<string, LandmarkInfo>, name: string): string | null =>
+  info[name] ? name : info[name.replace(/ — .*$/, '')] ? name.replace(/ — .*$/, '') : null
+
 export const CARD_CSS = `
 .sr-landmark-card { position: fixed; left: 16px; bottom: 64px; width: min(360px, 44vw); padding: 14px 16px 14px;
   z-index: 5; transition: opacity .4s ease, transform .4s ease; }
@@ -52,13 +68,7 @@ export class LandmarkCard {
   }
 
   async load(base: string, names: string[]): Promise<void> {
-    for (const n of names) {
-      try {
-        const r = await fetch(new URL(`landmarks/${n}-info.json`, base).href)
-        const t = await r.text()
-        if (r.ok && t.trimStart().startsWith('{')) { this.info = JSON.parse(t) as Record<string, LandmarkInfo>; return }
-      } catch { /* the next */ }
-    }
+    this.info = await loadLandmarkNotes(base, names)
   }
 
   get isOn(): boolean { return this.on }
@@ -86,7 +96,7 @@ export class LandmarkCard {
     this.last = now
     let best: { name: string; d: number; score: number; x: number; z: number } | null = null
     for (const p of this.places()) {
-      const key = this.info[p.name] ? p.name : this.info[p.name.replace(/ — .*$/, '')] ? p.name.replace(/ — .*$/, '') : null
+      const key = noteKey(this.info, p.name)
       if (!key) continue
       const dx = p.x - at.x
       const dz = p.z - at.z

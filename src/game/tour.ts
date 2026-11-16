@@ -13,6 +13,8 @@ import { SF_TOURS, type Tour, type TourStop } from '../city/sf/tours.ts'
 import { PARIS_TOURS } from '../city/paris/tours.ts'
 import STATS from '../city/sf/tour-stats.json'
 import PARIS_STATS from '../city/paris/tour-stats.json'
+import type { RideBySight } from '../city/sights.ts'
+import { sameThing } from './tour-same.ts'
 
 export type { Tour, TourStop }
 
@@ -128,38 +130,61 @@ export class TourGuide {
   }
 }
 
+/** a landmark's note (public/landmarks/<region>-info.json, ui/landmark-card.ts), placed where the landmark stands */
+export interface NotePlace { name: string; x: number; z: number; text: string; meta?: string }
+export type Sight = { name: string; text: string; meta?: string } & P
+
 /**
- * FREE RIDE's points of interest: every announced stop of every tour, once each by name. A card comes up as the
- * rider passes within `NEAR` of one, and not again until they have been well away from it.
+ * THE POINTS OF INTEREST RIDDEN PAST: every announced stop of every tour, once each by name, and every landmark with a
+ * note (`notes`). A card comes up as the rider passes within `NEAR` of one, and not again until they have been well
+ * away from it. In free ride, all of them; during a tour too (owner, 2026-11-15: "on a long tour it is boring to only
+ * have a few info boxes for the entire tour") — but not the tour's own stops, which have their own cards (`skip`).
  */
 export class Sights {
-  private readonly places: (TourStop & P)[] = []
+  private readonly places: Sight[] = []
   private readonly shown = new Set<string>()
   // (the farthest announced stop from a street it is ridden past is 108 m: the Palace of Fine Arts, across its lagoon)
   private static readonly NEAR = 130
+  /** a landmark's note: its point is the middle of the building, which may be 100 m and more inside its walls (the Louvre) */
+  private static readonly NEAR_NOTE = 190
   private static readonly AWAY = 400
+  /** a sight this close to one of the tour's own stops is that stop by another name ("Tour Eiffel", "The Eiffel Tower") */
+  private static readonly SAME = 160
 
-  constructor(tours: Tour[], toLocal: (ll: { lat: number; lon: number }) => P) {
+  constructor(tours: Tour[], toLocal: (ll: { lat: number; lon: number }) => P, private readonly notes: () => Iterable<NotePlace> = () => [],
+    rideBy: RideBySight[] = []) {
     const seen = new Set<string>()
+    // (the ride-by sights first: src/city/<city>/sights.ts)
+    for (const s of rideBy) { seen.add(s.name); this.places.push({ name: s.name, text: s.text, meta: s.meta, ...toLocal(s) }) }
     for (const t of tours) for (const s of t.stops) {
       if (!s.text || !s.name || seen.has(s.name)) continue
       // (a tour's own end-of-tour lines are not for somebody riding by)
       if (/^(Back at|The finish|Down to)/.test(s.name)) continue
       seen.add(s.name)
-      this.places.push({ ...s, ...toLocal(s) })
+      this.places.push({ name: s.name, text: s.text, ...toLocal(s) })
     }
   }
 
   /** as if shown: the stop a tour just ended at, whose card is up already */
   seen(name: string | undefined): void { if (name) this.shown.add(name) }
 
-  update(at: P): (TourStop & P) | null {
-    let hit: (TourStop & P) | null = null
-    for (const p of this.places) {
+  /**
+   * the sight to show here, if any; `skip` the points of the tour being ridden (their sights are marked seen, not shown).
+   * `once`: not again, however far the rider goes from it. While `canShow` says no (another card up, the next stop close), a sight in range waits rather than being lost.
+   */
+  update(at: P, skip: P[] = [], canShow: () => boolean = () => true, once = false): Sight | null {
+    let hit: Sight | null = null
+    const look = (p: Sight, near: number): void => {
       const d = Math.hypot(p.x - at.x, p.z - at.z)
-      if (d > Sights.AWAY) this.shown.delete(p.name!)
-      else if (d < Sights.NEAR && !this.shown.has(p.name!)) { this.shown.add(p.name!); hit ??= p }
+      // (once: a tour that comes back the same way — the marathon from Versailles — doesn't tell it twice)
+      if (d > Sights.AWAY) { if (!once) this.shown.delete(p.name) }
+      else if (d < near && !this.shown.has(p.name) && !hit) {
+        if (skip.some((q) => Math.hypot(q.x - p.x, q.z - p.z) < Sights.SAME)) this.shown.add(p.name)
+        else if (canShow()) { this.shown.add(p.name); hit = p }
+      }
     }
+    for (const p of this.places) look(p, Sights.NEAR)
+    for (const p of this.notes()) if (!this.places.some((q) => q.name === p.name || sameThing(q, p))) look(p, Sights.NEAR_NOTE)
     return hit
   }
 }

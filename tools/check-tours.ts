@@ -16,7 +16,7 @@ import type { RideEdge, RideGraph } from '../src/city/ridegraph.ts'
 import { Projection } from '../src/city/geo.ts'
 import { SF_TOURS } from '../src/city/sf/tours.ts'
 import { PARIS_TOURS } from '../src/city/paris/tours.ts'
-import { nearestOnGraph, planRoute, type Route } from '../src/sim/route.ts'
+import { isTunnel, nearestOnGraph, planRoute, tourEdgeCost, type Route } from '../src/sim/route.ts'
 
 const city = process.argv.find((a) => a.startsWith('--city='))?.slice(7) ?? 'san-francisco'
 const TOURS = city === 'paris-centre' ? PARIS_TOURS : SF_TOURS
@@ -80,7 +80,7 @@ const stats: Record<string, { km: number; climb: number; descent: number; steepe
 for (const t of TOURS) {
   const pts = t.stops.map((s) => proj.toLocal({ lat: s.lat, lon: s.lon }))
   for (let i = 0; i < pts.length; i++) {
-    const n = nearestOnGraph(g, pts[i])!
+    const n = nearestOnGraph(g, pts[i], isTunnel)!
     if (n.d > 200) { console.log(`  ${t.name}: stop ${i + 1} (${t.stops[i].name ?? 'unannounced'}) is ${Math.round(n.d)} m from the ride graph`); bad++ }
   }
   let length = 0
@@ -88,8 +88,8 @@ for (const t of TOURS) {
   let down = 0
   let steepest = 0
   for (let i = 1; i < pts.length; i++) {
-    const s = nearestOnGraph(g, pts[i - 1])!
-    const route = planRoute(g, { edgeId: s.edgeId, s: s.s, reversed: false }, pts[i])
+    const s = nearestOnGraph(g, pts[i - 1], isTunnel)!
+    const route = planRoute(g, { edgeId: s.edgeId, s: s.s, reversed: false }, pts[i], nearestOnGraph(g, pts[i], isTunnel), tourEdgeCost)
     if (!route) { console.log(`  ${t.name}: no route from stop ${i} to ${i + 1}`); bad++; continue }
     const c = climbOf(heightsAlong(g, s, route))
     length += route.length
@@ -97,6 +97,9 @@ for (const t of TOURS) {
     down += c.down
     // the leg's average climb rate, for "steepest leg"
     if (route.length > 300) steepest = Math.max(steepest, c.up / route.length)
+    // a leg still through a tunnel (the only way, or far the shortest): the rider sees nothing of it
+    const under = [...new Set([s.edgeId, ...route.nodes.map((nd) => route.leave.get(nd)!)])].map((id) => g.edges.get(id)).filter((e) => e && isTunnel(e))
+    if (under.length) console.log(`  ${t.name}: ${i}→${i + 1} rides ${under.map((e) => `${e!.name ?? e!.id} (${Math.round(e!.length)} m)`).join(', ')}`)
     if (legs) console.log(`    ${i}→${i + 1} ${t.stops[i].name ?? '·'}: ${(route.length / 1000).toFixed(2)} km, +${Math.round(c.up)} m −${Math.round(c.down)} m`
       + `${route.turnRound ? ' (turns round)' : ''}`)
   }

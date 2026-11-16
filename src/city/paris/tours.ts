@@ -11,7 +11,11 @@ export const PARIS_TOURS: Tour[] = [
     id: 'paris-seine', name: 'The Seine and its Bridges',
     blurb: 'Along the river from the Eiffel Tower to the Institut du monde arabe, past the bridges and the great museums.',
     stops: [
-      { lat: 48.85700, lon: 2.29620, name: 'The Eiffel Tower',
+      // (unannounced: the tour starts at the Trocadéro and rides down to the Pont d'Iéna, the tower ahead across the river
+      // — owner, 2026-11-15, on stops AT a landmark: "it's impossible to see since it's directly above or in front";
+      // from the Champ de Mars its trees hid it until the rider was under it: tools/tour-sheet.ts)
+      { lat: 48.86250, lon: 2.28820 },
+      { lat: 48.85975, lon: 2.29295, name: 'The Eiffel Tower',
         text: 'Built for the 1889 Exposition and meant to come down after twenty years. The radio mast on top saved it.' },
       { lat: 48.86420, lon: 2.30130, name: 'Pont de l\'Alma',
         text: 'Parisians judge a flood by the stone Zouave on its pier: wet feet close the riverside roads. In 1910 the water reached his shoulders.' },
@@ -31,7 +35,10 @@ export const PARIS_TOURS: Tour[] = [
     id: 'paris-right-bank', name: 'Monuments of the Right Bank',
     blurb: 'Down the Champs-Élysées from the Arc de Triomphe, past the Louvre and the Opéra, to the Bastille.',
     stops: [
-      { lat: 48.87380, lon: 2.29500, name: 'Arc de Triomphe',
+      // (unannounced: out along the Avenue de la Grande Armée, so the first leg rides at the Arc; announced short of the
+      // Étoile, where the whole arch is in frame, and the route goes round the square, not under it: sim/route.ts)
+      { lat: 48.87549, lon: 2.29021 },
+      { lat: 48.87456, lon: 2.29284, name: 'Arc de Triomphe',
         text: 'Ordered by Napoleon in 1806 and finished in 1836, long after him. Twelve avenues meet round it, and nobody has right of way but those joining.' },
       { lat: 48.86950, lon: 2.30800, name: 'The Champs-Élysées',
         text: 'Almost two kilometres, a gentle rise all the way up to the Arc. The Tour de France has finished on these cobbles since 1975.' },
@@ -59,6 +66,11 @@ export const PARIS_TOURS: Tour[] = [
         text: 'The oldest station in Paris, and the one Monet painted a dozen times in 1877, steam and all.' },
       { lat: 48.88410, lon: 2.33220, name: 'Moulin Rouge',
         text: 'Opened in 1889, the year of the Eiffel Tower. The red windmill has never ground anything. Toulouse-Lautrec had a table.' },
+      // (up the Rue Lepic and over the top by the Place du Tertre, as the 2024 road race went: from that side the
+      // basilica is at the rider's own level and its domes come into view down the Rue Norvins — from below, up the Rue
+      // de Steinkerque, the chase camera only ever showed the steps)
+      { lat: 48.88720, lon: 2.33500 },
+      { lat: 48.88720, lon: 2.34060 },
       { lat: 48.88670, lon: 2.34310, name: 'The Sacré-Cœur',
         text: 'Finished in 1914, at the top of the city\'s highest hill. Its stone gives off calcite in the rain, which is why it stays white.' },
       { lat: 48.88090, lon: 2.35530, name: 'Gare du Nord',
@@ -91,7 +103,8 @@ export const PARIS_TOURS: Tour[] = [
     id: 'paris-eiffel-louvre', name: 'Eiffel Tower to the Louvre',
     blurb: 'A short, flat ride: across the Champ de Mars, over the river and through the Tuileries to the pyramid.',
     stops: [
-      { lat: 48.85560, lon: 2.29860, name: 'Champ de Mars',
+      // (at the Place Joffre end, on the lawns' axis with the tower at the far end: further in, the allées' trees hid it)
+      { lat: 48.85380, lon: 2.30130, name: 'Champ de Mars',
         text: 'A parade ground for the École Militaire, then the site of five World\'s Fairs. The tower was the entrance arch of the 1889 one.' },
       { lat: 48.86190, lon: 2.28850, name: 'Trocadéro',
         text: 'The Palais de Chaillot\'s two curved wings frame the best view of the tower, across the fountains of the Varsovie gardens.' },
@@ -140,7 +153,9 @@ export const PARIS_TOURS: Tour[] = [
         text: 'The fountain of 1860, the archangel over the devil, has been the meeting place of the Latin Quarter ever since.' },
       { lat: 48.85060, lon: 2.34340, name: 'La Sorbonne',
         text: 'Founded in 1257 for poor students of theology; the quarter is Latin because that was what they spoke.' },
-      { lat: 48.84620, lon: 2.34600, name: 'The Panthéon',
+      // (up the Rue Soufflot, which frames its portico: the card coming up on the way up, the dome ahead)
+      { lat: 48.84726, lon: 2.34122 },
+      { lat: 48.84665, lon: 2.34400, name: 'The Panthéon',
         text: 'Built as a church on the top of the Montagne Sainte-Geneviève. Foucault hung his pendulum from the dome in 1851 to show the Earth turning.' },
       { lat: 48.84620, lon: 2.33720, name: 'Jardin du Luxembourg',
         text: 'Marie de Médicis\'s palace and garden of 1612, now the Senate. Children sail wooden boats on the basin.' },
@@ -161,7 +176,8 @@ export const PARIS_TOURS: Tour[] = [
       { lat: 48.87380, lon: 2.29500, name: 'Arc de Triomphe' },
       { lat: 48.88450, lon: 2.26880, name: 'Pont de Neuilly',
         text: 'The axis crosses the Seine here. Ahead, the towers of La Défense, Europe\'s largest business district.' },
-      { lat: 48.89260, lon: 2.23600, name: 'La Grande Arche',
+      // (announced out on the Esplanade, the arch ahead, not at its foot where the rider sees only the steps)
+      { lat: 48.89120, lon: 2.24000, name: 'La Grande Arche',
         text: 'Otto von Spreckelsen, 1989: a hollow cube 110 metres high, Notre-Dame would fit inside. It sits six degrees off the axis.' },
     ],
   },
@@ -169,14 +185,19 @@ export const PARIS_TOURS: Tour[] = [
     id: 'paris-versailles', name: 'Paris to Versailles',
     blurb: 'The long one: from the Eiffel Tower out by Boulogne and up the hills of Sèvres to the palace of the Sun King.',
     stops: [
-      { lat: 48.85700, lon: 2.29620, name: 'The Eiffel Tower' },
+      // (on the Quai Branly, setting off down it with the tower dead ahead — from the Champ de Mars the tour set off
+      // away from it, facing the Maison de la Radio)
+      { lat: 48.86200, lon: 2.29890, name: 'The Eiffel Tower' },
       { lat: 48.85000, lon: 2.28100, name: 'Maison de la Radio',
         text: 'A round house of 1963 for French radio, a kilometre of corridor around a central tower.' },
       { lat: 48.83500, lon: 2.24100, name: 'Boulogne-Billancourt',
         text: 'Renault built cars on the Île Seguin from 1929 to 1992. The island now carries the Seine Musicale.' },
       { lat: 48.82500, lon: 2.21900, name: 'Sèvres',
         text: 'The royal porcelain works moved here in 1756 at Madame de Pompadour\'s wish. From the river the road climbs hard.' },
-      { lat: 48.80490, lon: 2.12040, name: 'Château de Versailles',
+      // (up the Avenue de Paris, Louis XIV's approach, aimed at the palace: announced at its top, the Place d'Armes —
+      // the château's own point is inside it, reached from the gardens behind)
+      { lat: 48.80048, lon: 2.13794 },
+      { lat: 48.80300, lon: 2.12650, name: 'Château de Versailles',
         text: 'Louis XIV moved the court here in 1682. The Hall of Mirrors is where the treaty ending the First World War was signed in 1919.' },
     ],
   },
@@ -239,7 +260,10 @@ export const PARIS_TOURS: Tour[] = [
       { lat: 48.86220, lon: 2.33600, name: 'The Louvre' },
       { lat: 48.85000, lon: 2.28100, name: 'Maison de la Radio' },
       { lat: 48.82500, lon: 2.21900, name: 'Sèvres' },
-      { lat: 48.80490, lon: 2.12040, name: 'Château de Versailles',
+      // (up the Avenue de Paris, Louis XIV's approach, aimed at the palace: announced at its top, the Place d'Armes —
+      // the château's own point is inside it, reached from the gardens behind)
+      { lat: 48.80048, lon: 2.13794 },
+      { lat: 48.80300, lon: 2.12650, name: 'Château de Versailles',
         text: 'The turn, halfway, at the palace gates. The runners went back by the hills to the east.' },
       { lat: 48.81300, lon: 2.23700, name: 'The Pavé des Gardes',
         text: 'The course\'s cruel wall, near kilometre 29: up to 13.5 percent through the woods of Meudon.' },

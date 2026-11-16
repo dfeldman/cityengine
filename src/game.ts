@@ -38,7 +38,7 @@ import { quaysLayer } from './render/quays.ts'
 import { LoadingScreen, closeWelcome, welcomeOpen, welcomeScreen } from './ui/loading.ts'
 import { TravelCard } from './ui/travel.ts'
 import { stationsFor, metroName, fareFrom, destinations, type Station } from './game/stations.ts'
-import { LandmarkCard } from './ui/landmark-card.ts'
+import { LandmarkCard, loadLandmarkNotes, noteKey, type LandmarkInfo } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { roundaboutMonuments } from './render/paris/roundabout-monuments.ts'
 import { RIDE_OVERRIDES } from './city/overrides.ts'
@@ -128,8 +128,9 @@ import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/
 import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, exits, resolve, type CityGraph, type Edge } from './city/graph.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
-import { nearestOnGraph, planRoute, type Route } from './sim/route.ts'
+import { isTunnel, nearestOnGraph, planRoute, tourEdgeCost, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
+import { sightsFor } from './city/sights.ts'
 import { Sights, statsOf, TourGuide, toursFor, type GuideEvent, type Tour } from './game/tour.ts'
 import { TourCard, pickTour } from './ui/tour.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
@@ -1943,7 +1944,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let ownChoiceAt: number | null = null
   const replan = (): void => {
     if (!destination) { route = null; minimap.route = null; minimap.destination = null; paths.setRoute(null); return }
-    route = planRoute(rides, nav.position, destination)
+    // (tour mode keeps out of tunnels and never ends a leg in one: sim/route.ts `tourEdgeCost`)
+    route = opts.tour ? planRoute(rides, nav.position, destination, nearestOnGraph(rides, destination, isTunnel), tourEdgeCost)
+      : planRoute(rides, nav.position, destination)
     minimap.route = route?.line ?? null
     minimap.destination = destination
     paths.setRoute(route ? [nav.position.edgeId, ...route.nodes.map((n) => route!.leave.get(n)!).filter((x) => x !== undefined)] : null)
@@ -2028,7 +2031,20 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const tourPr = new Projection(pkg.origin)
   const tourLocal = (ll: { lat: number; lon: number }): { x: number; z: number } => tourPr.toLocal(ll)
   let guide: TourGuide | null = opts.tour?.pick ? new TourGuide(opts.tour.pick, tourLocal) : null
-  const sights = opts.tour ? new Sights(toursFor(opts.city), tourLocal) : null
+  // (the landmarks' notes too, wherever the landmarks have been placed: ui/landmark-card.ts)
+  let tourNotes: Record<string, LandmarkInfo> = {}
+  if (opts.tour) void loadLandmarkNotes(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city]).then((n) => { tourNotes = n })
+  const sights = opts.tour ? new Sights(toursFor(opts.city), tourLocal, function* () {
+    for (const p of [...(landmarks?.placed ?? []), ...staticPlaces]) {
+      const k = noteKey(tourNotes, p.name)
+      if (k) yield { name: k, x: p.x, z: p.z, text: tourNotes[k].text, meta: [tourNotes[k].kind, tourNotes[k].year].filter(Boolean).join(', ') }
+    }
+  }, sightsFor(opts.city)) : null
+  /** where the last card of any kind came up (nav.travelled), so a tour's sights are spaced out */
+  let lastCardAt = -Infinity
+  /** metres ridden between a tour's cards at least, and how far off the next stop must still be for a sight's */
+  const SIGHT_GAP = 250
+  const SIGHT_CLEAR = 250
   const tourCard = opts.tour && !opts.freeze ? new TourCard() : null
   /** where the tour began, for its summary */
   let tourFrom = { m: 0, s: 0 }
@@ -2050,6 +2066,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (!ev || !guide) continue
       if (ev.kind === 'approach') {
         const after = nextNamed(ev.stop.i)
+        lastCardAt = nav.travelled
         tourCard?.show(`Stop ${ev.stop.n} of ${guide.count}`, ev.stop.name ?? '', ev.stop.text ?? '', after ? `Next: ${after}` : 'The last stop')
         continue
       }
@@ -2089,8 +2106,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const t = await pickTour(toursFor(opts.city), { speedup: play.speedup, imperial: imperialNow(), touch: touchScreen(), platform: !!opts.platform, city: src.index?.name })
     tourPicking = false
     if (!t) { endTour(); telemetryOptions({ tour: 'free' }); hud.banner('Free ride', 'ride wherever you like'); return }
-    const jump = (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump
-    if (!jump?.(t.stops[0].lat, t.stops[0].lon)) { hud.banner('Could not start the tour', 'its first stop is off the streets'); return }
+    const jump = (window as unknown as { __jump?: (lat: number, lon: number, bearing?: number) => boolean }).__jump
+    // facing the second stop, so a tour that starts short of a landmark starts looking at it (not the way it came)
+    const a0 = tourLocal(t.stops[0]), a1 = t.stops[1] ? tourLocal(t.stops[1]) : a0
+    const face = (Math.atan2(a1.x - a0.x, a1.z - a0.z) * 180) / Math.PI
+    if (!jump?.(t.stops[0].lat, t.stops[0].lon, face)) { hud.banner('Could not start the tour', 'its first stop is off the streets'); return }
     guide = new TourGuide(t, tourLocal)
     tourFrom = { m: nav.travelled, s: simSeconds }
     telemetryOptions({ tour: t.id })
@@ -3144,8 +3164,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (t && (!destination || destination.x !== t.x || destination.z !== t.z)) { aimGuide(); routedAt = now }
         onGuide(guide.update(nav.at(), route ? route.length : null, route ? route.target.at : null))
       } else if (sights && !guide && !loading && frames % 15 === 0) {
-        const s = sights.update(nav.at())
-        if (s) tourCard?.show('Sight', s.name ?? '', s.text ?? '')
+        const s = sights.update(nav.at(), [], () => !tourCard?.isOpen)
+        if (s) tourCard?.show('Sight', s.name, s.text, s.meta)
+      }
+      // a tour's sights on the way: not over a stop's card, not just before the next stop's, and spaced out
+      if (sights && guide && !loading && !tourPicking && frames % 15 === 0) {
+        const toNext = route ? route.length : Infinity
+        const s = sights.update(nav.at(), guide.stops.filter((q) => q.n !== null), () => !tourCard?.isOpen && toNext > SIGHT_CLEAR && nav.travelled - lastCardAt > SIGHT_GAP, true)
+        if (s) {
+          tourCard?.show('On the way', s.name, s.text, s.meta)
+          lastCardAt = nav.travelled
+        }
       }
       // the GPS: keep the route current, and ask for its exit at the junction ahead
       if (destination && now - routedAt > 1000) {

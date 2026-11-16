@@ -107,9 +107,27 @@ class Heap {
   }
 }
 
-/** The shortest route from the rider's position to the target point, or null if none reaches it. */
+/**
+ * TOURS STAY OUT OF TUNNELS (owner, 2026-11-15: "many of the tours end up going through shortcut tunnels, like the arc
+ * d'triomphe tunnel … meaning the user never sees it"). A tour's route costs a tunnel this many times its length, so it
+ * takes the Étoile's surface roundabout rather than the Tunnel de l'Étoile under it — but a tunnel that is the only
+ * way (or a far shorter one) is still taken. The GPS outside tour mode is unchanged.
+ */
+export const TOUR_TUNNEL_COST = 8
+type CostEdge = { tunnel?: boolean; bore?: boolean; name?: string }
+/** a portal ramp is often mapped as its own unflagged way named for the tunnel (the Tunnel de l'Étoile's approaches) */
+const TUNNEL_NAME = /^(Tunnel|Souterrain)\b/
+export const isTunnel = (e: CostEdge): boolean => !!(e.tunnel || e.bore || (e.name && TUNNEL_NAME.test(e.name)))
+/** the cost multiplier tour mode routes with (`planRoute`'s `cost`) */
+export const tourEdgeCost = (e: CostEdge): number => isTunnel(e) ? TOUR_TUNNEL_COST : 1
+
+/**
+ * The shortest route from the rider's position to the target point, or null if none reaches it. `cost`, if given, is
+ * a multiplier (≥ 1) on each edge's length for choosing the route; the route's `length` stays the metres ridden.
+ */
 export function planRoute(g: CityGraph, from: Position, target: P,
-  onGraph: { edgeId: number; s: number; at: P } | null = nearestOnGraph(g, target)): Route | null {
+  onGraph: { edgeId: number; s: number; at: P } | null = nearestOnGraph(g, target),
+  cost?: (e: CostEdge) => number): Route | null {
   const here = g.edges.get(from.edgeId)
   if (!here || !onGraph) return null
   const goal = g.edges.get(onGraph.edgeId)!
@@ -136,6 +154,8 @@ export function planRoute(g: CityGraph, from: Position, target: P,
     for (const n of [e.a, e.b]) (adj.get(n) ?? adj.set(n, []).get(n)!).push(e.id)
   }
   const dist = new Map<number, number>()
+  /** the part of `dist` that is `cost`'s surcharge, not metres */
+  const surcharge = new Map<number, number>()
   const via = new Map<number, { edge: number; prev: number }>()
   const first = new Map<number, 'ahead' | 'behind'>()
   const heap = new Heap()
@@ -170,9 +190,11 @@ export function planRoute(g: CityGraph, from: Position, target: P,
       // the same two junctions (Rue de Versailles at Ville-d'Avray) — is a U-turn in disguise: it costs what
       // turning round costs. Round a real block is still a route.
       const twin = n === aheadNode && m === behindNode && e.length < TWIN_LOOP
-      const nd = d + e.length + (twin ? TURN_ROUND_COST : 0)
+      const extra = cost ? e.length * (cost(e) - 1) : 0
+      const nd = d + e.length + (twin ? TURN_ROUND_COST : 0) + extra
       if (nd < (dist.get(m) ?? Infinity)) {
         dist.set(m, nd)
+        if (cost) surcharge.set(m, (surcharge.get(n) ?? 0) + extra)
         via.set(m, { edge: eid, prev: n })
         first.set(m, first.get(n)!)
         heap.push([nd, m])
@@ -233,5 +255,5 @@ export function planRoute(g: CityGraph, from: Position, target: P,
   }
   for (let i = 0; i + 1 < nodes.length; i++) addEdge(leave.get(nodes[i])!, nodes[i])
   addEdge(goal.id, end, onGraph.s)
-  return { target: onGraph, turnRound: startTurn, leave, nodes, line, length: bestCost }
+  return { target: onGraph, turnRound: startTurn, leave, nodes, line, length: bestCost - (surcharge.get(end) ?? 0) }
 }
