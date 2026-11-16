@@ -256,3 +256,42 @@ Photos retrieved this pass: Commons Tour France (Seine bank), Alain Robert Arian
 | Ariane | OK | white aluminium panels with recessed windows confirmed in close-up |
 | Archipel, Nuages 1/2, Europe, Enedis, Vista, Meliá, PB5, Damiers Dauphiné, Kupka A/B, Pullman, Central Parc, Gémeaux, Hopen, Légende, Cœur Défense, Ciel | note | no photo retrieved; constants plausible, unchanged |
 | Quatre Temps west A/B | skipped | dropped from defense3.json (indoor rooms) |
+
+## Tower photo check 4
+Source: Panoramax street-level frames (tools/panoramax.py, one frame per target, read at <=340 px in a montage; many are wide-angle or 360 crops, some at night or looking at hoardings). Identity of the tower in frame is not always certain.
+
+| building | photo source | verdict | change |
+|---|---|---|---|
+| Nuages 1 | Panoramax, 2 frames (Nuages tower seen over trees) | fixed | NUAGES_TONES gained peach/salmon tones (#c9988a, #dcb3a0): facade reads pink-orange low with blue/white patches, builder was blues/greys only (shared by Nuages 1/2/3) |
+| Nuages 2 | Panoramax found 4 frames, none facing it | no photo | shares the Nuages kit palette fix |
+| Vista | Panoramax, 2 frames | fixed | glass #86a0b4 -> #5f8f9a (curved teal-green glass, white blade; confident) |
+| Hopen | Panoramax, 1 close frame | fixed | HOPEN_GLASS #7f9fb8 -> #5a82a8 (deep blue glass, bright stripes, dark base; medium confidence) |
+| Damiers du Dauphiné | Panoramax, 2 frames | OK | curved pale banded upper, stone lower block match |
+| Enedis | Panoramax, 1 frame (pale curved white-silver glass) | OK | none |
+| Meliá | Panoramax, 1 frame (grey-blue curved glass, dark bands) | OK | none; glass could be a little lighter, left |
+| Kupka A/B | Panoramax, 1 frame (curved blue-grey glass, pale frame) | OK | none |
+| Ciel | Panoramax, 1 frame (tan-grey slab, window strips) | OK | none |
+| Pullman | Panoramax, 2 frames (beige-grey stone tower, brick base) | OK, low confidence | none |
+| PB5 | Panoramax frame was a canopy interior; a second frame showed a warm-grey tower, identity unsure | unresolved | none |
+| Europe | Panoramax, 2 frames: curved cream ribs with pale green-aqua glass at the base; a round white tower beside | unresolved | none (builder glass #6d7b84 is darker than the frame; not changed, identity unsure) |
+| Archipel | Panoramax, 2 frames: construction hoarding only | no photo | none |
+| Central Parc | frame is a path in foliage | no photo | none |
+| Gémeaux | 61 frames in range, none facing it | no photo | none |
+| Légende (pb6.ts) | frame is a tunnel interior | no photo | none |
+| Cœur Défense | frame is night, blurred | no photo | none |
+
+Generic spot-check (15 random d3g_*, seed 7; one Panoramax frame each, judged against the kind preset):
+
+| entry (kind) | verdict | change |
+|---|---|---|
+| 68852915 (shop), 68849907 (office) | both frames show the same small pale cottage with slate roof; one of them is probably a house | none, which of the two is it is not resolvable |
+| 82322985 (shop) | cream/wood shopfront under flats, fits | none |
+| 174249455 (office) | black/white banded pavilion near the esplanade, plausible | none |
+| 68851741 (office) | pale rendered wall, fits | none |
+| 82486331 (house) | cottage, fits | none |
+| 82486040 (shop) | white dealership with red lettering, fits | none |
+| 82323173 (shop) | frame shows a pink/cream balconied flat block over a shop; preset is low | unresolved, none |
+| 82485950 (apt) | frame shows a modern white curved block, not stone | unresolved, none |
+| 68849755, 68850334, 68850536, 68850683 (can) | canopy kind, frames show park/glass pavilions, nothing to contradict | none |
+| 68850086 (apt) | frame is trees and a billboard | no photo |
+| 82486085 (shop) | frame shows a low wall/cottage, plausible | none |

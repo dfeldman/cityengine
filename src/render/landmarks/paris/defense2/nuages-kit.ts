@@ -13,7 +13,7 @@ import { hex } from '../../kit.ts'
 import { tower, towerRing, type Face, type Tier } from '../../tower.ts'
 
 /** palette, darkest/bluest first; the band's height shifts the pick toward the pale end */
-export const NUAGES_TONES = ['#5f7f9e', '#7894b0', '#8fa79c', '#9aabbd', '#b4c5d6', '#cfd9e2', '#e6e9e8']
+export const NUAGES_TONES = ['#5f7f9e', '#7894b0', '#8fa79c', '#c9988a', '#9aabbd', '#dcb3a0', '#b4c5d6', '#cfd9e2', '#e6e9e8'] // + peach/salmon patches (Panoramax 2026-11: Rieti sky murals read pink-orange low on the tower)
 export const GLASS = '#3b434c', ROOF = '#8f9396', LOBBY = '#6d7479', PARAPET = '#d2d8dc'
 export const LOBBY_H = 3.5, FLOOR = 2.7, PITCH = 1.7, SOLID = 0.74, PARAPET_H = 1.0
 /** horizontal colour bands up the tower, edges per patch, and how strongly height lightens the tone (0..1) */

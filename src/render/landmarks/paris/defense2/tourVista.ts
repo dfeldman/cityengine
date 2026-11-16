@@ -11,7 +11,7 @@ import { hex } from '../../kit.ts'
 import { stack, type Passage } from './damiers-kit.ts'
 import type { P2 } from '../museums/enframe.ts'
 
-const WALL = hex('#c3cad0'), GLASS = hex('#86a0b4'), ROOF = hex('#7b7f83'), LOBBY = hex('#3b4248')
+const WALL = hex('#c3cad0'), GLASS = hex('#5f8f9a'), ROOF = hex('#7b7f83'), LOBBY = hex('#3b4248')
 const STOREYS = 23, FLOOR = 3.4, SOLID = 0.32
 const RING: P2[] = [[-6117.6,2698.8],[-6123.8,2690.9],[-6101.1,2672.8],[-6093.8,2663.2],[-6097.0,2659.1],[-6103.1,2651.6],[-6112.1,2640.1],[-6117.0,2634.2],[-6104.6,2624.0],[-6099.6,2630.2],[-6090.8,2641.2],[-6084.6,2648.9],[-6083.2,2650.8],[-6081.2,2653.2],[-6070.3,2648.6],[-6057.1,2638.3],[-6050.9,2646.2],[-6062.8,2655.5],[-6063.1,2655.8],[-6067.2,2659.0],[-6072.9,2663.6],[-6085.6,2673.5],[-6088.2,2675.6],[-6094.8,2680.8]]
 /** the boulevard under the bridge: road at -2.9 m, 6 m clear (tunable) */
