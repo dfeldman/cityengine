@@ -219,3 +219,40 @@ Second pass 2026-11-16 (Commons / Wikipedia thumbnails, glance-level colour and 
 | Quatre Temps west A/B | defense2/quartierAudranA/B.ts | Commons parvis frame | unchecked: towers too small |
 | generic d3g canopy 68852697 | defense2/canopy.ts | none usable | unchecked: no photo (generic) |
 | generic glass block 68852118 | defense2/- | none usable | unchecked: no photo (generic) |
+
+## Dropped after the 2026-11-16 rebake
+These entries named OSM ways the bake filters out (indoor rooms, building=roof canopies, a chimney), so they could never render. Removed from defense3.json; builders left in place.
+
+- d3QtWestA — way/628785928 — La Défense: Les Quatre Temps west volume 628785928
+- d3QtWestB — way/628785927 — La Défense: Les Quatre Temps west volume 628785927
+- d3QtArcA — way/628760501 — La Défense: Les Quatre Temps west volume 628760501
+- d3QtArcB — way/628591476 — La Défense: Les Quatre Temps west volume 628591476
+- d3Cojean — way/628760514 — La Défense: Cojean pavilion
+- d3ActionPavilion — way/628760505 — La Défense: Action pavilion
+- d3EgliseEvangelique — way/852354007 — La Défense: Église Protestante Évangélique
+- d3s1W68850827 — way/68850827 — La Défense: conc way/68850827
+- d3s1W68852887 — way/68852887 — La Défense: conc way/68852887
+- d3s1W68852394 — way/68852394 — La Défense: conc way/68852394
+- d3s1W637887599 — way/637887599 — La Défense: conc way/637887599
+- d3s1W68850953 — way/68850953 — La Défense: canopy way/68850953
+- d3s1W573378903 — way/573378903 — La Défense: canopy way/573378903
+- d3s2_226245904 — way/226245904 — La Défense: canopy (canopy, way/226245904)
+- d3s2_226278448 — way/226278448 — La Défense: canopy (canopy, way/226278448)
+- d3s2_851585852 — way/851585852 — La Défense: canopy (canopy, way/851585852)
+- d3s2_852634174 — way/852634174 — La Défense: canopy (canopy, way/852634174)
+- d3nPalaisJeunesse — way/68850745 — La Défense: Palais de la Jeunesse
+- d3nCarrefourCity — way/628777992 — La Défense: Carrefour City
+- d3g_68852412 — way/68852412 — La Défense: canopy (way/68852412)
+
+## Tower photo check 3
+Photos retrieved this pass: Commons Tour France (Seine bank), Alain Robert Ariane close-up, fr.wiki Initiale Juin 2020, Neptune Oct 2022, Prisma Juil 2022. Others had no retrievable daylight photo; judged from builder constants and general knowledge only (no change).
+
+| tower | verdict | change |
+|---|---|---|
+| France | fixed | glass #4b5459 -> #6f777c (photo reads pale cream with fine vertical lines, not dark ribbons) |
+| Allianz-Neptune | fixed | glass #8d9ba7 -> #707c87 (photo: dark glass between fine white fins reads mid-grey) |
+| Initiale | fixed | glass #a8835a -> #9a8566 (photo is sunset-lit; real glass is grey-green with warm bands; low confidence) |
+| Prisma | fixed | glass #7f97a6 -> #50697f (photo: dark navy glass, lattice on one face) |
+| Ariane | OK | white aluminium panels with recessed windows confirmed in close-up |
+| Archipel, Nuages 1/2, Europe, Enedis, Vista, Meliá, PB5, Damiers Dauphiné, Kupka A/B, Pullman, Central Parc, Gémeaux, Hopen, Légende, Cœur Défense, Ciel | note | no photo retrieved; constants plausible, unchanged |
+| Quatre Temps west A/B | skipped | dropped from defense3.json (indoor rooms) |

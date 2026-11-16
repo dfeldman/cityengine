@@ -11,7 +11,7 @@ import { tower } from '../../tower.ts'
 
 const HEIGHT = 113
 const LOBBY_H = 6
-const WALL = '#dcdfe0', GLASS = '#8d9ba7', ROOF = '#a8acae', LOBBY = '#3b434a', LOBBY_WALL = '#c8cccd', PARAPET = '#e2e4e4'
+const WALL = '#dcdfe0', GLASS = '#707c87', ROOF = '#a8acae', LOBBY = '#3b434a', LOBBY_WALL = '#c8cccd', PARAPET = '#e2e4e4'
 const FLOOR = 3.6, PITCH = 1.4, SOLID = 0.3, DEPTH = 0.25, PARAPET_H = 3
 
 export const tourNeptune = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {

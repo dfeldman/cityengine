@@ -11,7 +11,7 @@ import { tower } from '../../tower.ts'
 
 const HEIGHT = 126
 const LOBBY_H = 5
-const BAND = '#eceae4', GLASS = '#4b5459', ROOF = '#cfcdc8', LOBBY = '#39434a', LOBBY_WALL = '#d8d6d0', PARAPET = '#f0eee8'
+const BAND = '#eceae4', GLASS = '#6f777c', ROOF = '#cfcdc8', LOBBY = '#39434a', LOBBY_WALL = '#d8d6d0', PARAPET = '#f0eee8'
 const FLOOR = 2.95, SOLID = 0.5, PARAPET_H = 2.5
 
 export const tourFrance = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {

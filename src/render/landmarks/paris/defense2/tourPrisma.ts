@@ -10,7 +10,7 @@ import { hex } from '../../kit.ts'
 import { tower, type Face } from '../../tower.ts'
 
 const HEIGHT = 91.9, LOBBY_H = 7
-const MULLION = '#c9d0d4', GLASS = '#7f97a6', ROOF = '#8a8d8c', LOBBY = '#4f5e62', PARAPET = '#c4cfcf'
+const MULLION = '#c9d0d4', GLASS = '#50697f', ROOF = '#8a8d8c', LOBBY = '#4f5e62', PARAPET = '#c4cfcf'
 const FLOOR = 3.5, PITCH = 9, BRACE = 4
 
 const glass: Face = { kind: 'xbrace', wall: hex(MULLION), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, brace: BRACE, material: 'glass' }
