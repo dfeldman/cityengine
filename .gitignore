@@ -85,3 +85,4 @@ incoming_assets/
 .env.*
 *.token
 !.env.example
+public/devmaps/

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>devmaps</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font: 12px/1.35 ui-monospace, Menlo, monospace; background: #222; color: #ddd; overflow: hidden; }
+  #map { position: absolute; left: 0; top: 0; width: calc(100% - 380px); height: calc(100% - 22px); cursor: crosshair; display: block; }
+  #side { position: absolute; top: 0; right: 0; width: 380px; bottom: 22px; background: #1b1b1b; border-left: 1px solid #444; display: flex; flex-direction: column; }
+  #status { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: #111; border-top: 1px solid #444; padding: 3px 6px; white-space: nowrap; overflow: hidden; }
+  #status span { margin-right: 14px; }
+  .bar { padding: 4px; border-bottom: 1px solid #333; display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  input, select, button { font: inherit; background: #2b2b2b; color: #ddd; border: 1px solid #555; padding: 2px 4px; }
+  button:hover { background: #3a3a3a; } button.on { background: #35507a; }
+  input[type=text] { flex: 1; min-width: 80px; }
+  .tabs button { flex: 1; }
+  #panes { flex: 1; overflow: auto; }
+  .pane { display: none; padding: 4px; } .pane.on { display: block; }
+  details { margin: 2px 0; } summary { cursor: pointer; color: #9cf; }
+  .lay { display: block; white-space: nowrap; } .lay i { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: -1px; }
+  .kv { margin-left: 12px; } .k { color: #8ab; } .v { color: #eec; word-break: break-all; } .dec { color: #9d9; }
+  table { border-collapse: collapse; font-size: 11px; } td, th { border: 1px solid #333; padding: 0 3px; text-align: right; } th { color: #8ab; }
+  a { color: #7bf; } .hit { cursor: pointer; padding: 1px 2px; } .hit:hover { background: #333; }
+  .warn { color: #fa6; } .muted { color: #888; }
+  #toast { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); background: #35507a; padding: 4px 10px; display: none; z-index: 5; }
+</style>
+</head>
+<body>
+<canvas id="map"></canvas>
+<div id="toast"></div>
+<div id="side">
+  <div class="bar">
+    <select id="city"></select>
+    <input id="goto" type="text" placeholder="lat,lon | x,z | way 123 | search…">
+    <button id="gobtn">go</button>
+  </div>
+  <div class="bar">
+    <button id="measure" title="M: click points, Esc clears">measure</button>
+    <button id="osmload" title="draw an OSM way/node/relation by id over the map">OSM id</button>
+    <button id="gmaps">Google</button><button id="osmsite">OSM</button>
+    <button id="copyll" title="copy the view centre as lat,lon">copy centre</button>
+    <label>sat <input id="satop" type="range" min="0" max="100" value="0" style="width:60px"></label>
+    <label>data <input id="dataop" type="range" min="10" max="100" value="100" style="width:60px"></label>
+  </div>
+  <div class="bar tabs"><button data-p="inspect" class="on">inspect</button><button data-p="layers">layers</button><button data-p="find">find</button><button data-p="builders">builders</button><button data-p="tours">tours</button><button data-p="info">city</button></div>
+  <div id="panes">
+    <div class="pane on" id="p-inspect"><div class="muted">Click the map. Every entity under the cursor is listed; pick one to see all its fields. Right-click copies lat,lon.</div></div>
+    <div class="pane" id="p-layers"></div>
+    <div class="pane" id="p-find"></div>
+    <div class="pane" id="p-builders"></div>
+    <div class="pane" id="p-tours"></div>
+    <div class="pane" id="p-info"></div>
+  </div>
+</div>
+<div id="status"></div>
+<script type="module" src="/src/devmaps/main.ts"></script>
+</body>
+</html>

@@ -10,6 +10,7 @@
     "typecheck": "node tools/typecheck.js",
     "test": "vitest run",
     "bake": "node --max-old-space-size=12288 --experimental-strip-types tools/bake.ts",
+    "devmaps:prep": "node --max-old-space-size=8192 --experimental-strip-types tools/devmaps-prep.ts",
     "map:v3": "node --max-old-space-size=8192 --experimental-strip-types tools/map-v3.ts",
     "shots": "node --experimental-strip-types tools/shots.ts",
     "movie": "node --experimental-strip-types tools/route-movie.ts",
