@@ -141,6 +141,7 @@ import type { AtlasManifest } from './render/buildings.ts'
 import { SpeedLines, fovFor } from './ui/speedlines.ts'
 import * as sfx from './ui/sfx.ts'
 import { Cemetery, inCemetery } from './render/sf/cemetery.ts'
+import { Cemeteries, cemeteryManifest } from './render/cemeteries.ts'
 import { inGolfCourse } from './render/sf/golf.ts'
 
 const ASSETS = new URL('facades/', document.baseURI).href
@@ -1191,6 +1192,22 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     paved: () => pkg.areas.filter((a) => a.kind === 'paved').map((a) => unpackPoints(a.ring)),
     version: () => graph.edges.size,
   })
+  // every other cemetery, from the region's manifest (render/cemeteries.ts, tools/cemeteries.ts): Paris's chapels and slabs,
+  // Suresnes's crosses, Mission Dolores's headstones
+  let cemeteries: Cemeteries | null = null
+  if (!off.has('furniture')) {
+    void cemeteryManifest(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city]).then((specs) => {
+      if (!specs.length) return
+      const pr = new Projection(pkg.origin)
+      cemeteries = new Cemeteries(scene, specs, {
+        toLocal: (lat, lon) => pr.toLocal({ lat, lon }),
+        ground: (x, z) => city.terrain.heightAt(x, z),
+        ways: () => [...graph.edges.values()].map((e) => ({ points: e.points, half: e.width / 2 + (e.foot ? 0 : Math.max(0, e.walk ?? 0)) })),
+        paved: () => pkg.areas.filter((a) => a.kind === 'paved').map((a) => unpackPoints(a.ring)),
+        version: () => graph.edges.size,
+      })
+    })
+  }
   let lightClock = 0
   let collisions = 0
   // a few seconds' grace after a collision: knocked down twice in a row while getting up is not fun
@@ -3496,6 +3513,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         void wantTiles(f.x, f.z)
         // (the headstones are built when the city's focus comes near the cemetery — the rider, or a held view)
         cemetery?.update(f, performance.now())
+        cemeteries?.update(f, performance.now())
       }
 
       // Everything alive. The traffic and the crowd are told which streets are near so they populate what
