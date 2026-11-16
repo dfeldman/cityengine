@@ -209,6 +209,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     const w = ringWay(b.ring, 'bridge')
     w.id = b.id
     if (b.name !== undefined) w.name = dict.id('names', b.name)
+    if (b.lid) w.lid = [b.lid.dx, b.lid.dz, b.lid.y]
     addWay(w)
   }
 

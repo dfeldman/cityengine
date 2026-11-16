@@ -32,7 +32,8 @@ export type Piece =
 
 /** A fountain: at a landmark (by the manifest name) or at a lat/lon, facing `bearing` (degrees) */
 /** `drape`: each piece's y is over the ground under it, not over the landmark's centre (a garden on a slope, the Trocadéro) */
-export interface FountainSpec { landmark?: string; lat?: number; lon?: number; bearing?: number; onWater?: boolean; drape?: boolean; pieces: Piece[] }
+/** `probe`: how far along `bearing` an `onWater` fountain looks for its pool's level (40 m; 0 for a jet standing in its basin) */
+export interface FountainSpec { landmark?: string; lat?: number; lon?: number; bearing?: number; onWater?: boolean; probe?: number; drape?: boolean; pieces: Piece[] }
 
 const VERTEX = `
 precision highp float;
@@ -228,7 +229,8 @@ export class Fountains {
         const p = this.toLocal(f.lat, f.lon)
         x = p.x; z = p.z; rot = ((f.bearing ?? 0) * Math.PI) / 180
         if (f.onWater) {
-          const w = this.waterAt(x + Math.sin(rot) * 40, z + Math.cos(rot) * 40)
+          const d = f.probe ?? 40
+          const w = this.waterAt(x + Math.sin(rot) * d, z + Math.cos(rot) * d)
           // the pool's tile is not in yet: try again later
           if (w === null) return
           y = w

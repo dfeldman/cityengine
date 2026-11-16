@@ -1,6 +1,7 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import { block, hex, shade } from '../kit.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
 
 const FIXED = 0
 
@@ -42,7 +43,8 @@ export function trocaderoParvis(out: MeshBuilder): void {
   terraces(out, stone)
 }
 
-const PAVE = hex('#e6dfcf')
+// (a warm limestone, not near-white: lit by the landmark material it blew out to a white sheet on the bridgehead sheets, 2026-11-16)
+const PAVE = hex('#b8af9b')
 const JOINT = hex('#8e8a80')
 const WALL = hex('#d3c8b2')
 const GLASS: Rgb = [0.13, 0.15, 0.16]
@@ -84,7 +86,8 @@ function pipeRail(out: MeshBuilder, alongX: boolean, a0: number, a1: number, at:
 }
 /** A paved field, a block down to the mass, its square panels bordered in grey. */
 function paving(out: MeshBuilder, x0: number, x1: number, z0: number, z1: number, y: number, panel: number): void {
-  block(out, x0, x1, z0, z1, DEEP, y, PAVE)
+  // (in the granite page, not flat colour: flat, the sun blew the parvis out to a white sheet)
+  box(out, (x0 + x1) / 2, (DEEP + y) / 2, (z0 + z1) / 2, (x1 - x0) / 2, (y - DEEP) / 2, (z1 - z0) / 2, PAVE, surfaceTag('granite'))
   for (let x = Math.ceil(x0 / panel) * panel; x <= x1; x += panel) block(out, x - 0.22, x + 0.22, z0, z1, y, y + 0.015, JOINT)
   for (let z = Math.ceil(z0 / panel) * panel; z <= z1; z += panel) block(out, x0, x1, z - 0.22, z + 0.22, y, y + 0.015, JOINT)
 }

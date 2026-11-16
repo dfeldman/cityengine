@@ -1,21 +1,25 @@
 /**
- * Résidence Modigliani (Courbevoie, 13 levels of flats, ~43 m, architect Marc Rolinet; OSM way/82486138, no parts):
- * a 1970s-80s residential block on OSM's 12-point ring, pale render with balcony bands and dark window strips, a recessed
- * dark ground floor and a flat parapet. From the tags and footprint only: check tone against a street view.
+ * Résidence Modigliani (Courbevoie; OSM way/82486138, 13 levels; BD TOPO h 50.6 m): a white residential block with deep
+ * balcony slabs on every floor and shops in a dark ground floor (Panoramax street frame along the boulevard). Balconies
+ * are per-floor cornices.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 43
-const LOBBY_H = 4
-const WALL = '#d9d3c6', GLASS = '#3b4750', ROOF = '#6c6a66', LOBBY = '#2d3135', PARAPET = '#c0baad'
-const FLOOR = 3.0, PITCH = 2.1, SOLID = 0.45, PARAPET_H = 1.2
+const HEIGHT = 50.6
+const LOBBY_H = 4.5
+const WALL = '#eeede8', GLASS = '#7d91a0', ROOF = '#9a9892', LOBBY = '#4a4f54', SLAB = '#f4f3ef'
+const FLOOR = 3.3, BALCONY = 1.2, SLAB_H = 0.3
+
+const balconies = () => Array.from({ length: Math.floor((HEIGHT - LOBBY_H) / FLOOR) - 1 }, (_, i) =>
+  ({ at: LOBBY_H + FLOOR * (i + 1), depth: BALCONY, height: SLAB_H, colour: hex(SLAB) }))
 
 export const residenceModigliani = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY), glass: hex(GLASS), floor: LOBBY_H, pitch: 4, material: 'concrete' } },
+  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: 2.4, solid: 0.4, material: 'concrete' } }],
+  cornices: balconies(),
+  crown: { kind: 'parapet', height: 1.1, colour: hex(SLAB) },
 })

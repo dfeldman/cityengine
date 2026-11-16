@@ -1,21 +1,27 @@
 /**
- * Résidence Minerve (Courbevoie, 1970s, 18 levels, ~59 m; OSM way/50011897, no parts): the residential slab on OSM's
- * ring, pale grey-beige concrete with ribbon balconies/loggia bands and dark window strips, a recessed lobby and a flat
- * parapet. From tags and footprint; the tone is the thing to check against a street view.
+ * Résidence Minerve (OSM way/50011897, Courbevoie): a long curving terraced slab of flats, white concrete with
+ * continuous balcony bands, 48.1 m main body with 34–37 m stepped ends; BD TOPO parts and heights (local cache), white
+ * tone from Panoramax street frames.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
-import { tower } from '../../tower.ts'
+import type { P2 } from '../museums/enframe.ts'
+import { steppedParts, type StepPart, type StepLook} from './egalite.ts'
 
-const HEIGHT = 59
-const LOBBY_H = 5
-const WALL = '#c9c2b4', GLASS = '#4a5560', ROOF = '#8d8a85', LOBBY = '#3a3f44', PARAPET = '#b4aea2'
-const FLOOR = 3.1, SOLID = 0.5, PARAPET_H = 1.2
+const WALL = '#e4e2dc', WINDOW = '#6f7a82', LOBBY = '#545556', ROOF = '#8f8e8a'
+const LOOK: StepLook = {
+  face: { kind: 'bands', wall: hex(WALL), glass: hex(WINDOW), floor: 2.9, solid: 0.5, depth: 1.0 },
+  lobby: { kind: 'curtain', wall: hex(LOBBY), glass: hex('#3e4548'), floor: 4, pitch: 3 },
+  lobbyH: 4, roof: ROOF, parapet: 1.1, parapetColour: WALL,
+}
 
-export const residenceMinerve = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
-  height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, solid: SOLID, depth: 0.5, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
-})
+const OSM: P2[] = [[-60.9, -18.1], [-57.2, -18.7], [-58.0, -22.9], [-52.1, -23.9], [-46.3, -25.9], [-38.1, -28.3], [-37.3, -30.4], [-35.3, -35.9], [-34.1, -41.9], [-32.8, -48.2], [-28.8, -46.8], [-27.6, -50.2], [-19.6, -47.4], [-20.9, -43.9], [-17.0, -42.5], [-19.0, -36.9], [-20.2, -30.9], [-22.2, -22.6], [-16.7, -16.2], [-13.5, -11.0], [-10.5, -6.0], [-5.9, -1.9], [0.3, 3.9], [8.6, 2.4], [14.6, 2.2], [20.9, 2.0], [27.0, 1.8], [35.4, 1.1], [38.3, -6.8], [39.5, -12.7], [40.8, -19.0], [45.1, -17.4], [46.5, -21.1], [53.2, -18.7], [51.9, -15.1], [55.8, -13.7], [53.8, -8.0], [52.5, -2.0], [50.4, 6.5], [55.9, 12.9], [60.5, 16.9], [65.3, 21.2], [62.4, 23.6], [65.0, 26.6], [59.5, 31.2], [57.0, 28.3], [53.2, 31.5], [49.2, 26.9], [44.7, 22.8], [43.9, 23.4], [39.9, 18.7], [38.3, 16.8], [35.8, 17.2], [29.7, 18.3], [23.5, 18.5], [11.4, 19.8], [5.4, 20.0], [3.3, 20.4], [2.5, 22.4], [0.4, 28.3], [-2.4, 33.7], [-5.3, 39.1], [-9.8, 37.5], [-11.2, 41.4], [-19.6, 38.4], [-20.7, 38.0], [-22.4, 37.9], [-19.0, 27.4], [-16.2, 22.0], [-12.6, 14.7], [-14.0, 13.0], [-15.1, 11.7], [-17.8, 8.6], [-22.5, 4.4], [-27.3, 0.2], [-26.5, -0.4], [-30.4, -5.0], [-35.0, -11.8], [-43.1, -10.3], [-44.3, -9.2], [-48.9, -8.4], [-55.0, -6.4], [-55.7, -10.5], [-59.4, -9.8], [-60.8, -17.4]]
+const PARTS: StepPart[] = [
+  { h: 37.4, ring: [[44.3, -18.1], [45.8, -21.8], [53.0, -19.3], [51.6, -15.7]] },
+  { h: 37.3, ring: [[-30.3, -47.3], [-29.2, -51.2], [-21.6, -48.8], [-22.7, -45.0]] },
+  { h: 34.1, ring: [[-60.2, -10.5], [-61.5, -18.8], [-57.7, -19.5], [-58.2, -23.4], [-52.5, -24.5], [-46.7, -26.4], [-38.6, -28.5], [-36.0, -11.9], [-44.0, -10.6], [-50.0, -8.8], [-49.7, -7.7], [-55.6, -6.6], [-56.3, -11.0]] },
+  { h: 48.1, ring: [[-38.6, -28.5], [-36.1, -36.5], [-37.2, -36.7], [-35.4, -42.5], [-34.5, -48.5], [-30.3, -47.3], [-22.7, -45.0], [-18.9, -43.8], [-20.5, -38.1], [-21.5, -32.0], [-23.1, -23.2], [-17.5, -16.9], [-13.8, -11.5], [-11.2, -7.3], [-10.4, -6.3], [-9.8, -7.2], [-5.5, -2.2], [0.8, 3.3], [8.4, 1.8], [14.2, 1.4], [14.5, 2.8], [20.5, 1.5], [20.7, 2.6], [26.6, 1.2], [26.8, 2.4], [35.7, 0.8], [38.5, -7.4], [37.1, -7.7], [39.1, -13.3], [38.1, -13.8], [40.1, -19.6], [44.3, -18.1], [51.6, -15.7], [55.8, -14.2], [53.8, -8.5], [54.9, -8.0], [53.1, -2.5], [54.2, -2.1], [51.5, 5.9], [57.3, 12.2], [58.1, 11.6], [62.3, 16.1], [67.2, 19.7], [64.0, 22.6], [66.7, 25.6], [60.8, 31.0], [58.0, 28.1], [54.8, 31.1], [50.7, 26.8], [45.8, 22.8], [44.8, 23.7], [39.1, 17.6], [30.1, 19.4], [23.9, 19.6], [23.7, 18.5], [18.0, 19.6], [17.4, 18.4], [12.0, 19.6], [4.4, 20.3], [3.2, 20.5], [0.6, 27.9], [-0.7, 29.1], [-2.5, 33.8], [-5.3, 39.3], [-9.3, 37.7], [-10.8, 41.6], [-18.4, 39.0], [-17.0, 34.9], [-20.8, 33.3], [-18.7, 27.6], [-17.7, 27.9], [-15.6, 21.9], [-14.5, 22.4], [-12.9, 17.7], [-11.8, 14.7], [-17.6, 8.5], [-22.7, 4.5], [-24.4, 3.6], [-27.5, 0.4], [-31.2, -4.9], [-30.3, -5.7], [-36.0, -11.9]] },
+]
+
+export const residenceMinerve = (out: MeshBuilder, fit: Fit): void => steppedParts(out, fit, OSM, PARTS, LOOK)

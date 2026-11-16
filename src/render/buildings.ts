@@ -782,10 +782,11 @@ export function glassCode(hex: string): number {
   return ((r << 8) | (g << 4) | b) + 1
 }
 
+/** (the recursive calls below go to buildBuildingRaw: the tint is added once, here — nested wrappers summed it past 0.5 and the shader decoded pure red) */
 export function buildBuilding(...a: Parameters<typeof buildBuildingRaw>): void {
   const c0 = a[0].colors.length
   buildBuildingRaw(...a)
-  const hex = a[2].dress?.glassTint
+  const hex = a[2].dress?.glassTint ?? a[2].glassTint
   if (!hex) return
   const f = glassCode(hex) / GLASS_SCALE, c = a[0].colors
   for (let i = c0 + 3; i < c.length; i += 4) c[i] = Math.floor(c[i] + 1e-6) + f
@@ -819,10 +820,10 @@ function buildBuildingRaw(
     if (inner.length >= 3 && insetValid(ring, inner)) {
       const ground: FacadePlan = { ...plan, storeys: [g], height: g.y1, levels: 1,
         dress: { ...plan.dress!, parapet: 0, postwar: { ...pw, attic: 0, balconies: 'none', tower: false, coping: false, frame: false } } }
-      buildBuilding(out, inner, ground, atlas, seed, baseY, undefined, undefined, facesStreet, [], arches)
+      buildBuildingRaw(out, inner, ground, atlas, seed, baseY, undefined, undefined, facesStreet, [], arches)
       const upper: FacadePlan = { ...plan, storeys: plan.storeys.slice(1).map((s) => ({ ...s, y0: s.y0 - g.y1, y1: s.y1 - g.y1 })),
         height: plan.height - g.y1, levels: plan.storeys.length - 1, dress: { ...plan.dress!, postwar: { ...pw, inset: false } } }
-      buildBuilding(out, ring, upper, atlas, seed, baseY + g.y1, roofSpec, roofscape, facesStreet, [], arches)
+      buildBuildingRaw(out, ring, upper, atlas, seed, baseY + g.y1, roofSpec, roofscape, facesStreet, [], arches)
       // the soffit over the recess, facing down
       const base = out.positions.length / 3, i0 = out.indices.length
       capPolygonWithHoles(out, [ring], baseY + g.y1, shadeRgb(rgb(plan.palette.wall), POSTWAR_DIM.soffitShade), KIND_WALL)
@@ -836,7 +837,7 @@ function buildBuildingRaw(
     const bodyH = plan.storeys[n - 1].y1
     const body: FacadePlan = { ...plan, storeys: plan.storeys.slice(0, n), height: bodyH, levels: n,
       dress: { ...plan.dress!, parapet: 0.95, postwar: { ...pw, attic: 0 } } }
-    buildBuilding(out, ring, body, atlas, seed, baseY, undefined, undefined, facesStreet, [], arches)
+    buildBuildingRaw(out, ring, body, atlas, seed, baseY, undefined, undefined, facesStreet, [], arches)
     let inner: Ring = ring
     for (let k = 0; k < pw.attic; k++) {
       const next = insetRing(inner, pw.atticStep) as Ring
@@ -846,7 +847,7 @@ function buildBuildingRaw(
       const y0 = s.y0
       const storey: FacadePlan = { ...plan, storeys: [{ ...s, y0: 0, y1: s.y1 - y0, kind: 'top', index: 0 }], height: s.y1 - y0, levels: 1,
         dress: { ...plan.dress!, parapet: last ? 0 : 0.95, postwar: { ...pw, attic: 0, balconies: 'none', frame: false } } }
-      buildBuilding(out, inner, storey, atlas, seed ^ (k + 1) * 0x51ed27, baseY + y0, last ? roofSpec : undefined)
+      buildBuildingRaw(out, inner, storey, atlas, seed ^ (k + 1) * 0x51ed27, baseY + y0, last ? roofSpec : undefined)
     }
     return
   }

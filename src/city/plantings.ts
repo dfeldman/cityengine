@@ -316,6 +316,25 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
     for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) n += surveyed.get(`${gx + dx},${gz + dz}`) ?? 0
     return n >= 3
   }
+  // nor in a pond: a park's basin is mapped as water INSIDE the park's ring (the Bassin de Neptune had 20 trees standing in it)
+  const WET_CELL = 50
+  const wet = new Map<string, { x: number; z: number }[][]>()
+  for (const a of parks ? [] : pkg.areas) {
+    if (a.kind !== 'water') continue
+    const ring = unpackPoints(a.ring)
+    let x0 = Infinity; let x1 = -Infinity; let z0 = Infinity; let z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    if ((x1 - x0) * (z1 - z0) > 4e6) continue // the Seine's and the big lakes' rings: no park scatter reaches them anyway
+    for (let gx = Math.floor(x0 / WET_CELL); gx <= Math.floor(x1 / WET_CELL); gx++) {
+      for (let gz = Math.floor(z0 / WET_CELL); gz <= Math.floor(z1 / WET_CELL); gz++) {
+        const k = `${gx},${gz}`
+        const l = wet.get(k)
+        if (l) l.push(ring); else wet.set(k, [ring])
+      }
+    }
+  }
+  const inWater = (x: number, z: number): boolean =>
+    (wet.get(`${Math.floor(x / WET_CELL)},${Math.floor(z / WET_CELL)}`) ?? []).some((w) => inside(w, x, z))
   for (const a of parks ? [] : pkg.areas) {
     if (!GREEN.has(a.kind)) continue
     const ring = unpackPoints(a.ring)
@@ -338,7 +357,7 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
     for (let i = 0, tries = 0; i < want && tries < want * 8; tries++) {
       const x = minx + r() * (maxx - minx)
       const z = minz + r() * (maxz - minz)
-      if (!inside(ring, x, z) || planned(x, z) || (a.kind !== 'wood' && counted(x, z))) continue
+      if (!inside(ring, x, z) || planned(x, z) || (a.kind !== 'wood' && counted(x, z)) || inWater(x, z)) continue
       out.push({ x, z, height: parkH(), spin: r() * 6.28, park: true })
       i++
     }

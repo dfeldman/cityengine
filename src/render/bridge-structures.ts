@@ -179,6 +179,12 @@ export const RAIL_ARCHES = new Set(["Viaduc d'Austerlitz"])
 
 /** a bridge structure's deck profile: a running median over ±DECK_MEDIAN metre bins, then a mean over ±DECK_MEAN (no sawtooth parapet) */
 export const DECK_MEDIAN = 3, DECK_MEAN = 0
+/** the structures' polygon offset: positive is further, so a coplanar ground, pavement or road surface wins */
+export const BRIDGE_Z_OFFSET = 1, BRIDGE_Z_UNITS = 4
+/** the deck's own top between and beyond its ways: the decks' paving tone (render/bridges.ts PARIS_DECK; this material brightens what it is
+ *  given). At [0.5, 0.49, 0.46] it showed as pale wedges on the road where the ways' surfaces stop short of the structure's end — the
+ *  Pont Marie's and the Pont de Sully's (2026-11-16) */
+export const DECK_TOP: Rgb = [0.33, 0.33, 0.31]
 
 function railArch(out: MeshBuilder, ring: P[], rails: PackedRail[], wetAt: (x: number, z: number) => number | null): void {
   const ax = axisOf(ring)
@@ -299,6 +305,10 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
       out.toVertexData().applyToMesh(m)
       const mat = cartoonMaterial(scene, 'cartoonBridge', false)
       mat.backFaceCulling = false
+      // (a structure yields to a surface in its own plane: the Place de Varsovie's lid slabs lie flush with the plaza's ground and its
+      //  pavements past the trench's edges, and the two flickered through each other — owner, 2026-11-16: a "hole" that "appears and
+      //  disappears", "lots of overlapping textures". Over the trench there is nothing else, and the slab shows)
+      mat.zOffset = BRIDGE_Z_OFFSET; mat.zOffsetUnits = BRIDGE_Z_UNITS
       m.material = mat
       m.renderingGroupId = 3
       m.isPickable = false
@@ -311,13 +321,17 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
 /** a lid's slab: this thick, its top this far under the street (the ways on it draw their own surfaces), its parapets this high */
 /** the slab's depth (0.9 read as a 2 m band with its parapet, and the chase camera sat in it: owner 2026-11-08) */
 export const LID_SLAB_T = 0.5
-const LID_TOP_SINK = 0.06
+export const LID_TOP_SINK = 0.06
+/** the lid's top is drawn with the ground (render/city.ts `lidTops`), not here: false draws it here as before */
+export const LID_TOP_GROUND = true
 const LID_PARAPET = 1.0
 const LID_PARAPET_T = 0.3
 const LID_CONCRETE: Rgb = [0.5, 0.49, 0.47]
 const LID_SOFFIT: Rgb = [0.36, 0.36, 0.35]
 /** the top, paved like the plaza round it: this material brightens an upward face ≈ 1.8×, and the plaza reads (145, 137, 125) */
-const LID_TOP: Rgb = [0.32, 0.3, 0.275]
+// (the decks' pavement in Paris, render/bridges.ts PARIS_DECK: the lids are Paris's, and between a plaza's streets its slab and its
+//  footway decks read as one paving — owner 2026-11-16, the Place de Varsovie's "random patches of different pavements")
+const LID_TOP: Rgb = [0.312, 0.312, 0.29]
 
 /**
  * A LID's slab (tools/tunnels.ts `lidSlabs`; owner, 2026-11-08: "redesign this as an overpass"). The street over an
@@ -333,7 +347,7 @@ function lidSlab(out: MeshBuilder, ring: P[], lid: { dx: number; dz: number; y: 
   cx /= ring.length; cz /= ring.length
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i], b = ring[(i + 1) % ring.length]
-    out.quad([[cx, top, cz], [a.x, top, a.z], [b.x, top, b.z], [cx, top, cz]], [0, 1, 0], UV, LID_TOP, FIXED)
+    if (!LID_TOP_GROUND) out.quad([[cx, top, cz], [a.x, top, a.z], [b.x, top, b.z], [cx, top, cz]], [0, 1, 0], UV, LID_TOP, FIXED)
     out.quad([[cx, bot, cz], [a.x, bot, a.z], [b.x, bot, b.z], [cx, bot, cz]], [0, -1, 0], UV, LID_SOFFIT, FIXED)
     const ex = b.x - a.x, ez = b.z - a.z, el = Math.hypot(ex, ez) || 1
     // the outward normal (anticlockwise ring: right of the edge's direction)
@@ -624,7 +638,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   // for probes (tools/*, with ?probe in the URL): what each structure was built from
   const probing = typeof location !== 'undefined' && location.search.includes('probe')
   const dbg = probing ? ((globalThis as { __bridges?: Record<string, unknown> }).__bridges ??= {}) : {} as Record<string, unknown>
-  if (probing) dbg[`${b.name ?? b.id}`] = { L: +L.toFixed(1), hw: +hw.toFixed(1), O: [+O.x.toFixed(1), +O.z.toFixed(1)], u: [+ux.toFixed(3), +uz.toFixed(3)], kind: style.kind,
+  if (probing) dbg[`${b.name ?? b.id}`] = { lid: (b as { lid?: unknown }).lid ?? null, L: +L.toFixed(1), hw: +hw.toFixed(1), O: [+O.x.toFixed(1), +O.z.toFixed(1)], u: [+ux.toFixed(3), +uz.toFixed(3)], kind: style.kind,
     arches: arches.map((q) => [+q.a.toFixed(1), +q.b.toFixed(1), +q.spring.toFixed(1), +q.rise.toFixed(1)]),
     top: Array.from({ length: 11 }, (_, i) => +top((L * i) / 10).toFixed(1)), low: Array.from({ length: 11 }, (_, i) => +(lowBins[Math.round(((n - 1) * i) / 10)] ?? NaN).toFixed(1)) }
 
@@ -887,7 +901,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   }
   for (let s = 0; s < L - 1e-6; s += 1) {
     const s1 = Math.min(L, s + 1)
-    quad([at(s, -hw, low(s) - 0.08), at(s1, -hw, low(s1) - 0.08), at(s1, hw, low(s1) - 0.08), at(s, hw, low(s) - 0.08)], [0, 1, 0], style.timber ? [0.5, 0.47, 0.42] : [0.5, 0.49, 0.46])
+    quad([at(s, -hw, low(s) - 0.08), at(s1, -hw, low(s1) - 0.08), at(s1, hw, low(s1) - 0.08), at(s, hw, low(s) - 0.08)], [0, 1, 0], style.timber ? [0.5, 0.47, 0.42] : DECK_TOP)
   }
   // the timber deck's planks: a dark seam across it every 0.3 m
   if (style.timber) {

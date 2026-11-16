@@ -137,9 +137,9 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
   /*
    * (with the buildings a landmark's model took, where its model doesn't cut its own arches. In Paris it does: the generic vault and its stone
    * surround stood inside the Louvre's own guichets, smaller and off to one side. Owner, 2026-10-31, 48.860171, 2.333390: "the gate metal doesn't
-   * line up with the hole".)
+   * line up with the hole".) — except a landmark flagged `vault` (render/prepare.ts VAULT_BUILDERS), a plain extrusion with no arch of its own.
    */
-  for (const b of [...pkg.buildings, ...(ownArches ? [] : pkg.claimedBuildings ?? [])]) {
+  for (const b of [...pkg.buildings, ...(pkg.claimedBuildings ?? []).filter((c) => !ownArches || (c as { vault?: boolean }).vault)]) {
     // on the ground, or a part bridging the passage low enough to be its ceiling
     if ((b.minHeight ?? 0) > 7) continue
     // (a fuel canopy stands on columns over open ground: a footway under it is not a passage through a building)

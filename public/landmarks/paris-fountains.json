@@ -2819,5 +2819,2030 @@
     "r": 1.2
    }
   ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.807858,
+  "lon": 2.1218294,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     10.67,
+     0.1,
+     -4.41
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     10.67,
+     0.05,
+     -4.41
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     18.28,
+     0.1,
+     -5.83
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     18.28,
+     0.05,
+     -5.83
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -7.93,
+     0.1,
+     5.08
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -7.93,
+     0.05,
+     5.08
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -7.11,
+     0.1,
+     -17.63
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -7.11,
+     0.05,
+     -17.63
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     3.58,
+     0.1,
+     -21.79
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     3.58,
+     0.05,
+     -21.79
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     26.82,
+     0.1,
+     -0.02
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     26.82,
+     0.05,
+     -0.02
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -9.22,
+     0.1,
+     15.56
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -9.22,
+     0.05,
+     15.56
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -14.16,
+     0.1,
+     -35.11
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -14.16,
+     0.05,
+     -35.11
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.63,
+     0.1,
+     -39.44
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.63,
+     0.05,
+     -39.44
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -14.16,
+     0.1,
+     29.39
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -14.16,
+     0.05,
+     29.39
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     41.69,
+     0.1,
+     6.47
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     41.69,
+     0.05,
+     6.47
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -17.32,
+     0.1,
+     36.29
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -17.32,
+     0.05,
+     36.29
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     48.26,
+     0.1,
+     8.79
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     48.26,
+     0.05,
+     8.79
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -21.28,
+     0.1,
+     -52.75
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -21.28,
+     0.05,
+     -52.75
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8070307,
+  "lon": 2.1214866,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     7.16,
+     0.1,
+     17.52
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     7.16,
+     0.05,
+     17.52
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -10.31,
+     0.1,
+     4.24
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -10.31,
+     0.05,
+     4.24
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.26,
+     0.1,
+     21.73
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.26,
+     0.05,
+     21.73
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     14.27,
+     0.1,
+     34.95
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     14.27,
+     0.05,
+     34.95
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -7.13,
+     0.1,
+     -17.45
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -7.13,
+     0.05,
+     -17.45
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8069102,
+  "lon": 2.1212488,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8070808,
+  "lon": 2.1205344,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8052069,
+  "lon": 2.1121582,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8061147,
+  "lon": 2.1112281,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8070451,
+  "lon": 2.1154499,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8073544,
+  "lon": 2.1107024,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 15,
+    "r": 0.144
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 1.7999999999999998
+   }
+  ],
+  "name": "Bassin d'Apollon"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8013662,
+  "lon": 2.1251619,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8164898,
+  "lon": 2.1015382,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin de la Petite Gerbe"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8144975,
+  "lon": 2.1040598,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8149951,
+  "lon": 2.1044834,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8151389,
+  "lon": 2.1032185,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8161031,
+  "lon": 2.1050121,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin du Parterre de Laocoon"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8166599,
+  "lon": 2.1035154,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8170378,
+  "lon": 2.1025208,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8150403,
+  "lon": 2.1067025,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8038877,
+  "lon": 2.1187989,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.803583,
+  "lon": 2.1199436,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8082025,
+  "lon": 2.1125823,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 23,
+    "r": 0.144
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 2.76
+   },
+   {
+    "kind": "jet",
+    "at": [
+     1.22,
+     0.1,
+     1.67
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     1.22,
+     0.05,
+     1.67
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.59,
+     0.1,
+     3.14
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.59,
+     0.05,
+     3.14
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -4.92,
+     0.1,
+     -0.5
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -4.92,
+     0.05,
+     -0.5
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.15,
+     0.1,
+     -3.8
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.15,
+     0.05,
+     -3.8
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     3.0,
+     0.1,
+     3.58
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     3.0,
+     0.05,
+     3.58
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -0.15,
+     0.1,
+     5.05
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -0.15,
+     0.05,
+     5.05
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     0.29,
+     0.1,
+     -5.02
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.29,
+     0.05,
+     -5.02
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     3.68,
+     0.1,
+     -3.45
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     3.68,
+     0.05,
+     -3.45
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     5.01,
+     0.1,
+     0.24
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     5.01,
+     0.05,
+     0.24
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -7.03,
+     0.1,
+     2.5
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -7.03,
+     0.05,
+     2.5
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.25,
+     0.1,
+     6.73
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.25,
+     0.05,
+     6.73
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -6.94,
+     0.1,
+     -3.54
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -6.94,
+     0.05,
+     -3.54
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     2.4,
+     0.1,
+     6.98
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     2.4,
+     0.05,
+     6.98
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -2.56,
+     0.1,
+     -7.38
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -2.56,
+     0.05,
+     -7.38
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     3.39,
+     0.1,
+     -7.08
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     3.39,
+     0.05,
+     -7.08
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     7.02,
+     0.1,
+     3.09
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     7.02,
+     0.05,
+     3.09
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     7.42,
+     0.1,
+     -2.56
+    ],
+    "height": 3,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     7.42,
+     0.05,
+     -2.56
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin d'Encelade"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8075073,
+  "lon": 2.1172399,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8054043,
+  "lon": 2.1144598,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin du bosquet du dauphin"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8064854,
+  "lon": 2.1210708,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Le Bassin de la Pyramide"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8079008,
+  "lon": 2.1210057,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8082084,
+  "lon": 2.1220679,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 27,
+    "r": 0.144
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 3.2399999999999998
+   },
+   {
+    "kind": "jet",
+    "at": [
+     4.37,
+     0.1,
+     -0.45
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     4.37,
+     0.05,
+     -0.45
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.15,
+     0.1,
+     -3.19
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.15,
+     0.05,
+     -3.19
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -3.1,
+     0.1,
+     -7.57
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -3.1,
+     0.05,
+     -7.57
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     0.15,
+     0.1,
+     -10.32
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.15,
+     0.05,
+     -10.32
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     7.67,
+     0.1,
+     -3.19
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     7.67,
+     0.05,
+     -3.19
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     4.37,
+     0.1,
+     -10.23
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     4.37,
+     0.05,
+     -10.23
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     7.52,
+     0.1,
+     -7.37
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     7.52,
+     0.05,
+     -7.37
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin du Dragon"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8081936,
+  "lon": 2.1146838,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8094242,
+  "lon": 2.1137272,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 25,
+    "r": 0.144
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 3.0
+   }
+  ],
+  "name": "La Fontaine de l'Obélisque"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8064015,
+  "lon": 2.1203566,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin des Couronnes"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8060972,
+  "lon": 2.1214892,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin des Couronnes"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8040191,
+  "lon": 2.1125569,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 4,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -1.76,
+     0.1,
+     -5.84
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -1.76,
+     0.05,
+     -5.84
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     2.27,
+     0.1,
+     5.51
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     2.27,
+     0.05,
+     5.51
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     -4.65,
+     0.1,
+     -12.88
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     -4.65,
+     0.05,
+     -12.88
+    ],
+    "r": 0.6
+   },
+   {
+    "kind": "jet",
+    "at": [
+     4.49,
+     0.1,
+     12.77
+    ],
+    "height": 2.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     4.49,
+     0.05,
+     12.77
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Bassin du Miroir"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8049397,
+  "lon": 2.1126889,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8153866,
+  "lon": 2.1084843,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8154759,
+  "lon": 2.1073854,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8149174,
+  "lon": 2.1076325,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8147592,
+  "lon": 2.1055964,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.815079,
+  "lon": 2.1055787,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8159233,
+  "lon": 2.1038792,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8042455,
+  "lon": 2.1152322,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8168274,
+  "lon": 2.1046436,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ],
+  "name": "Amphithêatre"
+ },
+ {
+  "source": "tools/versailles-fountains.py",
+  "lat": 48.8163186,
+  "lon": 2.1217415,
+  "onWater": true,
+  "probe": 0,
+  "pieces": [
+   {
+    "kind": "jet",
+    "at": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "height": 3.5,
+    "r": 0.09
+   },
+   {
+    "kind": "foam",
+    "at": [
+     0.0,
+     0.05,
+     0.0
+    ],
+    "r": 0.6
+   }
+  ]
  }
 ]

@@ -90,3 +90,31 @@ ground, not a hole.
 - The stall is only on the long route: the same streets to Quai Carnot (48.8403, 2.2214) ride clean on the old bake
   and the new alike, so the bake did not move a bay into that lane; the long GPS route steers into it.
 - `tests/gardens.test.ts` now takes its bounds from the box, so the Versailles garden plans stand in it.
+
+## The gardens and park, 2026-11-15 (owner: "basically woods"; routes through hedges; two office blocks)
+
+- **Hedges are cut where any way crosses them** (tools/gardens/index.ts `HEDGE_CUT`), OSM's and the plans' alike; pleached rows on
+  trunks are left whole. The bosquets' invented rooms and spoke walks are gone: a bosquet now walls OSM's own paths (`pathWalls`),
+  sizes OSM's height-less hedges inside it as charmilles (`osmHedge`), draws its outline wall only where OSM does not
+  (`outlineHedge`), and keeps its massed trees off the ways and off OSM's lawns, basins and paving (`rowClear`). The Reine and the
+  Bains d'Apollon are English gardens: loose clumps (`ANGLAIS`).
+- **The Grand Canal's allées are clipped walls** (`CANAL_WALL`, pleached), and its plan ring is the cross of the canal and its allées:
+  the old rectangle round the whole canal kept the scatter off ~190 ha of forest, which is why the blocks beyond it were thin.
+- **Fountains**: `python3 -I tools/versailles-fountains.py` writes a jet at every OSM `amenity=fountain` point in the domain into
+  paris-fountains.json, one fountain per basin; heights by basin name in its `JET` table. `probe: 0` stands a jet on its own basin.
+- **Park buildings OSM gives no height** are two-storey pavilions up to 2 500 m² (render/prepare.ts `PARK_PAVILION`).
+- **Builders** (render/landmarks/paris/versailles/garden-structures.ts): the grotto of the Bains d'Apollon (way/224643670), the
+  Encelade's treillage (relation/8420868), La Lanterne (way/74630403; outside the regions, so its U is in the builder).
+- **Built 2026-11-16** (one builder file each in `src/render/landmarks/paris/versailles/`, entries in `palaces.json`, tunables at the top):
+  `colonnade.ts` (32 arches on 64 paired Ionic columns, basins and jets; radius 15.4 m is estimated, OSM maps only the 44 m space),
+  `salle-de-bal.ts` (5-tier meulière cascade on the east, gilded torchères, gravel floor, turf gradins), `neptune.ts` (151 m retaining
+  wall, balustrade, 22 vases, group plinths, wall sheets, terraces), `cent-marches.ts` (both 103-step flights in three runs, 12 m drop,
+  balustraded walls), `trianon-follies.ts` (Temple de l'Amour, Belvédère, Grand Rocher grotto; they claim OSM's column/roof parts and
+  the pavilion so no generic box draws inside them), `orangerie-parterre.ts` (box edging on OSM's mapped broderie beds, ~420 tubbed
+  orange trees). `versaillesOrangerie` (communs.ts) now leaves out the two stair strips of its U.
+- Garden plans take `rooms` (tools/gardens/versailles-rooms.ts): the Salle de Bal floor and the Colonnade ring get no path walls,
+  hedges or plan trees. The Orangerie plan is outline-only now (its fictional panels hid OSM's broderie).
+- The Paris park scatter (plantLegacy) skips water: the Bassin de Neptune had 20 trees in it. Shows at the next paris-centre bake.
+- Open: the Orangerie's gallery roof cap doesn't draw (extrude on the 62-vertex ring; it predates this); the west Cent-Marches flight's
+  baked ground hardly climbs; the nonbuildings audit's `intersects` for the east flight is its unrotated box (the real flight only
+  touches building 13440683's corner); statues (Proserpine, Neptune groups, Cupid, sphinxes) are GLB-list items.

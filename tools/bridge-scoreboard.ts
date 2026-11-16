@@ -26,6 +26,7 @@ import type { CityPackage, PackedEdge } from '../src/city/package.ts'
 import { Terrain } from '../src/city/terrain.ts'
 import { Projection } from '../src/city/geo.ts'
 import { nearestOnGraph, planRoute, type Route } from '../src/sim/route.ts'
+import { alignWallLine } from './wall-align.ts'
 import { btMatchEdge, btName, btSegs, btSol, fetchBdTopo, fillNoZ, type BtFeature } from './bdtopo-zones.ts'
 import { ignLidar } from './ign-lidar.ts'
 
@@ -555,10 +556,12 @@ function audit(br: Bridge): Audits {
     const covered = (p: P): boolean => (cellOf.get(key(p.x, p.z)) ?? []).some((i) => nearSeg({ x: walls[i].ax, z: walls[i].az }, { x: walls[i].bx, z: walls[i].bz }, p).d <= WALL_NEAR)
     for (const f of lines) {
       if (!/^(Quai|Mur de soutènement)$/.test(String(f.props.nature)) || btSol(f) === '-1') continue
-      for (const part of f.coords) {
+      for (const part0 of f.coords) {
+        // (the line the bake builds on: moved onto the lidar's step, tools/wall-align.ts)
+        const part = alignWallLine(part0.map((q) => toLocal(q[1], q[0])), (x, z) => lidarH({ x, z })).line
         const smp: { p: P; c: boolean; w: boolean }[] = []
         for (let i = 1; i < part.length; i++) {
-          const a = toLocal(part[i - 1][1], part[i - 1][0]), b = toLocal(part[i][1], part[i][0]), n = Math.max(1, Math.ceil(dist(a, b)))
+          const a = part[i - 1], b = part[i], n = Math.max(1, Math.ceil(dist(a, b)))
           const L = dist(a, b) || 1
           for (let k = 0; k < n; k++) { const p = { x: a.x + (b.x - a.x) * k / n, z: a.z + (b.z - a.z) * k / n }; const w = covered(p); smp.push({ p, c: w || crossed(p, (b.x - a.x) / L, (b.z - a.z) / L), w }) }
         }

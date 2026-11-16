@@ -7,7 +7,9 @@ import type { Fit } from '../../fit.ts'
 import { laTrinite, saintGermainAuxerrois, saintGermainDesPres, saintRoch } from './churches.ts'
 import { saintEustache } from './saint-eustache.ts'
 import { carrouselArch, porteSaintDenis, porteSaintMartin } from './gates.ts'
-import { grandeArche, montparnasseFull } from './modern.ts'
+import { montparnasseFull } from './modern.ts'
+import { grandeArche } from '../defense-famous/grandeArche.ts'
+import { bassinTakis, fontaineAgam, parvisPaving } from '../defense-famous/parvis.ts'
 import { pantheonFull } from './pantheon.ts'
 import { lionDeBelfort, triompheRepublique, troneColumnPhilippeAuguste, troneColumnSaintLouis } from './statues.ts'
 import { sacreCoeurFull } from './sacre-coeur.ts'
@@ -44,7 +46,10 @@ import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
 import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
 import { fontaineChateauEau } from './fontaine-chateau-eau.ts'
 import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
-import { araigneeRouge, cnitVault, domeImax, lePouce, quatreTemps, tourFirst } from './la-defense.ts'
+import { araigneeRouge, domeImax, lePouce } from './la-defense.ts'
+import { cnitVault } from '../defense-famous/cnitVault.ts'
+import { quatreTemps } from '../defense-famous/quatreTemps.ts'
+import { tourFirst } from '../defense-famous/tourFirst.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   araigneeRouge,
@@ -62,6 +67,9 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineStravinsky,
   fontaineVarsovie,
   grandeArche,
+  fontaineAgam,
+  bassinTakis,
+  parvisPaving,
   grandeMosquee,
   jeanSansPeur,
   laTrinite,

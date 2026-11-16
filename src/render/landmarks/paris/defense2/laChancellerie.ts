@@ -1,21 +1,21 @@
 /**
- * La Chancellerie (Courbevoie, 19 levels, ~63 m; OSM way/82322824, no parts): a residential block on OSM's ring, warm
- * grey-beige concrete with ribbon windows, a recessed dark ground floor and a flat parapet.
- * From tags and footprint; the tone is a guess to check against a street view.
+ * La Chancellerie (Courbevoie, OSM way/82322824): a 19-level block of flats. BD TOPO (local cache) gives one 51.8 m
+ * part, an L wider than OSM's ring, which is drawn here in its place; warm beige concrete with punched ribbon windows,
+ * a recessed dark ground floor. Panoramax frames near it showed only hoardings, so the tone is not photo-checked.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
-import { tower } from '../../tower.ts'
+import type { P2 } from '../museums/enframe.ts'
+import { steppedParts, type StepLook } from './egalite.ts'
 
-const HEIGHT = 63
-const LOBBY_H = 4.5
-const WALL = '#bfb6a6', GLASS = '#46505a', ROOF = '#85827c', LOBBY = '#383634', PARAPET = '#aaa294'
-const FLOOR = 3.1, PITCH = 2.8, SOLID = 0.5, PARAPET_H = 1.2
+const WALL = '#cbc2b2', GLASS = '#56616a', LOBBY = '#46443f', ROOF = '#8a877f'
+const LOOK: StepLook = {
+  face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: 2.75, pitch: 2.8, solid: 0.42, material: 'concrete' },
+  lobby: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' },
+  lobbyH: 4.2, roof: ROOF, parapet: 1.2, parapetColour: WALL,
+}
+const OSM: P2[] = [[-15.3, -4.6], [-8.1, -16.1], [18.7, 0.4], [14.5, 7.1], [11.5, 11.9], [2.7, 6.5], [-8.8, -0.6]]
+const PART: P2[] = [[-8.8, -0.6], [-15.3, -4.7], [-5.2, -20.6], [0.9, -17.0], [-0.5, -14.8], [7.1, -10.1], [10.1, -7.5], [17.4, -3.7], [20.4, -2.9], [14.5, 7.1], [11.5, 12.0], [2.8, 6.5]]
 
-export const laChancellerie = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
-  height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
-})
+export const laChancellerie = (out: MeshBuilder, fit: Fit): void => steppedParts(out, fit, OSM, [{ h: 51.8, ring: PART }], LOOK)

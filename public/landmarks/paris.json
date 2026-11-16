@@ -472,15 +472,6 @@
     "note": "Drawn wing by wing on OSM's outline and IGN's aerial (2026-10-30), in plan metres about this point: not fitted, and on its own datum, because the ground runs from -3 m in the Colonnade's moat to +2.4 in the Cour Carrée and an entry's base is otherwise the lowest of it. OSM's outline stays in the bake for the passages' vaults (TileData.claimedBuildings)."
   },
   {
-    "name": "Tours Société Générale",
-    "osm": [
-      "way/226235094",
-      "way/226235095"
-    ],
-    "restyle": "operaGlass",
-    "note": "Alicante and Chassagne, La Défense (owner, 2026-10-30, 48.891995, 2.230358: \"colors are not quite right\"): OSM has them as pale glass, building:facade:colour #A2E1FA, where the office towers' palette is dark. A silvery glass from the styles there are; not their own colour."
-  },
-  {
     "name": "Pyramide inversée",
     "procedural": "louvreInverted",
     "lat": 48.8614474,
@@ -1459,6 +1450,9 @@
   },
   {
     "include": "paris/defense2.json"
+  },
+  {
+    "include": "paris/defense3.json"
   },
   {
     "include": "paris/batch8.json"

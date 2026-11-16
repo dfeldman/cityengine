@@ -235,7 +235,8 @@ function axis(q: MeshBuilder, s: CivicSpec, st: Style, L: number, H: number, gro
     const c = ACCENTS[st.accent], dh = Math.min(3.4, groundH - 0.5)
     box(q, 0, grade + dh + 0.25, proud + 0.2, Math.min(2.6, L / 5) / 2 + 0.6, 0.25, 0.04, c)
     const sx = Math.min(L * 0.3, 7)
-    for (let f = 1; f * groundH < H - 1; f++) box(q, sx, f * groundH + groundH * 0.5, 0.06, 0.9, groundH * 0.32, 0.04, c)
+    // (not up a front of bay windows: they stand 0.9 m proud (facade.ts 'bays'), so the 0.06 m strip sank into them and showed in pieces between them, flickering)
+    if ((st.windows ?? s.windows) !== 'bays') for (let f = 1; f * groundH < H - 1; f++) box(q, sx, f * groundH + groundH * 0.5, 0.06, 0.9, groundH * 0.32, 0.04, c)
   }
   // the door: a frame of dressed stone, a dark leaf, a lintel with its words, the step
   const y = grade

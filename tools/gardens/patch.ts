@@ -11,13 +11,21 @@ import { Projection } from '../../src/city/geo.ts'
 import { CITIES, detailBboxOf } from '../cities.ts'
 import { gardenPartsQuery, overpassTiled } from '../overpass.ts'
 import { bakeGardens } from './index.ts'
+import { unpackPoints } from '../../src/city/package.ts'
+import { readPackage } from '../bake-files.ts'
 
 const id = process.argv[2] ?? 'paris-centre'
 const spec = CITIES.find((c) => c.id === id)
 if (!spec) throw new Error(`no city ${id}`)
 const proj = new Projection(spec.centre)
 const got = await overpassTiled(gardenPartsQuery, detailBboxOf(spec))
-const g = bakeGardens(got.ways, (q) => proj.toLocal(q))
+// the baked package's ways and open ground, as the bake passes them (hedges are cut where a way crosses)
+const pkg = readPackage(id)
+const OPEN = new Set(['water', 'grass', 'paved', 'pitch'])
+const g = bakeGardens(got.ways, (q) => proj.toLocal(q), {
+  ways: pkg.edges.map((e) => ({ points: unpackPoints(e.points), half: e.width / 2, kind: e.kind, bridge: e.bridge, tunnel: e.tunnel })),
+  open: pkg.areas.filter((a) => OPEN.has(a.kind)).map((a) => unpackPoints(a.ring)),
+})
 const f = resolve(import.meta.dirname, '..', '..', 'public', 'cities', id, 'v3', 'index.json')
 const index = JSON.parse(readFileSync(f, 'utf8'))
 index.legacy.garden = g.garden

@@ -29,7 +29,7 @@ export const ML_TRUST = Number(process.env.ML_TRUST ?? 2.5), ML_TRUST_UP = Numbe
 /** weights: the lidar pull, a held height (deck, car tunnel), a trench road, a kept height (covered) */
 export const ML_W_MNT = 1, ML_W_HOLD = 60, ML_W_CUT = 20, ML_W_KEEP = Number(process.env.ML_W_KEEP ?? 0.6), ML_W_KEEP_OVER = 0.6, ML_W_PRIOR = 0.05
 /** the grade the solve aims under (stairs aside): a steeper segment's membrane is stiffened and the solve re-run, up to ML_GRADE_ITERS times */
-export const ML_GRADE_MAX = Number(process.env.ML_GRADE_MAX ?? 0.11), ML_GRADE_ITERS = 5
+export const ML_GRADE_MAX = Number(process.env.ML_GRADE_MAX ?? 0.11), ML_GRADE_ITERS = Number(process.env.ML_GRADE_ITERS ?? 5)
 /** a deck holds its height fully only this far (m, along it) from an end that meets a street; nearer, the hold eases to ML_W_MNT */
 export const ML_DECK_END = 25, ML_DECK_END_MIN = 0.2
 /** segments longer than this are split (m) before the solve */
@@ -58,6 +58,8 @@ export const ML_RIVER_LAND = 0.8, ML_RIVER_CORR = 2.5, ML_RIVER_BED = 1.5, ML_BO
 export const ML_BRIDGE_NEAR = 30, ML_BANK = 2.5, ML_PORT_MAX = 0
 /** under a structure the ground continues the nearest at-grade way's level out to this far (m); further, the Laplace fill */
 export const ML_UNDER_REACH = Number(process.env.ML_UNDER_REACH ?? 25)
+/** …but not a level more than this over the lidar there (m; 0: off): see the ground under a structure */
+export const ML_UNDER_MNT_DH = Number(process.env.ML_UNDER_MNT_DH ?? 2.5), ML_UNDER_MNT_RIVER = Number(process.env.ML_UNDER_MNT_RIVER ?? 60)
 /** a lower-layer way is blind to the lidar this far (m, past the upper way's half-width) from where a higher-layer way crosses it */
 export const ML_UNDER_CROSS = 8
 /** bridge ways on one structure share its deck: a deck vertex holds the highest deck way within this (m), if within ML_DECK_DH m of it */
@@ -77,6 +79,25 @@ export const ML_GAP0 = 9e14, ML_GAP1 = 9.7e14, ML_GAP_BACK = 0.3, ML_GAP_NODE0 =
  *  quai by the Pont d'Arcole was joined at its foot to a way on the upper quai 7.9 m higher and 3 m off, and the solve held the whole
  *  flight level at the top, 8.5 m over the port */
 export const ML_GAP_LIDAR_DH = 2, ML_GAP_LIDAR_GRADE = 0.6
+/** a node whose ways end more than this far apart in height (m) is split, one node per level (new ids from ML_SPLIT_NODE0) */
+export const ML_NODE_SPLIT = 2.0, ML_SPLIT_NODE0 = 8.95e14
+/** a tunnel this share of whose length lies under a bridge's outline is a passage under it, at grade */
+export const ML_PASSAGE_IN = 0.8
+/** a tunnel piece's neighbour running this far (m) under the lidar is a cutting */
+export const ML_CUT_MIN = 0.7
+/** a lid's level as tools/bake.ts takes it (LID_LEVEL_Q), and the ground held this far (m) under it */
+export const ML_LID_Q = 0.1, ML_LID_UNDER = 0.15
+/** under a structure, the ground takes the lowest at-grade way within ML_UNDER_REACH (the passage's floor), not the nearest */
+export const ML_UNDER_LOW = process.env.ML_UNDER_LOW === '1'
+/** a flight of stairs lays the ground under its own width only, no skirt (the Pont d'Iéna's right-bank flights spread the lower quai's
+ *  bank into a broad grass ramp up the wall, owner 2026-11-16) */
+export const ML_STEPS_NO_SKIRT = process.env.ML_STEPS_NO_SKIRT !== '0'
+/** a corridor's skirt blends the ground to the open lidar beyond only where that lies within this (m) of the way */
+export const ML_SKIRT_DH = Number(process.env.ML_SKIRT_DH ?? 2.0)
+/** inside the drawn width of two ways, the nearer centreline sets the ground */
+export const ML_ON_CENTRE = process.env.ML_ON_CENTRE === '1'
+/** inside the drawn width of two ways whose half-widths differ by more than ML_NARROW_DIFF m, the narrower sets the ground */
+export const ML_ON_NARROW = process.env.ML_ON_NARROW === '1', ML_NARROW_DIFF = 3
 /** a stretch of a way this far over (a deck) or under (covered) the lidar it can see, after the solve (m) */
 export const ML_RAISE = Number(process.env.ML_RAISE ?? 2.5)
 /** a segment rising this much (m) at this grade or steeper across a wall line is a flight of stairs */
@@ -87,7 +108,7 @@ export const ML_CLIMB_DH = 2.0, ML_CLIMB_GRADE = 0.25, ML_CLIMB_DH_STEEP = 2.5, 
 export const ML_RAIL_GRADE = 0.04, ML_RAIL_SPIKE = 1.0, ML_RAIL_PAIR = 6
 /** WALL LINES: within ML_WALL_SNAP m of a BD TOPO wall line the lidar is read ML_WALL_READ m out from the line on the cell's own side,
  *  so the ground steps AT the line (the 1 m lidar smears a 4 m wall over two posts, and the wall runs cut from the ground broke up) */
-export const ML_WALL_SNAP = 2.0, ML_WALL_READ = 2.6
+export const ML_WALL_SNAP = Number(process.env.ML_WALL_SNAP ?? 2.0), ML_WALL_READ = Number(process.env.ML_WALL_READ ?? 2.6)
 /** the Laplace fill under structures: SOR iterations and factor */
 export const ML_FILL_ITERS = 400, ML_FILL_SOR = 1.85
 const FOOT = /^(footway|cycleway|path|pedestrian|steps|bridleway|track)$/
@@ -108,6 +129,8 @@ export interface MultiLevelInput {
   walls?: XZ[][]
   /** moored boats' outlines (OSM building=boat|houseboat|ship), local rings: the ground under one is the riverbed */
   boats?: XZ[][]
+  /** the lids' slab outlines (tools/tunnels.ts lidSlabs): the ground under one lies under the slab */
+  lids?: XZ[][]
   log: (s: string) => void
 }
 export interface MultiLevel {
@@ -238,6 +261,23 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     return false
   }
 
+  // A TUNNEL UNDER A BRIDGE IS A PASSAGE (owner, 2026-11-15, the Pont d'Iéna's right bank: a dark block over the lower quai, "likely
+  // caused by the tunnel entrance"): OSM tags the Port Debilly's road `tunnel` for the 7 m it runs under the bridge's end, and a tunnel
+  // drew its own portal and tube inside the bridge's land arch. A tunnel way ML_PASSAGE_IN of whose length lies within ML_STRUCT_PAD
+  // of a bridge outline is at grade, under the bridge's arch.
+  let nPass = 0
+  for (const e of edges) {
+    if (!e.tunnel || !e.heights || e.bridge || !anyIn(e, weight)) continue
+    let inL = 0, all = 0
+    for (let i = 2; i < e.points.length; i += 2) {
+      const mx = (e.points[i - 2] + e.points[i]) / 2, mz = (e.points[i - 1] + e.points[i + 1]) / 2, l = Math.hypot(e.points[i] - e.points[i - 2], e.points[i + 1] - e.points[i - 1])
+      all += l
+      if ((ringCells.get(rck(Math.floor(mx / RC), Math.floor(mz / RC))) ?? []).some(({ r }) => inRing(r, mx, mz) || nearRing(r, mx, mz) < ML_STRUCT_PAD)) inL += l
+    }
+    if (all > 0 && inL / all >= ML_PASSAGE_IN) { delete e.tunnel; delete e.bore; if ((e.layer ?? 0) < 0) delete e.layer; nPass++ }
+  }
+  if (nPass) log(`multi-level: ${nPass} tunnels under a bridge's outline made passages at grade`)
+
   /** within ML_BRIDGE_NEAR m of a bridge outline */
   const nearBridge = (x: number, z: number): boolean => {
     const gx = Math.floor(x / RC), gz = Math.floor(z / RC)
@@ -245,6 +285,15 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
       if (x < bb[0] - ML_BRIDGE_NEAR || x > bb[2] + ML_BRIDGE_NEAR || z < bb[1] - ML_BRIDGE_NEAR || z > bb[3] + ML_BRIDGE_NEAR) continue
       if (inRing(r, x, z) || nearRing(r, x, z) < ML_BRIDGE_NEAR) return true
     }
+    return false
+  }
+  /** inside a lid's outline (ML_UNDER_MNT_DH stands down there) */
+  const lidBoxes = (inp.lids ?? []).map((r) => ({ r, bb: bbox(r) }))
+  const inLid = (x: number, z: number): boolean => lidBoxes.some(({ r, bb }) => x >= bb[0] && x <= bb[2] && z >= bb[1] && z <= bb[3] && inRing(r, x, z))
+  /** river within r m (eight directions, every 10 m): ML_UNDER_MNT_RIVER */
+  const nearWater = (x: number, z: number, r: number): boolean => {
+    if (riverCell(x, z)) return true
+    for (let d = 10; d <= r; d += 10) for (let a = 0; a < 8; a++) if (riverCell(x + Math.cos(a * Math.PI / 4) * d, z + Math.sin(a * Math.PI / 4) * d)) return true
     return false
   }
   /** more than ML_BANK m from the river outline's edge, along the axes */
@@ -473,6 +522,8 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
   log(`multi-level: ${flat} stair vertices laid straight; ${stiff} steep links stiffened; ${shared} deck vertices raised to their structure's deck; ${solveEdges.length} ways, ${nv} unknowns (${added} vertices added); lidar-pulled ${cnt.mnt} (foot tunnels ${cnt.foot}), held ${cnt.hold}, blind under structures ${cnt.blind}, kept ${cnt.keep} (of them seen but > ${ML_TRUST} m off: ${cnt.covered}); ${moved} vertices moved, max ${maxMove.toFixed(1)} m`)
 
   const freeSteps = new Set<PackedEdge>()
+  /** the cuttings made at covered pieces' approaches (no trench pad) */
+  const approaches = new Set<PackedEdge>()
   /** the open ground near a point under a structure: the median lidar at ML_RING radii round it, outside structures and the river */
   const ringGround = (x: number, z: number): number | null => {
     const v: number[] = []
@@ -542,7 +593,7 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     for (const u of surf) {
       if (u.cut || u.trench || u.lid) continue
       const cu = cum.get(u)!, n = u.heights!.length
-      const r = [...Array(n).keys()].map((i) => {
+      const r0 = [...Array(n).keys()].map((i) => {
         const x = u.points[2 * i], z = u.points[2 * i + 1]
         if (weight(x, z) <= 0) return null
         // (under a structure the lidar is the deck: the open ground is the MEDIAN of the lidar in a ring round the vertex, outside every
@@ -552,7 +603,11 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
         const m = inp.mnt(x, z), rv = riverCell(x, z); if (m === null || (rv && (rv.level === null || m <= rv.level + ML_RIVER_LAND))) return null
         return u.heights![i] - m
       })
+      // (…but a way under a bridge's outline is never COVERED there: the bridge covers it, and the ring round a bridgehead is mostly the
+      //  upper quai — the Port Debilly's road under the Pont d'Iéna's end was cut as a 7 m tunnel, and drew a portal in the land arch)
+      const rUnder = r0.map((v, i) => (underStructure(u.points[2 * i], u.points[2 * i + 1]) ? null : v))
       for (const [sign, into] of [[1, spans], [-1, tun]] as const) {
+        const r = sign > 0 ? r0 : rUnder
         // (OSM's layer says which side a way is on: a layer 1 cycleway on a raised boulevard was chopped into 2 m "covered" pieces)
         if ((sign < 0 && (u.layer ?? 0) > 0) || (sign > 0 && (u.layer ?? 0) < 0)) continue
         let i = 0
@@ -606,7 +661,8 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
         }
       }
     }
-    let nextNode = ML_NODE0, nextId = edges.reduce((m, e) => Math.max(m, e.id), 0) + 1, made = 0, madeT = 0
+    let nextNode = ML_NODE0, nextId = edges.reduce((m, e) => Math.max(m, e.id), 0) + 1, made = 0, madeT = 0, nCutApproach = 0
+    approaches.clear()
     const named: string[] = []
     for (const e of new Set([...spans.keys(), ...tun.keys(), ...stair.keys()])) {
       const merge = (list: [number, number][]): [number, number][] => {
@@ -650,13 +706,24 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
         if (kind === 'steps') { piece.kind = 'steps'; piece.foot = true; piece.width = Math.min(piece.width, 3); piece.walk = 0; delete piece.ramp; delete piece.oneway }
         out.push(piece); nodeA = nodeB
       }
+      // A COVERED PIECE'S APPROACH IS A CUTTING: next to a tunnel piece, a stretch that runs ML_CUT_MIN m or more under the lidar (short
+      // of ML_RAISE, where a covered piece starts) is `cut` — the ground follows it down, no skirt. The Pont National's bike ramp went
+      // under the railway embankment and lay a metre under the ground on its way in.
+      for (let k = 0; k < out.length; k++) {
+        const pc = out[k]
+        if (pc.tunnel || pc.bridge || pc.cut || pc.kind === 'steps' || !pc.heights) continue
+        if (!(out[k - 1]?.tunnel || out[k + 1]?.tunnel)) continue
+        let deep = 0
+        for (let i = 0; i < pc.heights.length; i++) { const m = inp.mnt(pc.points[2 * i], pc.points[2 * i + 1]); if (m !== null) deep = Math.max(deep, m - pc.heights[i]) }
+        if (deep >= ML_CUT_MIN) { pc.cut = true; approaches.add(pc); nCutApproach++ }
+      }
       if (out.length > 1 || out[0]?.bridge || out[0]?.tunnel || out[0]?.kind === 'steps') {
         edges.splice(edges.indexOf(e), 1, ...out)
         const si = solveEdges.indexOf(e); if (si >= 0) solveEdges.splice(si, 1, ...out)
         if (e.name && !named.includes(e.name)) named.push(e.name)
       }
     }
-    log(`multi-level grade separation: ${made} decks (${nRaise} of them stretches ${ML_RAISE} m+ over the lidar) and ${madeT} covered pieces (${nSink} stretches ${ML_RAISE} m+ under it) cut out of ${new Set([...spans.keys(), ...tun.keys()]).size} ways, ${nClimb} wall climbs made stairs, ${freeSteps.size} raised flights left standing free, ${nOver} samples over a lower corridor (${named.slice(0, 6).join(', ')})`)
+    log(`multi-level grade separation: ${made} decks (${nRaise} of them stretches ${ML_RAISE} m+ over the lidar) and ${madeT} covered pieces (${nSink} stretches ${ML_RAISE} m+ under it) cut out of ${new Set([...spans.keys(), ...tun.keys()]).size} ways, ${nClimb} wall climbs made stairs, ${nCutApproach} tunnel approaches made cuttings, ${freeSteps.size} raised flights left standing free, ${nOver} samples over a lower corridor (${named.slice(0, 6).join(', ')})`)
     // the new decks hold the lidar off the ground under them too
     for (const e of edges) if (e.bridge && e.heights && anyIn(e, weight)) for (let i = 2; i < e.points.length; i += 2) decks.add({ ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half: halfOf(e) + ML_DECK_PAD, e }, halfOf(e) + ML_DECK_PAD)
   }
@@ -672,8 +739,10 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     if (!e.cut && !e.trench) for (let i = 2; i < e.points.length; i += 2) gradeFar.add({ ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half, e }, half + ML_UNDER_REACH)
     // (a trench road's floor runs ML_TRENCH_PAD past its kerb, so the step up to the street stands behind the trench wall's face, not
     //  in front of it: on a 1 m grid a diagonal corridor edge stood as a row of spikes inside the Iéna tunnel)
-    const tr = !!(e.cut || e.trench), halfT = tr ? half + ML_TRENCH_PAD : half
-    for (let i = 2; i < e.points.length; i += 2) grade.add({ ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half: halfT, e, cut: tr }, halfT + ML_SKIRT)
+    // (not an approach cutting: it has no walls to stand behind, and its padded floor sank the end of the sidewalk beside the Pont
+    //  National's bike ramp 2.2 m)
+    const tr = !!(e.cut || e.trench), halfT = tr && !approaches.has(e) ? half + ML_TRENCH_PAD : half
+    for (let i = 2; i < e.points.length; i += 2) grade.add({ ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half: halfT, e, cut: tr || (ML_STEPS_NO_SKIRT && e.kind === 'steps') }, halfT + ML_SKIRT)
   }
   /** the corridor at (x, z): the nearest at-grade way's height and how far outside its corridor the point is (≤ 0 inside) */
   const ML_TIE = process.env.ML_TIE !== '0'
@@ -681,11 +750,52 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
   //  corridor, 1.8 m higher, which won on edge distance and buried it). Under a structure only: by the quay walls it moved the step
   //  between a lower and an upper corridor off the wall line, and 14 more wall gaps opened on seine-centre-mini)
   const corridor = (x: number, z: number, reach = ML_SKIRT): { h: number; d: number; cut?: boolean } | null => {
-    let best: { h: number; d: number; cut?: boolean; c: number } | null = null
+    let best: { h: number; d: number; cut?: boolean; c: number; half: number } | null = null
     for (const s of (reach > ML_SKIRT ? gradeFar : grade).near(x, z)) {
       const q = segDist(x, z, s.ax, s.az, s.bx, s.bz), d = q.d - s.half
       if (d > reach) continue
-      if (!best || (ML_TIE && d <= 0 && best.d <= 0 && underStructure(x, z) ? q.d < best.c : d < best.d)) best = { h: s.ha + (s.hb - s.ha) * q.t, d, cut: s.cut, c: q.d }
+      // (not across a wall line: a footway along a retaining wall's top, at the Pont d'Iéna's right bank, laid its corridor 1.2 m past
+      //  the line and moved the wall's step out over the lower quai's road, a 6 m slope of grass in front of the stone)
+      if (d > -ML_BED_PAD && walledOff(x, z, s.ax + (s.bx - s.ax) * q.t, s.az + (s.bz - s.az) * q.t)) continue
+      // (…and anywhere, inside the DRAWN width of two ways, the way whose centreline is nearer: a Pont National flight's top and its bike
+      //  ramp lay a metre under a wider neighbour's corridor)
+      const bothOn = best !== null && d <= -ML_BED_PAD && best.d <= -ML_BED_PAD
+      // (the NARROWER way, where one lies inside the other's drawn width: a path inside a wide boulevard's footprint is the more specific
+      //  — the Pont National's bike ramp runs inside the Bd Jean Simon's 19 m and a metre under it, and was buried; ML_ON_NARROW)
+      const narrower = ML_ON_NARROW && bothOn && Math.abs(s.half - best!.half) > ML_NARROW_DIFF
+      if (!best || (narrower ? s.half < best.half : (ML_ON_CENTRE && bothOn) || (ML_TIE && d <= 0 && best.d <= 0 && underStructure(x, z)) ? q.d < best.c : d < best.d)) best = { h: s.ha + (s.hb - s.ha) * q.t, d, cut: s.cut, c: q.d, half: s.half }
+    }
+    return best
+  }
+  /** the level of the at-grade way within `reach` of its corridor whose level at (x, z) is nearest `target` (ML_UNDER_MNT_DH) */
+  const corridorNear = (x: number, z: number, reach: number, target: number): number | null => {
+    let best: number | null = null
+    for (const s of gradeFar.near(x, z)) {
+      const q = segDist(x, z, s.ax, s.az, s.bx, s.bz)
+      if (q.d - s.half > reach) continue
+      const h = s.ha + (s.hb - s.ha) * q.t
+      if (best === null || Math.abs(h - target) < Math.abs(best - target)) best = h
+    }
+    return best
+  }
+  /** does a wall line cross the segment from (x, z) to (px, pz)? */
+  const walledOff = (x: number, z: number, px: number, pz: number): boolean => {
+    for (const w of wallIdx.near(x, z)) {
+      const d1 = (w.bx - w.ax) * (z - w.az) - (w.bz - w.az) * (x - w.ax), d2 = (w.bx - w.ax) * (pz - w.az) - (w.bz - w.az) * (px - w.ax)
+      if ((d1 > 0) === (d2 > 0)) continue
+      const e1 = (px - x) * (w.az - z) - (pz - z) * (w.ax - x), e2 = (px - x) * (w.bz - z) - (pz - z) * (w.bx - x)
+      if ((e1 > 0) !== (e2 > 0)) return true
+    }
+    return false
+  }
+  /** the lowest at-grade way within reach (not across a wall line) */
+  const corridorLow = (x: number, z: number, reach: number): { h: number; d: number } | null => {
+    let best: { h: number; d: number } | null = null
+    for (const s of gradeFar.near(x, z)) {
+      const q = segDist(x, z, s.ax, s.az, s.bx, s.bz), d = q.d - s.half
+      if (d > reach) continue
+      const h = s.ha + (s.hb - s.ha) * q.t
+      if (!best || h < best.h) best = { h, d }
     }
     return best
   }
@@ -718,7 +828,8 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     G.ensure(tx, tz); fixed.ensure(tx, tz, 0); rland.ensure(tx, tz)
   }
   // fixed: 1 = lidar, 2 = corridor, 3 = river (left), 4 = under a structure at a way's level, 5 = the riverbed, 0 = unknown
-  let nUnder = 0, nCorr = 0, nRiver = 0, nTerr = 0, nFill = 0
+  let nUnder = 0, nCorr = 0, nRiver = 0, nTerr = 0, nFill = 0, nUnderMnt = 0
+  const underMntAt = new Map<string, number>()
   for (const [i, j] of G.cells()) {
     const x = i * ML_CELL, z = j * ML_CELL
     const rv0 = riverCell(x, z), boat = boatAt(x, z), rv = rv0 ?? (boat ? rivers[0] : undefined), c = corridor(x, z)
@@ -740,7 +851,25 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
       let hd: number | null = null
       for (const sg of decks.near(x, z)) { const q = segDist(x, z, sg.ax, sg.az, sg.bx, sg.bz); if (q.d < sg.half - ML_DECK_PAD) { const h = sg.ha + (sg.hb - sg.ha) * q.t; if (hd === null || h > hd) hd = h } }
       if (hd !== null && md !== null && Math.abs(md - hd) < ML_FLUSH) { G.set(i, j, hd - ML_FILL_UNDER); fixed.set(i, j, 4); nFill++; continue }
-      const u = corridor(x, z, ML_UNDER_REACH)
+      // (the LOWEST way within reach, not the nearest: under the Pont d'Iéna's land arch the nearest was the upper quai, and the ground
+      //  rose from the lower quai's road as a grass bank to it under the arch — owner, 2026-11-16; under a bridge the floor is the
+      //  passage's, and the abutment stands from it)
+      const u = ML_UNDER_LOW ? corridorLow(x, z, ML_UNDER_REACH) : corridor(x, z, ML_UNDER_REACH)
+      // (NOT A LEVEL THE LIDAR DENIES, owner 2026-11-16 at 48.889028, 2.254117: under the Défense slab's walkway decks the nearest
+      //  at-grade way was up on the slab, 18 m off, and the ground stood under the decks as 9 m ridges, the lidar 12 m lower, "huge
+      //  protrusions going into buildings and streets". Over the lidar by ML_UNDER_MNT_DH or more, the floor is the way within reach
+      //  nearest the lidar's level, or the lidar itself. Only over: under a bridge the lidar runs across from the deck's ends, so it reads
+      //  high, never low, and taken below the way the rule raised the floor under the Pont d'Iéna's left-bank arch and closed it. Nor
+      //  within ML_UNDER_MNT_RIVER m of the river: there the structures are its bridges, whose land arches the rule was made for, and
+      //  even over-only it reshaped the ground beside the Iéna's left-bank arch. Nor under a lid: there the lidar sees the trench floor
+      //  under the slab, the ground went down to it, and the Place de Varsovie's paving was drawn 9 m down in the trench under its slab —
+      //  holes that slid about with the eye, owner 2026-11-16)
+      if (u && md !== null && ML_UNDER_MNT_DH > 0 && u.h - md > ML_UNDER_MNT_DH && !nearWater(x, z, ML_UNDER_MNT_RIVER) && !inLid(x, z)) {
+        const v = corridorNear(x, z, ML_UNDER_REACH, md)
+        G.set(i, j, v && Math.abs(v - md) <= ML_UNDER_MNT_DH ? v : md); fixed.set(i, j, 4); nUnderMnt++
+        if (process.env.ML_LOG_UNDER_MNT) { const k = `${Math.round(x / 20) * 20},${Math.round(z / 20) * 20}`; underMntAt.set(k, (underMntAt.get(k) ?? 0) + 1) }
+        continue
+      }
       if (u) { G.set(i, j, u.h); fixed.set(i, j, 4); nTerr++; continue }
       nUnder++; continue
     }
@@ -749,7 +878,10 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     // (no skirt across a wall: a wall line nearer than the corridor's edge stands between them, and the quai road's 4 m skirt had run
     //  over the quay wall's top and blurred the step the walls are cut from)
     const walled = c && wallIdx.near(x, z).some((w) => segDist(x, z, w.ax, w.az, w.bx, w.bz).d < c.d)
-    G.set(i, j, c && !walled && !c.cut ? c.h + (m - c.h) * Math.min(1, c.d / ML_SKIRT) : m); fixed.set(i, j, 1)
+    // (and no skirt up a WALL: where the open ground beyond stands ML_SKIRT_DH m or more off the way, a skirt laid a 4 m grass bank from
+    //  the lower quai's road up to the plateau beside the Pont d'Iéna; the ground steps at the corridor's edge instead)
+    const skirt = c && !walled && !c.cut && Math.abs(m - c.h) < ML_SKIRT_DH
+    G.set(i, j, skirt ? c.h + (m - c.h) * Math.min(1, c.d / ML_SKIRT) : m); fixed.set(i, j, 1)
   }
   // LAND IN THE RIVER MUST REACH THE SHORE (2026-11-15, owner: a barge "shouldn't display as grassy land"): the lidar takes some moored
   // barges' decks for ground, 1–2 m over the water, and they stood as grass in the Seine. A blob of land inside the river's outline that
@@ -795,7 +927,31 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
       if (n) { const g = G.get(i, j); G.set(i, j, g + (s / n - g) * ML_FILL_SOR) }
     }
   }
-  log(`multi-level ground: ${G.tiles.size} tiles of ${ML_TILE} m; ${nCorr} corridor cells, ${nTerr} under structures continuing a way's level, ${nFill} filled up under flush decks, ${nUnder} filled, ${nSnap} lidar reads moved clear of ${(inp.walls ?? []).length} wall lines, ${nGhost} bridge-ghost lidar cells and ${nBoat} cells under ${(inp.boats ?? []).length} boats and ${nIsle} of land blobs off the shore laid as riverbed, ${nRiver} river cells left`)
+  if (process.env.ML_LOG_UNDER_MNT) log(`ML_UNDER_MNT cells by 20 m: ${[...underMntAt].sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k}:${n}`).join(' ')}`)
+  log(`multi-level ground: ${G.tiles.size} tiles of ${ML_TILE} m; ${nCorr} corridor cells, ${nTerr} under structures continuing a way's level (${nUnderMnt} more at the lidar's, ML_UNDER_MNT_DH), ${nFill} filled up under flush decks, ${nUnder} filled, ${nSnap} lidar reads moved clear of ${(inp.walls ?? []).length} wall lines, ${nGhost} bridge-ghost lidar cells and ${nBoat} cells under ${(inp.boats ?? []).length} boats and ${nIsle} of land blobs off the shore laid as riverbed, ${nRiver} river cells left`)
+
+  // UNDER A LID THE GROUND IS UNDER ITS SLAB (owner, 2026-11-16, the Place de Varsovie: "random patches of different pavements"): the
+  // slab lies at its low streets' level (tools/bake.ts LID_LEVEL_Q), and plaza ground a quarter metre over it showed through between the
+  // streets as khaki wedges in the paving. Inside a lid's outline the ground stands no higher than ML_LID_UNDER under that level.
+  {
+    let nLid = 0
+    for (const ring of inp.lids ?? []) {
+      const bb = bbox(ring), hs: number[] = []
+      for (const e of edges) {
+        if (!e.heights || e.tunnel || e.cut || e.trench || e.foot) continue
+        for (let i = 0; i < e.heights.length; i++) { const x = e.points[2 * i], z = e.points[2 * i + 1]; if (x >= bb[0] && x <= bb[2] && z >= bb[1] && z <= bb[3] && inRing(ring, x, z)) hs.push(e.heights[i]) }
+      }
+      if (hs.length < 3) continue
+      hs.sort((a, b) => a - b)
+      const top = hs[Math.floor(hs.length * ML_LID_Q)] - ML_LID_UNDER
+      for (let j = Math.floor(bb[1] / ML_CELL); j <= Math.ceil(bb[3] / ML_CELL); j++) for (let i = Math.floor(bb[0] / ML_CELL); i <= Math.ceil(bb[2] / ML_CELL); i++) {
+        const x = i * ML_CELL, z = j * ML_CELL, g = G.get(i, j)
+        if (Number.isNaN(g) || g <= top || !inRing(ring, x, z)) continue
+        G.set(i, j, top); nLid++
+      }
+    }
+    if (nLid) log(`multi-level: ${nLid} cells under ${(inp.lids ?? []).length} lids held under their slabs`)
+  }
 
   if (process.env.ML_DEBUG) for (const pt of process.env.ML_DEBUG.split(';')) {
     const [x, z] = pt.split(',').map(Number), c = corridor(x, z), u = corridor(x, z, ML_UNDER_REACH)
@@ -867,6 +1023,34 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     if (above < ML_RAMP_ABOVE) { delete e.ramp; rampOff++ } else rampKept++
   }
   log(`multi-level flags: ramp taken off ${rampOff} ways standing on the ground, kept on ${rampKept}`)
+
+  // ONE NODE, TWO LEVELS, TWO NODES (owner, 2026-11-15, the Place de Varsovie: "the route in the tunnel also jumps to street level"):
+  // OSM shares a node between a street on the place and the Avenue de New York's trench 7 m under it. The solve gave them their own
+  // heights, but the node joined them, and the ride graph drew a 7.6 m step from one to the other. Where the ways at a node end more
+  // than ML_NODE_SPLIT m apart, the level with the most ways keeps the node; each other level gets one of its own.
+  {
+    const at = new Map<number, { e: PackedEdge; b: boolean; h: number }[]>()
+    for (const e of edges) {
+      if (!e.heights || !anyIn(e, weight)) continue
+      for (const b of [false, true]) { const v = b ? e.b : e.a, l = at.get(v) ?? at.set(v, []).get(v)!; l.push({ e, b, h: b ? e.heights[e.heights.length - 1] : e.heights[0] }) }
+    }
+    let nSplit = 0, node = ML_SPLIT_NODE0
+    for (const l of at.values()) {
+      if (l.length < 2) continue
+      l.sort((p, q) => p.h - q.h)
+      const groups: (typeof l)[] = [[l[0]]]
+      for (let k = 1; k < l.length; k++) { if (l[k].h - l[k - 1].h > ML_NODE_SPLIT) groups.push([]); groups[groups.length - 1].push(l[k]) }
+      if (groups.length < 2) continue
+      const keep = groups.reduce((m, g) => (g.length > m.length ? g : m))
+      for (const g of groups) {
+        if (g === keep) continue
+        const v = node++
+        for (const q of g) { if (q.b) q.e.b = v; else q.e.a = v }
+        nSplit++
+      }
+    }
+    log(`multi-level: ${nSplit} nodes shared across levels split`)
+  }
 
   return {
     weight,

@@ -76,6 +76,9 @@ export interface Palette {
   ground?: string
   /** how often this palette is drawn against the others in its list (default 1): San Francisco's lofts are mostly red brick */
   weight?: number
+  /** the window glass's tint (#rrggbb) for buildings drawn with this palette — becomes `FacadePlan.glassTint`; pale values also
+   *  brighten the pane (facade-material.ts GLASS_PALE_GAIN). Absent: the style's painted dark glass. */
+  glass?: string
 }
 
 export interface Style {
@@ -216,6 +219,8 @@ export interface FacadePlan {
   institution?: boolean
   top: TopKind
   hasBalconyAt: (level: number) => boolean
+  /** the palette's glass tint (Palette.glass), for the curtain-wall glass shader; a Dress.glassTint wins */
+  glassTint?: string
   /** this building's own dressing, for the styles that have one (`DRESSERS`) */
   dress?: Dress
 }
@@ -917,6 +922,7 @@ export function planFacade(
     // (the roof holds the mansard storey: the wall's top is its cornice, not a second row of dormers)
     top: osm.attic && st.top === 'mansard' ? 'cornice' : st.top,
     hasBalconyAt: (level) => balconyLevels.has(level),
+    ...(palette.glass ? { glassTint: palette.glass } : {}),
     // (a raised part has no street front to dress — except a canopy, whose whole edge is its fascia: Dress.solid)
     ...(dressed && (!aloft || dressed.dress.solid) ? { dress: dressed.dress } : {}),
   }

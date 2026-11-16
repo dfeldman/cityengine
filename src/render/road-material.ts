@@ -57,7 +57,13 @@ void main(void) {
 `
 
 /** natural ground steeper than this is drawn as stone: |normal.y| from CLIFF_FROM (all stone) to CLIFF_TO (all ground); the courses' height (m) and colour */
-export const CLIFF_FROM = 0.42, CLIFF_TO = 0.62, CLIFF_COURSE = 0.55, CLIFF_STONE: [number, number, number] = [0.66, 0.6, 0.5]
+export const CLIFF_FROM = 0.42, CLIFF_TO = 0.62, CLIFF_COURSE_PLAIN = 0.55, CLIFF_STONE: [number, number, number] = [0.66, 0.6, 0.5]
+/** Paris's ashlar: course height (m) and colour */
+export const CLIFF_COURSE = 0.45, CLIFF_ASHLAR: [number, number, number] = [0.6, 0.575, 0.52]
+/** the ashlar's blocks (m) and its mortar's shade (of the stone's) */
+export const CLIFF_BLOCK = 0.95, CLIFF_MORTAR = 0.58
+/** the base ground's steepness per vertex (render/city.ts): grade from CLIFF_GRADE_FROM (ground) to CLIFF_GRADE_TO (all stone), read over CLIFF_GRADE_RUN m */
+export const CLIFF_GRADE_FROM = 0.8, CLIFF_GRADE_TO = 1.4, CLIFF_GRADE_RUN = 0.8
 /** the ground surfaces a cliff turns to stone on (the city's base ground; never a road, a deck or a painted layer) */
 export const CLIFF_SURFACES = new Set(['grass', 'dirt', 'sand'])
 const FRAGMENT = `
@@ -137,11 +143,35 @@ void main(void) {
    */
   if (cliff > 0.5) {
     vec3 gn = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
-    float steep = 1.0 - smoothstep(${CLIFF_FROM.toFixed(3)}, ${CLIFF_TO.toFixed(3)}, abs(gn.y));
+    // (the ground's own steepness per vertex where the city gave it, colour alpha −1..−2: smooth across triangles, so the stone's edge
+    //  follows the bank and not the mesh's diagonals; the face's own slope otherwise)
+    bool given = vHalf < -0.5;
+    float steep = given ? smoothstep(0.15, 0.55, clamp(-vHalf - 1.0, 0.0, 1.0))
+      : 1.0 - smoothstep(${CLIFF_FROM.toFixed(3)}, ${CLIFF_TO.toFixed(3)}, abs(gn.y));
     if (steep > 0.0) {
-      float course = fract(vWorld.y / ${CLIFF_COURSE.toFixed(3)});
-      float joint = smoothstep(0.0, 0.07, course) * (1.0 - smoothstep(0.93, 1.0, course));
-      vec3 stone = vec3(${CLIFF_STONE.map((v) => v.toFixed(3)).join(', ')}) * (0.8 + 0.2 * joint) * (0.92 + 0.08 * tex.g / max(0.001, dot(tex, vec3(0.333))));
+      vec3 stone;
+      if (given) {
+        /*
+         * ASHLAR (2026-11-16, the plazas and bridgeheads pass; Paris, where the city gives the steepness per vertex): dressed limestone
+         * in courses of CLIFF_COURSE m, blocks CLIFF_BLOCK m long staggered by half a block, sunk mortar joints, each block its own shade
+         * and a broad weathering. Along a fixed world direction, not the face's: the face's slope from screen derivatives jitters at a
+         * lumpy bank's many triangle edges, and the blocks speckled. No texture: the grass page speckled the stone too.
+         */
+        float v = vWorld.y / ${CLIFF_COURSE.toFixed(3)};
+        float row = floor(v);
+        float u = dot(vWorld.xz, vec2(0.8, 0.6)) / ${CLIFF_BLOCK.toFixed(3)} + 0.5 * mod(row, 2.0);
+        vec2 cell = vec2(floor(u), row);
+        float fv = fract(v), fu = fract(u);
+        float wv = fwidth(v) * 1.0 + 0.04, wu = fwidth(u) * 1.0 + 0.03;
+        float joint = smoothstep(0.0, wv, fv) * (1.0 - smoothstep(1.0 - wv, 1.0, fv)) * smoothstep(0.0, wu, fu) * (1.0 - smoothstep(1.0 - wu, 1.0, fu));
+        float shade = (0.88 + 0.18 * hash21(cell)) * (0.86 + 0.14 * vnoise(vWorld.xz * 0.35 + vWorld.y * 0.2));
+        stone = vec3(${CLIFF_ASHLAR.map((v) => v.toFixed(3)).join(', ')}) * shade * mix(${CLIFF_MORTAR.toFixed(3)}, 1.0, joint);
+      } else {
+        // (elsewhere, as before: limestone in courses)
+        float course = fract(vWorld.y / ${CLIFF_COURSE_PLAIN.toFixed(3)});
+        float joint = smoothstep(0.0, 0.07, course) * (1.0 - smoothstep(0.93, 1.0, course));
+        stone = vec3(${CLIFF_STONE.map((v) => v.toFixed(3)).join(', ')}) * (0.8 + 0.2 * joint) * (0.92 + 0.08 * tex.g / max(0.001, dot(tex, vec3(0.333))));
+      }
       base = mix(base, stone, steep);
     }
   }

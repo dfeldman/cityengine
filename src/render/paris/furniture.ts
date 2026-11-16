@@ -393,3 +393,29 @@ export function stoneBench(out: MeshBuilder, seed = 0): void {
   for (let i = 0; i < 4; i++) box(out, -1.65 + i * 1.1, 0.4, 0, 0.545, 0.075, 0.22, tones[(i + seed) % tones.length], FIXED)
   for (const x of [-1.9, -0.65, 0.65, 1.9]) box(out, x, 0.165, 0, 0.13, 0.165, 0.13, [0.44, 0.44, 0.43], FIXED)
 }
+
+/*
+ * THE SQUARES' OTHER BENCHES (owner, 2026-11-16: "add different bench patterns and bench types"), by OSM's backrest and
+ * material tags (tools/square-benches.py). Each long in x, the sitter facing +z, its seat 0.44 m up.
+ */
+const WOOD: Rgb[] = [[0.55, 0.38, 0.22], [0.5, 0.34, 0.2], [0.58, 0.41, 0.25], [0.52, 0.36, 0.21], [0.56, 0.39, 0.23]]
+const CONCRETE: Rgb = [0.62, 0.61, 0.58]
+const STEEL: Rgb = [0.27, 0.29, 0.3]
+const STEEL_SEAT: Rgb = [0.34, 0.36, 0.37]
+
+/** A backless wooden PLANK bench: five hardwood slats across two cast-concrete blocks, 2 m long. */
+export function plankBench(out: MeshBuilder): void {
+  for (let i = 0; i < 5; i++) box(out, 0, 0.44, -0.2 + i * 0.1, 1.0, 0.02, 0.04, WOOD[i], FIXED)
+  for (const x of [-0.72, 0.72]) box(out, x, 0.21, 0, 0.13, 0.21, 0.24, CONCRETE, FIXED)
+}
+
+/** A modern STEEL bench: thin grey slats on a pair of flat-bar frames, with a raked back of the same or none. 1.9 m long. */
+export function steelBench(out: MeshBuilder, back = false): void {
+  for (let i = 0; i < 7; i++) box(out, 0, 0.44, -0.2 + i * 0.065, 0.95, 0.012, 0.024, STEEL_SEAT, FIXED)
+  if (back) for (let i = 0; i < 4; i++) slab(out, 0, 0.56 + i * 0.1, -0.24 - i * 0.03, 0.95, 0.03, 0.012, 0.28, STEEL_SEAT)
+  for (const x of [-0.78, 0.78]) {
+    box(out, x, 0.42, 0, 0.02, 0.02, 0.25, STEEL, FIXED)                                       // the seat rail
+    box(out, x, 0.21, 0.2, 0.02, 0.21, 0.02, STEEL, FIXED)                                     // the front leg
+    box(out, x, back ? 0.45 : 0.21, -0.22, 0.02, back ? 0.45 : 0.21, 0.02, STEEL, FIXED)      // the rear leg (and back post)
+  }
+}

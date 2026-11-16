@@ -22,6 +22,19 @@ export interface GardenPlan {
   pleached?: { line: LL[]; y0?: number; h?: number; w?: number; spacing?: number }[]
   /** real trees, in a line: chestnuts in a quincunx, the planes of an allée */
   rows?: { line: LL[]; spacing?: number; h?: number; form?: 'plane' }[]
+  /**
+   * Clipped walls either side of every mapped footway and path inside `ring` (the bosquets' charmilles stand along the allées OSM
+   * draws, not along walks of our own): `gap` metres off the path's edge (0.6). Cut where another way crosses (index.ts).
+   */
+  pathWalls?: { h: number; w: number; gap?: number }
+  /** open rooms inside the plan (a structure's floor): no hedge, path wall or plan tree stands in them */
+  rooms?: LL[][]
+  /** the plan's rows keep `path` metres off every way, and off OSM's open ground (water, lawn, paving, pitches) when `open` */
+  rowClear?: { path: number; open?: boolean }
+  /** OSM's hedges inside `ring` that give no height: this size (the bosquets' mapped palissades are walls, not box edging) */
+  osmHedge?: { h: number; w: number }
+  /** a hedge round `ring` itself, left out where OSM's own hedges already follow the outline (half of it, within 6 m) */
+  outlineHedge?: { h: number; w: number }
   /** clipped yews, and `shrub`, an unclipped mound of leaves */
   topiary?: { at: LL; shape: 'cone' | 'ball' | 'box' | 'shrub'; h: number }[]
 }

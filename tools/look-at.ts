@@ -85,11 +85,15 @@ await page.evaluate(`(() => {
   const cam = sc.activeCamera
   // --fov=70 widens the lens (degrees, vertical): a whole front from across a narrow street
   ${arg('fov') ? `cam.fov = ${(Number(arg('fov')) * Math.PI) / 180}` : ''}
-  window.__lookHold = () => { cam.position.set(${px}, ${py}, ${pz}); cam.setTarget(new cam.position.constructor(${x}, ${ty} + ${height !== null ? 8 : lift * k}, ${z})) }
+  window.__lookHold = () => { cam.position.set(${px}, ${py}, ${pz}); cam.setTarget(new cam.position.constructor(${x}, ${ty} + ${arg('aimh') ? Number(arg('aimh')) : height !== null ? 8 : lift * k}, ${z})) }
   sc.onBeforeRenderObservable.add(window.__lookHold)
 })()`)
+// --only=Name hides every building and landmark mesh except landmarks whose entry name contains Name (judge one model with nothing in front); --aimh=m raises the aim point m above the target's ground
+if (arg('only')) await page.evaluate(`(() => { const n = ${JSON.stringify(arg('only'))}; for (const m of window.__scene.meshes) if (m.name.startsWith('b:') || (m.name.startsWith('landmark:') && !m.name.includes(n))) m.isVisible = false })()`)
 // --hide=a,b hides every mesh whose name starts with one of them (which mesh draws what)
 if (arg('hide')) await page.evaluate(`(() => { const ps = ${JSON.stringify((arg('hide') ?? '').split(','))}; for (const m of window.__scene.meshes) if (ps.some((p) => m.name.startsWith(p))) m.isVisible = false })()`)
+// --bridges=Name prints what each bridge structure whose name contains it was built from (needs --extra=probe=1: render/bridge-structures.ts)
+if (arg('bridges')) console.log('bridges', JSON.stringify(await page.evaluate(`Object.fromEntries(Object.entries(window.__bridges ?? {}).filter(([k]) => ${JSON.stringify(arg("bridges"))} === "*" || k.includes(${JSON.stringify(arg("bridges"))})))`)))
 // --names lists the meshes whose names start with one of the given prefixes, with their rendering group
 if (arg('names')) console.log('names', JSON.stringify(await page.evaluate(`window.__scene.meshes.filter((m) => ${JSON.stringify((arg('names') ?? '').split(','))}.some((p) => m.name.startsWith(p))).map((m) => m.name + '@' + m.renderingGroupId + (m.isEnabled() ? '' : '(off)')).slice(0, 60)`)))
 await page.waitForTimeout(1500)
@@ -100,6 +104,18 @@ if (arg('probe')) {
   console.log('probe', JSON.stringify(await page.evaluate(`window.__pickBuilding(${px2}, ${py2})`)))
   // and whatever mesh at all is drawn there
   console.log('any', JSON.stringify(await page.evaluate(`(() => { const s = window.__scene; for (const m of s.meshes) m.isPickable = true; const h = s.pick(${px2}, ${py2}); return h && h.hit ? { mesh: h.pickedMesh.name, at: h.pickedPoint.asArray().map((v) => Math.round(v * 10) / 10) } : null })()`)))
+}
+// --eval=<js expression> prints its JSON value once the shot is taken (window.__scene etc.)
+if (arg('eval')) console.log('eval', JSON.stringify(await page.evaluate(arg('eval'))))
+// --probeall=x,y;x,y lists every mesh the screen ray through each pixel hits, nearest first, with its distance and render group: what
+// a later group's drawing shows through (the ground groups clear depth, render/city.ts setupGroundLayers)
+if (arg('probeall')) {
+  for (const q of arg('probeall')!.split(';')) {
+    const [px2, py2] = q.split(',').map(Number)
+    console.log('probeall', q, JSON.stringify(await page.evaluate(`(() => { const s = window.__scene; for (const m of s.meshes) m.isPickable = true
+      const r = s.createPickingRay(${px2}, ${py2}, null, s.activeCamera)
+      return (s.multiPickWithRay(r) ?? []).filter((h) => h.pickedMesh.isVisible && h.pickedMesh.isEnabled()).sort((a, b) => a.distance - b.distance).slice(0, 10).map((h) => [h.pickedMesh.name.slice(0, 36), h.pickedMesh.renderingGroupId, Math.round(h.distance * 10) / 10]) })()`)))
+  }
 }
 // --ray=x,z lists every mesh a vertical ray hits there, top down, with its height: what is stacked on what
 if (arg('ray')) {

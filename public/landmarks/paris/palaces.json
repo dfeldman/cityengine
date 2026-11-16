@@ -1517,6 +1517,193 @@
     "madeBy": "claude-opus-5-5"
   },
   {
+    "name": "Versailles: the grotto of the Bains d'Apollon",
+    "procedural": "versaillesBainsApollon",
+    "osm": [
+      "way/224643670"
+    ],
+    "lat": 48.80664,
+    "lon": 2.11853,
+    "front": 315,
+    "size": [
+      35,
+      23
+    ],
+    "height": 16,
+    "note": "Hubert Robert's artificial rock (1778-81) at the back of the bosquet's lake: the great grotto and two niches for Girardon's and the Marsys' groups (GLBs, not here), falls into the lake; -z to the pond, north-west (versailles/garden-structures.ts, tunables in GROTTO). Was a 7-storey office block (owner, 2026-11-15).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Versailles: the treillage of the Bosquet de l'Encelade",
+    "procedural": "versaillesEnceladeTreillage",
+    "osm": [
+      "relation/8420868"
+    ],
+    "lat": 48.8082,
+    "lon": 2.11257,
+    "front": 0,
+    "size": [
+      54,
+      53
+    ],
+    "height": 7.5,
+    "note": "The ring of green trellis bowers round the Encelade's basin (Hardouin-Mansart 1676, restored 1998) on OSM's ring and its hole: arched ribs, diamond lattice, climbers over the vault, domed cabinets on the diagonals, doorways on the axes (versailles/garden-structures.ts, TREILLAGE). Was an office block (owner, 2026-11-15).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Lanterne",
+    "procedural": "versaillesLanterne",
+    "osm": [
+      "way/74630403"
+    ],
+    "lat": 48.80419,
+    "lon": 2.09229,
+    "front": 180,
+    "size": [
+      53,
+      46
+    ],
+    "height": 12,
+    "note": "The Prince de Poix's lodge of 1787 at the old Menagerie, now a state residence (owner, 2026-11-15: 'even though in real life it is blocked from view'): two storeys of pale render under a slate mansard round its court, on OSM's U (versailles/garden-structures.ts, LANTERNE). Its pool and tennis court are OSM's.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Temple de l'Amour",
+    "osm": ["way/637934836", "way/637934838", "way/637934840", "way/637934842", "way/637934846", "way/637934850", "way/637934853", "way/637934856", "way/637934859"],
+    "procedural": "versaillesTempleAmour",
+    "lat": 48.816086,
+    "lon": 2.112127,
+    "front": 180,
+    "size": [
+      15.5,
+      15.5
+    ],
+    "height": 10,
+    "note": "Mique's monopteros of 1778 on its island in the Jardin anglais (OSM way/63855314): twelve Corinthian columns on a stepped round podium under a coffered dome; Cupid is a GLB (versailles/trianon-follies.ts, TEMPLE).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Belvédère (Petit Trianon)",
+    "osm": ["way/427280007"],
+    "procedural": "versaillesBelvedere",
+    "lat": 48.816717,
+    "lon": 2.108403,
+    "front": 185,
+    "size": [
+      9.3,
+      9.3
+    ],
+    "height": 9.5,
+    "note": "Mique's octagonal belvedere of 1778 by the little lake (OSM way/427280007): four doors and four windows under pediments, balustrade, lead dome, sphinx plinths (versailles/trianon-follies.ts, BELVEDERE).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Grotte du Petit Trianon",
+    "procedural": "versaillesGrotteTrianon",
+    "lat": 48.816451,
+    "lon": 2.10843,
+    "front": 180,
+    "size": [
+      12.6,
+      19.9
+    ],
+    "height": 8,
+    "note": "The Grand Rocher (OSM way/427280143): a mound of artificial rock with a cave facing east to the water and a stream out of its mouth (versailles/trianon-follies.ts, ROCHER).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Parterre de l'Orangerie de Versailles",
+    "procedural": "versaillesOrangerieParterre",
+    "osm": [
+      "relation/11724461"
+    ],
+    "lat": 48.8027,
+    "lon": 2.11865,
+    "front": 180,
+    "height": 4,
+    "note": "The sunken parterre south of the Orangerie: box edging along every lawn and scroll OSM maps (the bake draws the ground), and the caisses de Versailles, green wooden tubs with corner finials and clipped orange trees, in rows along the Orangerie front, the walls and the great basin (versailles/orangerie-parterre.ts, data orangerie-data.ts).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Escaliers des Cent-Marches (ouest)",
+    "procedural": "versaillesCentMarches",
+    "lat": 48.80261,
+    "lon": 2.11737,
+    "front": 112.6,
+    "size": [
+      63,
+      24
+    ],
+    "height": 14,
+    "note": "The great flight (103 steps, about 20 m wide) beside the Orangerie, from the Orangerie parterre up to the Parterre du Midi: three runs and two landings between ashlar retaining walls with a balustrade, on the line of OSM's three steps ways (versailles/cent-marches.ts). +x runs up the flight.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Escaliers des Cent-Marches (est)",
+    "procedural": "versaillesCentMarchesEst",
+    "lat": 48.80201,
+    "lon": 2.119604,
+    "front": 111.65,
+    "size": [
+      63,
+      24
+    ],
+    "height": 14,
+    "note": "The east flight (103 steps, about 20 m wide) beside the Orangerie, from the Orangerie parterre up to the Parterre du Midi: three runs and two landings between ashlar retaining walls with a balustrade, on the line of OSM's three steps ways (versailles/cent-marches.ts). +x runs up the flight.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Versailles: the Bassin de Neptune",
+    "procedural": "versaillesNeptune",
+    "osm": [
+      "way/196502843"
+    ],
+    "lat": 48.80855,
+    "lon": 2.12225,
+    "front": 180,
+    "size": [
+      165,
+      60
+    ],
+    "height": 8,
+    "note": "The great basin at the garden's north end: the south side a dressed-stone retaining wall (plinth, pilasters, string course, cornice) under a balustrade with 22 lead vases on piers, plinths for the three groups' places on its face, lames from the string course, a terrace and stairs behind, turf terraces round the arc (versailles/neptune.ts, NEPTUNE). The wall is the longest straight edge of the OSM ring. Statues and the basin's jets are elsewhere.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Versailles: the Bosquet de la Salle de Bal",
+    "procedural": "versaillesSalleDeBal",
+    "osm": [
+      "relation/23448909"
+    ],
+    "lat": 48.80424,
+    "lon": 2.11702,
+    "front": 180,
+    "size": [
+      59,
+      47
+    ],
+    "height": 6,
+    "note": "Le Notre's oval amphitheatre (1680s) on OSM's ring: turf gradins and a gravel floor, the stepped millstone-and-shell cascade on the east with a trough per tier, falls and gilded torcheres (versailles/salle-de-bal.ts, tunables in SALLE).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Versailles: the Bosquet de la Colonnade",
+    "procedural": "versaillesColonnade",
+    "osm": [
+      "way/23731243"
+    ],
+    "lat": 48.806166,
+    "lon": 2.112404,
+    "front": 180,
+    "size": [
+      44,
+      44
+    ],
+    "height": 7.5,
+    "note": "Mansart's circular peristyle of 1685: 32 keyed arches on 64 paired Ionic columns in red, blue-grey and white marble, a basin and jet at every arch's foot, a cornice and an urn over each pier, a plain plinth for the Rape of Proserpine (versailles/colonnade.ts, COLONNADE). Centred on OSM's pedestrian ring.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
     "name": "Le Petit Trianon",
     "procedural": "versaillesPetitTrianon",
     "osm": [

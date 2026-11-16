@@ -131,6 +131,12 @@ export function handLook(id: number, other: Look | null): Look | null {
   return { ...h, ...other, palette: { ...h.palette, ...other.palette }, dress: { ...h.dress, ...other.dress } }
 }
 
+/** La Défense (btype.ts `defense`: 1300 m of 2.24, 48.8917) as a lat/lon ring */
+const DEFENSE_RING: [number, number][] = Array.from({ length: 24 }, (_, i) => {
+  const a = (i / 24) * Math.PI * 2, R = 1300
+  return [48.8917 + Math.sin(a) * R / 111320, 2.24 + Math.cos(a) * R / 73270] as [number, number]
+})
+
 /**
  * Area palettes: inside a ring, a style draws from these palettes instead of its own. Boulogne-Billancourt and Issy's
  * north bank (owner 2026-11-05: "most are light-colored, the opposite of the black and dark beige generic buildings";
@@ -138,6 +144,22 @@ export function handLook(id: number, other: Look | null): Look | null {
  * The skyscraper style's own palettes are the dark ones (#4f5a63, #6d6255…). Ring is lat/lon, east of it is Paris proper.
  */
 const AREAS: { name: string; ring: [number, number][]; styles: Partial<Record<StyleId, Palette[]>> }[] = [
+  {
+    // owner, 2026-11-15: La Défense's towers are mostly LIGHT — pale blue / silver / pale green-grey reflective glass, white or cream
+    // panels, a few dark. `glass` tints the pane (the painted pane is dark whatever the palette; see GLASS_PALE_GAIN); `wall` the spandrels.
+    name: 'La Défense (generic towers)',
+    ring: DEFENSE_RING,
+    styles: {
+      skyscraper: [
+        { wall: '#d4dce2', trim: '#eef1f3', roof: '#8d939a', accent: '#6f8798', glass: '#c8d3da', weight: 2.2 }, // pale blue glass, silver panels
+        { wall: '#c9d0d4', trim: '#e6e9eb', roof: '#8d939a', accent: '#5f7482', glass: '#d3d8dc', weight: 2.0 }, // silver
+        { wall: '#d2dcd6', trim: '#ebf0ed', roof: '#8c9490', accent: '#62786c', glass: '#cdd8d1', weight: 1.4 }, // pale green-grey
+        { wall: '#f1eee6', trim: '#fbfaf6', roof: '#908d86', accent: '#74777a', glass: '#dadfe2', weight: 1.4 }, // white / cream panels
+        { wall: '#e3dccb', trim: '#f3eee2', roof: '#8e8a80', accent: '#7a7467', glass: '#d8dcdc', weight: 0.8 }, // cream panels
+        { wall: '#5d6b76', trim: '#98a5ae', roof: '#3c444b', accent: '#2b3138', glass: '#6c8ba2', weight: 0.9 }, // the odd dark one
+      ],
+    },
+  },
   {
     name: 'Boulogne-Billancourt and Issy north bank',
     ring: [[48.846, 2.224], [48.846, 2.2555], [48.838, 2.2565], [48.834, 2.2625], [48.830, 2.2700], [48.822, 2.2720], [48.822, 2.224]],
@@ -164,6 +186,12 @@ function inside(lat: number, lon: number, r: [number, number][]): boolean {
     if ((ya > lat) !== (yb > lat) && lon < ((xb - xa) * (lat - ya)) / (yb - ya) + xa) c = !c
   }
   return c
+}
+
+/** an area's palettes by name (the showcase's `&area=` preview, which has no map to stand on) */
+export function namedAreaPalettes(name: string, style: StyleId): Palette[] | undefined {
+  const flat = (t: string): string => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  return AREAS.find((a) => flat(a.name).includes(flat(name)))?.styles[style]
 }
 
 /** the palettes an area gives this style at local x,z, or undefined */

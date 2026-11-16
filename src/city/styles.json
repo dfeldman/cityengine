@@ -472,6 +472,7 @@
     {
       "id": "skyscraper-banded",
       "name": "Skyscraper, banded",
+      "art": "skyscraper",
       "note": "The skyscraper curtain wall with the floor slabs showing as a band in the trim colour at every storey: a grey tower striped in gold (Tour Eqho). Needs the entry to give wall and trim.",
       "levels": [
         12,

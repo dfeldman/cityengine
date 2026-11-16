@@ -3,7 +3,9 @@ import { hex, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import { extrude, palette, type Pal, type Storey } from '../palaces/common.ts'
 import { registerRing } from '../museums/enframe.ts'
+import polygonClipping from 'polygon-clipping'
 import { PLANS } from './dependances-plan.ts'
+import { CENT_FLIGHTS, ORANGERIE_RING } from './orangerie-data.ts'
 import { church } from '../../church.ts'
 import { pairOn, pedimentOn, rectOn } from '../palaces/common.ts'
 import { box, prism } from '../../../models.ts'
@@ -89,7 +91,39 @@ function dep(out: MeshBuilder, fit: Fit, d: Dep): void {
 export const versaillesMinistres = (out: MeshBuilder, fit: Fit): void => dep(out, fit, MINISTRES)
 export const versaillesGrandCommun = (out: MeshBuilder, fit: Fit): void => dep(out, fit, COMMUN)
 export const versaillesReservoirs = (out: MeshBuilder, fit: Fit): void => dep(out, fit, RESERVOIRS)
-export const versaillesOrangerie = (out: MeshBuilder, fit: Fit): void => dep(out, fit, ORANGERIE)
+
+/**
+ * The Orangerie's side galleries run under the two Cent-Marches flights (cent-marches.ts), which draw their own retaining walls: so
+ * the U is drawn without the strips the flights occupy (each flight's box, `across` half-width and `along` half-length in metres,
+ * about the flight's centre on OSM's plan), and any remnant smaller than `minArea` m² is dropped.
+ */
+const STAIR_CUT = { across: 10.8, along: 33, minArea: 60 }
+
+type XZ = { x: number; z: number }
+const areaOf = (r: XZ[]): number => Math.abs(r.reduce((s, a, i) => { const b = r[(i + 1) % r.length]; return s + a.x * b.z - b.x * a.z }, 0)) / 2
+
+/** a polygon with a rectangle (centre c, axis angle a, half-sizes hu along it, hv across) taken out, as separate pieces (polygon-clipping splits a concave U cleanly) */
+function minusRect(poly: XZ[], c: XZ, a: number, hu: number, hv: number): XZ[][] {
+  const ux = Math.cos(a), uz = Math.sin(a)
+  const at = (u: number, v: number): [number, number] => [c.x + u * ux - v * uz, c.z + u * uz + v * ux]
+  const cut = polygonClipping.difference([poly.map((p) => [p.x, p.z] as [number, number])], [[at(-hu, -hv), at(hu, -hv), at(hu, hv), at(-hu, hv)]])
+  return cut.map((m) => m[0].slice(0, -1).map(([x, z]) => ({ x, z })))
+}
+
+export const versaillesOrangerie = (out: MeshBuilder, fit: Fit): void => {
+  let pieces: XZ[][] = fit.ring && fit.ring.length >= 3 ? [fit.ring] : []
+  if (pieces.length) {
+    const F = registerRing(ORANGERIE_RING, fit)
+    for (const f of CENT_FLIGHTS) {
+      const r = (f.up * Math.PI) / 180, c = F.xz(f.c[0], f.c[1]), t = F.xz(f.c[0] + Math.sin(r), f.c[1] + Math.cos(r))
+      const a = Math.atan2(t.z - c.z, t.x - c.x)
+      pieces = pieces.flatMap((q) => minusRect(q, c, a, STAIR_CUT.along, STAIR_CUT.across)).filter((q) => q.length >= 3 && areaOf(q) >= STAIR_CUT.minArea)
+    }
+  }
+  if (!pieces.length) { dep(out, fit, ORANGERIE); return }
+  const p: Pal = palette(ORANGERIE.stone, '#3f474d')
+  for (const q of pieces) extrude(out, [q], p, { eaves: ORANGERIE.eaves, storeys: ORANGERIE.storeys, bay: ORANGERIE.bay, win: ORANGERIE.win, rise: ORANGERIE.rise, inset: ORANGERIE.inset, dormers: false })
+}
 
 /** the planned dependencies by builder name, for the palaces' registry (the entries in palaces.json name them) */
 export const VERSAILLES_DEPENDANCES = {

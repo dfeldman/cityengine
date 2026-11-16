@@ -782,8 +782,9 @@ function rings(out: MeshBuilder, fit: Fit, g: number): void {
 /** The place round it, laid on the ground in rings: flags out to the dark posts, setts out to the bollards. Hollow round the arch's own feet. */
 function place(out: MeshBuilder, fit: Fit, g: number): void {
   const at = (x: number, z: number): number => (fit.groundAt?.(x, z) ?? g) + 0.1
-  const flags: Rgb = hex('#8d877b')
-  const setts: Rgb = hex('#6a625c')
+  // (the Étoile's terre-plein is setts and grey flags; the flags drawn as 'concrete' lit to a cream disc round the arch, 2026-11-16)
+  const flags: Rgb = hex('#7d766b')
+  const setts: Rgb = hex('#625a54')
   const n = 40
   const radii: [number, Rgb][] = [[13, flags], [26, flags], [39, flags], [47.5, setts], [56.2, setts]]
   for (let j = 0; j < radii.length; j++) {
@@ -792,7 +793,7 @@ function place(out: MeshBuilder, fit: Fit, g: number): void {
     for (let i = 0; i < n; i++) {
       const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2
       const P = (r: number, a: number): V => { const x = Math.cos(a) * r, z = Math.sin(a) * r; return [x, at(x, z), z] }
-      const tag = surfaceTag(c === setts ? 'granite' : 'concrete')
+      const tag = surfaceTag('granite')
       out.quad([P(r0, a0), P(r1, a0), P(r1, a1), P(r0, a1)], [0, 1, 0], UV, c, tag)
     }
   }

@@ -22,6 +22,9 @@ export interface Fit {
    * at the Post Street end as "large red cubes in the street" (owner, 2026-10-04). Absent where not measured.
    */
   groundAt?: (x: number, z: number) => number
+  /** a point of the city's local frame (x, z) in the model's own frame, and the city y of the model's origin: for a builder that cuts a world-fixed way through itself (defense3/passages.ts) */
+  toLocal?: (wx: number, wz: number) => { x: number; z: number }
+  baseY?: number
   /**
    * Faces another model covers (the manifest's `bare`, world bearings each face looks along), as outward unit normals in
    * the model's own frame: a builder leaves its awnings and galleries off them. Pier 39's own shop builder drew its striped

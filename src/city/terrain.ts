@@ -97,6 +97,14 @@ interface Block { step: number; cols: number; dm: Int16Array }
  * Bilinear rather than nearest because a city is covered in long straight things — a kerb, a lane line, a
  * row of shopfronts — and nearest-neighbour sampling turns every one of them into a staircase.
  */
+/**
+ * NO STREET LIFTS THE GROUND OVER A WALL'S FOOT (owner, 2026-11-16, Quai Branly at 48.856433, 2.28932: pale spikes up a quay wall's
+ * face). A footway along the wall's top had a corridor reaching past the line, and the ground on the low side, inside it, took the
+ * footway's level up to the stone's face: its edge zigzagged through the face. On a quay wall's low side (terrain.walls `side`) a
+ * street's level or cut may lower the ground but never lift it. false: the old rule.
+ */
+export const WALL_LOW_NO_LIFT = true
+
 export class Terrain {
   /**
    * The COARSE grid, from the index: the whole city's footprint, out past the box to the skyline objects.
@@ -175,10 +183,20 @@ export class Terrain {
   heightAt(x: number, z: number): number {
     // in a street's cut (into a tunnel mouth) what is drawn follows the street, below the ground
     const c = this.cut?.(x, z)
-    if (c !== null && c !== undefined) return c
+    if (c !== null && c !== undefined) {
+      if (!WALL_LOW_NO_LIFT || !this.walls) return c
+      const raw = this.rawHeightAt(x, z)
+      return c > raw && this.lowOfWall(x, z) ? raw : c
+    }
     const raw = this.rawHeightAt(x, z)
     const g = this.grade?.(x, z)
-    return g === null || g === undefined ? raw : Math.max(raw, g)
+    if (g === null || g === undefined || g <= raw) return raw
+    return WALL_LOW_NO_LIFT && this.lowOfWall(x, z) ? raw : g
+  }
+
+  /** on a quay wall's low side, within its reach (WALL_LOW_NO_LIFT) */
+  private lowOfWall(x: number, z: number): boolean {
+    return !!this.walls && this.walls.side(x, z, this.stepAt(x, z)) < 0
   }
 
   /**

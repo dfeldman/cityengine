@@ -1,21 +1,25 @@
 /**
- * Tour Gambetta (Courbevoie, 1975, 101 m, 37 storeys of flats; OSM way/82486306, no parts): a slab on OSM's ring in
- * warm grey concrete with ribbon windows between solid spandrels, a recessed dark lobby and a flat plant parapet.
- * From memory of photographs; the wall tone is the thing to check against a street view.
+ * Tour Gambetta (Courbevoie, 1975, 37 storeys of flats; OSM way/82486306): a tall cream-white slab, its faces cut by
+ * narrow full-height window strips between white piers (Commons "Tour Gambetta 2.jpg"); the top storeys step in at
+ * the corners. Height: BD TOPO batiment hauteur 103.3 m.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 101
-const LOBBY_H = 6
-const WALL = '#a39d92', GLASS = '#3b4348', ROOF = '#6b6862', LOBBY = '#2a2d2f', PARAPET = '#8a857c'
-const FLOOR = 101 / 37, PITCH = 2.2, SOLID = 0.4, PARAPET_H = 2.5
+const HEIGHT = 103.3
+const LOBBY_H = 5
+const WALL = '#cfcbc1', GLASS = '#56636c', ROOF = '#8a877f', LOBBY = '#4a4c4c'
+const FLOOR = 103.3 / 37, PITCH = 2.4, SOLID = 0.55, DEPTH = 0.35
+const TOP_FROM = 0.94, TOP_INSET = 1.8, PARAPET_H = 1.5
 
-export const tourGambetta = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
-  height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
-})
+export const tourGambetta = (out: MeshBuilder, fit: Fit): void => {
+  const face = { kind: 'fins' as const, wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, depth: DEPTH, material: 'concrete' as const }
+  tower(out, fit, {
+    height: HEIGHT, roof: hex(ROOF),
+    base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(WALL), glass: hex(LOBBY), floor: LOBBY_H, pitch: 3, material: 'glass' } },
+    tiers: [{ to: TOP_FROM, face }, { to: 1, inset: TOP_INSET, face }],
+    crown: { kind: 'parapet', height: PARAPET_H, colour: hex(WALL), material: 'concrete' },
+  })
+}

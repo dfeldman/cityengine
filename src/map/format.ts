@@ -212,6 +212,9 @@ export interface Way {
   /** v2 junction node ids at the two ends, while refs are derived from them */
   a?: number
   b?: number
+  /** a bridge outline that is a LID's slab (PackedBridge.lid: its direction and street level): [dx, dz, y]. Without it a lid drew as a
+   *  plain girder bridge as wide as its outline — the Place de Varsovie's, 120 m across, pale over the plaza (owner, 2026-11-16) */
+  lid?: [number, number, number]
 }
 
 /** Street flag bits (MAP-FORMAT §5.5). */

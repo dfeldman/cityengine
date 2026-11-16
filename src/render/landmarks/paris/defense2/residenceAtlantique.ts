@@ -1,21 +1,25 @@
 /**
- * Résidence Atlantique (Puteaux, 1970s, 50 m, 17 storeys of flats; OSM way/1311610926, no parts; not Tour Atlantique,
- * way/19446485, the 106 m office tower in Courbevoie): a 47 x 16 m slab on OSM's ring, pale concrete spandrels with
- * ribbon windows, a recessed dark ground floor and a flat parapet. From the tags only: check tone against a street view.
+ * Atlantique (Courbevoie; OSM way/1311610926, 17 levels; BD TOPO h 52 m): a white residential slab wrapped in continuous
+ * balcony slabs every floor, glazed balustrades and blue-grey windows behind, set on a fully glazed ground-floor pavilion
+ * (Panoramax street frame). Balcony ledges are tower() cornices, one per floor.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 50
-const LOBBY_H = 4
-const WALL = '#c9c4b8', GLASS = '#3a4650', ROOF = '#6b6a66', LOBBY = '#2a2f33', PARAPET = '#b4afa4'
-const FLOOR = 2.8, PITCH = 2.2, SOLID = 0.4, PARAPET_H = 1.5
+const HEIGHT = 52
+const LOBBY_H = 5
+const WALL = '#f1f0eb', GLASS = '#8ea3b3', ROOF = '#9d9b95', LOBBY_GLASS = '#7f97a8', LOBBY_WALL = '#e6e5e0', SLAB = '#f6f5f1'
+const FLOOR = 2.75, BALCONY = 1.3, SLAB_H = 0.3, PARAPET_H = 1.2
+
+const balconies = () => Array.from({ length: Math.floor((HEIGHT - LOBBY_H) / FLOOR) }, (_, i) =>
+  ({ at: LOBBY_H + FLOOR * (i + 1), depth: BALCONY, height: SLAB_H, colour: hex(SLAB) }))
 
 export const residenceAtlantique = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY_WALL), glass: hex(LOBBY_GLASS), floor: LOBBY_H, pitch: 2.5, material: 'glass' } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, solid: 0.35, material: 'concrete' } }],
+  cornices: balconies(),
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(SLAB) },
 })

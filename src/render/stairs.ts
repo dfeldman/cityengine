@@ -16,7 +16,7 @@ import { cartoonMaterial, surfaceTag } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
-import { stairway, type NamedStairway, type StairPoint } from './landmarks/stairway.ts'
+import { stairway, type NamedStairway, type StairPoint, type StairwayStyle } from './landmarks/stairway.ts'
 
 const CONCRETE: Rgb = [0.68, 0.67, 0.64]
 const NOSING: Rgb = [0.58, 0.57, 0.55]
@@ -37,6 +37,13 @@ const TRAIL_TIMBER: [number, number, number] = [0.33, 0.24, 0.16]
 /** a painted stairway's risers, bottom up (Ghirardelli Square's steps from Beach Street, owner's Street View 2026-10-06) */
 const RAINBOW: Rgb[] = [[0.62, 0.16, 0.5], [0.85, 0.15, 0.15], [0.93, 0.45, 0.12], [0.95, 0.8, 0.15], [0.6, 0.8, 0.15], [0.15, 0.6, 0.3], [0.15, 0.7, 0.7], [0.15, 0.35, 0.85]]
 const PAINTED_TREAD: Rgb = [0.5, 0.26, 0.2]
+
+/** quay stairs: on, the share of a flight's points that must lie within a quay wall's reach, the ground step the reach is read at, the style */
+export const QUAY_STAIRS = true, QUAY_STAIR_NEAR = 0.6, QUAY_STAIR_STEP = 4
+export const QUAY_STAIR_STYLE: StairwayStyle = {
+  riser: 0.16, maxRisers: 18, landing: 1.8, cheek: 0.95, cheekStep: 1, sideRails: false, newels: true,
+  colour: [0.74, 0.7, 0.62], treadColour: [0.68, 0.65, 0.58], copingColour: [0.8, 0.77, 0.7], newelColour: [0.76, 0.72, 0.64],
+}
 
 export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string, NamedStairway> = {}, drawnBy?: (x: number, z: number) => boolean,
                             painted: { x: number; z: number; radius: number }[] = []): TileLayer {
@@ -128,7 +135,12 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
          * are short (the Lyon Street run is six of them over 140 m) and the layer's reach is three tiles, so
          * nothing is ever far enough outside its anchor tile to pop.
          */
-        const spec = e.name ? named[e.name] : undefined
+        // A QUAY STAIR (owner, 2026-11-16, the Pont d'Iéna's left-bank flights): a flight running along a quay wall — QUAY_STAIR_NEAR of
+        // its points within a wall's reach — is the Seine's stone stair down the wall, built whole as flights and landings with a solid
+        // stone parapet stepping down in register (render/landmarks/stairway.ts), not a concrete ramp of treads on the ground
+        const quay = !(e.name && named[e.name]) && QUAY_STAIRS && terrain.walls
+          && pts.filter((p) => terrain.walls!.signed(p.x, p.z, QUAY_STAIR_STEP) !== null).length >= QUAY_STAIR_NEAR * pts.length
+        const spec = e.name && named[e.name] ? named[e.name] : quay ? { style: QUAY_STAIR_STYLE } as NamedStairway : undefined
         if (spec) {
           const mid = pts[Math.floor(pts.length / 2)]
           if (!inRect(mid.x, mid.z)) continue

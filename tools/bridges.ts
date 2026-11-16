@@ -128,12 +128,82 @@ function densify(e: BridgeEdge, world: BridgeWorld): void {
  * Brooklyn Bridge promenade is six edges); humped edge by edge it would be a washboard. A chain runs through
  * nodes where exactly two bridge edges meet, each edge marked with whether it runs backwards in the chain.
  */
+/** chains() follows a named foot deck through a 3-way junction (CHAIN_THROUGH_NAMED=0 in the env turns it off) */
+const CHAIN_THROUGH_NAMED = process.env.CHAIN_THROUGH_NAMED !== '0'
+/**
+ * a foot bridge over nothing in a footBridgeLayers zone takes CAP_FLAT_RISE — OFF unless CAP_FLAT=1: BD TOPO has La Jetée at
+ * NGF 65.6–66.7, ~34–35 m in the package's datum, 12 m over the Jardins de l'Arche the lidar sees (DEFENSE-WALKWAYS.md)
+ */
+const CAP_FLAT = process.env.CAP_FLAT === '1'
+const CAP_FLAT_RISE = 0
+/** foot-bridge ends meeting at one node inside a footBridgeLayers zone come to one level (ALIGN_DECK_ENDS=0 turns it off) */
+const ALIGN_DECK_ENDS = process.env.ALIGN_DECK_ENDS !== '0'
+/** …when they stand at most this far apart, eased back over at most ALIGN_EASE m of each way (and half its length) */
+const ALIGN_MAX_STEP = 8
+const ALIGN_EASE = 20
+
+/**
+ * A FOOT BRIDGE THAT IS CLOSED (`access=no`/`private`, La Défense's La Jetée, "Toujours fermé"): still drawn, never on the bike
+ * ride graph (CLOSED_FOOT_BRIDGES=0 in the env rides it again). Paths, footways, pedestrian ways and steps only.
+ */
+export function closedFootBridge(t: Record<string, string>): boolean {
+  return process.env.CLOSED_FOOT_BRIDGES !== '0' && /^(yes|viaduct|boardwalk|cantilever)$/.test(t.bridge ?? '')
+    && /^(footway|pedestrian|path|steps|cycleway)$/.test(t.highway ?? '') && /^(no|private)$/.test(t.access ?? '') && t.bicycle !== 'yes'
+}
+
+/**
+ * ONE LEVEL WHERE FOOT DECKS MEET (La Défense, DEFENSE-WALKWAYS.md). `bridgeHeights` profiles each chain from its own ends, and nothing
+ * reconciles two bridge ends at one node: at La Jetée's junction (-7178,3628) the deck and its side footway stood 27.1, 30.1 and 33.1.
+ * Inside a `layerCaps` zone, the foot-bridge ends at a node within ALIGN_MAX_STEP of each other all take the highest, eased back into
+ * each way's own profile. Mutates `edges`; returns the ids changed.
+ */
+export function alignDeckEnds(edges: BridgeEdge[], caps: { x: number; z: number; radius: number }[]): number[] {
+  if (!ALIGN_DECK_ENDS || !caps.length) return []
+  const at = new Map<number, { e: BridgeEdge; fromA: boolean; x: number; z: number }[]>()
+  for (const e of edges) {
+    if (!e.bridge || !e.foot || !e.heights || e.heights.length < 2) continue
+    const p = e.points
+    for (const [n, fromA, x, z] of [[e.a, true, p[0], p[1]], [e.b, false, p[p.length - 2], p[p.length - 1]]] as const) {
+      if (!caps.some((c) => Math.hypot(x - c.x, z - c.z) < c.radius)) continue
+      ;(at.get(n) ?? at.set(n, []).get(n)!).push({ e, fromA, x, z })
+    }
+  }
+  const changed = new Set<number>()
+  for (const ends of at.values()) {
+    if (ends.length < 2) continue
+    const hs = ends.map(({ e, fromA }) => fromA ? e.heights![0] : e.heights![e.heights!.length - 1])
+    const top = Math.max(...hs), low = Math.min(...hs)
+    if (top - low < 0.05 || top - low > ALIGN_MAX_STEP) continue
+    ends.forEach(({ e, fromA }, k) => {
+      const step = top - hs[k]
+      if (step < 0.05) return
+      const cum = cumulative(pts(e.points)), L = cum[cum.length - 1], ease = Math.max(0.5, Math.min(ALIGN_EASE, L / 2))
+      e.heights = e.heights!.map((h, i) => {
+        const d = fromA ? cum[i] : L - cum[i]
+        return d >= ease ? h : Math.round((h + step * (1 - d / ease)) * 100) / 100
+      })
+      changed.add(e.id)
+    })
+  }
+  return [...changed]
+}
+
 export function chains(deck: BridgeEdge[]): { e: BridgeEdge; reversed: boolean }[][] {
   const at = new Map<number, BridgeEdge[]>()
   for (const e of deck) for (const n of [e.a, e.b]) at.set(n, [...(at.get(n) ?? []), e])
   const used = new Set<number>()
   const out: { e: BridgeEdge; reversed: boolean }[][] = []
   const through = (n: number): boolean => (at.get(n)?.length ?? 0) === 2
+  /*
+   * …and a NAMED foot deck goes on through a junction of three or more onto the one way of its own name and layer (La Défense,
+   * DEFENSE-WALKWAYS.md: La Jetée's ways met at a node where a side footway joined, each profiled from its own ends, and stood 27.1,
+   * 30.1 and 33.1 m there — the owner's "massive drop in path" at 48.893146, 2.233859). Only when exactly one such way is left.
+   */
+  const namedOnward = (n: number, from: BridgeEdge): BridgeEdge | undefined => {
+    if (!CHAIN_THROUGH_NAMED || !from.foot || !from.name) return undefined
+    const same = (at.get(n) ?? []).filter((x) => x.id !== from.id && x.foot && x.name === from.name && (x.layer ?? 1) === (from.layer ?? 1))
+    return same.length === 1 && !used.has(same[0].id) ? same[0] : undefined
+  }
   for (const seed of deck) {
     if (used.has(seed.id)) continue
     used.add(seed.id)
@@ -141,9 +211,11 @@ export function chains(deck: BridgeEdge[]): { e: BridgeEdge; reversed: boolean }
     // forward from seed.b, then backward from seed.a
     for (const dir of [1, -1] as const) {
       let node = dir === 1 ? seed.b : seed.a
-      for (let guard = 0; guard < 1000 && through(node); guard++) {
-        const next = at.get(node)!.find((x) => !used.has(x.id))
+      let cur = seed
+      for (let guard = 0; guard < 1000; guard++) {
+        const next = through(node) ? at.get(node)!.find((x) => !used.has(x.id)) : namedOnward(node, cur)
         if (!next) break
+        cur = next
         used.add(next.id)
         if (dir === 1) {
           const rev = next.b === node
@@ -250,6 +322,11 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
    * place round it painted at the foot of them (BUGS.md #31).
    */
   if (footOnlyUnder) return { rise: 0, over: 'nothing' }
+  /*
+   * …and a FOOT bridge over nothing inside a `footBridgeLayers` zone stands on the dalle the lidar already has (La Défense,
+   * DEFENSE-WALKWAYS.md: La Jetée's west way floated 2 m over its own ends, 5 m over the garden it ends above). CAP_FLAT_RISE, 0.
+   */
+  if (cap && CAP_FLAT) return { rise: CAP_FLAT_RISE, over: 'nothing' }
   return { rise: 2, over: 'nothing' }
 }
 

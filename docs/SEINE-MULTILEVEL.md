@@ -625,3 +625,184 @@ Each was probed on a mini and the fix shot there; paris-centre was rebaked with 
   pieces only (Royal 1, Marie 2, Double 1).
 - **Shots on the final paris-centre:** at 48.860758, 2.291972 the road-tunnel portal, the pavement and the water to the quay, with
   nothing out of place; at Concorde's 48.863667, 2.320426 the bridge's end arch and the lower quai's path, no ground in the water.
+
+### Round 6: the Pont d'Iéna (2026-11-16)
+
+The owner's report at the Place de Varsovie (48.860260, 2.290997): a dark block at the bridge's right-bank end, a hole in the ground
+that comes and goes, and "the route in the tunnel also jumps to street level (both routes in it)". Then: make the Pont d'Iéna look right
+from both bridgeheads, on the bridge and in every passage under it, then the bridges near it. Views are a fixed set in bir-hakeim-mini
+(scratchpad `iena-shots.sh`: each bridgehead from land, the abutments from the lower quai, both faces, the deck).
+
+- **The routes in the trench (fixed, render-side: the ride graph).** The Place de Varsovie is a hand-made roundabout (`overrides.ts`,
+  R 55 m), and `applyRoundabout` rebuilt every ride edge inside it as ring and spokes: the Avenue de New York's two carriageways,
+  7 m under the place in their trench, were cut at the boundary and spoked up onto the ring. A way all of whose points inside a
+  place are more than `ROUNDABOUT_LEVEL` 2.5 m off the place's level (the median of its road points) now passes through it untouched
+  and lends the ring no heights.
+- **One node, two levels (fixed, bake).** OSM shares a node between a street on the place and the trench's ramp; the solve gave them
+  their own heights, but the node joined them, and the ride graph drew a 7.6 m step. Where the ways at a node end more than
+  `ML_NODE_SPLIT` 2 m apart, the level with the most ways keeps the node and each other level gets its own. 3 on bir-hakeim-mini.
+  With both fixes bir-hakeim-mini's route legs went 9/14 → 11/14 and its scoreboard total 115 → 90–96.
+- **The dark block (fixed, bake).** The Port Debilly's lower-quai road runs under the bridge's right-bank land arch. The grade
+  separation compared it with the median lidar in a ring round it, mostly the upper quai at a bridgehead, cut 7 m of it as a covered
+  piece, and the tunnel renderer drew a portal and tube inside the arch. A way under a bridge's outline is no longer cut as covered
+  there (the bridge covers it), and an OSM tunnel lying ≥ 80 % under a bridge's outline is a passage at grade (`ML_PASSAGE_IN`). The
+  road now runs straight under the open land arch.
+- **The retaining wall behind the lower quai (improved, bake).** The step stood as a grass ramp and a cliff of ground, the wall 2 m back
+  on the plateau: BD TOPO's Mur de soutènement line lies about 2–2.5 m behind the step that the lidar and OSM's footway on its top
+  both show. BD TOPO's wall lines are now moved onto the lidar's step (`tools/wall-align.ts`: the strongest step within ±3 m of each
+  2 m sample, if clearly stronger than the step on the line, offsets median-smoothed), for the ground pass and the wall builder alike.
+  The wall now stands as one vertical face; a strip of grass still rises in front of its foot. Corridors also no longer reach across a
+  wall line. (The scoreboard's wallGap reads BD TOPO's own lines, so walls moved onto the step count against it: 15 → 21 on
+  bir-hakeim-mini.)
+- **Corridors stop at wall lines, but not under a way's own width:** checked only in a way's bed pad and skirt. Checking across its
+  whole width buried paths along quay walls: Iéna's stairs, the Port de Montebello, the Parc Rives de Seine by the Arcole.
+- **The scoreboard measures walls against the aligned lines** (the bake's), so wallGap no longer counts the alignment against itself:
+  seine-centre-mini 192 with it, against 191 before this round.
+- **Still to do at the Pont d'Iéna:** the bridgehead pavements (jagged pale shapes and grass islands where the pavement layer, the
+  areas and the grass meet; the owner: "lots of overlapping textures"); the grass strip at the right bank's retaining wall foot; the
+  faces read dark from the water; the stairs on one side (the owner: "famous steps"). Then the bridges near it.
+- **The Place de Varsovie's surface (owner: "holes in the surface", "random patches of different pavements").** Four causes, all fixed:
+  1. *Lids lost their flag on the way to the page.* The v3 tile format (`src/map/format.ts`) had no place for `PackedBridge.lid`, so
+     every lid slab arrived as a plain bridge outline and was built as a girder bridge as wide as its outline: 120 m of pale slab across
+     the plaza, flush with its ground. The format now carries `lid` (convert.ts writes it, adapt.ts reads it).
+  2. *The lid's level was taken before the multi-level pass* moved the streets on it, 0.6 m over them, and the vans sank into it. It is
+     now the 10th percentile of the street heights on it as shipped (`LID_LEVEL_Q`), and the ground inside a lid's outline is held
+     `ML_LID_UNDER` under that level, so the slab is the paving between the streets.
+  3. *Two tiles drew the same pavements and carriageways* within a few metres of their shared edge, each subdivided and draped its own
+     way, and they fought in patches; a tile seam runs through the place. Each tile's pavement layer and carriageways are now clipped
+     to its own square (`render/clip-mesh.ts`, `TILE_CLIP`).
+  4. *Three paving colours:* the slab, the footway decks (`PARIS_DECK`) and the structures' own. The lid's top is the decks' Paris
+     paving, and structures take a small polygon offset (`BRIDGE_Z_OFFSET`) so they yield to a surface in their own plane.
+  The bake needs `tsx` while another session's tools/gardens/index.ts uses a constructor parameter property that Node's type
+  stripping rejects: `NODE_OPTIONS=--max-old-space-size=12288 npx tsx tools/bake.ts <city>`.
+- **The bank beside the right-bank lower quai (improved).** The grass bank between the lower quai's road and the plateau came from the
+  road's corridor skirt, which blends the ground 4 m out to the lidar beyond: here up 8 m, under the bridge where no BD TOPO wall line
+  runs. A skirt now applies only where the open ground beyond lies within `ML_SKIRT_DH` 2 m of the way; past that the ground steps at
+  the corridor's edge (−4.4 → +3.8 m between 202 and 204 under the arch). Stairs lay the ground under their own width only
+  (`ML_STEPS_NO_SKIRT`). A paved strip `WALL_FOOT_PAVE` 2.5 m wide now runs along every quay wall's low side. Taking the lowest way
+  under a structure (`ML_UNDER_LOW`) was tried and left off: no change here, a worse scoreboard.
+- **Stairs at the Pont d'Iéna:** OSM has two long flights at the left bank (338, 39 m from the lower quai up to the Quai Branly; 1722,
+  15 m) and short ones at the right; all are drawn as generic stone flights. Which ones the owner means by "famous steps" is open.
+- **Quay stairs (owner: the left-bank flights).** A flight running along a quay wall (60 % of its points within a wall's reach,
+  `QUAY_STAIRS` in render/stairs.ts) is now built whole by the civic stairway builder (render/landmarks/stairway.ts) as stone flights
+  and landings with a solid parapet raking down in register, newels at the foot (`QUAY_STAIR_STYLE`), not concrete treads on the
+  ground. The Pont d'Iéna's two left-bank flights read as stone quay stairs from the lower quai; so does every other quay stair on the
+  Seine. Render-only.
+- **Regression for the skirt and stair-ground changes:** no site worse; Alma's buried way gone, Bir-Hakeim's high ground cells
+  29 → 21, Pont National's low cells 18 → 15.
+- **The neighbouring bridges, first look** (scratchpad `bridge-views.py <city> <name> <prefix>`: both faces from the water, the deck and
+  both heads, framed from the structure's own axis). The Pont de Bir-Hakeim reads well: the iron arches and the métro viaduct, the deck's
+  walk under the colonnade, both heads. Only a pale wedge of steep ground by a viaduct pier at its right bank. The Passerelle Debilly is
+  clean from the water: green iron arch and railings. The Pont de l'Alma: the girder and its two piers, water under the deck (the green
+  band seen under it is the far lower quai's lawns), the deck and right-bank head fine.
+- **paris-centre, checked after the 2026-11-16 rebake** (99 min; 22 tunnels under bridge outlines made passages, 38 nodes split by level):
+  the Place de Varsovie reads as one plaza (cobbles and roads, no pale slab, no flicker); the lower quai runs under the Pont d'Iéna's open
+  right-bank land arch; the left-bank quay stairs show their stone parapets; the Concorde points and 48.860758, 2.291972 are clean. That
+  bake predates the skirt rule and the ground under lids (the bank under the right-bank arch still slopes −3.8 → −0.2 m there); a
+  further rebake carries them.
+- **paris-centre rebaked again (67 min) with the skirt rule, stairs without skirts and the ground under 31 lids (1,309 cells).** Under the
+  Pont d'Iéna's right-bank arch the bank now stands as a stone face beside the path, not a grass ramp.
+- **Ten more bridges, checked in paris-centre** (both faces from the water, the deck from the street before it, both heads):
+  Grenelle, Invalides, Alexandre III, Concorde, Royal, Carrousel, Arts, Saint-Michel, Marie and Sully. One flaw, on two of them: the
+  structure's own deck top, drawn the whole width just under its lowest way, showed as pale wedges on the road at the Pont Marie's and
+  the Pont de Sully's ends where the ways' surfaces stop short of the structure. Its colour is now the decks' paving tone (`DECK_TOP`),
+  and both decks read as road and grey pavements. The rest read correctly: arches and pylons, decks, heads. (Several head views
+  landed inside buildings or the Louvre when framed from the axis; those were camera placements, checked again from the quai roads.)
+- **Pont National's last audit items (left, explained).** Three ways read exactly 1.0 m under the ground at one point each, and two
+  pieces at 12–14 %. Debugged at the cells: the bike ramp overlaps the Bd Jean Simon's 19 m-wide corridor in plan, a metre under it —
+  below `ML_SEP` 3 m, so the levels are not separated and the ground takes the boulevard's. At the flight's top and the raised footway's
+  end the ground at the cell is within 0.3 m of the way (5.20 under 5.42; 4.53 under 4.5); the audit's 1.0 m is the ground mesh's blend
+  between neighbouring cells at the junction. Three rules were tried and reverted: the lower way inside two drawn widths (floated
+  footway 1013 by 1.6 m), the nearer centreline there (`ML_ON_CENTRE`, the ramp 2 m under), and stairs' shared ends off the lidar (a
+  buried way back at the Pont au Double).
+- **Final paris-centre, re-checked:** 48.860758, 2.291972 clean (water to the quay, a moored boat); under the Pont d'Iéna's right-bank
+  arch a stone face beside the path; the land arch open from the river.
+  Two more tries, both reverted: the narrower way inside two drawn widths (`ML_ON_NARROW`, no change: the ramp's cells sit at the
+  edge of its own width) and holding the bike ramp at its declared profile (the ramp 1.7 m under). The ramp is laid once, before the
+  pass (tools/bike-ramps.ts via `earlyRamps`), and its declared route runs inside the Bd Jean Simon's mapped width for its first
+  metres; the fix belongs in the declared ramp's via points (region data), not in the ground rules.
+  Then the via point itself, tried 5 and 9 m west (src/city/bike-ramps.ts): the ramp's descent also runs over the boulevard's sidewalk
+  footway, 1.3 m under it, and clearing that put its corridor under footway 1013, which floated 2.3 m. Reverted. The declared ramp's own
+  note says no one has looked at an overhead shot of its line; it needs that look (where the real ramp, wall and sidewalks run) before
+  it moves. These three items are this audit's, not the owner's reports.
+  **The overhead look (IGN orthophoto, tools/ortho.ts, with the ways drawn over it):** the declared ramp's upper half runs from the Bd
+  Jean Simon's end diagonally across a strip of tracks with catenary poles, and its lower half across the three parallel paths of the
+  promenade, before it reaches the Quai d'Ivry. It follows nothing on the ground, so no via point clears the railway, the sidewalk
+  and the paths at once. It needs a decision from the owner: a real route for it, or dropping it (the bridge's left bank is then
+  reached by the steps and lift alone).
+  **Resolved as a deck:** a declared bike ramp now stands as a steel ramp on posts (`bridge`, layer 1) unless its declaration says
+  `ground` (src/city/bike-ramps.ts). It keeps its designed profile over the track strip and the paths, the ground under it stays the
+  lidar's, and the Pont National audit no longer lists it as buried; route legs unchanged at 9/10. Left at Pont National: the flight's
+  top and the raised footway's end (1.0 m readings that are blends between cells at the junctions; the cells are within 0.3 m), and
+  two short footway stretches at 12 and 14 %, just over the audit's 11 %.
+- **paris-centre rebaked with the elevated bike ramp (44 min).** Pont National there: no buried way; the ramp is a deck. One reading:
+  the flight beside the wall (59826, the mini's 616) stands 1.6 m over the ground at its middle, where the lidar under a stair against
+  a wall reads the low side; the quay-stair builder draws it as one solid stone flight, so nothing hangs open. Two footway stretches at
+  12 and 14 % remain over the audit's 11 %.
+  **Reverted: the ramp as a deck.** Rays along it in paris-centre: its deck lay under the boulevard's sidewalk paving (6.5 m over
+  4.5) and then under the embankment's ground (4.3 over 3.0), the rider hidden. The embankment stays at 4.3–6.5 m almost to the quai
+  and drops at a wall near the end, so a ramp falling at 10 % from the boulevard is inside it on any line. The ramp is back at grade on
+  its original line (one 1 m spot); `elevated` remains as an option for a declared ramp. Its line needs a design — along the wall,
+  descending where the ground does — and the owner's call.
+  **Why no line works as declared:** the top is at (−191, −161), 6.5 m; the embankment holds 6.5 m to its edge at about z −135 (no BD TOPO
+  wall line there), and below it the ground is 1.9 → 0.8 → −0.3 m; the bottom on the Quai d'Ivry is at (−190, −107), 31 m past the
+  edge. 6.8 m over 31 m is 22 %. A ramp outside the embankment needs a switchback on the low ground below the edge, which holds the
+  track strip and the promenade's paths (orthophoto). A design decision for the owner: where the switchback goes, or no ramp.
+  (The paris-centre bake of 2026-11-16 03:58 wrote every city file; its final audit stage then failed on three La Défense entries in
+  another session's paris/defense3.json, not on anything of this work.)
+- **The Pont National bike ramp, resolved as it stands.** The height map shows its route is coherent: from the boulevard's plateau it
+  passes under the railway embankment (a covered piece the pass cuts) and descends to the Quai d'Ivry. Its 1 m reading was the tunnel's
+  approach, under the ground but short of `ML_RAISE`. A stretch next to a covered piece that runs `ML_CUT_MIN` 0.7 m or more under
+  the lidar is now `cut`: the ground follows it down, no skirt. The ramp is no longer buried; six approaches became cuttings on
+  pont-national-mini. Regression: no site worse (low-ground counts rise where cuttings lower the ground, by design); legs unchanged.
+  Approach cuttings take no trench pad (`approaches`): padded, the ramp's cutting sank the end of the sidewalk beside it, which stood
+  2.2 m over the ground in paris-centre. After the paris-centre rebake (2026-11-16, 76 approaches made cuttings): Pont National has no
+  buried or floating way except the flight beside the wall over its lidar dip (drawn on the ground by the stairs layer), and two footway
+  stretches at 12 and 14 %. Regression: no site worse; legs unchanged.
+  The two 12 and 14 % footway stretches are pinned at both ends by the ways they join: eight grade-stiffening rounds instead of five
+  (`ML_GRADE_ITERS`, now tunable) changed nothing.
+
+### Round 7: banks between street levels, and the Défense slab (2026-11-16)
+
+Owner's reports at 48.868278, 2.224362 (Suresnes), 48.889156, 2.250540 and 48.888766, 2.254812 (La Défense's edge), 48.886270, 2.256000
+(Pont de Neuilly) and 48.889028, 2.254117: shards of pavement and grass on every bank between two street levels, sawtooth walls, a tunnel
+portal seen through a bank, all moving with the camera, and 9 m ridges of ground under the slab's walkways. Test city `neuilly-mini`
+(500 m round the Pont de Neuilly). `look-at --probeall=x,y;…` lists every mesh a pixel's ray hits with its render group: the ground groups
+clear depth (render/city.ts `setupGroundLayers`), so what a later group draws shows through the ground unless an occluder hides it.
+
+- **Render (no rebake):**
+  - `WT_OCC_BANKS`: the base ground's depth skin skipped every triangle steeper than `WT_OCC_GRADE`, meant for wall faces, so a bare bank
+    had no depth in the later groups (the coarse occluder sinks to the drop's foot) and the upper level's paving, roads and a footway
+    tunnel's portal drew through it. Steep triangles are now skipped only in a quay wall's reach or where a street is levelled off the raw
+    ground (a street's retaining wall stands there; without that test the bank skin sawed the foot of Suresnes's walls).
+  - `STREET_LAYER_MAX_GRADE` 0.6: the corridor's concrete (4.5 m wider than the street) and the pavements spilled onto banks of ~1.2,
+    under `OVERLAY_MAX_GRADE` 1.5, and lost only some triangles: shards. No street is steeper than 0.6, so steeper triangles of those
+    layers go.
+  - `WT_TUNE.conform` (city/wall-ground.ts): the base ground and its layers are different chords of the same ground; at a bank's toe they
+    parted by a metre. An edge whose middle is 0.15 m off the ground is split, over ground shipped at `conformStep` 2 m or finer only
+    (on SF's Russian Hill it more than doubled the ground layers' triangles, 1.37M → 3.31M). Site 4 is on 4 m ground: a few small shards
+    remain at its bank's foot.
+  - `RW_SEEK…`: a street's retaining wall stood at a fixed line beside the street; on ground shipped at 4 m or finer the ground already
+    steps there, and its cells stood in front of the wall's face as teeth. Each piece's ends now go out to the step's foot (≤ 1.5 posts,
+    6 m) and a strip at the street's level covers the gap — only where the drop from the street over that distance is `RW_STEP_GRADE`
+    0.6 or steeper, so a hillside sloping away keeps its wall where it was (Taylor at Green, SF: unchanged).
+- **Bake (`tools/multilevel.ts`, needs a rebake):** under a structure the ground took the nearest at-grade way's level within 25 m; under
+  the slab's walkway decks that way was on the slab, 12 m over the street the lidar sees. Over the lidar by `ML_UNDER_MNT_DH` 2.5 m, the
+  floor is now the way within reach nearest the lidar's level, or the lidar. Over only (under a bridge the lidar reads high, not low), and
+  not within `ML_UNDER_MNT_RIVER` 60 m of the river: either way the rule reshaped the ground by the Pont d'Iéna's left-bank arch.
+  neuilly-mini: 1,600+ cells; bir-hakeim-mini: 138, all 60 m+ inland (the Trocadéro gardens, Rue Beethoven's stair bridge in Passy; not
+  looked at closely). `ML_LOG_UNDER_MNT=1` logs where. Not yet in paris-centre: it needs the rebake.
+- **Unchecked:** SF stair streets against `STREET_LAYER_MAX_GRADE` (flights of 0.45–0.7 may lose part of their corridor strip).
+- **Not changed:** at Suresnes (site 1) the beige patch is bare base ground in the median between Boulevard Henri Sellier's two
+  carriageways, which the bake has 1.4 m apart (5.56 and 6.99).
+- **Quay wall's foot (render):** at the Quai Branly (48.856433, 2.28932) a footway along a wall's top had a corridor reaching past the
+  line, and the ground on the low side took its level up to the stone's face: pale spikes up the wall and lawn panels standing on it.
+  On a quay wall's low side a street's level or cut may now lower the ground, never lift it (`WALL_LOW_NO_LIFT`, city/terrain.ts).
+- **Lids (render), the Place de Varsovie (48.860111, 2.290794):** the ground under a lid is the trench's, 7–9 m down; the place's paving
+  and lawns were draped down there under the slab, the slab's flat top (structures group) painted over them, and the streets on it were
+  dark decks up to 2 m over it. Now the slab's top is ground (`lidtop:` in the base group, depth copies just under it in the later
+  groups), the place's layers inside a lid's outline stand on it, both at the level of the nearest street on the lid (`lidLevel`), and a
+  street with 80 % of its length on a lid is laid as a carriageway in its own surface (`lidroad:`), not a deck (`LID_TOP_GROUND`,
+  `LID_*` constants in render/city.ts). Foot ways on lids are still decks.
+- **Bake:** the lidar rule (`ML_UNDER_MNT_DH`) now stands down inside a lid's outline too (it would sink the ground to the trench floor
+  under lids more than 60 m from the river). Needs the next paris-centre rebake.

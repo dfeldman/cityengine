@@ -1,21 +1,21 @@
 /**
- * La Lutèce (Courbevoie, ~40 m, 12 levels of flats; OSM way/82486102, no parts, cadastre 2010): a residential block on OSM's
- * ring, cream-grey render with punched windows and thin spandrels, a recessed dark ground floor and a flat parapet.
- * From tags and footprint; the render tone wants a street-view check.
+ * La Lutèce (Courbevoie, 12 levels of flats; OSM way/82486102): read from two Panoramax street frames as a cream-white
+ * residential block, continuous white balcony slabs with railings at every floor over darker recessed window walls,
+ * grey vertical panels at the corners, shops behind a dark ground floor, flat parapet. Height 40 m from 12 levels
+ * (not in the local BD TOPO cache tiles).
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 40
-const LOBBY_H = 4.5
-const WALL = '#c9c3b6', GLASS = '#4a5560', ROOF = '#6d6b68', LOBBY = '#2e3438', PARAPET = '#aaa597'
-const FLOOR = 3.1, PITCH = 2.6, SOLID = 0.4, PARAPET_H = 1.2
+const HEIGHT = 40, LOBBY_H = 4.5, FLOOR = 3.0, SLAB_SHARE = 0.38, PARAPET_H = 1.2, BALCONY = 0.9
+const SLAB = '#ece6da', WINDOW = '#5b646c', LOBBY = '#353c42', LOBBY_WALL = '#cfc8ba', ROOF = '#76736e'
 
 export const laLutece = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY_WALL), glass: hex(LOBBY), floor: LOBBY_H, pitch: 4, material: 'glass' }, canopy: { depth: BALCONY, colour: hex(SLAB) } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(SLAB), glass: hex(WINDOW), floor: FLOOR, solid: SLAB_SHARE, material: 'stucco' } }],
+  cornices: [3, 5, 7, 9, 11].map((f) => ({ at: LOBBY_H + f * FLOOR, depth: BALCONY, height: 0.25, colour: hex(SLAB) })),
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(SLAB) },
 })

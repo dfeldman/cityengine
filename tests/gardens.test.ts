@@ -3,7 +3,9 @@
  * rings are rings, and the bake makes a package part out of it (tools/gardens/index.ts).
  */
 import { describe, expect, it } from 'vitest'
-import { bakeGardens, rowPoints } from '../tools/gardens/index.ts'
+import { bakeGardens, cutLine, rowPoints } from '../tools/gardens/index.ts'
+import { unpackPoints } from '../src/city/package.ts'
+import type { GardenPlan } from '../tools/gardens/plan.ts'
 import { GARDENS } from '../tools/gardens/paris.ts'
 import { bboxOf, city } from '../tools/cities.ts'
 
@@ -48,5 +50,32 @@ describe('the traced gardens', () => {
   it('space a row of trees evenly along its line', () => {
     const pts = rowPoints({ points: [{ x: 0, z: 0 }, { x: 40, z: 0 }], spacing: 8 })
     expect(pts.map((p) => p.x)).toEqual([4, 12, 20, 28, 36])
+  })
+
+  it('cut a line where it is blocked, keeping the runs', () => {
+    const runs = cutLine([{ x: 0, z: 0 }, { x: 20, z: 0 }], (p) => p.x > 8 && p.x < 12)
+    expect(runs.length).toBe(2)
+    expect(runs[0][runs[0].length - 1].x).toBeLessThanOrEqual(8)
+    expect(runs[1][0].x).toBeGreaterThanOrEqual(12)
+  })
+
+  it('cut a hedge where a way crosses it, and wall a plan\'s paths without walling them shut', () => {
+    // a hedge 40 m east-west, a footway 2 m wide crossing it north-south at x = 0
+    const L = (x: number, z: number): { lat: number; lon: number } => ({ lat: 48.8605 + z / 111320, lon: 2.332 + x / 73270 })
+    const hedge = { id: 1, tags: { barrier: 'hedge' }, geometry: [L(-20, 0), L(20, 0)] }
+    const path = { points: [{ x: 0, z: -30 }, { x: 0, z: 30 }], half: 1, kind: 'footway' }
+    const cross = { points: [{ x: -30, z: 10 }, { x: 30, z: 10 }], half: 1, kind: 'footway' }
+    const g = bakeGardens([hedge], local, { ways: [path], open: [] }, [])
+    expect(g.garden.hedges.length).toBe(2)
+    for (const h of g.garden.hedges) for (const p of unpackPoints(h.points)) expect(Math.abs(p.x)).toBeGreaterThan(1.3)
+    // a plan walling its paths: walls either side of both, each cut where the other path crosses it
+    const ll = (x: number, z: number): [number, number] => { const q = L(x, z); return [q.lat, q.lon] }
+    const plan: GardenPlan = { name: 'test', ring: [ll(-25, -25), ll(25, -25), ll(25, 25), ll(-25, 25)], pathWalls: { h: 3, w: 1 } }
+    const w = bakeGardens([], local, { ways: [path, cross], open: [] }, [plan])
+    // two walls a path, each cut once by the other path: 8 runs
+    expect(w.garden.hedges.length).toBe(8)
+    for (const h of w.garden.hedges) for (const p of unpackPoints(h.points)) {
+      expect(Math.abs(p.x) > 1.3 || Math.abs(p.z - 10) > 1.3).toBe(true)
+    }
   })
 })

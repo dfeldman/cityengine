@@ -1,21 +1,21 @@
 /**
- * Le Bélier (Courbevoie, Henri Pottier, 19 levels, ~63 m; OSM way/82322950, no parts): a residential slab on OSM's
- * canted-rectangle ring, pale concrete with ribbon windows, a recessed dark ground floor and a flat parapet.
- * From tags and footprint; the tone is a guess to check against a street view.
+ * Le Bélier (Courbevoie, residential; OSM way/82322950; 53.9 m BD TOPO, OSM's 63 m too tall): a slab of flats on OSM's
+ * canted-rectangle ring, pale grey panels with a dense even grid of small square windows, a recessed dark ground floor
+ * and a flat parapet. Height from local BD TOPO; tone from a Panoramax street photo.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 63
-const LOBBY_H = 4.5
-const WALL = '#cfc8bb', GLASS = '#4a5560', ROOF = '#8d8a84', LOBBY = '#3a3836', PARAPET = '#b9b2a6'
-const FLOOR = 3.1, PITCH = 2.6, SOLID = 0.45, PARAPET_H = 1.2
+const HEIGHT = 53.9
+const LOBBY_H = 4
+const WALL = '#cfd2d1', WINDOW = '#5f6e78', LOBBY = '#4a4a49', ROOF = '#8e8d89'
+const FLOOR = 2.9, PITCH = 1.6, SOLID = 0.4, DEPTH = 0.3, PARAPET_H = 1.2
 
 export const leBelier = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY), glass: hex('#3c4448'), floor: LOBBY_H, pitch: 3 } },
+  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(WINDOW), floor: FLOOR, pitch: PITCH, solid: SOLID, depth: DEPTH } }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(WALL) },
 })

@@ -1,21 +1,21 @@
 /**
- * Hôtel Renaissance Paris La Defense (60 cours Valmy, Puteaux, 10 levels, 43 m, architects Andrault and Parat;
- * OSM way/68851427, no parts): a 1970s-80s hotel slab on OSM's 6-point ring, pale concrete with dark window bands,
- * a recessed dark glazed lobby and a flat parapet. From the tags and footprint only: check tone against a street view.
+ * Hôtel Renaissance Paris La Défense (Puteaux; OSM way/68851427, 10 levels; BD TOPO h 40.7 m): a curved-front hotel of
+ * beige stone piers framing tall bays of blue reflective glass, a dark glazed ground floor with a canopy, flat roof
+ * (Panoramax street frame of the curved front with the RENAISSANCE HOTEL sign).
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 43
-const LOBBY_H = 5
-const WALL = '#cfc8ba', GLASS = '#3d4a54', ROOF = '#66645f', LOBBY = '#2b3237', PARAPET = '#b9b2a4'
-const FLOOR = 3.8, PITCH = 3.0, SOLID = 0.9, PARAPET_H = 1.0
+const HEIGHT = 40.7
+const LOBBY_H = 5.5
+const STONE = '#d8ccb4', GLASS = '#5d7f9e', ROOF = '#77746e', LOBBY = '#2f383f', LOBBY_WALL = '#5b5650', CANOPY = '#3a3a3a'
+const FLOOR = 3.5, PITCH = 6.5, SOLID = 0.38, DEPTH = 0.45, PARAPET_H = 1
 
 export const hotelRenaissance = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY_WALL), glass: hex(LOBBY), floor: LOBBY_H, pitch: 3, material: 'glass' }, canopy: { depth: 2.5, colour: hex(CANOPY) } },
+  tiers: [{ to: 1, face: { kind: 'fins', wall: hex(STONE), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, depth: DEPTH, continuous: true, material: 'concrete' } }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(STONE) },
 })

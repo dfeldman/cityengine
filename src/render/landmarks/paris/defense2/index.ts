@@ -13,6 +13,7 @@ import { exaltis } from './exaltis.ts'
 import { campusea } from './campusea.ts'
 import { tourAllianzOne } from './tourAllianzOne.ts'
 import { tourAtlantique } from './tourAtlantique.ts'
+import { nuagesTower } from './nuages-kit.ts'
 import { tourAurore } from './tourAurore.ts'
 import { tourCgi } from './tourCgi.ts'
 import { tourEmblem } from './tourEmblem.ts'
@@ -91,6 +92,7 @@ export const PARIS_DEFENSE2: Record<string, (out: MeshBuilder, fit: Fit) => void
   damiersAnjou,
   tourAllianzOne,
   tourAtlantique,
+  nuagesTower,
   tourAurore,
   tourCgi,
   tourEmblem,

@@ -1,21 +1,20 @@
 /**
- * Tour Pascal A (Courbevoie, 1983, ~59 m, 18 storeys of offices; OSM way/61118185, no parts): the shorter sibling of
- * Pascal B, same family of plain shaft on OSM's ring with ribbon glazing, here a lighter stone-grey spandrel.
- * From tags and the sibling's recipe; tones are unchecked against a street view.
+ * Tour Pascal A — now part of Landscape (Dominique Perrault refurbishment of the Pascal towers, delivered 2021;
+ * way/61118185). BD TOPO h 60 m. New double skin of hundreds of glass scales and silver threads (parisladefense.com Landscape;
+ * perraultarchitecture.com) — en.wikipedia photo File:Tour_Landscape.jpg: deep square grid of silver frames over blue-grey glass.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 59
-const LOBBY_H = 5
-const WALL = '#9a9e9f', GLASS = '#46596a', ROOF = '#5d6368', LOBBY = '#23292d', LOBBY_WALL = '#555b60', PARAPET = '#767c80'
-const FLOOR = 3.2, PITCH = 1.6, SOLID = 0.25, PARAPET_H = 2.5
+const HEIGHT = 60, LOBBY_H = 7
+const FRAME = '#b9c0c4', GLASS = '#6c8494', ROOF = '#8e908e', LOBBY = '#5c666c', PARAPET = '#d0d2d0'
+const FLOOR = 3.3, PITCH = 2.7, SOLID = 0.22, RELIEF = 0.4, CROWN_H = 2.5
 
 export const tourPascalA = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY_WALL), glass: hex(LOBBY), floor: LOBBY_H, pitch: 3, material: 'glass' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'glass' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(FRAME), glass: hex(LOBBY), floor: LOBBY_H, pitch: 3, material: 'glass' } },
+  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(FRAME), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, depth: RELIEF, material: 'metal' } }],
+  crown: { kind: 'parapet', height: CROWN_H, colour: hex(PARAPET), material: 'glass' },
 })

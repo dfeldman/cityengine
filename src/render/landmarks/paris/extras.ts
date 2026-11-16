@@ -64,6 +64,9 @@ export function railPortal(out: MeshBuilder, fit: Fit): void {
 }
 
 /** A road's tunnel (tools/paris-portals.ts): the same mouth in pale concrete, its opening square-headed and a lorry's height. */
+/** a road's mouth is built only where the street behind stands this far over the road (m) */
+const ROAD_PORTAL_SUNK = 3.5
+
 export function roadPortal(out: MeshBuilder, fit: Fit): void {
   portal(out, fit, [0.62, 0.61, 0.58], true)
 }
@@ -80,6 +83,10 @@ function portal(out: MeshBuilder, fit: Fit, stone: Rgb, road: boolean): void {
   // (the lowest road or track across the front: a dual road's mouth is centred BETWEEN its carriageways, off both cuts)
   const track = Math.min(...[-0.8, -0.4, 0, 0.4, 0.8].map((f) => g(hx * f, hz + 2)))
   const street = Math.max(g(0, -hz - 5), g(-hx * 0.6, -hz - 5), g(hx * 0.6, -hz - 5)) - track
+  // (a ROAD's mouth only where the road has gone down under the street: where the street behind stands less than ROAD_PORTAL_SUNK over
+  //  it — a short underpass OSM calls a tunnel, a mouth under a lid or a bridgehead whose ground the slab hides — the 7 m wall stood on
+  //  the open road as a block, owner's bridgehead sheets 2026-11-16, Billancourt and Saint-Cloud)
+  if (road && street < ROAD_PORTAL_SUNK) return
   // (a mouth let in between two tracks is narrower than a pier and a half each side: tools/rail-levels.ts `railMouths`; a road's keeps its width)
   const span = road ? Math.max(4.5, hx - 3) : Math.max(Math.min(4.5, hx - 0.8), hx - 3)
   const room = street > 7 ? street - 0.4 : street > SUNK ? street + PARAPET : Math.max(7, fit.height)
@@ -114,8 +121,10 @@ function portal(out: MeshBuilder, fit: Fit, stone: Rgb, road: boolean): void {
    * the Petite Ceinture's at 48.833081, 2.290562 runs on under level lawn — the culvert stood 8 m over the grass, a stone block
    * in a field. Banked down from the coping to the ground behind, at BANK_SLOPE, it reads as the hill the track goes into.
    */
+  // (a RAIL mouth's: a road's goes in under a street, a lid or a bridgehead, whose ground the slab hides — the trench floor read there,
+  //  and the bank stood up into the place as a 7 m green wedge, owner 2026-11-16, the Place de Varsovie and the Pont de Saint-Cloud)
   const behind = Math.max(g(-hx * 0.6, -hz - 2), g(hx * 0.6, -hz - 2), g(0, -hz - 2))
-  if (top - behind > 1.5) {
+  if (!road && top - behind > 1.5) {
     const W = hx + 0.3, L = (top - behind) * BANK_SLOPE, z0 = -hz - 0.02, z1 = z0 - L, lo = behind - 0.3
     quadN(out, [[-W, top + 0.25, z0], [W, top + 0.25, z0], [W + L * 0.5, lo, z1], [-W - L * 0.5, lo, z1]], [0, 1, -0.5], BANK, FIXED)
     for (const sg of [-1, 1]) {

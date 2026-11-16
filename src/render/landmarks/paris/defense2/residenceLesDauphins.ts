@@ -1,21 +1,19 @@
 /**
- * Résidence Les Dauphins (Puteaux/Courbevoie, 1970s, 15 levels, 50 m; OSM way/82486104, no parts, ref CH3): a plain
- * residential slab on OSM's ring, pale precast concrete with ribbon windows, a recessed dark ground floor, flat roof.
- * From tags and footprint; the pale tone is a guess to check against a street view.
+ * Résidence Les Dauphins (CH3, 1974, Chesneau & Verola, 15 levels; OSM way/82486104): pale precast flats with
+ * deep continuous balcony bands over dark glazing, a dark ground floor and a thin parapet. BD TOPO h 37.5 m at the
+ * centroid is a low wing; fr.wikipedia's list gives 50 m / 15 levels, used here.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 50
-const LOBBY_H = 4
-const WALL = '#cfc8bb', GLASS = '#4a5560', ROOF = '#8a8782', LOBBY = '#3a3d40', PARAPET = '#b5afa4'
-const FLOOR = 3.1, PITCH = 2.2, SOLID = 0.4, PARAPET_H = 1
+const HEIGHT = 48, LOBBY_H = 4, FLOOR = 2.95, SOLID = 0.4, PARAPET_H = 1.1
+const BALCONY = '#dcd8cc', WINDOW = '#4f5961', LOBBY = '#383d42', ROOF = '#8a8b88', PARAPET = '#cfcbc0'
 
 export const residenceLesDauphins = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY), glass: hex(LOBBY), floor: LOBBY_H, pitch: 4 } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(BALCONY), glass: hex(WINDOW), floor: FLOOR, solid: SOLID, depth: 0.5, material: 'concrete' } }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET), material: 'concrete' },
 })

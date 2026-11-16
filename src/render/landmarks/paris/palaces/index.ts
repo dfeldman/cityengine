@@ -41,6 +41,13 @@ import { operaComique } from './opera-comique.ts'
 import { palaisRoyal } from './palais-royal.ts'
 import { versaillesChateau } from '../versailles/chateau.ts'
 import { TRIANON_BUILDERS } from '../versailles/trianon.ts'
+import { VERSAILLES_GARDEN_STRUCTURES } from '../versailles/garden-structures.ts'
+import { VERSAILLES_ORANGERIE_PARTERRE } from '../versailles/orangerie-parterre.ts'
+import { VERSAILLES_TRIANON_FOLLIES } from '../versailles/trianon-follies.ts'
+import { VERSAILLES_CENT_MARCHES } from '../versailles/cent-marches.ts'
+import { VERSAILLES_NEPTUNE } from '../versailles/neptune.ts'
+import { VERSAILLES_SALLE_DE_BAL } from '../versailles/salle-de-bal.ts'
+import { VERSAILLES_COLONNADE } from '../versailles/colonnade.ts'
 import { VERSAILLES_DEPENDANCES, versaillesGrandCommun, versaillesMinistres, versaillesOrangerie, versaillesReservoirs } from '../versailles/communs.ts'
 import { theatreChampsElysees } from './champs-elysees-theatre.ts'
 import { tokyoParvis } from './tokyo.ts'
@@ -109,6 +116,13 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   versaillesMinistres, versaillesGrandCommun, versaillesReservoirs, versaillesOrangerie,
   ...VERSAILLES_DEPENDANCES,
   ...TRIANON_BUILDERS,
+  ...VERSAILLES_GARDEN_STRUCTURES,
+  ...VERSAILLES_ORANGERIE_PARTERRE,
+  ...VERSAILLES_TRIANON_FOLLIES,
+  ...VERSAILLES_CENT_MARCHES,
+  ...VERSAILLES_NEPTUNE,
+  ...VERSAILLES_SALLE_DE_BAL,
+  ...VERSAILLES_COLONNADE,
   theatreChampsElysees,
   theatreDeLaVille,
   tokyoParvis,

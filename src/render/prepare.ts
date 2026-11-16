@@ -6,9 +6,15 @@
 import { style as styleOf, type StyleId } from '../city/facade.ts'
 import { specialFor } from '../city/specials.ts'
 import { TILE, type CityIndex, type TileData } from '../city/tiles.ts'
-import { isReplaced, replacedIds, restyles, type LandmarkEntry } from './landmarks.ts'
+import { isReplaced, replacedIds, packedIds, restyles, type LandmarkEntry } from './landmarks.ts'
+
+/** landmark builders drawn as plain extrusions (defense3 kit `d3*`), which get the city's passage vaults */
+export const VAULT_BUILDERS = /^d3/
 import { gardenWalks, parkTile, type ParkMap } from '../city/park-area.ts'
 import { region } from '../city/region.ts'
+
+/** an untagged building in a park, larger than a kiosk: OSM's building=yes with no height, kept to a pavilion's size */
+const PARK_PAVILION = { m2: 2500, levels: 2, h: 8 }
 
 const hexRgb = (h: string): [number, number, number] =>
   [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255]
@@ -34,6 +40,13 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
    * generated walls, its shadow and its shop signs all go with it (render/landmarks.ts).
    */
   const replaced = replacedIds(entries)
+  /*
+   * Landmarks whose model is a plain extrusion and cuts no opening of its own: the city's passage vault is drawn into
+   * them as into a generic building (render/passages.ts `vault`). Owner, 2026-11-16, 48.888341, 2.253066: four ride
+   * routes went through solid La Défense walls (Rue des Blanchisseurs, Voie de l'Ancre). Opt in by builder name
+   * (VAULT_BUILDERS) or with `vault: true` on the entry; a builder that cuts its own (damiers-kit) stays out.
+   */
+  const vaulted = new Set(entries.filter((e) => (e as { vault?: boolean }).vault ?? VAULT_BUILDERS.test(e.procedural ?? '')).flatMap(packedIds))
   // an entry naming an outline the bake replaced with its own parts takes those parts too (`isReplaced`,
   // BUGS.md #100): without it the parts stayed in the massing and a plain box stood in the landmark's place
 
@@ -137,8 +150,12 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
         || specialFor(b.id)?.part === 'canopy')
       && !(restyled.get(b.id)?.dropParts && (b.minHeight ?? 0) > 2.5 && overGround(b) && !overPassage(b))).map((b) => {
       const e = restyled.get(b.id)
-      if (!e && b.levelsInferred && (b.minHeight ?? 0) < 1 && footprint(b.ring) < 300 && inPark(b)) {
-        return { ...b, levels: 1, height: 4.5, roof: 'hipped' as const, roofHeight: 2 }
+      if (!e && b.levelsInferred && (b.minHeight ?? 0) < 1 && inPark(b)) {
+        const f = footprint(b.ring)
+        if (f < 300) return { ...b, levels: 1, height: 4.5, roof: 'hipped' as const, roofHeight: 2 }
+        // a park's pavilion, lodge or orangery that OSM gives no height: two storeys, not the town's guess of seven
+        // (Versailles' park: the grotto of the Bains d'Apollon and the Encelade's treillage came out as office blocks, 2026-11-15)
+        if (f < PARK_PAVILION.m2) return { ...b, levels: PARK_PAVILION.levels, height: PARK_PAVILION.h, roof: 'hipped' as const, roofHeight: 3 }
       }
       if (!e?.restyle) {
         const kind = byKind.get(b.id) ?? (b.partOf !== undefined ? kindOf.get(b.partOf) : undefined) ?? (churchRings.length && inChurch(b) ? 'church' : '')
@@ -192,7 +209,7 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       return lifted
     }))
     // (and the ones the landmarks took, for the passages through them: TileData.claimedBuildings)
-    const claimedBuildings = t.buildings.filter((b) => isReplaced(replaced, b))
+    const claimedBuildings = t.buildings.filter((b) => isReplaced(replaced, b)).map((b) => isReplaced(vaulted, b) ? { ...b, vault: true } : b)
     return { ...t, buildings, ...(claimedBuildings.length ? { claimedBuildings } : {}), fringe: t.fringe.filter((f) => !isReplaced(replaced, f)) }
   }
 }

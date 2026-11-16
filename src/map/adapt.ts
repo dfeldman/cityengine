@@ -112,6 +112,7 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
     } else if (w.role === 'bridge') {
       const b: PackedBridge = { id: w.id!, ring: flat(wi) }
       if (w.name !== undefined) b.name = dict.names[w.name]
+      if (w.lid) b.lid = { dx: w.lid[0], dz: w.lid[1], y: w.lid[2] }
       t.bridges!.push(b)
     }
   })

@@ -1,21 +1,20 @@
 /**
- * Apollonia (Courbevoie, 12 levels, ~40 m; OSM way/82486240, no parts): an office block on OSM's ring, pale stone-grey
- * spandrel bands with ribbon glazing, a recessed glazed ground floor and a flat roof with a low parapet.
- * From tags and footprint; the tone is a guess to check against a street view.
+ * Apollonia (Courbevoie, 12 levels; OSM way/82486240, 77-node curved ring): a white office block read from a Panoramax
+ * street frame as continuous white horizontal spandrel bands sweeping round rounded corners, with dark-blue ribbon
+ * glazing between, a darker glazed ground floor under the first band and a thin white parapet.
+ * Height 40 m (12 levels x ~3.3 m; not in the local BD TOPO cache tiles).
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 40
-const LOBBY_H = 4.5
-const WALL = '#b9b6ae', GLASS = '#46586a', ROOF = '#75777a', LOBBY = '#34414d', PARAPET = '#a7a59f'
-const FLOOR = 3.3, PITCH = 1.8, SOLID = 0.3, PARAPET_H = 1
+const HEIGHT = 40, LOBBY_H = 4.5, FLOOR = 3.3, BAND_SHARE = 0.48, PARAPET_H = 1.2
+const BAND = '#eceae4', RIBBON = '#56687a', LOBBY = '#3e4b56', LOBBY_WALL = '#d9d7d0', ROOF = '#8a8c8e'
 
 export const apollonia = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY_WALL), glass: hex(LOBBY), floor: LOBBY_H, pitch: 2.4, material: 'glass' }, canopy: { depth: 0.8, colour: hex(BAND) } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(BAND), glass: hex(RIBBON), floor: FLOOR, solid: BAND_SHARE, material: 'metal' } }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(BAND), material: 'metal' },
 })

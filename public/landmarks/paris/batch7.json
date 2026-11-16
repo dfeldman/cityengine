@@ -6,7 +6,7 @@
     "name": "La Défense: Hekla",
     "procedural": "hekla",
     "height": 221,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/hekla.ts: two flat triangles per face creased on a full-height diagonal, alternately leaning corners, steep-plane crown to one prow, tall glass lobby. Sources: Commons 'Photo tour Hekla janvier 2022.jpg', 'Hekla Tower in construction - 2021-07-31.jpg' (no finished-tower photo on Commons); IGN LiDAR HD MNS top 284.3 m NGF over ~65 m ground = ~219 m, OSM 221 kept.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -15,8 +15,8 @@
     ],
     "name": "La Défense: The Link",
     "procedural": "theLink",
-    "height": 241,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "height": 242,
+    "note": "defense-famous/theLink.ts: two staggered blades, Arche 242 m (52 st.) west and Seine 178 m (35 st.) east, white link slabs every 2 storeys across the overlap; heights fr.wikipedia infobox (IGN MNS predates the towers); plan from OSM ring + IGN ortho; skin from Commons The Link Octobre 2025.jpg, Link - Juin 2025.jpg, The Link at la Defense - 2026-08-14.jpg.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -25,8 +25,8 @@
     ],
     "name": "La Défense: Tour Majunga",
     "procedural": "majunga",
-    "height": 186,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "height": 192,
+    "note": "defense-famous/majunga.ts (2026-11-16): three slices with sloping crowns, stepping apart as they rise, folded long faces, zigzag of cantilevered loggias, pale glass with white floor bands. Heights from IGN LiDAR HD MNS (tools/ign-mns.ts): slices 180-176, 185-192, 177-186 m. Look from fr.wikipedia photos 'Tour Majunga Février 2020.jpeg' and 'Tour Majunga Octobre 2022.jpeg'.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -35,8 +35,8 @@
     ],
     "name": "La Défense: Tour Orano (Areva, Fiat)",
     "procedural": "areva",
-    "height": 184,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "height": 178,
+    "note": "defense-famous/areva.ts: black granite square prism, windows widening upward; 178 m roof + 6 m mast (en.wikipedia Tour_Areva, ladefense.fr, pss-archi FR-92026-16); IGN MNS masked over the tower.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -46,7 +46,7 @@
     "name": "La Défense: Tour Granite",
     "procedural": "granite",
     "height": 184,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/granite.ts: wedge plan and slanted roof (prow 181 m, east flank 147 m) from IGN LiDAR HD MNS 2026-11-16; 184 m per fr.wikipedia Tour Granite; colour, fins and prow spine from the fr.wikipedia page photo Tour_Granite_Mai_2021.jpeg.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -56,7 +56,7 @@
     "name": "La Défense: Tour Engie T1",
     "procedural": "engieT1",
     "height": 169,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/engieT1.ts: sail profile (vertical S/E faces, NW face leaning in convexly to 60% depth at the roof), crown screen to 185 m. Sources: fr.wikipedia 'Tour T1' photos TourT1-oct08.jpg + Tour T1 Fevrier 2020.jpeg (finished tower, 2 angles); IGN LiDAR HD MNS roof 164-169 m above ground (roof plan = SE ~60% of footprint); crown 185 m Wikipedia; plan OSM way/82486329. The lower T1 B block is not in this way.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -65,8 +65,8 @@
     ],
     "name": "La Défense: Tour Saint-Gobain",
     "procedural": "saintGobain",
-    "height": 168,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "height": 178,
+    "note": "defense-famous/saintGobain.ts: fr.wikipedia (167.5 m from parvis, 178 m from street; photo Tour_Saint_Gobain_Mai_2020.jpeg, finished) + IGN LiDAR MNS 2026-11-16 (shaft roof sloping 133-140 m, glass cage top 159-173 m over ground 37.75 NGF). Pale blue shaft, white diagonal fins, sawtooth loggia slot, overhanging glass-cage crown.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -76,17 +76,16 @@
     "name": "La Défense: Tour Trinity",
     "procedural": "trinity",
     "height": 151,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/trinity.ts: deck over the N192/D992 trench (OSM building_passage) with columns between the carriageways and the road open beneath; blocks from IGN LiDAR HD MNS (south 131, east 135, summit 143 with a 119 step, north 108 m above the trench; dalle +5), 140 m above the dalle / 151 m roof (fr.wikipedia); decentred core slot with panoramic lifts (fr.wikipedia); pale glass, white floor bands, glass-railed terraces from Commons Base of the Trinity tower at La Defense, Paris area - 2021-02-21.jpg. No full-height finished photo fetched (Commons rate-limited).",
     "madeBy": "claude-opus-5-5"
   },
   {
     "osm": [
-      "way/82467015"
-    ],
+      "way/82467015", "way/82467016", "way/850519709", "way/82466958"],
     "name": "La Défense: Tour D2",
     "procedural": "tourD2",
-    "height": 175,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "height": 171,
+    "note": "defense-famous/tourD2.ts: avocado/bullet form (spindle plan on the OSM ring axes, widest ~0.4H, pointed nose from ~0.66H), bold white steel diagrid (~25 m diamonds) over blue-grey glass. Refs: fr.wikipedia Fichier:Tour_D2_Septembre_2022.jpeg (2022), Commons File:La-defense-2016-2.jpg (2016). Height: 171 m roof (en.wikipedia; fr.wikipedia gives 175 m), 37 storeys; IGN BD TOPO batiment hauteur 180.1 m from sol 41.6 m (below the dalle). IGN MNS lidar not fetched.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -98,7 +97,7 @@
     "name": "La Défense: Tour Carpe Diem",
     "procedural": "carpeDiem",
     "height": 166,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/carpeDiem.ts: folded-crystal shaft, slanted open crown screen round a planted terrace and plant block, SW wing. Heights from IGN LiDAR HD MNS (terraces 145-149 m, screen tips 159-165 m, core 162 m, wing ~25 m); creases/colour from a Panoramax street photo (2024) by the Carpe Diem sign.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -107,8 +106,8 @@
     ],
     "name": "La Défense: Tour Alto",
     "procedural": "tourAlto",
-    "height": 160,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "height": 154,
+    "note": "defense-famous/tourAlto.ts: inverted cone (12 cm out per floor, ~700→1,500 m² floors, fr.wikipedia), silver-blue glass with a white floor hoop (fr.wikipedia lead photo 'Tour Alto Mars 2022'). Heights IGN LiDAR MNS: roof 146, plant 154 above street ground; BD TOPO 160; fr.wikipedia 160 from street.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -126,9 +125,9 @@
       "way/82467041"
     ],
     "name": "La Défense: Tour CB21",
-    "procedural": "defenseGreen",
+    "procedural": "cb21",
     "height": 179,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/cb21.ts: OSM's cross ring; arms stop at 0.93 H, core to the roof. Pale green-grey glass on a silver grid from fr.wikipedia's lead photo 'Tour CB21 Août 2021' and Commons 'Esplanade Général Gaulle - Puteaux (FR92) - 2023-09-16'. Height 179 m (fr.wikipedia).",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -136,19 +135,18 @@
       "way/19546127"
     ],
     "name": "La Défense: Tour Légende",
-    "procedural": "defenseSteel",
+    "procedural": "legende",
     "height": 165,
     "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
     "madeBy": "claude-opus-5-5"
   },
   {
-    "osm": [
-      "way/229148698"
-    ],
-    "name": "La Défense: Tour PB6 (EDF)",
-    "procedural": "defenseBlue",
-    "height": 161,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "name": "La Défense: Cœur Défense",
+    "osm": ["relation/3071676", "way/229148698", "way/1158726203", "way/1158726204", "relation/3071677", "relation/3071678", "relation/3071679", "relation/3071680", "relation/3071682", "way/226276930", "way/226276932", "way/226276933"],
+    "procedural": "coeurDefense",
+    "height": 154,
+    "noShops": true,
+    "note": "defense-famous/coeurDefense.ts: towers A/B from way 229148698's part rings 1158726203/204, the 36 m block and three fingers from relation 3071676's outline (local pbf); the other parts inside (relations 3071677-82, wall=no canopies) claimed. Tops from IGN LiDAR HD MNS above the dalle (tools/ign-mns.ts 2026-11-16): tower roofs 149, plant 154, block 36.5 (Wikipedia: 161 m from the street, 39 storeys). Skin from Commons 'Cœur Défense and buildings around it, La Défense, Paris.jpg': pale cream-silver spandrels banded with grey-green glass. way/229148698 was formerly mis-claimed by a 'Tour PB6 (EDF)' stub entry; Tour EDF is Tour Légende (way/19546127, old_name=Tour EDF), so that entry was removed.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -156,9 +154,9 @@
       "way/82486022"
     ],
     "name": "La Défense: Tour Hopen",
-    "procedural": "defenseBlue",
-    "height": 155,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "procedural": "hopen",
+    "height": 153,
+    "note": "defense-famous/hopen.ts: ex-Adria, 2021–25 reclad: white slanted frame zigzagging over blue glass, V-groove, rooftop pavilion and mast (Chateauform Hopen reference photo 2025; paris-la-defense.com). Heights BD TOPO 153; IGN MNS roof 133 over the dalle, mast 165; fr.wikipedia 150/167.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -166,9 +164,9 @@
       "way/19450182"
     ],
     "name": "La Défense: Tour Ariane",
-    "procedural": "defenseSteel",
+    "procedural": "ariane",
     "height": 152,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/ariane.ts: OSM's slab ring; white aluminium punched grid of small pale windows, dark glass lobby, flat top, from fr.wikipedia's lead photo 'Tour Ariane Novembre 2021'. Height 152 m (fr.wikipedia).",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -176,9 +174,9 @@
       "way/82323076"
     ],
     "name": "La Défense: Tour Les Poissons, Ciel",
-    "procedural": "defenseStone",
+    "procedural": "ciel",
     "height": 150,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "Tour Les Poissons (Pottier, 1970): tan slab + lower dark block. Sources: fr.wikipedia 'Tour Les Poissons' (roof 129.5 m), Commons Tour_Les_Poissons_Juin_2020.jpeg; dark block height by eye.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -186,9 +184,9 @@
       "way/82467028"
     ],
     "name": "La Défense: Tour CBX (Dexia)",
-    "procedural": "defenseBlue",
+    "procedural": "cbx",
     "height": 142,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "Tour CBX (KPF/SRA 2005): straight + curved faces, roof sloping up to 142 m. Sources: fr.wikipedia 'Tour CBX', Commons Tour_CBX_Juillet_2020.jpeg; BD TOPO h 130.8 (low roof edge).",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -196,9 +194,9 @@
       "way/82468263"
     ],
     "name": "La Défense: Europlaza",
-    "procedural": "defenseBronze",
+    "procedural": "europlaza",
     "height": 135,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "Europlaza (1972, reclad 1999 B&B): green-grey glass, white bands, dark hipped roof, mast. Sources: fr.wikipedia 'Tour Europlaza' (135 m), Commons Tour_Europlaza_Aout_2021.jpeg.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -206,9 +204,9 @@
       "way/82486351"
     ],
     "name": "La Défense: Tour Égée",
-    "procedural": "defenseSteel",
+    "procedural": "egee",
     "height": 155,
-    "note": "batch7/defense.ts: the skin from memory of photographs; street-view check listed.",
+    "note": "defense-famous/egee.ts: OSM's wedge ring; pale silver glass, white edge columns at the sharp corners, white parapet, dark recessed lobby, from fr.wikipedia's lead photo 'Tour Egée Juillet 2020'. Height 155 m (fr.wikipedia).",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -217,7 +215,7 @@
       "relation/3071549"
     ],
     "noShops": true,
-    "note": "batch7/defense.ts tourCoupole: dark smoked glass on OSM's sawtooth ring, two setbacks at the top; the skyline draws tourCoupoleFar. From memory.",
+    "note": "defense-famous/tourCoupole.ts: six lobes from OSM relation 3071549's building:part rings (local pbf), tops from IGN LiDAR HD MNS above the dalle (tools/ign-mns.ts 2026-11-16): main 179 (+plant 183), N 161, S 135, E 110, NW 44, SW 34; blue-grey sky-mirror glass in silver frames, lighter toward the top, from the fr.wikipedia photo (upload.wikimedia.org/wikipedia/fr/8/89/Tour-Total.jpg) and the owner's 2026-11-05 note. The skyline still draws batch7 tourCoupoleFar.",
     "madeBy": "claude-opus-5-5",
     "procedural": "tourCoupole",
     "height": 187
@@ -227,13 +225,10 @@
     "osm": [
       "relation/3071645"
     ],
-    "restyle": "skyscraper-banded",
+    "procedural": "eqho",
+    "height": 130,
     "noShops": true,
-    "note": "Ex-Descartes (2013's reclad): grey glass striped in gold at every floor (slabBands in the skyscraper-banded style; trim = the gold). A relation of parts, so a restyle.",
-    "roof": "flat",
-    "wall": "#737b81",
-    "trim": "#c4a24a",
-    "roofColour": "#8a9499",
+    "note": "defense-famous/eqho.ts: ex-Descartes, 2013 reclad. 66×30 m slab with a half-cylinder scooped from its north face, on a podium filling the OSM ring; pale silver-grey glass, light warm-grey floor bands (fr.wikipedia lead photo 'Tour Eqho Février 2022'; OSM facade colour #E0E0E0). Plan and heights IGN LiDAR MNS: roof 127, plant 130; BD TOPO 129.9.",
     "madeBy": "claude-opus-5-5"
   },
   {
@@ -415,6 +410,26 @@
     "height": 25,
     "sign": false,
     "note": "Standalone at the Bains-Douches's north-east corner, read off the aerial 48.8597 2.3510; the exact corner is worth a street-view check.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/226235094"
+    ],
+    "name": "La Défense: Tour Alicante (Société Générale)",
+    "procedural": "alicante",
+    "height": 167,
+    "note": "defense-famous/societeGeneraleTwins.ts: quarter-round plan with a straight inner front and dark recessed slot, one ~30 m skillion crown falling towards the partner tower (OSM roof:direction/roof:height), ~48 m joint base. Height 167 m / 37 floors from fr.wikipedia 'Tours Société Générale', checked on IGN LiDAR HD MNS (back edge 158-170 m, front eave 130-137 m, base 40-55 m). Colour from Commons photos Tours_Chassagne_Alicante_Aout_2022.jpeg and Tours_Granite_Chassagne_et_Alicante_(vue_Parc_Nanterre).JPG: silver-blue curved faces with floor bands, dark tinted straight fronts (owner: one of the few dark complexes; replaces the operaGlass restyle, owner 2026-10-30 'colors are not quite right').",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "osm": [
+      "way/226235095"
+    ],
+    "name": "La Défense: Tour Chassagne (Société Générale)",
+    "procedural": "chassagne",
+    "height": 167,
+    "note": "defense-famous/societeGeneraleTwins.ts: quarter-round plan with a straight inner front and dark recessed slot, one ~30 m skillion crown falling towards the partner tower (OSM roof:direction/roof:height), ~48 m joint base. Height 167 m / 37 floors from fr.wikipedia 'Tours Société Générale', checked on IGN LiDAR HD MNS (back edge 158-170 m, front eave 130-137 m, base 40-55 m). Colour from Commons photos Tours_Chassagne_Alicante_Aout_2022.jpeg and Tours_Granite_Chassagne_et_Alicante_(vue_Parc_Nanterre).JPG: silver-blue curved faces with floor bands, dark tinted straight fronts (owner: one of the few dark complexes; replaces the operaGlass restyle, owner 2026-10-30 'colors are not quite right').",
     "madeBy": "claude-opus-5-5"
   }
 ]

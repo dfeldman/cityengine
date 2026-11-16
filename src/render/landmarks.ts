@@ -1245,6 +1245,11 @@ export class Landmarks {
     fit.grade = this.terrain.heightAt(cx - fit.hz * Math.sin(rotation), cz - fit.hz * Math.cos(rotation)) - y
     fit.groundAt = (lx: number, lz: number): number =>
       this.terrain.heightAt(cx + lx * Math.cos(rotation) + lz * Math.sin(rotation), cz - lx * Math.sin(rotation) + lz * Math.cos(rotation)) - y
+    fit.baseY = y
+    fit.toLocal = (wx: number, wz: number) => {
+      const dx = wx - cx - ox, dz = wz - cz - oz
+      return { x: dx * Math.cos(rotation) - dz * Math.sin(rotation), z: dx * Math.sin(rotation) + dz * Math.cos(rotation) }
+    }
     // (faces another model covers: world bearings into the model's frame, the inverse of the placement's turn)
     if (e.bare?.length) fit.bare = e.bare.map((b) => {
       const wx = Math.sin((b * Math.PI) / 180), wz = Math.cos((b * Math.PI) / 180)

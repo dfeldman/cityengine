@@ -1,21 +1,23 @@
 /**
- * Résidence étudiante Campuséa (Puteaux, 2018, Ateliers Jean Nouvel, 75 m, 20 storeys of student flats; OSM way/547648868,
- * no parts): a slim slab on OSM's quadrilateral, pale grey-white concrete skin punched by deep dark window openings at a
- * close pitch, a recessed dark ground floor and a flat parapet. From memory of photographs: tone is the thing to check.
+ * Résidence étudiante Campuséa / YouFirst Campus (Puteaux, 2018, Ateliers Jean Nouvel, R+21 student flats; OSM
+ * way/547648868, no parts): a slim tower on OSM's quadrilateral in close-set grey-blue glass with fine vertical fins,
+ * a darker glazed ground floor, its roof cut on a slant. Sources: Panoramax street photos round 48.8884,2.2352 (slim
+ * dark-glass faceted tower, slanted top); pss-archi.eu FR-92062-45921 (Nouvel, R+21, 75.2 m total); height IGN BD TOPO
+ * batiment.hauteur 62.9 m for the main roof, the slanted crown taking it toward pss-archi's total.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 75
+const HEIGHT = 62.9, CROWN_H = 8
 const LOBBY_H = 5
-const WALL = '#b9b7b0', GLASS = '#2a3036', ROOF = '#8a8985', LOBBY = '#24282b', PARAPET = '#a09e98'
-const FLOOR = 3.5, PITCH = 2.2, SOLID = 0.35, PARAPET_H = 1.5
+const WALL = '#55606a', GLASS = '#6f8496', ROOF = '#4a5157', LOBBY = '#2a3036', CROWN = '#5c6873'
+const FLOOR = 2.85, PITCH = 1.2, SOLID = 0.2, DEPTH = 0.25
 
-export const campusea = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
+export const campusea = (out: MeshBuilder, fit: Fit): void => tower(out, { ...fit, height: HEIGHT }, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY), glass: hex('#33404a'), pitch: 2.5 } },
+  tiers: [{ to: 1, face: { kind: 'fins', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, depth: DEPTH } }],
+  crown: { kind: 'sliced', height: CROWN_H, colour: hex(CROWN) },
 })

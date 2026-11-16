@@ -184,6 +184,42 @@
     "note": "Bartholdi's copper lion on the Place Denfert-Rochereau. Placed on its pedestal, OSM way 79629168's box turned to its long axis (osmium, 2026-10-29); the lion looks along local +x (bearing 209.5) — its real heading not checked against a photograph."
   },
   {
+    "name": "Fontaine Agam",
+    "procedural": "fontaineAgam",
+    "osm": ["way/19464174"],
+    "lat": 48.890465,
+    "lon": 2.242627,
+    "rotateDeg": 116,
+    "size": [57.2, 27],
+    "height": 4,
+    "note": "Yaacov Agam's 1977 mosaic basin on the parvis: kerb, coloured bands in the floor, rows of jets. Fitted to OSM way 19464174 (osmium, local pbf). Low kerb only, so the dalle stays rideable round it.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parvis de La Défense — paving",
+    "procedural": "parvisPaving",
+    "lat": 48.89069,
+    "lon": 2.24182,
+    "rotateDeg": 206,
+    "size": [900, 70],
+    "height": 1,
+    "sign": false,
+    "note": "Decal of the dalle's paving from the Arche (local −x) to the Esplanade's east end: pink joint grid, red-pink strips along the axis, pink bands across. Axis and centre from the Arche (48.89256, 2.23577) at bearing 116, checked against Fontaine Agam on the line. Patterns read off the owner's Google satellite screenshot 2026-11-16 (approximate). defense-famous/parvis.ts.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Bassin Takis",
+    "procedural": "bassinTakis",
+    "osm": ["way/19463289"],
+    "lat": 48.888067,
+    "lon": 2.250142,
+    "rotateDeg": 205.7,
+    "size": [56.5, 52.4],
+    "height": 9,
+    "note": "Takis's 1988 pool of 49 signaux lumineux: steel stems 3-9 m with coloured lamps, standing in a dark basin. Fitted to OSM way 19463289 (osmium, local pbf). Low kerb only.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
     "name": "Grande Arche de la Défense",
     "procedural": "grandeArche",
     "osm": [
@@ -199,7 +235,8 @@
       112.3
     ],
     "height": 110,
-    "note": "Spreckelsen and Andreu's hollow cube closing the axis. Placed on OSM way 19441489's box turned to its sides (osmium, 2026-10-29); the opening runs through along local z, −z toward Paris (bearing 122.1). The outline, its duplicate 621620714, the roof's office way 225694316 and their ~30 building:parts (the steps' 13 treads, the soffit's steps, whose heights the model follows) are replaced."
+    "note": "Spreckelsen and Andreu's hollow cube, 110.9 m (Wikipedia; soffit steps 100-108 m from OSM building:parts). Placed on OSM way 19441489's box (osmium, 2026-10-29), which carries the 6.33° twist; opening along local z, −z toward Paris. Faces plain per owner 2026-11-03: smooth marble outside, pale glass inside the opening, Grand Escalier 13 treads, Nuage, panoramic lifts. Outline, duplicate 621620714, roof way 225694316 and the ~30 parts are replaced.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Tour Montparnasse",
@@ -970,7 +1007,8 @@
     ],
     "height": 46.3,
     "front": 206,
-    "note": "The vault of 1958, three glazed arches on a triangle of 215 m (OSM relation 3071527 and its parts, all replaced) and 46.3 m at the crown (Wikipedia fr; OSM says 50). Front −z toward the Quatre Temps, along the edge at bearing 116. The rim's curve is by eye from a 1991 Commons photograph; the shell between is an interpolation."
+    "note": "The vault of 1958 (Camelot, de Mailly, Zehrfuss; Prouvé; reglazed 2009): triangle of 218 m a side on three abutments (OSM relation 3071527 and parts, all replaced), 46.3 m at the crown (Wikipedia fr, matching the 46 m BD TOPO apex). Three corrugated shell lobes meeting in valleys to the corners, white rim, inclined glass arches with vertical fins, Hilton/office blocks inside. Shape from Commons photos: Puteaux - Centre des nouvelles industries et technologies - 2025-10-08 17-14-11 001.jpg and 2010-09-28 - CNIT Paris 22.jpg.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Tour First",
@@ -997,7 +1035,8 @@
     ],
     "height": 231,
     "front": 206,
-    "note": "A simple model for the skyline: 225 m to the roof and 231 to the spike (Wikipedia fr), OSM way 82466977's outline and its colour. Its OSM building:parts, whose heights run to 259 m, are replaced and not followed. The stepped crown is from a Commons skyline photograph and is only an approximation."
+    "note": "KPF 2011 rebuild of Tour UAP: Y plan of three wings (NW 231 m, E 190 m, S 170 m, each with a 25 m sloped glass screen), core crown and mast to 259 m, 16 m glass atrium base. Plan and part heights from OSM parts (osmium, local pbf); look from Commons 'Tour First - La Defense - Inauguration 6 mai 2011.jpg'. Lidar not measured.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Les 4 Temps",
@@ -1024,7 +1063,17 @@
       "way/638154290",
       "way/21145238",
       "way/250145895",
-      "way/250145896"
+      "way/250145896",
+      "way/68086774",
+      "way/68086780",
+      "way/68086788",
+      "way/68086791",
+      "way/68094160",
+      "way/68094161",
+      "way/68252296",
+      "way/636957675",
+      "way/636957678",
+      "way/638154285"
     ],
     "lat": 48.890542,
     "lon": 2.237526,
@@ -1034,7 +1083,8 @@
     ],
     "height": 24,
     "front": 206,
-    "note": "The podium of the shopping centre, OSM way 396802664's outline. The steps to Le Dôme where OSM's wide flights are (lat 48.89142, lon 2.2365), the porch from a Commons photograph of 2013. Its roof's height is by eye over the parvis: no figure was found, and most of the centre is under the slab."
+    "note": "Westfield Les 4 Temps: OSM way 396802664's outline (defense-famous/quatreTemps.ts). Glazed shopfronts on the parvis faces, glass entrance with the red Westfield band and sloped glass canopy at the top of the steps (OSM flights, 48.89142,2.2365), roof car-park decks at the east end. Generic OSM buildings inside the footprint claimed (osmium, 2026-11-16). Roof height by eye over the parvis.",
+    "madeBy": "claude-opus-5-5"
   },
   {
     "name": "Dôme Imax",

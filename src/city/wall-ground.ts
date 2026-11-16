@@ -117,7 +117,16 @@ export const WT_ON = true, WT_NEAR_EDGE = 4, WT_EDGE = 0.4
 /** …and any triangle across a STEEP DROP — a trench wall's top, a tunnel mouth's cut, a road's corridor edge over the ground beside
  *  it (owner, 2026-11-10: "the ground needs more tesselation whenever there is a steep dropoff"): corners differing by WT_DROP_MIN m and
  *  more than WT_DROP_GRADE per metre are split on down to WT_DROP_EDGE m, so the drop is a step, not a ramp of big triangles */
-export const WT_TUNE = { drop: true, dropMin: 0.5, dropGrade: 1.0, dropEdge: 0.4, dropScan: 1, dropStepFrac: 0.5, walls: true }
+export const WT_TUNE = { drop: true, dropMin: 0.5, dropGrade: 1.0, dropEdge: 0.4, dropScan: 1, dropStepFrac: 0.5, walls: true, conform: 0.15, conformEdge: 1, conformStep: 2 }
+/**
+ * CONFORM (owner, 2026-11-16, banks between street levels at La Défense and the Pont de Neuilly: shards of pavement over the bank that
+ * moved with the camera). The base ground (triangles up to twice the post step) and each layer on it (the corridor's strip, the
+ * pavements) are different chords of the same ground: at a bank's toe or lip they parted by a metre, and a layer drawn over the ground
+ * (the ground groups clear depth) hung over the bank in pieces. An edge longer than `conformEdge` m whose middle lies more than
+ * `conform` m off the ground there is split, so every draped layer follows the one surface. Planar ground is never split. 0: off.
+ * Only over ground shipped at `conformStep` m or finer (the Seine band's): on San Francisco's 4–20 m hills it more than doubled the
+ * ground layers' triangles (Russian Hill, 1.4M → 3.3M), and the chords there are as they have always been.
+ */
 /** (WT_TUNE: drop on/off, WT_DROP_MIN, WT_DROP_GRADE, WT_DROP_EDGE, the scan step along a long edge (m), the walls' own refinement on/off) */
 /** triangles refineAtWalls has added so far (the heap report's question: what the walls' fine ground costs) */
 export let wallTrianglesAdded = 0
@@ -177,6 +186,8 @@ export function* refineAtWallsSteps(out: Mesh3, terrain: Terrain, marked?: numbe
     return false
   }
   const len = (a: number, b: number): number => Math.hypot(P[a * 3] - P[b * 3], P[a * 3 + 2] - P[b * 3 + 2])
+  const bulge = (a: number, b: number, l: number): boolean => l > D.conformEdge && terrain.stepAt(P[a * 3], P[a * 3 + 2]) <= D.conformStep &&
+    Math.abs(terrain.heightAt((P[a * 3] + P[b * 3]) / 2, (P[a * 3 + 2] + P[b * 3 + 2]) / 2) - (hOf(a) + hOf(b)) / 2) > D.conform
   // (a stack, not recursion, so the refinement can pause between any two splits)
   const stack: number[] = []
   let lo = false, hi = false
@@ -192,7 +203,8 @@ export function* refineAtWallsSteps(out: Mesh3, terrain: Terrain, marked?: numbe
       look(x1, z1); look((x1 + x2) / 2, (z1 + z2) / 2)
       look(x2, z2); look((x2 + x0) / 2, (z2 + z0) / 2)
       look((x0 + x1 + x2) / 3, (z0 + z1 + z2) / 3)
-      if ((lo && hi) || ((lo || hi) && m > WT_NEAR_EDGE) || (D.drop && m > D.dropEdge && (steep(a, b, ab) || steep(b, c, bc) || steep(c, a, ca)))) {
+      if ((lo && hi) || ((lo || hi) && m > WT_NEAR_EDGE) || (D.drop && m > D.dropEdge && (steep(a, b, ab) || steep(b, c, bc) || steep(c, a, ca))) ||
+        (D.conform > 0 && m > D.conformEdge && (bulge(a, b, ab) || bulge(b, c, bc) || bulge(c, a, ca)))) {
         if (m === ab) { const q = mid(a, b); stack.push(q, b, c, depth + 1, a, q, c, depth + 1) }
         else if (m === bc) { const q = mid(b, c); stack.push(q, c, a, depth + 1, b, q, a, depth + 1) }
         else { const q = mid(c, a); stack.push(q, a, b, depth + 1, c, q, b, depth + 1) }

@@ -1431,6 +1431,8 @@ function circleCut(p: Point, q: Point, c: Point, R: number): number | null {
 /** The circle and spokes in place of everything inside a roundabout's boundary. */
 /** a roundabout's new ways take the heights of this many nearest road points in the place */
 const ROUNDABOUT_NEAR = 6
+/** a way this far (m) off the place's level at every point inside it passes under or over, untouched */
+export const ROUNDABOUT_LEVEL = 2.5
 
 export function applyRoundabout(es: RideEdge[], o: Roundabout, ids: Ids, groundAt: (x: number, z: number) => number): RideEdge[] {
   const c = { x: o.x, z: o.z }
@@ -1441,9 +1443,32 @@ export function applyRoundabout(es: RideEdge[], o: Roundabout, ids: Ids, groundA
    * against is the coarse grid, 2.5 m under a bridgehead the bake levelled its streets onto: so a point takes the heights of the
    * nearest road points inside the place, the ground only where there are none.
    */
-  const samples: { p: Point; h: number }[] = []
+  /*
+   * A WAY UNDER (OR OVER) THE PLACE PASSES THROUGH IT (owner, 2026-11-15, the Place de Varsovie: "the route in the tunnel also jumps to
+   * street level (both routes in it)"): the Avenue de New York runs in a trench under the place, 7 m down, and both carriageways were
+   * cut at the boundary and spoked up onto the ring. The place's level is the median of its road points; a way all of whose points
+   * inside the boundary are more than ROUNDABOUT_LEVEL m off it is left as it is, and lends the ring no heights.
+   */
+  const pts0: number[] = []
   for (const e of es) {
     if (e.foot || !e.heights || e.heights.length !== e.points.length || e.bridge || e.tunnel) continue
+    e.points.forEach((p, i) => { if (distance(p, c) < o.R) pts0.push(e.heights![i]) })
+  }
+  pts0.sort((a, b) => a - b)
+  const level = pts0.length ? pts0[Math.floor(pts0.length / 2)] : null
+  const apart = (e: RideEdge): boolean => {
+    if (level === null || !e.heights || e.heights.length !== e.points.length) return false
+    let any = false
+    for (let i = 0; i < e.points.length; i++) {
+      if (distance(e.points[i], c) >= o.R) continue
+      any = true
+      if (Math.abs(e.heights[i] - level) <= ROUNDABOUT_LEVEL) return false
+    }
+    return any
+  }
+  const samples: { p: Point; h: number }[] = []
+  for (const e of es) {
+    if (e.foot || !e.heights || e.heights.length !== e.points.length || e.bridge || e.tunnel || apart(e)) continue
     e.points.forEach((p, i) => { if (distance(p, c) < o.R) samples.push({ p, h: e.heights![i] }) })
   }
   const heightAt = (x: number, z: number): number => {
@@ -1516,7 +1541,7 @@ export function applyRoundabout(es: RideEdge[], o: Roundabout, ids: Ids, groundA
     const dips = (i: number): number[] => circleCuts(pts[i - 1], pts[i], c, o.R)
     let touches = pts.some(inside)
     for (let i = 1; i < pts.length && !touches; i++) if (dips(i).length === 2) touches = true
-    if (!touches) { out.push(e); continue }
+    if (!touches || apart(e)) { out.push(e); continue }
     const hs = e.heights && e.heights.length === pts.length ? e.heights : null
     // the runs of the edge outside the boundary, each cut where it crosses
     let run: Point[] = []

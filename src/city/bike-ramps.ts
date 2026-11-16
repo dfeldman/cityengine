@@ -21,6 +21,8 @@ export interface BikeRampDecl {
   top: { lat: number; lon: number; way?: string }
   bottom: { lat: number; lon: number; way?: string }
   via?: [number, number][]
+  /** the ramp stands as a steel deck on posts rather than on the ground */
+  elevated?: boolean
   maxGrade?: number
   width?: number
 }
@@ -35,6 +37,10 @@ export const BIKE_RAMPS: Record<string, BikeRampDecl[]> = {
     // Pont National, left bank: the elevated boulevard (h 5.1 in bake 2) down to the upper-quay cycleway (1.8) along the sidewalk's
     // west side — the only way up was steps and a lift. ~64 m at ~5 %. (Unlooked: no overhead shot yet of walls along the line)
     { bridge: 'Pont National', label: 'left bank, boulevard to Quai d\'Ivry',
+      // (2026-11-16, unresolved: the boulevard's embankment stays at 4.3–6.5 m almost to the quai and drops at a wall near the end, so a
+      //  ramp falling at 10 % from the boulevard runs inside it along most of its length on any line. Tried and reverted: the via point
+      //  5 and 9 m west, and the ramp as a deck on posts (hidden under the sidewalks' paving and the embankment). Its line needs a design:
+      //  along the embankment's wall, descending where the ground does. docs/SEINE-MULTILEVEL.md round 6)
       top: { lat: 48.827052, lon: 2.385394, way: 'Jean Simon' }, via: [[48.827294, 2.385217]],
       bottom: { lat: 48.827537, lon: 2.385408, way: 'Quai d\'Ivry' } },
   ],
@@ -82,6 +88,8 @@ export function layBikeRamps(edges: PackedEdge[], region: string, toLocal: (lat:
     const e: PackedEdge = {
       id: id++, a: top.n, b: bot.n, points: packPoints(pts), heights, surface: 'asphalt', width: d.width ?? RAMP_WIDTH, walk: 0,
       name: `${d.bridge} bike ramp`, foot: false, kind: 'cycleway', ramp: true, bikeRamp: true,
+      // (a declared `elevated` ramp stands as a steel deck on posts; otherwise it lies on the ground)
+      ...(d.elevated ? { bridge: true, layer: 1 } : {}),
     }
     edges.push(e); added.push(e)
     log.push(`${d.bridge} ${d.label}: ${Math.round(L)} m, ${top.h.toFixed(1)} → ${bot.h.toFixed(1)}, ${(grade * 100).toFixed(1)} %${grade > (d.maxGrade ?? RAMP_MAX_GRADE) ? ' — STEEPER than its max: add a via point' : ''} (top ${top.e.name ?? top.e.kind}, bottom ${bot.e.name ?? bot.e.kind})`)

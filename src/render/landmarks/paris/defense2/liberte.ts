@@ -1,21 +1,21 @@
 /**
- * Liberté (La Défense, Puteaux, 20 levels of flats, ~69 m; OSM way/552869771, building=residential, no parts): a long
- * residential block on OSM's ring, pale warm concrete with regular punched windows, a recessed dark ground floor and a
- * plain parapet. From the tags and the footprint, not from photographs: check the tone against a street view.
+ * Liberté (Puteaux, Jacques Kalisz's Liberté-Égalité-Fraternité residential group; OSM way/552869771; 54.5 m BD TOPO,
+ * OSM's 69 m is too tall): a long block of flats on OSM's ring, pale off-white concrete with continuous balcony
+ * slabs and darker window strips, a recessed dark ground floor. Height from local BD TOPO; tone not photo-checked.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 69
-const LOBBY_H = 5
-const WALL = '#cfc8bb', GLASS = '#56687a', ROOF = '#8d8a85', LOBBY = '#3d4448', PARAPET = '#b9b2a6'
-const FLOOR = 3.3, PITCH = 3.4, SOLID = 0.45, PARAPET_H = 1.2
+const HEIGHT = 54.5
+const LOBBY_H = 4
+const WALL = '#e2ded5', WINDOW = '#76848c', LOBBY = '#4c4d4c', ROOF = '#8f8f8b'
+const FLOOR = 2.9, SOLID = 0.42, DEPTH = 0.9, PARAPET_H = 1.2
 
 export const liberte = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'blank', wall: hex(LOBBY), material: 'concrete' } },
-  tiers: [{ to: 1, face: { kind: 'punched', wall: hex(WALL), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'concrete' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY), glass: hex('#3c4448'), floor: LOBBY_H, pitch: 3 } },
+  tiers: [{ to: 1, face: { kind: 'bands', wall: hex(WALL), glass: hex(WINDOW), floor: FLOOR, solid: SOLID, depth: DEPTH } }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(WALL) },
 })

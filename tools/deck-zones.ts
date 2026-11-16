@@ -21,6 +21,7 @@
 import type { PackedEdge, QuayWall } from '../src/city/package.ts'
 import { applyLevelPlans } from './level-plans.ts'
 import { deckChains } from './rail-levels.ts'
+import { alignWallLine } from './wall-align.ts'
 import { ownLevels } from './bridges.ts'
 import type { PackedRail } from '../src/city/package.ts'
 
@@ -210,6 +211,11 @@ export class DeckZone {
     this.shape = spec.shape ?? null
     const loc = (r: LLp[]) => r.flatMap(([lat, lon]) => { const q = toLocal(lat, lon); return [q.x, q.z] })
     this.lines = (spec.btLines ?? []).map(loc)
+    // (BD TOPO's wall lines moved onto the lidar's step, as the ground pass has them: tools/wall-align.ts)
+    if (this.mOf) {
+      const m = this.mOf
+      this.lines = this.lines.map((r) => { const pts: { x: number; z: number }[] = []; for (let i = 0; i + 1 < r.length; i += 2) pts.push({ x: r[i], z: r[i + 1] }); return alignWallLine(pts, m).line.flatMap((q) => [q.x, q.z]) })
+    }
     this.ring = loc(spec.ring); this.fade = spec.fade ?? DZ_FADE; this.floor = (spec.noFadeBelow ?? -Infinity) - datum
     this.levels = spec.levels.map((l) => {
       const a = l.slope && toLocal(l.slope.from[0], l.slope.from[1]), b = l.slope && toLocal(l.slope.to[0], l.slope.to[1])

@@ -133,3 +133,89 @@ Scope: detail box only (lon > 2.2185, lat < 48.8975); buildings whose height or 
 | 40 | (unnamed) | way/68851009 | apartments | 2.2484,48.8853 | Sonnet |
 | 40 | (unnamed) | way/1389195390 | yes | 2.2558,48.8971 | Sonnet |
 | 40 | (unnamed) | way/1361938169 | office | 2.233,48.888 | Sonnet |
+
+## Status 2026-11-16 (rebuild pass)
+
+Every building in the core (axis Arche→Neptune, ±380 m; 426 OSM outlines, docs/landmarks/DEFENSE-CORE.tsv with BD TOPO heights) and every row of this audit now has its own builder, except 20 deliberate skips: 2 footbridges (drawn as bridges), 6 slivers < 8 m², 10 underground/indoor rooms (the bake drops them: tools/bake.ts `belowGround`), La Grenouille (a sculpture: GLB later) and the indoor Poste d'Alsace.
+
+- Famous towers, one file each: src/render/landmarks/paris/defense-famous/ (First, Hekla, The Link, Majunga, Grande Arche + Agam/Takis pools, CNIT, Quatre Temps, D2, Coupole, Carpe Diem, Orano, Trinity (N192 open under it), Saint-Gobain, Granite, Société Générale twins, Cœur Défense (new entry), Engie T1, Légende/PB6 (the old "PB6" entry was Cœur Défense's outline), CB21, Ariane, Égée, Alto, Eqho (was a red missing-art restyle), Hopen, Ciel/Poissons, CBX, Europlaza).
+- Named Tier A/B: defense2/ rewritten from photos + BD TOPO heights (Nuages kit, Damiers kit with the Passage de Seine / Voie de l'Ancre passages open).
+- Everything else: defense3/ (kit.ts + cluster1–6, small1–2, tierc), defense3.json; looks from one Panoramax frame each where one existed.
+- Generic La Défense curtain walls are pale (src/city/hand-looks.ts AREAS "La Défense (generic towers)" + facade-material GLASS_PALE_GAIN).
+- Raised walkways: docs/DEFENSE-WALKWAYS.md (BD TOPO deck heights, dalle ground, stairs at deck ends, closed decks off the bike graph; shipped in the 2026-11-16 bakes).
+- Checking a model in-city: scratchpad frame.sh / tools/shoot-landmark.sh with ONLY=<entry name> (draws only that landmark) and AIMH.
+
+
+## Renderer check 2026-11-16
+
+Pass over La Défense entries >= 60 m (63 found; Montparnasse, Triangle and the churches are outside scope). One Panoramax frame per tower, read by Haiku off a contact sheet at ~265 px; glass tone varies with sky, so only med-confidence disagreements are flagged and no constants were changed.
+
+| name | builder | photo source | verdict |
+|---|---|---|---|
+| The Link | defense-famous/theLink.ts | Commons Link Oct 2025 + Panoramax | ok (Panoramax a touch darker, sky-dependent) |
+| Tour First | defense-famous/tourFirst.ts | Commons inauguration photo | ok (not re-photographed; lidar not measured, OSM part heights) |
+| Hekla | defense-famous/hekla.ts | Commons + Panoramax | ok |
+| Majunga | defense-famous/majunga.ts | fr.wiki + Panoramax; lidar-measured | ok |
+| Coupole | defense-famous/tourCoupole.ts | fr.wiki + Panoramax; lidar-measured | ok |
+| Granite | defense-famous/granite.ts | fr.wiki + Panoramax; lidar-measured | ok |
+| CB21 | defense-famous/cb21.ts | Panoramax + Commons "La Défense - Paris photo5" (daylight) | ok (second daylight photo shows pale silver-grey notched tower; the earlier teal read was a neighbouring dark-green tower) |
+| Saint-Gobain | defense-famous/saintGobain.ts | fr.wiki + Panoramax; lidar-measured | ok |
+| Orano (Areva) | defense-famous/areva.ts | Panoramax | ok (dark) |
+| D2 | defense-famous/tourD2.ts | fr.wiki Sept 2022 + Panoramax | ok (white lattice over blue-grey glass) |
+| Engie T1 | defense-famous/engieT1.ts | fr.wiki + Panoramax; lidar-measured | ok (Panoramax frame darker, ~#4f6170, low confidence; sky reflection) |
+| Chassagne / Alicante | defense-famous/societeGeneraleTwins.ts | Commons + Panoramax | ok |
+| Carpe Diem | defense-famous/carpeDiem.ts | Panoramax 2024; lidar-measured | ok |
+| Légende | defense-famous/legende.ts + batch7/defense.ts | Panoramax frame was a tunnel shot | unchecked: no usable photo |
+| Égée | defense-famous/egee.ts | fr.wiki + Panoramax | ok |
+| Alto | defense-famous/tourAlto.ts | fr.wiki + Panoramax; lidar-measured | ok (Panoramax mid-dark ~#5b6f85 vs #abc0cf, med confidence; likely sky-dependent, recheck) |
+| Cœur Défense | defense-famous/coeurDefense.ts | Commons; lidar-measured | unchecked: Panoramax frame in a tunnel |
+| Hopen | defense-famous/hopen.ts | reference photo 2025 + Panoramax | unchecked: no unambiguous second daylight photo found; dark navy Panoramax frame likely sky/shadow |
+| Ariane | defense-famous/ariane.ts | fr.wiki | unchecked: Panoramax tower too small |
+| Trinity | defense-famous/trinity.ts | Commons 2021; lidar-traced | ok (Panoramax darker, low confidence) |
+| Les Poissons / Ciel | defense-famous/ciel.ts | Commons June 2020 | unchecked: distant frame |
+| CBX | defense-famous/cbx.ts | Commons + Panoramax | ok |
+| Europlaza | defense-famous/europlaza.ts | Commons Aug 2021 + Commons daylight skyline (Puteaux et La Défense) | ok (pale white-grey at distance, not slate; Panoramax dark frame was shadow) |
+| Défense 2000 | defense2/defense2000.ts | en.wiki page image | ok (photo-sourced) |
+| Eqho | defense-famous/eqho.ts | fr.wiki, OSM facade:color; lidar-measured | ok |
+| Grande Arche | defense-famous/grandeArche.ts | Wikipedia 110.9 m | ok (not re-photographed) |
+
+Second pass 2026-11-16 (Commons / Wikipedia thumbnails, glance-level colour and massing check; 3 tuned, 14 ok, 19 unchecked for want of a usable daylight photo):
+
+| name | builder | photo source | verdict |
+|---|---|---|---|
+| Tour France | defense2/tourFrance.ts | none usable | unchecked: wikipedia thumbnail not retrievable; only distant Commons frames |
+| Franklin | defense2/tourFranklin.ts | fr.wiki Juillet 2021 | ok (near-black bronze glass) |
+| W | defense2/tourW.ts | fr.wiki Sept 2022 | ok |
+| Séquoia | defense2/tourSequoia.ts | fr.wiki | ok |
+| Michelet | defense2/tourMichelet.ts | fr.wiki Sept 2022 | ok |
+| CGI | defense2/tourCgi.ts | fr.wiki Juillet 2020 | ok |
+| Allianz-Neptune | defense2/tourNeptune.ts | none usable | unchecked: no photo retrieved |
+| Manhattan | defense2/tourManhattan.ts | fr.wiki | ok |
+| Initiale | defense2/tourInitiale.ts | none usable | unchecked: only distant/grey-sky Commons frames |
+| Atlantique | defense2/tourAtlantique.ts | fr.wiki | fixed: glass #8b99a5 -> #767b7f, mullion #c4c9cc -> #aeb2b3 (photo reads darker warm grey) |
+| Archipel | defense2/archipel.ts | none usable | unchecked: no photo retrieved |
+| Aurore | defense2/tourAurore.ts | fr.wiki | ok |
+| Nuages 1/2 | defense2/tourNuages1/2.ts | none usable | unchecked: search returned only Aillaud towers at Nanterre |
+| Ève | defense2/tourEve.ts | fr.wiki | ok |
+| Gambetta | defense2/tourGambetta.ts | fr.wiki | fixed: wall #e4dfd3 -> #cfcbc1 (photo is mid-grey concrete) |
+| Opus 12 | defense2/tourOpus12.ts | fr.wiki Nov 2021 | ok |
+| Allianz One | defense2/tourAllianzOne.ts | fr.wiki Sept 2022 | ok |
+| Emblem | defense2/tourEmblem.ts | fr.wiki Mai 2022 | fixed: glass #6f8798 -> #55697f, fin glass #5d7486 -> #485c72 (photo is dark navy between white fins) |
+| Europe | defense2/tourEurope.ts | none usable | unchecked: only a snow frame with mixed towers |
+| Prisma | defense2/tourPrisma.ts | fr.wiki Juillet 2022 | unchecked: tower too small in frame |
+| Enedis | defense2/tourEnedis.ts | none usable | unchecked: page image returned the Tower of London |
+| La Pacific | defense2/laPacific.ts | fr.wiki Juin 2022 | ok |
+| Pascal B | defense2/tourPascalB.ts | fr.wiki + Commons | ok (low confidence; photo reads a touch warmer grey) |
+| Voltaire | defense2/tourVoltaire.ts | fr.wiki | ok |
+| Vista | defense2/tourVista.ts | none usable | unchecked: only night panoramas |
+| Meliá | defense2/meliaParis.ts | none usable | unchecked: only night views |
+| PB5 | defense2/tourPb5.ts | none usable | unchecked: no identifiable frame |
+| Exaltis | defense2/exaltis.ts | fr.wiki Aout 2022 | ok |
+| Damiers du Dauphiné | defense2/damiersDauphine.ts | none usable | unchecked: no photo retrieved |
+| Kupka A&B | defense2/kupkaAB.ts | none usable | unchecked: only saturated night photo |
+| Pullman | defense2/hotelPullman.ts | none usable | unchecked: no photo retrieved |
+| Central Parc | defense2/centralParc.ts | none usable | unchecked: no photo retrieved |
+| Les Gémeaux | defense2/lesGemeaux.ts | none usable | unchecked: no photo retrieved |
+| Quatre Temps west A/B | defense2/quartierAudranA/B.ts | Commons parvis frame | unchecked: towers too small |
+| generic d3g canopy 68852697 | defense2/canopy.ts | none usable | unchecked: no photo (generic) |
+| generic glass block 68852118 | defense2/- | none usable | unchecked: no photo (generic) |

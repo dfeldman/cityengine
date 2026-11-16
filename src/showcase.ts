@@ -15,6 +15,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { Scene } from '@babylonjs/core/scene'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import '@babylonjs/core/Materials/standardMaterial'
+import { namedAreaPalettes } from './city/hand-looks.ts'
 import { STYLES, chooseStyle, planFacade, type StyleId } from './city/facade.ts'
 import { MeshBuilder, buildBuilding, rectangle, type AtlasManifest } from './render/buildings.ts'
 import { facadeMaterial, updateEye } from './render/facade-material.ts'
@@ -27,6 +28,8 @@ export async function showcase(canvas: HTMLCanvasElement, only?: string): Promis
   const scene = new Scene(engine)
   scene.clearColor = new Color4(0.72, 0.76, 0.82, 1)
 
+  // (`&area=defense`: the palettes an area (hand-looks.ts AREAS) gives each style, to judge them without a bake)
+  const area = new URLSearchParams(location.search).get('area')
   const street = new URLSearchParams(location.search).get('street') === '1'
   const ids: StyleId[] = only && STYLES.some((s) => s.id === only)
     ? (Array(8).fill(only) as StyleId[])
@@ -38,7 +41,7 @@ export async function showcase(canvas: HTMLCanvasElement, only?: string): Promis
   const widths: number[] = []
   ids.forEach((id, i) => {
     const seed = 1000 + i * 37
-    const plan = planFacade(id, seed, {})
+    const plan = planFacade(id, seed, {}, area ? namedAreaPalettes(area, id) : undefined)
     const w = 8 + (seed % 5) * 2.4
     const depth = 11 + (seed % 3) * 3
     widths.push(w)

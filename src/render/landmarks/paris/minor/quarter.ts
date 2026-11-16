@@ -104,22 +104,25 @@ export function extensionDrums(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+const CUPOLA_DECK = 24.7, CUPOLA_X = [-11, 8], CUPOLA_Z = 3, SUBLIME_DECK = 47.3
 /**
  * #17 ("an extremely interesting fake calssical building"): the quarter's own dress is the restyle in minor.json. These are what it stands up in
  * on IGN's aerial: the two gilded cupolas at the south end of the crescent's corner block (way/1361408422, 8 levels) and the green copper pavilion
- * on the north point of Le Sublime (way/1155621126, 15). Their shapes are from the air only; their heights follow OSM's levels at 4 m. x east, z north.
+ * on the north point of Le Sublime (way/1155621126, 15). Their shapes are from the air only; their heights sit on the baked roof decks. x east, z north.
  */
 export function bergeresCupolas(out: MeshBuilder, fit: Fit): void {
   const g = fit.grade ?? 0.5
   const GOLD: Rgb = hex('#c79a3f'), STONE: Rgb = hex('#e4dac4'), COPPER: Rgb = hex('#6f9a8a')
-  const y = g + 32
-  for (const x of [-11, 11]) {
-    prism(out, x, 0, y, y + 3.2, 3.1, 12, STONE, FIXED, 3.1, false)
-    dome(out, x, 0, y + 3.2, 3.1, 3.2, GOLD, 12)
-    prism(out, x, 0, y + 6.3, y + 8, 0.34, 6, GOLD, FIXED, 0.08)
+  // Heights are the baked roof decks, not OSM levels x 4 m (the haussmann style builds 3.0-3.4 m levels, so 8 and 15 levels float the cupolas 7 and 13 m):
+  // measured by ray, 2026-11-16, the corner block's flat deck is 25.1 m over this model's origin and Le Sublime's 47.7 m; the cupolas sink 0.4 m into them.
+  const y = g + CUPOLA_DECK
+  for (const x of CUPOLA_X) {
+    prism(out, x, CUPOLA_Z, y, y + 3.2, 3.1, 12, STONE, FIXED, 3.1, false)
+    dome(out, x, CUPOLA_Z, y + 3.2, 3.1, 3.2, GOLD, 12)
+    prism(out, x, CUPOLA_Z, y + 6.3, y + 8, 0.34, 6, GOLD, FIXED, 0.08)
   }
   // Le Sublime's point, 88 m to the north-west of them (from the aerial): a square copper pavilion
-  const X = -106, Z = 92, Y = g + 64
+  const X = -106, Z = 104, Y = g + SUBLIME_DECK + 4
   block(out, X - 7, X + 7, Z - 7, Z + 7, Y - 4, Y + 0.6, STONE)
   dome(out, X, Z, Y + 0.6, 7.6, 5.5, COPPER, 8)
   prism(out, X, Z, Y + 6, Y + 9, 1.1, 8, STONE, FIXED, 0.9)

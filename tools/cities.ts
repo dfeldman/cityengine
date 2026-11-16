@@ -516,6 +516,13 @@ export const CITIES: CitySpec[] = [
     note: 'A test area: Pont de Bir-Hakeim, the Île aux Cygnes tip, Pont d\'Iéna right bank (docs/SEINE-MULTILEVEL.md).',
   },
   {
+    id: 'neuilly-mini', live: false, test: true, region: 'paris',
+    name: 'Pont de Neuilly and La Défense edge test area (multi-level)',
+    centre: { lat: 48.8875, lon: 2.2545 }, radius: 500, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: the Pont de Neuilly, the Courbevoie quai and the edge of the Défense slab, where banks between street levels broke up (owner, 2026-11-16).',
+  },
+  {
     id: 'seine-centre-mini', live: false, test: true, region: 'paris',
     name: 'Central Seine test area (multi-level, eight bridges)',
     centre: { lat: 48.8555, lon: 2.3460 }, radius: 1300, wide: false, ground: 'grass', datum: 32.94,

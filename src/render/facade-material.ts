@@ -113,6 +113,10 @@ bool underside(vec3 p, vec3 e) {
 #define GLASS_BODY 2.2
 #define GLASS_SKY_GAIN 1.8
 #define GLASS_SKY_MIX 0.55
+// a PALE tint (luminance from LO to 0.9) also lifts the room's gain by up to GLASS_PALE_GAIN: silver and pale-blue glass (La Defense)
+// would otherwise read as dark as the painted pane. Dark tints (lum < LO) are untouched.
+#define GLASS_PALE_GAIN 0.32
+#define GLASS_PALE_LO 0.55
 
 void main(void) {
   // The ground variant is drawn with culling off, so it must refuse its own underside, or a lawn standing
@@ -174,7 +178,8 @@ void main(void) {
     // unlit interior is cold rather than black
     vec3 interior = albedo.rgb * 0.34 + skyColour * 0.06;
     // a tinted pane: the room behind it takes the tint (scaled up, a #3d5c70 is a dark colour) and the reflection some
-    interior = gcode < 0.0 ? interior : interior * glassTint * GLASS_BODY;
+    float glassLum = dot(glassTint, vec3(0.299, 0.587, 0.114));
+    interior = gcode < 0.0 ? interior : interior * glassTint * GLASS_BODY * (1.0 + GLASS_PALE_GAIN * smoothstep(GLASS_PALE_LO, 0.9, glassLum));
     sky = gcode < 0.0 ? sky : sky * mix(vec3(1.0), glassTint * GLASS_SKY_GAIN, GLASS_SKY_MIX);
 
     lit = mix(interior, sky, clamp(fresnel * 1.35, 0.0, 0.94)) + sunColour * spec * 1.6;

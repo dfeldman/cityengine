@@ -1,21 +1,24 @@
 /**
- * Société générale, La Défense (Courbevoie/Puteaux, 37 m; OSM way/226235093, no parts; wikipedia: Tours Chassagne et Alicante).
- * Pale glass curtain wall (OSM facade colour #A2E1FA) in narrow bays on OSM's ring, a darker glazed lobby, flat roof.
- * From OSM's tags and ring; the mullion tone is guessed.
+ * Société Générale block (Courbevoie, Tours Chassagne/Alicante site; OSM way/226235093): read from two Panoramax
+ * frames as one of La Défense's genuinely DARK buildings — swelling, curved walls of dark blue-grey mirror glass in
+ * fine horizontal and vertical lines, which bulge out over a recessed glazed entrance. Here: a recessed dark glass
+ * ground storey, the body cantilevered back out to OSM's ring on a dark soffit, dark mirror curtain wall, flat roof.
+ * Height 42.8 m from the local IGN BD TOPO cache (h); OSM says 37.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { hex } from '../../kit.ts'
 import { tower } from '../../tower.ts'
 
-const HEIGHT = 37
-const LOBBY_H = 5
-const GLASS = '#a2e1fa', MULLION = '#7f9fae', LOBBY = '#3b5360', LOBBY_WALL = '#b9c4c9', ROOF = '#8a9296', PARAPET = '#aab6bb'
-const FLOOR = 3.5, PITCH = 1.5, PARAPET_H = 0.8
+const HEIGHT = 42.8, LOBBY_H = 6, LOBBY_RECESS = 2, FLOOR = 3.5, PITCH = 1.5, SOLID = 0.1, PARAPET_H = 0.6
+const GLASS = '#3f5363', MULLION = '#6e7f8b', LOBBY = '#2c3a44', SOFFIT = '#4a565e', ROOF = '#5e6468'
 
 export const societeGenerale = (out: MeshBuilder, fit: Fit): void => tower(out, fit, {
   height: HEIGHT, roof: hex(ROOF),
-  base: { height: LOBBY_H, face: { kind: 'curtain', wall: hex(LOBBY_WALL), glass: hex(LOBBY), floor: LOBBY_H, pitch: 3, material: 'glass' } },
-  tiers: [{ to: 1, face: { kind: 'curtain', wall: hex(MULLION), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, material: 'glass' } }],
-  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(PARAPET) },
+  tiers: [
+    { to: LOBBY_H, inset: LOBBY_RECESS, face: { kind: 'curtain', wall: hex(MULLION), glass: hex(LOBBY), floor: LOBBY_H, pitch: 3, material: 'glass' } },
+    { to: 1, inset: -LOBBY_RECESS, face: { kind: 'curtain', wall: hex(MULLION), glass: hex(GLASS), floor: FLOOR, pitch: PITCH, solid: SOLID, material: 'glass' } },
+  ],
+  cornices: [{ at: LOBBY_H, depth: 0.05, height: 0.6, colour: hex(SOFFIT) }],
+  crown: { kind: 'parapet', height: PARAPET_H, colour: hex(GLASS), material: 'glass' },
 })
