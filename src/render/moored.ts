@@ -72,13 +72,13 @@ function station(z: number, L: number, B: number, s: HullShape): { w: number; ri
   return { w: B / 2, rise: 0 }
 }
 
-function stations(L: number, B: number, s: HullShape): { z: number; w: number; rise: number }[] {
+function stations(L: number, B: number, s: HullShape, steps = TAPER_STEPS): { z: number; w: number; rise: number }[] {
   const h = L / 2
   const bowLen = Math.min(s.bow, L * 0.4)
   const sternLen = Math.min(s.stern, L * 0.3)
   const zs: number[] = []
-  for (let i = 0; i <= TAPER_STEPS; i++) zs.push(-h + (sternLen * i) / TAPER_STEPS)
-  for (let i = 0; i <= TAPER_STEPS; i++) zs.push(h - bowLen + (bowLen * i) / TAPER_STEPS)
+  for (let i = 0; i <= steps; i++) zs.push(-h + (sternLen * i) / steps)
+  for (let i = 0; i <= steps; i++) zs.push(h - bowLen + (bowLen * i) / steps)
   return zs.map((z) => ({ z, ...station(z, L, B, s) }))
 }
 
@@ -86,8 +86,8 @@ function stations(L: number, B: number, s: HullShape): { z: number; w: number; r
  * The hull: from `y0` (below the water) up to `y1` at the sides, in `colour`, the top `bandH` of it in `band`,
  * and a deck over it in `deck` (none when null). Returns nothing; the deck is at y1 (+ the sheer forward).
  */
-export function hull(out: MeshBuilder, L: number, B: number, y0: number, y1: number, s: HullShape, colour: Rgb, band: Rgb | null, bandH: number, deck: Rgb | null): void {
-  const st = stations(L, B, s)
+export function hull(out: MeshBuilder, L: number, B: number, y0: number, y1: number, s: HullShape, colour: Rgb, band: Rgb | null, bandH: number, deck: Rgb | null, steps = TAPER_STEPS): void {
+  const st = stations(L, B, s, steps)
   const side = (ya: (i: number) => number, yb: (i: number) => number, c: Rgb): void => {
     for (let i = 0; i + 1 < st.length; i++) {
       const a = st[i], b = st[i + 1]

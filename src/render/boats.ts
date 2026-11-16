@@ -9,7 +9,8 @@
  *
  * A boat floats at the level of the water it lies in. Most have a gangway to the quay, and many houseboats a
  * shore hut beside them — a store, a letterbox, a gate (owner, 2026-11-15) — where the quay is low enough.
- * Regions without a library (San Francisco) keep the plain péniche.
+ * Each region brings its LIBRARY (`BoatLibrary`): Paris's (below), San Francisco's (render/sf/moored.ts — Sausalito's
+ * houseboats). A region without one keeps the plain péniche.
  */
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
@@ -41,8 +42,6 @@ const REVERSED = 0.2
 const HUT_RISE: [number, number] = [0.4, 4.8]
 /** how far in from the water's edge the hut's face stands */
 const HUT_SETBACK = 1.6
-/** the chance a boat of each kind has a hut */
-const HUT_CHANCE: Partial<Record<MooredKind, number>> = { peniche: 0.55, dutch: 0.45, floatHome: 0.4, venue: 0.25, cruiser: 0.15 }
 /** a gangway only where the quay is no higher than this above the deck */
 const GANGWAY_MAX_RISE = 5.5
 /** no port boat this near a landmark's centre (a modelled boat — the Piscine Joséphine Baker) */
@@ -54,7 +53,17 @@ const tally = (k: string): true => { STATS[k] = (STATS[k] ?? 0) + 1; return true
 ;(globalThis as { __boatStats?: Record<string, number> }).__boatStats = STATS
 
 /** a port stretch in local metres: its line, its unit direction (upstream), and the rest of its data */
-export interface LocalPort { name: string; x: number; z: number; side: 1 | -1; ux: number; uz: number; len: number; per100: number; mix: [MooredKind, number][]; raft: number; seed: number }
+export interface LocalPort { name: string; x: number; z: number; side: 1 | -1; ux: number; uz: number; len: number; per100: number; mix: [string, number][]; raft: number; seed: number }
+
+/** A region's moored boats: its builders by kind, their sizes (for the ports), what an OSM boat is, and who gets a hut. */
+export interface BoatLibrary {
+  build: Record<string, Builder>
+  sizes: Record<string, { L: [number, number]; B: number }>
+  /** an OSM boat's builder and kind (null kind: a one-off), or null to leave it out (it is a landmark) */
+  classify(len: number, beam: number, id: number, name?: string): { build: Builder; kind: string | null; seed?: number } | null
+  /** the chance a boat of each kind has a shore hut */
+  huts: Record<string, number>
+}
 
 const inside = (r: number[], x: number, z: number): boolean => {
   let o = false
@@ -89,7 +98,9 @@ function fit(ring: number[]): { cx: number; cz: number; len: number; beam: numbe
   }
   const ux = Math.sin(best.angle)
   const uz = Math.cos(best.angle)
-  return { cx: cx + best.ox * ux + best.oz * uz, cz: cz + best.ox * uz - best.oz * ux, len: best.len, beam: best.beam, angle: best.angle }
+  const c = { cx: cx + best.ox * ux + best.oz * uz, cz: cz + best.ox * uz - best.oz * ux }
+  // the long side is the length (a squarish houseboat's rectangle can come out either way round)
+  return best.beam > best.len ? { ...c, len: best.beam, beam: best.len, angle: best.angle + Math.PI / 2 } : { ...c, len: best.len, beam: best.beam, angle: best.angle }
 }
 
 /** The plain péniche, for regions without a boat library. Local +z, centred, waterline at y = 0. */
@@ -124,6 +135,19 @@ function kindOf(len: number, beam: number, id: number): MooredKind {
   if (len < 28) return r < 0.55 ? 'dutch' : r < 0.7 ? 'cruiser' : 'peniche'
   if (len < 46) return r < 0.8 ? 'peniche' : 'venue'
   return r < 0.6 ? 'venue' : 'tourBoat'
+}
+
+/** Paris: the péniches, bars and homes of render/paris/moored.ts, the famous boats by name */
+export const PARIS_BOATS: BoatLibrary = {
+  build: MOORED, sizes: MOORED_SIZES,
+  huts: { peniche: 0.55, dutch: 0.45, floatHome: 0.4, venue: 0.25, cruiser: 0.15 },
+  classify(len, beam, id, name) {
+    const named = namedBoat(name)
+    if (named?.skip) return null
+    if (named?.build) return { build: named.build, kind: null, seed: named.seed }
+    const kind = named?.kind ?? kindOf(len, beam, id)
+    return { build: MOORED[kind], kind, seed: named?.seed }
+  },
 }
 
 /** Copy a boat built in its own frame into the tile's builder: rotated by `angle` about y (local +z → (sin, cos)), lifted to `y`. */
@@ -164,12 +188,12 @@ function banksOf(water: TileArea[]): Edge[] {
   return out
 }
 
-export function boatsLayer(scene: Scene, terrain?: Terrain, library = false, ports: LocalPort[] = []): TileLayer {
+export function boatsLayer(scene: Scene, terrain?: Terrain, lib: BoatLibrary | null = null, ports: LocalPort[] = []): TileLayer {
   return {
     name: 'boats',
     build(near, rect) {
       const boats = (near.tile.boats ?? []) as PackedBoat[]
-      const myPorts = library ? ports.filter((p) => Math.abs(p.x - (rect.x0 + rect.x1) / 2) < p.len / 2 + TILE && Math.abs(p.z - (rect.z0 + rect.z1) / 2) < p.len / 2 + TILE) : []
+      const myPorts = lib ? ports.filter((p) => Math.abs(p.x - (rect.x0 + rect.x1) / 2) < p.len / 2 + TILE && Math.abs(p.z - (rect.z0 + rect.z1) / 2) < p.len / 2 + TILE) : []
       if (boats.length === 0 && myPorts.length === 0) return []
       const water = near.around.areas.filter((a): a is TileArea => a.kind === 'water' && (a as TileArea).level !== undefined)
       if (water.length === 0) return []
@@ -200,7 +224,7 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, library = false, por
       const ground = (x: number, z: number): number | null => terrain ? terrain.heightAt(x, z) : null
 
       /** the gangway and maybe the hut, from a boat's bank side to the quay */
-      const ashore = (bank: Bank, cx: number, cz: number, B: number, L: number, deck: number, level: number, kind: MooredKind | null, seed: number): void => {
+      const ashore = (bank: Bank, cx: number, cz: number, B: number, L: number, deck: number, level: number, kind: string | null, seed: number): void => {
         const r = rnd(seed * 13 + 5)
         // the bank point abreast of the boat, and the quay's height a step in from it
         const along = (cx - bank.px) * bank.tx + (cz - bank.pz) * bank.tz
@@ -214,7 +238,7 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, library = false, por
         if (rise - deck < GANGWAY_MAX_RISE && side < 4) {
           gangway(out, [bx + bank.nx * (side + 0.2), level + deck, bz + bank.nz * (side + 0.2)], [qx, g, qz])
         }
-        if (!kind || r() > (HUT_CHANCE[kind] ?? 0) || rise < HUT_RISE[0] || rise > HUT_RISE[1]) return
+        if (!kind || r() > (lib?.huts[kind] ?? 0) || rise < HUT_RISE[0] || rise > HUT_RISE[1]) return
         const d = HUT.d[1]
         const hx = bx - bank.nx * (HUT_SETBACK + d / 2) + bank.tx * (r() > 0.5 ? 3 : -3)
         const hz = bz - bank.nz * (HUT_SETBACK + d / 2) + bank.tz * (r() > 0.5 ? 3 : -3)
@@ -231,24 +255,25 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, library = false, por
       const fits = boats.map((b) => ({ b, f: fit(b.ring) }))
       const osmAround = ((near.around.boats ?? []) as PackedBoat[]).map((b) => b.ring)
       for (const { b, f } of fits) {
+        // a boat that is a landmark (the Taj Mahal houseboat, the Piscine Joséphine Baker) is the landmark's to draw
+        if (lib && near.around.landmarks.some((lm) => Math.abs(lm.x - f.cx) < 60 && Math.abs(lm.z - f.cz) < 60 && inside(b.ring, lm.x, lm.z))) continue
         const bank = bankNear(f.cx, f.cz, 60)
         const w = water.find((a) => inside(a.ring, f.cx, f.cz))
         const level = w?.level ?? bank?.level
         if (level === undefined) continue
         const part = new MeshBuilder()
         let deck = 1.1
-        let kind: MooredKind | null = null
-        if (!library) deck = plainPeniche(part, f.len, f.beam, b.id)
+        let kind: string | null = null
+        if (!lib) deck = plainPeniche(part, f.len, f.beam, b.id)
         else {
-          const named = namedBoat(b.name)
-          if (named?.skip) continue
-          kind = named?.kind ?? (named?.build ? null : kindOf(f.len, f.beam, b.id))
-          const build: Builder = named?.build ?? MOORED[kind!]
-          deck = build(part, Math.max(6, Math.min(f.len, 140)), Math.max(2.5, Math.min(f.beam, 24)), named?.seed ?? b.id)
+          const c = lib.classify(f.len, f.beam, b.id, b.name)
+          if (!c) continue
+          kind = c.kind
+          deck = c.build(part, Math.max(6, Math.min(f.len, 140)), Math.max(2.5, Math.min(f.beam, 24)), c.seed ?? b.id)
         }
         // bow upstream where the bank says which way that is: the port stretches carry it; else keep the fit's
         place(out, part, f.cx, level + 0.05, f.cz, f.angle)
-        if (library && bank && bank.d < 25) ashore(bank, f.cx, f.cz, f.beam, f.len, deck, level, kind, b.id)
+        if (lib && bank && bank.d < 25) ashore(bank, f.cx, f.cz, f.beam, f.len, deck, level, kind, b.id)
       }
 
       // ── the ports: the boats OSM does not map ──
@@ -273,12 +298,12 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, library = false, por
       for (const p of myPorts) {
         const r = rnd(p.seed)
         const total = p.mix.reduce((a, [, w]) => a + w, 0)
-        const pickKind = (): MooredKind => { let t = r() * total; for (const [k, w] of p.mix) { t -= w; if (t <= 0) return k } return p.mix[0][0] }
+        const pickKind = (): string => { let t = r() * total; for (const [k, w] of p.mix) { t -= w; if (t <= 0) return k } return p.mix[0][0] }
         const pitch = 100 / p.per100
         for (let s = -p.len / 2, n = 0; s < p.len / 2; n++) {
           // every draw is made whether or not this tile builds the boat, so each tile sees the same sequence
           const kind = pickKind()
-          const size = MOORED_SIZES[kind]
+          const size = lib!.sizes[kind]
           const L = size.L[0] + r() * (size.L[1] - size.L[0])
           const B = size.B * (0.95 + r() * 0.1)
           const gap = Math.max(1.2, pitch - L) * (0.5 + r())
@@ -304,19 +329,19 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, library = false, por
           placed.push({ cx, cz, ux, uz, L, B })
           tally('placed'); tally(`${p.name}`)
           const part = new MeshBuilder()
-          const deck = MOORED[kind](part, L, B, seed)
+          const deck = lib!.build[kind](part, L, B, seed)
           place(out, part, cx, bank.level + 0.05, cz, Math.atan2(ux, uz))
           ashore(bank, cx, cz, B, L, deck, bank.level, kind, seed)
           if (raft && rk !== 'hotel' && rk !== 'tourBoat') {
             // a second boat tied outside the first, two abreast as they lie at the crowded ports
-            const rs = MOORED_SIZES[rk]
+            const rs = lib!.sizes[rk]
             const L2 = Math.min(L, rs.L[0] + rL * (rs.L[1] - rs.L[0]))
             const off2 = off + B / 2 + RAFT_GAP + rs.B / 2
             const c2x = bank.px + bank.nx * off2, c2z = bank.pz + bank.nz * off2
             if (clash(c2x, c2z, ux, uz, L2, rs.B)) continue
             placed.push({ cx: c2x, cz: c2z, ux, uz, L: L2, B: rs.B })
             const p2 = new MeshBuilder()
-            MOORED[rk](p2, L2, rs.B, seed + 1)
+            lib!.build[rk](p2, L2, rs.B, seed + 1)
             place(out, p2, c2x, bank.level + 0.05, c2z, Math.atan2(ux, uz) + (rTurn ? Math.PI : 0))
           }
         }

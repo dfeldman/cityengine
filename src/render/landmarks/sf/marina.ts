@@ -8,14 +8,14 @@
  *
  * Frame: the water at y = 0 (placed with `deckAbove: 0`); x the long axis.
  */
-import type { MeshBuilder } from '../../buildings.ts'
+import { MeshBuilder } from '../../buildings.ts'
+import { motorYacht, sailboat, speedboat } from '../../sf/moored.ts'
 import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { box, prism } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
 const DOCK: Rgb = [0.56, 0.52, 0.46]
-const CANVAS: Rgb[] = [[0.1, 0.25, 0.45], [0.75, 0.72, 0.64], [0.12, 0.3, 0.26]]
 
 const hash = (a: number, b: number): number => {
   const h = Math.sin(a * 127.1 + b * 311.7) * 43758.5453
@@ -44,7 +44,7 @@ export function marina(out: MeshBuilder, fit: Fit): void {
       for (const side of [-1, 1]) {
         const h = hash(x + side * 0.37, z)
         if (h > take) continue
-        boat(out, x + SLIP / 2, z + side * 7.5, side)
+        boat(out, x + SLIP / 2, z + side * 7.5, side > 0 ? 0 : Math.PI)
       }
     }
     // the gangway end: a pile at each walkway's head
@@ -52,58 +52,36 @@ export function marina(out: MeshBuilder, fit: Fit): void {
   }
 }
 
-/**
- * A HULL in plan: a square stern, sides running parallel for the after half, then drawn in to a pointed bow — along z,
- * the bow toward `dir` (±1), `len` long, `beam` wide, from just under the water to `deck`. White topsides with a
- * coloured boot stripe at the waterline, a pale deck. (2026-10-17: the boats were coloured boxes, red, green and blue —
- * toys; a marina is white hulls and a forest of masts.)
- */
-function hull(out: MeshBuilder, bx: number, bz: number, len: number, beam: number, dir: number, deck: number, stripe: Rgb): void {
-  const metal = surfaceTag('metal')
-  const WHITE: Rgb = [0.93, 0.93, 0.91], DECK: Rgb = [0.84, 0.82, 0.76]
-  const h = beam / 2
-  // the outline, stern to bow on one side and back on the other (x across, z along, bow at +len/2 · dir)
-  const half: [number, number][] = [[h * 0.9, -0.5], [h, -0.1], [h, 0.15], [h * 0.82, 0.3], [h * 0.45, 0.42], [0, 0.5]]
-  const ring: [number, number][] = [...half.map(([x, z]) => [x, z] as [number, number]), ...half.slice(0, -1).reverse().map(([x, z]) => [-x, z] as [number, number])]
-  const P = (x: number, z: number, y: number): [number, number, number] => [bx + x, y, bz + z * len * dir]
-  const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
-  for (let i = 0; i < ring.length; i++) {
-    const [x0, z0] = ring[i], [x1, z1] = ring[(i + 1) % ring.length]
-    const nx = (z1 - z0) * len * dir, nz = -(x1 - x0) * dir
-    // (the bow rises a little: the sheer)
-    const d0 = deck + Math.max(0, z0) * 0.5, d1 = deck + Math.max(0, z1) * 0.5
-    out.quad([P(x0, z0, -0.15), P(x1, z1, -0.15), P(x1, z1, 0.25), P(x0, z0, 0.25)], [nx, 0, nz], UV, stripe, metal)
-    out.quad([P(x0, z0, 0.25), P(x1, z1, 0.25), P(x1, z1, d1), P(x0, z0, d0)], [nx, 0, nz], UV, WHITE, metal)
-  }
-  // the deck, a fan from the middle
-  const cy = deck + 0.12
-  for (let i = 0; i < ring.length; i++) {
-    const [x0, z0] = ring[i], [x1, z1] = ring[(i + 1) % ring.length]
-    out.quad([P(0, 0, cy), P(x0, z0, deck + Math.max(0, z0) * 0.5), P(x1, z1, deck + Math.max(0, z1) * 0.5), P(x1, z1, deck + Math.max(0, z1) * 0.5)], [0, 1, 0], UV, DECK, metal)
-  }
-}
+/** the marina's mix of small craft, by share (render/sf/moored.ts) */
+const MARINA_MIX = { sail: 0.7, motor: 0.9 }
+/** boat lengths in a slip, m */
+const MARINA_LEN: [number, number] = [7, 14]
 
-/** one moored boat at (bx, bz), its bow toward `side` along z: a sailboat (mast, covered main) or a motor launch */
-export function boat(out: MeshBuilder, bx: number, bz: number, side: number): void {
+/**
+ * One moored boat at (bx, bz), turned `angle` about y (0: bow to +z): mostly sailboats, then motor yachts and speedboats,
+ * from the shared small-craft library. Its untagged faces are retagged metal, or the landmark material dresses pale
+ * hulls as ashlar (pale-faces-go-stone).
+ */
+export function boat(out: MeshBuilder, bx: number, bz: number, angle: number, seed = Math.floor(hash(bx, bz) * 1e6)): void {
+  const h = hash(bz, bx)
+  const L = MARINA_LEN[0] + h * (MARINA_LEN[1] - MARINA_LEN[0])
+  const k = hash(bx + 7, bz)
+  const part = new MeshBuilder()
+  if (k < MARINA_MIX.sail) sailboat(part, L, L * 0.32, seed)
+  else if (k < MARINA_MIX.motor) motorYacht(part, L, L * 0.34, seed)
+  else speedboat(part, Math.min(L, 8), 2.3, seed)
   const metal = surfaceTag('metal')
-  const len = 7 + hash(bz, bx) * 7
-  const beam = len * 0.32
-  // nearly all white, a few dark-hulled; the colour is in the boot stripe and the sail covers
-  const stripes: Rgb[] = [[0.12, 0.2, 0.42], [0.12, 0.2, 0.42], [0.6, 0.12, 0.1], [0.12, 0.34, 0.24], [0.1, 0.1, 0.12], [0.2, 0.45, 0.65]]
-  const stripe = stripes[Math.floor(hash(bx, bz + 1) * stripes.length)]
-  hull(out, bx, bz, len, beam, side, 0.75, stripe)
-  if (hash(bz + 2, bx) < 0.72) {
-    // a sailboat: a low coachroof, the mast, the boom with its furled main in a cover
-    box(out, bx, 1.05, bz - side * len * 0.05, beam * 0.28, 0.22, len * 0.18, [0.93, 0.93, 0.91], metal)
-    box(out, bx, 1.05, bz - side * len * 0.05 + side * len * 0.18, beam * 0.27, 0.12, 0.02, [0.2, 0.24, 0.28], surfaceTag('glass'))
-    prism(out, bx, bz + side * len * 0.06, 1.0, 1.0 + len * 1.45, 0.07, 4, [0.78, 0.78, 0.76], metal)
-    box(out, bx, 2.1, bz - side * len * 0.15, 0.17, 0.17, len * 0.21, CANVAS[Math.floor(hash(bx + 3, bz) * CANVAS.length)], metal)
-  } else {
-    // a motor launch: a cabin with a dark windscreen band, a flybridge on the bigger ones
-    box(out, bx, 1.35, bz + side * len * 0.02, beam * 0.36, 0.55, len * 0.2, [0.94, 0.94, 0.92], metal)
-    box(out, bx, 1.55, bz + side * len * 0.02, beam * 0.37, 0.2, len * 0.17, [0.18, 0.22, 0.26], surfaceTag('glass'))
-    if (len > 11) box(out, bx, 2.05, bz - side * len * 0.05, beam * 0.3, 0.1, len * 0.14, [0.92, 0.92, 0.9], metal)
+  const c = Math.cos(angle), s = Math.sin(angle)
+  const base = out.positions.length / 3
+  for (let i = 0; i < part.positions.length; i += 3) {
+    const x = part.positions[i], z = part.positions[i + 2]
+    out.positions.push(bx + x * c + z * s, part.positions[i + 1], bz - x * s + z * c)
+    const nx = part.normals[i], nz = part.normals[i + 2]
+    out.normals.push(nx * c + nz * s, part.normals[i + 1], -nx * s + nz * c)
   }
+  for (let i = 0; i < part.colors.length; i += 4) out.colors.push(part.colors[i], part.colors[i + 1], part.colors[i + 2], part.colors[i + 3] === 0 ? metal : part.colors[i + 3])
+  for (const v of part.uvs) out.uvs.push(v)
+  for (const i of part.indices) out.indices.push(base + i)
 }
 
 /**
@@ -117,8 +95,8 @@ export function mooringField(out: MeshBuilder, fit: Fit): void {
   for (let i = 0; i < n; i++) {
     const x = (hash(i, 1.7) * 2 - 1) * hx
     const z = (hash(i, 5.3) * 2 - 1) * hz
-    // turned by the tide: build at the origin's axes, then the boat's own heading is all a box can do, so pick one of two
-    boat(out, x, z, hash(i, 9.1) < 0.5 ? 1 : -1)
+    // swung every which way by the tide
+    boat(out, x, z, hash(i, 9.1) * Math.PI * 2)
   }
 }
 

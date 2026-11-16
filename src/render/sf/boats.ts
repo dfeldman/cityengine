@@ -5,11 +5,16 @@
  * engine (render/river-traffic.ts) sends its boats along and back, keeping right, turning at the ends. Off the built
  * tiles, or more than 1.6 km from the rider, a boat is not drawn, so the long runs cost nothing until they are near.
  *
- * The fleet: the Golden Gate and SF Bay ferries' white catamarans, the Alcatraz boat, and sailboats.
+ * The fleet: the Golden Gate and SF Bay ferries' white catamarans, the Alcatraz boat, sailboats, speedboats, yachts
+ * and water taxis (render/sf/moored.ts); in the deep-water lane the ocean ships (render/ships.ts) and the Queen Mary 2,
+ * and along the Cityfront a Fleet Week line (render/sf/big-ships.ts).
  */
 import type { MeshBuilder } from '../buildings.ts'
 import { box, prism, wedge, type Rgb } from '../models.ts'
 import { DARK, F, GLASS, WHITE, bow, passengers, rnd, type BoatKind } from '../river-traffic.ts'
+import { motorYacht, sailboat as sailboat2, smallFerry, speedboat } from './moored.ts'
+import { SHIP_SIZES, containerShip as containerShip2, cruiseShip } from '../ships.ts'
+import { BIG_SIZES, amphib, carrier, destroyer, queenMary2 } from './big-ships.ts'
 
 const NAVY: Rgb = [0.12, 0.2, 0.42]
 const SAIL: Rgb = [0.95, 0.95, 0.92]
@@ -53,31 +58,16 @@ function alcatrazBoat(out: MeshBuilder, seed: number): { L: number; B: number } 
   return { L, B }
 }
 
-/** A sailboat, 9-11 m, under main and jib: white hull, aluminium mast, sails leaning a little off the wind. */
+/** A sailboat under main and jib, 8–14 m, from the small-craft library (render/sf/moored.ts): any hull colour, now and then coloured sails. */
 function sailboat(out: MeshBuilder, seed: number): { L: number; B: number } {
-  const r = rnd(seed)
-  const L = 4.6 + r() * 0.8
-  const B = 1.5
-  const hull: Rgb = r() < 0.75 ? WHITE : r() < 0.5 ? NAVY : [0.6, 0.12, 0.12]
-  box(out, 0, 0.35, -0.4, B, 0.55, L - 0.8, hull, F)
-  bow(out, L - 1.2, B, 0.35, 0.5, hull, 0.4)
-  box(out, 0, 1.05, -1.2, B - 0.5, 0.25, 1.6, WHITE, F)
-  box(out, 0, 0.92, -L + 1.6, B - 0.3, 0.05, 1.0, DARK, F)
-  passengers(out, 0.9, -L + 1.0, -L + 2.4, B - 0.7, r, 0.8, 0.8)
-  // the mast and boom
-  const H = 11 + r() * 3
-  prism(out, 0, 0.6, 0.9, H, 0.07, 6, SPAR, F, 0.06, true)
-  box(out, 0, 2.0, -1.4, 0.05, 0.05, 2.3, SPAR, F)
-  // the sails, both faces, heeled off the centre line
-  const off = (r() < 0.5 ? -1 : 1) * 0.5
-  const tri = (a: [number, number, number], b: [number, number, number], c: [number, number, number]): void => {
-    out.quad([a, b, c, c], [1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], SAIL, F)
-    out.quad([c, b, a, a], [-1, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], SAIL, F)
-  }
-  tri([0, 2.1, 0.6], [off, 2.1, -3.6], [0, H - 0.4, 0.55])
-  tri([0, 1.2, 0.8], [0, H * 0.82, 0.75], [off * 0.6, 1.3, L - 0.6])
-  return { L, B }
+  const L = 8 + rnd(seed)() * 6
+  sailboat2(out, L, L * 0.32, seed, true)
+  return { L: L / 2, B: L * 0.16 }
 }
+
+/** small craft from the library, built full size and handed back at half size (river-traffic's frame) */
+const small = (b: (o: MeshBuilder, L: number, B: number, s: number) => number, L: [number, number], B: number) =>
+  (out: MeshBuilder, seed: number): { L: number; B: number } => { const l = L[0] + rnd(seed + 3)() * (L[1] - L[0]); b(out, l, B, seed); return { L: l / 2, B: B / 2 } }
 
 /** The Blue & Gold bay cruise: a long white two-deck monohull, blue hull band, its open top deck crowded at the rail. */
 function cruiseBoat(out: MeshBuilder, seed: number): { L: number; B: number } {
@@ -178,29 +168,31 @@ function swimmer(out: MeshBuilder, seed: number): { L: number; B: number } {
   return { L: 0.6, B: 0.25 }
 }
 
-/** A small motor launch going in and out of the Marina: white, a windscreen, a canvas top. */
-function motorboat(out: MeshBuilder, seed: number): { L: number; B: number } {
-  const r = rnd(seed)
-  const L = 4.5
-  const B = 1.5
-  box(out, 0, 0.35, -0.3, B, 0.5, L - 0.4, WHITE, F)
-  bow(out, L - 0.8, B, 0.35, 0.48, WHITE, 0.4)
-  wedge(out, 0, 1.1, 0.6, B - 0.25, 0.3, 0.6, 0.3, GLASS, F)
-  box(out, 0, 1.6, -0.6, B - 0.2, 0.05, 1.1, r() < 0.5 ? NAVY : [0.75, 0.72, 0.6], F)
-  passengers(out, 0.55, -L + 1.2, -0.2, B - 0.6, r, 0.6)
-  return { L, B }
-}
-
 const FERRY: BoatKind = { name: 'ferry', build: ferry, speed: 11, lane: 45 }
 const ALCATRAZ: BoatKind = { name: 'alcatraz', build: alcatrazBoat, speed: 6, lane: 30 }
 const SAILBOAT: BoatKind = { name: 'sailboat', build: sailboat, speed: 3.2, lane: 60 }
 const CRUISE: BoatKind = { name: 'cruise', build: cruiseBoat, speed: 7, lane: 40 }
 const SHIP: BoatKind = { name: 'container ship', build: containerShip, speed: 6, lane: 120, hideEnds: 450 }
+/** the ocean ships from render/ships.ts and render/sf/big-ships.ts, built full size, handed back at half size */
+const big = (name: string, L: number, B: number, b: (o: MeshBuilder, seed: number) => void, speed = 6, lane = 140): BoatKind =>
+  ({ name, speed, lane, hideEnds: 450, build: (out, seed) => { b(out, seed); return { L: L / 2, B: B / 2 } } })
+const Z = SHIP_SIZES
+const ULCV = big('ULCV', Z.ulcv.L, Z.ulcv.B, (o, s) => containerShip2(o, Z.ulcv.L, Z.ulcv.B, s))
+const PANAMAX = big('panamax', Z.panamax.L, Z.panamax.B, (o, s) => containerShip2(o, Z.panamax.L, Z.panamax.B, s))
+const FEEDER = big('feeder', Z.feeder.L, Z.feeder.B, (o, s) => containerShip2(o, Z.feeder.L, Z.feeder.B, s))
+const CRUISE_MEGA = big('cruise ship', Z.cruiseMega.L, Z.cruiseMega.B, (o, s) => cruiseShip(o, Z.cruiseMega.L, Z.cruiseMega.B, s), 7)
+const CRUISE_MID = big('cruise ship', Z.cruiseMid.L, Z.cruiseMid.B, (o, s) => cruiseShip(o, Z.cruiseMid.L, Z.cruiseMid.B, s), 7)
+const QM2 = big('Queen Mary 2', BIG_SIZES.qm2.L, BIG_SIZES.qm2.B, (o) => queenMary2(o), 7)
+const DDG = big('destroyer', BIG_SIZES.destroyer.L, BIG_SIZES.destroyer.B, (o) => destroyer(o), 5, 90)
+const CVN = big('carrier', BIG_SIZES.carrier.L, 77, (o) => carrier(o), 4, 110)
+const LHD = big('amphibious assault ship', BIG_SIZES.amphib.L, BIG_SIZES.amphib.B, (o) => amphib(o), 4.5, 90)
 const TUG: BoatKind = { name: 'tug', build: tug, speed: 5, lane: 30 }
 const KAYAK: BoatKind = { name: 'kayak', build: kayak, speed: 1.4, lane: 5 }
 const MODEL_YACHT: BoatKind = { name: 'model yacht', build: modelYacht, speed: 0.7, lane: 4 }
 const SWIMMER: BoatKind = { name: 'swimmer', build: swimmer, speed: 0.8, lane: 3 }
-const LAUNCH_SF: BoatKind = { name: 'motorboat', build: motorboat, speed: 4, lane: 8 }
+const SPEEDBOAT: BoatKind = { name: 'speedboat', build: small(speedboat, [5, 8.5], 2.3), speed: 9, lane: 10 }
+const YACHT: BoatKind = { name: 'motor yacht', build: small(motorYacht, [10, 18], 4.2), speed: 5, lane: 14 }
+const WATER_TAXI: BoatKind = { name: 'water taxi', build: small(smallFerry, [14, 20], 5.5), speed: 8, lane: 24 }
 
 export interface BayRoute { name: string; points: [number, number][]; fleet: BoatKind[] }
 
@@ -219,7 +211,7 @@ export const SF_ROUTES: BayRoute[] = [
     [37.7945, -122.3893], [37.7930, -122.3800], [37.7960, -122.3600], [37.7990, -122.3400], [37.7985, -122.3300]] },
   { name: 'Alcatraz boat', fleet: [ALCATRAZ, ALCATRAZ], points: [
     [37.8095, -122.4040], [37.8140, -122.4080], [37.8200, -122.4150], [37.8255, -122.4205]] },
-  { name: 'Cityfront sailing', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT], points: [
+  { name: 'Cityfront sailing', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SPEEDBOAT, SAILBOAT, SAILBOAT, YACHT, SAILBOAT, SAILBOAT, SAILBOAT, SPEEDBOAT], points: [
     [37.8110, -122.4700], [37.8120, -122.4550], [37.8150, -122.4380], [37.8190, -122.4250], [37.8240, -122.4350],
     [37.8230, -122.4550], [37.8170, -122.4680]] },
   // (owner, 2026-10-06: "scenic sailboats off shore from the beach"): a long loop 700–900 m off Ocean Beach, in sight
@@ -227,14 +219,22 @@ export const SF_ROUTES: BayRoute[] = [
   { name: 'Off Ocean Beach', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT], points: [
     [37.7560, -122.5195], [37.7640, -122.5215], [37.7720, -122.5222], [37.7765, -122.5200], [37.7700, -122.5180],
     [37.7610, -122.5172]] },
-  { name: 'Richardson Bay sailing', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT], points: [
+  { name: 'Richardson Bay sailing', fleet: [SAILBOAT, SAILBOAT, SPEEDBOAT, SAILBOAT, YACHT, SAILBOAT], points: [
     [37.8530, -122.4700], [37.8600, -122.4640], [37.8610, -122.4620], [37.8580, -122.4560], [37.8540, -122.4600]] },
   { name: 'Bay cruise: Pier 39, under the Golden Gate, round Alcatraz', fleet: [CRUISE, CRUISE], points: [
     [37.8110, -122.4100], [37.8135, -122.4300], [37.8120, -122.4600], [37.8125, -122.4760], [37.8140, -122.4840],
     [37.8200, -122.4780], [37.8260, -122.4500], [37.8300, -122.4300], [37.8290, -122.4180], [37.8215, -122.4140]] },
-  { name: 'Deep-water lane: the Golden Gate to the Oakland bar', fleet: [SHIP, SHIP], points: [
+  { name: 'Deep-water lane: the Golden Gate to the Oakland bar', fleet: [ULCV, CRUISE_MEGA, PANAMAX, QM2, SHIP, FEEDER, CRUISE_MID], points: [
     [37.8040, -122.5200], [37.8080, -122.4990], [37.8140, -122.4780], [37.8195, -122.4500], [37.8195, -122.4300], [37.8150, -122.4030],
     [37.8050, -122.3870], [37.8000, -122.3700], [37.8010, -122.3450], [37.8050, -122.3300]] },
+  // (owner, 2026-11-15: "speedboats and small ferries"): water taxis and the odd yacht along the Cityfront, on the tugs' line
+  { name: 'Water taxis along the Cityfront', fleet: [WATER_TAXI, YACHT, WATER_TAXI, SPEEDBOAT], points: [
+    [37.7830, -122.3822], [37.7900, -122.3832], [37.7990, -122.3885], [37.8095, -122.3985], [37.8120, -122.4150]] },
+  // Fleet Week (owner, 2026-11-15: "realistic US Navy ships in SF since they often visit"): the parade of ships in from
+  // the Gate along the Cityfront to the piers, on water the sailing and ferry routes already cross
+  { name: 'Fleet Week: the Gate along the Cityfront to the piers', fleet: [DDG, LHD, DDG, CVN], points: [
+    [37.8080, -122.4990], [37.8125, -122.4600], [37.8120, -122.4400], [37.8130, -122.4200], [37.8100, -122.4050],
+    [37.8030, -122.3930], [37.7950, -122.3860]] },
   { name: 'Tugs along the Cityfront', fleet: [TUG, TUG], points: [
     [37.7830, -122.3822], [37.7900, -122.3832], [37.7990, -122.3885], [37.8095, -122.3985], [37.8120, -122.4150]] },
   { name: 'Kayaks in McCovey Cove', fleet: [KAYAK, KAYAK, KAYAK, KAYAK, KAYAK], points: [
@@ -245,6 +245,6 @@ export const SF_ROUTES: BayRoute[] = [
     [37.77125, -122.49520], [37.77135, -122.49420], [37.77100, -122.49360], [37.77070, -122.49430], [37.77090, -122.49500]] },
   { name: 'Swimmers in Aquatic Park', fleet: [SWIMMER, SWIMMER, SWIMMER, SWIMMER], points: [
     [37.80780, -122.42450], [37.80860, -122.42400], [37.80900, -122.42500], [37.80820, -122.42550]] },
-  { name: 'Motorboats out of the Marina', fleet: [LAUNCH_SF, LAUNCH_SF], points: [
+  { name: 'Motorboats out of the Marina', fleet: [SPEEDBOAT, YACHT, SPEEDBOAT], points: [
     [37.80749, -122.44114], [37.80775, -122.43960], [37.80901, -122.43960], [37.81200, -122.43900], [37.81450, -122.43850]] },
 ]

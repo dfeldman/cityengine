@@ -872,7 +872,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const b = (p.bearing * Math.PI) / 180
       return { name: p.name, x: q.x, z: q.z, side: p.bank === 'L' ? 1 : -1, ux: Math.sin(b), uz: Math.cos(b), len: p.len, per100: p.per100, mix: Object.entries(p.mix) as LocalPort['mix'], raft: p.raft ?? 0, seed: 7001 + i * 31 }
     })
-    city.addLayer(boatsLayer(scene, city.terrain, moor !== undefined, ports))
+    city.addLayer(boatsLayer(scene, city.terrain, regionKit(pkg.region).boats ?? null, ports))
   }
   // …and the boats under way on it (render/river-traffic.ts)
   let river: RiverTraffic | null = null

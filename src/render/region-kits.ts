@@ -14,6 +14,8 @@ import type { CarKit } from './street-fleet.ts'
 import { SF_STOCK } from './sf/trains.ts'
 import { sfFlora } from './sf/flora.ts'
 import { SF_ROUTES, type BayRoute } from './sf/boats.ts'
+import { SF_BOATS } from './sf/moored.ts'
+import { PARIS_BOATS, type BoatLibrary } from './boats.ts'
 import type { Flora } from './flora.ts'
 
 export interface RegionKit {
@@ -23,6 +25,8 @@ export interface RegionKit {
   routes?: BayRoute[]
   /** its moored boats drawn from the boat library (render/boats.ts), and the ports where it fills in the ones OSM leaves out */
   moorings?: PortStretch[]
+  /** its moored-boat library (render/boats.ts `BoatLibrary`); without one, OSM's boats are plain péniches */
+  boats?: BoatLibrary
   /** what it plants, given the city's local-metre → lat/lon */
   flora?: (toLatLon: (x: number, z: number) => { lat: number; lon: number }) => Flora
   /** its street traffic: the mix, the liveries, the buses (render/street-fleet.ts) */
@@ -30,8 +34,8 @@ export interface RegionKit {
 }
 
 const KITS: Record<string, RegionKit> = {
-  paris: { stock: PARIS_STOCK, fleet: PARIS_FLEET, moorings: PARIS_PORTS, flora: parisFlora, cars: PARIS_CARS },
-  'san-francisco': { stock: SF_STOCK, flora: sfFlora, routes: SF_ROUTES },
+  paris: { stock: PARIS_STOCK, fleet: PARIS_FLEET, moorings: PARIS_PORTS, boats: PARIS_BOATS, flora: parisFlora, cars: PARIS_CARS },
+  'san-francisco': { stock: SF_STOCK, flora: sfFlora, routes: SF_ROUTES, boats: SF_BOATS },
 }
 
 export const regionKit = (region: string | undefined): RegionKit => KITS[region ?? ''] ?? {}

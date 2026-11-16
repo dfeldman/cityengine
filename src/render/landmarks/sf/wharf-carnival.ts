@@ -591,7 +591,7 @@ function wharfMarina(harbour: string): (out: MeshBuilder, fit: Fit) => void {
               const tmp = new (out.constructor as new () => MeshBuilder)()
               // (built at its real spot, so its look — sail or launch, hull colour, length — is its slip's own, then moved
               // back to the origin to be turned)
-              boat(tmp, x, z, sd)
+              boat(tmp, x, z, sd > 0 ? 0 : Math.PI)
               for (let v = 0; v < tmp.positions.length; v += 3) { tmp.positions[v] -= x; tmp.positions[v + 2] -= z }
               const c = Math.cos(Math.atan2(ux, uz)), s2 = Math.sin(Math.atan2(ux, uz))
               const base = out.positions.length / 3

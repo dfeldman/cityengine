@@ -8,6 +8,8 @@
  * `window.__rebuild(fit)` builds the model again to a given fit — a real footprint (a tower-grammar building is
  * its own outline raised), which the tool reads from the Overpass cache — and returns its bounds.
  */
+import { amphib, carrier, destroyer, queenMary2 } from './render/sf/big-ships.ts'
+import { SF_MOORED, SF_SIZES, sailboat, type SfKind } from './render/sf/moored.ts'
 import type { KitArgs } from './render/landmarks/paris/kit/recipes.ts'
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
@@ -52,6 +54,16 @@ for (const k of Object.keys(MOORED) as MooredKind[]) for (let s = 1; s <= 6; s++
 for (const [k, z] of Object.entries(SHIP_SIZES)) for (let s = 1; s <= 3; s++) {
   BOAT_MODELS[`ship_${k}_${s}`] = (o) => { (k.startsWith('cruise') || k === 'expedition' ? cruiseShip : containerShip)(o, z.L, z.B, s * 7919) }
 }
+// the Bay's small craft, seeds 1–6: `?model=sf_houseboat_3`, `?model=sf_sailing_2` (sails set)
+for (const k of Object.keys(SF_MOORED) as SfKind[]) for (let s = 1; s <= 6; s++) {
+  const z = SF_SIZES[k]
+  BOAT_MODELS[`sf_${k}_${s}`] = (o) => { SF_MOORED[k](o, z.L[0] + (z.L[1] - z.L[0]) * ((s % 3) / 2), z.B * (k === 'houseboat' ? 0.8 + (s % 3) * 0.2 : 1), s * 7919) }
+}
+BOAT_MODELS.ship_qm2 = (o) => { queenMary2(o) }
+BOAT_MODELS.ship_destroyer = (o) => { destroyer(o) }
+BOAT_MODELS.ship_carrier = (o) => { carrier(o) }
+BOAT_MODELS.ship_amphib = (o) => { amphib(o) }
+for (let s = 1; s <= 6; s++) BOAT_MODELS[`sf_sailing_${s}`] = (o) => { sailboat(o, 9 + s, 3.4, s * 7919, true) }
 BOAT_MODELS.ship_classic_1 = (o) => { cruiseShip(o, 270, 32, 11, 'classic') }
 for (const [key, [name, L, B]] of Object.entries(NAMED_SIZES)) {
   const n = NAMED_BOATS.find((e) => e.re.test(name))
