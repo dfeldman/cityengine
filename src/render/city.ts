@@ -1049,6 +1049,8 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
   /*
    * In 800 m chunks, one vertex per grid point (BUGS.md #242, the iPhone's memory). It was one mesh of four
    * vertices a cell — 3.8 million in San Francisco, 198 MB of vertex buffers, drawn whole every frame — built
+/** a coarse post beside a river post stands this far over the river's clamp (m): just under the water's sheet, never through it */
+export const DISTANT_BANK_LIFT = 0
    * in one set of JS number arrays. The normal and colour are the same everywhere, so a point shared by four
    * cells is the same vertex; the uvs are world metres from the grid's corner rather than each cell's own
    * 0..step, which is the same page wherever `ROAD_PAGE_METRES` divides the step and seamless where it does not.
@@ -1075,7 +1077,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
         const k = (r - r0) * W + (c - c0)
         if (id[k] < 0) {
           id[k] = pos.length / 3
-          pos.push(t.x0 + c * t.step, t.heights[r * t.cols + c], t.z0 + r * t.step)
+          pos.push(t.x0 + c * t.step, distantY(c, r), t.z0 + r * t.step)
         }
         return id[k]
       }
@@ -1085,6 +1087,28 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
           // MeshBuilder.quad's winding for these corners facing up
           const a = v(c, r), b = v(c + stride, r), cc = v(c + stride, r + stride), d = v(c, r + stride)
           idx.push(a, b, cc, a, cc, d)
+  /*
+   * UNDER THE RIVER (2026-11-15, owner: "ground still peeks out over the seine", "on both sides of the island"): this coarse mesh is
+   * drawn under the tiles' own ground everywhere, and a 20 m cell spanning a bank sloped from the bank down to the riverbed through
+   * the water's sheet — straight-edged green patches standing out of the Seine. A post in the river takes the river's clamp
+   * (Terrain.river), and a post beside one goes down to it too, so no cell crosses the water above its sheet.
+   */
+  const rc = terrain.river
+  const clampAt = (c: number, r: number): number => {
+    const h = t.heights[r * t.cols + c]
+    return rc ? rc(t.x0 + c * t.step, t.z0 + r * t.step, h) : h
+  }
+  const distantY = (c: number, r: number): number => {
+    const own = clampAt(c, r)
+    if (!rc) return own
+    let y = own
+    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+      if ((!dr && !dc) || c + dc < 0 || r + dr < 0 || c + dc >= t.cols || r + dr >= t.rows) continue
+      const raw = t.heights[(r + dr) * t.cols + c + dc], cl = clampAt(c + dc, r + dr)
+      if (cl < raw - 0.01) y = Math.min(y, cl + DISTANT_BANK_LIFT)
+    }
+    return y
+  }
           cells++
         }
       }
@@ -5799,7 +5823,10 @@ export const WATER_SAMPLES = 5, WATER_CLIP_EDGE = 2, WATER_CLIP_ITERS = 6
 export function dropDryWater(out: MeshBuilder, i0: number, y: number, heightAt: (x: number, z: number) => number, wallSide?: (x: number, z: number) => number | null): void {
   const P = out.positions, tris = out.indices.splice(i0)
   // f < 0 wet, > 0 dry, near-linear across the shore so its zero can be found along an edge
-  const f = (x: number, z: number): number => { const w = wallSide ? wallSide(x, z) : null; return w !== null ? w : heightAt(x, z) - y - WATER_DRY_RISE }
+  const f = (x: number, z: number): number => {
+    const w = wallSide ? wallSide(x, z) : null, h = heightAt(x, z)
+    return w !== null && h > y - WATER_BED_WET ? w : h - y - WATER_DRY_RISE
+  }
   const tint = [out.colors[0] ?? 0, out.colors[1] ?? 0, out.colors[2] ?? 0, out.colors[3] ?? 0]
   const uvS = (() => { for (let v = 0; v < P.length / 3; v++) if (Math.abs(P[3 * v]) > 1e-3) return P[3 * v] / (out.uvs[2 * v] || 1); return 2.4 })()
   const vert = (x: number, z: number): number => { const v = P.length / 3; P.push(x, y, z); out.normals.push(0, 1, 0); out.uvs.push(x / uvS, z / uvS); out.colors.push(tint[0], tint[1], tint[2], tint[3]); return v }
@@ -5818,6 +5845,10 @@ export function dropDryWater(out: MeshBuilder, i0: number, y: number, heightAt: 
     for (let i = 0; i < 3; i++) {
       const j = (i + 1) % 3, p = vs[i], q = vs[j]
       if (fs[i] <= 0) poly.push(p)
+/** …but ground WATER_BED_WET m or more under the sheet is the riverbed, wet on any side of a wall: short wall pieces round the Vert-Galant's
+ *  tip and the Pont d'Iéna's bank faced their high side out to the river, and their 30 m land reach cut straight-edged wedges out of the
+ *  water — the bed showed as lawn (owner, 2026-11-15: "lots of grass visible in the water", "a poly over the ground… a tesselation issue") */
+export const WATER_BED_WET = 0.8
       if ((fs[i] <= 0) !== (fs[j] <= 0)) { const [x, z] = zero(P[3 * p], P[3 * p + 2], fs[i], P[3 * q], P[3 * q + 2]); poly.push(vert(x, z)) }
     }
     for (let i = 1; i + 1 < poly.length; i++) out.indices.push(poly[0], poly[i], poly[i + 1])

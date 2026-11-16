@@ -42,7 +42,7 @@ const MIN_WATER_DECK = 60, AUDIT_R = 300, BOX_PAD = 300
 /** (AUDIT_R 300: the band reaches 90 m past a deck's end plus 120 m off the water; Pont National's 6.1 m step stood 234 m off it)
  *  deckEnd also walks DECK_REACH m along each way leaving a deck end: a vertex DECK_DH off the line from the end to there is a dip */
 const DECK_REACH = 40
-const STEP_DH = 1, DECK_DH = 1, OFF_DH = 1.5, WALL_GAP = 3, WALL_NEAR = 3, RAIL_DH = 1.5
+const STEP_DH = 1, DECK_DH = 1, OFF_DH = 1.5, WALL_GAP = 3, WALL_NEAR = 3, WALL_OPEN = 3, RAIL_DH = 1.5
 const TRENCH_DH = 2, TRENCH_NEIGH = 1, TRENCH_BRIDGE_R = 10
 /** zigzag (2026-11-08): a ride edge whose heights reverse (a turn after a rise or fall of > ZIG_DH m) ZIG_N or more times within
  *  ZIG_WIN m along it (the band's unmatched footways flipped per vertex between the roads each vertex saw) */
@@ -153,10 +153,38 @@ interface Leg { bridge: string; leg: string; from: P; to: P; fromName?: string; 
   /** snap the ends to non-bridge edges only (a lower-quay leg's ends are on the road under the deck, not on the deck) */ offDeck?: boolean }
 interface LegResult { bridge: string; leg: string; pass: boolean; line: string; cause: string; why: string[] }
 
+/**
+ * A LOWER QUAI'S END is the LOWEST way near it, not the nearest in plan: past a tunnel's mouth the lower quai runs on in the tunnel
+ * under the upper quai's street, and the nearest way in plan was the street above (the Pont Neuf's lower-quai leg, 2026-11-15, once
+ * the false join that had dived the Quai du Louvre's sidewalk into the Tunnel des Tuileries' mouth was undone). Among the non-deck
+ * ways within LOW_SLACK m of the nearest, the lowest at its nearest point.
+ */
+const LOW_SLACK = 6
+function nearestLow(p: P): { edgeId: number; s: number; at: P; d: number; h: number } | null {
+  const near: { edgeId: number; s: number; at: P; d: number; h: number }[] = []
+  for (const e of g.edges.values()) {
+    if ((e as RideEdge).bridge) continue
+    let run = 0, best: { s: number; at: P; d: number; h: number } | null = null
+    for (let i = 1; i < e.points.length; i++) {
+      const a = e.points[i - 1], b = e.points[i], dx = b.x - a.x, dz = b.z - a.z, L = Math.hypot(dx, dz) || 1e-6
+      const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / (L * L))), at = { x: a.x + dx * t, z: a.z + dz * t }, d = dist(at, p)
+      const h = e.heights ? e.heights[i - 1] + (e.heights[i] - e.heights[i - 1]) * t : 0
+      if (!best || d < best.d) best = { s: run + t * L, at, d, h }
+      run += L
+    }
+    if (best) near.push({ edgeId: e.id, ...best })
+  }
+  if (!near.length) return null
+  const d0 = Math.min(...near.map((q) => q.d))
+  const c = near.filter((q) => q.d <= d0 + LOW_SLACK).sort((u, v) => u.h - v.h)[0]
+  if (process.env.SB_DEBUG) { const a = ll(p); console.log(`  dbg low ${a.lat.toFixed(6)},${a.lon.toFixed(6)}: ${near.filter((q) => q.d <= d0 + 25).sort((u, v) => u.d - v.d).slice(0, 6).map((q) => `${q.edgeId}:${(g.edges.get(q.edgeId)!.name ?? '').slice(0, 12)} d${q.d.toFixed(1)} h${q.h.toFixed(1)}`).join(' | ')}`) }
+  return { edgeId: c.edgeId, s: c.s, at: c.at, d: c.d, h: c.h }
+}
+
 function routeLeg(l: Leg): LegResult {
   const named = (n?: string) => n ? (e: { name?: string; bridge?: boolean }) => !(e.name ?? '').includes(n) || (!!l.offDeck && !!e.bridge) : l.offDeck ? (e: { bridge?: boolean }) => !!e.bridge : undefined
   const a = l.from, b = l.to
-  const sa = nearestOnGraph(g, a, named(l.fromName)), sb = nearestOnGraph(g, b, named(l.toName))
+  const sa = l.offDeck && !l.fromName ? nearestLow(a) : nearestOnGraph(g, a, named(l.fromName)), sb = l.offDeck && !l.toName ? nearestLow(b) : nearestOnGraph(g, b, named(l.toName))
   const why: string[] = []
   if (!sa || sa.d > MAX_SNAP) why.push(`start ${sa ? Math.round(sa.d) + ' m' : 'nowhere'} from ${l.fromName ?? 'the graph'}`)
   if (!sb || sb.d > MAX_SNAP) why.push(`end ${sb ? Math.round(sb.d) + ' m' : 'nowhere'} from ${l.toName ?? 'the graph'}`)
@@ -504,16 +532,38 @@ function audit(br: Bridge): Audits {
     const cellOf = new Map<string, number[]>()
     const key = (x: number, z: number) => `${Math.floor(x / 25)},${Math.floor(z / 25)}`
     walls.forEach((w, i) => { for (const [x, z] of [[w.ax, w.az], [w.bx, w.bz], [(w.ax + w.bx) / 2, (w.az + w.bz) / 2]]) for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) { const k = key(x + dx * 25, z + dz * 25); const l = cellOf.get(k); if (l) l.push(i); else cellOf.set(k, [i]) } })
+    // (an OPENING is not a gap: the bake takes a wall piece out where a drawn way crosses its line, tools/bake.ts WALL_CROSS_DEG, so
+    //  a route does not run through the stone — 88 of them on seine-centre-mini, and the count rose 161 → 184 with them)
+    const wayCell = new Map<string, P[][]>()
+    for (const e of pkg.edges) {
+      if (e.bridge || e.tunnel || e.cut) continue
+      for (let i = 2; i < e.points.length; i += 2) {
+        const a = { x: e.points[i - 2], z: e.points[i - 1] }, b = { x: e.points[i], z: e.points[i + 1] }, k = key((a.x + b.x) / 2, (a.z + b.z) / 2)
+        if (dist(a, b) > 40) continue
+        const l = wayCell.get(k); if (l) l.push([a, b]); else wayCell.set(k, [[a, b]])
+      }
+    }
+    // (crossing it, not running along it: a quai road beside its wall is no opening)
+    const cos = Math.cos((25 * Math.PI) / 180)
+    const crossed = (p: P, ux: number, uz: number): boolean => {
+      for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) for (const [a, b] of wayCell.get(key(p.x + dx * 25, p.z + dz * 25)) ?? []) {
+        const l = dist(a, b) || 1
+        if (Math.abs(((b.x - a.x) * ux + (b.z - a.z) * uz) / l) < cos && nearSeg(a, b, p).d <= WALL_OPEN) return true
+      }
+      return false
+    }
     const covered = (p: P): boolean => (cellOf.get(key(p.x, p.z)) ?? []).some((i) => nearSeg({ x: walls[i].ax, z: walls[i].az }, { x: walls[i].bx, z: walls[i].bz }, p).d <= WALL_NEAR)
     for (const f of lines) {
       if (!/^(Quai|Mur de soutènement)$/.test(String(f.props.nature)) || btSol(f) === '-1') continue
       for (const part of f.coords) {
-        const smp: { p: P; c: boolean }[] = []
+        const smp: { p: P; c: boolean; w: boolean }[] = []
         for (let i = 1; i < part.length; i++) {
           const a = toLocal(part[i - 1][1], part[i - 1][0]), b = toLocal(part[i][1], part[i][0]), n = Math.max(1, Math.ceil(dist(a, b)))
-          for (let k = 0; k < n; k++) { const p = { x: a.x + (b.x - a.x) * k / n, z: a.z + (b.z - a.z) * k / n }; smp.push({ p, c: covered(p) }) }
+          const L = dist(a, b) || 1
+          for (let k = 0; k < n; k++) { const p = { x: a.x + (b.x - a.x) * k / n, z: a.z + (b.z - a.z) * k / n }; const w = covered(p); smp.push({ p, c: w || crossed(p, (b.x - a.x) / L, (b.z - a.z) / L), w }) }
         }
-        if (!smp.some((s) => s.c)) continue
+        // (a line with no shipped wall anywhere along it is not scored — an opening does not make it one)
+        if (!smp.some((s) => s.w)) continue
         let run = 0
         const close = (): void => { if (run > WALL_GAP) wallGap!++; run = 0 }
         for (const s of smp) { if (!inWindow(br, s.p)) { close(); continue } if (s.c) close(); else run++ }

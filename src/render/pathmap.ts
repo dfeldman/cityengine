@@ -197,9 +197,41 @@ export class PathMap {
     return m
   }
 
+  /**
+   * A junction's height: the end height of an edge meeting there, not the ground. In a trench or a tunnel the ground beside the road
+   * is the street over it, and the discs and spokes stood up at street level (owner, 2026-11-15, the Avenue de New York under the
+   * Place de Varsovie: "the tunnel routes go up and down to street level repeatedly"). Null where no edge there has heights.
+   */
+  private nodeY(p: P): number | null {
+    if (!this.nodeH) {
+      this.nodeH = new Map()
+      for (const e of this.g.edges.values()) {
+        if (!e.heights || e.heights.length !== e.points.length) continue
+        const n = e.points.length - 1
+        this.nodeH.set(`${Math.round(e.points[0].x)},${Math.round(e.points[0].z)}`, e.heights[0])
+        this.nodeH.set(`${Math.round(e.points[n].x)},${Math.round(e.points[n].z)}`, e.heights[n])
+      }
+    }
+    return this.nodeH.get(`${Math.round(p.x)},${Math.round(p.z)}`) ?? null
+  }
+  private nodeH: Map<string, number> | null = null
+
+  /** A point's height on an edge's own profile (nearest point of its polyline), or the ground if the edge has no heights. */
+  private yOn(edge: Edge, q: P): number {
+    const h = edge.heights
+    if (!h || h.length !== edge.points.length) return this.terrain.heightAt(q.x, q.z) + LIFT
+    let best = Infinity, y = h[0]
+    for (let i = 1; i < edge.points.length; i++) {
+      const a = edge.points[i - 1], b = edge.points[i], dx = b.x - a.x, dz = b.z - a.z, l2 = dx * dx + dz * dz || 1e-9
+      const t = Math.max(0, Math.min(1, ((q.x - a.x) * dx + (q.z - a.z) * dz) / l2)), d = Math.hypot(a.x + dx * t - q.x, a.z + dz * t - q.z)
+      if (d < best) { best = d; y = h[i - 1] + (h[i] - h[i - 1]) * t }
+    }
+    return y + LIFT
+  }
+
   /** A flat ring of radius r and width w at p. */
   private ring(out: MeshBuilder, p: P, r: number, w: number, colour: Rgb, dy = 0, sides = 18): void {
-    const y = this.terrain.heightAt(p.x, p.z) + LIFT + dy
+    const y = (this.nodeY(p) ?? this.terrain.heightAt(p.x, p.z)) + LIFT + dy
     const at = (k: number, rr: number): [number, number, number] =>
       [p.x + Math.cos((k / sides) * Math.PI * 2) * rr, y, p.z + Math.sin((k / sides) * Math.PI * 2) * rr]
     for (let i = 0; i < sides; i++) out.quad([at(i, r - w / 2), at(i + 1, r - w / 2), at(i + 1, r + w / 2), at(i, r + w / 2)], [0, 1, 0], PLAIN, colour, 0)
@@ -236,10 +268,10 @@ export class PathMap {
           const q = { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t }
           const ya = this.y(e, i - 1, a)
           const yb = this.y(e, i, b)
-          dense.push({ p: q, y: e ? ya + (yb - ya) * t : this.terrain.heightAt(q.x, q.z) + LIFT })
+          dense.push({ p: q, y: e ? ya + (yb - ya) * t : this.yOn(edge, q) })
         }
       }
-      dense.push({ p: pts[i], y: this.y(e, i, pts[i]) })
+      dense.push({ p: pts[i], y: e ? this.y(e, i, pts[i]) : this.yOn(edge, pts[i]) })
     }
     for (let i = 1; i < dense.length; i++) {
       const a = dense[i - 1]
@@ -256,7 +288,7 @@ export class PathMap {
 
   /** A flat disc of `sides`, radius r, at p. */
   private disc(out: MeshBuilder, p: P, r: number, colour: Rgb, dy = 0, sides = 14): void {
-    const y = this.terrain.heightAt(p.x, p.z) + LIFT + dy
+    const y = (this.nodeY(p) ?? this.terrain.heightAt(p.x, p.z)) + LIFT + dy
     for (let i = 0; i < sides; i += 2) {
       const at = (k: number): [number, number, number] =>
         [p.x + Math.cos((k / sides) * Math.PI * 2) * r, y, p.z + Math.sin((k / sides) * Math.PI * 2) * r]

@@ -136,7 +136,9 @@ export const DZ_BED = true, DZ_BED_TOL = 0.15, DZ_BED_FOOT = false
  *  (foot ways too) is LOWERED to the way where the ground stands DZ_BED_DOWN m over it: no way under the ground (bake.ts) */
 export const DZ_MNT_CAP: number | null = 1.0, DZ_BED_DOWN = 0.15
 export const DZ_BAND_NO_BIKE = /^(motorway|trunk)(_link)?$/
-export const DZ_BAND_NO_BIKE_TUNNEL_OK = /^(footway|cycleway|path|pedestrian|steps)$/
+/** …but not a SERVICE tunnel: the old expressway's tunnels on the Parc Rives de Seine (the Tunnel des Tuileries) are service roads now,
+ *  closed to traffic and ridden by bikes, and with one off the graph the promenade dead-ended at its mouth (2026-11-15) */
+export const DZ_BAND_NO_BIKE_TUNNEL_OK = /^(footway|cycleway|path|pedestrian|steps|service)$/
 export const DZ_LAY_STEP = 4, DZ_ID0 = 9.7e14, DZ_NODE0 = 9.71e14
 
 type LLp = [number, number]
@@ -862,6 +864,8 @@ export function applyDeckZoneRoutes(edges: PackedEdge[], zones: DeckZone[], toLo
  *  a dive. Each node of a bridge track that comes within DZ_RAIL_NEAR of a zone takes the height of the nearest bridge way's point
  *  (the road deck beside it, within DZ_RAIL_NEAR) — Pont National's tram and the Petite Ceinture. */
 export const DZ_RAIL_NEAR = 15
+/** …only a deck within this of the track's own height (m): Bir-Hakeim's métro viaduct, 5 m over the road deck, was pulled down onto it */
+export const DZ_RAIL_SNAP_DH = 2.5
 export function conformDeckRails(rails: { points: number[]; heights?: number[]; bridge?: boolean }[], edges: PackedEdge[], zones: DeckZone[]): string[] {
   const decks = edges.filter((e) => e.bridge && usable(e))
   let n = 0
@@ -875,7 +879,7 @@ export function conformDeckRails(rails: { points: number[]; heights?: number[]; 
     for (let i = 0; i < r.heights.length; i++) {
       const x = r.points[2 * i], z = r.points[2 * i + 1]
       let best = DZ_RAIL_NEAR, y: number | null = null
-      for (const e of decks) for (let k = 0; k < e.heights!.length; k++) { const d = Math.hypot(e.points[2 * k] - x, e.points[2 * k + 1] - z); if (d < best) { best = d; y = e.heights![k] } }
+      for (const e of decks) for (let k = 0; k < e.heights!.length; k++) { const d = Math.hypot(e.points[2 * k] - x, e.points[2 * k + 1] - z); if (d < best && Math.abs(e.heights![k] - r.heights[i]) <= DZ_RAIL_SNAP_DH) { best = d; y = e.heights![k] } }
       if (y !== null && Math.abs(y - r.heights[i]) > 0.05) { r.heights[i] = r2(y); n++ }
       if (y !== null) (snapped.get(r) ?? snapped.set(r, []).get(r)!)[i] = true
     }

@@ -177,6 +177,9 @@ export { axisOf }
  */
 export const RAIL_ARCHES = new Set(["Viaduc d'Austerlitz"])
 
+/** a bridge structure's deck profile: a running median over ±DECK_MEDIAN metre bins, then a mean over ±DECK_MEAN (no sawtooth parapet) */
+export const DECK_MEDIAN = 3, DECK_MEAN = 0
+
 function railArch(out: MeshBuilder, ring: P[], rails: PackedRail[], wetAt: (x: number, z: number) => number | null): void {
   const ax = axisOf(ring)
   if (!ax) return
@@ -380,6 +383,32 @@ export const freewayKind = (e: Pick<PackedEdge, 'kind' | 'name'>): boolean => FR
 /** bridges whose outline flares at its heads under the 45 % `straightOutline` asks, and are straight for all that (the Pont de l'Archevêché's, a T each end) */
 export const FLARED_OUTLINES = new Set(["Pont de l'Archevêché"])
 
+/**
+ * THE STRUCTURE RUNS ALONG ITS WAYS, NOT ITS OUTLINE (owner, 2026-11-15: the Pont Neuf's and the Pont Alexandre III's "fences and lights
+ * are not aligned with the bridge deck and road"). The outline's rectangle can be turned a few degrees off the ways it carries — the
+ * Pont Alexandre III's by 3.5°, the Pont Neuf's short arm by 8° — and over 150 m the parapets, set at ±hw from that axis, crossed the
+ * roadway and the pavements by 9 m. The axis turns to the length-weighted direction of the bridge's own segments that run within
+ * ALONG_WAYS_DEG of it (a carriageway's counted ALONG_ROAD_WEIGHT times a footway's), about its middle, ALONG_PAD m longer each end
+ * (the structure's ends are trimmed to the ways on it afterwards).
+ */
+export const ALONG_WAYS_DEG = 25, ALONG_ROAD_WEIGHT = 2, ALONG_PAD = 3
+function alongWays(ax: NonNullable<ReturnType<typeof axisOf>>, own: [P, P][], roads?: Set<[P, P]>): NonNullable<ReturnType<typeof axisOf>> {
+  let sx = 0, sz = 0
+  const c = Math.cos((ALONG_WAYS_DEG * Math.PI) / 180)
+  for (const sg of own) {
+    const [a, b] = sg, dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz)
+    if (l < 0.5) continue
+    const d = (dx * ax.ux + dz * ax.uz) / l
+    if (Math.abs(d) < c) continue
+    const w = (roads?.has(sg) ? ALONG_ROAD_WEIGHT : 1) * Math.sign(d)
+    sx += dx * w; sz += dz * w
+  }
+  const l = Math.hypot(sx, sz)
+  if (l < 1) return ax
+  const ux = sx / l, uz = sz / l, cx = ax.o.x + ax.ux * ax.L / 2, cz = ax.o.z + ax.uz * ax.L / 2, L = ax.L + 2 * ALONG_PAD
+  return { o: { x: cx - ux * L / 2, z: cz - uz * L / 2 }, ux, uz, L, half: ax.half }
+}
+
 function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: PackedEdge[], terrain: Terrain,
   wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>, waterDefault: StructureStyle = DEFAULT_OVER_WATER): void {
   const long = axisOf(ring)
@@ -391,15 +420,15 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     if (inOutline(ring, e.points[k], e.points[k + 1], 1.5)) return
   }
   // along the bridge's own ways, which is not always its long side (bridge-axis.ts `axisAlong`)
-  const own: [P, P][] = []
+  const own: [P, P][] = [], roads = new Set<[P, P]>()
   for (const e of edges) {
     if (!e.bridge || freewayKind(e)) continue
     const pts = unpackPoints(e.points)
     for (let i = 1; i < pts.length; i++) {
-      if (inOutline(ring, (pts[i - 1].x + pts[i].x) / 2, (pts[i - 1].z + pts[i].z) / 2, 0.5)) own.push([pts[i - 1], pts[i]])
+      if (inOutline(ring, (pts[i - 1].x + pts[i].x) / 2, (pts[i - 1].z + pts[i].z) / 2, 0.5)) { const sg: [P, P] = [pts[i - 1], pts[i]]; own.push(sg); if (!e.foot) roads.add(sg) }
     }
   }
-  const ax = axisAlong(long, own)
+  const ax = alongWays(axisAlong(long, own), own, roads)
   const { ux, uz } = ax
   let O = ax.o
   let L = ax.L
@@ -492,6 +521,17 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     const lo = known.filter((k) => k < i).pop()
     const hi = known.find((k) => k > i)
     bins[i] = lo === undefined ? bins[hi!] : hi === undefined ? bins[lo] : bins[lo]! + ((bins[hi]! - bins[lo]!) * (i - lo)) / (hi - lo)
+  }
+  /*
+   * A DECK IS SMOOTH (2026-11-15, the Pont d'Iéna's end): a bin's median flips between two levels from one metre to the next where
+   * ways at different heights cross it, and the parapet drew it as a sawtooth. A running median over ±DECK_MEDIAN bins, then a
+   * mean over ±DECK_MEAN.
+   */
+  {
+    const med = bins.map((_, i) => { const w = bins.slice(Math.max(0, i - DECK_MEDIAN), i + DECK_MEDIAN + 1).map((v) => v!).sort((a, b) => a - b); return w[Math.floor(w.length / 2)] })
+    // (the median alone: it keeps a steady ramp exactly and drops only the flips; a mean after it blurred the bridge's ends, and the
+    //  structure stood off the ways' own decks there — owner, the Pont Neuf and the Pont Alexandre III "clashing")
+    for (let i = 0; i < n; i++) bins[i] = DECK_MEAN > 0 ? med.slice(Math.max(0, i - DECK_MEAN), i + DECK_MEAN + 1).reduce((a, b) => a + b, 0) / med.slice(Math.max(0, i - DECK_MEAN), i + DECK_MEAN + 1).length : med[i]
   }
   const top = (s: number): number => {
     const f = Math.max(0, Math.min(n - 1, s))

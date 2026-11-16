@@ -88,6 +88,10 @@ await page.evaluate(`(() => {
   window.__lookHold = () => { cam.position.set(${px}, ${py}, ${pz}); cam.setTarget(new cam.position.constructor(${x}, ${ty} + ${height !== null ? 8 : lift * k}, ${z})) }
   sc.onBeforeRenderObservable.add(window.__lookHold)
 })()`)
+// --hide=a,b hides every mesh whose name starts with one of them (which mesh draws what)
+if (arg('hide')) await page.evaluate(`(() => { const ps = ${JSON.stringify((arg('hide') ?? '').split(','))}; for (const m of window.__scene.meshes) if (ps.some((p) => m.name.startsWith(p))) m.isVisible = false })()`)
+// --names lists the meshes whose names start with one of the given prefixes, with their rendering group
+if (arg('names')) console.log('names', JSON.stringify(await page.evaluate(`window.__scene.meshes.filter((m) => ${JSON.stringify((arg('names') ?? '').split(','))}.some((p) => m.name.startsWith(p))).map((m) => m.name + '@' + m.renderingGroupId + (m.isEnabled() ? '' : '(off)')).slice(0, 60)`)))
 await page.waitForTimeout(1500)
 await page.screenshot({ path: arg('out') })
 // --probe=x,y reports which building is drawn at that screen point (needs --extra=pick=1)

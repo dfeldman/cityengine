@@ -443,7 +443,7 @@ export const CITIES: CitySpec[] = [
   {
     id: 'concorde-mini', live: false, test: true, region: 'paris',
     name: 'Concorde test area (bike tunnel)',
-    centre: { lat: 48.8648, lon: 2.3202 }, radius: 300, wide: false, ground: 'grass',
+    centre: { lat: 48.8648, lon: 2.3202 }, radius: 300, wide: false, ground: 'grass', datum: 32.94,
     styles: [{ id: 'haussmann', weight: 1 }],
     note: 'A test area: the Tunnel Concorde under the Port de la Concorde.',
   },
@@ -507,6 +507,35 @@ export const CITIES: CitySpec[] = [
     styles: [{ id: 'haussmann', weight: 1 }],
     note: 'A test area: the Passerelle Simone de Beauvoir and the quais de Bercy (plans/bridgeheads/NOTES.md).',
   },
+  /* The multi-level pass (docs/SEINE-MULTILEVEL.md, 2026-11-15): the owner's six spots. */
+  {
+    id: 'bir-hakeim-mini', live: false, test: true, region: 'paris',
+    name: 'Bir-Hakeim and Iéna test area (multi-level)',
+    centre: { lat: 48.8585, lon: 2.2890 }, radius: 450, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Pont de Bir-Hakeim, the Île aux Cygnes tip, Pont d\'Iéna right bank (docs/SEINE-MULTILEVEL.md).',
+  },
+  {
+    id: 'seine-centre-mini', live: false, test: true, region: 'paris',
+    name: 'Central Seine test area (multi-level, eight bridges)',
+    centre: { lat: 48.8555, lon: 2.3460 }, radius: 1300, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Pont Royal to Pont de Sully, both banks and the islands (docs/SEINE-MULTILEVEL.md).',
+  },
+  {
+    id: 'debilly-mini', live: false, test: true, region: 'paris',
+    name: 'Port Debilly test area (multi-level)',
+    centre: { lat: 48.8615, lon: 2.2940 }, radius: 300, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Port Debilly, the ramps through the quay walls, the moored boats (docs/SEINE-MULTILEVEL.md).',
+  },
+  {
+    id: 'grenelle-mini', live: false, test: true, region: 'paris',
+    name: 'Pont de Grenelle test area (multi-level)',
+    centre: { lat: 48.8500, lon: 2.2790 }, radius: 300, wide: false, ground: 'grass', datum: 32.94,
+    styles: [{ id: 'haussmann', weight: 1 }],
+    note: 'A test area: Pont de Grenelle right bank stairs (docs/SEINE-MULTILEVEL.md).',
+  },
   /* The band's regressions on the first paris-centre band bake (plans/bridgeheads/NOTES.md, 2026-11-08). */
   {
     id: 'louvre-mini', live: false, test: true, region: 'paris',
@@ -538,6 +567,7 @@ export const CITIES: CitySpec[] = [
     name: 'Alma test area (tunnel mouths)',
     centre: { lat: 48.8641, lon: 2.3008 },
     radius: 300,
+    datum: 32.94,
     wide: false,
     ground: 'grass',
     styles: [{ id: 'haussmann', weight: 1 }],

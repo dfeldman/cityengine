@@ -92,7 +92,7 @@ import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
 import { COURT_MAX_M2, courtEligible, courtSport, fitCourt, ringArea, tileCourts } from '../src/city/sports.ts'
 import { chooseStyle, style as styleOf, type StyleId } from '../src/city/facade.ts'
-import { packPoints, unpackPoints, waterLevels, type CityPackage, type PackedPoi, type QuayWall, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedCourt, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
+import { packPoints, unpackPoints, waterLevels, onSurface, type CityPackage, type PackedPoi, type QuayWall, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedCourt, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
 import { pavementFor } from '../src/city/pavement.ts'
 import { ringForm, thresholds, type RingForm } from '../src/city/ring-forms.ts'
 import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
@@ -5168,6 +5168,71 @@ async function bake(spec: CitySpec): Promise<void> {
   if (deckZones.some((z) => z.rOf)) for (const t of bdTopoRails(rails, deckZones, (x, z) => shipped.heightAt(x, z))) console.log(`  ${t}`)
   // (an open lid's road is in its cut, never a structure: deck-conform and the zones judged it on the lidar before the carve)
   for (const e of kept) if (lidRoadIds.has(e.id) && e.ramp) delete e.ramp
+  // THE MULTI-LEVEL PASS (tools/multilevel.ts, docs/SEINE-MULTILEVEL.md, 2026-11-15): the band's way heights solved once and its
+  //  ground rebuilt from the 1 m lidar and the at-grade ways, after every other writer. MULTILEVEL=0 off.
+  // (the declared bike ramps go in BEFORE the pass when it runs, so its solve and its ground see them: laid after, straight from top to
+  //  bottom, Pont National's stood 2.9 m under the ground it crossed)
+  const earlyRamps = !!seine && process.env.MULTILEVEL !== '0'
+  if (earlyRamps) { const r = layBikeRamps(kept, spec.region ?? spec.id, (lat, lon) => proj.toLocal({ lat, lon })); for (const t of r.log) console.log(`  bike ramp: ${t}`) }
+  if (seine && process.env.MULTILEVEL !== '0') {
+    const tMl = Date.now()
+    const [s0, w0, n0, e0] = seine.band.boxLL
+    const lid1 = await (await import('./ign-lidar.ts')).ignLidar({ south: s0 - 0.001, west: w0 - 0.0015, north: n0 + 0.001, east: e0 + 0.0015 }, 1024)
+    const mntL = (x: number, z: number): number | null => { const q = proj.toLatLon({ x, z }), v = lid1.at(q.lat, q.lon); return v === null ? null : v - datumRaw }
+    const gotB = await overpassBox(bridgesQuery, spec).catch(() => null)
+    const bridgeRings = [
+      ...(gotB?.ways ?? []).filter((w) => w.geometry && w.geometry.length >= 4).map((w) => w.geometry!.map((q) => proj.toLocal(q))),
+      ...(gotB?.relations ?? []).flatMap((rl) => outerRings(rl).map((g) => g.map((q) => proj.toLocal(q)))),
+    ]
+    // BD TOPO's quay and retaining wall lines (cached pages): the ground steps at them
+    const wallLines = (await fetchBdTopo('construction_lineaire', s0, w0, n0, e0).catch(() => [] as Awaited<ReturnType<typeof fetchBdTopo>>))
+      .filter((f) => /^(Quai|Mur de soutènement)$/.test(String(f.props.nature)) && btSol(f) !== '-1')
+      .flatMap((f) => f.coords.map((line) => line.map(([lo, la]) => proj.toLocal({ lat: la, lon: lo }))))
+    // RIVER HOLES (2026-11-15, owner: "ground still peeks out over the seine"): OSM cuts moored barges and pontoons out of the river as
+    //  holes, and no water is drawn in a hole — the riverbed showed as a green patch on the river. A hole the lidar reads as water
+    //  (most of its samples under the river's level + 0.8 m) is dropped; an island's (land) stays.
+    {
+      let dropped = 0, kept = 0
+      for (const a of areas) {
+        if (a.kind !== 'water' || !a.river || !a.holes?.length || a.level === undefined) continue
+        const lv = a.level
+        a.holes = a.holes.filter((h) => {
+          const n = h.length / 2; let cx = 0, cz = 0
+          for (let i = 0; i < n; i++) { cx += h[2 * i]; cz += h[2 * i + 1] }
+          cx /= n; cz /= n
+          const pts = [[cx, cz], ...[...Array(Math.min(n, 12)).keys()].map((k) => { const i = Math.floor(k * n / Math.min(n, 12)); return [(h[2 * i] + cx) / 2, (h[2 * i + 1] + cz) / 2] })]
+          let wet = 0, seen = 0
+          for (const [x, z] of pts) { const m = mntL(x, z); if (m === null) continue; seen++; if (m < lv + 0.8) wet++ }
+          const water = seen > 0 && wet / seen > 0.6
+          if (water) dropped++; else kept++
+          return !water
+        })
+      }
+      console.log(`  river holes: ${dropped} dropped (the lidar reads water in them: moored boats, pontoons), ${kept} kept (land)`)
+    }
+    const ml = (await import('./multilevel.ts')).multiLevel({
+      edges: kept, rails, areas, bridgeRings, bandOut: (x, z) => seine.band.out(x, z), box: seine.band.box, mnt: mntL, walls: wallLines,
+      boats: boatWays.map((w) => w.geometry.slice(0, -1).map((g) => proj.toLocal(g))), log: (t) => console.log(`  ${t}`),
+    })
+    let nml = 0
+    const grid = (h: ArrayLike<number> & { [i: number]: number }, cols: number, rows: number, x0: number, z0: number, step: number) => {
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        const x = x0 + c * step, z = z0 + r * step; if (ml.weight(x, z) <= 0) continue
+        const i = r * cols + c, y = ml.groundAt(x, z, h[i]); if (y !== h[i]) { h[i] = y; nml++ }
+      }
+    }
+    grid(fineGround, fcols, frows, fx0, fz0, FINE_STEP); grid(ground, cols, rows, tx0, tz0, STEP)
+    if (quayDetail) { const at3 = quayDetail.at; quayDetail.at = (x, z) => { const v = at3(x, z); if (ml.weight(x, z) <= 0) return v; const p = v ?? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z); return ml.groundAt(x, z, p) } }
+    shipped = new GroundModel({
+      coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+      fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+      fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE, detail: quayDetail,
+    })
+    for (const [k2, b] of shipped.blocks) {
+      if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+    }
+    console.log(`  multi-level: ${nml} grid posts relaid; ${((Date.now() - tMl) / 1000).toFixed(1)} s`)
+  }
   /*
    * TRENCH WALLS, by distance from the slab along the lid roads: a node inside a slab is 0, and a lid road is walled out to
    * LID_WALL_REACH m from it (render/city.ts). A ramp's chain walks on along the quay at its own grade, where the ground
@@ -5478,10 +5543,37 @@ async function bake(spec: CitySpec): Promise<void> {
     for (let i = 0; i < n0; i += 5) if (!underDeck(pkg.plantings[i], pkg.plantings[i + 1])) kept.push(...pkg.plantings.slice(i, i + 5))
     pkg.plantings = kept
     if (kept.length < n0) console.log(`  plantings: ${(n0 - kept.length) / 5} under bridge decks taken out`) }
-  {
+  if (!earlyRamps) {
     // the declared bike ramps beside bridgeheads' stairs (src/city/bike-ramps.ts; `--rides` lays them again without a bake)
     const pj = new Projection(pkg.origin), r = layBikeRamps(pkg.edges, spec.region ?? spec.id, (lat, lon) => pj.toLocal({ lat, lon }))
     for (const t of r.log) console.log(`  bike ramp: ${t}`)
+  }
+  // NO WALL ACROSS A ROAD (2026-11-15, owner at 48.862035, 2.293575: "the routes go through retaining walls several times"): a wall
+  //  piece a drawn way crosses at more than WALL_CROSS_DEG is an opening — a ramp down to a port through the quay wall — and goes
+  if (pkg.quayWalls?.length) {
+    const WALL_CROSS_DEG = 25, C = 20, cell = new Map<string, number[][]>()
+    for (const e of pkg.edges) {
+      if (!e.heights || e.bridge || e.tunnel || !onSurface(e)) continue
+      const p = e.points
+      for (let i = 2; i < p.length; i += 2) {
+        const sg = [p[i - 2], p[i - 1], p[i], p[i + 1]]
+        for (let gx = Math.floor(Math.min(sg[0], sg[2]) / C); gx <= Math.floor(Math.max(sg[0], sg[2]) / C); gx++) for (let gz = Math.floor(Math.min(sg[1], sg[3]) / C); gz <= Math.floor(Math.max(sg[1], sg[3]) / C); gz++) { const k = `${gx},${gz}`; (cell.get(k) ?? cell.set(k, []).get(k)!).push(sg) }
+      }
+    }
+    const sinMin = Math.sin(WALL_CROSS_DEG * Math.PI / 180), n0 = pkg.quayWalls.length
+    pkg.quayWalls = pkg.quayWalls.filter((q) => {
+      const rx = q.bx - q.ax, rz = q.bz - q.az, rl = Math.hypot(rx, rz) || 1
+      const cands = new Set<number[]>()
+      for (const [x, z] of [[q.ax, q.az], [q.bx, q.bz]]) for (const sg of cell.get(`${Math.floor(x / C)},${Math.floor(z / C)}`) ?? []) cands.add(sg)
+      for (const sg of cands) {
+        const sx = sg[2] - sg[0], sz = sg[3] - sg[1], sl = Math.hypot(sx, sz) || 1, den = rx * sz - rz * sx
+        if (Math.abs(den) / (rl * sl) < sinMin) continue
+        const t = ((sg[0] - q.ax) * sz - (sg[1] - q.az) * sx) / den, u = ((sg[0] - q.ax) * rz - (sg[1] - q.az) * rx) / den
+        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return false
+      }
+      return true
+    })
+    if (pkg.quayWalls.length < n0) console.log(`  quay walls: ${n0 - pkg.quayWalls.length} pieces a road crosses taken out (openings)`)
   }
   await mkdir(workDir(spec.id), { recursive: true })
   // (bake-private: what the secondary tools read — tools/bake-files.ts; never published)
@@ -6122,7 +6214,9 @@ async function main(): Promise<void> {
         for (const e of lp.moved) pins.moved.add(e)
       }
       // the deck zones again (tools/deck-zones.ts): re-pinned and re-graded only (ground, walls and laid routes need the full bake)
-      if (process.env.DECK_ZONES !== '0' && (region(spec.region).deckZones?.length || process.env.BDTOPO_BAND === '1')) {
+      // (with the band, the multi-level pass already solved the package's heights: laying the zones' routes again would undo it)
+      if (process.env.BDTOPO_BAND === '1' && process.env.MULTILEVEL !== '0') console.log('  deck zones: the package heights are the multi-level pass\'s, kept')
+      else if (process.env.DECK_ZONES !== '0' && (region(spec.region).deckZones?.length || process.env.BDTOPO_BAND === '1')) {
         if (spec.datum === undefined) console.log('  deck zones: skipped (--rides needs the CitySpec datum)')
         else {
           // (BDTOPO_BAND=1: the Seine band again, from BD TOPO's cached pages, the hand zones over it: the same zones as the bake)

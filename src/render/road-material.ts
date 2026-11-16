@@ -56,6 +56,10 @@ void main(void) {
 }
 `
 
+/** natural ground steeper than this is drawn as stone: |normal.y| from CLIFF_FROM (all stone) to CLIFF_TO (all ground); the courses' height (m) and colour */
+export const CLIFF_FROM = 0.42, CLIFF_TO = 0.62, CLIFF_COURSE = 0.55, CLIFF_STONE: [number, number, number] = [0.66, 0.6, 0.5]
+/** the ground surfaces a cliff turns to stone on (the city's base ground; never a road, a deck or a painted layer) */
+export const CLIFF_SURFACES = new Set(['grass', 'dirt', 'sand'])
 const FRAGMENT = `
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
@@ -66,6 +70,7 @@ varying float vHalf;
 varying float vDepth;
 varying vec3 vWorld;
 uniform sampler2D surfaceTex;
+uniform float cliff;
 uniform vec3 sunDir;
 uniform vec3 sunColour;
 uniform vec3 skyColour;
@@ -125,6 +130,21 @@ void main(void) {
   vec3 tex = texture2D(surfaceTex, vec2(across, along) / pageMetres).rgb;
   // 2.0 was chosen when the tints were brighter and at this exposure it washed every street out
   vec3 base = tex * vTint * 1.25;
+  /*
+   * A CLIFF IS STONE (2026-11-15, owner: the Iéna tunnel's sides "quite weird in texture"): the natural ground (grass, dirt, sand) on a
+   * face steeper than about 60° — the step at a trench, a quay, a bank — is drawn as limestone in courses, not grass stretched up a
+   * wall. The slope is the face's own (screen derivatives of the world position): several ground meshes carry an up normal everywhere.
+   */
+  if (cliff > 0.5) {
+    vec3 gn = normalize(cross(dFdx(vWorld), dFdy(vWorld)));
+    float steep = 1.0 - smoothstep(${CLIFF_FROM.toFixed(3)}, ${CLIFF_TO.toFixed(3)}, abs(gn.y));
+    if (steep > 0.0) {
+      float course = fract(vWorld.y / ${CLIFF_COURSE.toFixed(3)});
+      float joint = smoothstep(0.0, 0.07, course) * (1.0 - smoothstep(0.93, 1.0, course));
+      vec3 stone = vec3(${CLIFF_STONE.map((v) => v.toFixed(3)).join(', ')}) * (0.8 + 0.2 * joint) * (0.92 + 0.08 * tex.g / max(0.001, dot(tex, vec3(0.333))));
+      base = mix(base, stone, steep);
+    }
+  }
 
   // Wheel polish, but only on a carriageway STRIP, where 'across' means distance from the centre line. The
   // unioned road surface has no centre line to measure from — its uvs are just world metres — so it carries
@@ -251,9 +271,11 @@ export function roadMaterial(scene: Scene, surface: string, assetBase: string,
   const mat = new ShaderMaterial(name, scene, 'road', {
     attributes: ['position', 'normal', 'uv', 'color'],
     uniforms: ['world', 'worldViewProjection', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
-      'fogColour', 'fogDensity', 'pageMetres', 'marked', 'night', 'wetness', 'zenith', 'horizon', 'eye'],
+      'fogColour', 'fogDensity', 'pageMetres', 'marked', 'night', 'wetness', 'zenith', 'horizon', 'eye', 'cliff'],
     samplers: ['surfaceTex'],
   })
+  // (only the base ground's own material: a road, a deck's sides and the painted layers are never cliffs)
+  mat.setFloat('cliff', CLIFF_SURFACES.has(surface) && !variant ? 1 : 0)
   /*
    * A SINGLE PIXEL OF THE PAGE'S OWN AVERAGE COLOUR, until the page itself arrives.
    *
