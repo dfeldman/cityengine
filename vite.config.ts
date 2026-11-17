@@ -99,7 +99,8 @@ export default defineConfig({
   },
   // Babylon arrives through the @babylonjs/core barrel, as in the platform's other games
   // public/ is copied into dist/ by tools/link-assets.js, which skips what the asset bucket serves
-  build: { chunkSizeWarningLimit: 7500, copyPublicDir: false },
+  // two pages: the game, and devmaps.html (the 2D bake debugger, docs/DEVMAPS.md; its data is copied by link-assets)
+  build: { chunkSizeWarningLimit: 7500, copyPublicDir: false, rollupOptions: { input: { main: 'index.html', devmaps: 'devmaps.html' } } },
   // the platform glue's tests need gamekit; without a dandyhorse checkout they are left out
   test: { exclude: [...configDefaults.exclude, ...(HAS_GAMEKIT ? [] : ['tests/platform.test.ts'])] },
 })

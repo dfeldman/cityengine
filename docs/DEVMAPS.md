@@ -10,6 +10,11 @@ npm run devmaps:prep -- --city=paris-centre     # or --city=a --city=b, or --all
 npm run dev                                     # then open http://localhost:5200/devmaps.html
 ```
 
+**Live site**: `npm run build` puts `devmaps.html` beside the game and copies `public/devmaps/<city>/` for the live
+cities (`src/cities.json`) whose prep is of the bake that ships; a missing or stale prep is left out with a warning
+(`tools/link-assets.js`). So prep the live cities after baking them and before building; `sh tools/r2-upload.sh` then
+publishes it at `/devmaps.html`. All URLs are relative, so it works under any base path.
+
 Re-run the prep after every bake. The viewer warns in the status bar (and in the city tab) when the prep's bake id is not
 the bake of the tiles on disk, since the raw tiles' dictionaries then disagree with the prep's.
 

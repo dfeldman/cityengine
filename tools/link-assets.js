@@ -5,11 +5,12 @@
  *   - the folders the shared asset bucket serves (src/assets.ts) are skipped;
  *   - of the cities, only those on src/cities.json, and of each only its shipped bake, `v3/` (tools/bake-files.ts);
  *   - files in public/ that are managed but not for the game (NOT_SHIPPED: the generators' contact sheets) are left out;
+ *   - devmaps/ (the 2D debugger's prep): the live cities' preps of their shipped bake only;
  *   - and anything that is not a plain file or folder.
  * Everything else (the textures restored by assetmgr, the manifests, the landmarks) is copied.
  */
 import { execFileSync } from 'node:child_process'
-import { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs'
+import { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'
 
 /**
@@ -65,6 +66,27 @@ for (const name of readdirSync(pub)) {
       cpSync(v3, join(to, id, 'v3'), { recursive: true })
     }
     console.log(`  cities -> ${LIVE.join(', ')} (their v3/ only)`)
+    continue
+  }
+  if (name === 'devmaps') {
+    /*
+     * devmaps (docs/DEVMAPS.md): `npm run devmaps:prep` output, made from a city's bake, so it ships like the bake — the
+     * live cities only, and only a prep of the very bake that ships (its tiles' dictionaries must agree). A city with no
+     * prep, or a stale one, is left out with a warning, not an error: the game doesn't need it.
+     */
+    const shipped = []
+    const list = existsSync(join(from, 'cities.json')) ? JSON.parse(readFileSync(join(from, 'cities.json'), 'utf8')) : []
+    for (const id of LIVE) {
+      const c = list.find((e) => e.id === id)
+      const bake = JSON.parse(readFileSync(join(pub, 'cities', id, 'v3', 'index.json'), 'utf8')).bake
+      if (!c || !existsSync(join(from, id, 'meta.json'))) { console.warn(`  devmaps: ${id} has no prep (npm run devmaps:prep -- --city=${id}): left out`); continue }
+      if (c.bake !== bake) { console.warn(`  devmaps: ${id} was prepped from bake ${c.bake}, ${bake} ships: left out (re-run npm run devmaps:prep -- --city=${id})`); continue }
+      cpSync(join(from, id), join(to, id), { recursive: true, filter: (f) => !f.endsWith('.DS_Store') })
+      shipped.push(c)
+    }
+    mkdirSync(to, { recursive: true })
+    writeFileSync(join(to, 'cities.json'), JSON.stringify(shipped, null, 1))
+    console.log(`  devmaps -> ${shipped.map((c) => c.id).join(', ') || 'none'}`)
     continue
   }
   cpSync(from, to, { recursive: true, filter: (f) => !f.endsWith('.DS_Store') && !NOT_SHIPPED.test(relative(pub, f).split(sep).join('/')) && managed(f) })

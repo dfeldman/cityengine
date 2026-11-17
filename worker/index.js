@@ -43,7 +43,7 @@ export default {
      */
     const stamped = url.searchParams.has('b')
     headers.set('cache-control', key.startsWith('assets/') || stamped ? 'public, max-age=31536000, immutable'
-      : key === 'index.html' || ext === 'json' || ext === 'webmanifest' ? 'private, no-cache'
+      : ext === 'html' || ext === 'json' || ext === 'webmanifest' ? 'private, no-cache'
       : 'public, max-age=3600')
     headers.set('access-control-allow-origin', '*')
 

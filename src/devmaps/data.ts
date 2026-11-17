@@ -78,7 +78,7 @@ export class CityData {
   constructor(readonly id: string) {}
 
   async load(): Promise<void> {
-    const base = `/devmaps/${this.id}`
+    const base = `devmaps/${this.id}`
     this.meta = await (await fetch(`${base}/meta.json`)).json()
     this.proj = new Projection(this.meta.index.origin)
     this.major = await (await fetch(`${base}/major.json`)).json()
@@ -95,7 +95,7 @@ export class CityData {
       img.onload = () => { this.terrainImg = img; this.onLoad() }
     }
     // is the prep from the same bake as the tiles on disk? (the raw tiles' dictionaries must match the prep's)
-    try { this.liveBake = (await (await fetch(`/cities/${this.id}/v3/index.json`, { method: 'GET' })).json()).bake } catch { /* none */ }
+    try { this.liveBake = (await (await fetch(`cities/${this.id}/v3/index.json`, { method: 'GET' })).json()).bake } catch { /* none */ }
   }
 
   /** a chunk if it is here; otherwise starts fetching it and returns undefined */
@@ -103,7 +103,7 @@ export class CityData {
     const c = this.chunks.get(key)
     if (c || !this.chunkSet.has(key) || this.pending.has('c' + key)) return c
     this.pending.add('c' + key)
-    fetch(`/devmaps/${this.id}/chunk/${key}.json`).then((r) => r.json()).then((j: Chunk) => { this.chunks.set(key, j); this.pending.delete('c' + key); this.onLoad() })
+    fetch(`devmaps/${this.id}/chunk/${key}.json`).then((r) => r.json()).then((j: Chunk) => { this.chunks.set(key, j); this.pending.delete('c' + key); this.onLoad() })
       .catch(() => this.pending.delete('c' + key))
     return undefined
   }
@@ -117,7 +117,7 @@ export class CityData {
     if (t || !this.tileSet.has(key) || this.pending.has('t' + key)) return t
     this.pending.add('t' + key)
     const q = this.meta.index.bake ? `?b=${this.meta.index.bake}` : ''
-    fetch(`/cities/${this.id}/v3/${key.replace(',', '_')}.json${q}`).then((r) => r.json()).then((j) => { this.tiles.set(key, j); this.pending.delete('t' + key); this.onLoad() })
+    fetch(`cities/${this.id}/v3/${key.replace(',', '_')}.json${q}`).then((r) => r.json()).then((j) => { this.tiles.set(key, j); this.pending.delete('t' + key); this.onLoad() })
       .catch(() => this.pending.delete('t' + key))
     return undefined
   }
@@ -129,7 +129,7 @@ export class CityData {
   }
 
   async search(): Promise<(string | number)[][]> {
-    if (!this.searchRows) this.searchRows = await (await fetch(`/devmaps/${this.id}/search.json`)).json()
+    if (!this.searchRows) this.searchRows = await (await fetch(`devmaps/${this.id}/search.json`)).json()
     return this.searchRows!
   }
 

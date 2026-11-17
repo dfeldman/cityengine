@@ -994,7 +994,7 @@ async function loadCity(id: string, keepView = false): Promise<void> {
   data = next
   fineCache.clear(); selected = null; osmOverlay = null; coarse = null; tourOn.clear(); measure.length = 0
   const t = data.meta.terrain
-  if (t) fetch(`/cities/${id}/v3/terrain.bin`).then((r) => r.arrayBuffer()).then((b) => { if (b.byteLength >= t.cols * t.rows * 2) coarse = new Int16Array(b, 0, t.cols * t.rows) }).catch(() => {})
+  if (t) fetch(`cities/${id}/v3/terrain.bin`).then((r) => r.arrayBuffer()).then((b) => { if (b.byteLength >= t.cols * t.rows * 2) coarse = new Int16Array(b, 0, t.cols * t.rows) }).catch(() => {})
   builderCount = new Map(); hiddenBuilders.clear()
   for (const c of data.custom) if (c.kind === 'builder') builderCount.set(builderOf(c), (builderCount.get(builderOf(c)) ?? 0) + 1)
   buildLayers(); buildTours(); buildInfo(); buildBuilders()
@@ -1131,7 +1131,7 @@ window.addEventListener('hashchange', () => {
 const frame = (): void => { if (dirty && data?.meta) render(); requestAnimationFrame(frame) }
 
 async function main(): Promise<void> {
-  const list = await (await fetch('/devmaps/cities.json')).json() as { id: string; name: string }[]
+  const list = await (await fetch('devmaps/cities.json')).json() as { id: string; name: string }[]
   const sel = $<HTMLSelectElement>('city')
   sel.innerHTML = list.map((c) => `<option value="${c.id}">${c.id}</option>`).join('')
   sel.onchange = () => { history.replaceState(null, '', `#city=${sel.value}`); void loadCity(sel.value) }
