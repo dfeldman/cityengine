@@ -3078,7 +3078,10 @@ export class City {
    * frame, and dropped with hysteresis (built within VIEW, kept to VIEW + 1) so a rider on a tile border does
    * not rebuild the same tile back and forth. `idle` says nothing is waiting — the shot tools wait for it.
    */
+  /** where the rings were last centred (`update`), for the far massing's hole (render/far-massing.ts) */
+  ringAt = { x: 0, z: 0 }
   update(x: number, z: number): void {
+    this.ringAt = { x, z }
     this.clockHandsLazy?.update()
     const [cx, cz] = tileOf(x, z)
     const dist = (k: string): number => {

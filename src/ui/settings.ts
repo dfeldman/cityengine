@@ -26,6 +26,8 @@ export interface Settings {
   motion: boolean
   /** the haze that thickens with distance (owner, 2026-10-15: "a graphics setting to turn fog on or off") */
   fog: boolean
+  /** the whole city as plain blocks past the streamed tiles, seen from high up (render/far-massing.ts); auto = High quality only */
+  farCity: 'auto' | 'on' | 'off'
   /** the hour and the weather (owner, 2026-10-15: "we should add weather to settings"); `auto` is the default look, or
    *  what a Dandyhorse launch or the address (`?time=`, `?weather=`) asks for — those win over this */
   time: 'auto' | 'dawn' | 'day' | 'dusk' | 'night'
@@ -50,7 +52,7 @@ export const FEATURE_OFF: Record<'trees' | 'people' | 'details', string[]> = {
 }
 
 const KEY = 'cycledash.settings'
-const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', touch: false, steering: 'auto', quality: 'auto', motion: true, fog: true, time: 'auto', weather: 'auto',
+const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', touch: false, steering: 'auto', quality: 'auto', motion: true, fog: true, farCity: 'auto', time: 'auto', weather: 'auto',
   trees: 'auto', people: 'auto', cars: 'auto', details: 'auto' }
 
 let current: Settings | null = null
@@ -116,6 +118,8 @@ export const SETTING_DEFS: SettingDef[] = [
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'clear', label: 'Clear' }, { value: 'overcast', label: 'Overcast' }, { value: 'rain', label: 'Rain' }] }),
   def({ key: 'fog', group: 'Graphics', label: 'Fog', applies: 'ride',
     choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] }),
+  def({ key: 'farCity', group: 'Graphics', label: 'Far city from high up', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] }),
   def({ key: 'motion', group: 'Graphics', label: 'Speed streaks', applies: 'ride',
     choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] }),
   def({ key: 'steering', group: 'Controls', label: 'Steering', applies: 'ride',

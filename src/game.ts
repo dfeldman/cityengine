@@ -57,6 +57,7 @@ import { region } from './city/region.ts'
 import { ambientOcclusion } from './render/depth.ts'
 import { colourGrade, GRADE, GRADE_NO_AO } from './render/grade.ts'
 import { City, setupGroundLayers, BRIDGE_CROWN_REACH } from './render/city.ts'
+import { FarMassing, FAR_FOG } from './render/far-massing.ts'
 import { Crowd, crowdLook } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
 import { OverheadLines } from './render/overhead.ts'
@@ -901,6 +902,20 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const bridgeRings = new Set<{ x: number; z: number }[]>()
   city.eachBridgeOutline((ring) => { bridgeRings.add(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring, BRIDGE_CROWN_REACH) })
   let plantsClear: ((ring: { x: number; z: number }[]) => void) | null = null
+  // the whole city as coarse blocks past the streamed tiles, shown from high up (render/far-massing.ts)
+  // Settings → Far city: Auto is the High tier only (Paris: ~0.5 M triangles in view and 12 MB, not yet measured on a phone)
+  // (?farmass loads it whatever the setting and quality, and shows it at street level too)
+  const farMassForce = new URLSearchParams(location.search).has('farmass')
+  const farCity = settings().farCity ?? 'auto'
+  if (!off.has('farmass') && (farMassForce || farCity === 'on' || farCity === 'auto' && (opts.tier ?? 'desktop') === 'desktop')) {
+    void FarMassing.load(scene, new URL(`cities/${opts.city}/v3/farmass.bin?b=${src.stamp}`, document.baseURI).href, TILE, () => MID,
+      (x, z) => city.terrain.heightAt(x, z)).then((f) => {
+      ;(window as unknown as { __farMass?: unknown }).__farMass = f
+      // from high up the street's fog would wash the loaded city out whiter than the far blocks beyond it: thin it to theirs
+      if (f) f.onShow = (on) => setRegionFog(scene, on ? FAR_FOG : inPark ? parkStyle.fogDensity : null)
+      if (f) scene.onBeforeCameraRenderObservable.add((cam) => { if (cam === scene.activeCamera) f.update(cam, city.ringAt.x, city.ringAt.z, farMassForce) })
+    })
+  }
   const landmarks = off.has('landmarks') ? null
     // (the sea's level, from the index: `deckAbove` — the piers — places by it; without it every pier fell through to
     //  the drape on the sea bed and stood 3-10 m under the water, BUGS.md #258)

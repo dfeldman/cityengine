@@ -10,6 +10,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { spawnSync } from 'node:child_process'
 import { Terrain } from '../src/city/terrain.ts'
 import { writeV3 } from './v3-writer.ts'
 import type { MapIndex } from '../src/map/format.ts'
@@ -31,3 +32,6 @@ const v2 = index.tiles.reduce((s, e) => s + e.bytes, 0)
 console.log(`${id}: bake ${bake} · ${stats.tiles} tiles in ${((Date.now() - t0) / 1000).toFixed(1)} s · ${(bytes / 1e6).toFixed(1)} MB (v2 ${(v2 / 1e6).toFixed(1)} MB) · zFloor ${m.zFloor} cm`)
 console.log(`  dict: ${m.dict.names.length} names, ${m.dict.kinds.length} kinds, ${m.dict.items.length} item types, ${m.dict.styles.length} styles`)
 console.log(`  streets carrying their own z at a junction: ${stats.zOverrides} · unshared junctions: ${stats.unsharedJunctions} · below zFloor: ${stats.belowFloor}`)
+// and the far massing from the tiles just written (render/far-massing.ts), as the full bake does
+const fm = spawnSync(resolve(import.meta.dirname, '..', 'node_modules', '.bin', 'vite-node'), [resolve(import.meta.dirname, 'far-massing.ts'), '--', `--city=${id}`], { stdio: 'inherit' })
+if (fm.status !== 0) console.warn(`  !! far massing not made for ${id}`)

@@ -25,6 +25,7 @@ const CLAY_PITCHES = new Set<number>([24732817])
  *
  *   npm run bake                     every city in tools/cities.ts
  *   npm run bake -- paris-marais     just the one
+ *   npm run bake -- --no-farmass     without the far massing at the end (tools/far-massing.ts)
  *
  *      Overpass ──► streets ──► a graph: ways split at every shared node
  *               ──► buildings ──► streets-gl's tag layer ──► a style, levels, a height
@@ -424,6 +425,18 @@ const isFoot = (t: Record<string, string>): boolean =>
 /** two boxes the same, to the metre: then the wide fetch would only repeat the near one */
 const sameBox = (a: { south: number; north: number; west: number; east: number }, b: typeof a): boolean =>
   Math.abs(a.south - b.south) < 1e-6 && Math.abs(a.north - b.north) < 1e-6 && Math.abs(a.west - b.west) < 1e-6 && Math.abs(a.east - b.east) < 1e-6
+
+/**
+ * THE FAR MASSING (render/far-massing.ts): the whole city as plain blocks for the views from high up, made from the v3 tiles
+ * just written (tools/far-massing.ts, from disk). Under vite-node, like the audit, for the region and style code it reads.
+ * A failure is reported and the bake goes on: the layer is optional and the game runs without the file.
+ */
+function farMassStage(id: string): void {
+  if (process.argv.includes('--no-farmass')) return
+  const bin = resolve(import.meta.dirname, '..', 'node_modules', '.bin', 'vite-node')
+  const r = spawnSync(bin, [resolve(import.meta.dirname, 'far-massing.ts'), '--', `--city=${id}`], { stdio: 'inherit' })
+  if (r.status !== 0) console.warn(`  !! far massing not made for ${id}${r.error ? `: ${r.error.message}` : ''} — the views from high up will stop at the streamed tiles`)
+}
 
 /**
  * The landmark audit, spawned under vite-node because it needs the REAL selection code from
@@ -5745,6 +5758,7 @@ async function bake(spec: CitySpec): Promise<void> {
   if (deckWork) await writeFile(decksUndoFile(spec.id), JSON.stringify(deckWork.undo))
   recordBake(spec.id, bake)
   await dropOldLayout(spec.id)
+  farMassStage(spec.id)
   console.log(`  bake ${bake}`)
   // and last, the checks that genuinely need the finished tiles: direction A confirmed against what was
   // actually written, and direction B — what is standing in the city with nothing but the classifier
