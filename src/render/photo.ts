@@ -65,11 +65,14 @@ export function setFog(scene: Scene, on: boolean): void {
     if (current !== undefined && !original.has(m)) original.set(m, current)
     const base = original.get(m)
     if (base === undefined) return          // this material has no fog to turn off
-    m.setFloat('fogDensity', on ? base : 0)
+    // (back on: the place's air where one is set — the far city's thinned air, the park's — not the shipped density)
+    m.setFloat('fogDensity', on ? regionDensity ?? base : 0)
   })
 }
 
 export const fogIsOff = (): boolean => fogOff
+/** the density the city's shaders draw with now, or null for each material's shipped one */
+export const regionFog = (): number | null => regionDensity
 
 /**
  * Fog as a PLACE's property rather than a debug key — the park's air, not the city's (docs/PARKS.md).
@@ -136,5 +139,6 @@ export function photoMode(scene: Scene, camera: Camera, onStatus?: (s: string) =
   })
 
   // catch materials created after the toggle (tiles stream in continuously)
-  setInterval(() => { if (fogOff) setFog(scene, false) }, 2000)
+  // (…and a place's air too: a tile streamed in while the far city or the park sets it arrives with the shipped density)
+  setInterval(() => { if (fogOff) setFog(scene, false); else if (regionDensity !== null) setRegionFog(scene, regionDensity) }, 2000)
 }

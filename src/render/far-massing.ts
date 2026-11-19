@@ -23,7 +23,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import type { Camera } from '@babylonjs/core/Cameras/camera'
 import { DAYLIGHT } from './facade-material.ts'
 import { GROUND_STENCIL } from './city.ts'
-import { fogIsOff } from './photo.ts'
+import { fogIsOff, regionFog } from './photo.ts'
 
 import { CHUNK, Q_XZ, Q_Y } from '../city/farmass-format.ts'
 
@@ -42,15 +42,24 @@ export const OCCLUDER_KEEP = 2
 export const RING_SLACK = 0
 /** how much of the sun a far wall takes; the rest is sky light. Kept low: the city's own walls are flattish at range */
 const SUN = 0.55, SKY = 0.75
+/** the chunk level water is read as: drawn near and far alike */
+const WATER_LEVEL = 2
+/** far water: the water material's own look (render/water-material.ts), its deep colour and fresnel to the sky, no waves */
+const WATER_DEEP = [0.07, 0.11, 0.12]
+const WATER_FRESNEL = 1.2
+/** a near wall is a third window: far walls take this much of the glass colour so they read as dark as the near ones */
+const GLASS_MIX = 0.3
+const GLASS = [0.22, 0.25, 0.28]
 
 const VERTEX = `precision highp float;
 attribute vec3 position; attribute vec3 normal; attribute vec4 color;
 uniform mat4 viewProjection; uniform vec3 eye;
-varying vec3 vW; varying vec3 vN; varying vec3 vC;
-void main() { vW = position; vN = normal; vC = color.rgb; gl_Position = viewProjection * vec4(position, 1.0); }`
+varying vec3 vW; varying vec3 vN; varying vec3 vC; varying float vA;
+void main() { vW = position; vN = normal; vC = color.rgb; vA = color.a; gl_Position = viewProjection * vec4(position, 1.0); }`
 
 const FRAGMENT = `precision highp float;
-varying vec3 vW; varying vec3 vN; varying vec3 vC;
+varying vec3 vW; varying vec3 vN; varying vec3 vC; varying float vA;
+uniform vec3 zenith; uniform vec3 horizon;
 uniform vec3 eye; uniform vec3 sunDir; uniform vec3 sunColour; uniform vec3 skyColour; uniform vec3 fogColour;
 uniform float fogDensity; uniform float hazeMax; uniform float debug; uniform vec2 ringCentre; uniform float ringHalf; uniform float tile;
 void main() {
@@ -59,7 +68,14 @@ void main() {
   vec3 n = normalize(vN);
   float sun = max(0.0, dot(n, -sunDir));
   float up = 0.5 + 0.5 * n.y;
-  vec3 c = vC * (sunColour * sun * ${SUN.toFixed(2)} + skyColour * (${SKY.toFixed(2)} + 0.35 * up));
+  vec3 base = n.y > 0.5 ? vC : mix(vC, vec3(${GLASS.map((v) => v.toFixed(3)).join(', ')}), ${GLASS_MIX.toFixed(3)});
+  vec3 c = base * (sunColour * sun * ${SUN.toFixed(2)} + skyColour * (${SKY.toFixed(2)} + 0.35 * up));
+  if (vA < 0.5) {
+    vec3 view = normalize(vW - eye);
+    float fresnel = 0.02 + 0.98 * pow(1.0 - clamp(-view.y, 0.0, 1.0), 5.0);
+    vec3 sky = mix(horizon, zenith, pow(max(-view.y, 0.0), 0.55));
+    c = mix(vec3(${WATER_DEEP.map((v) => v.toFixed(3)).join(', ')}), sky, clamp(fresnel * ${WATER_FRESNEL.toFixed(2)}, 0.0, 0.96));
+  }
   float d = distance(vW, eye);
   float f = min(hazeMax, 1.0 - exp(-d * fogDensity));
   gl_FragColor = debug > 0.5 ? vec4(1.0, 0.1 + 0.5 * f, 0.1, 1.0) : vec4(mix(c, fogColour, f), 1.0);
@@ -72,7 +88,7 @@ interface FarChunk { level: number; x: number; z: number; mesh: Mesh; on: boolea
 
 export function readFarMassing(buf: ArrayBuffer): { ci: number; cj: number; level: number; pos: Float32Array; nrm: Float32Array; col: Float32Array; idx: Uint32Array }[] {
   const v = new DataView(buf)
-  if (String.fromCharCode(v.getUint8(0), v.getUint8(1), v.getUint8(2), v.getUint8(3)) !== 'FMS2') throw new Error('farmass.bin: not format FMS2 (re-run tools/far-massing.ts)')
+  if (String.fromCharCode(v.getUint8(0), v.getUint8(1), v.getUint8(2), v.getUint8(3)) !== 'FMS3') throw new Error('farmass.bin: not format FMS3 (re-run tools/far-massing.ts)')
   const n = v.getUint32(4, true)
   let o = 8
   const out = []
@@ -103,6 +119,22 @@ export function readFarMassing(buf: ArrayBuffer): { ci: number; cj: number; leve
     }
     out.push({ ci, cj, level, pos, nrm, col, idx })
   }
+  // water: triangles, flat, colour alpha 0 marks them for the shader; level WATER_LEVEL draws at every distance
+  const nw = v.getUint32(o, true)
+  o += 4
+  for (let c = 0; c < nw; c++) {
+    const ci = v.getInt32(o, true), cj = v.getInt32(o + 4, true), yMin = v.getFloat32(o + 8, true), t = v.getUint32(o + 12, true)
+    o += 16
+    const ox = ci * CHUNK, oz = cj * CHUNK
+    const pos = new Float32Array(t * 9), nrm = new Float32Array(t * 9), col = new Float32Array(t * 12), idx = new Uint32Array(t * 3)
+    for (let k = 0; k < t * 3; k++, o += 6) {
+      pos.set([ox + v.getInt16(o, true) * Q_XZ, yMin + v.getUint16(o + 4, true) * Q_Y, oz + v.getInt16(o + 2, true) * Q_XZ], k * 3)
+      nrm.set([0, 1, 0], k * 3)
+      col.set([0, 0, 0, 0], k * 4)
+      idx[k] = k
+    }
+    out.push({ ci, cj, level: WATER_LEVEL, pos, nrm, col, idx })
+  }
   return out
 }
 
@@ -119,7 +151,7 @@ export class FarMassing {
     Effect.ShadersStore['farMassingFragmentShader'] = FRAGMENT
     const mat = new ShaderMaterial('farMassing', scene, 'farMassing', {
       attributes: ['position', 'normal', 'color'],
-      uniforms: ['viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'fogColour', 'fogDensity', 'hazeMax', 'ringCentre', 'ringHalf', 'tile', 'debug'],
+      uniforms: ['viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'fogColour', 'fogDensity', 'hazeMax', 'ringCentre', 'ringHalf', 'tile', 'debug', 'zenith', 'horizon'],
     })
     mat.backFaceCulling = false
     // the ground's stencil bit, so the skyline stand-ins (drawn over sky only) do not show through a far block
@@ -141,7 +173,9 @@ export class FarMassing {
       mat.setColor3('sunColour', DAYLIGHT.sunColour)
       mat.setColor3('skyColour', DAYLIGHT.skyColour)
       mat.setColor3('fogColour', DAYLIGHT.fogColour)
-      mat.setFloat('fogDensity', fogIsOff() ? 0 : FAR_FOG)
+      mat.setColor3('zenith', DAYLIGHT.zenith)
+      mat.setColor3('horizon', DAYLIGHT.horizon)
+      mat.setFloat('fogDensity', fogIsOff() ? 0 : regionFog() ?? FAR_FOG)  // the city's own air, so near and far haze alike
       mat.setFloat('hazeMax', FAR_HAZE_MAX)
       mat.setVector2('ringCentre', { x: this.ringCentre.x, y: this.ringCentre.z } as never)
       mat.setFloat('ringHalf', this.ringHalf() + RING_SLACK)
@@ -195,7 +229,7 @@ export class FarMassing {
     const e = camera.globalPosition
     const show = this.enabled && (force || e.y - this.groundAt(e.x, e.z) > SHOW_AGL)
     for (const c of this.chunks) {
-      const on = show && (c.level === 0) === (Math.hypot(c.x - e.x, c.z - e.z) < LOD_M)
+      const on = show && (c.level === WATER_LEVEL || (c.level === 0) === (Math.hypot(c.x - e.x, c.z - e.z) < LOD_M))
       if (on !== c.on) { c.on = on; c.mesh.setEnabled(on) }
     }
     this.trimOccluders(show, e.x, e.z)

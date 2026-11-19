@@ -1412,7 +1412,7 @@ function shadeHex(hex: string, k: number): string {
 }
 
 /** a Haussmann palette's wall and trim, a few per cent lighter or darker and warmer or whiter (planFacade) */
-function shadeCream(p: Palette, r: () => number): Palette {
+export function shadeCream(p: Palette, r: () => number): Palette {
   const k = 0.95 + r() * 0.08, warm = (r() - 0.5) * 0.06
   const shade = (hex: string): string => {
     const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)

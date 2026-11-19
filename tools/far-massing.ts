@@ -25,9 +25,11 @@ import { unpackPoints } from '../src/city/package.ts'
 
 type Point = { x: number; z: number }
 import { Terrain } from '../src/city/terrain.ts'
-import { paletteFor, style as styleOf, type Palette } from '../src/city/facade.ts'
+import { paletteFor, rng, shadeCream, style as styleOf, type Palette } from '../src/city/facade.ts'
+import { areaPalettes, handLook, setHandOrigin } from '../src/city/hand-looks.ts'
 import { region } from '../src/city/region.ts'
 import { CHUNK, Q_XZ, Q_Y } from '../src/city/farmass-format.ts'
+import earcut from 'earcut'
 
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 const city = arg('city', 'paris-centre')
@@ -77,19 +79,24 @@ const hexRgb = (c: unknown): number => {
   if (Array.isArray(c)) return (Math.round(c[0] * (c[0] <= 1 ? 255 : 1)) << 16) | (Math.round(c[1] * (c[1] <= 1 ? 255 : 1)) << 8) | Math.round(c[2] * (c[2] <= 1 ? 255 : 1))
   return 0xb8ad9a
 }
-const colourOf = (id: number, st: string): number => {
+if (src.index.origin) setHandOrigin(src.index.origin)
+/** the wall colour render/city.ts paints building `id`: a reface's palette, else the area's, the region's or the style's, then a hand look */
+const colourOf = (id: number, st: string, x: number, z: number, own?: Palette): number => {
   try {
-    const pals: readonly Palette[] = (reg.palettes as Record<string, Palette[]>)[st] ?? styleOf(st as never).palettes
-    return hexRgb(paletteFor(id, pals).wall)
+    const list: readonly Palette[] = own ? [own] : areaPalettes(x, z, st as never) ?? (reg.palettes as Record<string, Palette[]>)[st] ?? styleOf(st as never).palettes
+    let p = paletteFor(id, list)
+    if (st === 'haussmann') p = shadeCream(p, rng(id ^ 0xc4ea3))
+    const look = handLook(id, null)
+    return hexRgb(look?.palette?.wall ?? p.wall)
   } catch { return 0xb8ad9a }
 }
 const like = (a: number, b: number): boolean =>
   Math.abs((a >> 16) - (b >> 16)) + Math.abs(((a >> 8) & 255) - ((b >> 8) & 255)) + Math.abs((a & 255) - (b & 255)) <= COLOUR_TOL
 
 // ---- every building once, as what the grid needs
-interface Bld { ring: Point[]; x0: number; x1: number; z0: number; z1: number; cx: number; cz: number; top: number; foot: number; rgb: number }
+interface Bld { ring: Point[]; x0: number; x1: number; z0: number; z1: number; cx: number; cz: number; top: number; foot: number; rgb: number; roof: number }
 const blds: Bld[] = []
-function addBuilding(id: number, flat: number[], height: number, minH: number, baseY: number | undefined, st: string): void {
+function addBuilding(id: number, flat: number[], height: number, minH: number, baseY: number | undefined, st: string, roofC: unknown, own?: Palette): void {
   if (height < MIN_H) return
   if (minH > 0 && minH > height * 0.5) return   // a part floating on another: its host already stands there
   const ring = unpackPoints(flat)
@@ -98,7 +105,23 @@ function addBuilding(id: number, flat: number[], height: number, minH: number, b
   for (const p of ring) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z); sx += p.x; sz += p.z }
   if (baseY === undefined) for (const p of ring) low = Math.min(low, terrain.heightAt(p.x, p.z))
   const foot = baseY ?? low
-  blds.push({ ring, x0, x1, z0, z1, cx: sx / ring.length, cz: sz / ring.length, top: Math.round((foot + height) / TOP_STEP) * TOP_STEP, foot, rgb: colourOf(id, st) })
+  blds.push({ ring, x0, x1, z0, z1, cx: sx / ring.length, cz: sz / ring.length, top: Math.round((foot + height) / TOP_STEP) * TOP_STEP, foot, rgb: colourOf(id, st, ring[0].x, ring[0].z, own), roof: hexRgb(roofC) })
+}
+
+// ---- water: each tile's pieces, at the level the city draws them (render/city.ts: 0.03 + level, + RIVER_LIFT on a river)
+const RIVER_LIFT = 0.2
+interface WaterTri { x: number[]; z: number[]; y: number }
+const water: WaterTri[] = []
+function addWater(a: { ring: number[]; holes?: number[][]; level?: number; river?: boolean }): void {
+  const rings = [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)]
+  const flat: number[] = [], holes: number[] = []
+  for (const [k, r] of rings.entries()) { if (k > 0) holes.push(flat.length / 2); for (const p of r) flat.push(p.x, p.z) }
+  const tri = earcut(flat, holes.length ? holes : undefined)
+  const y = 0.03 + (a.level ?? 0) + (a.river ? RIVER_LIFT : 0)
+  for (let i = 0; i < tri.length; i += 3) {
+    const v = [tri[i], tri[i + 1], tri[i + 2]]
+    water.push({ x: v.map((n) => flat[n * 2]), z: v.map((n) => flat[n * 2 + 1]), y })
+  }
 }
 
 const keys = idx.tiles.map((t) => t.key)
@@ -111,8 +134,9 @@ async function worker(): Promise<void> {
     const t = await src!.load(k)
     src!.forget(k)
     if (t) {
-      for (const b of t.buildings) addBuilding(b.id, b.ring, b.height ?? (b.levels ?? 5) * 3.2, b.minHeight ?? 0, b.baseY, b.style)
-      for (const f of t.fringe) addBuilding(f.id, f.ring, f.height, (f as { minHeight?: number }).minHeight ?? 0, f.baseY, f.style)
+      for (const a of t.areas) if (a.kind === 'water') addWater(a)
+      for (const b of t.buildings) addBuilding(b.id, b.ring, b.height ?? (b.levels ?? 5) * 3.2, b.minHeight ?? 0, b.baseY, b.style, b.roofColour, b.palette as Palette | undefined)
+      for (const f of t.fringe) addBuilding(f.id, f.ring, f.height, (f as { minHeight?: number }).minHeight ?? 0, f.baseY, f.style, (f as { roofColour?: unknown }).roofColour)
     }
     if (++done % 2000 === 0) console.log(`  far massing: ${done}/${idx.tiles.length} tiles, ${Math.round((Date.now() - t0) / 1000)} s`)
   }
@@ -120,7 +144,7 @@ async function worker(): Promise<void> {
 await Promise.all(Array.from({ length: PAR }, worker))
 
 // ---- one level: grid, then quads. kind 0 = top, 1 = wall facing +x, 2 = −x, 3 = +z, 4 = −z
-interface Cell { top: number; foot: number; rgb: number }
+interface Cell { top: number; foot: number; rgb: number; roof: number }
 interface Quad { kind: number; rgb: number; x0: number; z0: number; x1: number; z1: number; y0: number; y1: number }
 const OFF = 1 << 15
 const ck = (i: number, j: number): number => (i + OFF) * 65536 + (j + OFF)
@@ -130,8 +154,8 @@ function level(cell: number): Quad[] {
   const put = (i: number, j: number, b: Bld): void => {
     const k = ck(i, j)
     const c = grid.get(k)
-    if (!c) grid.set(k, { top: b.top, foot: b.foot, rgb: b.rgb })
-    else { if (b.top > c.top) { c.top = b.top; c.rgb = b.rgb } c.foot = Math.min(c.foot, b.foot) }
+    if (!c) grid.set(k, { top: b.top, foot: b.foot, rgb: b.rgb, roof: b.roof })
+    else { if (b.top > c.top) { c.top = b.top; c.rgb = b.rgb; c.roof = b.roof } c.foot = Math.min(c.foot, b.foot) }
   }
   for (const b of blds) {
     const ring = b.ring
@@ -172,11 +196,11 @@ function level(cell: number): Quad[] {
     for (let s = 0; s < is.length;) {
       const c = at(is[s], j)!
       let e = s
-      while (e + 1 < is.length && is[e + 1] === is[e] + 1 && at(is[e + 1], j)!.top === c.top && like(at(is[e + 1], j)!.rgb, c.rgb)) e++
+      while (e + 1 < is.length && is[e + 1] === is[e] + 1 && at(is[e + 1], j)!.top === c.top && like(at(is[e + 1], j)!.roof, c.roof)) e++
       const k = `${is[s]},${is[e]},${c.top}`
       const r = open.get(k)
-      if (r && r.j1 === j - 1 && like(r.rgb, c.rgb)) r.j1 = j
-      else { const n = { i0: is[s], i1: is[e], j0: j, j1: j, top: c.top, rgb: c.rgb }; open.set(k, n); rects.push(n) }
+      if (r && r.j1 === j - 1 && like(r.rgb, c.roof)) r.j1 = j
+      else { const n = { i0: is[s], i1: is[e], j0: j, j1: j, top: c.top, rgb: c.roof }; open.set(k, n); rects.push(n) }
       s = e + 1
     }
   }
@@ -229,11 +253,17 @@ for (const [lv, cell] of [CELL, CELL * 2].entries()) {
   }
 }
 const REC = 16
-let size = 8
+const wchunks = new Map<string, WaterTri[]>()
+for (const w of water) {
+  const k = `${Math.floor(w.x[0] / CHUNK)},${Math.floor(w.z[0] / CHUNK)}`
+  ;(wchunks.get(k) ?? wchunks.set(k, []).get(k)!).push(w)
+}
+let size = 12
 for (const l of chunks.values()) size += 20 + l.length * REC
+for (const l of wchunks.values()) size += 16 + l.length * 18
 const buf = Buffer.alloc(size)
 let o = 0
-buf.write('FMS2', o); o += 4
+buf.write('FMS3', o); o += 4
 buf.writeUInt32LE(chunks.size, o); o += 4
 for (const [k, l] of chunks) {
   const [lv, ci, cj] = k.split(',').map(Number)
@@ -249,6 +279,21 @@ for (const [k, l] of chunks) {
     o += REC
   }
 }
+// water after the buildings: u32 chunks; per chunk i32 ci, cj, f32 yMin, u32 triangles; per corner i16 x z, u16 y
+buf.writeUInt32LE(wchunks.size, o); o += 4
+let wtris = 0
+for (const [k, l] of wchunks) {
+  const [ci, cj] = k.split(',').map(Number)
+  const ox = ci * CHUNK, oz = cj * CHUNK
+  const yMin = Math.min(...l.map((w) => w.y))
+  buf.writeInt32LE(ci, o); buf.writeInt32LE(cj, o + 4); buf.writeFloatLE(yMin, o + 8); buf.writeUInt32LE(l.length, o + 12); o += 16
+  for (const w of l) for (let c = 0; c < 3; c++) {
+    buf.writeInt16LE(Math.round((w.x[c] - ox) / Q_XZ), o); buf.writeInt16LE(Math.round((w.z[c] - oz) / Q_XZ), o + 2)
+    buf.writeUInt16LE(Math.round((w.y - yMin) / Q_Y), o + 4); o += 6
+  }
+  wtris += l.length
+}
+console.log(`  far massing: water ${wtris} triangles in ${wchunks.size} chunks`)
 const out = resolve(ROOT, `public/cities/${city}/v3/farmass.bin`)
 writeFileSync(out, buf)
 console.log(`  → public/cities/${city}/v3/farmass.bin  ${blds.length} buildings, ${chunks.size} chunks, ${(size / 1e6).toFixed(1)} MB, ${((Date.now() - t0) / 1000).toFixed(0)} s`)
