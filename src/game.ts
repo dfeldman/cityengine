@@ -83,6 +83,8 @@ import { Beacon } from './render/beacon.ts'
 import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
 import { BakedCrowd, cityClothes, peopleLights, wardrobeFor } from './render/crowd-baked.ts'
+import { Dogs } from './render/dogs.ts'
+import { Zoo } from './render/zoo.ts'
 import { CableRiders } from './render/cable-riders.ts'
 import { FerrisWheel, ROUE_DE_PARIS, SKYSTAR } from './render/sf/ferris.ts'
 import { Balloon, BALLON_DE_PARIS, Rides, VASQUE, type Ride as BoardRide } from './render/paris/balloons.ts'
@@ -932,6 +934,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // (the trees are made further down: a paving that arrives first is queued for them)
     landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
     landmarks.onFootprint = (ring) => { clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
+  // zoo animals at their hand-placed spots (render/zoo.ts): loaded only when the rider comes near one
+  const zoo = off.has('zoo') || pkg.region !== 'paris' ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href)
     landmarks.dryAt = (x, z) => city.dryAt(x, z)
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)
@@ -1471,6 +1475,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const all: BoardRide[] = [new FerrisWheel(scene, p.x, p.z, city.terrain.heightAt(p.x, p.z), wheelSpec)]
     if (pkg.region === 'paris') for (const b of [BALLON_DE_PARIS, VASQUE]) {
       const q = proj.toLocal({ lat: b.lat, lon: b.lon })
+  let dogs: Dogs | null = null
       all.push(new Balloon(scene, q.x, q.z, city.terrain.heightAt(q.x, q.z), b))
     }
     return new Rides(all)
@@ -1501,6 +1506,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   quays.plantWith((k, ps) => trees.setTrees(k, ps))
   treesReady = true
   for (const r of clearingsEarly) trees.clear(r, bridgeRings.has(r) ? BRIDGE_CROWN_REACH : 0)
+      // some strangers walk a dog (render/dogs.ts) — OFF unless asked for: the auto-rigged Tripo dogs looked bad
+      // (owner, 2026-11-20). `?dogs=N` gives one walker in N a dog, `?dogs=1` everyone
+      const share = Number(new URLSearchParams(location.search).get('dogs')) || 0
+      if (share > 0 && !off.has('crowd')) {
+        const d = new Dogs(scene, new URL('models/', document.baseURI).href, { share })
+        void d.ready.then(() => { dogs = d; (window as unknown as { __dogs?: Dogs }).__dogs = d })
+      }
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
   // (`treesReady`: the shot tools wait for it — SF's forms are forty-odd models and take a while)
@@ -3688,6 +3700,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           // (a bed — a deck whose trees stand close to its edge — is planted edge to edge: render/plants.ts `bedPlanting`)
           if (d.shrubs !== false) plants.addDeck(d.ring, d.y, d.keepOff !== undefined)
           if (d.trees !== false) trees.addDeck(d.ring, d.y, d.keepOff, d.spacing, d.form)
+        dogs?.update(dt, walkers, at, city.terrain, strangers?.drawn)
+        zoo?.update(dt, at)
         }
       }
       // the single plants landmarks place (Lombard Street's hydrangeas), the same way: as their tiles stream in

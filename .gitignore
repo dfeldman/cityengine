@@ -86,3 +86,4 @@ incoming_assets/
 *.token
 !.env.example
 public/devmaps/
+animal_experiments/
