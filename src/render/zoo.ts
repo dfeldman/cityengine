@@ -14,6 +14,9 @@
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import type { AssetContainer } from '@babylonjs/core/assetContainer'
 import type { AnimationGroup } from '@babylonjs/core/Animations/animationGroup'
+// the side effect that makes animations ADVANCE: Babylon 9 keeps scene._animate in this module, and nothing else
+// in the game imports it (the crowd's motion is baked) — without it the clips start but never move (2026-11-20)
+import '@babylonjs/core/Animations/animatable'
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode'
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
@@ -42,8 +45,10 @@ const POST_EVERY = 3
 const FENCE_H = 1.9
 const RAILS = [0.55, 1.15, 1.8]
 const WOOD = new Color3(0.42, 0.31, 0.2)
-/** the clips' frame rate (tools/animals/giraffe-clips.py FPS) */
-const CLIP_FPS = 24
+/** Babylon's glTF loader keys every clip at 60 frames a second, whatever rate it was authored at */
+const CLIP_FPS = 60
+/** a walk turns on the spot until it is within this of its heading (rad), then sets off */
+const SET_OFF = 0.5
 
 interface Species {
   file: string
@@ -191,6 +196,20 @@ function edgeDist(p: Point, poly: Point[]): number {
 /** well inside the paddock: inside it and MARGIN from every edge */
 const roomy = (p: Point, poly: Point[]): boolean => inside(p, poly) && edgeDist(p, poly) > MARGIN
 
+/**
+ * The whole straight walk from `a` to `b` stays well inside: a paddock can be concave (the giraffe plain wraps
+ * round a wood), and a target that is roomy itself can still lie across a corner — the animal walked its head
+ * through the fence before it noticed (owner, 2026-11-20).
+ */
+function clearPath(a: Point, b: Point, poly: Point[]): boolean {
+  const n = Math.ceil(distance(a, b))
+  for (let i = 1; i <= n; i++) {
+    const p = { x: a.x + ((b.x - a.x) * i) / n, z: a.z + ((b.z - a.z) * i) / n }
+    if (!inside(p, poly) || edgeDist(p, poly) < MARGIN - 0.5) return false
+  }
+  return true
+}
+
 export class Zoo {
   private readonly scene: Scene
   private readonly terrain: Terrain
@@ -233,7 +252,7 @@ export class Zoo {
     for (let k = 0; k < 300; k++) {
       const p = { x: minX + pen.rand() * (maxX - minX), z: minZ + pen.rand() * (maxZ - minZ) }
       if (!roomy(p, pen.poly)) continue
-      if (from) { const d = distance(p, from); if (d < WALK_MIN || d > WALK_MAX) continue }
+      if (from) { const d = distance(p, from); if (d < WALK_MIN || d > WALK_MAX || !clearPath(from, p, pen.poly)) continue }
       if (pen.beasts.some((b) => distance(b.target ?? b.at, p) < SPACING)) continue
       return p
     }
@@ -336,13 +355,14 @@ export class Zoo {
       let turn = Math.atan2(dx, dz) - b.heading
       turn = Math.atan2(Math.sin(turn), Math.cos(turn))
       b.heading += Math.max(-sp.turn * dt, Math.min(sp.turn * dt, turn))
-      // slow while turning hard; stop if another animal is just ahead
-      let speed = pace * Math.max(0.25, Math.cos(turn))
+      // turn on the spot (stepping round slowly) until nearly facing the target, then walk, easing off in turns
+      let speed = Math.abs(turn) > SET_OFF ? 0 : pace * Math.cos(turn)
+      // another animal just ahead: wait for it rather than walk into it
       const ahead = { x: b.at.x + Math.sin(b.heading) * 4, z: b.at.z + Math.cos(b.heading) * 4 }
       if (pen.beasts.some((o) => o !== b && distance(o.at, ahead) < 3)) speed = 0
       const nx = b.at.x + Math.sin(b.heading) * speed * dt
       const nz = b.at.z + Math.cos(b.heading) * speed * dt
-      if (speed === 0 || !inside({ x: nx, z: nz }, pen.poly) || Math.hypot(dx, dz) < 1.5) {
+      if (Math.hypot(dx, dz) < 1.5 || !roomy({ x: nx, z: nz }, pen.poly) && speed > 0) {
         b.target = undefined
         this.play(b, 'idle')
         b.until = this.time + 2 + pen.rand() * 4
@@ -350,7 +370,7 @@ export class Zoo {
         b.at = { x: nx, z: nz }
       }
       const g = b.clips.walk
-      if (g) g.speedRatio = Math.max(0.2, speed / pace)
+      if (g) g.speedRatio = speed > 0 ? Math.max(0.3, speed / pace) : 0.35
     } else if (this.time > b.until) {
       this.next(pen, b)
     }
@@ -364,6 +384,13 @@ export class Zoo {
 
   update(dt: number, rider: Point): void {
     this.time += dt
+    /*
+     * Babylon's animation clock does not start while the scene has pending data (scene._animate waits for
+     * _pendingData to empty before setting _animationTimeLast), and a streaming city always has something pending:
+     * every clip started but none ever advanced (2026-11-20). Give the clock its start.
+     */
+    const sc = this.scene as unknown as { _animationTimeLast?: number }
+    if (!sc._animationTimeLast) sc._animationTimeLast = performance.now()
     for (const pen of this.pens) {
       const d = distance(pen.centre, rider)
       if (pen.state === 'far') {
