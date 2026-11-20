@@ -35,7 +35,7 @@ const COAT = 0.86
 export const ANIMALS: { id: string; file: string; tris?: number; front?: '-x' | '+x' | '-z' | '+z'; neutral?: boolean; tex?: number; clips?: string }[] = [
   { id: 'dog-retriever', file: 'goldenretriever.glb', tris: 3000, front: '-x', neutral: true },
   { id: 'giraffe', file: 'giraffe.glb', tex: 1024, clips: 'giraffe-clips.py' },
-  { id: 'bison', file: 'bison.glb', tex: 1024 },
+  { id: 'bison', file: 'bison.glb', tex: 1024, clips: 'bison-clips.py' },
 ]
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ sharp })

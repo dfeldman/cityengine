@@ -935,7 +935,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
     landmarks.onFootprint = (ring) => { clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
   // zoo animals at their hand-placed spots (render/zoo.ts): loaded only when the rider comes near one
-  const zoo = off.has('zoo') || pkg.region !== 'paris' ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href)
+  const zoo = off.has('zoo') ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href)
     landmarks.dryAt = (x, z) => city.dryAt(x, z)
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)

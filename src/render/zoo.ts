@@ -65,6 +65,10 @@ interface Species {
 
 export const SPECIES: Record<string, Species> = {
   giraffe: { file: 'common/giraffe.glb', size: 4.8, yaw: Math.PI / 2, walk: 1.1, turn: 0.45, rest: [6, 18], odds: { walk: 0.5, idle: 0.3 } },
+  // Tripo's bison is normalised to 1 unit LONG (3 m, ~2 m at the hump) and already faces +z after the flip
+  // (checked from straight ahead of its heading, 2026-11-20); its "browse" clip is grazing, head to the grass
+  // (tools/animals/bison-clips.py)
+  bison: { file: 'common/bison.glb', size: 3.0, yaw: 0, walk: 1.0, turn: 0.4, rest: [8, 20], odds: { walk: 0.35, idle: 0.25 } },
 }
 
 export interface Herd {
@@ -106,9 +110,22 @@ const MENAGERIE_PADDOCK: [number, number][] = [
  * two petting farms left out — the Bergerie des Malassis is a 36 × 25 m sheepfold, La ferme ouverte is at the box's
  * far west edge. The San Francisco Zoo is outside the SF bake.
  */
+/** Golden Gate Park's Bison Paddock (OSM attraction=animal, 50 700 m², along JFK Drive by Spreckels Lake). */
+const GGP_BISON_PADDOCK: [number, number][] = [
+  [37.770121, -122.500191], [37.770029, -122.500183], [37.770003, -122.50018], [37.769514, -122.500057],
+  [37.76948, -122.500052], [37.769329, -122.500073], [37.768986, -122.49997], [37.768645, -122.499596],
+  [37.768738, -122.499237], [37.76879, -122.499219], [37.768796, -122.499186], [37.7688, -122.499161],
+  [37.768786, -122.499098], [37.768899, -122.498638], [37.769086, -122.498142], [37.769578, -122.496043],
+  [37.770138, -122.496249], [37.770138, -122.496443], [37.770119, -122.496912], [37.770241, -122.497215],
+  [37.770675, -122.497593], [37.770773, -122.498158], [37.770551, -122.498758], [37.770279, -122.499479],
+  [37.770264, -122.499518], [37.770325, -122.49964],
+]
+
 export const HERDS: Herd[] = [
   { name: 'vincennes-giraffes', species: 'giraffe', paddock: GIRAFFE_PLAIN, sizes: [1, 1.04, 0.96, 1, 0.7], fence: true },
   { name: 'menagerie-giraffes', species: 'giraffe', paddock: MENAGERIE_PADDOCK, sizes: [1, 0.95, 0.72], fence: true },
+  // the real herd is about ten; two calves
+  { name: 'ggp-bison', species: 'bison', paddock: GGP_BISON_PADDOCK, sizes: [1, 1.06, 0.95, 1, 1.1, 0.92, 1.02, 0.62, 0.58], fence: true },
 ]
 
 type Clip = 'idle' | 'browse' | 'walk'
