@@ -24,8 +24,8 @@ if (cam === 'follow') await p.evaluate(`(() => {
     if (k < 0 || !as[k]) k = Math.max(0, as.findIndex((a) => a.clip === 'walk'))
     if (as[k].clip !== 'walk') { const w = as.findIndex((a) => a.clip === 'walk'); if (w >= 0) k = w }
     const a = as[k], sx = ${process.env.FRONT ? "Math.sin(a.heading)" : "Math.cos(a.heading)"}, sz = ${process.env.FRONT ? "Math.cos(a.heading)" : "-Math.sin(a.heading)"}
-    const P = new V(a.at.x + sx * ${+(process.env.SIDE ?? 16)}, window.__heightAt(a.at.x, a.at.z) + 3, a.at.z + sz * ${+(process.env.SIDE ?? 16)})
-    const T = new V(a.at.x, window.__heightAt(a.at.x, a.at.z) + 2.4, a.at.z)
+    const P = new V(a.at.x + sx * ${+(process.env.SIDE ?? 16)}, window.__heightAt(a.at.x, a.at.z) + ${+(process.env.CAMH ?? 3)}, a.at.z + sz * ${+(process.env.SIDE ?? 16)})
+    const T = new V(a.at.x, window.__heightAt(a.at.x, a.at.z) + ${+(process.env.LOOKH ?? 2.4)}, a.at.z)
     pos = pos ? V.Lerp(pos, P, 0.03) : P; tgt = tgt ? V.Lerp(tgt, T, 0.1) : T
     c.position.copyFrom(pos); c.setTarget(tgt)
   })

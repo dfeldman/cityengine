@@ -8,6 +8,10 @@
  * to a spot elsewhere in the paddock, turning as it goes, its clip cross-faded from one to the next and the walk
  * played at the pace it actually moves, so its hooves do not slide.
  *
+ * Not only zoos: a herd without a fence is free-roaming birds on a park's lawns — the peacocks of the Parc de
+ * Bagatelle, which wander the château lawns and the Roseraie (tools/animals/peacock-clips.py rigs Tripo's unrigged
+ * bird). Such a species walks shorter, closer together and nearer the edge (`roam`).
+ *
  * Loaded only when the rider comes within `LOAD` of a paddock, drawn and moved only within `DRAW`. Each animal is
  * its own copy of the model (AssetContainer.instantiateModelsToScene): a herd is a handful, not a crowd.
  */
@@ -66,7 +70,11 @@ interface Species {
   /** how long it stays put (s), and how likely each next thing is: walk, idle (else browse) */
   rest: [number, number]
   odds: { walk: number; idle: number }
+  /** a small free-roaming animal's own distances in place of MARGIN, SPACING and WALK_MIN/MAX (m) */
+  roam?: { margin: number; spacing: number; walk: [number, number] }
 }
+
+const roamOf = (sp: Species) => sp.roam ?? { margin: MARGIN, spacing: SPACING, walk: [WALK_MIN, WALK_MAX] as [number, number] }
 
 export const SPECIES: Record<string, Species> = {
   giraffe: { file: 'common/giraffe.glb', size: 4.8, yaw: Math.PI / 2, walk: 1.1, turn: 0.45, rest: [6, 18], odds: { walk: 0.5, idle: 0.3 } },
@@ -74,6 +82,12 @@ export const SPECIES: Record<string, Species> = {
   // (checked from straight ahead of its heading, 2026-11-20); its "browse" clip is grazing, head to the grass
   // (tools/animals/bison-clips.py)
   bison: { file: 'common/bison.glb', size: 3.0, yaw: 0, walk: 1.0, turn: 0.4, rest: [8, 20], odds: { walk: 0.35, idle: 0.25 } },
+  // Tripo's peacock, fan up in display, 0.887 units tall: 1.5 m to the fan's top, the head at ~0.75 m. Faces −y in
+  // Blender like the bison, so yaw 0. "browse" is pecking at the grass
+  peacock: {
+    file: 'common/peacock.glb', size: 1.7, yaw: 0, walk: 0.45, turn: 1.2, rest: [4, 12], odds: { walk: 0.45, idle: 0.3 },
+    roam: { margin: 1.5, spacing: 2.5, walk: [4, 18] },
+  },
 }
 
 export interface Herd {
@@ -126,11 +140,43 @@ const GGP_BISON_PADDOCK: [number, number][] = [
   [37.770264, -122.499518], [37.770325, -122.49964],
 ]
 
+/** Parc de Bagatelle: the open lawn east of the château (OSM landuse=grass, 10 800 m², simplified to 1.5 m) */
+const BAGATELLE_CHATEAU_LAWN: [number, number][] = [
+  [48.871682, 2.247532], [48.871455, 2.24764], [48.871334, 2.24773], [48.871306, 2.2478], [48.871451, 2.248472],
+  [48.871451, 2.248815], [48.871653, 2.248663], [48.871792, 2.248949], [48.871761, 2.249213], [48.871667, 2.249328],
+  [48.871658, 2.24945], [48.87186, 2.249438], [48.872024, 2.249372], [48.87215, 2.249278], [48.872299, 2.249115],
+  [48.87239, 2.248949], [48.872463, 2.248699], [48.872416, 2.248701], [48.872358, 2.248643], [48.872381, 2.248469],
+  [48.872425, 2.248393], [48.872392, 2.248265], [48.872328, 2.248273], [48.872265, 2.248131], [48.872125, 2.248126],
+  [48.87218, 2.247933], [48.872173, 2.247892], [48.872123, 2.247882], [48.872077, 2.24797], [48.872026, 2.247954],
+  [48.872005, 2.247833], [48.872024, 2.247719], [48.871778, 2.247559],
+]
+/** Parc de Bagatelle: the lawn beyond it to the east (OSM landuse=grass, 7 400 m²) */
+const BAGATELLE_EAST_LAWN: [number, number][] = [
+  [48.872308, 2.249155], [48.872271, 2.249185], [48.872295, 2.24926], [48.872268, 2.249382], [48.872232, 2.24938],
+  [48.872221, 2.249252], [48.871962, 2.249429], [48.871842, 2.249471], [48.871583, 2.249476], [48.871604, 2.24989],
+  [48.871782, 2.250464], [48.871896, 2.250387], [48.872007, 2.25066], [48.872116, 2.250717], [48.872158, 2.250548],
+  [48.872354, 2.250414], [48.872358, 2.250271], [48.872427, 2.250014], [48.872413, 2.249748], [48.872428, 2.249708],
+  [48.87253, 2.249728], [48.872578, 2.249456], [48.872501, 2.249394], [48.872464, 2.249448], [48.872418, 2.249349],
+  [48.872457, 2.249217], [48.872425, 2.249173], [48.872365, 2.249209],
+]
+/** Parc de Bagatelle: the Roseraie (OSM leisure=garden "Roseraie de Bagatelle", 10 700 m²), where the peacocks
+ * are best known */
+const BAGATELLE_ROSERAIE: [number, number][] = [
+  [48.867146, 2.243211], [48.867121, 2.243378], [48.867038, 2.243404], [48.866729, 2.24395], [48.866752, 2.244143],
+  [48.866857, 2.244285], [48.867091, 2.244818], [48.867392, 2.244975], [48.867503, 2.245095], [48.867671, 2.244902],
+  [48.867838, 2.244617], [48.867842, 2.244562], [48.86786, 2.244563], [48.867824, 2.244293], [48.867785, 2.244177],
+  [48.867604, 2.243829], [48.867693, 2.243756], [48.867815, 2.243724], [48.867437, 2.243379],
+]
+
 export const HERDS: Herd[] = [
   { name: 'vincennes-giraffes', species: 'giraffe', paddock: GIRAFFE_PLAIN, sizes: [1, 1.04, 0.96, 1, 0.7], fence: true },
   { name: 'menagerie-giraffes', species: 'giraffe', paddock: MENAGERIE_PADDOCK, sizes: [1, 0.95, 0.72], fence: true },
   // the real herd is about ten; two calves
   { name: 'ggp-bison', species: 'bison', paddock: GGP_BISON_PADDOCK, sizes: [1, 1.06, 0.95, 1, 1.1, 0.92, 1.02, 0.62, 0.58], fence: true },
+  // free-roaming, no fence
+  { name: 'bagatelle-chateau-peacocks', species: 'peacock', paddock: BAGATELLE_CHATEAU_LAWN, sizes: [1, 0.96, 1.04] },
+  { name: 'bagatelle-east-peacocks', species: 'peacock', paddock: BAGATELLE_EAST_LAWN, sizes: [1, 0.95] },
+  { name: 'bagatelle-roseraie-peacocks', species: 'peacock', paddock: BAGATELLE_ROSERAIE, sizes: [1.02, 0.97, 1, 0.94] },
 ]
 
 type Clip = 'idle' | 'browse' | 'walk'
@@ -193,19 +239,19 @@ function edgeDist(p: Point, poly: Point[]): number {
   return best
 }
 
-/** well inside the paddock: inside it and MARGIN from every edge */
-const roomy = (p: Point, poly: Point[]): boolean => inside(p, poly) && edgeDist(p, poly) > MARGIN
+/** well inside the paddock: inside it and `margin` from every edge */
+const roomy = (p: Point, poly: Point[], margin = MARGIN): boolean => inside(p, poly) && edgeDist(p, poly) > margin
 
 /**
  * The whole straight walk from `a` to `b` stays well inside: a paddock can be concave (the giraffe plain wraps
  * round a wood), and a target that is roomy itself can still lie across a corner — the animal walked its head
  * through the fence before it noticed (owner, 2026-11-20).
  */
-function clearPath(a: Point, b: Point, poly: Point[]): boolean {
+function clearPath(a: Point, b: Point, poly: Point[], margin = MARGIN): boolean {
   const n = Math.ceil(distance(a, b))
   for (let i = 1; i <= n; i++) {
     const p = { x: a.x + ((b.x - a.x) * i) / n, z: a.z + ((b.z - a.z) * i) / n }
-    if (!inside(p, poly) || edgeDist(p, poly) < MARGIN - 0.5) return false
+    if (!inside(p, poly) || edgeDist(p, poly) < margin - 0.5) return false
   }
   return true
 }
@@ -249,11 +295,12 @@ export class Zoo {
   private spot(pen: Pen, from?: Point): Point | null {
     let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity
     for (const p of pen.poly) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minZ = Math.min(minZ, p.z); maxZ = Math.max(maxZ, p.z) }
+    const { margin, spacing, walk } = roamOf(SPECIES[pen.herd.species])
     for (let k = 0; k < 300; k++) {
       const p = { x: minX + pen.rand() * (maxX - minX), z: minZ + pen.rand() * (maxZ - minZ) }
-      if (!roomy(p, pen.poly)) continue
-      if (from) { const d = distance(p, from); if (d < WALK_MIN || d > WALK_MAX || !clearPath(from, p, pen.poly)) continue }
-      if (pen.beasts.some((b) => distance(b.target ?? b.at, p) < SPACING)) continue
+      if (!roomy(p, pen.poly, margin)) continue
+      if (from) { const d = distance(p, from); if (d < walk[0] || d > walk[1] || !clearPath(from, p, pen.poly, margin)) continue }
+      if (pen.beasts.some((b) => distance(b.target ?? b.at, p) < spacing)) continue
       return p
     }
     return null
@@ -358,11 +405,13 @@ export class Zoo {
       // turn on the spot (stepping round slowly) until nearly facing the target, then walk, easing off in turns
       let speed = Math.abs(turn) > SET_OFF ? 0 : pace * Math.cos(turn)
       // another animal just ahead: wait for it rather than walk into it
-      const ahead = { x: b.at.x + Math.sin(b.heading) * 4, z: b.at.z + Math.cos(b.heading) * 4 }
-      if (pen.beasts.some((o) => o !== b && distance(o.at, ahead) < 3)) speed = 0
+      const { margin, spacing } = roamOf(sp)
+      const reach = (spacing * 2) / 3
+      const ahead = { x: b.at.x + Math.sin(b.heading) * reach, z: b.at.z + Math.cos(b.heading) * reach }
+      if (pen.beasts.some((o) => o !== b && distance(o.at, ahead) < spacing / 2)) speed = 0
       const nx = b.at.x + Math.sin(b.heading) * speed * dt
       const nz = b.at.z + Math.cos(b.heading) * speed * dt
-      if (Math.hypot(dx, dz) < 1.5 || !roomy({ x: nx, z: nz }, pen.poly) && speed > 0) {
+      if (Math.hypot(dx, dz) < 1.5 || !roomy({ x: nx, z: nz }, pen.poly, margin) && speed > 0) {
         b.target = undefined
         this.play(b, 'idle')
         b.until = this.time + 2 + pen.rand() * 4
