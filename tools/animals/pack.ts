@@ -37,6 +37,7 @@ export const ANIMALS: { id: string; file: string; tris?: number; front?: '-x' | 
   { id: 'giraffe', file: 'giraffe.glb', tex: 1024, clips: 'giraffe-clips.py' },
   { id: 'bison', file: 'bison.glb', tex: 1024, clips: 'bison-clips.py' },
   { id: 'peacock', file: 'peacock.glb', tex: 1024, clips: 'peacock-clips.py' },
+  { id: 'flamingo', file: 'flamingo 3d model.glb', tex: 1024, clips: 'flamingo-clips.py' },
 ]
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ sharp })

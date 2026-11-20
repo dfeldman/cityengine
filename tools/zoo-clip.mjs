@@ -37,6 +37,6 @@ else await p.evaluate(`(() => {
 })()`)
 await p.waitForTimeout(1500)
 await p.screenshot({ path: `${dir}/still.png` })
-console.log(JSON.stringify(await p.evaluate('window.__zoo.animals.map(a => [Math.round(a.at.x), Math.round(a.at.z), a.clip])')))
+console.log(JSON.stringify(await p.evaluate('window.__zoo.animals.map(a => [Math.round(a.at.x), Math.round(a.at.z), a.clip, a.wet ? "wet" : "dry"])')))
 if (+secs > 0) await p.waitForTimeout(+secs * 1000)
 await ctx.close(); await b.close()

@@ -84,7 +84,8 @@ import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
 import { BakedCrowd, cityClothes, peopleLights, wardrobeFor } from './render/crowd-baked.ts'
 import { Dogs } from './render/dogs.ts'
-import { Zoo } from './render/zoo.ts'
+import { HERDS, Zoo } from './render/zoo.ts'
+import { waterLookup } from './render/watermask.ts'
 import { CableRiders } from './render/cable-riders.ts'
 import { FerrisWheel, ROUE_DE_PARIS, SKYSTAR } from './render/sf/ferris.ts'
 import { Balloon, BALLON_DE_PARIS, Rides, VASQUE, type Ride as BoardRide } from './render/paris/balloons.ts'
@@ -935,7 +936,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
     landmarks.onFootprint = (ring) => { clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
   // zoo animals at their hand-placed spots (render/zoo.ts): loaded only when the rider comes near one
-  const zoo = off.has('zoo') ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href)
+  const zooWet = (() => {
+    const look = waterLookup(wholeWater(pkg).map((a) => {
+      const ring = unpackPoints(a.ring)
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: 0 }
+    }))
+    return (x: number, z: number) => look(x, z) !== null
+  })()
+  const zoo = off.has('zoo') ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href, HERDS, zooWet)
     landmarks.dryAt = (x, z) => city.dryAt(x, z)
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)

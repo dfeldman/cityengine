@@ -88,6 +88,12 @@ export const SPECIES: Record<string, Species> = {
     file: 'common/peacock.glb', size: 1.7, yaw: 0, walk: 0.45, turn: 1.2, rest: [4, 12], odds: { walk: 0.45, idle: 0.3 },
     roam: { margin: 1.5, spacing: 2.5, walk: [4, 18] },
   },
+  // Tripo's flamingo, 0.979 units tall (1.27 m), one leg cut off so it stands on the other, the way flamingos do
+  // (tools/animals/flamingo-clips.py). Faces +x like the giraffe. It never walks; "browse" is a shallow feeding dip
+  flamingo: {
+    file: 'common/flamingo.glb', size: 1.3, yaw: Math.PI / 2, walk: 0.3, turn: 0.5, rest: [10, 30], odds: { walk: 0, idle: 0.65 },
+    roam: { margin: 0.4, spacing: 1.1, walk: [2, 6] },
+  },
 }
 
 export interface Herd {
@@ -98,7 +104,27 @@ export interface Herd {
   /** each animal's size relative to the species' (a young one is smaller) */
   sizes: number[]
   fence?: boolean
+  /** how far the animals stand below the ground (m): waders in a pond, the water up their shins */
+  sink?: number
 }
+
+/**
+ * Ménagerie du Jardin des Plantes, the flamingo enclosure: OSM has only the flock's point (48.845133, 2.358579) and
+ * a 24 m² basin 15 m east; the pink patch on the IGN aerial (2026-11-20) lies between, under the trees. Drawn round both.
+ */
+const MENAGERIE_FLAMINGOS: [number, number][] = [
+  [48.84518, 2.35856], [48.845185, 2.3588], [48.84511, 2.35883], [48.84505, 2.35881], [48.84505, 2.3587], [48.8451, 2.35856],
+]
+/**
+ * Parc zoologique de Paris, the Grande Volière's western pond (OSM natural=water, 300 m²), by OSM's greater flamingos
+ * (48.833504, 2.418741). The eastern one across the walkway (210 m²) is not drawn as water in the game, so not it.
+ */
+const VINCENNES_FLAMINGO_POND: [number, number][] = [
+  [48.833631, 2.418518], [48.833561, 2.418539], [48.833549, 2.41858], [48.833621, 2.418637], [48.833641, 2.418766],
+  [48.833692, 2.41887], [48.833734, 2.418841], [48.833767, 2.418713], [48.833734, 2.418648], [48.833705, 2.418566],
+]
+/** how deep the flamingos stand in the ponds (m) */
+const FLAMINGO_SINK = 0.15
 
 /** Parc zoologique de Paris, Plaine Sahel-Soudan: OSM's sand polygon on the giraffe plain, simplified to 1.5 m. */
 const GIRAFFE_PLAIN: [number, number][] = [
@@ -177,6 +203,12 @@ export const HERDS: Herd[] = [
   { name: 'bagatelle-chateau-peacocks', species: 'peacock', paddock: BAGATELLE_CHATEAU_LAWN, sizes: [1, 0.96, 1.04] },
   { name: 'bagatelle-east-peacocks', species: 'peacock', paddock: BAGATELLE_EAST_LAWN, sizes: [1, 0.95] },
   { name: 'bagatelle-roseraie-peacocks', species: 'peacock', paddock: BAGATELLE_ROSERAIE, sizes: [1.02, 0.97, 1, 0.94] },
+  // flamingos (OSM attraction=animal): the Caribbean flamingos of the Ménagerie, the greater flamingos of Vincennes
+  { name: 'menagerie-flamingos', species: 'flamingo', paddock: MENAGERIE_FLAMINGOS, sizes: [1, 0.95, 1.04, 0.97, 1, 0.92, 1.02] },
+  {
+    name: 'vincennes-flamingos', species: 'flamingo', paddock: VINCENNES_FLAMINGO_POND,
+    sizes: [1, 0.96, 1.03, 0.94, 1, 0.98, 1.05, 0.95, 1.02, 0.97, 1, 0.93], sink: FLAMINGO_SINK,
+  },
 ]
 
 type Clip = 'idle' | 'browse' | 'walk'
@@ -260,11 +292,15 @@ export class Zoo {
   private readonly scene: Scene
   private readonly terrain: Terrain
   private readonly base: string
+  /** is this point in water the game draws: a herd's `sink` applies only there (a pond too small to draw is lawn) */
+  private readonly wet: (x: number, z: number) => boolean
   private readonly pens: Pen[]
   private readonly containers = new Map<string, Promise<AssetContainer>>()
   private time = 0
 
-  constructor(scene: Scene, origin: { lat: number; lon: number }, terrain: Terrain, base: string, herds: Herd[] = HERDS) {
+  constructor(scene: Scene, origin: { lat: number; lon: number }, terrain: Terrain, base: string, herds: Herd[] = HERDS,
+    wet: (x: number, z: number) => boolean = () => false) {
+    this.wet = wet
     this.scene = scene
     this.terrain = terrain
     this.base = base
@@ -278,8 +314,8 @@ export class Zoo {
   }
 
   /** where each animal is and what it is doing (dev: the shot tools look at them) */
-  get animals(): { herd: string; at: Point; heading: number; clip: Clip }[] {
-    return this.pens.flatMap((p) => p.beasts.map((b) => ({ herd: p.herd.name, at: b.at, heading: b.heading, clip: b.clip })))
+  get animals(): { herd: string; at: Point; heading: number; clip: Clip; wet: boolean }[] {
+    return this.pens.flatMap((p) => p.beasts.map((b) => ({ herd: p.herd.name, at: b.at, heading: b.heading, clip: b.clip, wet: this.wet(b.at.x, b.at.z) })))
   }
 
   private container(species: string): Promise<AssetContainer> {
@@ -427,7 +463,7 @@ export class Zoo {
     for (const [name, g] of Object.entries(b.clips) as [Clip, AnimationGroup][]) {
       g.setWeightForAllAnimatables(name === b.clip ? b.fade : name === b.from ? 1 - b.fade : 0)
     }
-    b.node.position.set(b.at.x, this.terrain.rawHeightAt(b.at.x, b.at.z), b.at.z)
+    b.node.position.set(b.at.x, this.terrain.rawHeightAt(b.at.x, b.at.z) - (pen.herd.sink && this.wet(b.at.x, b.at.z) ? pen.herd.sink : 0), b.at.z)
     b.node.rotation.y = b.heading + sp.yaw
   }
 
