@@ -109,7 +109,7 @@ export function brassensAmphi(out: MeshBuilder, fit: Fit): void {
 /* ---------------------------------------------------------------------------------------------------- Bagatelle */
 
 /**
- * LE GRAND ROCHER and the KIOSQUE DE L'IMPÉRATRICE (Bélanger's rockwork of the 1770s, OSM's "Grotte des quatre vents" way/577580949 and the pond relation/8188977 south of it): a heap of artificial rock with the grotto's dark mouth at the water, a thread of cascade down it, and the little octagonal kiosk on top that Eugénie took tea in, with a view over the lawns. Kiosk from photographs in memory; −z to the pond.
+ * LE GRAND ROCHER (Bélanger's rockwork of the 1770s, OSM's "Grotte des quatre vents" way/577580949 and the pond relation/8188977 south of it): a heap of artificial rock with the grotto's dark mouth at the water, and a thread of cascade down it. The Kiosque de l'Impératrice is not up here: OSM puts it by the Roseraie, batch6/roseraie.ts. −z to the pond.
  */
 export function bagatelleRocher(out: MeshBuilder, fit: Fit): void {
   const y = fit.grade ?? 0, R = hex('#5c5547')
@@ -122,21 +122,6 @@ export function bagatelleRocher(out: MeshBuilder, fit: Fit): void {
   for (let i = 0; i < 3; i++) strut(out, [2.2 + i * 0.5, y + 5.6 - i * 0.2, -3.8 - i * 0.2], [2.5 + i * 0.5, y + 0.1, -6 - i * 0.25], 0.42, 0.12, FOAM, 0, false)
   // the steps up its west flank
   for (let i = 0; i < 7; i++) block(out, -7.6 + i * 0.6, -6.1 + i * 0.6, -1 + i * 0.55, 0.6 + i * 0.55, y, y + 0.5 + i * 0.62, shade(R, 0.8))
-  // the kiosk: a stone floor on the rock's head, eight painted posts, the lattice rail, the flared lead roof and its gilt finial
-  const K = y + 6.7, r = 2.5, G = hex('#3a5046'), PALE = hex('#c6bc9f')
-  prism(out, 0, 0.3, K - 0.8, K, r + 0.55, 8, shade(STONE, 0.86), ash)
-  for (let i = 0; i < 8; i++) {
-    const a = ((i + 0.5) / 8) * Math.PI * 2, x = Math.cos(a) * r, z = 0.3 + Math.sin(a) * r
-    const b = ((i + 1.5) / 8) * Math.PI * 2, xb = Math.cos(b) * r, zb = 0.3 + Math.sin(b) * r
-    block(out, x - 0.1, x + 0.1, z - 0.1, z + 0.1, K, K + 2.9, G)
-    strut(out, [x, K + 0.85, z], [xb, K + 0.85, zb], 0.07, 0.07, PALE, 0, false)
-    strut(out, [x, K + 2.55, z], [xb, K + 2.55, zb], 0.09, 0.3, PALE, 0, false)
-  }
-  prism(out, 0, 0.3, K + 2.85, K + 3, r + 0.95, 8, shade(SLATE, 1.05), metal)
-  prism(out, 0, 0.3, K + 3, K + 3.95, r + 0.95, 8, SLATE, metal, 1.05)
-  prism(out, 0, 0.3, K + 3.95, K + 4.7, 1.05, 8, SLATE, metal, 0.12)
-  box(out, 0, K + 4.82, 0.3, 0.13, 0.13, 0.13, GILT, metal)
-  prism(out, 0, 0.3, K + 4.9, K + 5.25, 0.05, 5, GILT, metal)
 }
 
 /* ------------------------------------------------------------------------------------------------- Albert-Kahn */
