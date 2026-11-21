@@ -945,7 +945,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }))
     return (x: number, z: number) => look(x, z) !== null
   })()
-  const zoo = off.has('zoo') ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href, HERDS, zooWet)
+  const zoo = off.has('zoo') ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href, HERDS, zooWet, (x, z) => city.waterLevelAt(x, z))
     landmarks.dryAt = (x, z) => city.dryAt(x, z)
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)
@@ -1532,6 +1532,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   } else (window as unknown as Record<string, unknown>).treesReady = true
   // the shrubs and flower beds in the parks (render/plants.ts, PARIS_EXPAND §6 item 8)
   const plants = new Plants(scene, city.terrain, new URL('plants/', document.baseURI).href)
+  // the zoo's enclosures dress themselves with the plants' boulders and shrubs
+  if (zoo) zoo.plant = (list) => plants.addPlants(list)
   // which shrubs grow where, by zone (map format v3; a v2 city has none and gets the defaults everywhere)
   if (index.zones?.length) plants.zones = new PlantZones(index.zones)
   if (pkg.region === 'paris') plants.woodWalls = true
@@ -3935,6 +3937,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { mesh: hit.pickedMesh.name, face: hit.faceId, building: id, at: hit.pickedPoint?.asArray().map((v) => Math.round(v * 10) / 10) }
   }
   ;(window as unknown as { __heightAt?: unknown }).__heightAt = (x: number, z: number) => city.terrain.heightAt(x, z)
+  ;(window as unknown as { __waterLevelAt?: unknown }).__waterLevelAt = (x: number, z: number) => city.waterLevelAt(x, z)
   // (debug: the street grade and the raw ground under a point, for the wall and island probes)
   // (debug: the city object itself, for tile and edge inspection from the console)
   ;(window as unknown as { __city?: unknown }).__city = city
