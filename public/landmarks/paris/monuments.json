@@ -940,6 +940,25 @@
     "note": "The bronze at the downstream tip of the island. OSM node 465294103 (height 11.5). Sources agree she was turned toward the west in 1937; the bearing, 228, is taken along the island's own footway, not measured. The figure, the gilt flame and the tablet's two dates from a Commons photograph; the pedestal by eye, no source for its height found."
   },
   {
+    "name": "Hautes Herbes",
+    "procedural": "hautesHerbes",
+    "kind": "sculpture",
+    "osm": [
+      "node/8458628895"
+    ],
+    "lat": 48.859907,
+    "lon": 2.340571,
+    "size": [
+      6.8,
+      6.8
+    ],
+    "height": 5.2,
+    "front": 0,
+    "sign": false,
+    "note": "Béatrice Guichard, 2003: eight steel blades of grass, some with a gilt edge, rising from the gravel of the Place du Louvre before Saint-Germain-l'Auxerrois. OSM node 8458628895. The blades read from a Commons photograph (Hautes Herbes.jpg, Aquilae); heights, bends and turns by eye, tunable in hautes-herbes.ts. The sand under it is the city's own (an OSM area); the builder's disc is off (DRAW_SAND). The Tripo route failed: too thin to photograph.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
     "name": "Monument du Maréchal Moncey",
     "procedural": "monumentMoncey",
     "kind": "statue",
