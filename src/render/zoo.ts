@@ -12,6 +12,9 @@
  * Bagatelle, which wander the château lawns and the Roseraie (tools/animals/peacock-clips.py rigs Tripo's unrigged
  * bird). Such a species walks shorter, closer together and nearer the edge (`roam`).
  *
+ * Paris also has its swans on four lakes, Canada geese on the banks of eight more, and rabbits at the Invalides and
+ * in the woods (PARIS_BIRDS); a swan keeps to the water and a rabbit to dry land (`habitat`).
+ *
  * Loaded only when the rider comes within `LOAD` of a paddock, drawn and moved only within `DRAW`. Each animal is
  * its own copy of the model (AssetContainer.instantiateModelsToScene): a herd is a handful, not a crowd.
  */
@@ -49,10 +52,29 @@ const POST_EVERY = 3
 const FENCE_H = 1.9
 const RAILS = [0.55, 1.15, 1.8]
 const WOOD = new Color3(0.42, 0.31, 0.2)
+/** a big cat's or a bear's fence ('mesh'): steel posts this far apart and this tall, a top rail, a see-through mesh */
+const MESH_EVERY = 3
+const MESH_H = 3.6
+const STEEL = new Color3(0.2, 0.22, 0.2)
+const MESH_ALPHA = 0.28
+/** an enclosure's dressing (`Herd.dress`): the rock library's boulders this tall (m), the plant library's shrubs
+ *  this tall; none nearer the fence than EDGE, nor each other than GAP. A boulder's footprint is FOOT × its height */
+const ROCK_H: [number, number] = [1.3, 3.0]
+const SHRUB_H: [number, number] = [0.9, 2.2]
+const ROCK_FOOT = 0.85
+/** a boulder is bedded this much of its height into the ground (on the paddock's raw ground, as the fence is) */
+const ROCK_BED = 0.2
+const DRESS_EDGE = 1.5
+const DRESS_GAP = 0.6
+/** an animal keeps this far out of a rock's footprint (m) */
+const ROCK_CLEAR = 0.5
 /** Babylon's glTF loader keys every clip at 60 frames a second, whatever rate it was authored at */
 const CLIP_FPS = 60
 /** a walk turns on the spot until it is within this of its heading (rad), then sets off */
 const SET_OFF = 0.5
+/** how fast a wading animal settles into the water or rises out of it (m/s): the ground under a lake is up to a metre
+ *  off its drawn surface, so a goose stepping off the bank drops that too */
+const WADE = 0.8
 
 interface Species {
   file: string
@@ -72,6 +94,8 @@ interface Species {
   odds: { walk: number; idle: number }
   /** a small free-roaming animal's own distances in place of MARGIN, SPACING and WALK_MIN/MAX (m) */
   roam?: { margin: number; spacing: number; walk: [number, number] }
+  /** where in the pen it may stand: only in drawn water (a swan) or only out of it (a rabbit); else anywhere */
+  habitat?: 'water' | 'land'
 }
 
 const roamOf = (sp: Species) => sp.roam ?? { margin: MARGIN, spacing: SPACING, walk: [WALK_MIN, WALK_MAX] as [number, number] }
@@ -82,6 +106,37 @@ export const SPECIES: Record<string, Species> = {
   // (checked from straight ahead of its heading, 2026-11-20); its "browse" clip is grazing, head to the grass
   // (tools/animals/bison-clips.py)
   bison: { file: 'common/bison.glb', size: 3.0, yaw: 0, walk: 1.0, turn: 0.4, rest: [8, 20], odds: { walk: 0.35, idle: 0.25 } },
+  // Tripo's elephant, 0.659 units to the shoulder, 4.75 m to the unit: ~3.1 m at the shoulder, 4.7 m nose to tail. Faces
+  // −y in Blender like the bison, so yaw 0. A slow walk; "browse" is the trunk reaching for the grass and curling to
+  // the mouth (tools/animals/elephant-clips.py)
+  elephant: {
+    file: 'common/elephant.glb', size: 4.75, yaw: 0, walk: 0.4, turn: 0.35, rest: [8, 22], odds: { walk: 0.35, idle: 0.3 },
+    roam: { margin: 3.5, spacing: 7, walk: [6, 22] },
+  },
+  // big cats and bears (PLACEHOLDER numbers for the lion, tools/animals/lion-clips.py sets the real ones): Tripo models,
+  // their own rigs thrown away. Lions lie about most of the day
+  // Tripo's lion, 0.45 to the shoulder (0.58 to the top of the mane), 0.98 nose to rump: 2.75 m to the unit makes a male
+  // 1.25 m at the shoulder and 2.7 m long. Faces −y like the elephant, so yaw 0; the walk is an unhurried 0.72 m/s. Idle
+  // is standing and looking round (a lie-down would tear the mesh), browse is nose to the ground (tools/animals/lion-clips.py)
+  lion: {
+    file: 'common/lion.glb', size: 2.75, yaw: 0, walk: 0.72, turn: 0.6, rest: [12, 40], odds: { walk: 0.25, idle: 0.35 },
+    roam: { margin: 3, spacing: 4, walk: [6, 25] },
+  },
+  // Tripo's grizzly, 1.0 unit nose to tail and 0.53 to the hump, 2.1 m to the unit: ~2.1 m long, 1.1 m at the shoulder.
+  // Faces −y in Blender like the bison, so yaw 0. A rolling, pigeon-toed amble; "browse" is nosing and scraping the dirt
+  // (tools/animals/bear-clips.py)
+  // Tripo's red deer stag, 0.55 to the withers and 0.98 nose to rump (0.98 to the antler tips): 2.25 m to the unit makes
+  // ~1.25 m at the shoulder and 2.2 m long. Faces −y like the lion, so yaw 0; a deliberate four-beat walk at 0.7 m/s,
+  // stride matched in tools/animals/deer-clips.py (idle: alert, looking round; browse: grazing). Wild in the woods west
+  // of Paris, a few together, free-roaming (no fence)
+  deer: {
+    file: 'common/deer.glb', size: 2.25, yaw: 0, walk: 0.7, turn: 0.6, rest: [8, 25], odds: { walk: 0.3, idle: 0.3 },
+    roam: { margin: 3, spacing: 4, walk: [6, 25] }, habitat: 'land',
+  },
+  bear: {
+    file: 'common/bear.glb', size: 2.1, yaw: 0, walk: 0.65, turn: 0.6, rest: [8, 25], odds: { walk: 0.35, idle: 0.25 },
+    roam: { margin: 2.5, spacing: 4, walk: [5, 20] },
+  },
   // Tripo's peacock, fan up in display, 0.887 units tall: 1.5 m to the fan's top, the head at ~0.75 m. Faces −y in
   // Blender like the bison, so yaw 0. "browse" is pecking at the grass
   peacock: {
@@ -94,6 +149,23 @@ export const SPECIES: Record<string, Species> = {
     file: 'common/flamingo.glb', size: 1.3, yaw: Math.PI / 2, walk: 0.3, turn: 0.5, rest: [10, 30], odds: { walk: 0, idle: 0.65 },
     roam: { margin: 0.4, spacing: 1.1, walk: [2, 6] },
   },
+  // Paris's park birds and rabbits: Tripo models with no rig, rigged and animated by tools/animals/{swan,goose,
+  // rabbit}-clips.py. All face −y in Blender like the peacock, so yaw 0. The mute swan's legs are cut off: it only
+  // swims, "walk" is a glide and "browse" a head-dip into the water
+  swan: {
+    file: 'common/swan.glb', size: 1.4, yaw: 0, walk: 0.35, turn: 0.35, rest: [8, 25], odds: { walk: 0.5, idle: 0.3 },
+    roam: { margin: 3, spacing: 3, walk: [5, 25] }, habitat: 'water',
+  },
+  // Canada goose: waddles on the bank, grazes, and swims when its walk takes it into the water (its herd's `sink`)
+  goose: {
+    file: 'common/goose.glb', size: 0.95, yaw: 0, walk: 0.4, turn: 1.0, rest: [5, 15], odds: { walk: 0.35, idle: 0.25 },
+    roam: { margin: 1.5, spacing: 1.6, walk: [3, 12] },
+  },
+  // European rabbit: sits, nibbles, hops a few metres; "walk" is one hop, played at its pace
+  rabbit: {
+    file: 'common/rabbit.glb', size: 0.42, walk: 0.8, yaw: 0, turn: 3, rest: [4, 14], odds: { walk: 0.3, idle: 0.4 },
+    roam: { margin: 1, spacing: 1.5, walk: [1.5, 6] }, habitat: 'land',
+  },
 }
 
 export interface Herd {
@@ -103,9 +175,15 @@ export interface Herd {
   paddock: [number, number][]
   /** each animal's size relative to the species' (a young one is smaller) */
   sizes: number[]
-  fence?: boolean
+  /** true: post-and-rail; 'mesh': a big cat's tall steel mesh */
+  fence?: boolean | 'mesh'
+  /** boulders and shrubs scattered in the paddock, drawn by render/plants.ts (`rock:<species>` from the rock library,
+   *  the rest from the plant library), picked in turn from the kinds given; the animals walk round the boulders */
+  dress?: { rocks: number; shrubs: number; rockKinds: string[]; shrubKinds: string[] }
   /** how far the animals stand below the ground (m): waders in a pond, the water up their shins */
   sink?: number
+  /** this herd's own `habitat`, over the species' (flamingos in a pond keep to its water) */
+  habitat?: 'water' | 'land'
 }
 
 /**
@@ -116,13 +194,13 @@ const MENAGERIE_FLAMINGOS: [number, number][] = [
   [48.84518, 2.35856], [48.845185, 2.3588], [48.84511, 2.35883], [48.84505, 2.35881], [48.84505, 2.3587], [48.8451, 2.35856],
 ]
 /**
- * Parc zoologique de Paris, the Grande Volière's western pond (OSM natural=water, 300 m²), by OSM's greater flamingos
- * (48.833504, 2.418741). The eastern one across the walkway (210 m²) is not drawn as water in the game, so not it.
+ * Parc zoologique de Paris: OSM's greater flamingos (48.833504, 2.418741) are inside the Grande Volière, which the
+ * rider cannot enter; they stand instead in the open pond 33 m south of it (OSM natural=water, 1740 m², 6 m from a
+ * walkway). Kept to its water, so a patch a little over the pond is fine.
  */
-const VINCENNES_FLAMINGO_POND: [number, number][] = [
-  [48.833631, 2.418518], [48.833561, 2.418539], [48.833549, 2.41858], [48.833621, 2.418637], [48.833641, 2.418766],
-  [48.833692, 2.41887], [48.833734, 2.418841], [48.833767, 2.418713], [48.833734, 2.418648], [48.833705, 2.418566],
-]
+/** the pond is some 45 m by 40 */
+const FLAMINGO_R = 20
+const VINCENNES_FLAMINGO_POND = patch(48.833203, 2.418643, FLAMINGO_R)
 /** how deep the flamingos stand in the ponds (m) */
 const FLAMINGO_SINK = 0.15
 
@@ -194,24 +272,159 @@ const BAGATELLE_ROSERAIE: [number, number][] = [
   [48.867604, 2.243829], [48.867693, 2.243756], [48.867815, 2.243724], [48.867437, 2.243379],
 ]
 
+/** a round patch of radius `r` metres as a paddock: a free-roaming herd's ground in a park or a wood */
+function patch(lat: number, lon: number, r: number, sides = 12): [number, number][] {
+  const dlat = r / 111_320
+  const dlon = r / (111_320 * Math.cos((lat * Math.PI) / 180))
+  return Array.from({ length: sides }, (_, i) => {
+    const a = (i / sides) * Math.PI * 2
+    return [lat + dlat * Math.sin(a), lon + dlon * Math.cos(a)] as [number, number]
+  })
+}
+/** `n` animals, each a little bigger or smaller than the species' size */
+const flock = (n: number, spread = 0.06): number[] => Array.from({ length: n }, (_, i) => 1 + spread * Math.sin(i * 2.4 + 0.7))
+
+/** how deep a swimming bird sits (m): the swan's waterline on its breast, the goose's halfway up its flank */
+const SWAN_SINK = 0.28
+const GOOSE_SINK = 0.24
+/** the patches' radii (m): a swan's stretch of lake, a goose flock's bank, a rabbit warren in the grass */
+const SWAN_R = 45
+const GOOSE_R = 30
+const RABBIT_R = 15
+/** a peacock cluster's patch of park (m) */
+const PEACOCK_R = 18
+/** the Esplanade's lawn strips are some 22 m across */
+const INVALIDES_R = 10
+/** a deer group's ground (m): wide, a few together under the trees */
+const DEER_R = 30
+
+/**
+ * Paris's swans, geese and rabbits. Each patch is centred on a point picked from the baked package (2026-11-20):
+ * a lake's edge within 12 m of a footpath or cycleway (swans and geese), or 8 m off a path in a wood, 60 m and more
+ * from any road (rabbits). The swans keep to the patch's water, the rabbits to its land, the geese go where they like.
+ */
+const PARIS_BIRDS: Herd[] = [
+  // mute swans on four of the lakes that have them: the Bois de Boulogne's Lac Inférieur, the Bois de Vincennes's Lac
+  // Daumesnil, Versailles's Grand Canal, the Buttes-Chaumont
+  { name: 'lac-inferieur-swans-s', species: 'swan', paddock: patch(48.86207, 2.260829, SWAN_R), sizes: flock(3), sink: SWAN_SINK },
+  { name: 'lac-inferieur-swans-n', species: 'swan', paddock: patch(48.864694, 2.259314, SWAN_R), sizes: flock(2), sink: SWAN_SINK },
+  { name: 'daumesnil-swans-s', species: 'swan', paddock: patch(48.828708, 2.416609, SWAN_R), sizes: flock(3), sink: SWAN_SINK },
+  { name: 'daumesnil-swans-n', species: 'swan', paddock: patch(48.831742, 2.414509, SWAN_R), sizes: flock(2), sink: SWAN_SINK },
+  { name: 'grand-canal-swans', species: 'swan', paddock: patch(48.814104, 2.102504, SWAN_R), sizes: flock(4), sink: SWAN_SINK },
+  { name: 'buttes-chaumont-swans', species: 'swan', paddock: patch(48.88029, 2.383014, SWAN_R), sizes: flock(2), sink: SWAN_SINK },
+  // Canada geese on the banks (and in the water) of the smaller lakes and ponds
+  { name: 'lac-superieur-geese', species: 'goose', paddock: patch(48.85821, 2.258153, GOOSE_R), sizes: flock(6), sink: GOOSE_SINK },
+  { name: 'minimes-geese-s', species: 'goose', paddock: patch(48.835721, 2.456056, GOOSE_R), sizes: flock(5), sink: GOOSE_SINK },
+  { name: 'minimes-geese-n', species: 'goose', paddock: patch(48.838623, 2.459651, GOOSE_R), sizes: flock(4), sink: GOOSE_SINK },
+  { name: 'montsouris-geese', species: 'goose', paddock: patch(48.823278, 2.33863, GOOSE_R), sizes: flock(5), sink: GOOSE_SINK },
+  { name: 'saint-mande-geese', species: 'goose', paddock: patch(48.842164, 2.423239, GOOSE_R), sizes: flock(4), sink: GOOSE_SINK },
+  { name: 'corot-geese', species: 'goose', paddock: patch(48.820042, 2.181233, GOOSE_R), sizes: flock(5), sink: GOOSE_SINK },
+  { name: 'suisses-geese', species: 'goose', paddock: patch(48.795088, 2.114334, GOOSE_R), sizes: flock(6), sink: GOOSE_SINK },
+  { name: 'mare-saint-james-geese', species: 'goose', paddock: patch(48.876362, 2.2604, GOOSE_R), sizes: flock(4), sink: GOOSE_SINK },
+  // rabbits: the famous warren on the Esplanade des Invalides' lawns (centred on the lawns as drawn, which are wider
+  // than the package's grass; the gardens by the Hôtel draw as gravel), and a few in each of the woods
+  { name: 'invalides-rabbits-w', species: 'rabbit', paddock: patch(48.8605, 2.3126, INVALIDES_R), sizes: flock(5, 0.1) },
+  { name: 'invalides-rabbits-e', species: 'rabbit', paddock: patch(48.86048, 2.31351, INVALIDES_R), sizes: flock(5, 0.1) },
+  { name: 'invalides-rabbits-s', species: 'rabbit', paddock: patch(48.8595, 2.3127, INVALIDES_R), sizes: flock(4, 0.1) },
+  { name: 'boulogne-rabbits-1', species: 'rabbit', paddock: patch(48.867346, 2.245028, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'boulogne-rabbits-2', species: 'rabbit', paddock: patch(48.860977, 2.250094, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'boulogne-rabbits-3', species: 'rabbit', paddock: patch(48.854585, 2.239468, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'vincennes-rabbits-1', species: 'rabbit', paddock: patch(48.828089, 2.427662, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'vincennes-rabbits-2', species: 'rabbit', paddock: patch(48.825054, 2.437932, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'vincennes-rabbits-3', species: 'rabbit', paddock: patch(48.828878, 2.446872, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'saint-cloud-rabbits-1', species: 'rabbit', paddock: patch(48.83313, 2.203878, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'saint-cloud-rabbits-2', species: 'rabbit', paddock: patch(48.832405, 2.212258, RABBIT_R), sizes: flock(4, 0.1) },
+  { name: 'meudon-rabbits', species: 'rabbit', paddock: patch(48.80428, 2.21342, RABBIT_R), sizes: flock(4, 0.1) },
+  // red deer in the woods west of Paris where they live wild (not the Bois de Boulogne or Vincennes, which have none):
+  // spots from tools/animals/pick-sites.ts forest (2026-11-20: off a path, 60 m and more from a road). One stag model,
+  // so every one has antlers
+  { name: 'meudon-deer', species: 'deer', paddock: patch(48.802856, 2.214149, DEER_R), sizes: flock(3, 0.08) },
+  { name: 'saint-cloud-deer', species: 'deer', paddock: patch(48.831657, 2.189005, DEER_R), sizes: flock(2, 0.08) },
+  { name: 'fausses-reposes-deer-1', species: 'deer', paddock: patch(48.823199, 2.173146, DEER_R), sizes: flock(3, 0.08) },
+  { name: 'fausses-reposes-deer-2', species: 'deer', paddock: patch(48.826766, 2.166269, DEER_R), sizes: flock(2, 0.08) },
+]
+
+/** Parc zoologique de Paris: the OSM sand polygon south of the giraffe plain (natural=sand, 2 980 m², simplified to 1.5 m) */
+const ELEPHANT_SAND: [number, number][] = [
+  [48.831710, 2.417996], [48.831597, 2.418147], [48.831270, 2.418456], [48.831180, 2.418640],
+  [48.831207, 2.418830], [48.831192, 2.418964], [48.831296, 2.419280], [48.831373, 2.419249],
+  [48.831381, 2.419165], [48.831361, 2.419133], [48.831447, 2.418984], [48.831500, 2.419010],
+  [48.831514, 2.418974], [48.831586, 2.418941], [48.831613, 2.418874], [48.831605, 2.418717],
+  [48.831658, 2.418671], [48.831694, 2.418404], [48.831722, 2.418347], [48.831696, 2.418281],
+  [48.831734, 2.418190],
+]
+
+/** Ménagerie du Jardin des Plantes: the fenced paddock (OSM barrier=fence, 1 955 m²) south of the giraffes' one */
+const MENAGERIE_ELEPHANT_PADDOCK: [number, number][] = [
+  [48.845253, 2.361479], [48.845206, 2.361495], [48.845094, 2.361635], [48.845073, 2.361682],
+  [48.845080, 2.361771], [48.845145, 2.362154], [48.845215, 2.362188], [48.845240, 2.362256],
+  [48.845259, 2.362460], [48.845372, 2.362805], [48.845514, 2.362570], [48.845285, 2.361778],
+  [48.845275, 2.361554],
+]
+
+/** Parc zoologique de Paris, the lions (OSM attraction=animal node 2845192380): OSM has no enclosure, only its rock
+ *  outcrops and scrub; drawn along the visitors' fence (OSM barrier=fence, west and north) to the lion house's wall */
+const VINCENNES_LION_YARD: [number, number][] = [
+  [48.831307, 2.419846], [48.831307, 2.419764], [48.831307, 2.419696], [48.831271, 2.419668], [48.831271, 2.4196],
+  [48.831208, 2.41945], [48.831154, 2.4193], [48.831064, 2.419218], [48.83101, 2.419232], [48.830974, 2.419313],
+  [48.830929, 2.419436], [48.830947, 2.419491], [48.830831, 2.419682], [48.830831, 2.419832],
+]
+/** San Francisco Zoo: "Lions & Tiger Yards" (OSM natural=grassland, 2 670 m²) beside the Lion House */
+const SFZOO_LION_YARDS: [number, number][] = [
+  [37.732189, -122.501945], [37.732009, -122.50188], [37.73204, -122.501744], [37.73208, -122.501565],
+  [37.732137, -122.501317], [37.732089, -122.501298], [37.732015, -122.50125], [37.731967, -122.501175],
+  [37.731907, -122.501153], [37.731838, -122.501456], [37.731773, -122.50174], [37.731747, -122.501875],
+  [37.731755, -122.501959], [37.731788, -122.502037], [37.731846, -122.502101], [37.731882, -122.502123],
+  [37.732127, -122.502212],
+]
+/** San Francisco Zoo: Grizzly Gulch (OSM natural=grassland, 2 510 m², a pool in it), home of two grizzly sisters */
+const SFZOO_GRIZZLY_GULCH: [number, number][] = [
+  [37.732637, -122.498875], [37.732574, -122.498814], [37.732499, -122.498813], [37.732433, -122.498718],
+  [37.732521, -122.498575], [37.732536, -122.498485], [37.732829, -122.49839], [37.732971, -122.498517],
+  [37.733052, -122.498601], [37.73304, -122.498635], [37.733111, -122.498708], [37.733315, -122.498871],
+  [37.733188, -122.499073], [37.73307, -122.498964], [37.733035, -122.498892], [37.733044, -122.498808],
+  [37.732976, -122.498747], [37.732924, -122.498779], [37.732914, -122.498807], [37.732734, -122.49881],
+  [37.732684, -122.498839],
+]
+
 export const HERDS: Herd[] = [
   { name: 'vincennes-giraffes', species: 'giraffe', paddock: GIRAFFE_PLAIN, sizes: [1, 1.04, 0.96, 1, 0.7], fence: true },
   { name: 'menagerie-giraffes', species: 'giraffe', paddock: MENAGERIE_PADDOCK, sizes: [1, 0.95, 0.72], fence: true },
+  { name: 'vincennes-elephants', species: 'elephant', paddock: ELEPHANT_SAND, sizes: [1, 1.05, 0.95, 0.55], fence: true },
+  { name: 'menagerie-elephants', species: 'elephant', paddock: MENAGERIE_ELEPHANT_PADDOCK, sizes: [1, 0.96, 0.55], fence: true },
+  // a pride each: the male and his lionesses (the model has a mane; the lionesses are only smaller); the two grizzlies
+  { name: 'vincennes-lions', species: 'lion', paddock: VINCENNES_LION_YARD, sizes: [1, 0.88, 0.86, 0.9], fence: 'mesh',
+    dress: { rocks: 8, shrubs: 10, rockKinds: ['rock:cracked', 'rock:grey-group', 'rock:lichen'], shrubKinds: ['bush_green', 'deer_grass', 'hazel', 'bush_green'] } },
+  { name: 'sfzoo-lions', species: 'lion', paddock: SFZOO_LION_YARDS, sizes: [1, 0.87, 0.9], fence: 'mesh',
+    dress: { rocks: 9, shrubs: 14, rockKinds: ['rock:grey', 'rock:cracked', 'rock:grey-group'], shrubKinds: ['bush_green', 'deer_grass', 'hazel', 'bush_green'] } },
+  { name: 'sfzoo-grizzlies', species: 'bear', paddock: SFZOO_GRIZZLY_GULCH, sizes: [1, 0.95], fence: 'mesh',
+    dress: { rocks: 10, shrubs: 14, rockKinds: ['rock:mossy', 'rock:grey', 'rock:mossy-group'], shrubKinds: ['hazel', 'fern', 'rhododendron', 'bush_green'] } },
   // the real herd is about ten; two calves
   { name: 'ggp-bison', species: 'bison', paddock: GGP_BISON_PADDOCK, sizes: [1, 1.06, 0.95, 1, 1.1, 0.92, 1.02, 0.62, 0.58], fence: true },
   // free-roaming, no fence
   { name: 'bagatelle-chateau-peacocks', species: 'peacock', paddock: BAGATELLE_CHATEAU_LAWN, sizes: [1, 0.96, 1.04] },
   { name: 'bagatelle-east-peacocks', species: 'peacock', paddock: BAGATELLE_EAST_LAWN, sizes: [1, 0.95] },
   { name: 'bagatelle-roseraie-peacocks', species: 'peacock', paddock: BAGATELLE_ROSERAIE, sizes: [1.02, 0.97, 1, 0.94] },
+  // and where else Paris's peacocks roam free, a cluster or two in each park (spots from tools/animals/pick-sites.ts park,
+  // 2026-11-20: off a path, away from roads), so a rider through the park has a fair chance of passing one
+  { name: 'acclimatation-peacocks-1', species: 'peacock', paddock: patch(48.877796, 2.264172, PEACOCK_R), sizes: flock(7) },
+  { name: 'acclimatation-peacocks-2', species: 'peacock', paddock: patch(48.877773, 2.265269, PEACOCK_R), sizes: flock(5) },
+  { name: 'parc-floral-peacocks-1', species: 'peacock', paddock: patch(48.839336, 2.445215, PEACOCK_R), sizes: flock(8) },
+  { name: 'parc-floral-peacocks-2', species: 'peacock', paddock: patch(48.839851, 2.440947, PEACOCK_R), sizes: flock(6) },
+  { name: 'jardin-des-plantes-peacocks', species: 'peacock', paddock: patch(48.843869, 2.359289, PEACOCK_R), sizes: flock(6) },
   // flamingos (OSM attraction=animal): the Caribbean flamingos of the Ménagerie, the greater flamingos of Vincennes
   { name: 'menagerie-flamingos', species: 'flamingo', paddock: MENAGERIE_FLAMINGOS, sizes: [1, 0.95, 1.04, 0.97, 1, 0.92, 1.02] },
   {
     name: 'vincennes-flamingos', species: 'flamingo', paddock: VINCENNES_FLAMINGO_POND,
-    sizes: [1, 0.96, 1.03, 0.94, 1, 0.98, 1.05, 0.95, 1.02, 0.97, 1, 0.93], sink: FLAMINGO_SINK,
+    sizes: [1, 0.96, 1.03, 0.94, 1, 0.98, 1.05, 0.95, 1.02, 0.97, 1, 0.93], sink: FLAMINGO_SINK, habitat: 'water',
   },
+  ...PARIS_BIRDS,
 ]
 
 type Clip = 'idle' | 'browse' | 'walk'
+
+/** one boulder or shrub, as render/plants.ts `addPlants` takes it */
+type Planted = { x: number; z: number; species: string; h: number; spin: number; dy?: number; raw?: boolean }
 
 interface Beast {
   node: TransformNode
@@ -225,6 +438,9 @@ interface Beast {
   at: Point
   heading: number
   size: number
+  /** how far under the ground it stands now (m): in water, down to the drawn surface less the herd's `sink`; eased
+   *  as a goose wades in, so it does not drop in a frame */
+  sink: number
 }
 
 interface Pen {
@@ -234,6 +450,8 @@ interface Pen {
   beasts: Beast[]
   state: 'far' | 'loading' | 'ready'
   rand: () => number
+  /** the dressing's rocks: centre and footprint radius (m) */
+  rocks: { x: number; z: number; r: number }[]
 }
 
 /** a small seeded generator, so a herd starts the same way every ride */
@@ -294,13 +512,20 @@ export class Zoo {
   private readonly base: string
   /** is this point in water the game draws: a herd's `sink` applies only there (a pond too small to draw is lawn) */
   private readonly wet: (x: number, z: number) => boolean
+  /** the drawn water's surface at a point (render/city.ts waterLevelAt), or null where its tile is not in */
+  private readonly surface: (x: number, z: number) => number | null
   private readonly pens: Pen[]
   private readonly containers = new Map<string, Promise<AssetContainer>>()
   private time = 0
+  /** where the dressing's boulders and shrubs go: game.ts sets it to the plants' `addPlants` once it has them */
+  private plantSink: ((list: Planted[]) => void) | null = null
+  private planting: Planted[] = []
+  set plant(f: (list: Planted[]) => void) { this.plantSink = f; if (this.planting.length) f(this.planting.splice(0)) }
 
   constructor(scene: Scene, origin: { lat: number; lon: number }, terrain: Terrain, base: string, herds: Herd[] = HERDS,
-    wet: (x: number, z: number) => boolean = () => false) {
+    wet: (x: number, z: number) => boolean = () => false, surface: (x: number, z: number) => number | null = () => null) {
     this.wet = wet
+    this.surface = surface
     this.scene = scene
     this.terrain = terrain
     this.base = base
@@ -308,7 +533,7 @@ export class Zoo {
     this.pens = herds.map((herd, i) => {
       const poly = herd.paddock.map(([lat, lon]) => proj.toLocal({ lat, lon }))
       const centre = { x: poly.reduce((s, p) => s + p.x, 0) / poly.length, z: poly.reduce((s, p) => s + p.z, 0) / poly.length }
-      return { herd, poly, centre, beasts: [], state: 'far' as const, rand: mulberry(0x9e3779b9 ^ (i * 7919)) }
+      return { herd, poly, centre, beasts: [], rocks: [], state: 'far' as const, rand: mulberry(0x9e3779b9 ^ (i * 7919)) }
     })
     ;(window as unknown as { __zoo?: Zoo }).__zoo = this
   }
@@ -334,20 +559,54 @@ export class Zoo {
     const { margin, spacing, walk } = roamOf(SPECIES[pen.herd.species])
     for (let k = 0; k < 300; k++) {
       const p = { x: minX + pen.rand() * (maxX - minX), z: minZ + pen.rand() * (maxZ - minZ) }
-      if (!roomy(p, pen.poly, margin)) continue
-      if (from) { const d = distance(p, from); if (d < walk[0] || d > walk[1] || !clearPath(from, p, pen.poly, margin)) continue }
+      if (!roomy(p, pen.poly, margin) || !this.fits(pen, p) || pen.rocks.some((r) => distance(r, p) < r.r + ROCK_CLEAR)) continue
+      if (from) { const d = distance(p, from); if (d < walk[0] || d > walk[1] || !clearPath(from, p, pen.poly, margin) || !this.fitsAlong(pen, from, p) || !this.pastRocks(pen, from, p)) continue }
       if (pen.beasts.some((b) => distance(b.target ?? b.at, p) < spacing)) continue
       return p
     }
     return null
   }
 
+  /** how far under the ground an animal of this herd stands at p: in drawn water (a herd with a `sink` only), at the
+   *  water's surface less its sink — the ground under a lake is not the surface, it is a metre off either way */
+  private sinkAt(pen: Pen, p: Point): number {
+    if (!pen.herd.sink || !this.wet(p.x, p.z)) return 0
+    const ground = this.terrain.rawHeightAt(p.x, p.z)
+    return ground - (this.surface(p.x, p.z) ?? ground) + pen.herd.sink
+  }
+  /** the species may stand here: in water for a swan, out of it for a rabbit */
+  private fits(pen: Pen, p: Point): boolean {
+    const h = pen.herd.habitat ?? SPECIES[pen.herd.species].habitat
+    return !h || this.wet(p.x, p.z) === (h === 'water')
+  }
+
+  /** …and all the way from `a` to `b` (checked every 2 m) */
+  private fitsAlong(pen: Pen, a: Point, b: Point): boolean {
+    if (!SPECIES[pen.herd.species].habitat) return true
+    const n = Math.ceil(distance(a, b) / 2)
+    for (let i = 1; i < n; i++) if (!this.fits(pen, { x: a.x + ((b.x - a.x) * i) / n, z: a.z + ((b.z - a.z) * i) / n })) return false
+    return true
+  }
+
+  /** the straight walk from `a` to `b` keeps out of every rock */
+  private pastRocks(pen: Pen, a: Point, b: Point): boolean {
+    const dx = b.x - a.x, dz = b.z - a.z, L = dx * dx + dz * dz || 1
+    return pen.rocks.every((r) => {
+      const t = Math.max(0, Math.min(1, ((r.x - a.x) * dx + (r.z - a.z) * dz) / L))
+      return Math.hypot(a.x + dx * t - r.x, a.z + dz * t - r.z) > r.r + ROCK_CLEAR
+    })
+  }
+
   private async load(pen: Pen): Promise<void> {
     const sp = SPECIES[pen.herd.species]
     const c = await this.container(pen.herd.species)
-    if (pen.herd.fence) this.fence(pen)
+    if (pen.herd.fence === 'mesh') this.meshFence(pen)
+    else if (pen.herd.fence) this.fence(pen)
+    if (pen.herd.dress) this.dress(pen, pen.herd.dress)
     pen.herd.sizes.forEach((size, i) => {
-      const at = this.spot(pen) ?? pen.centre
+      // the patch's centre is on the bank: a swan (or a rabbit) with nowhere it may stand is left out
+      const at = this.spot(pen) ?? (pen.herd.habitat ?? sp.habitat ? null : pen.centre)
+      if (!at) return
       const node = new TransformNode(`zoo.${pen.herd.name}.${i}`, this.scene)
       const inst = c.instantiateModelsToScene((n) => `zoo.${pen.herd.name}.${i}.${n}`, false)
       for (const r of inst.rootNodes) r.parent = node
@@ -362,9 +621,82 @@ export class Zoo {
         g.goToFrame(g.from + (g.to - g.from) * pen.rand())
         g.setWeightForAllAnimatables(name === 'idle' ? 1 : 0)
       }
-      pen.beasts.push({ node, clips, clip: 'idle', fade: 1, until: this.time + sp.rest[0] * pen.rand() * 2, at, heading: pen.rand() * Math.PI * 2, size })
+      pen.beasts.push({ node, clips, clip: 'idle', fade: 1, until: this.time + sp.rest[0] * pen.rand() * 2, at, heading: pen.rand() * Math.PI * 2, size, sink: this.sinkAt(pen, at) })
     })
     pen.state = 'ready'
+  }
+
+  /** boulders and shrubs, somewhere roomy in the paddock and clear of each other, handed to the plants to draw; their
+   *  own seeded generator, so the herd's moves stay as they were */
+  private dress(pen: Pen, d: NonNullable<Herd['dress']>): void {
+    const rand = mulberry(0x51ed27 ^ (pen.herd.name.length * 104729) ^ Math.round(pen.centre.x * 31))
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity
+    for (const p of pen.poly) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minZ = Math.min(minZ, p.z); maxZ = Math.max(maxZ, p.z) }
+    const placed: { x: number; z: number; r: number }[] = []
+    const out: Planted[] = []
+    const scatter = (n: number, kinds: string[], [h0, h1]: [number, number], foot: number, rock: boolean) => {
+      for (let k = 0, got = 0; k < n * 40 && got < n; k++) {
+        const h = h0 + (h1 - h0) * rand()
+        const r = foot * h
+        const p = { x: minX + rand() * (maxX - minX), z: minZ + rand() * (maxZ - minZ) }
+        if (!roomy(p, pen.poly, r + DRESS_EDGE) || placed.some((q) => distance(q, p) < q.r + r + DRESS_GAP)) continue
+        placed.push({ ...p, r })
+        if (rock) pen.rocks.push({ ...p, r })
+        out.push({ ...p, species: kinds[got++ % kinds.length], h, spin: rand() * Math.PI * 2, raw: true, dy: rock ? -ROCK_BED * h : 0 })
+      }
+    }
+    // the boulders first: they are the bigger, and the animals walk round them
+    scatter(d.rocks, d.rockKinds, ROCK_H, ROCK_FOOT, true)
+    scatter(d.shrubs, d.shrubKinds, SHRUB_H, 0.4, false)
+    if (this.plantSink) this.plantSink(out)
+    else this.planting.push(...out)
+  }
+
+  /** a big cat's fence: tall steel posts, a top rail, and between them a see-through mesh (one ribbon, half-alpha) */
+  private meshFence(pen: Pen): void {
+    const posts: Vector3[] = []
+    for (let i = 0; i < pen.poly.length; i++) {
+      const a = pen.poly[i]
+      const b = pen.poly[(i + 1) % pen.poly.length]
+      const n = Math.max(1, Math.round(distance(a, b) / MESH_EVERY))
+      for (let k = 0; k < n; k++) {
+        const x = a.x + ((b.x - a.x) * k) / n
+        const z = a.z + ((b.z - a.z) * k) / n
+        posts.push(new Vector3(x, this.terrain.rawHeightAt(x, z), z))
+      }
+    }
+    const steel = new StandardMaterial(`zoo.${pen.herd.name}.steel`, this.scene)
+    steel.diffuseColor = STEEL
+    steel.specularColor.set(0.1, 0.1, 0.1)
+    const box = MeshBuilder.CreateBox(`zoo.${pen.herd.name}.posts`, { size: 1 }, this.scene)
+    box.material = steel
+    box.isPickable = false
+    box.renderingGroupId = 3
+    const mats: number[] = []
+    const m = new Matrix()
+    for (let i = 0; i < posts.length; i++) {
+      const p = posts[i], q = posts[(i + 1) % posts.length]
+      Matrix.ComposeToRef(new Vector3(0.1, MESH_H, 0.1), Quaternion.Identity(), new Vector3(p.x, p.y + MESH_H / 2, p.z), m)
+      mats.push(...m.asArray())
+      const dx = q.x - p.x, dz = q.z - p.z, h = Math.hypot(dx, dz)
+      const rot = Quaternion.RotationYawPitchRoll(Math.atan2(dx, dz), -Math.atan2(q.y - p.y, h), 0)
+      Matrix.ComposeToRef(new Vector3(0.07, 0.07, Math.hypot(h, q.y - p.y)), rot, new Vector3((p.x + q.x) / 2, (p.y + q.y) / 2 + MESH_H, (p.z + q.z) / 2), m)
+      mats.push(...m.asArray())
+    }
+    box.thinInstanceSetBuffer('matrix', new Float32Array(mats), 16, true)
+    const ring = [...posts, posts[0]]
+    const net = MeshBuilder.CreateRibbon(`zoo.${pen.herd.name}.mesh`, {
+      pathArray: [ring.map((p) => p.clone()), ring.map((p) => p.add(new Vector3(0, MESH_H, 0)))],
+      sideOrientation: 2,
+    }, this.scene)
+    const nm = new StandardMaterial(`zoo.${pen.herd.name}.mesh`, this.scene)
+    nm.diffuseColor = STEEL
+    nm.specularColor.set(0, 0, 0)
+    nm.alpha = MESH_ALPHA
+    nm.backFaceCulling = false
+    net.material = nm
+    net.isPickable = false
+    net.renderingGroupId = 3
   }
 
   /** a post-and-rail fence along the paddock's edge: one box, thin-instanced */
@@ -447,7 +779,7 @@ export class Zoo {
       if (pen.beasts.some((o) => o !== b && distance(o.at, ahead) < spacing / 2)) speed = 0
       const nx = b.at.x + Math.sin(b.heading) * speed * dt
       const nz = b.at.z + Math.cos(b.heading) * speed * dt
-      if (Math.hypot(dx, dz) < 1.5 || !roomy({ x: nx, z: nz }, pen.poly, margin) && speed > 0) {
+      if (Math.hypot(dx, dz) < 1.5 || (!roomy({ x: nx, z: nz }, pen.poly, margin) || !this.fits(pen, { x: nx, z: nz })) && speed > 0) {
         b.target = undefined
         this.play(b, 'idle')
         b.until = this.time + 2 + pen.rand() * 4
@@ -463,7 +795,9 @@ export class Zoo {
     for (const [name, g] of Object.entries(b.clips) as [Clip, AnimationGroup][]) {
       g.setWeightForAllAnimatables(name === b.clip ? b.fade : name === b.from ? 1 - b.fade : 0)
     }
-    b.node.position.set(b.at.x, this.terrain.rawHeightAt(b.at.x, b.at.z) - (pen.herd.sink && this.wet(b.at.x, b.at.z) ? pen.herd.sink : 0), b.at.z)
+    const sink = this.sinkAt(pen, b.at)
+    b.sink += Math.max(-WADE * dt, Math.min(WADE * dt, sink - b.sink))
+    b.node.position.set(b.at.x, this.terrain.rawHeightAt(b.at.x, b.at.z) - b.sink, b.at.z)
     b.node.rotation.y = b.heading + sp.yaw
   }
 

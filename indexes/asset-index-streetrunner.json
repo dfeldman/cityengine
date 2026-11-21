@@ -11696,6 +11696,400 @@
           "path": "models/paris/wallace.glb"
         }
       }
+    },
+    {
+      "id": "animal-bear",
+      "name": "bear (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo bear, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/bear-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/bear-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "bear"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-8e0667e85d-animal-bear.glb",
+          "hash": "8e0667e85dc3a90b512d134f2c1451f3aba53ecd09fb851efda10079b193369b",
+          "size": 735392,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/bear.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-bison",
+      "name": "bison (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo bison, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/bison-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/bison-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "bison"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-543cb7641e-animal-bison.glb",
+          "hash": "543cb7641eeb73aa999458e881a62298f600541a1045d4f16493419830bc11ad",
+          "size": 2142912,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/bison.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-dog-retriever",
+      "name": "dog retriever (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo dog retriever, packed by tools/animals/pack.ts.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts"
+      },
+      "assetKeywords": [
+        "animal",
+        "dog",
+        "retriever"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-97773ac2a0-animal-dog-retriever.glb",
+          "hash": "97773ac2a084b35c104f0e6a4d0ca33fa60b7df15e5e36ccf32390d7115a0fd0",
+          "size": 129588,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/dog-retriever.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-elephant",
+      "name": "elephant (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo elephant, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/elephant-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/elephant-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "elephant"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7bb0594003-animal-elephant.glb",
+          "hash": "7bb05940037dd0d02e8c9654f93d5fbe051fa552eceb57bd6d582293fc0e8357",
+          "size": 825468,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/elephant.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-flamingo",
+      "name": "flamingo (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo flamingo, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/flamingo-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/flamingo-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "flamingo"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-2f27c9c177-animal-flamingo.glb",
+          "hash": "2f27c9c1774ab93b8cda9afbffdb2cf77eca34cd986751d8d2da57fe90f4472d",
+          "size": 1601348,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/flamingo.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-giraffe",
+      "name": "giraffe (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo giraffe, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/giraffe-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/giraffe-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "giraffe"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-da97b8fddf-animal-giraffe.glb",
+          "hash": "da97b8fddfe4f0e74f9f7638ce8e06dbfa9603a3f45acc9cecfdaea5a10e7855",
+          "size": 1099320,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/giraffe.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-goose",
+      "name": "goose (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo goose, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/goose-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/goose-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "goose"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-5ddedef56c-animal-goose.glb",
+          "hash": "5ddedef56c0eba5e52275a3a454beedc84d40cbbf0fa9851eab0cacfb4232aba",
+          "size": 664608,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/goose.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-lion",
+      "name": "lion (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo lion, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/lion-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/lion-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "lion"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-e3118dab36-animal-lion.glb",
+          "hash": "e3118dab3649c0981cac8400cea8265591813d20f4ac0cc2598f96426a94cf0b",
+          "size": 930760,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/lion.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-peacock",
+      "name": "peacock (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo peacock, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/peacock-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/peacock-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "peacock"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7632ef92e1-animal-peacock.glb",
+          "hash": "7632ef92e116946cf2c2e53d12a929ffa74c44e66fae1dfd8e4637600ee475d6",
+          "size": 1890688,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/peacock.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-rabbit",
+      "name": "rabbit (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo rabbit, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/rabbit-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/rabbit-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "rabbit"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-3e052dbfed-animal-rabbit.glb",
+          "hash": "3e052dbfede32dee162db046775fde325dc7f085848af29954af683a3fcbe407",
+          "size": 471712,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/rabbit.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-swan",
+      "name": "swan (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo swan, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/swan-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/swan-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "swan"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-fa0beea52e-animal-swan.glb",
+          "hash": "fa0beea52e986c602d0c680b76326f8d0a4d54ba8b62e9d7cb904a7bf43698b4",
+          "size": 812228,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/swan.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-deer",
+      "name": "deer (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo deer, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/deer-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/deer-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "deer"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7538e443aa-animal-deer.glb",
+          "hash": "7538e443aa3c4dadcbfc73cc83e86b6e76dab1e299a87b3a0826d39a770aad33",
+          "size": 740440,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/deer.glb"
+        }
+      }
     }
   ]
 }

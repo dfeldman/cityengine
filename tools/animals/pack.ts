@@ -38,6 +38,13 @@ export const ANIMALS: { id: string; file: string; tris?: number; front?: '-x' | 
   { id: 'bison', file: 'bison.glb', tex: 1024, clips: 'bison-clips.py' },
   { id: 'peacock', file: 'peacock.glb', tex: 1024, clips: 'peacock-clips.py' },
   { id: 'flamingo', file: 'flamingo 3d model.glb', tex: 1024, clips: 'flamingo-clips.py' },
+  { id: 'swan', file: 'swan.glb', tex: 512, clips: 'swan-clips.py' },
+  { id: 'goose', file: 'goose.glb', tex: 512, clips: 'goose-clips.py' },
+  { id: 'rabbit', file: 'rabbit.glb', tex: 512, clips: 'rabbit-clips.py' },
+  { id: 'elephant', file: 'elephant.glb', tex: 1024, clips: 'elephant-clips.py' },
+  { id: 'lion', file: 'lion.glb', tex: 1024, clips: 'lion-clips.py' },
+  { id: 'bear', file: 'bear.glb', tex: 1024, clips: 'bear-clips.py' },
+  { id: 'deer', file: 'buck.glb', tex: 1024, clips: 'deer-clips.py' },
 ]
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ sharp })

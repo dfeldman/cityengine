@@ -2,7 +2,7 @@
 /**
  * Record Street Runner's OWN generated assets in its assetmgr index (indexes/asset-index-streetrunner.json), for
  * upload to the shared bucket: the SF street trees (public/sftrees, tools/sftrees) and the extruded signs
- * (public/models/signs, tools/signs.ts). Everything else Street Runner draws is owned elsewhere and read from the
+ * (public/models/signs, tools/signs.ts), the animals (public/models/common, tools/animals/pack.ts). Everything else Street Runner draws is owned elsewhere and read from the
  * bucket by src/assets.ts: trees, plants and rocks from assetkit, the Paris statues from assetkit, avatars from
  * avatarkit.
  *
@@ -206,6 +206,33 @@ async function main() {
     if (changed) own++
   }
   console.log(`own models: ${own} added or replaced`)
+
+  // ---- the zoo's and the parks' animals (render/zoo.ts, render/dog-walks.ts): the owner's Tripo models, packed by
+  // tools/animals/pack.ts into public/models/common/ — decimated, turned, WebP textures, and for most a procedural rig
+  // and clips from tools/animals/<id>-clips.py baked in. The Tripo sources (animal_experiments/) are not uploaded.
+  let animals = 0
+  const common = join(PUB, 'models', 'common')
+  for (const name of existsSync(common) ? (await readdir(common)).filter((n) => n.endsWith('.glb')).sort() : []) {
+    const stem = name.replace(/\.glb$/, '')
+    const id = slugify(`animal-${stem}`)
+    const clips = `tools/animals/${stem}-clips.py`
+    const rigged = existsSync(join(ROOT, clips))
+    const src = join(common, name)
+    const changed = await upsert(id, {
+      src,
+      asset: {
+        id, name: `${stem.replace(/-/g, ' ')} (animal)`, type: '3d', subtype: 'animal', folder: 'animals',
+        assetKeywords: ['animal', ...stem.split('-')],
+        generator: { script: 'streetrunner/tools/animals/pack.ts', ...(rigged ? { params: { clips } } : {}) },
+        notes: `The owner's Tripo ${stem.replace(/-/g, ' ')}, packed by tools/animals/pack.ts` +
+          (rigged ? `; rigged and animated (idle, browse, walk) by ${clips}.` : '.'),
+        extra: { streetrunner: { path: `models/common/${name}` } },
+      },
+      file: { isProd: true },
+    }, await readFile(src))
+    if (changed) animals++
+  }
+  console.log(`animals: ${animals} added or replaced`)
 
   // ---- files the game reads from public/ by fixed name (and two screenshots): kept out of git, put back by
   // `npx assetmgr restore` through their localPath. Bytes are uploaded as they are (no renaming inside).

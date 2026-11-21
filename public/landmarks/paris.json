@@ -1117,7 +1117,8 @@
     "lon": 2.3008761,
     "rotateDeg": 0,
     "stone": false,
-    "note": "The gilded flame on its black granite plinth above the Alma tunnel."
+    "baseY": 0.45,
+    "note": "The gilded flame on its dark drum and granite star above the Alma tunnel. baseY is the tunnel lid's deck (package bridge 900000000000019, LID y 0.45): the terrain under the footprint is the tunnel floor at -6.7, and the drape sank the model into the tunnel (owner, 2026-11-20)."
   },
   {
     "name": "Hôtel de la Marine and Hôtel de Crillon",

@@ -2,7 +2,7 @@
  * The zoo (render/zoo.ts) in the game: a fixed camera over a paddock, a still and a short recording.
  *   node tools/zoo-clip.mjs <out-dir> [seconds=10] [cam x,z,h] [look x,z,h] [lat,lon to start at] [w h]
  * cam=follow: the camera keeps 16 m to the side of whichever animal is walking (sticky), 3 m up.
- * CITY=san-francisco shoots another city (default paris-centre).
+ * NEAR=1 draws the herd wherever the rider spawned. CITY=san-francisco shoots another city (default paris-centre). HERD=<name prefix> follows only that herd's animals.
  * Defaults look west across the Vincennes giraffe plain from beside the Maison des girafes.
  */
 import { chromium } from 'playwright'
@@ -14,13 +14,19 @@ const p = await ctx.newPage()
 p.on('console', (m) => { if (/zoo/i.test(m.text())) console.log('console:', m.text().slice(0, 200)) })
 await p.goto(`http://localhost:5200/?city=${process.env.CITY ?? 'paris-centre'}&dev=1&at=${at}`)
 await p.waitForFunction('window.__zoo && window.__zoo.animals.length > 0', null, { timeout: 180000 })
+// NEAR=1: the zoo is told the rider stands among the followed herd (in San Francisco `at` can spawn the rider beyond the
+// zoo's draw range, and nothing is drawn)
+if (process.env.NEAR) await p.evaluate(`(() => {
+  const z = window.__zoo, up = z.update.bind(z)
+  z.update = (dt, rider) => { const a = z.animals.find((a) => a.herd.startsWith(${JSON.stringify(process.env.HERD ?? '')})); return up(dt, a ? a.at : rider) }
+})()`)
 await p.addStyleTag({ content: 'body * { visibility: hidden !important } canvas { visibility: visible !important }' })
 const [cx, cz, ch] = cam.split(',').map(Number), [lx, lz, lh] = look.split(',').map(Number)
 if (cam === 'follow') await p.evaluate(`(() => {
   const sc = window.__scene, c = sc.activeCamera, V = c.position.constructor, z = window.__zoo
   let k = -1, pos = null, tgt = null
   sc.onBeforeRenderObservable.add(() => {
-    const as = z.animals
+    const as = z.animals.filter((a) => a.herd.startsWith(${JSON.stringify(process.env.HERD ?? '')}))
     if (k < 0 || !as[k]) k = Math.max(0, as.findIndex((a) => a.clip === 'walk'))
     if (as[k].clip !== 'walk') { const w = as.findIndex((a) => a.clip === 'walk'); if (w >= 0) k = w }
     const a = as[k], sx = ${process.env.FRONT ? "Math.sin(a.heading)" : "Math.cos(a.heading)"}, sz = ${process.env.FRONT ? "Math.cos(a.heading)" : "-Math.sin(a.heading)"}
@@ -35,8 +41,8 @@ else await p.evaluate(`(() => {
   const C = new V(${cx}, window.__heightAt(${cx}, ${cz}) + ${ch}, ${cz}), T = new V(${lx}, window.__heightAt(${lx}, ${lz}) + ${lh}, ${lz})
   sc.onBeforeRenderObservable.add(() => { c.position.copyFrom(C); c.setTarget(T) })
 })()`)
-await p.waitForTimeout(1500)
+await p.waitForTimeout(+(process.env.WAIT ?? 1500))  // WAIT=ms: longer for the plants (an enclosure's boulders) to load
 await p.screenshot({ path: `${dir}/still.png` })
-console.log(JSON.stringify(await p.evaluate('window.__zoo.animals.map(a => [Math.round(a.at.x), Math.round(a.at.z), a.clip, a.wet ? "wet" : "dry"])')))
+console.log(JSON.stringify(await p.evaluate('window.__zoo.animals.map(a => [a.herd, Math.round(a.at.x), Math.round(a.at.z), a.clip, a.wet ? "wet" : "dry"])')))
 if (+secs > 0) await p.waitForTimeout(+secs * 1000)
 await ctx.close(); await b.close()
