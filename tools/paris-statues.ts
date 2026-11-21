@@ -9,10 +9,12 @@
  * into an about.md that did not come from OSM, Wikidata or Commons, and a photograph comes from the work's own Commons category, or
  * from a search with a geotag within 200 m. Finding none is an answer, and is said so.
  *
- *   node --experimental-strip-types tools/paris-statues.ts [--photos=60] [--dry]
+ * A folder that already has an about.md is left as it is (--refresh makes it again).
+ * --photos=N works through Paris A–C, then the hand-written sections' Paris works (D on), then Versailles (V, then G).
+ *   node --experimental-strip-types tools/paris-statues.ts [--photos=60] [--refresh] [--dry]
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 
@@ -27,6 +29,8 @@ type Tags = Record<string, string>
 interface Work {
   name: string; kind: string; lat: number; lon: number; artist: string; date: string; height: string; material: string
   wikidata: string; commons: string; wikipedia: string; done: string; place: boolean; street: number; score: number; note?: string; own?: string
+  /** where it stands, for the photo search and about.md: Paris unless Versailles' list or a hand section says otherwise */
+  town?: string
 }
 
 /** Not in OSM by name, or known to the owner: the owner's own finds, and the last list's (docs/landmarks/statues.md) that stand on something else. */
@@ -44,12 +48,17 @@ const HAND: Partial<Work>[] = [
   { name: 'Fontaine du Théâtre Français - Nymphe fluviale', kind: 'fountain', lat: 48.863745, lon: 2.335562, wikidata: 'Q28861345', note: "The owner's find, on the Place André-Malraux: the city has only OSM's round of water for it. Its twin, the Nymphe marine, is 40 m west across the place." },
 ]
 
-function readOsm(): Work[] {
+/** The Paris box, and Versailles' detail regions (the park, the old town, the Trianons) beyond its west edge. Versailles isn't
+ * baked into paris-centre, so its works get their own section, ranked without the ride-graph terms. */
+const PARIS_BOX = '2.20,48.80,2.43,48.92'
+const VERSAILLES_BOX = '2.06,48.79,2.145,48.83'
+
+function readOsm(bbox: string): Work[] {
   const dir = mkdtempSync(resolve(tmpdir(), 'statues-'))
   try {
     const pbf = resolve(ROOT, 'tools', 'cache', 'osm', 'ile-de-france-latest.osm.pbf')
     const box = resolve(dir, 'box.pbf')
-    execFileSync('osmium', ['extract', '-b', '2.20,48.80,2.43,48.92', '--overwrite', '-o', box, pbf], { stdio: 'ignore' })
+    execFileSync('osmium', ['extract', '-b', bbox, '--overwrite', '-o', box, pbf], { stdio: 'ignore' })
     const art = resolve(dir, 'art.pbf')
     execFileSync('osmium', ['tags-filter', box, 'nwr/tourism=artwork', 'nwr/historic=memorial', 'nwr/historic=monument', 'nwr/amenity=fountain', '--overwrite', '-o', art], { stdio: 'ignore' })
     const text = execFileSync('osmium', ['export', art, '-f', 'geojsonseq'], { maxBuffer: 1 << 30 }).toString()
@@ -81,13 +90,18 @@ function readOsm(): Work[] {
 }
 
 // ---- how much a rider gets from it
-const works = readOsm()
+const works = readOsm(PARIS_BOX)
+const vWorks = readOsm(VERSAILLES_BOX)
 for (const h of HAND) works.push({ name: '', kind: '', lat: 0, lon: 0, artist: '', date: '', height: '', material: '', wikidata: '', commons: '', wikipedia: '', done: '', place: false, street: 1e9, score: 0, ...h })
 const normal = (s: string): string => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 const statues = JSON.parse(readFileSync(resolve(ROOT, 'public', 'landmarks', 'paris-statues.json'), 'utf8')) as { id: string; name: string; lat?: number; lon?: number }[]
 const list = Array.isArray(statues) ? statues : (statues as unknown as { statues: typeof statues }).statues
 const pkg = JSON.parse(readFileSync(resolve(ROOT, 'public', 'cities', 'paris-centre', 'v3', 'ride-bike.json'), 'utf8')) as { edges: { points: number[] | { x: number; z: number }[] }[] }
 const CELL = 40
+/** Same name within about this many metres is one work drawn several times. */
+const SAME_WORK_M = 200
+/** A name found inside another names the same work only when it is at least this share of its length. */
+const NAME_SHARE = 0.6
 const grid = new Set<string>()
 for (const e of pkg.edges) {
   const p = e.points as number[]
@@ -104,7 +118,9 @@ const index = JSON.parse(readFileSync(resolve(ROOT, 'public', 'cities', 'paris-c
 const rings = (index.legacy?.roundabouts ?? index.roundabouts ?? []).filter((r) => r.lat !== undefined)
 for (const w of works) {
   const x = X(w.lon), z = Z(w.lat)
-  const had = list.find((s) => (s.lat !== undefined && Math.hypot(X(s.lon!) - x, Z(s.lat) - z) < 40) || normal(s.name).includes(normal(w.name)) || normal(w.name).includes(normal(s.name)))
+  // (a name inside a much longer one is another work: OSM's "Lion" is not the GLB "Lion of the Monument à la République")
+  const alike = (a: string, b: string): boolean => (a.includes(b) || b.includes(a)) && Math.min(a.length, b.length) >= NAME_SHARE * Math.max(a.length, b.length)
+  const had = list.find((s) => (s.lat !== undefined && Math.hypot(X(s.lon!) - x, Z(s.lat) - z) < 40) || alike(normal(s.name), normal(w.name)))
   if (had) w.done = had.id
   w.place = rings.some((r) => Math.hypot(X(r.lon!) - x, Z(r.lat!) - z) < Math.max(r.r ?? 0, 14))
   w.street = nearStreet(x, z)
@@ -112,12 +128,82 @@ for (const w of works) {
     + (w.kind === 'bust' ? -2 : w.kind === 'statue' || w.kind === 'group' || w.kind === 'fountain' ? 1 : 0)
     + (Math.abs(x) < 5000 && Math.abs(z) < 4500 ? 1 : -1) + (w.own || w.note ? 6 : 0)
 }
-// (one row a work: OSM has "Les enfants du monde" as five nodes and the Arc de Triomphe, which has its own model, as its sculptures)
+// (one row a work: OSM has "Les enfants du monde" as five nodes and the Arc de Triomphe, which has its own model, as its sculptures;
+// the key holds the place too, or Rodin's Baiser in the Tuileries vanishes behind Brâncuși's in Montparnasse)
 const once = new Map<string, Work>()
-for (const w of works) if (!w.done && !/^arc de triomphe$/i.test(w.name) && !(once.get(w.name) && once.get(w.name)!.score >= w.score)) once.set(w.name, w)
+const onceKey = (w: Work): string => `${normal(w.name)}|${Math.round(Z(w.lat) / SAME_WORK_M)}|${Math.round(X(w.lon) / SAME_WORK_M)}`
+for (const w of works) if (!w.done && !/^arc de triomphe$/i.test(w.name) && !(once.get(onceKey(w)) && once.get(onceKey(w))!.score >= w.score)) once.set(onceKey(w), w)
 const todo = [...once.values()].sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
+// Versailles: no ride graph or roundabouts there yet, and the GLB list is Paris's (a shared name like "Apollon" is another work),
+// so it ranks on documentation and kind alone and is written whole, below C
+const vOnce = new Map<string, Work>()
+for (const w of vWorks) {
+  w.score = (w.wikidata ? 3 : 0) + (w.artist ? 2 : 0) + (w.commons || w.wikipedia ? 1 : 0) + (w.kind === 'bust' ? -2 : w.kind === 'statue' || w.kind === 'group' || w.kind === 'fountain' ? 1 : 0)
+  const k = onceKey(w)
+  if (!(vOnce.get(k) && vOnce.get(k)!.score >= w.score)) vOnce.set(k, w)
+}
+const vTodo = [...vOnce.values()].sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
+for (const w of vTodo) w.town = 'Versailles'
+const townOf = (w: Work): string => w.town ?? 'Paris'
+
+// The hand-written sections (from "## D" on: the Louvre and Tuileries, Wikidata's works that OSM lacks, La Défense,
+// Versailles' gardens), read back from the list so their works get photo folders too (owner, 2026-11-21). A row needs a
+// lat, lon (a leading ≈ is fine); its Wikidata id is any Q… in the row; one that repeats a listed work is left out.
+const MD_PATH = resolve(ROOT, 'docs', 'landmarks', 'PARIS-STATUES.md')
+const HAND_TOWNS: Record<string, string> = { F: 'La Défense', G: 'Versailles' }
+const handRows: Work[] = []
+{
+  const text = existsSync(MD_PATH) ? readFileSync(MD_PATH, 'utf8') : ''
+  const listed = new Set([...todo, ...vTodo].map(onceKey))
+  for (const sec of text.split('\n## ').slice(1)) {
+    const letter = sec[0]
+    if (!/[D-Z]/.test(letter) || letter === 'V') continue
+    for (const line of sec.split('\n')) {
+      const c = line.split('|').map((x) => x.trim())
+      if (!/^\d+$/.test(c[1] ?? '') || c.length < 8) continue
+      const ll = c[6].match(/(-?\d+\.\d+),\s*(-?\d+\.\d+)/)
+      if (!ll || !c[2]) continue
+      const w: Work = { name: c[2], kind: c[3] || 'sculpture', lat: +ll[1], lon: +ll[2], artist: c[4], date: '', height: '', material: '',
+        wikidata: line.match(/\bQ\d+\b/)?.[0] ?? '', commons: '', wikipedia: '', done: '', place: false, street: 1e9, score: 0,
+        town: HAND_TOWNS[letter] ?? 'Paris' }
+      if (!listed.has(onceKey(w))) { listed.add(onceKey(w)); handRows.push(w) }
+    }
+  }
+}
+// what --photos=N works through, in order: Paris A–C, the hand-written Paris sections, then Versailles (V, then G)
+const photoQueue = [...todo, ...handRows.filter((w) => w.town !== 'Versailles'), ...vTodo, ...handRows.filter((w) => w.town === 'Versailles')]
 const tier = (w: Work): string => (w.score >= 9 ? 'A' : w.score >= 6 ? 'B' : 'C')
 const slugOf = (s: string): string => normal(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
+
+// ---- one reference folder a work. Works sharing a name ("Apollon", "Lion") would share a folder and each other's photographs.
+// A folder already made stays with the work its about.md places it at (img2glb specs name folders by path); the others get
+// the sculptor's surname, or the place when that doesn't tell them apart. Before any folder exists the best-ranked one keeps the bare name.
+const OWNER_M = 100
+const folderAt = (slug: string): { lat: number; lon: number } | undefined => {
+  const f = resolve(OUT, slug, 'about.md')
+  if (!existsSync(f)) return undefined
+  const m = readFileSync(f, 'utf8').match(/Location: [^(]*\(([-\d.]+), ([-\d.]+)\)/)
+  return m ? { lat: +m[1], lon: +m[2] } : { lat: NaN, lon: NaN }
+}
+const slugs = new Map<Work, string>()
+{
+  const groups = new Map<string, Work[]>()
+  for (const w of photoQueue) { const s = slugOf(w.name); (groups.get(s) ?? groups.set(s, []).get(s)!).push(w) }
+  for (const [base, ws] of groups) {
+    if (ws.length === 1) { slugs.set(ws[0], base); continue }
+    const at = folderAt(base)
+    const owner = at ? ws.find((w) => Math.hypot(X(w.lon) - X(at.lon), Z(w.lat) - Z(at.lat)) < OWNER_M) : [...ws].sort((a, b) => b.score - a.score)[0]
+    const surname = (w: Work): string => slugOf(w.artist.split(/[;,&]/)[0].trim().split(/\s+/).pop() ?? '')
+    for (const w of ws) {
+      if (w === owner) { slugs.set(w, base); continue }
+      const s = surname(w)
+      const unique = s && ws.filter((o) => o !== owner && surname(o) === s).length === 1
+      slugs.set(w, `${base}-${unique ? s : `${w.lat.toFixed(4)}-${w.lon.toFixed(4)}`.replace(/\./g, '')}`)
+    }
+  }
+}
+const slugFor = (w: Work): string => slugs.get(w) ?? slugOf(w.name)
+if (process.argv.includes('--slugs')) for (const [w, s] of slugs) if (s !== slugOf(w.name)) console.log(`  ${s}  (${w.name}, ${w.artist || 'no sculptor'})`)
 
 // ---- Commons, one request at a time
 let last = 0
@@ -176,7 +262,8 @@ async function picsFor(w: Work): Promise<{ pics: Pic[]; about: string; from: str
   }
   if (found.length + first.length < 2) {
     // the search, and only what is geotagged at the work: "Jeanne d'Arc" is in every town in France
-    const near = await commons({ generator: 'search', gsrnamespace: '6', gsrlimit: '30', gsrsearch: `"${w.name}" Paris` })
+    const near = await commons({ generator: 'search', gsrnamespace: '6', gsrlimit: '30',
+      gsrsearch: `"${w.name.replace(/\s*\([^)]*\)/g, '').trim()}" ${townOf(w)}` })
     found.push(...near.filter((p) => p.lat !== undefined && Math.hypot(X(p.lon!) - X(w.lon), Z(p.lat!) - Z(w.lat)) < 200))
     from = category ? `${from} and a geotagged search` : 'a geotagged search'
   }
@@ -191,17 +278,25 @@ async function picsFor(w: Work): Promise<{ pics: Pic[]; about: string; from: str
 
 const promptOf = (w: Work, about: string): string => {
   const what = w.kind === 'bust' ? 'A portrait bust' : w.kind === 'fountain' ? 'A sculptural fountain' : w.kind === 'statue' ? 'A public statue' : 'A public sculpture'
-  return `${what}, ${w.name}${w.artist ? ` by ${w.artist}` : ''}, in Paris${about ? ` (${about})` : ''}.${w.note ? ` ${w.note}` : ''}${w.material ? ` Material: ${w.material}.` : ''} Follow the reference photographs for the pose, the proportions and the surface. A single solid object, the sculpture only, without the surroundings, people, or street behind it; keep its pedestal only if the photographs show it as part of the work.`
+  return `${what}, ${w.name}${w.artist ? ` by ${w.artist}` : ''}, in ${townOf(w)}${about ? ` (${about})` : ''}.${w.note ? ` ${w.note}` : ''}${w.material ? ` Material: ${w.material}.` : ''} Follow the reference photographs for the pose, the proportions and the surface. A single solid object, the sculpture only, without the surroundings, people, or street behind it; keep its pedestal only if the photographs show it as part of the work.`
 }
 
 async function main(): Promise<void> {
   const N = Number(arg('photos') ?? 0)
   const found = new Map<string, { n: number; from: string }>()
+  if (N > 0) console.log(`photo queue: ${todo.length} Paris A–C, ${handRows.filter((w) => w.town !== 'Versailles').length} hand-written Paris, `
+      + `${vTodo.length} Versailles V, ${handRows.filter((w) => w.town === 'Versailles').length} hand-written Versailles; taking the first ${N}`)
   if (N > 0 && !process.argv.includes('--dry')) {
     mkdirSync(OUT, { recursive: true })
-    for (const w of todo.slice(0, N)) {
-      const slug = slugOf(w.name)
+    for (const w of photoQueue.slice(0, N)) {
+      const slug = slugFor(w)
       const dir = resolve(OUT, slug)
+      // a folder already made keeps its photographs and about.md: Commons may answer differently now, and a rewritten
+      // about.md would then credit the old photographs to new files (--refresh to make them again)
+      if (existsSync(resolve(dir, 'about.md')) && !process.argv.includes('--refresh')) {
+        found.set(slugFor(w), { n: readdirSync(dir).filter((f) => /\.(jpe?g|png|webp)$/i.test(f)).length, from: 'kept' })
+        continue
+      }
       mkdirSync(dir, { recursive: true })
       const { pics, about, from } = await picsFor(w)
       const used: string[] = []
@@ -220,10 +315,10 @@ async function main(): Promise<void> {
         }
         used.push(`  - \`${file}\`: "${p.title}" (Wikimedia Commons), ${p.licence}${p.author ? `, ${p.author}` : ''}`)
       }
-      found.set(w.name, { n: k + (w.own ? 1 : 0), from })
+      found.set(slugFor(w), { n: k + (w.own ? 1 : 0), from })
       writeFileSync(resolve(dir, 'about.md'), `# ${w.name}\n\n`
         + (w.artist ? `- Sculptor: ${w.artist}${w.date ? `, ${w.date}` : ''}\n` : w.date ? `- Date: ${w.date}\n` : '')
-        + `- Location: Paris (${w.lat.toFixed(5)}, ${w.lon.toFixed(5)})\n`
+        + `- Location: ${townOf(w)} (${w.lat.toFixed(5)}, ${w.lon.toFixed(5)})\n`
         + (w.height ? `- Height (OSM): ${w.height} m\n` : '')
         + (about ? `- Wikidata: ${about} (${w.wikidata})\n` : '')
         + (w.note ? `- Note: ${w.note}\n` : '')
@@ -234,15 +329,26 @@ async function main(): Promise<void> {
       console.log(`${String(k).padStart(2)} photos  ${w.name}`)
     }
   }
-  const row = (w: Work, i: number): string => `| ${i + 1} | ${w.name.replace(/\|/g, '/')} | ${w.kind} | ${w.artist.replace(/\|/g, '/')} | ${w.place ? 'place' : w.street <= 40 ? 'street' : w.street <= 160 ? 'near' : 'off'} | ${w.lat.toFixed(5)}, ${w.lon.toFixed(5)} | ${found.has(w.name) ? found.get(w.name)!.n : ''} |`
+  // (a run without --photos still reports the folders an earlier run made)
+  for (const w of [...todo, ...vTodo]) {
+    const dir = resolve(OUT, slugFor(w))
+    if (!found.has(slugFor(w)) && existsSync(resolve(dir, 'about.md'))) found.set(slugFor(w), { n: readdirSync(dir).filter((f) => /\.(jpe?g|png|webp)$/i.test(f)).length, from: 'kept' })
+  }
+  const row = (w: Work, i: number): string => `| ${i + 1} | ${w.name.replace(/\|/g, '/')} | ${w.kind} | ${w.artist.replace(/\|/g, '/')} | ${vOnce.has(onceKey(w)) && vTodo.includes(w) ? 'unbaked' : w.place ? 'place' : w.street <= 40 ? 'street' : w.street <= 160 ? 'near' : 'off'} | ${w.lat.toFixed(5)}, ${w.lon.toFixed(5)} | ${found.has(slugFor(w)) ? found.get(slugFor(w))!.n : ''} |`
   const head = '| # | Work | Kind | Sculptor | Seen from | lat, lon | Photos |\n|---|---|---|---|---|---|---|\n'
   const by = (t: string): Work[] => todo.filter((w) => tier(w) === t)
   const a = by('A'), b = by('B'), c = by('C')
-  writeFileSync(resolve(ROOT, 'docs', 'landmarks', 'PARIS-STATUES.md'), `# Paris statues and sculptures that want a real model\n\n`
+  // (sections from "## D" on are written by hand, from sources other than OSM: a rerun carries them over unchanged)
+  const md = MD_PATH
+  const old = existsSync(md) ? readFileSync(md, 'utf8') : ''
+  const hand = old.indexOf('\n## D') >= 0 ? old.slice(old.indexOf('\n## D')) : ''
+  writeFileSync(md, `# Paris statues and sculptures that want a real model\n\n`
     + `Written by tools/paris-statues.ts from OSM (owner, 2026-10-30). ${works.length} named works in the box; ${works.length - todo.length} already have a GLB (public/landmarks/paris-statues.json). Reference folders for the first ones: \`../assetkit/statues_to_model/paris/<slug>/\`, each with photographs and an \`about.md\` holding a prompt for the modeller.\n\n`
     + `The rank: in the middle of a place, beside a rideable street, a known sculptor, documented. "Seen from": place = the centre of a roundabout the bake found; street = within about 40 m of a rideable way. A rank is a guess at what a rider gets, not a judgement of the work; move any of them.\n\n`
     + `## A: first (${a.length})\n\n${head}${a.map(row).join('\n')}\n\n## B: worth it (${b.length})\n\n${head}${b.map(row).join('\n')}\n\n## C: if models turn up (${c.length})\n\n${head}${c.slice(0, 200).map(row).join('\n')}\n`
-    + (c.length > 200 ? `\n(${c.length - 200} more, by the same rule: rerun the tool to change the cut.)\n` : ''))
+    + (c.length > 200 ? `\n(${c.length - 200} more, by the same rule: rerun the tool to change the cut.)\n` : '')
+    + `\n## V: Versailles, from OSM (${vTodo.length})\n\nThe park, the old town and the Trianons (box ${VERSAILLES_BOX}), every named work, ranked on documentation and kind only: Versailles isn't baked, so there is no ride distance or roundabout yet, and Paris's GLB list isn't matched against it. Vases are left out, as everywhere.\n\n${head}${vTodo.map(row).join('\n')}\n`
+    + hand)
   console.log(`${works.length} works, ${works.length - todo.length} with a model; A ${a.length}, B ${b.length}, C ${c.length} → docs/landmarks/PARIS-STATUES.md`)
 }
 void main()
