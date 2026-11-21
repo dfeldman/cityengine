@@ -2834,7 +2834,7 @@ export class City {
 
   private gardenFiled: GardenTiles | null = null
   gardenTiles(): GardenTiles | null {
-    if (!this.gardenFiled && this.pkg.garden) this.gardenFiled = new GardenTiles(this.pkg.garden, TILE)
+    if (!this.gardenFiled && this.pkg.garden) this.gardenFiled = new GardenTiles(this.pkg.garden, TILE, this.pkg.origin ? new Projection(this.pkg.origin) : undefined)
     return this.gardenFiled
   }
 

@@ -9,6 +9,9 @@
 import { MeshBuilder } from './buildings.ts'
 import { surfaceTag } from './cartoon-material.ts'
 import { unpackPoints, type PackedGarden } from '../city/package.ts'
+import type { Projection } from '../city/geo.ts'
+import { ROSE, roseBedShape, type RoseBedShape } from './roses.ts'
+import { FLOWER_GARDENS, flowerBed, flowerBorder, type Flower } from './flower-gardens.ts'
 
 type Point = { x: number; z: number }
 type Rgb = [number, number, number]
@@ -327,7 +330,7 @@ function distanceField(open: Uint8Array, far: Float32Array, N: number): void {
 }
 
 interface Piece { a: Point; b: Point; h: number; w: number; y0: number; capA: boolean; capB: boolean; post: boolean; seed: number }
-interface Bed { ring: Point[]; x0: number; z0: number; x1: number; z1: number; seed: number; step: number; rim: boolean }
+interface Bed { ring: Point[]; x0: number; z0: number; x1: number; z1: number; seed: number; step: number; rim: boolean; rose?: RoseBedShape; flower?: Flower }
 
 /** A city's garden, filed by tile. */
 export class GardenTiles {
@@ -336,7 +339,9 @@ export class GardenTiles {
   private readonly beds = new Map<string, Bed[]>()
   private readonly flats = new Map<string, { ring: Point[]; kind: 'gravel' | 'lawn' | 'bed' }[]>()
 
-  constructor(g: PackedGarden, private readonly tile: number) {
+  /** `proj` places FLOWER_GARDENS (render/flower-gardens.ts): a bed inside one is planted with its flower, or is the lawn it really is */
+  constructor(g: PackedGarden, private readonly tile: number, proj?: Projection) {
+    const roseRings = proj ? FLOWER_GARDENS.map((r) => ({ flower: r.flower, edgeLawns: r.edgeLawns === true, ring: r.ring.map(([lat, lon]) => proj.toLocal({ lat, lon })) })) : []
     const at = (x: number, z: number): string => `${Math.floor(x / tile)},${Math.floor(z / tile)}`
     const push = <T>(m: Map<string, T[]>, k: string, v: T): void => { const l = m.get(k); if (l) l.push(v); else m.set(k, [v]) }
     // every row, cut into pieces of up to 3 m: a piece belongs to the tile it starts in, and a piece follows the ground
@@ -365,19 +370,35 @@ export class GardenTiles {
     for (let i = 0; i < g.topiary.length; i += 4) push(this.yews, at(g.topiary[i], g.topiary[i + 1]), i)
     this.topiary = g.topiary
     this.formal = g.formal.map(unpackPoints)
+    // (a rose garden's own lawns, laid like the plans' over their gravel)
+    const extra = proj ? FLOWER_GARDENS.flatMap((r) => (r.lawns ?? []).map((l) => ({ ring: l.map(([lat, lon]) => proj.toLocal({ lat, lon })), kind: 'lawn' as const }))) : []
+    for (const f of extra) {
+      const xs = f.ring.map((p) => p.x), zs = f.ring.map((p) => p.z)
+      for (let tz = Math.floor(Math.min(...zs) / tile); tz <= Math.floor(Math.max(...zs) / tile); tz++) {
+        for (let tx = Math.floor(Math.min(...xs) / tile); tx <= Math.floor(Math.max(...xs) / tile); tx++) push(this.flats, `${tx},${tz}`, f)
+      }
+    }
     g.flats.forEach((f, fi) => {
       const ring = unpackPoints(f.ring)
       let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
       for (const p of ring) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
+      // (a bed in a rosarium: its shape says whether it is roses, or a lawn the mapper called a bed)
+      const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2
+      const garden = f.kind === 'bed' || f.kind === 'lawn' ? roseRings.find((r) => insideRing(r.ring, cx, cz) && (f.kind === 'bed' || r.edgeLawns)) : undefined
+      const flower = garden?.flower
+      // (a lawn in a garden that edges its lawns: a border of its flower, whatever its size)
+      const rose = flower ? (f.kind === 'lawn' ? { ...roseBedShape(ring), role: 'border' as const } : roseBedShape(ring)) : undefined
+      const kind = rose && rose.role !== 'roses' ? 'lawn' : f.kind
       for (let tz = Math.floor(z0 / tile); tz <= Math.floor(z1 / tile); tz++) {
         for (let tx = Math.floor(x0 / tile); tx <= Math.floor(x1 / tile); tx++) {
-          push(this.flats, `${tx},${tz}`, { ring, kind: f.kind })
-          if (f.kind !== 'bed') continue
+          push(this.flats, `${tx},${tz}`, { ring, kind })
+          if (rose?.role === 'lawn') continue
+          if (f.kind !== 'bed' && !rose) continue
           let a = 0
           for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) a += ring[j].x * ring[i].z - ring[i].x * ring[j].z
           // (never more than about 900 cushions to a bed: the Jardin des Plantes's perspective is a bed too)
           const step = Math.max(0.8, Math.sqrt(Math.abs(a / 2) / 900))
-          push(this.beds, `${tx},${tz}`, { ring, x0, z0, x1, z1, seed: fi, step, rim: f.rim === true })
+          push(this.beds, `${tx},${tz}`, { ring, x0, z0, x1, z1, seed: fi, step, rim: f.rim === true || (flower === 'rose' && ROSE.EDGE_H > 0), rose, flower })
         }
       }
     })
@@ -654,12 +675,16 @@ export class GardenTiles {
     for (const i of this.yews.get(k) ?? []) topiary(out, this.topiary[i], this.topiary[i + 1], this.topiary[i + 2], this.topiary[i + 3], i)
     const bx0 = tx * this.tile, bz0 = tz * this.tile
     for (const b of this.beds.get(k) ?? []) {
-      flowers(out, b.ring, b.seed, b.step, Math.max(b.x0, bx0), Math.max(b.z0, bz0), Math.min(b.x1, bx0 + this.tile), Math.min(b.z1, bz0 + this.tile))
+      const rx0 = Math.max(b.x0, bx0), rz0 = Math.max(b.z0, bz0), rx1 = Math.min(b.x1, bx0 + this.tile), rz1 = Math.min(b.z1, bz0 + this.tile)
+      if (b.rose && b.flower && b.rose.role === 'roses') flowerBed(out, b.flower, b.ring, b.rose, b.seed, rx0, rz0, rx1, rz1)
+      else if (b.rose && b.flower) flowerBorder(out, b.flower, b.ring, b.seed, rx0, rz0, rx1, rz1)
+      else flowers(out, b.ring, b.seed, b.step, rx0, rz0, rx1, rz1)
       if (b.rim) {
+        const [eh, ew] = b.flower === 'rose' ? [ROSE.EDGE_H, ROSE.EDGE_W] : [0.35, 0.3]
         for (let i = 0, j = b.ring.length - 1; i < b.ring.length; j = i++) {
           const a = b.ring[j], c = b.ring[i]
           if (Math.floor(a.x / this.tile) === tx && Math.floor(a.z / this.tile) === tz) {
-            hedgePiece(out, a, c, 0, 0.35, 0.3, HEDGE_FOOT, HEDGE, HEDGE_TOP, false, false)
+            hedgePiece(out, a, c, 0, eh, ew, HEDGE_FOOT, HEDGE, HEDGE_TOP, false, false)
           }
         }
       }

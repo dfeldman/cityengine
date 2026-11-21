@@ -1,6 +1,8 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { areaOf, bed, centroid, FIXED, hex, noise, offsetRing, shade, UV, wound, type P2, type Rgb } from './common.ts'
+import { roseBed, roseBedShape, roseBorder } from '../../../roses.ts'
+import { flowerBed } from '../../../flower-gardens.ts'
 import { ALPIN_BEDS, IRIS_ROWS, PERSPECTIVE_BEDS, PLANE_ROWS, ROSERAIE_BEDS } from './jardin-layout.ts'
 
 const LAWN = hex('#4f7a35')
@@ -137,13 +139,18 @@ export function jardinPerspective(out: MeshBuilder, fit: Fit): void {
  * z north, not fitted.
  */
 export function jardinAnnexes(out: MeshBuilder): void {
+  // (render/roses.ts, 2026-11-20: a narrow bed is roses on soil, a lawn is edged with them; was the library's `bush_flowering`)
   ROSERAIE_BEDS.forEach((row, k) => {
     const ring = wound([pointsOf(row)])[0]
-    const area = Math.abs(areaOf(ring))
-    bed(out, ring, 0.1, LAWN, hex('#6a6450'))
-    const inner = inset(ring, 1.2)
-    if (inner) border(out, ring, 0.14, 1.2, [hex('#a83a52'), hex('#bd8096'), hex('#c8bfae'), hex('#8e3044'), ...LEAF], k + 40)
-    plantAlong(out, inner ?? ring, Math.min(26, Math.round(area / 50)), 'bush_flowering', 1.2, k + 41)
+    const shape = roseBedShape(ring)
+    const box = ring.reduce((b, p) => [Math.min(b[0], p.x), Math.min(b[1], p.z), Math.max(b[2], p.x), Math.max(b[3], p.z)], [Infinity, Infinity, -Infinity, -Infinity])
+    if (shape.role === 'roses') {
+      bed(out, ring, 0.1, hex('#4a3d2c'), hex('#6a6450'))
+      roseBed(out, ring, shape, k + 40, box[0], box[1], box[2] + 0.01, box[3] + 0.01, () => 0.1)
+    } else {
+      bed(out, ring, 0.1, LAWN, hex('#6a6450'))
+      roseBorder(out, ring, k + 40, box[0], box[1], box[2] + 0.01, box[3] + 0.01, () => 0.1)
+    }
   })
   ALPIN_BEDS.forEach((row, k) => {
     const ring = wound([pointsOf(row)])[0]
@@ -152,13 +159,13 @@ export function jardinAnnexes(out: MeshBuilder): void {
     plantAlong(out, ring, Math.min(9, Math.round(area / 22)), 'heather', 0.6, k + 60)
     if (area > 60) out.plants.push({ ...centroid(ring), species: 'rock:grey', h: 0.9, spin: noise(k, 9) * 6.28 })
   })
-  const IRIS = [hex('#5a4e92'), hex('#a597bc'), hex('#b89a3c'), hex('#6c4580')]
   IRIS_ROWS.forEach(([x0, z0, x1, z1], k) => {
     const L = Math.hypot(x1 - x0, z1 - z0) || 1
     const nx = -(z1 - z0) / L * 0.9, nz = (x1 - x0) / L * 0.9
     const ring: P2[] = [{ x: x0 - nx, z: z0 - nz }, { x: x1 - nx, z: z1 - nz }, { x: x1 + nx, z: z1 + nz }, { x: x0 + nx, z: z0 + nz }]
     bed(out, ring, 0.14, LAWN_DEEP, hex('#6a6450'))
-    border(out, ring, 0.18, 0.5, [IRIS[k % 4], IRIS[(k + 1) % 4], ...LEAF], k + 80)
-    plantAlong(out, ring, Math.min(7, Math.round(L / 6)), 'lavender', 0.75, k + 81)
+    // (render/flower-gardens.ts's bearded iris, 2026-11-20: was a border of colour and the library's lavender)
+    const bx = ring.reduce((b, p) => [Math.min(b[0], p.x), Math.min(b[1], p.z), Math.max(b[2], p.x), Math.max(b[3], p.z)], [Infinity, Infinity, -Infinity, -Infinity])
+    flowerBed(out, 'iris', ring, roseBedShape(ring), k + 80, bx[0], bx[1], bx[2] + 0.01, bx[3] + 0.01, () => 0.14)
   })
 }

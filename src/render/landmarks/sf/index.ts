@@ -164,6 +164,7 @@ import { loveBlocks, wheresTheBall } from './misfit-toys.ts'
 import { garfieldMonument } from './garfield.ts'
 import { millwrightCottage } from './millwright.ts'
 import { dahliaDell } from './dahlia-dell.ts'
+import { SF_FLOWER_GARDENS } from './flower-gardens.ts'
 import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alcatraz.ts'
 import { legionOfHonor, legionPyramid, legionFountain } from './legion.ts'
 import { tunnelPortal, rampPortal } from './portals.ts'
@@ -356,6 +357,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   oneHundredFirstPodium,
   stMarysCathedral,
   deYoungMuseum, deYoungHedges, threeGems, pomodoroSphere, loveBlocks, wheresTheBall, garfieldMonument, millwrightCottage, dahliaDell,
+  ...SF_FLOWER_GARDENS,
   alcatrazCellhouse,
   alcatrazLighthouse,
   alcatrazWaterTower,

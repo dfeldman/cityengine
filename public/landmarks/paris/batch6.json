@@ -93,6 +93,148 @@
     "madeBy": "claude-opus-5-5"
   },
   {
+    "name": "Parc de Bagatelle: la Roseraie's garlands, pergola and the Kiosque de l'Impératrice",
+    "procedural": "bagatelleRoseraie",
+    "kind": "garden",
+    "lat": 48.8673,
+    "lon": 2.2442,
+    "front": 180,
+    "size": [
+      100,
+      100
+    ],
+    "height": 6,
+    "sign": false,
+    "note": "batch6/roseraie.ts: the structures among the roses (garlands round both apses and the pergola off the 2021 ortho; the weeping standards' places assumed; the kiosk at OSM's shelter). The beds' roses are render/roses.ts, planted by render/garden.ts in ROSE_GARDENS' ring. Local x east, z north, origin the garden plan's frame origin.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc de Bercy: la Roseraie",
+    "procedural": "roseraieBercy",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.835697,
+    "lon": 2.38134,
+    "front": 180,
+    "size": [
+      38,
+      38
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM's rosarium (garden:style=rosarium) in the Jardin Yitzhak-Rabin; the 2021 ortho shows a grid of square beds in gravel.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Georges-Brassens: la Roseraie",
+    "procedural": "roseraieBrassens",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.831152,
+    "lon": 2.301771,
+    "front": 180,
+    "size": [
+      26,
+      37
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM's leisure=garden 'Roseraie' by the old horse-market halls; small beds in gravel, the layout generic.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Montsouris: la Roseraie",
+    "procedural": "roseraieMontsouris",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.821971,
+    "lon": 2.335991,
+    "front": 180,
+    "size": [
+      19,
+      32
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM's leisure=garden 'Roseraie'; the ortho shows a fan of beds, drawn as straight rows (generic).",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Île de Puteaux: la Roseraie",
+    "procedural": "roseraiePuteaux",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.883007,
+    "lon": 2.251014,
+    "front": 180,
+    "size": [
+      60,
+      57
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM's 'La Roseraie de l'Île de Puteaux'; the ortho shows a grid of small square beds. Its pergolas are not drawn yet.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Suresnes: la Roseraie",
+    "procedural": "roseraieSuresnes",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.88236,
+    "lon": 2.230527,
+    "front": 180,
+    "size": [
+      30,
+      31
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM's leisure=garden 'Roseraie'; the ortho shows three by four square beds in gravel.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Floral de Vincennes: the Iris garden (north)",
+    "procedural": "irisVincennesNorth",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.837219,
+    "lon": 2.442987,
+    "front": 180,
+    "size": [
+      14,
+      28
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM way/278043499; its Vallée des fleurs plan beds (tools/gardens/vincennes.ts) did not come through the bake, so laid here the same way.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "Parc Floral de Vincennes: the Iris garden (south)",
+    "procedural": "irisVincennesSouth",
+    "kind": "garden",
+    "drape": true,
+    "lat": 48.837487,
+    "lon": 2.442877,
+    "front": 180,
+    "size": [
+      18,
+      34
+    ],
+    "height": 2,
+    "sign": false,
+    "shadow": false,
+    "note": "batch6/flower-gardens.ts: OSM way/278043500; as the north garden.",
+    "madeBy": "claude-opus-5-5"
+  },
+  {
     "name": "Parc de Bagatelle: le Trianon",
     "osm": [
       "way/83064928"
