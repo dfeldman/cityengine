@@ -1274,5 +1274,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Visconti's wall fountain of 1844 at the corner of rue de Richelieu and rue Molière (Wikidata Q3076047; Seurre's bronze Molière, Pradier's two Muses): a shell-headed niche between pairs of Corinthian columns, entablature dated MDCCCXLIV, an arched pediment, the dedication pedestal, a stepped basin. Claims OSM way 54097804 (the fountain mapped as a building, ~8.3 m across the back, back wall on its SW edge, front toward the place Mireille at bearing 39). Heights (~12 m) and the 2.4 m seated bronze scaled off Commons photographs, not surveyed; the tympanum relief is a stand-in. Molière and the Muses are Modly models (statues manifest: moliere-seated, moliere-muse-1, moliere-muse-2)."
+  },
+  {
+    "name": "Fontaine Gaillon",
+    "procedural": "fontaineGaillon",
+    "kind": "fountain",
+    "lat": 48.869020,
+    "lon": 2.334308,
+    "front": 180,
+    "size": [
+      6,
+      4.5
+    ],
+    "height": 11,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
   }
 ]

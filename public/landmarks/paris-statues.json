@@ -372,5 +372,21 @@
     "range": 150,
     "note": "Pradier's Muse (La Comédie sérieuse, the left-hand one in photographs) on the platform; the same model stands each side. assetkit img2glb guided from a Commons photograph (Fontaine Molière Paris 1er 007.jpg); published in assetkit-models-paris",
     "asset": "moliere-muse"
+  },
+  {
+    "id": "gaillon-dauphin",
+    "name": "Fontaine Gaillon: putto on a dolphin",
+    "attach": {
+      "to": "Fontaine Gaillon",
+      "at": [
+        0,
+        3.45,
+        -0.7
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "The putto with a trident astride a dolphin on the upper bowl. assetkit img2glb guided from Commons 'Fontaine Gaillon August 8, 2011.jpg'; published in assetkit-models-paris",
+    "asset": "gaillon-dauphin"
   }
 ]
