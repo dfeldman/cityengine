@@ -731,6 +731,22 @@
     "note": "The Communards' wall in Père-Lachaise's south-east corner (Wikidata Q910923). Placed on OSM's plaque node 5220080010, the wall's centre line along way 13859706 (bearing 64.5), the plaque facing the cemetery side toward bearing 334.5 (osmium, 2026-11-22). Wall ~2.9 m, plaque ~2.3 x 1.45 m, the paved court and beds are estimated from two Commons photographs against the plaque, not surveyed; the ivy and plantings are stand-ins. No sculpture: no Modly piece."
   },
   {
+    "name": "Monument aux fusillés de la Cascade",
+    "procedural": "fusillesCascade",
+    "kind": "monument",
+    "lat": 48.8617465,
+    "lon": 2.244302,
+    "size": [
+      10,
+      10
+    ],
+    "height": 3,
+    "front": 270,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Memorial to the 16 young Resistance men shot by the Grande Cascade, 16 Aug 1944 (Wikidata Q3091182). Placed on OSM's memorial node 4484420031. A round stele ~2.4 m with two crosses, in a ring of green mesh fence with two flower bowls, scaled by eye off Commons photographs, not surveyed; the front bearing 270 (toward the track 8 m west) is a guess. No sculpture: no Modly piece."
+  },
+  {
     "name": "Mémorial de la Shoah",
     "procedural": "memorialShoah",
     "osm": [
