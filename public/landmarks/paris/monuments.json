@@ -730,6 +730,22 @@
     "height": 19.2,
     "front": 122,
     "note": "The memorial on the Rue Geoffroy-l'Asnier. Placed on the box of OSM's museum polygon (way 124052479; osmium, 2026-10-30), −z the street at bearing 122; the main block (way 55620205) and the street front (way 55620119, building=roof) are replaced, their rings OSM's. The street front is from one Commons photograph; the court and the block's front are from memory and not confirmed by one."
+  {
+    "name": "Mur des Fédérés",
+    "procedural": "murDesFederes",
+    "kind": "monument",
+    "lat": 48.859679,
+    "lon": 2.400082,
+    "size": [
+      48,
+      14
+    ],
+    "height": 3.5,
+    "front": 334.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Communards' wall in Père-Lachaise's south-east corner (Wikidata Q910923). Placed on OSM's plaque node 5220080010, the wall's centre line along way 13859706 (bearing 64.5), the plaque facing the cemetery side toward bearing 334.5 (osmium, 2026-11-22). Wall ~2.9 m, plaque ~2.3 x 1.45 m, the paved court and beds are estimated from two Commons photographs against the plaque, not surveyed; the ivy and plantings are stand-ins. No sculpture: no Modly piece."
+  },
   },
   {
     "name": "Église Notre-Dame-de-Lorette",

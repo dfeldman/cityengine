@@ -47,6 +47,7 @@ import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
 import { fontaineChateauEau } from './fontaine-chateau-eau.ts'
 import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
 import { hautesHerbes } from './hautes-herbes.ts'
+import { murDesFederes } from './mur-des-federes.ts'
 import { araigneeRouge, domeImax, lePouce } from './la-defense.ts'
 import { cnitVault } from '../defense-famous/cnitVault.ts'
 import { quatreTemps } from '../defense-famous/quatreTemps.ts'
@@ -82,6 +83,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentPasteur,
   montparnasseFull,
   moulinGalette,
+  murDesFederes,
   moulinRadet,
   notreDameDeLorette,
   pantheonFull,
