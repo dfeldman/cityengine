@@ -388,5 +388,21 @@
     "range": 150,
     "note": "The putto with a trident astride a dolphin on the upper bowl. assetkit img2glb guided from Commons 'Fontaine Gaillon August 8, 2011.jpg'; published in assetkit-models-paris",
     "asset": "gaillon-dauphin"
+  },
+  {
+    "id": "carmes-head",
+    "name": "Fontaine du Marché-aux-Carmes: two-faced herm head",
+    "attach": {
+      "to": "Fontaine du Marché-aux-Carmes",
+      "at": [
+        0,
+        3.05,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "The herm head with fruit-basket crown on the pillar. assetkit img2glb guided from Commons 'Fontaine du Marché-aux-Carmes (face Commerce) Paris 6e.jpg' and 'Fontainecarmes.jpg'; published in assetkit-models-paris",
+    "asset": "carmes-head"
   }
 ]

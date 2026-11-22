@@ -271,3 +271,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - Monument aux fusillés de la cascade du bois de Boulogne (Q3091182): modelled (src/render/landmarks/paris/monuments/fusilles-cascade.ts, public/landmarks/paris/monuments.json; Modly pieces: none, a plain round stele with shallow crosses)
 - La Danse de la fontaine émergente (Q747835): modelled (src/render/landmarks/paris/monuments/danse-fontaine-emergente.ts, public/landmarks/paris/monuments.json; Modly pieces: none, nothing figurative visible in the one photo; new kit routines sweptTube, hoop, finPlate)
 - fontaine Gaillon (Q579833): modelled (src/render/landmarks/paris/monuments/fontaine-gaillon.ts, public/landmarks/paris/monuments.json; Modly pieces: gaillon-dauphin)
+- fontaine du Marché-aux-Carmes (Q3076266): modelled (src/render/landmarks/paris/monuments/fontaine-marche-carmes.ts, public/landmarks/paris/monuments.json; Modly pieces: carmes-head)

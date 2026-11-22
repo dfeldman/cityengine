@@ -1290,5 +1290,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
+  },
+  {
+    "name": "Fontaine du Marché-aux-Carmes",
+    "procedural": "fontaineMarcheCarmes",
+    "kind": "fountain",
+    "osm": [
+      "way/1200620877"
+    ],
+    "lat": 48.856885,
+    "lon": 2.336808,
+    "front": 0,
+    "size": [
+      3,
+      3
+    ],
+    "height": 3.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fragonard's herm fountain of 1830, moved to the square Gabriel-Pierné (rue de Seine / rue Mazarine, 6e) in 1930 (Wikidata Q3076266; the old Marché des Carmes was at place Maubert, but the fountain stands here, at the list's coordinates). Basin radius 1.32 m from OSM way 1200620877 (claimed); pillar 0.64 x 0.46 m, 2.5 m to the shoulders, spouts at 1.0 m, scaled off three Commons photos against the basin width, not surveyed. The two-faced head with its fruit-basket crown is a Modly model (carmes-head), made from one face's photos so only one face is real; the bust fronts on the pillar are flat stand-ins."
   }
 ]
