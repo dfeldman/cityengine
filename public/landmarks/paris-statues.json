@@ -324,5 +324,53 @@
     "range": 120,
     "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
     "asset": "louvois-triton"
+  },
+  {
+    "id": "moliere-seated",
+    "name": "Fontaine Molière: Molière seated",
+    "attach": {
+      "to": "Fontaine Molière",
+      "at": [
+        0,
+        5.25,
+        1.9
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "Seurre's bronze Molière in the niche. assetkit img2glb guided (Hunyuan 2.1) from a Commons photograph (Fontaine Molière Paris 1er 005.jpg); published in assetkit-models-paris",
+    "asset": "moliere-seated"
+   },
+  {
+    "id": "moliere-muse-1",
+    "name": "Fontaine Molière: Muse, left",
+    "attach": {
+      "to": "Fontaine Molière",
+      "at": [
+        -2.5,
+        2.2,
+        -0.3
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "Pradier's Muse (La Comédie sérieuse, the left-hand one in photographs) on the platform; the same model stands each side. assetkit img2glb guided from a Commons photograph (Fontaine Molière Paris 1er 007.jpg); published in assetkit-models-paris",
+    "asset": "moliere-muse"
+  },
+  {
+    "id": "moliere-muse-2",
+    "name": "Fontaine Molière: Muse, right",
+    "attach": {
+      "to": "Fontaine Molière",
+      "at": [
+        2.5,
+        2.2,
+        -0.3
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "Pradier's Muse (La Comédie sérieuse, the left-hand one in photographs) on the platform; the same model stands each side. assetkit img2glb guided from a Commons photograph (Fontaine Molière Paris 1er 007.jpg); published in assetkit-models-paris",
+    "asset": "moliere-muse"
   }
 ]

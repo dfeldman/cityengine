@@ -1223,5 +1223,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Visconti's cast-iron fountain of 1844 in the square Louvois (Wikidata Q3076038; sculptor Klagmann): octagonal basin (OSM way 26277959, ~6 m flat to centre, a sloppy polygon so +-1 m; vertices near east, hence front 25), square pedestal with four tritons on dolphins, a wide bowl with zodiac band and mascarons, an upper pedestal, the four river goddesses back to back under the top bowl. Basin from OSM; bowls, pedestals and the ~8.5 m total height scaled off Commons photographs against the 3.6 m goddess group, not surveyed. Goddesses and top bowl are a Modly model (statues manifest: louvois-group), the tritons likewise (louvois-triton)."
+  },
+  {
+    "name": "Fontaine Molière",
+    "procedural": "fontaineMoliere",
+    "kind": "fountain",
+    "osm": [
+      "way/54097804"
+    ],
+    "lat": 48.8655,
+    "lon": 2.336608,
+    "size": [
+      8.4,
+      9
+    ],
+    "height": 12,
+    "front": 39,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Visconti's wall fountain of 1844 at the corner of rue de Richelieu and rue Molière (Wikidata Q3076047; Seurre's bronze Molière, Pradier's two Muses): a shell-headed niche between pairs of Corinthian columns, entablature dated MDCCCXLIV, an arched pediment, the dedication pedestal, a stepped basin. Claims OSM way 54097804 (the fountain mapped as a building, ~8.3 m across the back, back wall on its SW edge, front toward the place Mireille at bearing 39). Heights (~12 m) and the 2.4 m seated bronze scaled off Commons photographs, not surveyed; the tympanum relief is a stand-in. Molière and the Muses are Modly models (statues manifest: moliere-seated, moliere-muse-1, moliere-muse-2)."
   }
 ]
