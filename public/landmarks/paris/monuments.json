@@ -1309,5 +1309,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Fragonard's herm fountain of 1830, moved to the square Gabriel-Pierné (rue de Seine / rue Mazarine, 6e) in 1930 (Wikidata Q3076266; the old Marché des Carmes was at place Maubert, but the fountain stands here, at the list's coordinates). Basin radius 1.32 m from OSM way 1200620877 (claimed); pillar 0.64 x 0.46 m, 2.5 m to the shoulders, spouts at 1.0 m, scaled off three Commons photos against the basin width, not surveyed. The two-faced head with its fruit-basket crown is a Modly model (carmes-head), made from one face's photos so only one face is real; the bust fronts on the pillar are flat stand-ins."
+  },
+  {
+    "name": "Fontaine du Château d'eau de Montmartre",
+    "procedural": "fontaineReservoirMontmartre",
+    "kind": "fountain",
+    "osm": [
+      "way/77937860"
+    ],
+    "lat": 48.8870,
+    "lon": 2.339128,
+    "front": 197,
+    "size": [
+      8.5,
+      10.5
+    ],
+    "height": 7.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Titeux's wall fountain of 1835 on the front of the old Montmartre reservoir (9b rue Norvins, Wikidata Q945052; OSM way 77937860, the disused reservoir building, claimed: ring extruded as the body, front on its SSW edge, bearing 197). Aedicule 5 m wide, ~7.2 m to the pediment, 8-step stair, niche 2.6 m wide, scaled off two Commons photos against the niche and stair, not surveyed; pink marble panels and the frieze are flat stand-ins. The bronze vase with dolphin feet in the niche is a Modly model (reservoir-vase)."
   }
 ]
