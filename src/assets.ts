@@ -10,8 +10,8 @@
  *   assetkit-nature-textures                          their textures (only needed to name them for texture caps)
  *   assetkit-statues-paris                            the packed statues (`extra.streetrunner.packed`)
  *   streetrunner                                      this game's own: SF street trees, signs (`extra.streetrunner.path`)
- *   assetkit-models-sf                                the AI photogrammetry models of SF landmarks (ships…), one file
- *                                                     per LOD: `models/sf/<id>.lod<N>.glb`, and their `extra.model`
+ *   assetkit-models-sf, assetkit-models-paris         AI models (SF landmarks and ships; Paris monuments' sculpture), one file
+ *                                                     per LOD: `models/<sf|paris>/<id>.lod<N>.glb`, and their `extra.model`
  *                                                     metadata (real size, front axis, draft) — `modelInfo(id)`
  *
  * and serves `trees/index.json`, `plants/index.json` and `sftrees/index.json` rebuilt from the entries those
@@ -31,7 +31,9 @@ import { assetManifest, loadFromBucket, setAssetManifest, setAssetBase, setStudi
  */
 export const ASSET_BUCKET = 'https://assets.dfeldman.org'
 
-const INDEXES = ['assetkit-trees', 'assetkit-plants', 'assetkit-rocks', 'assetkit-nature-textures', 'assetkit-statues-paris', 'streetrunner', 'assetkit-models-sf'] as const
+const INDEXES = ['assetkit-trees', 'assetkit-plants', 'assetkit-rocks', 'assetkit-nature-textures', 'assetkit-statues-paris', 'streetrunner', 'assetkit-models-sf', 'assetkit-models-paris'] as const
+/** indexes the game can do without: one not uploaded yet reads as empty instead of sending the whole game to public/ */
+const OPTIONAL = new Set<string>(['assetkit-models-paris'])
 /** Library folders whose index.json is rebuilt from the bucket (rocks/index.json is this game's own, committed). */
 const LIBRARY: Record<string, string> = { 'assetkit-trees': 'trees', 'assetkit-plants': 'plants', 'assetkit-rocks': 'rocks' }
 
@@ -47,6 +49,8 @@ export interface ModelInfo {
   material: string
   /** the LOD files there are (0 = most detailed) */
   lods: { lod: number; triangles: number; tex: number }[]
+  /** which models index it came from: 'sf' (assetkit-models-sf) or 'paris' (assetkit-models-paris); its files are models/<region>/ */
+  region?: string
 }
 const models = new Map<string, ModelInfo>()
 /** The facts of an assetkit-models-sf model, once initAssets has read the bucket (null before, or without it). */
@@ -97,6 +101,7 @@ export function initAssets(): Promise<void> {
       ;[indexes] = await Promise.all([
         Promise.all(INDEXES.map(async (name) => {
           const r = await fetch(`${base}/asset-index-${name}.json`)
+          if (!r.ok && OPTIONAL.has(name)) return { name, assets: [] as BucketAsset[] }
           if (!r.ok) throw new Error(`asset index ${name}: HTTP ${r.status}`)
           return { name, ...(await r.json()) as { assets: BucketAsset[] } }
         })),
@@ -124,10 +129,12 @@ export function initAssets(): Promise<void> {
         } else if (idx.name === 'assetkit-statues-paris' && sr?.packed) {
           const prod = live.find((f) => f.isProd)
           if (prod) map(sr.packed.replace(/^public\//, ''), `${base}/${prod.filename}`)
-        } else if (idx.name === 'assetkit-models-sf' && a.id && a.extra?.model) {
-          // one file per LOD, asked for as models/sf/<id>.lod<N>.glb (render/statues.ts)
-          for (const f of live) if (f.isProd && f.lod !== undefined) map(`models/sf/${a.id}.lod${f.lod}.glb`, `${base}/${f.filename}`)
-          models.set(a.id, a.extra.model)
+        } else if (idx.name.startsWith('assetkit-models-') && a.id && a.extra?.model) {
+          // one file per LOD, asked for as models/<region>/<id>.lod<N>.glb (render/statues.ts): SF's modelpack landmarks,
+          // Paris's img2glb models (the sculpted parts of procedural monuments, assetkit tools/img2glb/guided)
+          const region = idx.name.slice('assetkit-models-'.length)
+          for (const f of live) if (f.isProd && f.lod !== undefined) map(`models/${region}/${a.id}.lod${f.lod}.glb`, `${base}/${f.filename}`)
+          models.set(a.id, { ...a.extra.model, region })
         } else if (idx.name === 'streetrunner' && sr?.path && live[0]) {
           map(sr.path, `${base}/${(glb ?? live[0]).filename}`)
           if (sr.entry && sr.path.startsWith('sftrees/')) libs.get('sftrees')!.push(sr.entry)

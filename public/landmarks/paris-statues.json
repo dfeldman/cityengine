@@ -209,5 +209,37 @@
     "plinthColour": "#bdb6a8",
     "range": 280,
     "note": "Carrefour de l'Odéon; OSM's 4 m plinth building replaced (paris.json)"
+  },
+  {
+    "id": "droits-group",
+    "name": "Monument des Droits de l'Homme: woman, man and child",
+    "attach": {
+      "to": "Monument des Droits de l'Homme",
+      "at": [
+        -4.2,
+        2.05,
+        -5.9
+      ],
+      "bearing": 180
+    },
+    "range": 220,
+    "note": "Theimer's bronze group on its verdigris drum. assetkit img2glb guided (Hunyuan 2.1) from one wide photograph (de.wikipedia 'Monuments de Droits d'Homme'); published in assetkit-models-paris",
+    "asset": "droits-group"
+  },
+  {
+    "id": "droits-toga",
+    "name": "Monument des Droits de l'Homme: the toga figure",
+    "attach": {
+      "to": "Monument des Droits de l'Homme",
+      "at": [
+        4.7,
+        2.05,
+        -3.9
+      ],
+      "bearing": 180
+    },
+    "range": 220,
+    "note": "Theimer's bronze man in a toga, on its verdigris drum. assetkit img2glb guided (Hunyuan 2.1) from one wide photograph (de.wikipedia 'Monuments de Droits d'Homme'); published in assetkit-models-paris",
+    "asset": "droits-toga"
   }
 ]

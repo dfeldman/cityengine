@@ -264,3 +264,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - Les Deux Plateaux (Q3232046): already modelled as src/render/landmarks/paris/buren-columns.ts
 - colonne Médicis (Q1110974): already modelled as medicisColumn in src/render/landmarks/paris/museums/bourse-commerce.ts (Bourse de Commerce entry)
 - fontaine de Léda (Q3076156): modelled (back of medicisFountain, src/render/landmarks/paris/palaces/medicis-fountain.ts `ledaFountain`, public/landmarks/paris/palaces.json "Fontaine Médicis" entry unchanged; Modly pieces: none, the Léda-and-swan relief is a flat procedural stand-in)
+- Monument des Droits de l'Homme (Q3323344): modelled (src/render/landmarks/paris/monuments/droits-de-l-homme.ts, public/landmarks/paris/monuments.json; Modly pieces: droits-group, droits-toga, published in assetkit-models-paris, placed in public/landmarks/paris-statues.json)

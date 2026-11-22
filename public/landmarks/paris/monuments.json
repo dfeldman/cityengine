@@ -1193,3 +1193,19 @@
     "note": "Driss Sans-Arcidet's monument to General Dumas (2009), OSM node 7952476083. Shape and sizes by eye from Commons 'Unchained (64188317).jpeg': tall ring with broken chain, cuff with hanging chain; bearing a guess."
   }
 ]
+  },
+  {
+    "name": "Monument des Droits de l'Homme",
+    "procedural": "droitsDeLHomme",
+    "kind": "monument",
+    "lat": 48.855225,
+    "lon": 2.301117,
+    "size": [
+      15,
+      15
+    ],
+    "height": 15.5,
+    "front": 225,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Jantzen and Theimer's mastaba-like tower of 1989 in the Champ de Mars (Wikidata Q3323344). Placed on the centre of OSM way 369434380 (a 14.5 m square podium turned 45 deg; osmium, 2026-11-22), the front (−z) the south-west face toward the Champ de Mars at bearing 225, the bronze door on the back. Podium from OSM; the tower (~7.2 m wide, 12 m tall), the two bronze obelisks (~14.5 m) and the figures' places are scaled off one wide photograph against the figures, not surveyed; the seals, triangle and sundial are stand-ins. The figures are Modly models (statues manifest: droits-group, droits-toga)."

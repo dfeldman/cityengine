@@ -13,7 +13,8 @@
  * monument. Models face along `front`, one of their own axes (as the loader leaves them: tools/glb/preview.ts
  * shows which), and are scaled to `height` metres.
  *
- * Or an ASSETKIT MODEL (`asset`: an id in assetkit's assetkit-models-sf index, made by assetkit tools/modelpack): the
+ * Or an ASSETKIT MODEL (`asset`: an id in assetkit's assetkit-models-sf index, made by tools/modelpack, or assetkit-models-paris,
+ * made by tools/img2glb — guided pieces for procedural monuments): the
  * model's own facts — real size, front axis, waterline — come from the index (assets.ts `modelInfo`), so the entry only
  * says where it goes. It has one file per LOD (`models/sf/<id>.lod<N>.glb`) and the pool loads the one its distance
  * asks for (`lodRanges`, with a margin so it doesn't flicker at the boundary), swapping without a gap. A ship `float`s:
@@ -43,7 +44,7 @@ export interface StatueEntry {
   name: string
   /** under `models/`, e.g. "paris/henri-iv.glb" (an `asset` names its own files) */
   model?: string
-  /** an assetkit-models-sf model id: its files, size, front and draft come from the index */
+  /** an assetkit-models-sf or assetkit-models-paris model id: its files, size, front and draft come from the index */
   asset?: string
   /** which of the model's axes it faces, as loaded (an `asset` has its own) */
   front?: '+z' | '-z' | '+x' | '-x'
@@ -250,7 +251,7 @@ export class Statues {
     s.loading = true
     const info = s.e.asset ? modelInfo(s.e.asset) : null
     if (s.e.asset && !info) { s.failed = true; s.loading = false; console.warn(`statue ${s.e.name}: ${s.e.asset} is not in the asset bucket`); return }
-    const file = info ? `sf/${s.e.asset}.lod${Math.min(lod, info.lods.length - 1)}.glb` : s.e.model!
+    const file = info ? `${info.region ?? 'sf'}/${s.e.asset}.lod${Math.min(lod, info.lods.length - 1)}.glb` : s.e.model!
     try {
       const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(`${this.base}models/`, file), this.scene)
       const root = r.meshes.find((m) => m.name === '__root__') ?? r.meshes[0]

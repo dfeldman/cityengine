@@ -109,4 +109,52 @@ export function roundBasin(out: MeshBuilder, cx: number, cz: number, y0: number,
   return y0 + depth
 }
 
+/** A tapering stone/bronze shaft about (cx, cz) from y0 to y1: `sides` 4 is a square obelisk (`w0`, `w1` the full widths at foot and top), 3 a triangular one (`w` = side length); a pyramidion `tip` high (own colour `tipC`) on top. */
+export function obelisk(out: MeshBuilder, cx: number, cz: number, y0: number, y1: number, o: {
+  w0: number; w1: number; sides?: 3 | 4; c: Rgb; tip?: number; tipC?: Rgb; turn?: number
+}): void {
+  const n = o.sides ?? 4
+  // prism takes the circumradius: a square's is w/√2, a triangle's w/√3
+  const k = n === 4 ? Math.SQRT1_2 : 1 / Math.sqrt(3)
+  const phase = (n === 4 ? Math.PI / 4 : 0) + (o.turn ?? 0)
+  prism(out, cx, cz, y0, y1, o.w0 * k, n, o.c, FIXED, o.w1 * k, true, phase)
+  if (o.tip) prism(out, cx, cz, y1, y1 + o.tip, o.w1 * k, n, o.tipC ?? o.c, FIXED, 0, true, phase)
+}
+
+/** A square tower with battered (leaning-in) walls about (cx, cz): half-width `h0` at y0 narrowing to `h1` at y1. */
+export function batteredTower(out: MeshBuilder, cx: number, cz: number, y0: number, y1: number, h0: number, h1: number, c: Rgb, course?: number): void {
+  const k = Math.SQRT1_2
+  prism(out, cx, cz, y0, y1, 2 * h0 * k, 4, c, FIXED, 2 * h1 * k, true, Math.PI / 4)
+  if (!course) return
+  // joint lines: thin slightly darker slabs on each face
+  const m = shade(c, 0.8)
+  for (let y = y0 + course; y < y1 - 0.1; y += course) {
+    const h = h0 + (h1 - h0) * ((y - y0) / (y1 - y0)) + 0.012
+    block(out, cx - h, cx + h, cz - h, cz + h, y, y + 0.025, m)
+  }
+}
+
+/** A bronze fire pot (a cauldron on a short foot, rim and lid-less mouth) with its square stone block, centre (cx, cz) from y0. */
+export function firePot(out: MeshBuilder, cx: number, cz: number, y0: number, o: { r?: number; block?: number; stone: Rgb; bronze: Rgb }): number {
+  const r = o.r ?? 0.8
+  const bh = o.block ?? 0.5
+  block(out, cx - r * 0.85, cx + r * 0.85, cz - r * 0.85, cz + r * 0.85, y0, y0 + bh, o.stone)
+  const y = y0 + bh
+  prism(out, cx, cz, y, y + 0.25, r * 0.4, 12, o.bronze, FIXED, r * 0.55, true)
+  prism(out, cx, cz, y + 0.25, y + 0.7, r * 0.55, 16, o.bronze, FIXED, r, true)
+  prism(out, cx, cz, y + 0.7, y + 0.95, r, 16, o.bronze, FIXED, r * 0.82, true)
+  prism(out, cx, cz, y + 0.95, y + 1.02, r * 0.88, 16, shade(o.bronze, 0.6), FIXED, r * 0.88, true)
+  return y + 1.02
+}
+
+/** A round statue pedestal about (cx, cz) from y0: a foot ring, the drum `r` wide and `h` high, a cap; returns the top. */
+export function drumPedestal(out: MeshBuilder, cx: number, cz: number, y0: number, o: { r?: number; h?: number; drum: Rgb; trim: Rgb }): number {
+  const r = o.r ?? 0.75
+  const h = o.h ?? 0.9
+  prism(out, cx, cz, y0, y0 + 0.12, r * 1.18, 20, o.trim, FIXED, r * 1.18, true)
+  prism(out, cx, cz, y0 + 0.12, y0 + 0.12 + h, r, 20, o.drum, FIXED, r, true)
+  prism(out, cx, cz, y0 + 0.12 + h, y0 + 0.2 + h, r * 1.14, 20, o.trim, FIXED, r * 1.14, true)
+  return y0 + 0.2 + h
+}
+
 export { UV }
