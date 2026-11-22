@@ -185,6 +185,8 @@ export class Statues {
   }
 
   /** How many models are in the scene now (for the HUD and the tests of the cap). */
+  /** world positions of the statues that have their own lat/lon, for the city to keep its generic street figures off */
+  get positions(): { x: number; z: number }[] { return this.slots.filter((s) => s.at).map((s) => ({ x: s.at!.x, z: s.at!.z })) }
   get loaded(): number { return this.slots.filter((s) => s.holder).length }
 
   /** Four times a second: resolve attachments, pick the nearest few, load one, let go of the far. */

@@ -15,6 +15,10 @@ import { Projection } from '../city/geo.ts'
 import { squareBenches } from './paris/square-benches.ts'
 import { levelPlanTweaks, prepareTweaks } from '../city/terrain-tweaks.ts'
 import { modelLevelTest } from '../city/model-walks.ts'
+/** the street figures a landmark or pooled statue may already draw (see `City.figureFree`) */
+/** metres round a landmark's footprint where its own figure/pedestal stands (the Molière statue's point is 6 m out, in front) */
+const FIGURE_PAD = 6
+const FIGURE_KINDS = new Set(['statue', 'bust', 'sculpture'])
 import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
 import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisPanel, sucette, treePit } from './paris/furniture.ts'
 import { WallaceFountains } from './paris/wallace.ts'
@@ -1782,6 +1786,12 @@ export class City {
    *  raised ways a hand-modelled landmark draws itself */
   private readonly coveredDecks = new Set<number>()
   /**
+   * Where a hand-built landmark or a pooled statue already draws the figure: the generic OSM artwork/memorial figure
+   * (render/paris/street.ts) is skipped in these rings and discs, so it does not double the real model. Order-free,
+   * like `coverAreas`: `noFigureIn` / `noFigureNear` rebuild any tile that was built before the model was placed.
+   */
+  private readonly figureFree: { ring?: { x: number; z: number }[]; x: number; z: number; r: number }[] = []
+  /**
    * The footprints landmarks declared they draw their own raised structure over (`coversRaised`,
    * render/landmarks.ts), in world metres with the band of heights each model occupies. BUGS.md #136.
    */
@@ -2566,6 +2576,25 @@ export class City {
     for (let tz = Math.floor(z0 / TILE); tz <= Math.floor(z1 / TILE); tz++) {
       for (let tx = Math.floor(x0 / TILE); tx <= Math.floor(x1 / TILE); tx++) this.rebuild(key(tx, tz))
     }
+  }
+
+  noFigureIn(ring: { x: number; z: number }[], pad = FIGURE_PAD): void {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    this.addFigureFree({ ring, x: (x0 + x1) / 2, z: (z0 + z1) / 2, r: Math.hypot(x1 - x0, z1 - z0) / 2 + pad }, pad)
+  }
+
+  noFigureNear(x: number, z: number, r: number): void { this.addFigureFree({ x, z, r }, 0) }
+
+  private addFigureFree(a: { ring?: { x: number; z: number }[]; x: number; z: number; r: number }, pad: number): void {
+    this.figureFree.push(a)
+    const stale = new Set<string>()
+    for (const [k, list] of this.pointsIn) if (list.some((f) => FIGURE_KINDS.has(f.kind) && this.figureTaken(f.x, f.z))) stale.add(k)
+    for (const k of stale) this.rebuild(k)
+  }
+
+  private figureTaken(x: number, z: number): boolean {
+    return this.figureFree.some((a) => Math.hypot(x - a.x, z - a.z) <= a.r && (!a.ring || inOutline(a.ring, x, z, FIGURE_PAD)))
   }
 
   coverRaised(c: { ring: { x: number; z: number }[]; y0: number; y1: number }): void {
@@ -5648,6 +5677,7 @@ export class City {
           continue
         }
         if (!standsFree(f.x, f.z)) continue
+        if (FIGURE_KINDS.has(f.kind) && this.figureTaken(f.x, f.z)) continue
         const model = parisStreetModel(f.kind, seed)
         let bearing = this.streetBearing(f.x, f.z)
         /*

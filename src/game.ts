@@ -928,13 +928,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const statues = off.has('landmarks') ? null : new Statues(scene, await statueManifest(document.baseURI, opts.city, pkg.region),
     pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [], index.sea ?? null)
   ;(window as unknown as { __statues?: unknown }).__statues = statues
+  /** a pooled statue is the real figure: no generic street figure within this many metres of it */
+  const STATUE_FIGURE_CLEAR = 6
+  for (const p of statues?.positions ?? []) city.noFigureNear(p.x, p.z, STATUE_FIGURE_CLEAR)
   if (landmarks) {
     // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
     // placed and before any tile is handed over — see Landmarks.covers / City.coverRaised (BUGS.md #136)
     landmarks.onCover = (c) => city.coverRaised(c)
     // (the trees are made further down: a paving that arrives first is queued for them)
     landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
-    landmarks.onFootprint = (ring) => { clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
+    landmarks.onFootprint = (ring) => { city.noFigureIn(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
   // zoo animals at their hand-placed spots (render/zoo.ts): loaded only when the rider comes near one
   const zooWet = (() => {
     const look = waterLookup(wholeWater(pkg).map((a) => {
