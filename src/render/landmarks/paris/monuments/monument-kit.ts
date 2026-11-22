@@ -1,6 +1,6 @@
 import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import { prism, type Rgb } from '../../../models.ts'
-import { block, roof, shade } from '../../kit.ts'
+import { block, lathe, roof, shade } from '../../kit.ts'
 import { ccw, FIXED, UV, walls, type P2 } from './common.ts'
 import { basin, circle, falls, G, spout } from './plaza-common.ts'
 
@@ -155,6 +155,27 @@ export function drumPedestal(out: MeshBuilder, cx: number, cz: number, y0: numbe
   prism(out, cx, cz, y0 + 0.12, y0 + 0.12 + h, r, 20, o.drum, FIXED, r, true)
   prism(out, cx, cz, y0 + 0.12 + h, y0 + 0.2 + h, r * 1.14, 20, o.trim, FIXED, r * 1.14, true)
   return y0 + 0.2 + h
+}
+
+/** A raised fountain bowl about (cx, cz): underside tapering from the stem `stem` to the belly `r` at y0 + `depth`·0.45, a moulded rim ring at y0 + depth, water `drop` under the rim. Returns the rim height. */
+export function fountainBowl(out: MeshBuilder, cx: number, cz: number, y0: number, r: number, o: {
+  depth?: number; stem?: number; drop?: number; sides?: number; body: Rgb; water: Rgb
+}): number {
+  const d = o.depth ?? 1.0
+  const stem = o.stem ?? 0.5
+  const n = o.sides ?? 32
+  const top = y0 + d
+  lathe(out, cx, cz, [[stem, y0], [r * 0.45, y0 + d * 0.12], [r * 0.8, y0 + d * 0.35], [r * 0.97, y0 + d * 0.7], [r, y0 + d * 0.86], [r * 1.03, y0 + d * 0.9], [r * 1.03, top], [r * 0.93, top + 0.03]], n, o.body)
+  prism(out, cx, cz, top - (o.drop ?? 0.12), top - (o.drop ?? 0.12) + 0.01, r * 0.93, n, o.water, FIXED, r * 0.93, true)
+  return top
+}
+
+/** `n` thin arcs of water from a ring of radius r0 at height y0 out and down to radius r1 at y1 (a top bowl spilling into the one below, or mascarons into a basin). */
+export function jetRing(out: MeshBuilder, cx: number, cz: number, n: number, r0: number, y0: number, r1: number, y1: number, o: { rise?: number; r?: number; c: Rgb; phase?: number }): void {
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + (o.phase ?? 0)
+    spout(out, [cx + Math.sin(a) * r0, y0, cz + Math.cos(a) * r0], [cx + Math.sin(a) * r1, y1, cz + Math.cos(a) * r1], o.rise ?? 0.25, o.r ?? 0.025, o.c)
+  }
 }
 
 export { UV }

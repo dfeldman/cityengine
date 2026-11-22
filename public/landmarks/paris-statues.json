@@ -241,5 +241,88 @@
     "range": 220,
     "note": "Theimer's bronze man in a toga, on its verdigris drum. assetkit img2glb guided (Hunyuan 2.1) from one wide photograph (de.wikipedia 'Monuments de Droits d'Homme'); published in assetkit-models-paris",
     "asset": "droits-toga"
+  },
+  {
+    "id": "louvois-group",
+    "name": "Fontaine Louvois: the four river goddesses and the top bowl",
+    "attach": {
+      "to": "Fontaine Louvois",
+      "at": [
+        0,
+        5.2,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Klagmann's Seine, Loire, Saône and Garonne back to back under the top bowl, on the upper pedestal. assetkit img2glb guided (Hunyuan 2.1) from a Commons photograph with the jets cropped out (CF7471 Paris 2e square Louvois fontaine Louvois rwk.jpg); published in assetkit-models-paris",
+    "asset": "louvois-group"
+  },
+  {
+    "id": "louvois-triton-1",
+    "name": "Fontaine Louvois: triton on a dolphin 1",
+    "attach": {
+      "to": "Fontaine Louvois",
+      "at": [
+        -1.25,
+        1.0,
+        -1.25
+      ],
+      "bearing": -135
+    },
+    "range": 120,
+    "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
+    "asset": "louvois-triton"
+  }
+,
+  {
+    "id": "louvois-triton-2",
+    "name": "Fontaine Louvois: triton on a dolphin 2",
+    "attach": {
+      "to": "Fontaine Louvois",
+      "at": [
+        1.25,
+        1.0,
+        -1.25
+      ],
+      "bearing": 135
+    },
+    "range": 120,
+    "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
+    "asset": "louvois-triton"
+  }
+,
+  {
+    "id": "louvois-triton-3",
+    "name": "Fontaine Louvois: triton on a dolphin 3",
+    "attach": {
+      "to": "Fontaine Louvois",
+      "at": [
+        1.25,
+        1.0,
+        1.25
+      ],
+      "bearing": 45
+    },
+    "range": 120,
+    "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
+    "asset": "louvois-triton"
+  }
+,
+  {
+    "id": "louvois-triton-4",
+    "name": "Fontaine Louvois: triton on a dolphin 4",
+    "attach": {
+      "to": "Fontaine Louvois",
+      "at": [
+        -1.25,
+        1.0,
+        1.25
+      ],
+      "bearing": -45
+    },
+    "range": 120,
+    "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
+    "asset": "louvois-triton"
   }
 ]

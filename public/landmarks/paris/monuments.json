@@ -1207,5 +1207,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Jantzen and Theimer's mastaba-like tower of 1989 in the Champ de Mars (Wikidata Q3323344). Placed on the centre of OSM way 369434380 (a 14.5 m square podium turned 45 deg; osmium, 2026-11-22), the front (−z) the south-west face toward the Champ de Mars at bearing 225, the bronze door on the back. Podium from OSM; the tower (~7.2 m wide, 12 m tall), the two bronze obelisks (~14.5 m) and the figures' places are scaled off one wide photograph against the figures, not surveyed; the seals, triangle and sundial are stand-ins. The figures are Modly models (statues manifest: droits-group, droits-toga)."
+  },
+  {
+    "name": "Fontaine Louvois",
+    "procedural": "fontaineLouvois",
+    "kind": "fountain",
+    "lat": 48.86797,
+    "lon": 2.3376,
+    "size": [
+      14.2,
+      14.2
+    ],
+    "height": 9.8,
+    "front": 25,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Visconti's cast-iron fountain of 1844 in the square Louvois (Wikidata Q3076038; sculptor Klagmann): octagonal basin (OSM way 26277959, ~6 m flat to centre, a sloppy polygon so +-1 m; vertices near east, hence front 25), square pedestal with four tritons on dolphins, a wide bowl with zodiac band and mascarons, an upper pedestal, the four river goddesses back to back under the top bowl. Basin from OSM; bowls, pedestals and the ~8.5 m total height scaled off Commons photographs against the 3.6 m goddess group, not surveyed. Goddesses and top bowl are a Modly model (statues manifest: louvois-group), the tritons likewise (louvois-triton)."
   }
 ]
