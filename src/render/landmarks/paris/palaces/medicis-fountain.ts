@@ -85,6 +85,7 @@ function draw(base: MeshBuilder, g: (x: number, z: number) => number): void {
     prism(out, s * (w - 0.2), z0 - 0.3, 9.4, 9.8, 0.12, 6, p.trim, FIXED, 0.02)
   }
   lifted(base, out, g(0, 28))
+  ledaFountain(base, p, g(0, z1 + 1.5), z1)
   // ---- the basin's kerb in lengths that each stand on their own ground, and the urns down its sides
   const bz0 = -29.8
   const bz1 = z0 - 1.6
@@ -109,6 +110,54 @@ function draw(base: MeshBuilder, g: (x: number, z: number) => number): void {
       prism(base, x, z, y + 1.55, y + 2.15, 0.38, 8, kerb, FIXED, 0.24)
     }
   }
+}
+
+/** Tunable sizes of the Léda fountain (the Médicis fountain's back, 1807 wall + Valois's 1897 relief; photographed 2010, sizes guessed). */
+const LEDA = { hw: 1.75, panelY0: 1.9, panelY1: 4.3, entabY1: 4.8, pedH: 0.95, domeH: 1.7, basinW: 1.9, basinD: 2.4, reliefH: 0.07 }
+
+/** The Léda fountain on the back (+z) of the Médicis wall: a mask-roundel dado, Valois's relief of Léda and the swan in a frame, a pedimented head with two reclining figures before a scaled dome, and the little basin with its single jet. The relief is a flat stand-in. */
+function ledaFountain(out: MeshBuilder, p: ReturnType<typeof palette>, y: number, z1: number): void {
+  const L = LEDA
+  const pl = z1
+  const mask = [0.16, 0.2, 0.17] as [number, number, number]
+  const dome = [0.42, 0.45, 0.33] as [number, number, number]
+  const marble = [0.7, 0.68, 0.6] as [number, number, number]
+  const lift = (f: (o: MeshBuilder) => void): void => { const o = new MeshBuilder(); f(o); lifted(out, o, y) }
+  lift((o) => {
+    slabOn(o, '+z', pl, -L.hw - 0.2, L.hw + 0.2, -0.5, 0.45, 1.15, p.deep)                       // plinth
+    slabOn(o, '+z', pl, -L.hw, L.hw, 0.45, L.panelY0 - 0.2, 0.9, p.stone)                        // dado
+    for (const x of [-1.1, 0, 1.1]) {
+      rectOn(o, '+z', pl + 0.9, x - 0.3, x + 0.3, 0.85, 1.45, mask, 0.05)                         // bronze mask roundels
+      rectOn(o, '+z', pl + 0.9, x - 0.18, x + 0.18, 0.7, 0.85, p.dark, 0.05)
+    }
+    for (const x of [-0.55, 0.55]) slabOn(o, '+z', pl, x - 0.1, x + 0.1, 0.45, L.panelY0 - 0.2, 1.0, p.trim)
+    slabOn(o, '+z', pl, -L.hw - 0.1, L.hw + 0.1, L.panelY0 - 0.2, L.panelY0, 1.05, p.trim)       // sill
+    slabOn(o, '+z', pl, -L.hw, L.hw, L.panelY0, L.panelY1 + 0.25, 0.7, p.stone)                  // frame
+    for (const s of [-1, 1]) slabOn(o, '+z', pl, s * (L.hw - 0.12) - 0.1, s * (L.hw - 0.12) + 0.1, L.panelY0 + 0.2, L.panelY1, 0.8, p.trim)  // pilasters
+    rectOn(o, '+z', pl + 0.7, -1.3, 1.3, L.panelY0 + 0.3, L.panelY1 - 0.1, p.deep, 0.02)           // the relief field
+    // the relief: Léda reclining, the swan, a cupid, reeds and an urn (flat stand-ins)
+    const r = pl + 0.72
+    slabOn(o, '+z', pl + 0.7, -0.2, 0.9, L.panelY0 + 0.5, L.panelY0 + 0.75, L.reliefH, marble)
+    slabOn(o, '+z', pl + 0.7, 0.1, 0.5, L.panelY0 + 0.75, L.panelY0 + 1.5, L.reliefH, marble)
+    slabOn(o, '+z', pl + 0.7, -0.75, -0.2, L.panelY0 + 0.5, L.panelY0 + 0.7, L.reliefH, p.trim)
+    slabOn(o, '+z', pl + 0.7, -1.1, -0.9, L.panelY0 + 0.45, L.panelY0 + 1.3, L.reliefH, marble)
+    slabOn(o, '+z', pl + 0.7, 1.0, 1.15, L.panelY0 + 0.4, L.panelY0 + 1.7, L.reliefH, p.trim)
+    void r
+    slabOn(o, '+z', pl, -L.hw - 0.15, L.hw + 0.15, L.panelY1 + 0.25, L.entabY1, 0.95, p.trim)    // entablature
+    pedimentOn(o, '+z', pl + 0.95, -L.hw - 0.2, L.hw + 0.2, L.entabY1, L.pedH, 0.4, p.trim)
+    rectOn(o, '+z', pl + 0.95, -0.4, 0.4, L.entabY1 + 0.15, L.entabY1 + 0.6, [0.55, 0.52, 0.45], 0.42) // the cartouche
+    for (const s of [-1, 1]) {                                                                       // the reclining figures on the slopes
+      slabOn(o, '+z', pl + 0.5, s * 1.15 - 0.4, s * 1.15 + 0.4, L.entabY1 + 0.35, L.entabY1 + 0.6, 0.5, marble)
+      slabOn(o, '+z', pl + 0.5, s * 0.8 - 0.12, s * 0.8 + 0.12, L.entabY1 + 0.6, L.entabY1 + 1.0, 0.4, marble)
+    }
+    prism(o, 0, pl + 0.3, L.entabY1, L.entabY1 + L.domeH, 1.5, 12, dome, FIXED, 0.1)                // the scaled dome behind
+    prism(o, 0, pl + 0.3, L.entabY1 + L.domeH, L.entabY1 + L.domeH + 0.4, 0.14, 8, p.trim, FIXED, 0.1)   // its finial
+    // the basin: a low stone rim round still water, one jet
+    const b0 = pl + 1.2, b1 = b0 + L.basinD
+    block(o, -L.basinW, L.basinW, b0, b1, -0.5, 0.45, p.trim)
+    block(o, -L.basinW + 0.25, L.basinW - 0.25, b0 + 0.25, b1 - 0.25, 0.4, 0.47, [0.4, 0.55, 0.6])
+    prism(o, 0, (b0 + b1) / 2, 0.45, 2.2, 0.03, 6, [0.85, 0.92, 0.95], FIXED, 0.015)
+  })
 }
 
 /** `part` appended to `out`, raised `y`. */

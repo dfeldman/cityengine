@@ -260,3 +260,7 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 ## Status
 
 - mur des Fédérés: modelled (src/render/landmarks/paris/monuments/mur-des-federes.ts, public/landmarks/paris/monuments.json; Modly pieces: none)
+- mémorial de la France combattante (Q3333148): skipped: Mont Valérien (lon 2.2138) lies west of the baked Paris box (lon 2.218–2.410)
+- Les Deux Plateaux (Q3232046): already modelled as src/render/landmarks/paris/buren-columns.ts
+- colonne Médicis (Q1110974): already modelled as medicisColumn in src/render/landmarks/paris/museums/bourse-commerce.ts (Bourse de Commerce entry)
+- fontaine de Léda (Q3076156): modelled (back of medicisFountain, src/render/landmarks/paris/palaces/medicis-fountain.ts `ledaFountain`, public/landmarks/paris/palaces.json "Fontaine Médicis" entry unchanged; Modly pieces: none, the Léda-and-swan relief is a flat procedural stand-in)
