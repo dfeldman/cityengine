@@ -715,22 +715,6 @@
     "note": "De Baudot's church of brick, ceramic and reinforced cement on the Place des Abbesses (1904). Placed on OSM way 77807770's box (osmium, 2026-10-30), −z the portal toward bearing 42; the way is replaced. The walls are its ring, the front from one Commons elevation, heights read off it (OSM has only five levels); sides and back not checked against a photograph."
   },
   {
-    "name": "Mémorial de la Shoah",
-    "procedural": "memorialShoah",
-    "osm": [
-      "way/55620205",
-      "way/55620119"
-    ],
-    "lat": 48.85491,
-    "lon": 2.356056,
-    "size": [
-      23,
-      44.1
-    ],
-    "height": 19.2,
-    "front": 122,
-    "note": "The memorial on the Rue Geoffroy-l'Asnier. Placed on the box of OSM's museum polygon (way 124052479; osmium, 2026-10-30), −z the street at bearing 122; the main block (way 55620205) and the street front (way 55620119, building=roof) are replaced, their rings OSM's. The street front is from one Commons photograph; the court and the block's front are from memory and not confirmed by one."
-  {
     "name": "Mur des Fédérés",
     "procedural": "murDesFederes",
     "kind": "monument",
@@ -746,6 +730,22 @@
     "madeBy": "claude-sonnet-5-5",
     "note": "The Communards' wall in Père-Lachaise's south-east corner (Wikidata Q910923). Placed on OSM's plaque node 5220080010, the wall's centre line along way 13859706 (bearing 64.5), the plaque facing the cemetery side toward bearing 334.5 (osmium, 2026-11-22). Wall ~2.9 m, plaque ~2.3 x 1.45 m, the paved court and beds are estimated from two Commons photographs against the plaque, not surveyed; the ivy and plantings are stand-ins. No sculpture: no Modly piece."
   },
+  {
+    "name": "Mémorial de la Shoah",
+    "procedural": "memorialShoah",
+    "osm": [
+      "way/55620205",
+      "way/55620119"
+    ],
+    "lat": 48.85491,
+    "lon": 2.356056,
+    "size": [
+      23,
+      44.1
+    ],
+    "height": 19.2,
+    "front": 122,
+    "note": "The memorial on the Rue Geoffroy-l'Asnier. Placed on the box of OSM's museum polygon (way 124052479; osmium, 2026-10-30), −z the street at bearing 122; the main block (way 55620205) and the street front (way 55620119, building=roof) are replaced, their rings OSM's. The street front is from one Commons photograph; the court and the block's front are from memory and not confirmed by one."
   },
   {
     "name": "Église Notre-Dame-de-Lorette",
@@ -1191,8 +1191,6 @@
     "front": 0,
     "sign": false,
     "note": "Driss Sans-Arcidet's monument to General Dumas (2009), OSM node 7952476083. Shape and sizes by eye from Commons 'Unchained (64188317).jpeg': tall ring with broken chain, cuff with hanging chain; bearing a guess."
-  }
-]
   },
   {
     "name": "Monument des Droits de l'Homme",
@@ -1209,3 +1207,5 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Jantzen and Theimer's mastaba-like tower of 1989 in the Champ de Mars (Wikidata Q3323344). Placed on the centre of OSM way 369434380 (a 14.5 m square podium turned 45 deg; osmium, 2026-11-22), the front (−z) the south-west face toward the Champ de Mars at bearing 225, the bronze door on the back. Podium from OSM; the tower (~7.2 m wide, 12 m tall), the two bronze obelisks (~14.5 m) and the figures' places are scaled off one wide photograph against the figures, not surveyed; the seals, triangle and sundial are stand-ins. The figures are Modly models (statues manifest: droits-group, droits-toga)."
+  }
+]
