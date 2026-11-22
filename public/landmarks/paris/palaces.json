@@ -18,6 +18,7 @@
   {
     "name": "Fontaine Médicis",
     "procedural": "medicisFountain",
+    "osm": ["way/59918188"],
     "kind": "fountain",
     "lat": 48.848066,
     "lon": 2.338941,
