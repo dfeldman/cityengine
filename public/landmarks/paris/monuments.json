@@ -1241,6 +1241,22 @@
     "note": "Visconti's cast-iron fountain of 1844 in the square Louvois (Wikidata Q3076038; sculptor Klagmann): octagonal basin (OSM way 26277959, ~6 m flat to centre, a sloppy polygon so +-1 m; vertices near east, hence front 25), square pedestal with four tritons on dolphins, a wide bowl with zodiac band and mascarons, an upper pedestal, the four river goddesses back to back under the top bowl. Basin from OSM; bowls, pedestals and the ~8.5 m total height scaled off Commons photographs against the 3.6 m goddess group, not surveyed. Goddesses and top bowl are a Modly model (statues manifest: louvois-group), the tritons likewise (louvois-triton)."
   },
   {
+    "name": "La Danse de la fontaine émergente",
+    "procedural": "danseFontaineEmergente",
+    "kind": "fountain",
+    "lat": 48.83918,
+    "lon": 2.37061,
+    "front": 0,
+    "size": [
+      31.6,
+      6.8
+    ],
+    "height": 2.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Chen Zhen's 2008 dragon-fountain on the place Augusta-Holmès (Wikidata Q747835; OSM node 447873149 is a point, no footprint to claim): a row of glass tubes with water inside breaking the paving, ringed with steel hoops and crested with scalloped steel fins. Procedural only (monument-kit sweptTube/hoop/finPlate). Hump count (5), length (~30 m), height (~2.1 m) and the serpentine are read off ONE Commons photo (Place_Augusta_Holmes_03) against a car and lamp post, not surveyed; orientation (front 0) is a guess: check against an aerial. The head is not visible in the photo, so the body just dives under at both ends. No Modly part: nothing figurative survives."
+  },
+  {
     "name": "Fontaine Molière",
     "procedural": "fontaineMoliere",
     "kind": "fountain",

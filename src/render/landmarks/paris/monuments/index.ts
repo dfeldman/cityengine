@@ -45,6 +45,7 @@ import { saintAlexandreNevsky } from './saint-alexandre-nevsky.ts'
 import { fontaineDuPalmier } from './fontaine-palmier.ts'
 import { fontaineLouvois } from './fontaine-louvois.ts'
 import { fontaineMoliere } from './fontaine-moliere.ts'
+import { danseFontaineEmergente } from './danse-fontaine-emergente.ts'
 import { fusillesCascade } from './fusilles-cascade.ts'
 import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
 import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
@@ -71,6 +72,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineQuatreSaisons,
   fontaineLouvois,
   fontaineMoliere,
+  danseFontaineEmergente,
   fusillesCascade,
   fontaineSaintSulpice,
   droitsDeLHomme,

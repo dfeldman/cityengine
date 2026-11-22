@@ -1,6 +1,6 @@
 import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import { prism, type Rgb } from '../../../models.ts'
-import { block, lathe, roof, shade } from '../../kit.ts'
+import { beam, block, lathe, roof, shade } from '../../kit.ts'
 import { ccw, FIXED, UV, walls, type P2 } from './common.ts'
 import { basin, circle, falls, G, spout } from './plaza-common.ts'
 
@@ -176,6 +176,79 @@ export function jetRing(out: MeshBuilder, cx: number, cz: number, n: number, r0:
     const a = (i / n) * Math.PI * 2 + (o.phase ?? 0)
     spout(out, [cx + Math.sin(a) * r0, y0, cz + Math.cos(a) * r0], [cx + Math.sin(a) * r1, y1, cz + Math.cos(a) * r1], o.rise ?? 0.25, o.r ?? 0.025, o.c)
   }
+}
+
+type V3 = [number, number, number]
+
+/** A tube swept along a 3-D centreline `path` (>= 2 points), radius `r` (number, or a function of 0..1 along it), `sides` facets, closed with a flat cap at each end unless `caps` is false: a serpent's body, a pipe, a rope. Smooth-shaded by radial normals. */
+export function sweptTube(out: MeshBuilder, path: V3[], o: { r: number | ((t: number) => number); sides?: number; c: Rgb; caps?: boolean }): void {
+  const n = o.sides ?? 12
+  const rr = (t: number): number => (typeof o.r === 'number' ? o.r : o.r(t))
+  const rings: { p: V3[]; nn: V3[]; c: V3; t: V3 }[] = []
+  for (let i = 0; i < path.length; i++) {
+    const a = path[Math.max(0, i - 1)], b = path[Math.min(path.length - 1, i + 1)]
+    let t: V3 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
+    const tl = Math.hypot(t[0], t[1], t[2]) || 1
+    t = [t[0] / tl, t[1] / tl, t[2] / tl]
+    let s: V3 = [t[2], 0, -t[0]]
+    const sl = Math.hypot(s[0], s[2])
+    s = sl < 1e-3 ? [1, 0, 0] : [s[0] / sl, 0, s[2] / sl]
+    const u: V3 = [t[1] * s[2] - t[2] * s[1], t[2] * s[0] - t[0] * s[2], t[0] * s[1] - t[1] * s[0]]
+    const r = rr(i / (path.length - 1))
+    const p: V3[] = [], nn: V3[] = []
+    for (let k = 0; k < n; k++) {
+      const th = (k / n) * Math.PI * 2
+      const d: V3 = [s[0] * Math.cos(th) + u[0] * Math.sin(th), s[1] * Math.cos(th) + u[1] * Math.sin(th), s[2] * Math.cos(th) + u[2] * Math.sin(th)]
+      nn.push(d)
+      p.push([path[i][0] + d[0] * r, path[i][1] + d[1] * r, path[i][2] + d[2] * r])
+    }
+    rings.push({ p, nn, c: path[i], t })
+  }
+  for (let i = 0; i + 1 < rings.length; i++) {
+    const A = rings[i], B = rings[i + 1]
+    for (let k = 0; k < n; k++) {
+      const k2 = (k + 1) % n
+      const m: V3 = [A.nn[k][0] + A.nn[k2][0], A.nn[k][1] + A.nn[k2][1], A.nn[k][2] + A.nn[k2][2]]
+      const ml = Math.hypot(m[0], m[1], m[2]) || 1
+      out.quad([A.p[k], A.p[k2], B.p[k2], B.p[k]], [m[0] / ml, m[1] / ml, m[2] / ml], UV, o.c, FIXED)
+    }
+  }
+  if (o.caps === false) return
+  for (const [R, sg] of [[rings[0], -1], [rings[rings.length - 1], 1]] as [typeof rings[0], number][]) {
+    const nrm: V3 = [R.t[0] * sg, R.t[1] * sg, R.t[2] * sg]
+    for (let k = 0; k < n; k++) {
+      const k2 = (k + 1) % n
+      out.quad([R.c, R.p[k], R.p[k2], R.c], nrm, UV, o.c, FIXED)
+    }
+  }
+}
+
+/** A thin ring (hoop) of radius `r` about `c`, standing square to the direction `t`, made of `n` round bars of thickness `w`: a rib round a tube. */
+export function hoop(out: MeshBuilder, c: V3, t: V3, r: number, w: number, col: Rgb, n = 14): void {
+  const tl = Math.hypot(t[0], t[1], t[2]) || 1
+  const T: V3 = [t[0] / tl, t[1] / tl, t[2] / tl]
+  let s: V3 = [T[2], 0, -T[0]]
+  const sl = Math.hypot(s[0], s[2])
+  s = sl < 1e-3 ? [1, 0, 0] : [s[0] / sl, 0, s[2] / sl]
+  const u: V3 = [T[1] * s[2] - T[2] * s[1], T[2] * s[0] - T[0] * s[2], T[0] * s[1] - T[1] * s[0]]
+  const pt = (k: number): V3 => {
+    const th = (k / n) * Math.PI * 2
+    return [c[0] + (s[0] * Math.cos(th) + u[0] * Math.sin(th)) * r, c[1] + (s[1] * Math.cos(th) + u[1] * Math.sin(th)) * r, c[2] + (s[2] * Math.cos(th) + u[2] * Math.sin(th)) * r]
+  }
+  for (let k = 0; k < n; k++) beam(out, pt(k), pt(k + 1), w, col)
+}
+
+/** A flat scalloped fin (a dorsal plate) standing on `base` and leaning along `lean`, `h` tall, `len` long at the foot, `thick` thick, with a rounded-off crown of `teeth` points: the steel spines on a serpent's back. `side` is the unit direction across the fin's thickness. */
+export function finPlate(out: MeshBuilder, base: V3, lean: V3, side: V3, o: { h: number; len: number; thick: number; c: Rgb }): void {
+  const hl = o.len / 2, ht = o.thick / 2
+  for (const sg of [-1, 1]) {
+    const so: V3 = [side[0] * ht * sg, side[1] * ht * sg, side[2] * ht * sg]
+    const P = (a: number, h: number): V3 => [base[0] + lean[0] * a + so[0], base[1] + h + so[1], base[2] + lean[2] * a + so[2]]
+    out.quad([P(-hl, 0), P(hl, 0), P(hl * 0.35, o.h), P(-hl * 0.55, o.h * 0.8)], [side[0] * sg, side[1] * sg, side[2] * sg], UV, o.c, FIXED)
+  }
+  // the crown edge
+  const P2 = (a: number, h: number, sg: number): V3 => [base[0] + lean[0] * a + side[0] * ht * sg, base[1] + h, base[2] + lean[2] * a + side[2] * ht * sg]
+  out.quad([P2(-hl * 0.55, o.h * 0.8, -1), P2(hl * 0.35, o.h, -1), P2(hl * 0.35, o.h, 1), P2(-hl * 0.55, o.h * 0.8, 1)], [0, 1, 0], UV, o.c, FIXED)
 }
 
 export { UV }
