@@ -2,7 +2,7 @@
  * Statues from real models (the user's own GLBs, `public/models/<region>/`, packed by tools/glb/pack.ts).
  *
  * A GLB holds its textures and a full-resolution mesh, so it costs real memory; the pool keeps AT MOST
- * `MAX_LOADED` in the scene (user, 2026-09-22: "limit to having say 3 onscreen at once"), the nearest within
+ * `MAX_LOADED` in the scene (24 since 2026-10-26; it began at 3, user 2026-09-22), the nearest within
  * each one's range, loading one at a time and letting go of one only when it is well out of range or a
  * nearer one needs its place. The pedestals are procedural and always there — cheap, and a plinth without
  * its statue for a moment reads as a plinth, not as a hole.
