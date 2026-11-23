@@ -1,8 +1,8 @@
-import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
-import { prism, type Rgb } from '../../../models.ts'
-import { beam, block, lathe, roof, shade } from '../../kit.ts'
-import { ccw, FIXED, UV, walls, type P2 } from './common.ts'
-import { basin, circle, falls, G, spout } from './plaza-common.ts'
+import { MeshBuilder, capPolygonWithHoles } from '../../../../buildings.ts'
+import { prism, type Rgb } from '../../../../models.ts'
+import { beam, block, lathe, roof, shade } from '../../../kit.ts'
+import { ccw, FIXED, UV, walls, type P2 } from '../common.ts'
+import { basin, circle, falls, G, spout } from '../plaza-common.ts'
 
 /*
  * THE MINOR-MONUMENT KIT (PARIS_MINOR_MONUMENTS.md): the structural pieces a small monument is built from — a wall with a

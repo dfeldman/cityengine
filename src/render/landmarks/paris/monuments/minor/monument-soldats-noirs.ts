@@ -1,9 +1,9 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import type { Rgb } from '../../../models.ts'
-import { block, hex, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
-import { G } from './plaza-common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import type { Rgb } from '../../../../models.ts'
+import { block, hex, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
+import { G } from '../plaza-common.ts'
 import { plaque } from './monument-kit.ts'
 
 /*

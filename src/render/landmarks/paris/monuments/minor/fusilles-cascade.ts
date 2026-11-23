@@ -1,8 +1,8 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { prism } from '../../../models.ts'
-import { block, hex, shade, type Rgb } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { prism } from '../../../../models.ts'
+import { block, hex, shade, type Rgb } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
 
 /*
  * THE MONUMENT AUX FUSILLÉS DE LA CASCADE (Bois de Boulogne, chemin des Réservoirs by the Grande Cascade; Wikidata Q3091182;

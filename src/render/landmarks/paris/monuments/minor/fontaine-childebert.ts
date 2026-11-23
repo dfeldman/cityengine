@@ -1,9 +1,9 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { type Rgb } from '../../../models.ts'
-import { beam, block, hex, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
-import { G, basin } from './plaza-common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { type Rgb } from '../../../../models.ts'
+import { beam, block, hex, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
+import { G, basin } from '../plaza-common.ts'
 
 /*
  * LA FONTAINE CHILDEBERT (square Paul-Langevin, 5e; Jean Beausire, 1715-17, re-erected here in 1875; Wikidata Q3076004): a

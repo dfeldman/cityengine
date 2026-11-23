@@ -1,10 +1,10 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { prism, type Rgb } from '../../../models.ts'
-import { block, hex, lathe, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
-import { FIXED } from './common.ts'
-import { G } from './plaza-common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { prism, type Rgb } from '../../../../models.ts'
+import { block, hex, lathe, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
+import { FIXED } from '../common.ts'
+import { G } from '../plaza-common.ts'
 import { plaque, roundBasin, steppedBase } from './monument-kit.ts'
 
 /*

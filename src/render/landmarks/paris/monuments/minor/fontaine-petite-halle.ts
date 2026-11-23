@@ -1,9 +1,9 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { type Rgb } from '../../../models.ts'
-import { beam, block, hex, roof, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
-import { G } from './plaza-common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { type Rgb } from '../../../../models.ts'
+import { beam, block, hex, roof, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
+import { G } from '../plaza-common.ts'
 
 /*
  * LA FONTAINE DE LA PETITE-HALLE (also Fontaine de Montreuil; rue du Faubourg-Saint-Antoine at the rue de Montreuil, 11e;

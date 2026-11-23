@@ -1,8 +1,8 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { hex, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
-import { ring } from './common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { hex, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
+import { ring } from '../common.ts'
 import { basin, G } from './monument-kit.ts'
 
 /*

@@ -1,9 +1,9 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { hex, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { hex, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
 import { finPlate, G, hoop, sweptTube } from './monument-kit.ts'
-import type { Rgb } from '../../../models.ts'
+import type { Rgb } from '../../../../models.ts'
 
 /*
  * LA DANSE DE LA FONTAINE ÉMERGENTE (place Augusta-Holmès, 13th; Chen Zhen, 2008; Wikidata Q747835): a stylised dragon

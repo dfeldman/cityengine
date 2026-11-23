@@ -1,9 +1,9 @@
-import type { MeshBuilder } from '../../../buildings.ts'
-import { type Rgb } from '../../../models.ts'
-import { beam, block, hex, lathe, shade } from '../../kit.ts'
-import type { Fit } from '../../fit.ts'
-import { fitted } from '../palaces/common.ts'
-import { G } from './plaza-common.ts'
+import type { MeshBuilder } from '../../../../buildings.ts'
+import { type Rgb } from '../../../../models.ts'
+import { beam, block, hex, lathe, shade } from '../../../kit.ts'
+import type { Fit } from '../../../fit.ts'
+import { fitted } from '../../palaces/common.ts'
+import { G } from '../plaza-common.ts'
 
 /*
  * LA FONTAINE DE JOYEUSE (also Fontaine Saint-Louis; 41 rue de Turenne, 3e; 1847 on the site of a 1687 fountain; Boitel's
