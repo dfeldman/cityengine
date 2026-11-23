@@ -1801,6 +1801,23 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Mémorial national de la guerre d'Algérie (quai Branly)",
+    "procedural": "monumentMemorialAlgerie",
+    "kind": "monument",
+    "lat": 48.860588,
+    "lon": 2.295012,
+    "rotateDeg": -47,
+    "osm": ["way/814263041"],
+    "size": [
+      18.3,
+      10.7
+    ],
+    "height": 5.85,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3333171, 2002 (Gérard Collin-Thiébaut): three pale columns 5.85 m high (Wikipedia) with scrolling-name displays in blue, white and red on both broad faces. Placed on the centre of OSM way 814263041 (18.3 x 10.7 m, long axis NE-SW along the quai). Column width 0.85, depth 0.42, spacing 2.7 m and the display strip are estimated off a Commons photo; the displays are static lit dashes."
+  },
+  {
     "name": "Fontaine du square Lamartine",
     "procedural": "fontaineSquareLamartine",
     "kind": "fountain",
