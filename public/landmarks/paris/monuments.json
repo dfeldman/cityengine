@@ -1465,5 +1465,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Beausire's free-standing ashlar fountain pavilion of 1719 at the rue du Faubourg-Saint-Antoine / rue de Montreuil (Q3076204, also Fontaine de Montreuil; OSM way 63649496, claimed, 4.5 x 5.2 m with its niche dent). Stepped plinth, corner pilasters, cornice, pediment on each face, hipped roof; arched niche with trough and the bearded bronze mascaron (Modly montreuil-mascaron); blind arches/oculi on the sides, a door at the back. Heights, which face is which and the door side read off two Commons photos against the door (~2 m), not surveyed."
+  },
+  {
+    "name": "Miroir d'eau, la Seine et ses affluents",
+    "procedural": "fontaineMiroirEau",
+    "kind": "fountain",
+    "lat": 48.866886,
+    "lon": 2.311635,
+    "rotateDeg": 0,
+    "size": [
+      11.6,
+      10
+    ],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Raoul Larche's fountain of 1900-1901 in the square Jean-Perrin beside the Grand Palais (Q3076034): a lobed oval marble basin with the Seine and her tributaries seated on its rim. Plan = OSM ways 66758129 (outer) and 66758138 (water), measured; rim height 0.6 m and group sizes by eye against Commons photos. The sculpture groups are Modly pieces in paris-statues.json."
   }
 ]
