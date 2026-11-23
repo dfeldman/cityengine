@@ -2225,6 +2225,22 @@
     "note": "The wall fountain of the Jardin des plantes' north entrance (Q137838758, 40 rue Geoffroy-Saint-Hilaire): the retaining wall of Rohault de Fleury's 1834 reservoir, a stone wall with a round arch over a brick cul-de-four, a round basin before it and a lion-head spout; the two bronze lions of Jacquemart (1857/1860) stand on its top corners (Modly jdp-lion, placed from paris-statues.json). OSM way 97183056 (building named Fontaine aux Lions, 8.5 m front edge) claimed; origin = middle of its SE front edge (the polygon lies NW of it), front bearing 151. Wall 8.3 m wide, ~3.3 m high with cornice, arch 3.7 m wide, basin 4.6 m across: scaled off Commons photographs (bollards ~1 m), not surveyed."
   },
   {
+    "name": "Fontaine du square Tolstoï",
+    "procedural": "fontaineSquareTolstoi",
+    "kind": "fountain",
+    "lat": 48.853135,
+    "lon": 2.2608174,
+    "front": 90,
+    "size": [
+      7,
+      6.06
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Three nested hexagonal basins (fr.wikipedia: like Russian dolls) in the square Tolstoï, boulevard Suchet, laid out 1934, under Charles Georges Cassou's marble Femme et enfant of 1934 (Wikidata Q3076299). Placed on OSM node 6943355178 (no basin outline in OSM; no building ways under it). Basin radii, rim heights and the pedestal are estimated by eye off two Commons photos against the ~1.9 m figure, not surveyed; the front (statue faces east, into the square away from the boulevard) is read off a photo's background. The figure is a Modly model (statues manifest tolstoi-femme-enfant)."
+  },
+  {
     "name": "Tombes de La Fontaine et de Molière",
     "procedural": "tombeLaFontaineMoliere",
     "kind": "monument",

@@ -1512,6 +1512,14 @@
     },
     "range": 250,
     "note": "The poet's wrapped recumbent figure on the slab, head toward the stele. assetkit img2glb guided, 2nd attempt, from Commons 'Baudelaire's grave 01.jpg' (the 1st, from the 2024 front photo, made a standing hooded man). Height 0.4 m estimated; bearing 270 is a guess to lay it along z."
+  },
+  {
+    "id": "tolstoi-femme-enfant",
+    "name": "Fontaine du square Tolstoï: Femme et enfant (Cassou, 1934)",
+    "asset": "tolstoi-femme-enfant",
+    "attach": { "to": "Fontaine du square Tolstoï", "at": [0, 1.60, 0], "bearing": 180 },
+    "range": 200,
+    "note": "Cassou's marble woman with a child on her shoulder, on the top basin's pedestal. assetkit img2glb guided from Commons 'Fontaine du square Tolstoï, Paris 16e 3.jpg'; published in assetkit-models-paris"
   }
 
 

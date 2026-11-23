@@ -94,6 +94,7 @@ import { fontaineJoyeuse } from './minor/fontaine-joyeuse.ts'
 import { fontaineReservoirMontmartre } from './minor/fontaine-reservoir-montmartre.ts'
 import { fontaineMarcheCarmes } from './minor/fontaine-marche-carmes.ts'
 import { fontainePastorale } from './minor/fontaine-pastorale.ts'
+import { fontaineSquareTolstoi } from './minor/fontaine-square-tolstoi.ts'
 import { danseFontaineEmergente } from './minor/danse-fontaine-emergente.ts'
 import { fusillesCascade } from './minor/fusilles-cascade.ts'
 import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
@@ -127,6 +128,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontainePaix,
   fontaineLionsJardinPlantes,
   fontainePastorale,
+  fontaineSquareTolstoi,
   fontaineMoliere,
   fontaineParadis,
   fontainePuitsButteAuxCailles,
