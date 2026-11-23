@@ -1377,5 +1377,23 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Girard's fountain of 1811 (fontaine du Château d'eau, Q3076267) in the Place de la Fontaine-aux-Lions, La Villette; OSM way 81752247 (a 0.6 m wall outline, ~26 m across, claimed). Pool, two round steps, four diagonal piers, core and two-tazza plume are by eye from Commons photographs (Fontaine Château Eau Pierre Simon Girard Paris 1-4): radii and heights are guesses, only the 26 m outline is measured. The eight cast-iron lions (two a pier) are Modly pieces attached from paris-statues.json at LION_AT."
+  },
+  {
+    "name": "Fontaine du puits de Grenelle",
+    "procedural": "fontaineGrenelle",
+    "kind": "fountain",
+    "osm": [
+      "way/252282895"
+    ],
+    "lat": 48.846884,
+    "lon": 2.310023,
+    "size": [
+      3.4,
+      3.4
+    ],
+    "height": 5.1,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The fountain of 1906 (Q3076301) in the round planter of place Georges-Mulot, 15e, on the site of the first artesian well; OSM way 252282895 (natural=water, the 3.4 m planter circle) claimed. Square ashlar shaft with four engaged corner columns, plinth, oval medallions on the four faces, cornice, stepped stone cap and ball. Heights and widths are scaled off the Commons photo 'Fontaine du Puits de Grenelle.jpg' against the mascaron (~0.33 m) and plinth (~2.1 m), not surveyed; medallions/frames are shallow relief kept procedural. The bronze mascaron (south face) is a procedural stand-in: three Modly attempts (hunyuan21, trellis2 x2) from the only usable photo (~140 px of face) gave flat slabs, so none is published."
   }
 ]
