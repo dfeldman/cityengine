@@ -294,3 +294,34 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - monument à Komitas (Q3323366): modelled (src/render/landmarks/paris/monuments/minor/monument-komitas.ts, public/landmarks/paris/monuments.json; Modly pieces: komitas-statue2 (trellis2), published, placed in paris-statues.json)
 - monument aux morts du Père-Lachaise (Q3323309): modelled (src/render/landmarks/paris/monuments/minor/monument-morts-pere-lachaise.ts, public/landmarks/paris/monuments.json; Modly pieces: pere-couple, pere-gauche, pere-droite, all published, placed in public/landmarks/paris-statues.json)
 - Fontaine du Bassin Soufflot (Q3076290): modelled (src/render/landmarks/paris/monuments/minor/fontaine-bassin-soufflot.ts, public/landmarks/paris/monuments.json; Modly pieces: soufflot-triton, published; only seen in one overview shot)
+- Bassin d'Apollon (Q2887454): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin de Latone (Q14626964): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin du Miroir (Q2887544): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- bain des Nymphes (Q2879916): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- bassin de Bacchus (Q2887459): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- bassin de Cérès (Q2887473): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- bassin de Flore (Q2887478): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- bassin de Saturne (Q2887493): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- bassin de la Pyramide (Q2887514): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- fontaine du Point du Jour (Q15940457): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin des Couronnes (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin des Couronnes (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin des Lézards (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin des Lézards (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin du Midi (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Bassin du Nord (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Fontaine Saint-Louis (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Fontaine de la rue de l'Ermitage (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Fontaine de l’Amour assis sur un dauphin (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Fontaine des Quatre Pavés (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- pièce d'eau des Suisses (Q3389524): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Abbaye Notre-Dame-des-Anges (ancienne) (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Site historique de l'Hôpital Richaud (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- École spéciale militaire (ancienne maison royale de Saint-Louis) (): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- pavillon frais (Q3373111): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- pavillon français (Q15311040): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- Grotte du Petit Trianon (Q139624494): skipped: Versailles estate (Château, Trianon, park or Marly side), out of scope for now
+- mémorial de la Shoah à Drancy (Q85854201): skipped: lat 48.919, north of the paris-centre box (z1 ≈ lat 48.898)
+- Barry chien sauveteur (Q65938073): skipped: lat 48.910 (Asnières dog cemetery), north of the paris-centre box
+- monument aux morts de Levallois-Perret (Q96602263): skipped: lat 48.902, north of the paris-centre box
+- monument à Boussingault (Q28086367): skipped: lat 48.915, north of the paris-centre box
