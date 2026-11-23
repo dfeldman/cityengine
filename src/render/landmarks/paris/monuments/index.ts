@@ -53,6 +53,7 @@ import { fusillesCascade } from './fusilles-cascade.ts'
 import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
 import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
 import { fontaineChateauEau } from './fontaine-chateau-eau.ts'
+import { fontaineLionsNubie } from './fontaine-lions-nubie.ts'
 import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
 import { hautesHerbes } from './hautes-herbes.ts'
 import { murDesFederes } from './mur-des-federes.ts'
@@ -71,6 +72,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   domeImax,
   fers,
   fontaineChateauEau,
+  fontaineLionsNubie,
   fontaineDuPalmier,
   fontaineQuatreSaisons,
   fontaineLouvois,

@@ -1328,5 +1328,23 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Titeux's wall fountain of 1835 on the front of the old Montmartre reservoir (9b rue Norvins, Wikidata Q945052; OSM way 77937860, the disused reservoir building, claimed: ring extruded as the body, front on its SSW edge, bearing 197). Aedicule 5 m wide, ~7.2 m to the pediment, 8-step stair, niche 2.6 m wide, scaled off two Commons photos against the niche and stair, not surveyed; pink marble panels and the frieze are flat stand-ins. The bronze vase with dolphin feet in the niche is a Modly model (reservoir-vase)."
+  },
+  {
+    "name": "Fontaine aux Lions de Nubie",
+    "procedural": "fontaineLionsNubie",
+    "kind": "fountain",
+    "osm": [
+      "way/81752247"
+    ],
+    "lat": 48.889567,
+    "lon": 2.392277,
+    "size": [
+      26.6,
+      26.6
+    ],
+    "height": 9,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Girard's fountain of 1811 (fontaine du Château d'eau, Q3076267) in the Place de la Fontaine-aux-Lions, La Villette; OSM way 81752247 (a 0.6 m wall outline, ~26 m across, claimed). Pool, two round steps, four diagonal piers, core and two-tazza plume are by eye from Commons photographs (Fontaine Château Eau Pierre Simon Girard Paris 1-4): radii and heights are guesses, only the 26 m outline is measured. The eight cast-iron lions (two a pier) are Modly pieces attached from paris-statues.json at LION_AT."
   }
 ]
