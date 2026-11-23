@@ -390,6 +390,30 @@
     "asset": "gaillon-dauphin"
   },
   {
+    "id": "sainte-genevieve-lion-c",
+    "name": "Fontaine Sainte-Geneviève: lion mascaron (centre)",
+    "attach": { "to": "Fontaine Sainte-Geneviève", "at": [0, 0.86, 2.5], "bearing": 180 },
+    "range": 120,
+    "note": "Blue lion-head spout on the wall's inner face. assetkit img2glb guided from Commons 'Fontaine Sainte-Geneviève.jpg'; published in assetkit-models-paris",
+    "asset": "sainte-genevieve-lion"
+  },
+  {
+    "id": "sainte-genevieve-lion-e",
+    "name": "Fontaine Sainte-Geneviève: lion mascaron (east)",
+    "attach": { "to": "Fontaine Sainte-Geneviève", "at": [1.77, 0.86, 1.77], "bearing": 225 },
+    "range": 120,
+    "note": "Second lion-head spout, same model.",
+    "asset": "sainte-genevieve-lion"
+  },
+  {
+    "id": "sainte-genevieve-lion-w",
+    "name": "Fontaine Sainte-Geneviève: lion mascaron (west)",
+    "attach": { "to": "Fontaine Sainte-Geneviève", "at": [-1.77, 0.86, 1.77], "bearing": 135 },
+    "range": 120,
+    "note": "Third lion-head spout, same model.",
+    "asset": "sainte-genevieve-lion"
+  },
+  {
     "id": "reine-mascaron-e",
     "name": "Fontaine de la Reine: mascaron (east corbel)",
     "attach": {

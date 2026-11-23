@@ -1311,6 +1311,22 @@
     "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
   },
   {
+    "name": "Fontaine Sainte-Geneviève",
+    "procedural": "fontaineSainteGenevieve",
+    "kind": "fountain",
+    "lat": 48.847329,
+    "lon": 2.348507,
+    "front": 168,
+    "size": [
+      7.2,
+      7.2
+    ],
+    "height": 2.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Wall fountain of 1864 (Wikidata Q3076089) in the place Jacqueline-de-Romilly, rue Descartes / rue de la Montagne-Sainte-Geneviève, opposite the old École polytechnique: a semicircular stone wall ~6 m across (fr.wikipedia) with a blue iron railing, a pier with the city's shield at each end, a chain across the open side and three blue lion-head mascarons pouring into floor gratings (the lion is a Modly model, sainte-genevieve-lion). Plan from OSM's untagged 12-point arc at the corner (radius ~3 m, chord tilted ~12 deg; no building way to claim); wall height, pier height and railing taken off one Commons photograph against the lion head, not surveyed."
+  },
+  {
     "name": "Fontaine de la Reine",
     "procedural": "fontaineReine",
     "kind": "fountain",
