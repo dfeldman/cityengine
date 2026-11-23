@@ -40,7 +40,8 @@ Haussmann facade has a mansard and iron balconies because that is what the word 
 The Paris statue models placed by `public/landmarks/paris-statues-img2glb.json` are AI models (assetkit
 `tools/img2glb`, run on our own machine) each made from one Wikimedia Commons photograph, and each carries that
 photograph's licence: **CC BY-SA** where the photo is CC BY-SA, **CC BY** where it is CC BY, CC0 where it is public
-domain or CC0. The per-model list (statue, licence, photographer, Commons file page) is
+domain or CC0. So do the sculpted parts of procedural monuments placed by `public/landmarks/paris-statues.json`
+(assetkit `tools/img2glb/guided`, from hand-cropped Commons photos). The per-model list (licence, photographer, Commons file page) is
 [docs/credits/paris-img2glb-statues.md](docs/credits/paris-img2glb-statues.md), written by
 `tools/img2glb-statues.ts`; the same licence and attribution travel with each model in the assetmgr index
 `assetkit-models-paris`, from which the game loads them. A redistributed model keeps its licence and credit line.

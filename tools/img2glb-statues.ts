@@ -118,6 +118,8 @@ const metaOf = (id: string): Meta | null => {
 }
 interface Override {
   skip?: string; keep?: boolean; bearing?: number
+  /** a name-matched landmark checked and found not to draw it (its other checks still apply) */
+  notDrawn?: boolean
   /** degrees added to the bearing found: 180 for a model the review found turned backwards (its render shows the photo's other side) */
   turn?: number
   /** the photo shows the statue's back: a bearing from a wall or street (which wants the front) turns 180 */
@@ -342,6 +344,16 @@ for (let i = 0; i < titles.length; i += 50) {
 mkdirSync(resolve(CAMERA_CACHE, '..'), { recursive: true })
 writeFileSync(CAMERA_CACHE, JSON.stringify(Object.fromEntries(Object.entries(cameras).sort()), null, 0) + '\n')
 
+/** the guided pieces (assetkit tools/img2glb/guided: the sculpted parts of procedural monuments) paris-statues.json places */
+function guidedCredits(): string {
+  const all = new Map(json<{ assets: IndexAsset[] }>(resolve(AK, 'indexes/asset-index-assetkit-models-paris.json')).assets.filter((a) => !a.isDeleted).map((a) => [a.id, a]))
+  const used = [...new Set(statues.map((e) => e.asset).filter((a): a is string => !!a && all.has(a)))].sort()
+  if (!used.length) return ''
+  return `\n## The sculpted parts of procedural monuments\n\nModels made the same way from hand-cropped photographs (assetkit tools/img2glb/guided) and placed `
+    + `by public/landmarks/paris-statues.json on the monuments the game builds.\n\n| piece | licence | made from |\n|---|---|---|\n`
+    + used.map((id) => `| ${(all.get(id)!.name ?? id).replace(/\|/g, '/')} | ${all.get(id)!.license ?? 'CC0-1.0'} | ${(all.get(id)!.attribution ?? '').replace(/\|/g, '/')} |`).join('\n') + '\n'
+}
+
 // ---- place each
 interface Out { id: string; name: string; asset: string; lat: number; lon: number; bearing: number; raise?: number; lodRanges: number[]; beside?: string; plinth?: [number, number, number]; plinthColour?: string; note: string }
 const out: Out[] = []
@@ -353,8 +365,8 @@ for (const c of candidates) {
   const name = meta.name
   const skip = (reason: string): void => { report[id] = { batch: b, status: 'skipped', reason } }
   if (!o.keep && NOT_FREE.test(norm(name))) { skip('the name says relief/façade piece, not a free-standing statue'); continue }
-  // doubles: the hand-placed statues, then the procedural landmarks
-  if (!o.keep) {
+  // doubles: the hand-placed statues, then the procedural landmarks (`notDrawn`: checked, the landmark does not draw it)
+  if (!o.keep && !o.notDrawn) {
     const dup = statueAt.find(({ s, at }) => at && (Math.hypot(at.x - c.at.x, at.z - c.at.z) < DOUBLE_M && !s.attach
       || Math.hypot(at.x - c.at.x, at.z - c.at.z) < NAME_MATCH_M && (nameMatch(s.name, name) >= 0.6 || nameMatch(s.attach?.to ?? '', name) >= 0.6)))
     if (dup) { skip(`already in paris-statues.json: ${dup.s.id}${dup.s.attach ? ` (on ${dup.s.attach.to})` : ''}`); continue }
@@ -460,7 +472,8 @@ if (!process.argv.includes('--dry')) {
     + `public/landmarks/paris-statues-img2glb.json were made by assetkit tools/img2glb (Hunyuan3D / Trellis2 through Modly) from one `
     + `photograph each, and carry that photograph's licence: a model made from a CC BY-SA photo is CC BY-SA, from a CC BY one CC BY, `
     + `from a public-domain or CC0 one CC0. The same licence and attribution are on each model in the assetmgr index assetkit-models-paris.\n\n`
-    + `${counts.map(([l, n]) => `${l} ${n}`).join(' · ')}\n\n| statue | licence | made from |\n|---|---|---|\n${rows.join('\n')}\n`)
+    + `${counts.map(([l, n]) => `${l} ${n}`).join(' · ')}\n\n| statue | licence | made from |\n|---|---|---|\n${rows.join('\n')}\n`
+    + guidedCredits())
 }
 const only = arg('batch')?.split(',')
 const shown = Object.entries(report).filter(([, r]) => !only || only.includes(r.batch))

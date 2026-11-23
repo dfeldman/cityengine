@@ -2,6 +2,9 @@
  "a-la-memoire-de-theophile-alexandre-steinlen": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
  },
+ "albert-ier-de-belgique": {
+  "skip": "its source photo is the Brussels statue (Kunstberg), not the Paris one"
+ },
  "alphand": {
   "skip": "bad model (review r4)"
  },
@@ -107,6 +110,10 @@
  },
  "jeanne-d-albret": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "jeanne-d-arc": {
+  "notDrawn": true,
+  "note": "the Basilique Sainte-Jeanne-d’Arc is a generic parisCivic church (kit eglise), which draws no statue"
  },
  "l-abondance-injalbert": {
   "skip": "bad model (review r2)"

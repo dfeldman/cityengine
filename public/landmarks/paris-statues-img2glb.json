@@ -1,18 +1,5 @@
 [
  {
-  "id": "albert-ier-de-belgique",
-  "name": "Albert Ier de Belgique",
-  "asset": "albert-ier-de-belgique",
-  "lat": 48.86461,
-  "lon": 2.31828,
-  "bearing": 16,
-  "lodRanges": [
-   46,
-   184
-  ],
-  "note": "img2glb paris-002; facing towards the nearest cycleway (Piste Pierre et Ernest Michaux), 9 m"
- },
- {
   "id": "alexandre-combattant",
   "name": "Alexandre Combattant",
   "asset": "alexandre-combattant",
@@ -494,19 +481,6 @@
    112
   ],
   "note": "img2glb paris-004; facing towards the nearest footway, 4 m"
- },
- {
-  "id": "cenotaphe-de-charles-baudelaire",
-  "name": "Cénotaphe de Charles Baudelaire",
-  "asset": "cenotaphe-de-charles-baudelaire",
-  "lat": 48.8374012,
-  "lon": 2.3285208,
-  "bearing": 204,
-  "lodRanges": [
-   30,
-   112
-  ],
-  "note": "img2glb paris-006; facing towards the camera of its photo (17 m); moved 2.6 m off the service (Avenue Transversale)"
  },
  {
   "id": "ceres-ou-l-ete",
@@ -1173,6 +1147,19 @@
    152
   ],
   "note": "img2glb paris-008; facing towards the nearest footway, 6 m"
+ },
+ {
+  "id": "jeanne-d-arc",
+  "name": "Jeanne d'Arc",
+  "asset": "jeanne-d-arc",
+  "lat": 48.891501,
+  "lon": 2.3600241,
+  "bearing": 268,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-008; facing away from the wall 1.1 m behind; moved 1.8 m off the primary (Rue de la Chapelle); the Basilique Sainte-Jeanne-d’Arc is a generic parisCivic church (kit eglise), which draws no statue"
  },
  {
   "id": "jeune-fille-allongee",
