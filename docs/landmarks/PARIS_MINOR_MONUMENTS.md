@@ -325,3 +325,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - Barry chien sauveteur (Q65938073): skipped: lat 48.910 (Asnières dog cemetery), north of the paris-centre box
 - monument aux morts de Levallois-Perret (Q96602263): skipped: lat 48.902, north of the paris-centre box
 - monument à Boussingault (Q28086367): skipped: lat 48.915, north of the paris-centre box
+- Fontaine de Diane (Q3076128): modelled (src/render/landmarks/paris/monuments/minor/fontaine-diane.ts + kit hittorffFountain, public/landmarks/paris/monuments.json; Modly pieces: diane-diane, published)

@@ -756,6 +756,22 @@
     "range": 250,
     "note": "The group of the dead right of the door (half relief on a thin backing). assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux morts - après restauration 01.jpg', wall painted out by a hand polygon. Height 1.9 m estimated.",
     "asset": "pere-droite"
+  },
+  {
+    "id": "diane-diane",
+    "name": "Fontaine de Diane: Diane chasseresse",
+    "asset": "diane-diane",
+    "attach": {
+      "to": "Fontaine de Diane",
+      "at": [
+        0,
+        3.67,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Desprez's standing Diane on the reed tuft (1.8 m, by eye). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine de Diane Paris 8e 001.jpg'; a small leaf spike on the shoulder survives the cut-out; published in assetkit-models-paris"
   }
 
 

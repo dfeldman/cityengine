@@ -1567,5 +1567,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Bartholome's war memorial (1899, Q3323309; OSM way 311412497, width 14.1, height 8): a limestone mausoleum front at the top of the Avenue Principale steps, doorway with the couple (Modly pere-couple), a mourning group each side (pere-gauche, pere-droite), the sunk panel of the dead (shallow, procedural), bronze wing doors with step flights. Placed at the OSM polygon's long front edge (osmium; facing bearing 241.9, down the steps). Dimensions scaled by eye off Commons photographs against the 14.1 m OSM width, not surveyed."
+  },
+  {
+    "name": "Fontaine de Diane",
+    "procedural": "fontaineDiane",
+    "kind": "fountain",
+    "osm": [
+      "way/1136105125"
+    ],
+    "lat": 48.865924,
+    "lon": 2.31696,
+    "rotateDeg": 0,
+    "size": [
+      6.4,
+      6.4
+    ],
+    "height": 5.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hittorff's fountain of 1840 (Q3076128; also fontaine Ledoyen) in the jardin des Champs-Élysées, sister of the Cirque, Ambassadeurs and Grille du Coq fountains (kit routine hittorffFountain). Basin radius 3.0 m from OSM way 1136105125 (claimed); wall, octagonal pedestal, neck, vasque (~3.7 m across), 12 lion-mask lugs and reed tuft are by eye off Commons photos 'Fontaine de Diane Paris 8e 001-003', not surveyed. Desprez's Diane (~1.8 m) is Modly diane-diane."
   }
 ]

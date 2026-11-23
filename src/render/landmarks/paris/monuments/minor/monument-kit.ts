@@ -252,3 +252,77 @@ export function finPlate(out: MeshBuilder, base: V3, lean: V3, side: V3, o: { h:
 }
 
 export { UV }
+
+/** A Hittorff fountain of the Champs-Élysées gardens (Diane, Ambassadeurs, Cirque, Grille du Coq) about (cx, cz) from y0: a low round basin of radius `basinR` (wall `wall` high, rim `rim` wide, floor `floor` under y0+wall), an octagonal metal pedestal `pedW` across and `pedH` high with a raised panel and scallop on each face, a foliage neck with `dolphins` dolphins, a wide shallow vasque (radius `vasqueR`) carrying `masks` lion-mask lugs, a falling ring of water into the basin and a jet from the middle. Returns the vasque rim height; the group stands on a reed tuft + round plinth at `top` (own height returned as `plinthTop`). */
+export function hittorffFountain(out: MeshBuilder, cx: number, cz: number, y0: number, o: {
+  basinR: number; wall?: number; rim?: number; pedW?: number; pedH?: number; neckH?: number; vasqueR?: number; vasqueDepth?: number
+  masks?: number; dolphins?: number; fall?: number; stone: Rgb; metal: Rgb; water: Rgb; jet: Rgb; pedBase?: number
+}): { rim: number; plinthTop: number } {
+  const wall = o.wall ?? 0.75, rim = o.rim ?? 0.32
+  const pedW = o.pedW ?? 1.5, pedH = o.pedH ?? 0.85, neckH = o.neckH ?? 0.95
+  const vR = o.vasqueR ?? 2.0, vD = o.vasqueDepth ?? 0.62
+  const yBase = y0 + (o.pedBase ?? 0.25)
+  roundBasin(out, cx, cz, y0, o.basinR, { rim, depth: wall, lip: 0.06, stone: o.stone, water: o.water, sides: 40 })
+  // the basin wall is panelled: shallow vertical joints every ~0.9 m
+  const jc = shade(o.stone, 0.8)
+  const nj = Math.round((Math.PI * 2 * o.basinR) / 0.95)
+  for (let i = 0; i < nj; i++) {
+    const a = (i / nj) * Math.PI * 2
+    prism(out, cx + Math.sin(a) * o.basinR, cz + Math.cos(a) * o.basinR, y0 + 0.08, y0 + wall - 0.04, 0.03, 4, jc, FIXED, 0.03, true)
+  }
+  // octagonal pedestal: a plinth step, the faceted body, a cornice
+  const rc = (pedW / 2) / Math.cos(Math.PI / 8)
+  prism(out, cx, cz, y0, yBase, rc * 1.25, 8, shade(o.stone, 0.95), FIXED, rc * 1.25, true, Math.PI / 8)
+  prism(out, cx, cz, yBase, yBase + 0.1, rc * 1.12, 8, shade(o.metal, 0.9), FIXED, rc * 1.12, true, Math.PI / 8)
+  const yb = yBase + 0.1, yt = yBase + pedH
+  prism(out, cx, cz, yb, yt, rc, 8, o.metal, FIXED, rc * 0.96, true, Math.PI / 8)
+  prism(out, cx, cz, yt, yt + 0.1, rc * 1.12, 8, shade(o.metal, 1.08), FIXED, rc * 1.12, true, Math.PI / 8)
+  // a raised panel and a scallop on each of the eight faces
+  const pc = shade(o.metal, 0.82), sc = shade(o.metal, 1.14)
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2, s = Math.sin(a), c = Math.cos(a)
+    const ap = pedW / 2 + 0.012
+    const P = (u: number, y: number): [number, number, number] => [cx + s * ap + c * u, y, cz + c * ap - s * u]
+    const hw = pedW * 0.36, ya = yb + 0.12, yz = yt - 0.14
+    out.quad([P(-hw, ya), P(hw, ya), P(hw, yz), P(-hw, yz)], [s, 0, c], UV, pc, FIXED)
+    const ap2 = ap + 0.01
+    const Q = (u: number, y: number): [number, number, number] => [cx + s * ap2 + c * u, y, cz + c * ap2 - s * u]
+    const hs = pedW * 0.2, ys = yb + 0.22, yu = yt - 0.24
+    out.quad([Q(-hs * 0.35, ys), Q(hs * 0.35, ys), Q(hs, yu), Q(-hs, yu)], [s, 0, c], UV, sc, FIXED)
+    for (const k of [-0.5, 0, 0.5]) out.quad([Q(k * hs - 0.015, ys + 0.03), Q(k * hs + 0.015, ys + 0.03), Q(k * hs * 1.8 + 0.015, yu - 0.02), Q(k * hs * 1.8 - 0.015, yu - 0.02)], [s, 0, c], UV, pc, FIXED)
+  }
+  // the neck: foliage swelling over the cornice and drawing in under the vasque
+  const yn = yt + 0.1, yv = yn + neckH
+  lathe(out, cx, cz, [[rc * 0.78, yn], [rc * 0.9, yn + neckH * 0.2], [rc * 0.78, yn + neckH * 0.45], [rc * 0.5, yn + neckH * 0.72], [rc * 0.42, yv]], 24, o.metal)
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2
+    beam(out, [cx + Math.sin(a) * rc * 0.82, yn + neckH * 0.15, cz + Math.cos(a) * rc * 0.82], [cx + Math.sin(a) * rc * 0.62, yn + neckH * 0.62, cz + Math.cos(a) * rc * 0.62], 0.05, shade(o.metal, 1.12))
+  }
+  // dolphins climbing the neck, heads down, tails curling out under the vasque
+  const nd = o.dolphins ?? 4
+  for (let i = 0; i < nd; i++) {
+    const a = ((i + 0.5) / nd) * Math.PI * 2, s = Math.sin(a), c = Math.cos(a)
+    const P = (rr: number, y: number): V3 => [cx + s * rr, y, cz + c * rr]
+    sweptTube(out, [P(rc * 0.98, yn + neckH * 0.1), P(rc * 0.82, yn + neckH * 0.3), P(rc * 0.74, yn + neckH * 0.55), P(rc * 0.9, yn + neckH * 0.78), P(rc * 1.2, yn + neckH * 0.9)], { r: (t) => 0.11 * (1 - 0.6 * t) + 0.03, sides: 8, c: shade(o.metal, 1.05) })
+  }
+  // the vasque: a wide shallow bowl, lugs with lion masks round the rim
+  const rimY = fountainBowl(out, cx, cz, yv, vR, { depth: vD, stem: rc * 0.42, drop: 0.1, sides: 36, body: o.metal, water: o.water })
+  const nm = o.masks ?? 12
+  for (let i = 0; i < nm; i++) {
+    const a = (i / nm) * Math.PI * 2, s = Math.sin(a), c = Math.cos(a)
+    prism(out, cx + s * vR * 1.02, cz + c * vR * 1.02, rimY - 0.24, rimY + 0.06, 0.12, 6, shade(o.metal, 1.12), FIXED, 0.11, true)
+    prism(out, cx + s * vR * 1.04, cz + c * vR * 1.04, rimY - 0.16, rimY + 0.0, 0.06, 5, shade(o.metal, 0.8), FIXED, 0.06, true)
+  }
+  // water: a thin ring of falls from the vasque lip into the basin, and a jet at the tuft
+  const fall = o.fall ?? 0.05
+  jetRing(out, cx, cz, 56, vR * 1.0, rimY - 0.05, Math.min(o.basinR - rim - 0.15, vR + 0.35), y0 + wall - 0.06, { rise: fall, r: 0.02, c: o.jet })
+  // the tuft of reeds and the round plinth for the sculpture
+  const tuft = rimY + 0.04
+  prism(out, cx, cz, rimY, tuft + 0.1, 0.5, 12, shade(o.metal, 0.9), FIXED, 0.42, true)
+  for (let i = 0; i < 14; i++) {
+    const a = (i / 14) * Math.PI * 2
+    beam(out, [cx + Math.sin(a) * 0.3, tuft + 0.05, cz + Math.cos(a) * 0.3], [cx + Math.sin(a) * 0.6, tuft + 0.45 + (i % 3) * 0.08, cz + Math.cos(a) * 0.6], 0.04, shade(o.metal, 1.1))
+  }
+  prism(out, cx, cz, tuft + 0.1, tuft + 0.38, 0.38, 14, o.metal, FIXED, 0.3, true)
+  return { rim: rimY, plinthTop: tuft + 0.38 }
+}
