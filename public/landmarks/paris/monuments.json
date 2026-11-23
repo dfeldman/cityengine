@@ -2239,5 +2239,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Père-Lachaise division 25: the matching tombs of La Fontaine (Q3323381) and Molière (Q3323385, the Wikidata item the monuments list calls La Fontaine; both items share 48.86111, 2.39489), moved here together in 1817. Two pale-limestone trough sarcophagi on stepped plinths with a tilted plaque on a corbel at one end and a dark bronze panel on the side, behind a low iron rail. No OSM building way. Sizes by eye from Commons photos (Tombe la fontaine.jpg; Paris Père Lachaise La Fontaine et Molière.JPG); side-by-side spacing, orientation (plaque end toward -z) and the fence are guesses, the fox-and-stork relief is not visible in the photos so is not drawn. No Modly pieces: nothing in the round."
+  },
+  {
+    "name": "Monument aux victimes non reconnues de l'incendie du Bazar de la Charité",
+    "procedural": "monumentBazarCharite",
+    "kind": "monument",
+    "lat": 48.86098,
+    "lon": 2.39676,
+    "rotateDeg": 0,
+    "size": [
+      2.6,
+      2.4
+    ],
+    "height": 2.9,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Père-Lachaise division 92 (Wikidata Q29650332; 1899, gift of the City of Paris): grey-stone pedestal on two dark granite steps, a round moulded shaft with a leaf collar, an abacus, a die lettered LA VILLE DE PARIS and a small gabled top with the inscription tympanum. OSM has only a node (no building way). Sizes and facing (inscription toward -z) are guesses from two Commons photos; Wikidata width 2 m. Nothing in the round, so no Modly pieces; lettering is blocks, not legible."
   }
 ]
