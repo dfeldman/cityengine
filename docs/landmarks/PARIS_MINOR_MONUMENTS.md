@@ -291,3 +291,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - mur des Noms (Q3327981): already modelled as memorialShoah (src/render/landmarks/paris/monuments/memorial-shoah.ts, monuments.json "Mémorial de la Shoah" includes the Mur des Noms court)
 - place du Bataillon-Français-de-l'ONU-en-Corée (Q3390564): NOT REACHED/not modelled: a small Marais square (4e) whose "war memorial" tag is only a plaque (Commons shows plaques only), nothing to ride past; skip unless the coordinator disagrees
 - monument aux soldats noirs morts pour la France (Q17745972): modelled (src/render/landmarks/paris/monuments/monument-soldats-noirs.ts, public/landmarks/paris/monuments.json; Modly pieces: soldatsnoirs-femme, published)
+- monument à Komitas (Q3323366): modelled (src/render/landmarks/paris/monuments/monument-komitas.ts, public/landmarks/paris/monuments.json; Modly pieces: komitas-statue2 (trellis2), published, placed in paris-statues.json)

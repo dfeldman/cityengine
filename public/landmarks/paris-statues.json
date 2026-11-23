@@ -692,6 +692,19 @@
     "range": 250,
     "note": "The standing woman of the bas-relief (Biaggi). assetkit img2glb guided from Commons 'Aux soldats noirs morts pour la France.jpg', background painted out by hand (second attempt; the first, from the raw crop, lost the head); published in assetkit-models-paris. Half-relief with a thin stone backing.",
     "asset": "soldatsnoirs-femme"
+  },
+  {
+    "id": "komitas-statue2",
+    "name": "Monument à Komitas: the bronze statue",
+    "attach": {
+      "to": "Monument à Komitas",
+      "at": [0, 2.2, 0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Erevantsi's Komitas (2003). assetkit img2glb guided trellis2 (2nd attempt; the first, default model, left a hole in the chest) from Commons 'Monument Komitas à Paris.jpg', background painted out by hand; published in assetkit-models-paris. Height 2.8 m estimated.",
+    "asset": "komitas-statue2"
   }
+
 
 ]

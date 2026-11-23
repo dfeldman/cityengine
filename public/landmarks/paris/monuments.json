@@ -1513,5 +1513,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Stele in the Jardin d'agronomie tropicale (Q17745972, OSM memorial node, memorial=stele; Wikidata gives 48.8332 2.4661): a pale stone slab with a bas-relief of a woman beside a Poilu's helmet, on an inscribed die, three steps and a low wing wall each side. Placed on the OSM node; facing south (away from the Pavillon de l'Indochine, per the 1900s postcard) is a guess. Dimensions by eye off Commons photographs (die ~2 m wide), not surveyed. The woman is Modly soldatsnoirs-femme (paris-statues.json)."
+  },
+  {
+    "name": "Monument à Komitas",
+    "procedural": "monumentKomitas",
+    "kind": "monument",
+    "lat": 48.864411,
+    "lon": 2.309814,
+    "rotateDeg": 0,
+    "size": [
+      3.2,
+      2.8
+    ],
+    "height": 4.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   }
 ]
