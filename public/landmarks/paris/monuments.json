@@ -1292,6 +1292,25 @@
     "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
   },
   {
+    "name": "Fontaine du Vert Bois",
+    "procedural": "fontaineVertBois",
+    "osm": [
+      "way/54964126"
+    ],
+    "kind": "fountain",
+    "lat": 48.867637,
+    "lon": 2.354995,
+    "front": 335,
+    "size": [
+      4.2,
+      2
+    ],
+    "height": 7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The 1712 wall fountain of the rue Saint-Martin / rue du Vertbois (Wikidata Q3076291): a stone portal against the foot of the Saint-Martin-des-Champs tower, rusticated pilasters, relief, bronze plaque, shell and bronze mascaron spout, cornice and a cartouche of arms on top (Modly: vertbois-crown, vertbois-mascaron). OSM way 54964126 (amenity=fountain) claimed. Faces the rue Saint-Martin / rue du Vertbois junction (front 335, NNW), the tower to its right: read off OSM's footway/fence line and the junction position, not checked on site. Dimensions scaled off Commons photos at ~80 px/m (pilaster ~0.9 m), not surveyed; heights shakiest."
+  },
+  {
     "name": "Fontaine Dejean",
     "procedural": "fontaineDejean",
     "kind": "fountain",

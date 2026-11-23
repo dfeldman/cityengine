@@ -390,6 +390,38 @@
     "asset": "gaillon-dauphin"
   },
   {
+    "id": "vertbois-crown",
+    "name": "Fontaine du Vert Bois: crown cartouche",
+    "attach": {
+      "to": "Fontaine du Vert Bois",
+      "at": [
+        0,
+        6.25,
+        0.3
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "The shell-and-scrolls cartouche of the arms on the cornice block. assetkit img2glb guided from Commons 'Fontaine du Vertbois, Paris 3.jpg'; published in assetkit-models-paris",
+    "asset": "vertbois-crown"
+  },
+  {
+    "id": "vertbois-mascaron",
+    "name": "Fontaine du Vert Bois: bronze mascaron",
+    "attach": {
+      "to": "Fontaine du Vert Bois",
+      "at": [
+        0,
+        1.3,
+        0.1
+      ],
+      "bearing": 180
+    },
+    "range": 100,
+    "note": "The bronze mascaron spout low on the portal's plain face. assetkit img2glb guided (attempt 2) from Commons 'Detail of the fontaine du Vert Bois, Paris 19 November 2016.jpg'; published in assetkit-models-paris. A rough blob with its backing slab: set into the wall",
+    "asset": "vertbois-mascaron"
+  },
+  {
     "id": "carmes-head",
     "name": "Fontaine du Marché-aux-Carmes: two-faced herm head",
     "attach": {
