@@ -330,3 +330,15 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - Fontaine des Ambassadeurs: modelled (monuments/minor/fontaine-ambassadeurs.ts, monuments.json; Modly pieces: ambassadeurs-nymphe)
 - L'Embâcle (Q3076308): modelled (monuments/minor/fontaine-embacle.ts, monuments.json, kit tiltedSlab; Modly pieces: none, bronze plates are flat slabs; the list's coordinate was 28 m south inside a block, position taken from OSM way 664223075)
 - fontaine du Cirque (Q3076259): modelled (src/render/landmarks/paris/monuments/minor/fontaine-cirque.ts, public/landmarks/paris/monuments.json; Modly pieces: cirque-saisons (trellis2, published))
+- fontaine de Birague (Q3076115): skipped: destroyed in 1856 (fr.wikipedia: reconstructed twice, definitively demolished; Wikidata "former fountain"), nothing stands at rue Saint-Antoine/rue de Birague today
+- fontaine de la pointe Saint-Eustache (Q3076223): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- fontaine des Invalides (Q3076236): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- Château d'eau du Palais-Royal (Q58125588): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- fontaine du Marché-aux-Chevaux (Q125451260): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- fontaine du marché Saint-Martin (Q16636596): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- Barrière Saint-Jacques (Q124628027): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- Pavillon de la Nouvelle-Calédonie et dépendances à l'Exposition coloniale internationale de 1931 (Q130870360): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- barrière de Bercy (Q111207469): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- barrière de Passy (Q58049819): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- barrière de la Chapelle (Q21426962): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- barrière des Deux-Moulins (Q30739206): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
