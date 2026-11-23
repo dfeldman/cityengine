@@ -548,5 +548,22 @@
     "range": 220,
     "note": "One of the eight reclining cast-iron lions, two on each pier (pose and count from Commons 'Fontaine Château Eau Pierre Simon Girard Paris 2/3'). assetkit img2glb guided (Hunyuan 2.1) from Paris 3; the cut-out carries a second lion's head behind the near one, hidden in a pair; published in assetkit-models-paris",
     "asset": "nubie-lion"
+  },
+  {
+    "id": "dejean-pelican",
+    "name": "Fontaine Dejean: pelican",
+    "attach": {
+      "to": "Fontaine Dejean",
+      "at": [
+        0,
+        4.08,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "The pelican piercing its breast on the sphere that crowns the fountain (Malric). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Dejean Paris 3.jpg' and 'Fontaine Dejean.jpg'; the cut-out carries a little of the sphere at its foot; published in assetkit-models-paris",
+    "asset": "dejean-pelican"
   }
+
 ]
