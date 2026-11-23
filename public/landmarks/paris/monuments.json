@@ -1343,6 +1343,22 @@
     "note": "Dry wall fountain (Guillain 1636, Beausire 1705; Wikidata Q3076159) in the rounded SW corner pavilion of the Hôtel de Soubise, rue des Francs-Bourgeois at rue des Archives: scallop-headed niche, sill ledge, plain panel below, dedication plaque above. Placed on the chamfer of OSM way 6742329 (Soubise, NOT claimed; niche back 0.55 m in front of its face). Sizes scaled off Commons photos against the poster door (~2.6 m), the sill height is a guess; the real wall is curved, the model is flat. No sculpture, so no Modly piece."
   },
   {
+    "name": "Puits artésien de la Butte-aux-Cailles",
+    "procedural": "fontainePuitsButteAuxCailles",
+    "kind": "fountain",
+    "lat": 48.827691,
+    "lon": 2.352704,
+    "rotateDeg": 0,
+    "size": [
+      3.2,
+      2.4
+    ],
+    "height": 2.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Drinking fountain of the artesian well (Q16671566, place Paul-Verlaine, 13e): grey stone trough under an arched polished-steel pipe on a post, steel guard rail, drain grating. Placed on OSM's drinking_water node (2.3527043, 48.827691), not Wikidata's rounder point; no building way under it, so nothing to claim. Sizes scaled by eye off the one Commons photo (Artesienbutteauxcaillesparis.jpg), trough ~1.5 m long and the pipe ~1.5 m high are guesses; the info panel and wall behind are not modelled; the facing (rotateDeg) is a guess. No sculpture, so no Modly piece."
+  },
+  {
     "name": "Fontaine du Coq",
     "procedural": "fontaineDuCoq",
     "kind": "fountain",
