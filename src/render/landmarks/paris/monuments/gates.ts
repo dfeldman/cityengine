@@ -34,6 +34,10 @@ function inscription(out: MeshBuilder, fit: Fit, hx: number, hz: number, text: s
  */
 const CX = 9.2
 const CZ = 5.15
+/** The sculpture drawn by the statue pool as Modly models (public/landmarks/paris-statues.json `carrousel-*`, 2026-11-23): false
+ *  brings the procedural stand-in back. */
+const CARROUSEL_MODLY_QUADRIGA = true
+const CARROUSEL_MODLY_SOLDIERS = true
 export function carrouselArch(out: MeshBuilder, fit: Fit): void {
   fitted(out, fit, CX, CZ, (q) => carrousel(q))
 }
@@ -64,9 +68,9 @@ function carrousel(out: MeshBuilder): void {
       block(out, x - 0.85, x + 0.85, z - 0.95, z + 0.95, 1.8, 2.1, shade(stone, 1.04))
       classicalColumn(out, x, z, 2.1, 10.5, 0.42, marble, { order: 'corinthian', tier: 'mid', heading: f > 0 ? 0 : Math.PI, trim: bronze })
       block(out, x - 0.8, x + 0.8, f > 0 ? bz : z - 0.9, f > 0 ? z + 0.9 : -bz, 10.5, 12.0, stone)
-      // a soldier of the Grande Armée on the break, in coloured marble
+      // a soldier of the Grande Armée on the break, in marble (Modly models in the statue pool, `carrousel-<arm>`, stand on the block)
       block(out, x - 0.45, x + 0.45, z - 0.45, z + 0.45, 12.0, 12.5, stone)
-      figure(out, x, 12.5, z, 2.5, shade(stone, 0.95))
+      if (!CARROUSEL_MODLY_SOLDIERS) figure(out, x, 12.5, z, 2.5, shade(stone, 0.95))
     }
   }
   // the entablature, the attic and its reliefs, the plinth for the quadriga
@@ -76,11 +80,15 @@ function carrousel(out: MeshBuilder): void {
   for (const f of [-1, 1]) for (const x of [-5.6, 0, 5.6]) block(out, x - 1.6, x + 1.6, f * bz - 0.06, f * bz + 0.06, 12.8, 15.2, relief)
   block(out, -9.0, 9.0, -bz - 0.2, bz + 0.2, 15.6, 16.0, shade(stone, 1.04))
   block(out, -4.2, 4.2, -bz, bz, 16.0, 17.5, stone)
-  // the quadriga, facing the Tuileries: four gilded horses abreast, the chariot, Peace standing in it, a Victory each side
-  for (const x of [-1.5, -0.5, 0.5, 1.5]) horseman(out, x, 17.5, -1.2, Math.PI, gilt, 0.95, false)
-  block(out, -1.1, 1.1, 0.4, 2.2, 17.5, 19.0, gilt)
-  figure(out, 0, 19.0, 1.3, 2.6, gilt)
-  for (const s of [-1, 1]) figure(out, s * 3.1, 17.5, -1.0, 2.4, gilt)
+  // the quadriga: four bronze horses abreast, the chariot, Peace standing in it, a gilded Victory each side. The Modly models
+  // (`carrousel-quadriga`, `carrousel-victoire`) face the Louvre, +z, as the real one does (Commons 'Arc Triomphe Carrousel
+  // façade est Paris 14.jpg' sees the horses head on); this stand-in faced the Tuileries
+  if (!CARROUSEL_MODLY_QUADRIGA) {
+    for (const x of [-1.5, -0.5, 0.5, 1.5]) horseman(out, x, 17.5, -1.2, Math.PI, gilt, 0.95, false)
+    block(out, -1.1, 1.1, 0.4, 2.2, 17.5, 19.0, gilt)
+    figure(out, 0, 19.0, 1.3, 2.6, gilt)
+    for (const s of [-1, 1]) figure(out, s * 3.1, 17.5, -1.0, 2.4, gilt)
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------

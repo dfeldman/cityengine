@@ -346,6 +346,12 @@ function paix(r: Relief): void {
 
 /* ------------------------------------------------------------------------------------------------ the faces */
 
+/**
+ * The groups drawn by the statue pool as Modly models (public/landmarks/paris-statues.json `arctriomphe-*`, attached on the
+ * pedestals here, 2026-11-23): their procedural figures are left out. Take a name out to bring its stand-in back.
+ */
+const MODLY_GROUPS = new Set<(r: Relief) => void>([marseillaise, triomphe, resistance, paix])
+
 /** A group, its pedestal and plinth, standing on the wall at x = cx. */
 function pedestal(q: MeshBuilder, d: number, cx: number, group: (r: Relief) => void): void {
   slab(q, d, cx - 4.55, cx + 4.55, 0, 5.8, 1.35, STONE)
@@ -355,7 +361,7 @@ function pedestal(q: MeshBuilder, d: number, cx: number, group: (r: Relief) => v
   slab(q, d, cx - 4.2, cx + 4.2, 6.25, 6.75, 1.65, STONE)
   slab(q, d, cx - 3.95, cx + 3.95, 6.75, 7.25, 1.5, TRIM)
   slab(q, d, cx - 3.75, cx + 3.75, 7.25, 7.7, 1.4, STONE)
-  group(new Relief(q, cx, 7.7, -d - 0.02, STONE, 1.9))
+  if (!MODLY_GROUPS.has(group)) group(new Relief(q, cx, 7.7, -d - 0.02, STONE, 1.9))
 }
 
 /** A framed high relief: a moulded frame `w` by `h`, a battle in two ranks of figures, a horse if it is that kind of battle. */

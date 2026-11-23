@@ -954,6 +954,426 @@
     "note": "Hittorff's bronze nymph on the reed crown (1.9 m, by eye). assetkit img2glb guided from Commons 'Fontaine des Ambassadeurs Paris 8e 003/001.jpg'."
   },
   {
+    "id": "arctriomphe-depart",
+    "name": "Arc de Triomphe: Le Départ des Volontaires",
+    "asset": "arctriomphe-depart",
+    "attach": {
+      "to": "Arc de Triomphe",
+      "at": [
+        14.85,
+        7.7,
+        -12.4
+      ],
+      "bearing": 158
+    },
+    "range": 700,
+    "note": "Rude's group on the Champs-Élysées face, north pier, on the builder's pedestal (y 7.7); 11.6 m high (Wikipedia). assetkit img2glb guided (Hunyuan 2.1) from Commons 'DetailArc2007.jpg', a three-quarter view (straight-on photos of the reliefs came out as flat cards); the model's back is turned 22° from its front, hence bearing 158, its back 1.3 m behind its origin."
+  },
+  {
+    "id": "arctriomphe-paix",
+    "name": "Arc de Triomphe: La Paix de 1815",
+    "asset": "arctriomphe-paix",
+    "attach": {
+      "to": "Arc de Triomphe",
+      "at": [
+        14.85,
+        7.7,
+        12.3
+      ],
+      "bearing": 11
+    },
+    "range": 700,
+    "note": "Etex's group on the Grande Armée face, north pier, on the builder's pedestal (y 7.7); 11.6 m high (Wikipedia). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Arc Main Reliefs 2.jpg', a three-quarter view; its back turned 11° from its front, 1.2 m behind its origin."
+  },
+  {
+    "id": "arctriomphe-triomphe",
+    "name": "Arc de Triomphe: Le Triomphe de 1810",
+    "asset": "arctriomphe-triomphe",
+    "attach": {
+      "to": "Arc de Triomphe",
+      "at": [
+        -14.85,
+        7.7,
+        -12.2
+      ],
+      "bearing": 180
+    },
+    "range": 700,
+    "note": "Cortot's group on the Champs-Élysées face, south pier, on the builder's pedestal (y 7.7); 11.6 m high (Wikipedia). assetkit img2glb guided, TRELLIS 2 (three Hunyuan attempts gave flat cards or a blank slab) from Commons 'Arc de Triomphe img 2861.jpg', nearly straight on; 2.4 m deep, its back 1.1 m behind its origin."
+  },
+  {
+    "id": "arctriomphe-resistance",
+    "name": "Arc de Triomphe: La Résistance de 1814",
+    "asset": "arctriomphe-resistance",
+    "attach": {
+      "to": "Arc de Triomphe",
+      "at": [
+        -14.85,
+        7.7,
+        12.45
+      ],
+      "bearing": 20
+    },
+    "range": 700,
+    "note": "Etex's group on the Grande Armée face, south pier, on the builder's pedestal (y 7.7); 11.6 m high (Wikipedia). assetkit img2glb guided (Hunyuan 2.1) from Commons 'La Résistance de 1814 by Antoine Étex (10047435105).jpg', a three-quarter view, turned upright by hand (guided ignores EXIF) and cropped locally; its back turned 20° from its front, 1.4 m behind its origin."
+  },
+  {
+    "id": "carrousel-quadriga",
+    "name": "Arc de Triomphe du Carrousel: quadriga",
+    "asset": "carrousel-quadriga",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        0,
+        17.5,
+        0
+      ],
+      "bearing": 0
+    },
+    "range": 450,
+    "note": "Bosio's four horses (1828), the chariot and Peace, on the builder's plinth (y 17.5), facing the Louvre (+z). 3.9 m high, by eye against the Victories and the plinth. assetkit img2glb guided (Hunyuan 2.1) from Commons 'Peace riding in a triumphal chariot Bosio Carrousel.jpg', cropped between the Victories"
+  },
+  {
+    "id": "carrousel-victoire-sud",
+    "name": "Arc de Triomphe du Carrousel: gilded Victory (sud)",
+    "asset": "carrousel-victoire",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        3.55,
+        17.5,
+        0.6
+      ],
+      "bearing": 0
+    },
+    "range": 450,
+    "note": "One of Lemot's two gilded renommées (Peace and Victory, 1809) beside the quadriga; one model (the left one in the photo) stands for both. 2.9 m, by eye. assetkit img2glb guided from Commons 'Peace riding in a triumphal chariot Bosio Carrousel.jpg'"
+  },
+  {
+    "id": "carrousel-victoire-nord",
+    "name": "Arc de Triomphe du Carrousel: gilded Victory (nord)",
+    "asset": "carrousel-victoire",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        -3.55,
+        17.5,
+        0.6
+      ],
+      "bearing": 0
+    },
+    "range": 450,
+    "note": "One of Lemot's two gilded renommées (Peace and Victory, 1809) beside the quadriga; one model (the left one in the photo) stands for both. 2.9 m, by eye. assetkit img2glb guided from Commons 'Peace riding in a triumphal chariot Bosio Carrousel.jpg'"
+  },
+  {
+    "id": "carrousel-cuirassier",
+    "name": "Arc de Triomphe du Carrousel: the cuirassier (Taunay)",
+    "asset": "carrousel-cuirassier",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        7.85,
+        12.5,
+        4.2
+      ],
+      "bearing": 0
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, east (Louvre) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le cuirassier (Charles-Auguste Taunay) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-dragon",
+    "name": "Arc de Triomphe du Carrousel: the dragoon (Corbet)",
+    "asset": "carrousel-dragon",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        3.3,
+        12.5,
+        4.2
+      ],
+      "bearing": 0
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, east (Louvre) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le dragon (Charles-Louis Corbet) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-chasseur",
+    "name": "Arc de Triomphe du Carrousel: the chasseur à cheval (Foucou)",
+    "asset": "carrousel-chasseur",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        -3.3,
+        12.5,
+        4.2
+      ],
+      "bearing": 0
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, east (Louvre) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le chasseur à cheval (Jean-Joseph Foucou) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-carabinier-cheval",
+    "name": "Arc de Triomphe du Carrousel: the carabinier (Chinard)",
+    "asset": "carrousel-carabinier-cheval",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        -7.85,
+        12.5,
+        4.2
+      ],
+      "bearing": 0
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, east (Louvre) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le carabinier (Joseph Chinard) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-grenadier",
+    "name": "Arc de Triomphe du Carrousel: the grenadier (Dardel)",
+    "asset": "carrousel-grenadier",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        -7.85,
+        12.5,
+        -4.2
+      ],
+      "bearing": 180
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, west (Tuileries) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le grenadier (Robert-Guillaume Dardel) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-carabinier-infanterie",
+    "name": "Arc de Triomphe du Carrousel: the carabinier de ligne (Mouton)",
+    "asset": "carrousel-carabinier-infanterie",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        -3.3,
+        12.5,
+        -4.2
+      ],
+      "bearing": 180
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, west (Tuileries) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le carabinier d'infanterie (Antoine Mouton) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-artilleur",
+    "name": "Arc de Triomphe du Carrousel: the gunner (Bridan)",
+    "asset": "carrousel-artilleur",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        3.3,
+        12.5,
+        -4.2
+      ],
+      "bearing": 180
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, west (Tuileries) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - L'artilleur (Charles-Antoine Bridan) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "carrousel-sapeur",
+    "name": "Arc de Triomphe du Carrousel: the sapper (Dumont)",
+    "asset": "carrousel-sapeur",
+    "attach": {
+      "to": "Arc de Triomphe du Carrousel",
+      "at": [
+        7.85,
+        12.5,
+        -4.2
+      ],
+      "bearing": 180
+    },
+    "range": 350,
+    "note": "On the entablature's break over its column, west (Tuileries) face, in the order frwiki gives (left to right as seen from outside); 2.5 m, the builder's guess. assetkit img2glb guided from Commons 'Paris 1er - Arc de triomphe du Carrousel - Le sapeur (Jacques-Edme Dumont) - Copie de 2024.jpg'"
+  },
+  {
+    "id": "trocadero-jeunesse",
+    "name": "Palais de Chaillot parvis: La Jeunesse (Descatoire)",
+    "asset": "trocadero-jeunesse",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        -23.1,
+        2.5,
+        -16.3
+      ],
+      "bearing": 90
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM's artwork node for Descatoire's La Jeunesse. assetkit img2glb guided from Commons 'Statue pigeon, real pigeon (30138611911).jpg' (the pigeon on her head is in the model)."
+  },
+  {
+    "id": "trocadero-flore",
+    "name": "Palais de Chaillot parvis: Flore (Gimond), stand-in",
+    "asset": "trocadero-nue",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        -23.1,
+        2.5,
+        -5.53
+      ],
+      "bearing": 90
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM: Gimond's Flore. No usable photo of it on Commons (French freedom of panorama); the nude with the fruit (trocadero-nue, identity unchecked) stands in."
+  },
+  {
+    "id": "trocadero-matin",
+    "name": "Palais de Chaillot parvis: Le Matin (Pryas), stand-in",
+    "asset": "trocadero-drapee",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        -23.1,
+        2.5,
+        5.24
+      ],
+      "bearing": 90
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM: Pryas's Le Matin. No usable photo; Desruelles's Les fruits (trocadero-drapee) stands in."
+  },
+  {
+    "id": "trocadero-campagne",
+    "name": "Palais de Chaillot parvis: La Campagne (Cornet), stand-in",
+    "asset": "trocadero-jeunesse",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        -23.1,
+        2.5,
+        16.01
+      ],
+      "bearing": 90
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM: Cornet's La Campagne. No usable photo; Descatoire's La Jeunesse stands in."
+  },
+  {
+    "id": "trocadero-oiseaux",
+    "name": "Palais de Chaillot parvis: Les Oiseaux (Brasseur), stand-in",
+    "asset": "trocadero-drapee",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        23.1,
+        2.5,
+        -16.3
+      ],
+      "bearing": 270
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM: Brasseur's Les Oiseaux. No usable photo; Desruelles's Les fruits stands in."
+  },
+  {
+    "id": "trocadero-jardins",
+    "name": "Palais de Chaillot parvis: Les Jardins (Couturier), stand-in",
+    "asset": "trocadero-jeunesse",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        23.1,
+        2.5,
+        -5.53
+      ],
+      "bearing": 270
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM: Couturier's Les Jardins. No usable photo; Descatoire's La Jeunesse stands in."
+  },
+  {
+    "id": "trocadero-printemps",
+    "name": "Palais de Chaillot parvis: Le Printemps (Niclausse), stand-in",
+    "asset": "trocadero-nue",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        23.1,
+        2.5,
+        5.24
+      ],
+      "bearing": 270
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM: Niclausse's Le Printemps. No usable photo; the nude with the fruit (trocadero-nue, identity unchecked) stands in."
+  },
+  {
+    "id": "trocadero-fruits",
+    "name": "Palais de Chaillot parvis: Les Fruits (Desruelles)",
+    "asset": "trocadero-drapee",
+    "attach": {
+      "to": "Parvis du Trocadéro",
+      "at": [
+        23.1,
+        2.5,
+        16.01
+      ],
+      "bearing": 270
+    },
+    "range": 300,
+    "note": "Gilded bronze (1937) on the builder's pedestal, facing the axis; 3.0 m by eye. OSM's artwork node for Desruelles's Les fruits. assetkit img2glb guided from Commons 'Palais de Chaillot-Sculpture exterieur-DSC 2346w.jpg' (its description names it)."
+  },
+  {
+    "id": "trocadero-taureau",
+    "name": "Jardins du Trocadéro: Taureau et daim (Jouve)",
+    "asset": "trocadero-taureau",
+    "lat": 48.8614443,
+    "lon": 2.2892128,
+    "bearing": 44,
+    "plinth": [
+      2.6,
+      2.6,
+      1.3
+    ],
+    "plinthColour": "#cfc6b4",
+    "range": 300,
+    "note": "Paul Jouve's gilded bronze (1937) at the head of the Fontaine de Varsovie, at OSM's artwork node; facing the fountain's axis (a guess: the photo sees it side on). 3.5 m and the round pedestal 1.3 m by eye. assetkit img2glb guided from Commons 'Taureau Daim Fontaines Trocadéro Paris 1.jpg'. Its pair, Guyot's Chevaux et chien (x +16.5 in the fountain's frame), has no usable photo."
+  },
+  {
+    "id": "trocadero-jeunesse-poisson",
+    "name": "Jardins du Trocadéro: La Jeunesse (Pierre Poisson)",
+    "asset": "trocadero-jeunesse-poisson",
+    "lat": 48.8610166,
+    "lon": 2.2906854,
+    "bearing": 110,
+    "range": 300,
+    "note": "The carved block at the river end of the Fontaine de Varsovie, east side, the pair of Drivier's La Joie de vivre (img2glb batch, west); at the point assetkit's subject gives (the mirror of La Joie de vivre across the axis). Its carved face toward the river (bearing 110 turns the model's 24° yaw onto 134); 2.4 m to match its pair, on the ground: a pedestal would turn with the bearing, 24° off the block. assetkit img2glb guided from Commons 'Sculpture de Pierre-Marie Poisson, Paris.jpg' (one face only, so a second copy, trocadero-jeunesse-poisson-dos, stands back to back with it, each 0.55 m off the block's middle). The batch model of it, la-jeunesse-poisson, was rejected in review."
+  },
+  {
+    "id": "trocadero-jeunesse-poisson-dos",
+    "name": "Jardins du Trocadéro: La Jeunesse (Pierre Poisson), garden face",
+    "asset": "trocadero-jeunesse-poisson",
+    "lat": 48.8610234,
+    "lon": 2.2906746,
+    "bearing": 290,
+    "range": 300,
+    "note": "The garden face of the block: the same model as trocadero-jeunesse-poisson turned round, back to back with it (the real block is carved on both long faces; the photo shows one)."
+  },
+  {
+    "id": "trocadero-hercule",
+    "name": "Palais de Chaillot: Hercule et le taureau de Crète (Pommier)",
+    "asset": "trocadero-hercule",
+    "lat": 48.8618269,
+    "lon": 2.2879801,
+    "bearing": 134,
+    "plinth": [
+      2.6,
+      2.6,
+      2.0
+    ],
+    "plinthColour": "#d8cfbd",
+    "range": 400,
+    "note": "Albert Pommier's bronze (1937) on the terrace below the Paris wing, the pair of Bouchard's Apollon (img2glb batch, apollon-musagete); at OSM's artwork node, facing the gardens; 5.2 m as Apollon, the stone pedestal 2 m by eye. assetkit img2glb guided from Commons 'Statue on Palais de Chaillot(01).JPG', cut out with a window mullion's ghost erased by hand (the straight crop fused a wall panel in; 'Hercule Palais Chaillot Paris 1.jpg' gave a flat card)."
+  },
+  {
     "id": "theatre-marine-nymphe",
     "name": "Fontaine du Théâtre-Français: Nymphe marine",
     "asset": "theatre-marine-nymphe",

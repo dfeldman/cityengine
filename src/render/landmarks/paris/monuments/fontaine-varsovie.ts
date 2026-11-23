@@ -39,6 +39,10 @@ function pool(out: MeshBuilder, plan: P2[], y: number, kerb = 0.7, h = 0.42): vo
 }
 const rect = (x0: number, z0: number, x1: number, z1: number): P2[] => ring([x0, z0, x1, z0, x1, z1, x0, z1])
 
+/** The two "pylons" at the river end stood for the two carved stone groups there, Drivier's La Joie de vivre (west) and Poisson's
+ *  La Jeunesse (east), which the statue pool now draws (`la-joie-de-vivre`, img2glb batch; `trocadero-jeunesse-poisson`,
+ *  paris-statues.json; 2026-11-23). true brings the blocks back. */
+const VARSOVIE_PYLONS = false
 export function fontaineVarsovie(out: MeshBuilder): void {
   // ---- the long pool and its head cross-basin (OSM's ring)
   pool(out, BASIN, 0)
@@ -63,9 +67,11 @@ export function fontaineVarsovie(out: MeshBuilder): void {
   walls(out, offsetRing(ccw(crescent), 0.5), 0, 0.3, STONE, STONE)
   for (const s of [-1, 1]) {
     block(out, s * 19.5 - 1.3, s * 19.5 + 1.3, -45.5, -42.5, 0, 0.9, STONE)
-    block(out, s * 21.5 - 1.1, s * 21.5 + 1.1, -45, -43, 0.9, 5.2, STONE)           // the pylon
-    block(out, s * 21.5 - 1.2, s * 21.5 + 1.2, -45.1, -42.9, 5.2, 5.5, shade(STONE, 1.05))
-    block(out, s * 21.5 - 0.8, s * 21.5 + 0.8, -45.25, -42.75, 1.6, 4.6, shade(STONE, 0.86))  // its relief, standing proud
+    if (VARSOVIE_PYLONS) {
+      block(out, s * 21.5 - 1.1, s * 21.5 + 1.1, -45, -43, 0.9, 5.2, STONE)           // the pylon
+      block(out, s * 21.5 - 1.2, s * 21.5 + 1.2, -45.1, -42.9, 5.2, 5.5, shade(STONE, 1.05))
+      block(out, s * 21.5 - 0.8, s * 21.5 + 0.8, -45.25, -42.75, 1.6, 4.6, shade(STONE, 0.86))  // its relief, standing proud
+    }
     block(out, s > 0 ? 13.1 : -19.5, s > 0 ? 19.5 : -13.1, -44.5, -43.5, 0, 0.75, STONE)
   }
 

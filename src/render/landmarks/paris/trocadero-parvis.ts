@@ -22,14 +22,21 @@ const FIXED = 0
  * retaining walls (the 53-step lateral flights at z 76, the 38-step flights along x ±49, the walls at z 82 and x ±55.6).
  * The Fontaine de Varsovie below z 116 is another builder's.
  */
+const PARVIS_FIGURE_X = 23.1
+const PARVIS_FIGURE_Z0 = -16.3
+const PARVIS_FIGURE_DZ = 10.77
+const PARVIS_MODLY_FIGURES = true
 export function trocaderoParvis(out: MeshBuilder): void {
   const stone = hex('#e2d9c6')
   const gilt: Rgb = [0.88, 0.7, 0.3]
-  // the figures, on pedestals: a stepped base, the die, a cornice, then the gilded figure
+  // the figures, on pedestals: a stepped base, the die, a cornice, then the gilded figure. Where they stand is OSM's (its eight
+  // artwork nodes, 2026-11-23: x ±23.1 in front of the head pavilions' parvis faces, z −16.3…16.0; they had stood at ±15.5).
+  // The figures are Modly models in the statue pool (paris-statues.json `trocadero-*`) on these pedestals' tops (y 2.5)
   for (const sx of [-1, 1]) {
+      if (PARVIS_MODLY_FIGURES) continue
     for (let i = 0; i < 4; i++) {
-      const x = sx * 15.5
-      const z = -18 + i * 12
+      const x = sx * PARVIS_FIGURE_X
+      const z = PARVIS_FIGURE_Z0 + i * PARVIS_FIGURE_DZ
       block(out, x - 1.1, x + 1.1, z - 1.1, z + 1.1, 0, 0.35, shade(stone, 0.92))
       block(out, x - 0.85, x + 0.85, z - 0.85, z + 0.85, 0.35, 2.3, stone)
       block(out, x - 0.95, x + 0.95, z - 0.95, z + 0.95, 2.3, 2.5, shade(stone, 1.03))
