@@ -96,7 +96,7 @@ if (arg('hide')) await page.evaluate(`(() => { const ps = ${JSON.stringify((arg(
 if (arg('bridges')) console.log('bridges', JSON.stringify(await page.evaluate(`Object.fromEntries(Object.entries(window.__bridges ?? {}).filter(([k]) => ${JSON.stringify(arg("bridges"))} === "*" || k.includes(${JSON.stringify(arg("bridges"))})))`)))
 // --names lists the meshes whose names start with one of the given prefixes, with their rendering group
 if (arg('names')) console.log('names', JSON.stringify(await page.evaluate(`window.__scene.meshes.filter((m) => ${JSON.stringify((arg('names') ?? '').split(','))}.some((p) => m.name.startsWith(p))).map((m) => m.name + '@' + m.renderingGroupId + (m.isEnabled() ? '' : '(off)')).slice(0, 60)`)))
-await page.waitForTimeout(1500)
+await page.waitForTimeout(Number(process.env.SHOTS_SETTLE ?? 1500)) // SHOTS_SETTLE=40000: statues load only once the camera is placed
 await page.screenshot({ path: arg('out') })
 // --probe=x,y reports which building is drawn at that screen point (needs --extra=pick=1)
 if (arg('probe')) {
