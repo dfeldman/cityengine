@@ -1626,6 +1626,25 @@
     "note": "Bartholome's war memorial (1899, Q3323309; OSM way 311412497, width 14.1, height 8): a limestone mausoleum front at the top of the Avenue Principale steps, doorway with the couple (Modly pere-couple), a mourning group each side (pere-gauche, pere-droite), the sunk panel of the dead (shallow, procedural), bronze wing doors with step flights. Placed at the OSM polygon's long front edge (osmium; facing bearing 241.9, down the steps). Dimensions scaled by eye off Commons photographs against the 14.1 m OSM width, not surveyed."
   },
   {
+    "name": "Fontaine du Cirque",
+    "procedural": "fontaineCirque",
+    "kind": "fountain",
+    "osm": [
+      "way/67036988"
+    ],
+    "lat": 48.86896,
+    "lon": 2.31295,
+    "rotateDeg": 0,
+    "size": [
+      8.8,
+      8.8
+    ],
+    "height": 5.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hittorff and Barre's cast-iron fountain of 1839 in the jardins des Champs-Elysees (Wikidata Q3076259, OSM way 67036988 whose water ring is only ~3 m radius): wide low round stone basin (~8.3 m across by eye off Commons photos, a bench and people as scale), octagonal pedestal, big bowl with twelve lion mascarons, the four Seasons (children) back to back under a smaller bowl with dog and wolf heads. Sizes are estimates, not surveyed. The children group is a Modly model (statues manifest: cirque-saisons)."
+  },
+  {
     "name": "Fontaine de Diane",
     "procedural": "fontaineDiane",
     "kind": "fountain",

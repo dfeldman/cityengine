@@ -758,6 +758,22 @@
     "asset": "pere-droite"
   },
   {
+    "id": "cirque-saisons",
+    "name": "Fontaine du Cirque: the four Seasons (children)",
+    "asset": "cirque-saisons",
+    "attach": {
+      "to": "Fontaine du Cirque",
+      "at": [
+        0,
+        2.87,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Barre's four cast-iron children (wheat, grapes, a cloak, two doves) back to back. assetkit img2glb guided from Commons 'Paris 8e Fontaine du Cirque 018' and 'Fontaine du Cirque Paris 8e 006' crops"
+  },
+  {
     "id": "diane-diane",
     "name": "Fontaine de Diane: Diane chasseresse",
     "asset": "diane-diane",
