@@ -1897,5 +1897,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Davioud's twin fountains of 1872-74 in the place André-Malraux (1er), one drawing for both (src/render/landmarks/paris/monuments/minor/fontaine-theatre-francais.ts). Basin width measured from the OSM way (amenity=fountain + water + wall, 11.3 m across); every height, the bowls and the column are by eye off Commons photos (2026-08 set, Fontaine Nymphe Marine / Fluviale Paris 2, 5, 9). Winged Nymphe fluviale with a reed by Moreau and four seated putti by Gauthier: Modly pieces theatre-fluviale-nymphe, theatre-fluviale-putti."
+  },
+  {
+    "name": "Pyramide du bois de Vincennes",
+    "procedural": "obelisquePyramideVincennes",
+    "kind": "obelisque",
+    "lat": 48.8339043,
+    "lon": 2.4451917,
+    "rotateDeg": 0,
+    "size": [
+      12,
+      12
+    ],
+    "height": 17.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Obelisk of 1731 (Q3411287, Slodtz brothers) on the central island of the carrefour de la Pyramide, Wikidata coordinates; no OSM building there. Three round steps, rusticated square pedestal with banded courses, tapering shaft, rocaille cartouche on each face (shallow relief, procedural), ball and gilt spike. No height is written anywhere: ~17 m total, pedestal ~5 m, steps ~11 m across are scaled by eye off Commons Paris - Pyramide du bois de Vincennes - 020. No Modly pieces: only shallow reliefs."
   }
 ]
