@@ -1241,6 +1241,25 @@
     "note": "Visconti's cast-iron fountain of 1844 in the square Louvois (Wikidata Q3076038; sculptor Klagmann): octagonal basin (OSM way 26277959, ~6 m flat to centre, a sloppy polygon so +-1 m; vertices near east, hence front 25), square pedestal with four tritons on dolphins, a wide bowl with zodiac band and mascarons, an upper pedestal, the four river goddesses back to back under the top bowl. Basin from OSM; bowls, pedestals and the ~8.5 m total height scaled off Commons photographs against the 3.6 m goddess group, not surveyed. Goddesses and top bowl are a Modly model (statues manifest: louvois-group), the tritons likewise (louvois-triton)."
   },
   {
+    "name": "Fontaine de la Paix (Détournelle)",
+    "procedural": "fontainePaix",
+    "kind": "fountain",
+    "osm": [
+      "way/1200013023"
+    ],
+    "lat": 48.849506,
+    "lon": 2.332896,
+    "size": [
+      5.3,
+      3.8
+    ],
+    "height": 5.2,
+    "front": 90,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Détournelle's stone pylon fountain of 1806-10 in the allée du Séminaire off the rue Bonaparte (Wikidata Q3076202, monument historique 1926, reliefs by Voinier, Espercieux, Caraffe, Marquois): a plinth, a die with garland frieze and a pediment on each long face, four relief panels (A LA PAIX, SCIENCES ET ARTS, AGRICULTURE, COMMERCE), a mascaron and shell bowl on each long face, in a rectangular trough. Trough 5.3 x 3.8 m from OSM way 1200013023 (centre taken from it); the pylon's ~1.8 x 1.2 m die and ~5.2 m height scaled off Commons photographs against the trough, not surveyed. Reliefs are drawn as shallow dark panels (procedural, no Modly pieces). Which long face is the front (bearing) is a guess from the photos."
+  },
+  {
     "name": "La Danse de la fontaine émergente",
     "procedural": "danseFontaineEmergente",
     "kind": "fountain",
