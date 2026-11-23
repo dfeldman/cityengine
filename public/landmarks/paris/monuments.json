@@ -1890,6 +1890,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Fontaine du jardin Villemin",
+    "procedural": "fontaineJardinVillemin",
+    "kind": "fontaine",
+    "lat": 48.8751044,
+    "lon": 2.3616005,
+    "rotateDeg": 0,
+    "size": [
+      2,
+      1.6
+    ],
+    "height": 2.1,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Cast-iron fountain by Marie-Auguste Martin (Val d'Osne, 1846; Q3076294; MH 1970), moved to the jardin Villemin (canal Saint-Martin side) in the 1970s; still there (Commons photos 2010s). Placed on OSM's fountain node n1700445942 (Wikidata's point is 2 m off); no OSM building under it. Plinth and footing procedural, about 1.05 x 0.85 x 0.62 m, estimated off Commons photos against a lamp post (about 2.0 m in all); the tritons, bowl and child are one Modly piece (villemin-fontaine). Rotation guessed."
+  },
+  {
     "name": "Monument à Octave Gréard",
     "procedural": "fontaineOctaveGreard",
     "kind": "fontaine",

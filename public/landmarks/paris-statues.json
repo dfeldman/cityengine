@@ -842,6 +842,18 @@
     "asset": "komitas-statue2"
   },
   {
+    "id": "villemin-fontaine",
+    "name": "Fontaine du jardin Villemin: tritons, bowl and child",
+    "attach": {
+      "to": "Fontaine du jardin Villemin",
+      "at": [0, 1.12, 0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Martin's cast-iron group (1846): two tritons carrying a shell-edged bowl with a child and dolphins. assetkit img2glb guided from Commons 'Fontaine du jardin Villemin 03.jpg' cropped to the group. Height 1.4 m scaled off the photo against the plinth.",
+    "asset": "villemin-fontaine"
+  },
+  {
     "id": "greard-buste",
     "name": "Monument à Octave Gréard: the bust",
     "attach": {
