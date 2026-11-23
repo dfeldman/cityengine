@@ -818,6 +818,18 @@
     "asset": "komitas-statue2"
   },
   {
+    "id": "greard-buste",
+    "name": "Monument à Octave Gréard: the bust",
+    "attach": {
+      "to": "Monument à Octave Gréard",
+      "at": [0, 3.25, -0.05],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Chaplain's marble bust of Octave Gréard (1909) in the arch opening. assetkit img2glb guided (default model) from Commons 'Fontaine Octave Gréard Paris 5e (buste).jpg', cropped to the bust; published in assetkit-models-paris. Height 0.75 m scaled off the arch.",
+    "asset": "greard-buste"
+  },
+  {
     "id": "russe-soldat-cheval",
     "name": "Monument du corps expéditionnaire russe: soldier and horse",
     "attach": {

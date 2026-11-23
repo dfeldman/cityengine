@@ -1855,6 +1855,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Monument à Octave Gréard",
+    "procedural": "fontaineOctaveGreard",
+    "kind": "fontaine",
+    "lat": 48.8500313,
+    "lon": 2.3442694,
+    "rotateDeg": 111,
+    "size": [
+      5.2,
+      2.3
+    ],
+    "height": 5.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine Octave Gréard (Q2372689; Nénot architect, Chaplain sculptor, 1909), square Samuel-Paty, on the east edge of the square beside the place Paul-Painlevé; placed on OSM's artwork node n9426205207 (Wikidata's point is 6 m off), front (the relief face) toward the garden, i.e. west-north-west. No OSM building under it. A stone arch on a low base, battered piers, urns, a cartouche, the bust in the opening, a low relief of a schoolmistress and a child below: sizes (~5 m wide, ~4.9 m to the crown, base 1 m) scaled off Commons photographs against the bust, not surveyed. The relief stays procedural (shallow); the bust is Modly greard-buste (paris-statues.json). The two threads of water frwiki mentions are not visible in the photographs, so none is drawn."
+  },
+  {
     "name": "Mémorial national de la guerre d'Algérie (quai Branly)",
     "procedural": "monumentMemorialAlgerie",
     "kind": "monument",
