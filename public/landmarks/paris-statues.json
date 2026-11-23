@@ -704,6 +704,42 @@
     "range": 250,
     "note": "Erevantsi's Komitas (2003). assetkit img2glb guided trellis2 (2nd attempt; the first, default model, left a hole in the chest) from Commons 'Monument Komitas à Paris.jpg', background painted out by hand; published in assetkit-models-paris. Height 2.8 m estimated.",
     "asset": "komitas-statue2"
+  },
+  {
+    "id": "pere-couple",
+    "name": "Monument aux morts du Père-Lachaise: the couple in the doorway",
+    "attach": {
+      "to": "Monument aux morts du Père-Lachaise",
+      "at": [0, 3.65, -0.45],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Bartholome's man and woman entering the tomb (seen from behind). assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux morts - après restauration 01.jpg', dark doorway painted out (second attempt; the first kept the black recess as a slab); the man's head is ragged. Height 2.0 m estimated.",
+    "asset": "pere-couple"
+  },
+  {
+    "id": "pere-gauche",
+    "name": "Monument aux morts du Père-Lachaise: the left group",
+    "attach": {
+      "to": "Monument aux morts du Père-Lachaise",
+      "at": [-2.6, 3.65, -1.0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "The mourning group left of the door (half relief on a thin backing). assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux morts - après restauration 04.jpg', wall painted out by a hand polygon. Height 2.1 m estimated.",
+    "asset": "pere-gauche"
+  },
+  {
+    "id": "pere-droite",
+    "name": "Monument aux morts du Père-Lachaise: the right group",
+    "attach": {
+      "to": "Monument aux morts du Père-Lachaise",
+      "at": [2.5, 3.65, -1.0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "The group of the dead right of the door (half relief on a thin backing). assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux morts - après restauration 01.jpg', wall painted out by a hand polygon. Height 1.9 m estimated.",
+    "asset": "pere-droite"
   }
 
 
