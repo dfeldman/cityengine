@@ -390,6 +390,38 @@
     "asset": "gaillon-dauphin"
   },
   {
+    "id": "reine-mascaron-e",
+    "name": "Fontaine de la Reine: mascaron (east corbel)",
+    "attach": {
+      "to": "Fontaine de la Reine",
+      "at": [
+        0.85,
+        3.3,
+        -1.07
+      ],
+      "bearing": 180
+    },
+    "range": 120,
+    "note": "Bearded mascaron corbel under the cornice, from one Commons photo (Paris - 142 rue Saint-Denis - decor fontaine de la reine), wall painted out; one model, placed twice. assetkit img2glb guided reine-mascaron",
+    "asset": "reine-mascaron"
+  },
+  {
+    "id": "reine-mascaron-w",
+    "name": "Fontaine de la Reine: mascaron (west corbel)",
+    "attach": {
+      "to": "Fontaine de la Reine",
+      "at": [
+        -0.85,
+        3.3,
+        -1.07
+      ],
+      "bearing": 180
+    },
+    "range": 120,
+    "note": "Twin of the east mascaron corbel (same model).",
+    "asset": "reine-mascaron"
+  },
+  {
     "id": "vertbois-crown",
     "name": "Fontaine du Vert Bois: crown cartouche",
     "attach": {

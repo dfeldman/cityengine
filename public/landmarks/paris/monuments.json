@@ -1311,6 +1311,22 @@
     "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
   },
   {
+    "name": "Fontaine de la Reine",
+    "procedural": "fontaineReine",
+    "kind": "fountain",
+    "lat": 48.865196,
+    "lon": 2.350478,
+    "front": 225,
+    "size": [
+      3.4,
+      3.2
+    ],
+    "height": 5.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The dry 16th-c. wall fountain (Beausire 1732; Wikidata Q15948824, MH 1994) in the rounded south-west corner of the Aubry house, rue Saint-Denis 142 at rue Greneta: plinth with table panel, round-headed niche (spout and mascaron lost), cornice on two bearded mascaron corbels, royal cartouche, upper window. Placed on the OSM house corner (way 1101931, not claimed; model origin = its SW corner vertex, 10 m from Wikidata's point). Heights by eye off Commons photos against the street plaques (~0.3 m wide), good to ~0.3 m; the niche back stands 0.62 m in front of the house corner so shop boards clear."
+  },
+  {
     "name": "Fontaine de Paradis",
     "procedural": "fontaineParadis",
     "kind": "fountain",
