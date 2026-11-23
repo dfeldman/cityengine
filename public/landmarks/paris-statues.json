@@ -422,6 +422,22 @@
     "asset": "vertbois-mascaron"
   },
   {
+    "id": "childebert-mascaron2",
+    "name": "Fontaine Childebert: bronze mascaron",
+    "asset": "childebert-mascaron2",
+    "attach": {
+      "to": "Fontaine Childebert",
+      "at": [
+        0,
+        2.05,
+        0.2
+      ],
+      "bearing": 180
+    },
+    "range": 100,
+    "note": "The bronze mascaron spout on the panel under the niche. assetkit img2glb guided --model trellis2 (attempt 2; attempt 1 was a flat slab) from Commons 'Fontaine Childebert Paris 5e (mascaron).jpg'; published in assetkit-models-paris. The chin is dark where the texture failed"
+  },
+  {
     "id": "carmes-head",
     "name": "Fontaine du Marché-aux-Carmes: two-faced herm head",
     "attach": {

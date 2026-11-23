@@ -1311,6 +1311,22 @@
     "note": "The 1712 wall fountain of the rue Saint-Martin / rue du Vertbois (Wikidata Q3076291): a stone portal against the foot of the Saint-Martin-des-Champs tower, rusticated pilasters, relief, bronze plaque, shell and bronze mascaron spout, cornice and a cartouche of arms on top (Modly: vertbois-crown, vertbois-mascaron). OSM way 54964126 (amenity=fountain) claimed. Faces the rue Saint-Martin / rue du Vertbois junction (front 335, NNW), the tower to its right: read off OSM's footway/fence line and the junction position, not checked on site. Dimensions scaled off Commons photos at ~80 px/m (pilaster ~0.9 m), not surveyed; heights shakiest."
   },
   {
+    "name": "Fontaine Childebert",
+    "procedural": "fontaineChildebert",
+    "kind": "fountain",
+    "lat": 48.847658,
+    "lon": 2.350230,
+    "front": 35,
+    "size": [
+      2.8,
+      3
+    ],
+    "height": 4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Childebert (abbaye Saint-Germain) wall fountain of 1715-17 re-erected in the square Paul-Langevin (Wikidata Q3076004): ashlar pier with pilasters, shell niche, sunk panel, shelf, bronze mascaron (Modly) and a low curved basin, against the trellised terrace wall. Position: the Commons geotag (48.84768, 2.35025) moved ~3.5 m SW to the foot of the terrace wall seen in the game; front and dimensions estimated from photos (not surveyed). No OSM way mapped for it."
+  },
+  {
     "name": "Fontaine Dejean",
     "procedural": "fontaineDejean",
     "kind": "fountain",
