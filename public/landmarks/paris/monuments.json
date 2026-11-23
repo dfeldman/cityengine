@@ -1311,6 +1311,22 @@
     "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
   },
   {
+    "name": "Fontaine de Paradis",
+    "procedural": "fontaineParadis",
+    "kind": "fountain",
+    "lat": 48.860012,
+    "lon": 2.357050,
+    "front": 223,
+    "size": [
+      4.4,
+      2
+    ],
+    "height": 8.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Dry wall fountain (Guillain 1636, Beausire 1705; Wikidata Q3076159) in the rounded SW corner pavilion of the Hôtel de Soubise, rue des Francs-Bourgeois at rue des Archives: scallop-headed niche, sill ledge, plain panel below, dedication plaque above. Placed on the chamfer of OSM way 6742329 (Soubise, NOT claimed; niche back 0.55 m in front of its face). Sizes scaled off Commons photos against the poster door (~2.6 m), the sill height is a guess; the real wall is curved, the model is flat. No sculpture, so no Modly piece."
+  },
+  {
     "name": "Fontaine du Vert Bois",
     "procedural": "fontaineVertBois",
     "osm": [
