@@ -1446,5 +1446,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Denys Puech and Henri Guillaume's monument of 1904 (Q3076026, OSM node tagged amenity=fountain) in the middle of the place Saint-Georges roundabout: iron railing, round basin, square plinth with a bronze mask on two sides, a stout round column carrying Gavarni's carnival figures in high relief, frieze, cornice and the half-length statue of Gavarni. Dimensions scaled by eye off Commons photos (Monument Gavarni 2021-06-27 -3/-5, Fontaine Gavarni Paris 9e) against the railing (~1 m); about 7.4 m in all, not surveyed. Which way the front faces is a guess (-z). No OSM building ways under it."
+  },
+  {
+    "name": "Fontaine de la Petite-Halle",
+    "procedural": "fontainePetiteHalle",
+    "kind": "fountain",
+    "osm": [
+      "way/63649496"
+    ],
+    "lat": 48.850371,
+    "lon": 2.383128,
+    "front": 0,
+    "size": [
+      4.52,
+      5.16
+    ],
+    "height": 7.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Beausire's free-standing ashlar fountain pavilion of 1719 at the rue du Faubourg-Saint-Antoine / rue de Montreuil (Q3076204, also Fontaine de Montreuil; OSM way 63649496, claimed, 4.5 x 5.2 m with its niche dent). Stepped plinth, corner pilasters, cornice, pediment on each face, hipped roof; arched niche with trough and the bearded bronze mascaron (Modly montreuil-mascaron); blind arches/oculi on the sides, a door at the back. Heights, which face is which and the door side read off two Commons photos against the door (~2 m), not surveyed."
   }
 ]

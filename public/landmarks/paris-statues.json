@@ -422,6 +422,22 @@
     "asset": "vertbois-mascaron"
   },
   {
+    "id": "montreuil-mascaron",
+    "name": "Fontaine de la Petite-Halle: bronze mascaron",
+    "asset": "montreuil-mascaron",
+    "attach": {
+      "to": "Fontaine de la Petite-Halle",
+      "at": [
+        0,
+        1.95,
+        -1.44
+      ],
+      "bearing": 180
+    },
+    "range": 100,
+    "note": "The bearded bronze mascaron on the back of the niche. assetkit img2glb guided (hunyuan, attempt 1) from Commons 'Fontaine de Montreuil, mascaron.jpg', water jet painted out; published in assetkit-models-paris"
+  },
+  {
     "id": "childebert-mascaron2",
     "name": "Fontaine Childebert: bronze mascaron",
     "asset": "childebert-mascaron2",
