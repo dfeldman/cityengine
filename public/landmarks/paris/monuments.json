@@ -1448,6 +1448,25 @@
     "note": "Denys Puech and Henri Guillaume's monument of 1904 (Q3076026, OSM node tagged amenity=fountain) in the middle of the place Saint-Georges roundabout: iron railing, round basin, square plinth with a bronze mask on two sides, a stout round column carrying Gavarni's carnival figures in high relief, frieze, cornice and the half-length statue of Gavarni. Dimensions scaled by eye off Commons photos (Monument Gavarni 2021-06-27 -3/-5, Fontaine Gavarni Paris 9e) against the railing (~1 m); about 7.4 m in all, not surveyed. Which way the front faces is a guess (-z). No OSM building ways under it."
   },
   {
+    "name": "Fontaine du Bassin Soufflot",
+    "procedural": "fontaineBassinSoufflot",
+    "kind": "fountain",
+    "osm": [
+      "way/685770760"
+    ],
+    "lat": 48.8474,
+    "lon": 2.340588,
+    "rotateDeg": 0,
+    "size": [
+      14.6,
+      14.6
+    ],
+    "height": 3.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Davioud's basin (1862) in the place Edmond-Rostand, 6e, with Crauk's bronze Triton and nereid holding a shell (Q3076290; OSM way 685770760, fountain+water+wall height 0.5, ring radius ~7 m measured). Rim width, the 8 support blocks and the ring of small jets are by eye off Commons photos; the group is Modly soufflot-triton."
+  },
+  {
     "name": "Fontaine de la Petite-Halle",
     "procedural": "fontainePetiteHalle",
     "kind": "fountain",

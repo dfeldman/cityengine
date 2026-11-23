@@ -646,6 +646,22 @@
     "asset": "dejean-pelican"
   },
   {
+    "id": "soufflot-triton",
+    "name": "Fontaine du Bassin Soufflot: triton and nereid",
+    "asset": "soufflot-triton",
+    "attach": {
+      "to": "Fontaine du Bassin Soufflot",
+      "at": [
+        0,
+        0.5,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Crauk's bronze group on its slab. assetkit img2glb guided from Commons 'Fontaine du bassin Soufflot Paris 6e' with the background painted out by hand"
+  },
+  {
     "id": "gavarni-statue",
     "name": "Monument à Gavarni: the statue of Gavarni",
     "attach": {
