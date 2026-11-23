@@ -1343,6 +1343,22 @@
     "note": "Dry wall fountain (Guillain 1636, Beausire 1705; Wikidata Q3076159) in the rounded SW corner pavilion of the Hôtel de Soubise, rue des Francs-Bourgeois at rue des Archives: scallop-headed niche, sill ledge, plain panel below, dedication plaque above. Placed on the chamfer of OSM way 6742329 (Soubise, NOT claimed; niche back 0.55 m in front of its face). Sizes scaled off Commons photos against the poster door (~2.6 m), the sill height is a guess; the real wall is curved, the model is flat. No sculpture, so no Modly piece."
   },
   {
+    "name": "Fontaine du Coq",
+    "procedural": "fontaineDuCoq",
+    "kind": "fountain",
+    "lat": 48.875200,
+    "lon": 2.329880,
+    "front": 345,
+    "size": [
+      3.8,
+      2.6
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine du Coq (Wikidata Q41621277; frwiki): free-standing stone aedicule at the dead end of the avenue du Coq (9e), last remnant of the château des Porcherons: two piers, shell-headed niche, shell frieze, fish-and-trident relief over the keystone, half-round basin; the cast-iron fountain in the niche is Modly (coq-fontaine). Placed at the south end of OSM way 93530778 (Wikidata's point and the list's row sit on it); no OSM building under it, nothing claimed. Sizes scaled off one Commons photo assuming a 3.8 m width: not surveyed."
+  },
+  {
     "name": "Fontaine du Vert Bois",
     "procedural": "fontaineVertBois",
     "osm": [

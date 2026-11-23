@@ -868,6 +868,22 @@
     },
     "range": 250,
     "note": "Moreau's winged bronze nymph with a reed (2.3 m by eye) on the upper bowl's cap. assetkit img2glb guided from Commons 'Fontaine Nymphe Fluviale Paris 5 and 2' (EXIF-upright crops)."
+  },
+  {
+    "id": "coq-fontaine",
+    "name": "Fontaine du Coq: cast-iron fountain",
+    "asset": "coq-fontaine",
+    "attach": {
+      "to": "Fontaine du Coq",
+      "at": [
+        0,
+        1.0,
+        0.62
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "The small cast-iron wall fountain (1.7 m by eye) in the stone niche. assetkit img2glb guided from Commons 'Fontaine du Coq.jpg' (one crop)."
   }
 
 
