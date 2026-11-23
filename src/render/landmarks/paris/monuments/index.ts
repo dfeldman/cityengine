@@ -55,6 +55,7 @@ import { fontaineParadis } from './minor/fontaine-paradis.ts'
 import { fontainePuitsButteAuxCailles } from './minor/fontaine-puits-butte-aux-cailles.ts'
 import { fontaineDuCoq } from './minor/fontaine-du-coq.ts'
 import { fontaineVertBois } from './minor/fontaine-vert-bois.ts'
+import { fontainePreSaintGervais } from './minor/fontaine-pre-saint-gervais.ts'
 import { fontaineChildebert } from './minor/fontaine-childebert.ts'
 import { fontaineDejean } from './minor/fontaine-dejean.ts'
 import { fontaineGavarni } from './minor/fontaine-gavarni.ts'
@@ -127,6 +128,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineReine,
   fontaineDuCoq,
   fontaineGaillon,
+  fontainePreSaintGervais,
   fontaineVertBois,
   fontaineChildebert,
   fontaineDejean,

@@ -1426,6 +1426,25 @@
     "note": "The 1712 wall fountain of the rue Saint-Martin / rue du Vertbois (Wikidata Q3076291): a stone portal against the foot of the Saint-Martin-des-Champs tower, rusticated pilasters, relief, bronze plaque, shell and bronze mascaron spout, cornice and a cartouche of arms on top (Modly: vertbois-crown, vertbois-mascaron). OSM way 54964126 (amenity=fountain) claimed. Faces the rue Saint-Martin / rue du Vertbois junction (front 335, NNW), the tower to its right: read off OSM's footway/fence line and the junction position, not checked on site. Dimensions scaled off Commons photos at ~80 px/m (pilaster ~0.9 m), not surveyed; heights shakiest."
   },
   {
+    "name": "Regard de la fontaine du Pré-Saint-Gervais",
+    "procedural": "fontainePreSaintGervais",
+    "kind": "fountain",
+    "osm": [
+      "way/73248961"
+    ],
+    "lat": 48.883068,
+    "lon": 2.403552,
+    "front": 275.8,
+    "size": [
+      3.3,
+      4.3
+    ],
+    "height": 5.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The stone regard (inspection house) of the old Pré-Saint-Gervais aqueduct with a public fountain in its front, place Anatole-France / rue André-Joineau, Le Pré-Saint-Gervais (Wikidata Q3076279; monument historique inscrit 1899, PA00079946). Footprint and facing from OSM way 73248961 (building, claimed): 3.3 m across the front, 4.3 m deep, the front (-z) toward the west street (front 275.8); the apartment block 5 m behind it on the east side matches the Commons photograph. Heights (5.0 m eaves, porch cornice 2.5 m, 5.7 m roof top) read off the photograph against bollards, not surveyed. No sculpture: the pine-cone finial is a lathe."
+  },
+  {
     "name": "Fontaine Childebert",
     "procedural": "fontaineChildebert",
     "kind": "fountain",
