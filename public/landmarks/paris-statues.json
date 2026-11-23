@@ -404,5 +404,21 @@
     "range": 150,
     "note": "The herm head with fruit-basket crown on the pillar. assetkit img2glb guided from Commons 'Fontaine du Marché-aux-Carmes (face Commerce) Paris 6e.jpg' and 'Fontainecarmes.jpg'; published in assetkit-models-paris",
     "asset": "carmes-head"
+   },
+  {
+    "id": "reservoir-vase",
+    "name": "Fontaine du Château d'eau de Montmartre: bronze vase",
+    "attach": {
+      "to": "Fontaine du Château d'eau de Montmartre",
+      "at": [
+        0,
+        3.02,
+        -5.55
+      ],
+      "bearing": 180
+    },
+    "range": 150,
+    "note": "The bronze vase with serpent handles on the niche ledge. assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine de l'Ancien Réservoir.jpg' cropped to the vase, the water jet painted out of the photo; published in assetkit-models-paris",
+    "asset": "reservoir-vase"
   }
 ]

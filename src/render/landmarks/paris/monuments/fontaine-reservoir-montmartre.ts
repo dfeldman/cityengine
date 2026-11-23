@@ -47,13 +47,15 @@ const FALL: Rgb = hex('#c4d8dc')
 const ROOF: Rgb = hex('#7a7468')
 
 /** The vase stands on its plinth in the niche on the axis (landmark frame): for the statues manifest */
-export const VASE_AT: [number, number, number] = [0, G + FL + 0.82 + VASE_BASE, -HZ - 0.06 + SLAB_T - 0.55]
+// (the niche is only as deep as the claimed ring's front wall allows: the lining sits flush against it, the vase stands out on the ledge)
+const NICHE_BACK = -HZ        // z of the niche's back: the ring's front face
+export const VASE_AT: [number, number, number] = [0, G + FL + 0.82 + VASE_BASE, NICHE_BACK - 0.3]
 
 function draw(q: MeshBuilder, ring?: { x: number; z: number }[]): void {
   const y = (v: number): number => G + v
   const zf = -HZ - 0.06     // the slab's front, a hair proud of the ring's front wall
   const zb = zf + SLAB_T       // back of the niche slab
-  const zr = zf + SLAB_T - 0.05 // the niche's back panel
+  const zr = NICHE_BACK         // the niche's back panel: flush on the ring's front wall (any deeper is inside it)
   // the building behind: its own ring, plaster, to a flat lid
   const plan = ring && ring.length > 2 ? ring : [{ x: -HX, z: -HZ }, { x: HX, z: -HZ }, { x: HX, z: HZ }, { x: -HX, z: HZ }]
   walls(q, plan, 0, y(BODY_H), PLASTER, ROOF)
@@ -81,14 +83,14 @@ function draw(q: MeshBuilder, ring?: { x: number; z: number }[]): void {
   block(q, NICHE_R, HALF_W, zf, zb, 0, y(crown + 0.05), PALE)
   block(q, -HALF_W, HALF_W, zf, zb, y(crown + 0.05), y(ENT_Y), PALE)
   // niche lining: granite back, pink marble panels beside the vase
-  block(q, -NICHE_R, NICHE_R, zr - 0.06, zr, y(FL), y(SPRING + 0.02), GRANITE)
-  for (const s of [-1, 1]) block(q, s > 0 ? 0.55 : -1.05, s > 0 ? 1.05 : -0.55, zr - 0.1, zr - 0.06, y(FL + 0.9), y(FL + 2.5), PINK)
+  block(q, -NICHE_R, NICHE_R, zr - 0.03, zr, y(FL), y(SPRING + 0.02), GRANITE)
+  for (const s of [-1, 1]) block(q, s > 0 ? 0.55 : -1.05, s > 0 ? 1.05 : -0.55, zr - 0.06, zr - 0.03, y(FL + 0.9), y(FL + 2.5), PINK)
   for (let i = 0; i < 14; i++) {
     const a = (i / 13) * Math.PI
     const x = Math.cos(a) * (NICHE_R - 0.05), yy = SPRING + Math.sin(a) * (NICHE_R - 0.05)
-    block(q, x - 0.06, x + 0.06, zr - 0.1, zr - 0.04, y(Math.min(yy, SPRING + 0.7 * (NICHE_R - 0.05) + 0.2)) - 0.04, y(SPRING + 0.7 * (NICHE_R - 0.05) + 0.2), shade(GRANITE, 0.92))
+    block(q, x - 0.06, x + 0.06, zr - 0.06, zr - 0.02, y(Math.min(yy, SPRING + 0.7 * (NICHE_R - 0.05) + 0.2)) - 0.04, y(SPRING + 0.7 * (NICHE_R - 0.05) + 0.2), shade(GRANITE, 0.92))
   }
-  block(q, -NICHE_R, NICHE_R, zr - 0.09, zr - 0.04, y(SPRING + 0.1), y(crown - 0.1), shade(GRANITE, 0.85))
+  block(q, -NICHE_R, NICHE_R, zr - 0.05, zr - 0.02, y(SPRING + 0.1), y(crown - 0.1), shade(GRANITE, 0.85))
   // the arch moulding: a ring of blocks proud of the face
   for (let i = 0; i <= 22; i++) {
     const a = (i / 22) * Math.PI
@@ -111,9 +113,9 @@ function draw(q: MeshBuilder, ring?: { x: number; z: number }[]): void {
   roof(q, -HALF_W - 0.28, HALF_W + 0.28, zf - 0.3, zb, y(ENT_Y + ENT_H), PED_H, 0, (zb - zf + 0.3) / 2, PALE)
   block(q, -0.9, 0.9, zf - 0.34, zf - 0.3, y(ENT_Y + ENT_H + 0.12), y(ENT_Y + ENT_H + 0.55), shade(STONE, 0.9))
   // the water: a thin jet from the vase's mask onto the ledge
-  spout(q, [0, y(FL + 0.82 + VASE_BASE + 0.95), zr - 0.5], [0, y(FL + 0.82), zr - 0.9], 0.04, 0.012, FALL)
+  spout(q, [0, y(FL + 0.82 + VASE_BASE + 0.95), zr - 0.65], [0, y(FL + 0.82), zr - 0.52], 0.04, 0.012, FALL)
   // the vase's plinth (the vase itself is Modly)
-  block(q, -0.4, 0.4, zr - 0.9, zr - 0.1, y(FL + 0.82), y(FL + 0.82 + VASE_BASE), shade(PINK, 1.05))
+  block(q, -0.4, 0.4, zr - 0.62, zr - 0.1, y(FL + 0.82), y(FL + 0.82 + VASE_BASE), shade(PINK, 1.05))
 }
 
 export function fontaineReservoirMontmartre(out: MeshBuilder, fit: Fit): void {
