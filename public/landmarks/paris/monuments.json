@@ -1996,6 +1996,25 @@
     "note": "Obelisk of 1731 (Q3411287, Slodtz brothers) on the central island of the carrefour de la Pyramide, Wikidata coordinates; no OSM building there. Three round steps, rusticated square pedestal with banded courses, tapering shaft, rocaille cartouche on each face (shallow relief, procedural), ball and gilt spike. No height is written anywhere: ~17 m total, pedestal ~5 m, steps ~11 m across are scaled by eye off Commons Paris - Pyramide du bois de Vincennes - 020. No Modly pieces: only shallow reliefs."
   },
   {
+    "name": "Mausolée de Gaspard Monge",
+    "procedural": "tombeGaspardMonge",
+    "kind": "monument",
+    "osm": [
+      "way/1211895435"
+    ],
+    "lat": 48.86031,
+    "lon": 2.39366,
+    "rotateDeg": 0,
+    "size": [
+      5.5,
+      5.7
+    ],
+    "height": 5.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Mausolée de Gaspard Monge (Q5526576), Père-Lachaise division 18, OSM way 1211895435 (5.5 x 5.7 m, building=service + historic=tomb, claimed; south face has the door). Rubble crypt with ashlar corner piers, a grilled door in a framed surround, a flat terrace behind an X-braced iron railing, and an Egyptian-style open aedicule (jambs, winged disc, cavetto cornice) holding the marble bust of Monge (Modly tombe-monge-buste, paris-statues.json). Dimensions by eye off Commons photos (door grille ~0.95 m wide), not surveyed; OSM bust node at 48.8603096, 2.3936585."
+  },
+  {
     "name": "Tombe d'Héloïse et Abélard",
     "procedural": "tombeHeloiseAbelard",
     "kind": "monument",

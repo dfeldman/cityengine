@@ -924,6 +924,22 @@
     },
     "range": 250,
     "note": "The small cast-iron wall fountain (1.7 m by eye) in the stone niche. assetkit img2glb guided from Commons 'Fontaine du Coq.jpg' (one crop)."
+  },
+  {
+    "id": "tombe-monge-buste",
+    "name": "Mausolée de Gaspard Monge: buste",
+    "asset": "tombe-monge-buste",
+    "attach": {
+      "to": "Mausolée de Gaspard Monge",
+      "at": [
+        0,
+        4.15,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Marble bust of Monge (0.6 m with its block) on the aedicule's pedestal. assetkit img2glb guided from Commons 'Perelachaise-Monge-p1000360.jpg' (one crop, first attempt)."
   }
 
 
