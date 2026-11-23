@@ -73,6 +73,7 @@ import { fontaineSquareLamartine } from './minor/fontaine-square-lamartine.ts'
 import { monumentMortsPereLachaise } from './minor/monument-morts-pere-lachaise.ts'
 import { tombeHeloiseAbelard } from './minor/tombe-heloise-abelard.ts'
 import { tombeGaspardMonge } from './minor/tombe-gaspard-monge.ts'
+import { tombeCenotapheBaudelaire } from './minor/tombe-cenotaphe-baudelaire.ts'
 import { fontaineMiroirEau } from './minor/fontaine-miroir-eau.ts'
 import { fontaineEmbacle } from './minor/fontaine-embacle.ts'
 import { bassinRondPalais, bassinOvalePalais } from './minor/fontaine-bassins-palais.ts'
@@ -141,7 +142,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentKomitas,
   tombeHeloiseAbelard,
   tombeGaspardMonge,
-  monumentMortsPereLachaise,
+  tombeCenotapheBaudelaire,
+  fontaineMiroirEau,
   fontaineEmbacle,
   bassinRondPalais,
   bassinOvalePalais,

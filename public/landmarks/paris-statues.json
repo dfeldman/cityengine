@@ -956,6 +956,30 @@
     },
     "range": 250,
     "note": "Marble bust of Monge (0.6 m with its block) on the aedicule's pedestal. assetkit img2glb guided from Commons 'Perelachaise-Monge-p1000360.jpg' (one crop, first attempt)."
+  },
+  {
+    "id": "baudelaire-poete",
+    "name": "Cénotaphe de Baudelaire: the poet and genie relief",
+    "asset": "baudelaire-poete",
+    "attach": {
+      "to": "Cénotaphe de Baudelaire",
+      "at": [0, 1.42, 0.9],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Charmoy's high relief on the stele (poet, hands to chin, over the bat-winged genie). assetkit img2glb guided, 2nd attempt, from Commons 'Charles Baudelaire cénotaphe 2024.jpg' with the stele painted out by a hand polygon (the first, plain crop kept a slab of the stele and made two heads). Height 2.8 m estimated."
+  },
+  {
+    "id": "baudelaire-gisant",
+    "name": "Cénotaphe de Baudelaire: the recumbent wrapped figure",
+    "asset": "baudelaire-gisant",
+    "attach": {
+      "to": "Cénotaphe de Baudelaire",
+      "at": [0, 1.12, -0.1],
+      "bearing": 270
+    },
+    "range": 250,
+    "note": "The poet's wrapped recumbent figure on the slab, head toward the stele. assetkit img2glb guided, 2nd attempt, from Commons 'Baudelaire's grave 01.jpg' (the 1st, from the 2024 front photo, made a standing hooded man). Height 0.4 m estimated; bearing 270 is a guess to lay it along z."
   }
 
 
