@@ -1486,6 +1486,25 @@
     "note": "Davioud's basin (1862) in the place Edmond-Rostand, 6e, with Crauk's bronze Triton and nereid holding a shell (Q3076290; OSM way 685770760, fountain+water+wall height 0.5, ring radius ~7 m measured). Rim width, the 8 support blocks and the ring of small jets are by eye off Commons photos; the group is Modly soufflot-triton."
   },
   {
+    "name": "Fontaine des Ambassadeurs",
+    "procedural": "fontaineAmbassadeurs",
+    "kind": "fountain",
+    "osm": [
+      "way/67091995"
+    ],
+    "lat": 48.867351,
+    "lon": 2.3180025,
+    "rotateDeg": 0,
+    "size": [
+      6.0,
+      6.0
+    ],
+    "height": 5.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hittorff's fountain of 1840 in the jardins des Champs-Elysees (Q3076221; OSM way 67091995, amenity=fountain + water, 5.6 m across, measured): low round stone basin, square panelled pedestal, reed-and-mask cluster, wide cast-iron bowl with eight mascarons spilling into the basin, bronze nymph on top (Modly ambassadeurs-nymphe). Every height and the bowl and pedestal widths are by eye off Commons photos (Fontaine des Ambassadeurs Paris 8e 001/003) against the basin wall, not surveyed."
+  },
+  {
     "name": "Fontaine de la Petite-Halle",
     "procedural": "fontainePetiteHalle",
     "kind": "fountain",

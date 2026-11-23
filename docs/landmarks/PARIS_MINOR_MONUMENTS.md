@@ -327,3 +327,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - monument à Boussingault (Q28086367): skipped: lat 48.915, north of the paris-centre box
 - Fontaine de la Paix (Q3076202): modelled (monuments/minor/fontaine-paix.ts, monuments.json; Modly pieces: none, the four reliefs are shallow panels)
 - Fontaine de Diane (Q3076128): modelled (src/render/landmarks/paris/monuments/minor/fontaine-diane.ts + kit hittorffFountain, public/landmarks/paris/monuments.json; Modly pieces: diane-diane, published)
+- Fontaine des Ambassadeurs: modelled (monuments/minor/fontaine-ambassadeurs.ts, monuments.json; Modly pieces: ambassadeurs-nymphe)
