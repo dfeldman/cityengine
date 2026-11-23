@@ -1540,6 +1540,120 @@
     "note": "Raoul Larche's fountain of 1900-1901 in the square Jean-Perrin beside the Grand Palais (Q3076034): a lobed oval marble basin with the Seine and her tributaries seated on its rim. Plan = OSM ways 66758129 (outer) and 66758138 (water), measured; rim height 0.6 m and group sizes by eye against Commons photos. The sculpture groups are Modly pieces in paris-statues.json."
   },
   {
+    "name": "Bassin rond du Petit Palais (sud)",
+    "procedural": "bassinRondPalais",
+    "kind": "fountain",
+    "osm": [
+      "way/66768636"
+    ],
+    "lat": 48.865185,
+    "lon": 2.314017,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "One of the four small round basins of the 1900 layout round the Grand and Petit Palais (Q2887588; south-east round basin at the foot of the avenue Winston-Churchill, Petit Palais side; Wikidata Q2887588 'bassins du Petit et Grand Palais' = six basins; OSM way 66768636, ~8 m across, rim 0.2 tagged). Rim width, the cast-iron reed cluster and the tall jet are by eye off Commons (Fontaine du Grand Palais, Fontaine du Petit Palais); no Modly (the reeds are a 0.6 m ornament, procedural)."
+  },
+  {
+    "name": "Bassin rond du Grand Palais (sud)",
+    "procedural": "bassinRondPalais",
+    "kind": "fountain",
+    "osm": [
+      "way/66755254"
+    ],
+    "lat": 48.865176,
+    "lon": 2.313419,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "One of the four small round basins of the 1900 layout round the Grand and Petit Palais (Q2887588; south-west round basin, Grand Palais side; Wikidata Q2887588 'bassins du Petit et Grand Palais' = six basins; OSM way 66755254, ~8 m across, rim 0.2 tagged). Rim width, the cast-iron reed cluster and the tall jet are by eye off Commons (Fontaine du Grand Palais, Fontaine du Petit Palais); no Modly (the reeds are a 0.6 m ornament, procedural)."
+  },
+  {
+    "name": "Bassin rond du Grand Palais (nord)",
+    "procedural": "bassinRondPalais",
+    "kind": "fountain",
+    "osm": [
+      "way/66755262"
+    ],
+    "lat": 48.867011,
+    "lon": 2.313635,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "One of the four small round basins of the 1900 layout round the Grand and Petit Palais (north-west round basin, Grand Palais side; Wikidata Q2887588 'bassins du Petit et Grand Palais' = six basins; OSM way 66755262, ~8 m across, rim 0.2 tagged). Rim width, the cast-iron reed cluster and the tall jet are by eye off Commons (Fontaine du Grand Palais, Fontaine du Petit Palais); no Modly (the reeds are a 0.6 m ornament, procedural)."
+  },
+  {
+    "name": "Bassin rond du Petit Palais (nord)",
+    "procedural": "bassinRondPalais",
+    "kind": "fountain",
+    "osm": [
+      "way/66768651"
+    ],
+    "lat": 48.866961,
+    "lon": 2.314223,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "One of the four small round basins of the 1900 layout round the Grand and Petit Palais (north-east round basin, Petit Palais side; Wikidata Q2887588 'bassins du Petit et Grand Palais' = six basins; OSM way 66768651, ~8 m across, rim 0.2 tagged). Rim width, the cast-iron reed cluster and the tall jet are by eye off Commons (Fontaine du Grand Palais, Fontaine du Petit Palais); no Modly (the reeds are a 0.6 m ornament, procedural)."
+  },
+  {
+    "name": "Bassin ovale du Petit Palais (Champs-Élysées)",
+    "procedural": "bassinOvalePalais",
+    "kind": "fountain",
+    "osm": [
+      "way/66768655"
+    ],
+    "lat": 48.866917,
+    "lon": 2.315138,
+    "rotateDeg": 26,
+    "size": [
+      11.7,
+      8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The oval basin on the Champs-Élysées promenade east of the avenue Winston-Churchill (OSM way 66768655, 11.7 x 8 m measured; its west twin is the next entry; Larche's Miroir d'eau is a separate basin). Vase bowl, jet and the small bronze dolphins are procedural stand-ins by eye off Commons (Bassin du Grand Palais 5): Modly not attempted."
+  },
+  {
+    "name": "Bassin ovale du Grand Palais (square de Berlin)",
+    "procedural": "bassinOvalePalais",
+    "kind": "fountain",
+    "osm": [
+      "way/66768634"
+    ],
+    "lat": 48.867687,
+    "lon": 2.312721,
+    "rotateDeg": 27,
+    "size": [
+      11.5,
+      7.8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The oval basin on the Champs-Élysées promenade west of the avenue Winston-Churchill, Grand Palais side (OSM way 66768634, 11.5 x 7.8 m measured, rim 0.5 tagged; not the Miroir d'eau, which is Larche's separate basin in square Jean-Perrin). Vase bowl, jet and small bronze dolphins are procedural stand-ins by eye off Commons (Bassin du Grand Palais 5): Modly not attempted."
+  },
+  {
     "name": "L'Embâcle (Daudelin, place du Québec)",
     "procedural": "fontaineEmbacle",
     "kind": "fountain",
