@@ -2188,5 +2188,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "The wall fountain of the Jardin des plantes' north entrance (Q137838758, 40 rue Geoffroy-Saint-Hilaire): the retaining wall of Rohault de Fleury's 1834 reservoir, a stone wall with a round arch over a brick cul-de-four, a round basin before it and a lion-head spout; the two bronze lions of Jacquemart (1857/1860) stand on its top corners (Modly jdp-lion, placed from paris-statues.json). OSM way 97183056 (building named Fontaine aux Lions, 8.5 m front edge) claimed; origin = middle of its SE front edge (the polygon lies NW of it), front bearing 151. Wall 8.3 m wide, ~3.3 m high with cornice, arch 3.7 m wide, basin 4.6 m across: scaled off Commons photographs (bollards ~1 m), not surveyed."
+  },
+  {
+    "name": "Tombes de La Fontaine et de Molière",
+    "procedural": "tombeLaFontaineMoliere",
+    "kind": "monument",
+    "lat": 48.86111,
+    "lon": 2.39489,
+    "rotateDeg": 0,
+    "size": [
+      6.8,
+      3.8
+    ],
+    "height": 1.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Père-Lachaise division 25: the matching tombs of La Fontaine (Q3323381) and Molière (Q3323385, the Wikidata item the monuments list calls La Fontaine; both items share 48.86111, 2.39489), moved here together in 1817. Two pale-limestone trough sarcophagi on stepped plinths with a tilted plaque on a corbel at one end and a dark bronze panel on the side, behind a low iron rail. No OSM building way. Sizes by eye from Commons photos (Tombe la fontaine.jpg; Paris Père Lachaise La Fontaine et Molière.JPG); side-by-side spacing, orientation (plaque end toward -z) and the fence are guesses, the fox-and-stork relief is not visible in the photos so is not drawn. No Modly pieces: nothing in the round."
   }
 ]
