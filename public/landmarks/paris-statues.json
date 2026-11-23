@@ -438,6 +438,22 @@
     "note": "The bearded bronze mascaron on the back of the niche. assetkit img2glb guided (hunyuan, attempt 1) from Commons 'Fontaine de Montreuil, mascaron.jpg', water jet painted out; published in assetkit-models-paris"
   },
   {
+    "id": "joyeuse-enfant",
+    "name": "Fontaine de Joyeuse: zinc child with jar",
+    "asset": "joyeuse-enfant",
+    "attach": {
+      "to": "Fontaine de Joyeuse",
+      "at": [
+        0,
+        2.35,
+        -0.02
+      ],
+      "bearing": 180
+    },
+    "range": 100,
+    "note": "Boitel's zinc child pouring a jar, on the tazza in the niche. assetkit img2glb guided (hunyuan, attempt 1) from Commons 'Fontaine de Joyeuse détail statue.jpg', the water jet painted out; published in assetkit-models-paris"
+  },
+  {
     "id": "childebert-mascaron2",
     "name": "Fontaine Childebert: bronze mascaron",
     "asset": "childebert-mascaron2",

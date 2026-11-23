@@ -1481,5 +1481,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Raoul Larche's fountain of 1900-1901 in the square Jean-Perrin beside the Grand Palais (Q3076034): a lobed oval marble basin with the Seine and her tributaries seated on its rim. Plan = OSM ways 66758129 (outer) and 66758138 (water), measured; rim height 0.6 m and group sizes by eye against Commons photos. The sculpture groups are Modly pieces in paris-statues.json."
+  },
+  {
+    "name": "Fontaine de Joyeuse",
+    "procedural": "fontaineJoyeuse",
+    "kind": "fountain",
+    "lat": 48.857300,
+    "lon": 2.364356,
+    "front": 92,
+    "size": [
+      3.4,
+      2
+    ],
+    "height": 6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Boitel's stone edicule of 1847 at 41 rue de Turenne (Q3076142, also Fontaine Saint-Louis): fluted pilasters on pedestals, entablature with the arms of Paris, archivolt over a semi-domed niche, iron grille, lobed tazza over a half-round basin, the zinc child with a jar (Modly joyeuse-enfant). Real one is recessed into the house; here it stands about 1 m proud, its back 0.55 m in front of the house face (OSM building ways at x about 2369.7 not claimed; the face line and its 92 degree normal read off the OSM polygon, so the model centre is 1 m east of it). Width ~3.3 m from frwiki (about 3 m) and photos; heights scaled against a scooter, not surveyed."
   }
 ]
