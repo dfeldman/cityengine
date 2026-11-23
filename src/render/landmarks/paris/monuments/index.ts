@@ -64,6 +64,7 @@ import { fontaineTheatreFrancaisMarine, fontaineTheatreFrancaisFluviale } from '
 import { monumentSoldatsNoirs } from './minor/monument-soldats-noirs.ts'
 import { monumentKomitas } from './minor/monument-komitas.ts'
 import { obelisquePyramideVincennes } from './minor/obelisque-pyramide-vincennes.ts'
+import { fontaineSquareLamartine } from './minor/fontaine-square-lamartine.ts'
 import { monumentMortsPereLachaise } from './minor/monument-morts-pere-lachaise.ts'
 import { fontaineMiroirEau } from './minor/fontaine-miroir-eau.ts'
 import { fontaineEmbacle } from './minor/fontaine-embacle.ts'
@@ -122,6 +123,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineBassinSoufflot,
   monumentSoldatsNoirs,
   obelisquePyramideVincennes,
+  fontaineSquareLamartine,
   monumentKomitas,
   monumentMortsPereLachaise,
   fontaineEmbacle,

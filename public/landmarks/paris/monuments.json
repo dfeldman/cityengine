@@ -1785,6 +1785,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Fontaine du square Lamartine",
+    "procedural": "fontaineSquareLamartine",
+    "kind": "fountain",
+    "lat": 48.865262,
+    "lon": 2.275407,
+    "rotateDeg": 0,
+    "size": [
+      4.8,
+      3.6
+    ],
+    "height": 2.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine à l'Albien / puits artésien de Passy (Q3076297), square Lamartine: the 1950s travertine block (Dupuis) over the 1861 well, a grey plaque on the broad face and a tap on the narrow one. Placed on frwiki's coordinates (OSM has only the tap node, 48.86525 2.27549, no building). Block ~3.2 x 2.0 x 2.6 m estimated off one Commons photo (Puits artésien sq Lamartine.jpg), not surveyed; plan orientation (rotateDeg) is a guess. No sculpture, so no Modly pieces."
+  },
+  {
     "name": "Monument aux morts du Père-Lachaise",
     "procedural": "monumentMortsPereLachaise",
     "kind": "monument",
