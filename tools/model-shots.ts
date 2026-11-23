@@ -5,6 +5,7 @@ import { VIEWPORT } from './shot-size.ts'
  *   node --experimental-strip-types tools/model-shots.ts --model=goldenGateBridge --views=bridge [--out=docs/shots/models]
  */
 import { chromium } from 'playwright'
+import { shotLock } from './shot-lock.ts'
 
 /* The dev server to drive; SHOTS_BASE lets a worktree agent point at its own port. */
 const BASE = process.env.SHOTS_BASE ?? 'http://localhost:5200'
@@ -342,6 +343,7 @@ if (process.argv[1]?.endsWith('model-shots.ts')) {
     fitFor = got.fit
     spin = got.spin
   }
+  await shotLock()
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
   const page = await browser.newPage({ viewport: VIEWPORT })
   page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))

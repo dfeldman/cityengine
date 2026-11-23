@@ -7,6 +7,7 @@ import { VIEWPORT } from './shot-size.ts'
  *     (--at looks at a world point instead of a mesh; the rider starts on the street nearest it, so its tiles stream)
  */
 import { chromium } from 'playwright'
+import { shotLock } from './shot-lock.ts'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Projection } from '../src/city/geo.ts'
@@ -30,6 +31,7 @@ if (at) {
   const { lat, lon } = new Projection(origin).toLatLon({ x: at[0], z: at[1] })
   place = `&at=${lat.toFixed(7)},${lon.toFixed(7)}&freeze=1`
 }
+await shotLock()
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: VIEWPORT })
 await page.goto(`${process.env.SHOTS_BASE ?? 'http://localhost:5200'}/?city=${city}${place}&dev=1${arg('without') ? `&without=${arg('without')}` : ''}${arg('extra') ? `&${arg('extra')}` : ''}`)
