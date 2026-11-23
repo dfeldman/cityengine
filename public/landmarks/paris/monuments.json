@@ -1662,5 +1662,43 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Hittorff's fountain of 1840 (Q3076128; also fontaine Ledoyen) in the jardin des Champs-Élysées, sister of the Cirque, Ambassadeurs and Grille du Coq fountains (kit routine hittorffFountain). Basin radius 3.0 m from OSM way 1136105125 (claimed); wall, octagonal pedestal, neck, vasque (~3.7 m across), 12 lion-mask lugs and reed tuft are by eye off Commons photos 'Fontaine de Diane Paris 8e 001-003', not surveyed. Desprez's Diane (~1.8 m) is Modly diane-diane."
+  },
+  {
+    "name": "Fontaine du Théâtre-Français — Nymphe marine",
+    "procedural": "fontaineTheatreFrancaisMarine",
+    "kind": "fountain",
+    "osm": [
+      "way/664173645"
+    ],
+    "lat": 48.86367,
+    "lon": 2.335005,
+    "rotateDeg": 0,
+    "size": [
+      11.4,
+      11.4
+    ],
+    "height": 9.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Davioud's twin fountains of 1872-74 in the place André-Malraux (1er), one drawing for both (src/render/landmarks/paris/monuments/minor/fontaine-theatre-francais.ts). Basin width measured from the OSM way (amenity=fountain + water + wall, 11.3 m across); every height, the bowls and the column are by eye off Commons photos (2026-08 set, Fontaine Nymphe Marine / Fluviale Paris 2, 5, 9). Nymphe marine with an oar by Carrier-Belleuse (Q3076333) and four seated putti by Eude: Modly pieces theatre-marine-nymphe, theatre-marine-putti."
+  },
+  {
+    "name": "Fontaine du Théâtre-Français — Nymphe fluviale",
+    "procedural": "fontaineTheatreFrancaisFluviale",
+    "kind": "fountain",
+    "osm": [
+      "way/664173647"
+    ],
+    "lat": 48.863773,
+    "lon": 2.335567,
+    "rotateDeg": 0,
+    "size": [
+      11.4,
+      11.4
+    ],
+    "height": 9.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Davioud's twin fountains of 1872-74 in the place André-Malraux (1er), one drawing for both (src/render/landmarks/paris/monuments/minor/fontaine-theatre-francais.ts). Basin width measured from the OSM way (amenity=fountain + water + wall, 11.3 m across); every height, the bowls and the column are by eye off Commons photos (2026-08 set, Fontaine Nymphe Marine / Fluviale Paris 2, 5, 9). Winged Nymphe fluviale with a reed by Moreau and four seated putti by Gauthier: Modly pieces theatre-fluviale-nymphe, theatre-fluviale-putti."
   }
 ]

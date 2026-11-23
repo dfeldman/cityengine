@@ -804,6 +804,38 @@
     },
     "range": 250,
     "note": "Hittorff's bronze nymph on the reed crown (1.9 m, by eye). assetkit img2glb guided from Commons 'Fontaine des Ambassadeurs Paris 8e 003/001.jpg'."
+  },
+  {
+    "id": "theatre-marine-nymphe",
+    "name": "Fontaine du Théâtre-Français: Nymphe marine",
+    "asset": "theatre-marine-nymphe",
+    "attach": {
+      "to": "Fontaine du Théâtre-Français — Nymphe marine",
+      "at": [
+        0,
+        6.9,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Carrier-Belleuse's bronze nymph with an oar (2.3 m by eye) on the upper bowl's cap. assetkit img2glb guided from Commons 'Fontaine Nymphe Marine 2026-08-12 1 and 2' (the main photo is a back view)."
+  },
+  {
+    "id": "theatre-fluviale-nymphe",
+    "name": "Fontaine du Théâtre-Français: Nymphe fluviale",
+    "asset": "theatre-fluviale-nymphe",
+    "attach": {
+      "to": "Fontaine du Théâtre-Français — Nymphe fluviale",
+      "at": [
+        0,
+        6.9,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Moreau's winged bronze nymph with a reed (2.3 m by eye) on the upper bowl's cap. assetkit img2glb guided from Commons 'Fontaine Nymphe Fluviale Paris 5 and 2' (EXIF-upright crops)."
   }
 
 

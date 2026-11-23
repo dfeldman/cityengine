@@ -342,3 +342,5 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - barrière de Passy (Q58049819): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
 - barrière de la Chapelle (Q21426962): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
 - barrière des Deux-Moulins (Q30739206): skipped: lost (Wikidata 2026-11-23: "former …" and/or state of conservation destroyed / dissolved date); nothing to ride past
+- Fontaine du Théâtre Français - Nymphe marine (Q3076333): modelled (src/render/landmarks/paris/monuments/minor/fontaine-theatre-francais.ts `fontaineTheatreFrancaisMarine`, public/landmarks/paris/monuments.json; Modly pieces: theatre-marine-nymphe, published; the four putti are not modelled)
+- Fontaine du Théâtre Français - Nymphe fluviale: modelled (same builder `fontaineTheatreFrancaisFluviale`, public/landmarks/paris/monuments.json; Modly pieces: theatre-fluviale-nymphe, published; the four putti are not modelled)
