@@ -1925,6 +1925,22 @@
     "note": "Q15156006 (1888), common grave of the 25 May 1887 Opéra-Comique fire in Père-Lachaise division 96, on Wikidata's point. Form read off two Commons photos (Division 96 - Opéra-Comique 01, 03): two broad grey stone steps with a thick round-shouldered inscribed stele; no sculpture, so no Modly piece. Dimensions (steps ~2.9 x 2.7 m, stele ~1.35 m) and the facing direction are estimated by eye, not surveyed."
   },
   {
+    "name": "Monument aux morts pour la France en Afrique du Nord (Père-Lachaise)",
+    "procedural": "monumentMortsAfriqueDuNord",
+    "kind": "monument",
+    "lat": 48.862806,
+    "lon": 2.397613,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      5.2
+    ],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q96091551, division 88, allée des Fédérés, on Wikidata's point (the OSM node is a plaque, no building way). Form read off Commons Division 88 01-03: paved court with two entry steps, two-tier back wall (plain lower wall, name-panel band above on a shadow gap), inclined side wings, tall inscribed grey stele on a low ledger; no sculpture, so no Modly piece. All dimensions (court ~7.4 x 4.6 m, stele ~2.3 m, wall ~6.4 m wide) and the facing direction are estimated by eye, not surveyed."
+  },
+  {
     "name": "Fontaine du jardin Villemin",
     "procedural": "fontaineJardinVillemin",
     "kind": "fontaine",
