@@ -414,6 +414,22 @@
     "asset": "sainte-genevieve-lion"
   },
   {
+    "id": "jdp-lions-west",
+    "name": "Fontaine aux lions du Jardin des plantes: lion (west)",
+    "attach": { "to": "Fontaine aux lions du Jardin des plantes", "at": [-3.2, 4.0, 1.0], "bearing": 202 },
+    "range": 150,
+    "note": "Jacquemart's bronze lion on the wall's top corner. assetkit img2glb guided from Commons 'Bronze lions @ Henri Alfred Jacquemart' (30816406622); published in assetkit-models-paris",
+    "asset": "jdp-lion"
+  },
+  {
+    "id": "jdp-lions-east",
+    "name": "Fontaine aux lions du Jardin des plantes: lion (east)",
+    "attach": { "to": "Fontaine aux lions du Jardin des plantes", "at": [3.2, 4.0, 1.0], "bearing": 158 },
+    "range": 150,
+    "note": "Second lion, same model.",
+    "asset": "jdp-lion"
+  },
+  {
     "id": "reine-mascaron-e",
     "name": "Fontaine de la Reine: mascaron (east corbel)",
     "attach": {

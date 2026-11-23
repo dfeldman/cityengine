@@ -2083,5 +2083,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Marta Pan's fountain-labyrinth (competition 1980, inaugurated 1986/87; Wikidata Q635634): five eccentric concentric granite walls, each broken by a gap on alternating sides, cobbled floor; dry since ~2015 so no water. Radii, wall height (~0.55 m) and gap angles estimated from one Commons photograph against a car, not surveyed; the orientation (rotateDeg 0) and the amphitheatre steps on one side are not modelled. No OSM way to claim (only points nearby). Purely structural, no Modly piece."
+  },
+  {
+    "name": "Fontaine aux lions du Jardin des plantes",
+    "procedural": "fontaineLionsJardinPlantes",
+    "kind": "fountain",
+    "osm": [
+      "way/97183056"
+    ],
+    "lat": 48.843654,
+    "lon": 2.355486,
+    "front": 151,
+    "size": [
+      8.4,
+      5.2
+    ],
+    "height": 4.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The wall fountain of the Jardin des plantes' north entrance (Q137838758, 40 rue Geoffroy-Saint-Hilaire): the retaining wall of Rohault de Fleury's 1834 reservoir, a stone wall with a round arch over a brick cul-de-four, a round basin before it and a lion-head spout; the two bronze lions of Jacquemart (1857/1860) stand on its top corners (Modly jdp-lion, placed from paris-statues.json). OSM way 97183056 (building named Fontaine aux Lions, 8.5 m front edge) claimed; origin = middle of its SE front edge (the polygon lies NW of it), front bearing 151. Wall 8.3 m wide, ~3.3 m high with cornice, arch 3.7 m wide, basin 4.6 m across: scaled off Commons photographs (bollards ~1 m), not surveyed."
   }
 ]
