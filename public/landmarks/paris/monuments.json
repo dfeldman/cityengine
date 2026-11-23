@@ -1769,6 +1769,22 @@
     "note": "Stele in the Jardin d'agronomie tropicale (Q17745972, OSM memorial node, memorial=stele; Wikidata gives 48.8332 2.4661): a pale stone slab with a bas-relief of a woman beside a Poilu's helmet, on an inscribed die, three steps and a low wing wall each side. Placed on the OSM node; facing south (away from the Pavillon de l'Indochine, per the 1900s postcard) is a guess. Dimensions by eye off Commons photographs (die ~2 m wide), not surveyed. The woman is Modly soldatsnoirs-femme (paris-statues.json)."
   },
   {
+    "name": "Monument aux morts parisiens de la Première Guerre mondiale",
+    "procedural": "monumentMortsParisiensWw1",
+    "kind": "monument",
+    "lat": 48.861334,
+    "lon": 2.388487,
+    "rotateDeg": 72.2,
+    "size": [
+      280,
+      1.2
+    ],
+    "height": 5.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q95124483, 2018 (Phileas architecture): a 280 m long, 1.30 m high wall of dark blue steel plates carrying the 94,415 names, along the boulevard de Ménilmontant face of the Père-Lachaise wall (OSM way 13859706 runs (4181,-34)-(4099,221) in game metres, 283 m, which matches). Placed along that wall 0.9 m street-side of the OSM line, front facing WSW toward the boulevard (Wikidata's point sits on the wall, 33 m from the carriageway). Length and height are written figures; plate pitch, lettering and plinth guessed; the wall climbs 3.9 m north (baked ground at the wall, tools/at-point.ts) so the builder steps each plate up by the RISE table. No sculpture, so no Modly piece."
+  },
+  {
     "name": "Monument à Komitas",
     "procedural": "monumentKomitas",
     "kind": "monument",
