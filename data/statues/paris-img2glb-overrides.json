@@ -2,6 +2,9 @@
  "a-la-memoire-de-theophile-alexandre-steinlen": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
  },
+ "alphand": {
+  "skip": "bad model (review r4)"
+ },
  "ambroise-thomas": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
  },
@@ -45,8 +48,14 @@
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)",
   "turn": 180
  },
+ "comte-de-rochambeau": {
+  "turn": 180
+ },
  "daphne": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "david": {
+  "photo": "back"
  },
  "denis-papin": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
@@ -54,8 +63,14 @@
  "diderot": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
  },
+ "edicule-guimard-488691-23804": {
+  "skip": "bad model (review r4)"
+ },
  "fenelon": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "flechier": {
+  "skip": "bad model (review r4)"
  },
  "flore-farnese": {
   "skip": "the same model as flore-farnese-raon (one photo for several works): which it shows is unchecked"
@@ -69,11 +84,23 @@
  "harde-de-cerfs": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
  },
+ "hector-berlioz": {
+  "turn": 180
+ },
  "hercule-et-le-taureau-de-crete": {
   "skip": "the same model as l-homme (one photo for several works): which it shows is unchecked"
  },
+ "hercule-farnese": {
+  "skip": "bad model (review r4)"
+ },
  "hippomene": {
   "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "hommage-a-arago": {
+  "skip": "bad model (review r4)"
+ },
+ "horizons-suspendus": {
+  "skip": "bad model (review r4)"
  },
  "isocrate": {
   "skip": "the same model as ulysse (one photo for several works): which it shows is unchecked"
@@ -88,6 +115,9 @@
   "skip": "bad model (review r3)",
   "turn": 180,
   "photo": "back"
+ },
+ "l-arbre-des-voyelles": {
+  "skip": "bad model (review r4)"
  },
  "l-arbre-neuronal": {
   "skip": "bad model (review r3)"
@@ -116,6 +146,9 @@
  "la-grande-musicienne": {
   "skip": "bad model (review r3)"
  },
+ "la-jeunesse": {
+  "skip": "drawn on its parvis pedestal by paris-statues.json trocadero-jeunesse (Palais de Chaillot parvis, 2026-11-23)"
+ },
  "la-jeunesse-poisson": {
   "skip": "bad model (review r3)"
  },
@@ -124,6 +157,9 @@
  },
  "la-marne": {
   "skip": "photo shows an album page (sizes reader)"
+ },
+ "la-nuit": {
+  "photo": "back"
  },
  "la-spirale": {
   "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
@@ -158,6 +194,9 @@
  "les-fils-de-cain": {
   "photo": "back"
  },
+ "les-fruits": {
+  "skip": "drawn on its parvis pedestal by paris-statues.json trocadero-fruits (Palais de Chaillot parvis, 2026-11-23)"
+ },
  "les-jardins": {
   "skip": "photo shows something else (sizes reader)"
  },
@@ -176,8 +215,17 @@
  "les-trois-ombres": {
   "skip": "photo shows something else (sizes reader)"
  },
+ "luis-de-camoes": {
+  "skip": "bad model (review r4)"
+ },
  "monument-a-barye": {
   "skip": "broken, fragmented mesh (sizes reader)"
+ },
+ "monument-aux-morts-de-port-vendres": {
+  "skip": "its photo (and model) is a reclining Tuileries statue, not the memorial (review r4)"
+ },
+ "monument-de-solidarnosc": {
+  "skip": "bad model (review r4)"
  },
  "monument-du-corps-expeditionnaire-russe": {
   "skip": "flat slab, no figures (sizes reader)"
@@ -190,6 +238,9 @@
  },
  "ragtime": {
   "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "ronsard": {
+  "skip": "bad model (review r4)"
  },
  "silene-portant-bacchus": {
   "skip": "photo shows a bearded head, not the group (sizes reader)"

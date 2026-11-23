@@ -14,6 +14,7 @@
  *    Otherwise away from a wall right behind it, otherwise towards the nearest street or path. The method is in the note.
  *  - PEDESTAL, SIZE, MATERIAL: not written here; statues.ts reads them from the index (`extra.model.plinth`, `scale`,
  *    `material`), so the review page's values stay the one source. An override may still give `plinth`/`plinthColour`.
+ *  - CREDITS: docs/credits/paris-img2glb-statues.md, each placed model's licence and source photo (from the index).
  *  - DOUBLES: skipped when paris-statues.json already has it (name, or within DOUBLE_M), or a procedural landmark draws it
  *    (its name, near it), or the name says it is a relief / façade piece.
  *
@@ -33,6 +34,7 @@ const AK = resolve(ROOT, '..', 'assetkit')
 const arg = (n: string): string | undefined => process.argv.find((a) => a.startsWith(`--${n}=`))?.split('=').slice(1).join('=')
 const OUT = resolve(ROOT, 'public', 'landmarks', 'paris-statues-img2glb.json')
 const OVERRIDES = resolve(ROOT, 'data', 'statues', 'paris-img2glb-overrides.json')
+const CREDITS = resolve(ROOT, 'docs', 'credits', 'paris-img2glb-statues.md')
 const CAMERA_CACHE = resolve(ROOT, 'tools', 'cache', 'commons-camera.json')
 const PBF = resolve(ROOT, 'tools', 'cache', 'osm', 'ile-de-france-latest.osm.pbf')
 const PARIS_BOX = '2.20,48.80,2.43,48.92'
@@ -93,7 +95,7 @@ const batchOf = new Map<string, string>()
 for (const [b, ids] of Object.entries(batch.reviewBatches)) for (const id of ids) batchOf.set(id, b)
 interface Size { height?: number; plinth?: string; plinthSize?: number[]; geometry?: { bbox: number[] } }
 const sizes = json<Record<string, Size>>(resolve(AK, 'models/img2glb/paris.sizes.json'))
-interface IndexAsset { id: string; isDeleted?: boolean; extra?: { model?: { scale?: { metres: number }; plinth?: { state: string; size?: number[] } } } }
+interface IndexAsset { id: string; isDeleted?: boolean; license?: string; attribution?: string; name?: string; extra?: { model?: { scale?: { metres: number }; plinth?: { state: string; size?: number[] } } } }
 const indexed = new Map<string, IndexAsset>()
 for (const a of json<{ assets: IndexAsset[] }>(resolve(AK, 'indexes/asset-index-assetkit-models-paris.json')).assets) {
   if (!a.isDeleted && a.extra?.model?.scale) indexed.set(a.id, a)
@@ -448,7 +450,18 @@ for (const e of out) {
 }
 
 out.sort((a, b) => a.id.localeCompare(b.id))
-if (!process.argv.includes('--dry')) writeFileSync(OUT, JSON.stringify(out, null, 1) + '\n')
+if (!process.argv.includes('--dry')) {
+  writeFileSync(OUT, JSON.stringify(out, null, 1) + '\n')
+  // the credits: every placed model's licence and the photo it was made from (CC BY and BY-SA ask for this; CREDITS.md links it)
+  const lic = (id: string): string => indexed.get(id)?.license ?? 'CC0-1.0'
+  const rows = out.map((e) => `| ${e.name.replace(/\|/g, '/')} | ${lic(e.id)} | ${(indexed.get(e.id)?.attribution ?? '').replace(/\|/g, '/')} |`)
+  const counts = Object.entries(out.reduce((m, e) => ({ ...m, [lic(e.id)]: (m[lic(e.id)] ?? 0) + 1 }), {} as Record<string, number>)).sort((a, b) => b[1] - a[1])
+  writeFileSync(CREDITS, `# Paris statues made from photographs: credits\n\nWritten by tools/img2glb-statues.ts; do not edit. The ${out.length} statue models placed by `
+    + `public/landmarks/paris-statues-img2glb.json were made by assetkit tools/img2glb (Hunyuan3D / Trellis2 through Modly) from one `
+    + `photograph each, and carry that photograph's licence: a model made from a CC BY-SA photo is CC BY-SA, from a CC BY one CC BY, `
+    + `from a public-domain or CC0 one CC0. The same licence and attribution are on each model in the assetmgr index assetkit-models-paris.\n\n`
+    + `${counts.map(([l, n]) => `${l} ${n}`).join(' · ')}\n\n| statue | licence | made from |\n|---|---|---|\n${rows.join('\n')}\n`)
+}
 const only = arg('batch')?.split(',')
 const shown = Object.entries(report).filter(([, r]) => !only || only.includes(r.batch))
 const count = (st: string): number => shown.filter(([, r]) => r.status === st).length

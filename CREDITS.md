@@ -35,6 +35,16 @@ nothing by that script, so the output is CC0 and carries no third-party obligati
 The architectural styles are named after real building traditions, which is description rather than copying: a
 Haussmann facade has a mansard and iron balconies because that is what the word means.
 
+## Statues made from photographs
+
+The Paris statue models placed by `public/landmarks/paris-statues-img2glb.json` are AI models (assetkit
+`tools/img2glb`, run on our own machine) each made from one Wikimedia Commons photograph, and each carries that
+photograph's licence: **CC BY-SA** where the photo is CC BY-SA, **CC BY** where it is CC BY, CC0 where it is public
+domain or CC0. The per-model list (statue, licence, photographer, Commons file page) is
+[docs/credits/paris-img2glb-statues.md](docs/credits/paris-img2glb-statues.md), written by
+`tools/img2glb-statues.ts`; the same licence and attribution travel with each model in the assetmgr index
+`assetkit-models-paris`, from which the game loads them. A redistributed model keeps its licence and credit line.
+
 ## Not yet used
 
 Vegetation will come from Trail Trainer's existing generated libraries (`trailtrainer/public/trees`, CC-BY

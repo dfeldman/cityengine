@@ -1,5 +1,31 @@
 [
  {
+  "id": "albert-ier-de-belgique",
+  "name": "Albert Ier de Belgique",
+  "asset": "albert-ier-de-belgique",
+  "lat": 48.86461,
+  "lon": 2.31828,
+  "bearing": 16,
+  "lodRanges": [
+   46,
+   184
+  ],
+  "note": "img2glb paris-002; facing towards the nearest cycleway (Piste Pierre et Ernest Michaux), 9 m"
+ },
+ {
+  "id": "alexandre-combattant",
+  "name": "Alexandre Combattant",
+  "asset": "alexandre-combattant",
+  "lat": 48.86258,
+  "lon": 2.32891,
+  "bearing": 116,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 10 m"
+ },
+ {
   "id": "alexandre-dumas",
   "name": "Alexandre Dumas",
   "asset": "alexandre-dumas",
@@ -26,6 +52,97 @@
   "note": "img2glb paris-001; facing towards the nearest footway, 10 m"
  },
  {
+  "id": "alfred-de-musset",
+  "name": "Alfred de Musset",
+  "asset": "alfred-de-musset",
+  "lat": 48.87905,
+  "lon": 2.30713,
+  "bearing": 148,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-001; facing towards the nearest pedestrian (Allée de la Comtesse de Ségur), 21 m"
+ },
+ {
+  "id": "alphonse-daudet",
+  "name": "Alphonse Daudet",
+  "asset": "alphonse-daudet",
+  "lat": 48.86807,
+  "lon": 2.31617,
+  "bearing": 270,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-006; facing towards the nearest footway (Allée Marcel Proust), 17 m"
+ },
+ {
+  "id": "anne-d-autriche",
+  "name": "Anne d'Autriche",
+  "asset": "anne-d-autriche",
+  "lat": 48.84718,
+  "lon": 2.33581,
+  "bearing": 114,
+  "lodRanges": [
+   39,
+   156
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 8 m"
+ },
+ {
+  "id": "anne-de-beaujeu",
+  "name": "Anne de Beaujeu",
+  "asset": "anne-de-beaujeu",
+  "lat": 48.84643,
+  "lon": 2.33619,
+  "bearing": 31,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 9 m"
+ },
+ {
+  "id": "anne-de-bretagne",
+  "name": "Anne de Bretagne",
+  "asset": "anne-de-bretagne",
+  "lat": 48.84745,
+  "lon": 2.33626,
+  "bearing": 154,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 6 m"
+ },
+ {
+  "id": "apollon",
+  "name": "Apollon",
+  "asset": "apollon",
+  "lat": 48.86306,
+  "lon": 2.32768,
+  "bearing": 274,
+  "lodRanges": [
+   30,
+   92
+  ],
+  "note": "img2glb paris-002; facing towards the camera of its photo (16 m)"
+ },
+ {
+  "id": "apollon-belmondo",
+  "name": "Apollon",
+  "asset": "apollon-belmondo",
+  "lat": 48.86507,
+  "lon": 2.32519,
+  "bearing": 300,
+  "lodRanges": [
+   30,
+   92
+  ],
+  "note": "img2glb paris-004; facing towards the nearest footway, 25 m"
+ },
+ {
   "id": "apollon-musagete",
   "name": "Apollon Musagète",
   "asset": "apollon-musagete",
@@ -37,6 +154,32 @@
    208
   ],
   "note": "img2glb paris-002; facing towards the camera of its photo (7 m)"
+ },
+ {
+  "id": "archidamas",
+  "name": "Archidamas",
+  "asset": "archidamas",
+  "lat": 48.846,
+  "lon": 2.33324,
+  "bearing": 93,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-002; facing towards the camera of its photo (65 m)"
+ },
+ {
+  "id": "aristide-briand",
+  "name": "Aristide Briand",
+  "asset": "aristide-briand",
+  "lat": 48.86268,
+  "lon": 2.31672,
+  "bearing": 9,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-004; facing towards the camera of its photo (15 m)"
  },
  {
   "id": "atalante",
@@ -52,6 +195,19 @@
   "note": "img2glb paris-002; facing towards the camera of its photo (11 m)"
  },
  {
+  "id": "au-docteur-philippe-pinel",
+  "name": "Au Docteur Philippe Pinel",
+  "asset": "au-docteur-philippe-pinel",
+  "lat": 48.83338,
+  "lon": 2.36156,
+  "bearing": 134,
+  "lodRanges": [
+   50,
+   200
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 14 m"
+ },
+ {
   "id": "auschwitz-birkenau",
   "name": "Auschwitz-Birkenau",
   "asset": "auschwitz-birkenau",
@@ -63,6 +219,19 @@
    128
   ],
   "note": "img2glb paris-004; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "aux-enfants-du-xii-arrt-morts-pour-la-france",
+  "name": "Aux Enfants du XII ARRt morts pour la France",
+  "asset": "aux-enfants-du-xii-arrt-morts-pour-la-france",
+  "lat": 48.84121,
+  "lon": 2.38769,
+  "bearing": 22,
+  "lodRanges": [
+   38,
+   152
+  ],
+  "note": "img2glb paris-004; facing towards the nearest footway, 9 m"
  },
  {
   "id": "baigneuse-se-coiffant",
@@ -77,6 +246,19 @@
   ],
   "note": "img2glb paris-002; facing towards the camera of its photo (14 m)",
   "beside": "Vénus"
+ },
+ {
+  "id": "benjamin-franklin",
+  "name": "Benjamin Franklin",
+  "asset": "benjamin-franklin",
+  "lat": 48.86172,
+  "lon": 2.2864,
+  "bearing": 263,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 11 m"
  },
  {
   "id": "bernardin-de-saint-pierre-avec-paul-et-virginie",
@@ -102,7 +284,21 @@
    32,
    128
   ],
-  "note": "img2glb paris-002; facing towards the camera of its photo (6 m)"
+  "note": "img2glb paris-002; facing towards the camera of its photo (6 m)",
+  "beside": "La Reine Mathilde"
+ },
+ {
+  "id": "blanche-de-castille",
+  "name": "Blanche de Castille",
+  "asset": "blanche-de-castille",
+  "lat": 48.84671,
+  "lon": 2.33577,
+  "bearing": 63,
+  "lodRanges": [
+   38,
+   152
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 11 m"
  },
  {
   "id": "bordeaux",
@@ -144,6 +340,32 @@
   "note": "img2glb paris-004; facing towards the camera of its photo (133 m)"
  },
  {
+  "id": "buffon",
+  "name": "Buffon",
+  "asset": "buffon",
+  "lat": 48.84253,
+  "lon": 2.35778,
+  "bearing": 159,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 10 m"
+ },
+ {
+  "id": "buste-de-frederick-lemaitre",
+  "name": "Buste de Frédérick Lemaître",
+  "asset": "buste-de-frederick-lemaitre",
+  "lat": 48.86892,
+  "lon": 2.36719,
+  "bearing": 176,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-005; facing towards the camera of its photo (13 m)"
+ },
+ {
   "id": "buste-de-johann-strauss",
   "name": "Buste de Johann Strauss",
   "asset": "buste-de-johann-strauss",
@@ -155,6 +377,32 @@
    120
   ],
   "note": "img2glb paris-004; facing towards the camera of its photo (10 m)"
+ },
+ {
+  "id": "buste-de-la-republique",
+  "name": "Buste de la République",
+  "asset": "buste-de-la-republique",
+  "lat": 48.83267,
+  "lon": 2.32659,
+  "bearing": 111,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-004; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "cain-venant-de-tuer-son-frere-abel",
+  "name": "Caïn venant de tuer son frère Abel",
+  "asset": "cain-venant-de-tuer-son-frere-abel",
+  "lat": 48.86281,
+  "lon": 2.32991,
+  "bearing": 275,
+  "lodRanges": [
+   30,
+   92
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 14 m"
  },
  {
   "id": "calliope",
@@ -170,6 +418,19 @@
   "note": "img2glb paris-002; facing towards the nearest footway, 6 m"
  },
  {
+  "id": "casimir-perier",
+  "name": "Casimir Périer",
+  "asset": "casimir-perier",
+  "lat": 48.86003,
+  "lon": 2.39363,
+  "bearing": 255,
+  "lodRanges": [
+   55,
+   220
+  ],
+  "note": "img2glb paris-001; facing towards the nearest service (Rond-Point Casimir Périer), 16 m"
+ },
+ {
   "id": "cassandre-se-met-sous-la-protection-de-pallas",
   "name": "Cassandre Se Met Sous La Protection De Pallas",
   "asset": "cassandre-se-met-sous-la-protection-de-pallas",
@@ -183,6 +444,45 @@
   "note": "img2glb paris-002; facing towards the nearest footway, 13 m"
  },
  {
+  "id": "cavalier-arabe",
+  "name": "Cavalier Arabe",
+  "asset": "cavalier-arabe",
+  "lat": 48.8604411,
+  "lon": 2.2914707,
+  "bearing": 155,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-002; facing towards the camera of its photo (5 m); moved 1.4 m off the service"
+ },
+ {
+  "id": "cavalier-gaulois",
+  "name": "Cavalier Gaulois",
+  "asset": "cavalier-gaulois",
+  "lat": 48.85944,
+  "lon": 2.29301,
+  "bearing": 224,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-004; facing towards the nearest footway, 4 m"
+ },
+ {
+  "id": "cavalier-grec",
+  "name": "Cavalier Grec",
+  "asset": "cavalier-grec",
+  "lat": 48.8601815,
+  "lon": 2.2911295,
+  "bearing": 130,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-002; facing towards the nearest service, 5 m; moved 3.4 m off the primary (Avenue de New York); moved 3.6 m off the service"
+ },
+ {
   "id": "cavalier-romain",
   "name": "Cavalier Romain",
   "asset": "cavalier-romain",
@@ -194,6 +494,19 @@
    112
   ],
   "note": "img2glb paris-004; facing towards the nearest footway, 4 m"
+ },
+ {
+  "id": "cenotaphe-de-charles-baudelaire",
+  "name": "Cénotaphe de Charles Baudelaire",
+  "asset": "cenotaphe-de-charles-baudelaire",
+  "lat": 48.8374012,
+  "lon": 2.3285208,
+  "bearing": 204,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-006; facing towards the camera of its photo (17 m); moved 2.6 m off the service (Avenue Transversale)"
  },
  {
   "id": "ceres-ou-l-ete",
@@ -222,6 +535,45 @@
   "note": "img2glb paris-005; facing towards the nearest footway, 8 m, turned 180° (review)"
  },
  {
+  "id": "cincinnatus",
+  "name": "Cincinnatus",
+  "asset": "cincinnatus",
+  "lat": 48.86273,
+  "lon": 2.3287,
+  "bearing": 71,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 14 m"
+ },
+ {
+  "id": "clemence-isaure",
+  "name": "Clémence Isaure",
+  "asset": "clemence-isaure",
+  "lat": 48.84634,
+  "lon": 2.33794,
+  "bearing": 270,
+  "lodRanges": [
+   36,
+   144
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "clotilde-de-vaux",
+  "name": "Clotilde de Vaux",
+  "asset": "clotilde-de-vaux",
+  "lat": 48.85769,
+  "lon": 2.36834,
+  "bearing": 76,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-005; facing towards the camera of its photo (5 m)"
+ },
+ {
   "id": "colonne-de-la-paix-armee",
   "name": "Colonne de la Paix armée",
   "asset": "colonne-de-la-paix-armee",
@@ -233,6 +585,32 @@
    104
   ],
   "note": "img2glb paris-004; facing towards the camera of its photo (23 m)"
+ },
+ {
+  "id": "comptine",
+  "name": "Comptine",
+  "asset": "comptine",
+  "lat": 48.8632,
+  "lon": 2.32529,
+  "bearing": 356,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-004; facing towards the camera of its photo (11 m)"
+ },
+ {
+  "id": "comte-de-rochambeau",
+  "name": "Comte de Rochambeau",
+  "asset": "comte-de-rochambeau",
+  "lat": 48.86634,
+  "lon": 2.2967,
+  "bearing": 73,
+  "lodRanges": [
+   45,
+   180
+  ],
+  "note": "img2glb paris-004; facing towards the camera of its photo (18 m), turned 180° (review)"
  },
  {
   "id": "comtesse-de-segur",
@@ -287,6 +665,32 @@
   "note": "img2glb paris-005; facing towards the camera of its photo (13 m)"
  },
  {
+  "id": "david",
+  "name": "David",
+  "asset": "david",
+  "lat": 48.8469,
+  "lon": 2.33797,
+  "bearing": 280,
+  "lodRanges": [
+   45,
+   180
+  ],
+  "note": "img2glb paris-004; facing towards the nearest footway, 23 m, turned: its photo shows the back"
+ },
+ {
+  "id": "diane",
+  "name": "Diane",
+  "asset": "diane",
+  "lat": 48.86238,
+  "lon": 2.33042,
+  "bearing": 297,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-002; facing towards the camera of its photo (87 m)"
+ },
+ {
   "id": "diane-a-la-biche",
   "name": "Diane a la Biche",
   "asset": "diane-a-la-biche",
@@ -326,6 +730,58 @@
   "note": "img2glb paris-002; facing towards the camera of its photo (34 m)"
  },
  {
+  "id": "drame-au-desert-fouques",
+  "name": "Drame au Desert",
+  "asset": "drame-au-desert-fouques",
+  "lat": 48.84801,
+  "lon": 2.30227,
+  "bearing": 257,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-004; facing towards the camera of its photo (6 m)"
+ },
+ {
+  "id": "ecoute",
+  "name": "Écoute",
+  "asset": "ecoute",
+  "lat": 48.86298,
+  "lon": 2.34513,
+  "bearing": 199,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway (Allée Saint-John Perse), 7 m"
+ },
+ {
+  "id": "ernest-rousselle",
+  "name": "Ernest Rousselle",
+  "asset": "ernest-rousselle",
+  "lat": 48.82937,
+  "lon": 2.34854,
+  "bearing": 23,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-005; facing away from the wall 3.3 m behind"
+ },
+ {
+  "id": "etudiants-morts-dans-la-resistance",
+  "name": "Étudiants morts dans la Résistance",
+  "asset": "etudiants-morts-dans-la-resistance",
+  "lat": 48.84838,
+  "lon": 2.33873,
+  "bearing": 252,
+  "lodRanges": [
+   31,
+   124
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 12 m"
+ },
+ {
   "id": "eve-488640-23227",
   "name": "Ève",
   "asset": "eve-488640-23227",
@@ -336,7 +792,8 @@
    30,
    90
   ],
-  "note": "img2glb paris-004; facing towards the nearest footway, 10 m"
+  "note": "img2glb paris-004; facing towards the nearest footway, 10 m",
+  "beside": "La Grande Ombre (L'Ombre)"
  },
  {
   "id": "eve-au-rocher",
@@ -352,6 +809,19 @@
   "note": "img2glb paris-005; facing towards the camera of its photo (61 m)"
  },
  {
+  "id": "femme-aux-pommes",
+  "name": "Femme aux Pommes",
+  "asset": "femme-aux-pommes",
+  "lat": 48.84796,
+  "lon": 2.33815,
+  "bearing": 74,
+  "lodRanges": [
+   30,
+   116
+  ],
+  "note": "img2glb paris-002; facing towards the camera of its photo (6 m)"
+ },
+ {
   "id": "ferdinand-fabre",
   "name": "Ferdinand Fabre",
   "asset": "ferdinand-fabre",
@@ -363,6 +833,58 @@
    140
   ],
   "note": "img2glb paris-004; facing towards the camera of its photo (11 m)"
+ },
+ {
+  "id": "flore",
+  "name": "Flore",
+  "asset": "flore",
+  "lat": 48.84657,
+  "lon": 2.33652,
+  "bearing": 61,
+  "lodRanges": [
+   30,
+   108
+  ],
+  "note": "img2glb paris-004; facing towards the camera of its photo (10 m)"
+ },
+ {
+  "id": "flore-maillol",
+  "name": "Flore",
+  "asset": "flore-maillol",
+  "lat": 48.86191,
+  "lon": 2.33222,
+  "bearing": 25,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-007; facing towards the nearest path, 4 m"
+ },
+ {
+  "id": "fontaine-de-l-avril",
+  "name": "Fontaine de l'Avril",
+  "asset": "fontaine-de-l-avril",
+  "lat": 48.86529,
+  "lon": 2.29671,
+  "bearing": 175,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-004; facing towards the nearest footway, 24 m"
+ },
+ {
+  "id": "fontaine-de-la-cour-du-15-rue-du-louvre",
+  "name": "Fontaine de la cour du 15 rue du Louvre",
+  "asset": "fontaine-de-la-cour-du-15-rue-du-louvre",
+  "lat": 48.8636,
+  "lon": 2.34158,
+  "bearing": 313,
+  "lodRanges": [
+   40,
+   160
+  ],
+  "note": "img2glb paris-004; facing towards the camera of its photo (5 m)"
  },
  {
   "id": "fontaine-de-la-porte-d-auteuil",
@@ -391,6 +913,19 @@
   "note": "img2glb paris-005; facing towards the camera of its photo (11 m)"
  },
  {
+  "id": "fontaine-des-polypores",
+  "name": "Fontaine des Polypores",
+  "asset": "fontaine-des-polypores",
+  "lat": 48.83839,
+  "lon": 2.27864,
+  "bearing": 307,
+  "lodRanges": [
+   36,
+   144
+  ],
+  "note": "img2glb paris-002; facing towards the camera of its photo (21 m)"
+ },
+ {
   "id": "fontaine-eugene-delacroix",
   "name": "Fontaine Eugène Delacroix",
   "asset": "fontaine-eugene-delacroix",
@@ -402,6 +937,32 @@
    200
   ],
   "note": "img2glb paris-002; facing towards the nearest footway, 7 m"
+ },
+ {
+  "id": "francis-garnier",
+  "name": "Francis Garnier",
+  "asset": "francis-garnier",
+  "lat": 48.840243,
+  "lon": 2.3367516,
+  "bearing": 284,
+  "lodRanges": [
+   43,
+   172
+  ],
+  "note": "img2glb paris-007; facing towards the nearest primary (Avenue de l'Observatoire), 8 m; moved 0.8 m off the primary (Avenue de l'Observatoire); moved 1.5 m off the primary (Avenue de l'Observatoire)"
+ },
+ {
+  "id": "francois-barbaud",
+  "name": "François Barbaud",
+  "asset": "francois-barbaud",
+  "lat": 48.8302,
+  "lon": 2.30162,
+  "bearing": 44,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-007; facing towards the camera of its photo (6 m)"
  },
  {
   "id": "francois-villon",
@@ -417,6 +978,19 @@
   "note": "img2glb paris-002; facing towards the nearest footway (Allée Pierre Hadot), 3 m"
  },
  {
+  "id": "gabriel-de-mortillet",
+  "name": "Gabriel de Mortillet",
+  "asset": "gabriel-de-mortillet",
+  "lat": 48.84513,
+  "lon": 2.35342,
+  "bearing": 246,
+  "lodRanges": [
+   55,
+   220
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 5 m"
+ },
+ {
   "id": "gabriel-vicaire",
   "name": "Gabriel Vicaire",
   "asset": "gabriel-vicaire",
@@ -430,6 +1004,33 @@
   "note": "img2glb paris-007; facing towards the camera of its photo (163 m)"
  },
  {
+  "id": "general-diego-brosset",
+  "name": "Général Diego Brosset",
+  "asset": "general-diego-brosset",
+  "lat": 48.85506,
+  "lon": 2.289,
+  "bearing": 128,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-007; facing towards the nearest footway, 4 m"
+ },
+ {
+  "id": "general-francisco-de-miranda",
+  "name": "Général Francisco de Miranda",
+  "asset": "general-francisco-de-miranda",
+  "lat": 48.88616,
+  "lon": 2.29014,
+  "bearing": 46,
+  "lodRanges": [
+   38,
+   152
+  ],
+  "note": "img2glb paris-007; facing towards the nearest footway, 12 m",
+  "beside": "Justo Sierra"
+ },
+ {
   "id": "george-sand",
   "name": "George Sand",
   "asset": "george-sand",
@@ -440,7 +1041,8 @@
    30,
    104
   ],
-  "note": "img2glb paris-003; facing towards the nearest footway, 6 m"
+  "note": "img2glb paris-003; facing towards the nearest footway, 6 m",
+  "beside": "La Bocca de la Verita"
  },
  {
   "id": "groupe-de-baigneuses",
@@ -454,6 +1056,45 @@
    90
   ],
   "note": "img2glb paris-008; facing towards the nearest footway (Sentier du Chemin de Fer), 16 m"
+ },
+ {
+  "id": "gutenberg",
+  "name": "Gutenberg",
+  "asset": "gutenberg",
+  "lat": 48.84461,
+  "lon": 2.28069,
+  "bearing": 208,
+  "lodRanges": [
+   60,
+   240
+  ],
+  "note": "img2glb paris-003; facing towards the camera of its photo (21 m)"
+ },
+ {
+  "id": "hector-berlioz",
+  "name": "Hector Berlioz",
+  "asset": "hector-berlioz",
+  "lat": 48.88318,
+  "lon": 2.32988,
+  "bearing": 248,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-008; facing towards the camera of its photo (9 m), turned 180° (review)"
+ },
+ {
+  "id": "hommage-au-capitaine-dreyfus",
+  "name": "Hommage au capitaine Dreyfus",
+  "asset": "hommage-au-capitaine-dreyfus",
+  "lat": 48.85666,
+  "lon": 2.34354,
+  "bearing": 346,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-003; facing towards the camera of its photo (5 m)"
  },
  {
   "id": "il-dispetto",
@@ -508,6 +1149,32 @@
   "note": "img2glb paris-008; facing towards the nearest footway, 5 m"
  },
  {
+  "id": "jean-baptiste-colbert-l-organisateur",
+  "name": "Jean-Baptiste Colbert - L'organisateur",
+  "asset": "jean-baptiste-colbert-l-organisateur",
+  "lat": 48.86252,
+  "lon": 2.3185,
+  "bearing": 82,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-008; facing towards the camera of its photo (54 m)"
+ },
+ {
+  "id": "jean-leclaire",
+  "name": "Jean Léclaire",
+  "asset": "jean-leclaire",
+  "lat": 48.89468,
+  "lon": 2.32679,
+  "bearing": 23,
+  "lodRanges": [
+   38,
+   152
+  ],
+  "note": "img2glb paris-008; facing towards the nearest footway, 6 m"
+ },
+ {
   "id": "jeune-fille-allongee",
   "name": "Jeune Fille allongée",
   "asset": "jeune-fille-allongee",
@@ -518,7 +1185,8 @@
    30,
    90
   ],
-  "note": "img2glb paris-003; facing towards the camera of its photo (66 m)"
+  "note": "img2glb paris-003; facing towards the camera of its photo (66 m)",
+  "beside": "La Douleur"
  },
  {
   "id": "jose-maria-de-heredia",
@@ -547,6 +1215,32 @@
   "note": "img2glb paris-008; facing towards the camera of its photo (118 m)"
  },
  {
+  "id": "jules-ferry",
+  "name": "Jules Ferry",
+  "asset": "jules-ferry",
+  "lat": 48.8637,
+  "lon": 2.33113,
+  "bearing": 205,
+  "lodRanges": [
+   64,
+   254
+  ],
+  "note": "img2glb paris-008; facing towards the nearest footway (Esplanade des Feuillants), 7 m"
+ },
+ {
+  "id": "julius-caesar",
+  "name": "Julius Caesar",
+  "asset": "julius-caesar",
+  "lat": 48.8633,
+  "lon": 2.32838,
+  "bearing": 295,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway (Allée de Diane), 7 m"
+ },
+ {
   "id": "junon-reine-du-ciel",
   "name": "Junon, Reine du Ciel",
   "asset": "junon-reine-du-ciel",
@@ -560,6 +1254,20 @@
   "note": "img2glb paris-008; facing towards the nearest footway, 5 m"
  },
  {
+  "id": "justo-sierra",
+  "name": "Justo Sierra",
+  "asset": "justo-sierra",
+  "lat": 48.88606,
+  "lon": 2.29026,
+  "bearing": 350,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-008; facing towards the camera of its photo (10 m)",
+  "beside": "Général Francisco de Miranda"
+ },
+ {
   "id": "l-acteur-grec",
   "name": "L'acteur Grec",
   "asset": "l-acteur-grec",
@@ -571,6 +1279,19 @@
    90
   ],
   "note": "img2glb paris-003; facing towards the nearest footway, 8 m"
+ },
+ {
+  "id": "l-age-d-airain",
+  "name": "L'Âge d'airain",
+  "asset": "l-age-d-airain",
+  "lat": 48.85335,
+  "lon": 2.27094,
+  "bearing": 316,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-001; facing towards the nearest residential (Place Rodin), 11 m"
  },
  {
   "id": "l-amerique-du-nord",
@@ -599,6 +1320,19 @@
   ],
   "note": "img2glb paris-009; facing towards the camera of its photo (7 m)",
   "beside": "L'Amérique du Nord"
+ },
+ {
+  "id": "l-ami-de-personne",
+  "name": "L'Ami de Personne",
+  "asset": "l-ami-de-personne",
+  "lat": 48.86411,
+  "lon": 2.32839,
+  "bearing": 115,
+  "lodRanges": [
+   38,
+   150
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 6 m"
  },
  {
   "id": "l-amour-captif",
@@ -641,6 +1375,19 @@
   "note": "img2glb paris-009; facing towards the camera of its photo (7 m)"
  },
  {
+  "id": "l-education-maternelle",
+  "name": "L'Education maternelle",
+  "asset": "l-education-maternelle",
+  "lat": 48.85918,
+  "lon": 2.31981,
+  "bearing": 30,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 6 m"
+ },
+ {
   "id": "l-effort",
   "name": "L'Effort",
   "asset": "l-effort",
@@ -654,6 +1401,32 @@
   "note": "img2glb paris-003; facing towards the camera of its photo (18 m)"
  },
  {
+  "id": "l-enfance-de-bacchus-perraud",
+  "name": "L'enfance de Bacchus",
+  "asset": "l-enfance-de-bacchus-perraud",
+  "lat": 48.86556,
+  "lon": 2.29616,
+  "bearing": 266,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 20 m"
+ },
+ {
+  "id": "l-epopee-de-defense-polonaise",
+  "name": "L'Épopée de Défense Polonaise",
+  "asset": "l-epopee-de-defense-polonaise",
+  "lat": 48.86432,
+  "lon": 2.30493,
+  "bearing": 9,
+  "lodRanges": [
+   85,
+   300
+  ],
+  "note": "img2glb paris-001; facing towards the nearest cycleway (Cours Albert-Iᵉʳ), 12 m"
+ },
+ {
   "id": "l-ete",
   "name": "L'Été",
   "asset": "l-ete",
@@ -664,7 +1437,8 @@
    30,
    90
   ],
-  "note": "img2glb paris-003; facing towards the nearest footway, 27 m"
+  "note": "img2glb paris-003; facing towards the nearest footway, 27 m",
+  "beside": "Pomone, dite aussi Pomone nue"
  },
  {
   "id": "l-europe",
@@ -694,6 +1468,32 @@
   "note": "img2glb paris-003; facing towards the nearest footway, 11 m"
  },
  {
+  "id": "l-hiver",
+  "name": "L'Hiver",
+  "asset": "l-hiver",
+  "lat": 48.84794,
+  "lon": 2.33333,
+  "bearing": 268,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-003; facing towards the camera of its photo (217 m)"
+ },
+ {
+  "id": "l-ile-de-france",
+  "name": "L'Île-de-France",
+  "asset": "l-ile-de-france",
+  "lat": 48.86198,
+  "lon": 2.33148,
+  "bearing": 26,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-009; facing towards the nearest path, 20 m"
+ },
+ {
   "id": "l-oceanie",
   "name": "L'Océanie",
   "asset": "l-oceanie",
@@ -708,6 +1508,61 @@
   "beside": "L'Amérique du Sud"
  },
  {
+  "id": "la-baigneuse-drapee",
+  "name": "La Baigneuse drapée",
+  "asset": "la-baigneuse-drapee",
+  "lat": 48.86261,
+  "lon": 2.33277,
+  "bearing": 117,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 22 m",
+  "beside": "La Montagne"
+ },
+ {
+  "id": "la-bocca-de-la-verita",
+  "name": "La Bocca de la Verita",
+  "asset": "la-bocca-de-la-verita",
+  "lat": 48.84654,
+  "lon": 2.33991,
+  "bearing": 302,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 7 m",
+  "beside": "George Sand"
+ },
+ {
+  "id": "la-comedie",
+  "name": "La Comedie",
+  "asset": "la-comedie",
+  "lat": 48.86328,
+  "lon": 2.3291,
+  "bearing": 167,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 14 m"
+ },
+ {
+  "id": "la-douleur",
+  "name": "La Douleur",
+  "asset": "la-douleur",
+  "lat": 48.86142,
+  "lon": 2.33185,
+  "bearing": 115,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 25 m",
+  "beside": "Jeune Fille allongée"
+ },
+ {
   "id": "la-fontaine",
   "name": "La Fontaine",
   "asset": "la-fontaine",
@@ -719,6 +1574,19 @@
    96
   ],
   "note": "img2glb paris-003; facing towards the nearest cycleway (Allée Davia), 10 m"
+ },
+ {
+  "id": "la-force-488595-23266",
+  "name": "La Force",
+  "asset": "la-force-488595-23266",
+  "lat": 48.8595,
+  "lon": 2.3266,
+  "bearing": 204,
+  "lodRanges": [
+   37,
+   149
+  ],
+  "note": "img2glb paris-009; facing away from the wall 4.3 m behind"
  },
  {
   "id": "la-france",
@@ -745,7 +1613,8 @@
    30,
    100
   ],
-  "note": "img2glb paris-009; facing towards the camera of its photo (54 m)"
+  "note": "img2glb paris-009; facing towards the camera of its photo (54 m)",
+  "beside": "La renommée au combat"
  },
  {
   "id": "la-france-de-charlemagne",
@@ -785,7 +1654,48 @@
    30,
    100
   ],
-  "note": "img2glb paris-009; facing towards the camera of its photo (5 m)"
+  "note": "img2glb paris-009; facing towards the camera of its photo (5 m)",
+  "beside": "La Renommée de la guerre"
+ },
+ {
+  "id": "la-france-victorieuse",
+  "name": "La France Victorieuse",
+  "asset": "la-france-victorieuse",
+  "lat": 48.86187,
+  "lon": 2.33331,
+  "bearing": 205,
+  "lodRanges": [
+   30,
+   116
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 11 m"
+ },
+ {
+  "id": "la-grande-ombre-l-ombre",
+  "name": "La Grande Ombre (L'Ombre)",
+  "asset": "la-grande-ombre-l-ombre",
+  "lat": 48.86401,
+  "lon": 2.32278,
+  "bearing": 60,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 8 m",
+  "beside": "Ève"
+ },
+ {
+  "id": "la-grisette-de-1830",
+  "name": "La Grisette de 1830",
+  "asset": "la-grisette-de-1830",
+  "lat": 48.8686,
+  "lon": 2.36745,
+  "bearing": 281,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-009; facing towards the camera of its photo (23 m)"
  },
  {
   "id": "la-joie-de-la-famille",
@@ -801,6 +1711,19 @@
   "note": "img2glb paris-003; facing towards the camera of its photo (4 m)"
  },
  {
+  "id": "la-joie-de-vivre",
+  "name": "La Joie de vivre",
+  "asset": "la-joie-de-vivre",
+  "lat": 48.8607,
+  "lon": 2.29019,
+  "bearing": 245,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-009; facing towards the camera of its photo (6 m)"
+ },
+ {
   "id": "la-loi",
   "name": "La Loi",
   "asset": "la-loi",
@@ -812,6 +1735,19 @@
    90
   ],
   "note": "img2glb paris-003; facing towards the camera of its photo (8 m)"
+ },
+ {
+  "id": "la-loire-et-le-loiret",
+  "name": "La Loire et le Loiret",
+  "asset": "la-loire-et-le-loiret",
+  "lat": 48.86462,
+  "lon": 2.32332,
+  "bearing": 169,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway (Fer à Cheval), 10 m"
  },
  {
   "id": "la-meditation",
@@ -827,6 +1763,32 @@
   "note": "img2glb paris-009; facing towards the camera of its photo (64 m)"
  },
  {
+  "id": "la-messagere",
+  "name": "La Messagère",
+  "asset": "la-messagere",
+  "lat": 48.84796,
+  "lon": 2.33441,
+  "bearing": 336,
+  "lodRanges": [
+   34,
+   136
+  ],
+  "note": "img2glb paris-003; facing towards the camera of its photo (12 m)"
+ },
+ {
+  "id": "la-misere",
+  "name": "La Misere",
+  "asset": "la-misere",
+  "lat": 48.8626,
+  "lon": 2.32976,
+  "bearing": 26,
+  "lodRanges": [
+   33,
+   132
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway (Allée Centrale), 12 m"
+ },
+ {
   "id": "la-montagne",
   "name": "La Montagne",
   "asset": "la-montagne",
@@ -838,7 +1800,20 @@
    100
   ],
   "note": "img2glb paris-009; facing towards the nearest footway, 24 m",
-  "beside": "Les Trois Nymphes"
+  "beside": "La Baigneuse drapée"
+ },
+ {
+  "id": "la-mort-allouard",
+  "name": "La Mort",
+  "asset": "la-mort-allouard",
+  "lat": 48.8509712,
+  "lon": 2.340095,
+  "bearing": 4,
+  "lodRanges": [
+   30,
+   96
+  ],
+  "note": "img2glb paris-009; facing away from the wall 1.2 m behind; moved 2.6 m out of relation/659760"
  },
  {
   "id": "la-mort-du-lion",
@@ -854,6 +1829,19 @@
   "note": "img2glb paris-003; facing towards the camera of its photo (5 m)"
  },
  {
+  "id": "la-muse-whistler",
+  "name": "La Muse Whistler",
+  "asset": "la-muse-whistler",
+  "lat": 48.85516,
+  "lon": 2.31571,
+  "bearing": 109,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-009; facing towards the nearest footway, 8 m"
+ },
+ {
   "id": "la-navigation",
   "name": "La Navigation",
   "asset": "la-navigation",
@@ -865,6 +1853,46 @@
    90
   ],
   "note": "img2glb paris-009; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "la-nuit",
+  "name": "La Nuit",
+  "asset": "la-nuit",
+  "lat": 48.86119,
+  "lon": 2.33252,
+  "bearing": 25,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 5 m, turned: its photo shows the back"
+ },
+ {
+  "id": "la-nymphe",
+  "name": "La Nymphe",
+  "asset": "la-nymphe",
+  "lat": 48.86217,
+  "lon": 2.33253,
+  "bearing": 116,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 16 m",
+  "beside": "Vénus"
+ },
+ {
+  "id": "la-nymphe-tourmentant-un-dauphin",
+  "name": "La nymphe tourmentant un dauphin",
+  "asset": "la-nymphe-tourmentant-un-dauphin",
+  "lat": 48.84426,
+  "lon": 2.35751,
+  "bearing": 232,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway (Allée des Becquerel), 3 m"
  },
  {
   "id": "la-peinture",
@@ -891,6 +1919,50 @@
    112
   ],
   "note": "img2glb paris-010; facing away from the wall 1.8 m behind"
+ },
+ {
+  "id": "la-reine-mathilde",
+  "name": "La Reine Mathilde",
+  "asset": "la-reine-mathilde",
+  "lat": 48.84741,
+  "lon": 2.33821,
+  "bearing": 203,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 10 m",
+  "beside": "Berthe"
+ },
+ {
+  "id": "la-renommee-au-combat",
+  "name": "La renommée au combat",
+  "asset": "la-renommee-au-combat",
+  "lat": 48.86307,
+  "lon": 2.31381,
+  "bearing": 358,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "raise": 17,
+  "note": "img2glb paris-003; facing towards the nearest pedestrian (Promenade des Berges de la Seine — Port des Invalides), 6 m; on top of the 17 m structure way/64959941 under it",
+  "beside": "La France à la Renaissance"
+ },
+ {
+  "id": "la-renommee-de-la-guerre",
+  "name": "La Renommée de la guerre",
+  "asset": "la-renommee-de-la-guerre",
+  "lat": 48.86306,
+  "lon": 2.31314,
+  "bearing": 358,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "raise": 17,
+  "note": "img2glb paris-003; facing towards the nearest pedestrian (Promenade des Berges de la Seine — Port des Invalides), 6 m; on top of the 17 m structure way/230227015 under it",
+  "beside": "La France sous Louis XIV"
  },
  {
   "id": "la-renommee-des-arts",
@@ -920,6 +1992,19 @@
   ],
   "note": "img2glb paris-003; facing towards the camera of its photo (8 m)",
   "beside": "Concorde: the Renommée pier of the Tuileries gate"
+ },
+ {
+  "id": "la-republique",
+  "name": "La République",
+  "asset": "la-republique",
+  "lat": 48.85776,
+  "lon": 2.33593,
+  "bearing": 184,
+  "lodRanges": [
+   55,
+   220
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 3 m"
  },
  {
   "id": "la-sainte-catherine",
@@ -963,6 +2048,19 @@
   "beside": "road tunnel mouth 8"
  },
  {
+  "id": "la-seine-et-la-marne",
+  "name": "La Seine et la Marne",
+  "asset": "la-seine-et-la-marne",
+  "lat": 48.86488,
+  "lon": 2.32351,
+  "bearing": 62,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway (Fer à Cheval), 12 m"
+ },
+ {
   "id": "la-ville-de-paris-injalbert",
   "name": "La Ville de Paris",
   "asset": "la-ville-de-paris-injalbert",
@@ -989,6 +2087,85 @@
   "note": "img2glb paris-010; facing towards the nearest cycleway (Piste Pierre et Ernest Michaux), 11 m"
  },
  {
+  "id": "laure-de-noves",
+  "name": "Laure de Noves",
+  "asset": "laure-de-noves",
+  "lat": 48.84584,
+  "lon": 2.33634,
+  "bearing": 228,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-003; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "le-bon-samaritain",
+  "name": "Le Bon Samaritain",
+  "asset": "le-bon-samaritain",
+  "lat": 48.8625,
+  "lon": 2.32917,
+  "bearing": 18,
+  "lodRanges": [
+   30,
+   92
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 10 m"
+ },
+ {
+  "id": "le-botteleur",
+  "name": "Le Botteleur",
+  "asset": "le-botteleur",
+  "lat": 48.86191,
+  "lon": 2.37906,
+  "bearing": 253,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-001; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "le-centaur-nessus-enlevant-dejanire",
+  "name": "Le Centaur Nessus Enlevant Dejanire",
+  "asset": "le-centaur-nessus-enlevant-dejanire",
+  "lat": 48.86326,
+  "lon": 2.32941,
+  "bearing": 197,
+  "lodRanges": [
+   43,
+   172
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 11 m"
+ },
+ {
+  "id": "le-cheval-a-la-herse",
+  "name": "Le Cheval à la Herse",
+  "asset": "le-cheval-a-la-herse",
+  "lat": 48.86052,
+  "lon": 2.32559,
+  "bearing": 19,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 10 m"
+ },
+ {
+  "id": "le-combat-du-centaure",
+  "name": "Le Combat du Centaure",
+  "asset": "le-combat-du-centaure",
+  "lat": 48.8506026,
+  "lon": 2.3321875,
+  "bearing": 97,
+  "lodRanges": [
+   40,
+   160
+  ],
+  "note": "img2glb paris-010; facing away from the wall 2.8 m behind; moved 2.4 m off the service",
+  "beside": "Mairie du 6e arrondissement"
+ },
+ {
   "id": "le-crepuscule",
   "name": "Le Crépuscule",
   "asset": "le-crepuscule",
@@ -1000,6 +2177,46 @@
    92
   ],
   "note": "img2glb paris-010; facing towards the nearest footway, 16 m"
+ },
+ {
+  "id": "le-denicheur-d-oursons",
+  "name": "Le dénicheur d'oursons",
+  "asset": "le-denicheur-d-oursons",
+  "lat": 48.84318,
+  "lon": 2.35686,
+  "bearing": 69,
+  "lodRanges": [
+   30,
+   94
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 6 m"
+ },
+ {
+  "id": "le-faune-dansant",
+  "name": "Le Faune dansant",
+  "asset": "le-faune-dansant",
+  "lat": 48.84757,
+  "lon": 2.33981,
+  "bearing": 60,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 7 m"
+ },
+ {
+  "id": "le-fruit",
+  "name": "Le Fruit",
+  "asset": "le-fruit",
+  "lat": 48.84311,
+  "lon": 2.31876,
+  "bearing": 255,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-010; facing away from the wall 4.7 m behind",
+  "beside": "Le Musée Bourdelle"
  },
  {
   "id": "le-genie-du-repos-eternel",
@@ -1015,6 +2232,32 @@
   "note": "img2glb paris-010; facing towards the camera of its photo (11 m)"
  },
  {
+  "id": "le-jeune-faune",
+  "name": "Le jeune faune",
+  "asset": "le-jeune-faune",
+  "lat": 48.88003,
+  "lon": 2.31148,
+  "bearing": 57,
+  "lodRanges": [
+   30,
+   108
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway (Allée Michel Berger), 14 m"
+ },
+ {
+  "id": "le-joueur-de-billes",
+  "name": "Le joueur de billes",
+  "asset": "le-joueur-de-billes",
+  "lat": 48.87971,
+  "lon": 2.31056,
+  "bearing": 305,
+  "lodRanges": [
+   30,
+   116
+  ],
+  "note": "img2glb paris-010; facing towards the nearest footway, 8 m"
+ },
+ {
   "id": "le-lion-gardien-du-jardin-des-plantes",
   "name": "Le lion, gardien du Jardin des plantes",
   "asset": "le-lion-gardien-du-jardin-des-plantes",
@@ -1026,6 +2269,58 @@
    90
   ],
   "note": "img2glb paris-010; facing towards the nearest footway (Allée Chevreul), 8 m"
+ },
+ {
+  "id": "le-marchand-de-masques",
+  "name": "Le Marchand de Masques",
+  "asset": "le-marchand-de-masques",
+  "lat": 48.84626,
+  "lon": 2.33825,
+  "bearing": 302,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-011; facing towards the camera of its photo (33 m)"
+ },
+ {
+  "id": "le-nil",
+  "name": "Le Nil",
+  "asset": "le-nil",
+  "lat": 48.86441,
+  "lon": 2.32343,
+  "bearing": 161,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway, 3 m"
+ },
+ {
+  "id": "le-penseur",
+  "name": "Le Penseur",
+  "asset": "le-penseur",
+  "lat": 48.85561,
+  "lon": 2.31551,
+  "bearing": 8,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway, 15 m"
+ },
+ {
+  "id": "le-play",
+  "name": "Le Play",
+  "asset": "le-play",
+  "lat": 48.84536,
+  "lon": 2.33627,
+  "bearing": 165,
+  "lodRanges": [
+   34,
+   136
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway, 10 m"
  },
  {
   "id": "le-poete-chevauchant-pegase",
@@ -1041,6 +2336,45 @@
   "note": "img2glb paris-011; facing towards the nearest pedestrian (Square de l'Opéra Louis Jouvet), 4 m"
  },
  {
+  "id": "le-porteur-de-viande",
+  "name": "Le Porteur de viande",
+  "asset": "le-porteur-de-viande",
+  "lat": 48.83139,
+  "lon": 2.30222,
+  "bearing": 112,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-011; facing away from the wall 3.6 m behind"
+ },
+ {
+  "id": "le-repit-du-travailleur",
+  "name": "Le Répit du Travailleur",
+  "asset": "le-repit-du-travailleur",
+  "lat": 48.86782,
+  "lon": 2.3776,
+  "bearing": 343,
+  "lodRanges": [
+   30,
+   96
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway, 2 m"
+ },
+ {
+  "id": "le-serment-de-spartacus",
+  "name": "Le Serment de Spartacus",
+  "asset": "le-serment-de-spartacus",
+  "lat": 48.86316,
+  "lon": 2.32882,
+  "bearing": 137,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway, 14 m"
+ },
+ {
   "id": "le-silence",
   "name": "Le Silence",
   "asset": "le-silence",
@@ -1054,6 +2388,19 @@
   "note": "img2glb paris-011; facing towards the camera of its photo (19 m)"
  },
  {
+  "id": "le-souvenir",
+  "name": "Le souvenir",
+  "asset": "le-souvenir",
+  "lat": 48.86162,
+  "lon": 2.38847,
+  "bearing": 252,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-011; facing towards the nearest service (Avenue du Boulevard), 5 m"
+ },
+ {
   "id": "le-tibre",
   "name": "Le Tibre",
   "asset": "le-tibre",
@@ -1065,6 +2412,32 @@
    90
   ],
   "note": "img2glb paris-011; facing towards the camera of its photo (44 m)"
+ },
+ {
+  "id": "le-triomphe-de-silene",
+  "name": "Le Triomphe de Silène",
+  "asset": "le-triomphe-de-silene",
+  "lat": 48.84765,
+  "lon": 2.33317,
+  "bearing": 136,
+  "lodRanges": [
+   30,
+   104
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway, 7 m"
+ },
+ {
+  "id": "le-zouave",
+  "name": "Le Zouave",
+  "asset": "le-zouave",
+  "lat": 48.86383,
+  "lon": 2.30203,
+  "bearing": 186,
+  "lodRanges": [
+   52,
+   208
+  ],
+  "note": "img2glb paris-001; facing towards the camera of its photo (98 m)"
  },
  {
   "id": "leconte-de-lisle",
@@ -1106,17 +2479,17 @@
   "note": "img2glb paris-011; facing towards the nearest footway (Quai Aimé Césaire), 15 m, turned: its photo shows the back"
  },
  {
-  "id": "les-fruits",
-  "name": "Les fruits",
-  "asset": "les-fruits",
-  "lat": 48.86212,
-  "lon": 2.28804,
-  "bearing": 337,
+  "id": "les-lions",
+  "name": "Les Lions",
+  "asset": "les-lions",
+  "lat": 48.84571,
+  "lon": 2.33746,
+  "bearing": 298,
   "lodRanges": [
    30,
    90
   ],
-  "note": "img2glb paris-011; facing towards the camera of its photo (12 m)"
+  "note": "img2glb paris-011; facing towards the camera of its photo (4 m)"
  },
  {
   "id": "les-trois-nymphes",
@@ -1131,6 +2504,19 @@
   ],
   "note": "img2glb paris-011; facing towards the camera of its photo (8 m)",
   "beside": "La Montagne"
+ },
+ {
+  "id": "lille",
+  "name": "Lille",
+  "asset": "lille",
+  "lat": 48.8662,
+  "lon": 2.32267,
+  "bearing": 236,
+  "lodRanges": [
+   50,
+   200
+  ],
+  "note": "img2glb paris-011; facing towards the camera of its photo (139 m)"
  },
  {
   "id": "lion",
@@ -1186,6 +2572,19 @@
   "note": "img2glb paris-011; facing towards the nearest footway, 8 m"
  },
  {
+  "id": "lion-et-lionne-se-disputant-un-sanglier",
+  "name": "Lion et lionne se disputant un sanglier",
+  "asset": "lion-et-lionne-se-disputant-un-sanglier",
+  "lat": 48.8651,
+  "lon": 2.32728,
+  "bearing": 250,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-011; facing towards the camera of its photo (6 m)"
+ },
+ {
   "id": "louis-ratisbonne",
   "name": "Louis Ratisbonne",
   "asset": "louis-ratisbonne",
@@ -1238,6 +2637,72 @@
   "note": "img2glb paris-011; facing towards the nearest footway, 4 m"
  },
  {
+  "id": "ludovic-trarieux",
+  "name": "Ludovic Trarieux",
+  "asset": "ludovic-trarieux",
+  "lat": 48.83436,
+  "lon": 2.33144,
+  "bearing": 123,
+  "lodRanges": [
+   50,
+   200
+  ],
+  "note": "img2glb paris-011; facing towards the nearest footway (Allée Claude Mademba-Sy), 11 m"
+ },
+ {
+  "id": "manus-ultimus",
+  "name": "Manus Ultimus",
+  "asset": "manus-ultimus",
+  "lat": 48.86361,
+  "lon": 2.32775,
+  "bearing": 206,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-012; facing towards the nearest footway (Allée Centrale), 25 m"
+ },
+ {
+  "id": "marguerite-boucicaut-1816-1887",
+  "name": "Marguerite Boucicaut (1816-1887)",
+  "asset": "marguerite-boucicaut-1816-1887",
+  "lat": 48.84226,
+  "lon": 2.28421,
+  "bearing": 96,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-012; facing towards the camera of its photo (15 m)"
+ },
+ {
+  "id": "marie-de-medicis",
+  "name": "Marie de Médicis",
+  "asset": "marie-de-medicis",
+  "lat": 48.84603,
+  "lon": 2.33635,
+  "bearing": 83,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-012; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "massillon",
+  "name": "Massillon",
+  "asset": "massillon",
+  "lat": 48.85084,
+  "lon": 2.33328,
+  "bearing": 172,
+  "lodRanges": [
+   30,
+   112
+  ],
+  "note": "img2glb paris-012; facing towards the nearest footway, 9 m",
+  "beside": "Fontaine Saint-Sulpice"
+ },
+ {
   "id": "maximilien-de-sully-le-reformateur",
   "name": "Maximilien de Sully - Le réformateur",
   "asset": "maximilien-de-sully-le-reformateur",
@@ -1250,6 +2715,19 @@
   ],
   "note": "img2glb paris-012; facing towards the nearest footway, 3 m",
   "beside": "Michel de L'Hospital - Le conciliateur"
+ },
+ {
+  "id": "medee",
+  "name": "Medee",
+  "asset": "medee",
+  "lat": 48.86295,
+  "lon": 2.32867,
+  "bearing": 26,
+  "lodRanges": [
+   30,
+   91
+  ],
+  "note": "img2glb paris-012; facing towards the nearest footway (Allée Centrale), 12 m"
  },
  {
   "id": "michel-de-l-hospital-le-conciliateur",
@@ -1277,6 +2755,45 @@
    94
   ],
   "note": "img2glb paris-012; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "monument-a-balzac",
+  "name": "Monument à Balzac",
+  "asset": "monument-a-balzac",
+  "lat": 48.842442,
+  "lon": 2.3294686,
+  "bearing": 79,
+  "lodRanges": [
+   30,
+   108
+  ],
+  "note": "img2glb paris-001; facing towards the nearest secondary (Boulevard Raspail), 6 m; moved 1.4 m off the secondary (Boulevard Raspail); moved 2.8 m off the secondary (Boulevard Raspail)"
+ },
+ {
+  "id": "monument-a-charles-perrault",
+  "name": "Monument à Charles Perrault",
+  "asset": "monument-a-charles-perrault",
+  "lat": 48.86491,
+  "lon": 2.32577,
+  "bearing": 116,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-012; facing towards the nearest footway, 28 m"
+ },
+ {
+  "id": "monument-a-debussy",
+  "name": "Monument à Debussy",
+  "asset": "monument-a-debussy",
+  "lat": 48.8672,
+  "lon": 2.2705,
+  "bearing": 30,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-012; facing towards the nearest footway, 4 m"
  },
  {
   "id": "monument-a-jean-mace",
@@ -1331,6 +2848,59 @@
   "note": "img2glb paris-012; facing towards the camera of its photo (7 m)"
  },
  {
+  "id": "nantes",
+  "name": "Nantes",
+  "asset": "nantes",
+  "lat": 48.86511,
+  "lon": 2.31956,
+  "bearing": 30,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-013; facing towards the camera of its photo (131 m)"
+ },
+ {
+  "id": "nereide",
+  "name": "Néréide",
+  "asset": "nereide",
+  "lat": 48.86312,
+  "lon": 2.31316,
+  "bearing": 137,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-013; facing towards the camera of its photo (6 m)",
+  "beside": "La Renommée de la guerre"
+ },
+ {
+  "id": "nicolas-de-condorcet",
+  "name": "Nicolas de Condorcet",
+  "asset": "nicolas-de-condorcet",
+  "lat": 48.85724,
+  "lon": 2.33828,
+  "bearing": 38,
+  "lodRanges": [
+   45,
+   180
+  ],
+  "note": "img2glb paris-013; facing towards the nearest footway, 3 m"
+ },
+ {
+  "id": "nymphe",
+  "name": "Nymphe",
+  "asset": "nymphe",
+  "lat": 48.8626,
+  "lon": 2.33059,
+  "bearing": 204,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-013; facing towards the nearest footway (Allée Centrale), 14 m"
+ },
+ {
   "id": "orphee",
   "name": "Orphée",
   "asset": "orphee",
@@ -1358,6 +2928,32 @@
   "beside": "Lion couché"
  },
  {
+  "id": "pan",
+  "name": "Pan",
+  "asset": "pan",
+  "lat": 48.88055,
+  "lon": 2.3843,
+  "bearing": 235,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-001; facing towards the nearest path, 3 m"
+ },
+ {
+  "id": "paul-deroulede",
+  "name": "Paul Deroulède",
+  "asset": "paul-deroulede",
+  "lat": 48.87585,
+  "lon": 2.31984,
+  "bearing": 14,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-013; facing towards the camera of its photo (7 m)"
+ },
+ {
   "id": "paul-verlaine",
   "name": "Paul Verlaine",
   "asset": "paul-verlaine",
@@ -1369,6 +2965,32 @@
    128
   ],
   "note": "img2glb paris-013; facing towards the nearest footway, 14 m"
+ },
+ {
+  "id": "pericles-distribuant-les-couronnes-aux-artistes",
+  "name": "Pericles Distribuant les Couronnes aux Artistes",
+  "asset": "pericles-distribuant-les-couronnes-aux-artistes",
+  "lat": 48.86249,
+  "lon": 2.3295,
+  "bearing": 342,
+  "lodRanges": [
+   30,
+   95
+  ],
+  "note": "img2glb paris-013; facing towards the nearest footway, 14 m"
+ },
+ {
+  "id": "personnage-iii",
+  "name": "Personnage III",
+  "asset": "personnage-iii",
+  "lat": 48.86449,
+  "lon": 2.32542,
+  "bearing": 226,
+  "lodRanges": [
+   30,
+   120
+  ],
+  "note": "img2glb paris-013; facing towards the camera of its photo (14 m)"
  },
  {
   "id": "pierre-corneille",
@@ -1397,6 +3019,113 @@
   "note": "img2glb paris-013; facing towards the camera of its photo (6 m)"
  },
  {
+  "id": "polypheme-surprenant-acis-et-galatee",
+  "name": "Polyphème surprenant Acis et Galatée",
+  "asset": "polypheme-surprenant-acis-et-galatee",
+  "lat": 48.84806,
+  "lon": 2.3393,
+  "bearing": 274,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-013; facing towards the camera of its photo (19 m)"
+ },
+ {
+  "id": "pomone",
+  "name": "Pomone",
+  "asset": "pomone",
+  "lat": 48.86411,
+  "lon": 2.32441,
+  "bearing": 341,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-013; facing towards the nearest footway, 8 m"
+ },
+ {
+  "id": "pomone-488583-23631",
+  "name": "Pomone",
+  "asset": "pomone-488583-23631",
+  "lat": 48.85828,
+  "lon": 2.36306,
+  "bearing": 65,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-014; facing towards the camera of its photo (9 m)"
+ },
+ {
+  "id": "pomone-dite-aussi-pomone-nue",
+  "name": "Pomone, dite aussi Pomone nue",
+  "asset": "pomone-dite-aussi-pomone-nue",
+  "lat": 48.86176,
+  "lon": 2.33205,
+  "bearing": 333,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-014; facing towards the camera of its photo (18 m)",
+  "beside": "L'Été"
+ },
+ {
+  "id": "pomone-drapee",
+  "name": "Pomone drapée",
+  "asset": "pomone-drapee",
+  "lat": 48.86133,
+  "lon": 2.33179,
+  "bearing": 115,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-014; facing towards the nearest footway, 25 m",
+  "beside": "Jeune Fille allongée"
+ },
+ {
+  "id": "premier-artiste",
+  "name": "Premier Artiste",
+  "asset": "premier-artiste",
+  "lat": 48.84332,
+  "lon": 2.36273,
+  "bearing": 201,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-014; facing towards the camera of its photo (8 m)"
+ },
+ {
+  "id": "psyche-sous-l-emprise-du-mystere",
+  "name": "Psyché sous l'emprise du mystère",
+  "asset": "psyche-sous-l-emprise-du-mystere",
+  "lat": 48.84813,
+  "lon": 2.33667,
+  "bearing": 257,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-014; facing towards the camera of its photo (28 m)"
+ },
+ {
+  "id": "sainte-bathilde",
+  "name": "Sainte-Bathilde",
+  "asset": "sainte-bathilde",
+  "lat": 48.84759,
+  "lon": 2.33815,
+  "bearing": 283,
+  "lodRanges": [
+   30,
+   100
+  ],
+  "note": "img2glb paris-014; facing towards the camera of its photo (14 m)",
+  "beside": "Berthe"
+ },
+ {
   "id": "sainte-clotilde",
   "name": "Sainte-Clotilde",
   "asset": "sainte-clotilde",
@@ -1410,6 +3139,19 @@
   "note": "img2glb paris-014; facing towards the camera of its photo (8 m)"
  },
  {
+  "id": "sainte-genevieve-mercier",
+  "name": "Sainte-Geneviève",
+  "asset": "sainte-genevieve-mercier",
+  "lat": 48.84711,
+  "lon": 2.33862,
+  "bearing": 93,
+  "lodRanges": [
+   35,
+   140
+  ],
+  "note": "img2glb paris-014; facing towards the nearest footway, 6 m"
+ },
+ {
   "id": "sarah-bernhardt",
   "name": "Sarah Bernhardt",
   "asset": "sarah-bernhardt",
@@ -1421,6 +3163,32 @@
    100
   ],
   "note": "img2glb paris-014; facing towards the camera of its photo (6 m)"
+ },
+ {
+  "id": "solitude",
+  "name": "Solitude",
+  "asset": "solitude",
+  "lat": 48.8831,
+  "lon": 2.3101,
+  "bearing": 35,
+  "lodRanges": [
+   32,
+   128
+  ],
+  "note": "img2glb paris-002; facing towards the nearest footway, 5 m"
+ },
+ {
+  "id": "sphinge-de-sebastopol",
+  "name": "Sphinge de Sébastopol",
+  "asset": "sphinge-de-sebastopol",
+  "lat": 48.86107,
+  "lon": 2.32994,
+  "bearing": 117,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-014; facing towards the nearest footway, 3 m"
  },
  {
   "id": "statue-de-bela-bartok",
@@ -1462,6 +3230,32 @@
   "note": "img2glb paris-015; facing towards the nearest footway, 4 m"
  },
  {
+  "id": "statue-de-maria-deraismes",
+  "name": "Statue de Maria Deraismes",
+  "asset": "statue-de-maria-deraismes",
+  "lat": 48.8938,
+  "lon": 2.32652,
+  "bearing": 203,
+  "lodRanges": [
+   45,
+   180
+  ],
+  "note": "img2glb paris-015; facing towards the nearest footway, 2 m"
+ },
+ {
+  "id": "statue-du-docteur-philippe-pinel",
+  "name": "Statue du Docteur Philippe Pinel",
+  "asset": "statue-du-docteur-philippe-pinel",
+  "lat": 48.8404341,
+  "lon": 2.362599,
+  "bearing": 295,
+  "lodRanges": [
+   50,
+   200
+  ],
+  "note": "img2glb paris-015; facing towards the nearest footway, 4 m; moved 4.1 m off the service"
+ },
+ {
   "id": "statue-equestre-de-jeanne-d-arc-lefebvre",
   "name": "statue équestre de Jeanne d'Arc",
   "asset": "statue-equestre-de-jeanne-d-arc-lefebvre",
@@ -1475,6 +3269,19 @@
   "note": "img2glb paris-015; facing towards the nearest footway, 7 m"
  },
  {
+  "id": "statue-equestre-du-duc-d-orleans",
+  "name": "Statue équestre du duc d'Orléans",
+  "asset": "statue-equestre-du-duc-d-orleans",
+  "lat": 48.88968,
+  "lon": 2.27644,
+  "bearing": 303,
+  "lodRanges": [
+   60,
+   240
+  ],
+  "note": "img2glb paris-015; facing towards the camera of its photo (9 m)"
+ },
+ {
   "id": "theodore-de-banville",
   "name": "Théodore de Banville",
   "asset": "theodore-de-banville",
@@ -1486,6 +3293,19 @@
    128
   ],
   "note": "img2glb paris-015; facing towards the nearest footway, 4 m"
+ },
+ {
+  "id": "thesee-combattant-le-minotaure",
+  "name": "Thesee Combattant le Minotaure",
+  "asset": "thesee-combattant-le-minotaure",
+  "lat": 48.86318,
+  "lon": 2.32967,
+  "bearing": 216,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-015; facing towards the camera of its photo (6 m)"
  },
  {
   "id": "thomas-paine",
@@ -1514,6 +3334,32 @@
   "note": "img2glb paris-015; facing towards the camera of its photo (8 m)"
  },
  {
+  "id": "tigresse-portant-un-paon-a-ses-petits",
+  "name": "Tigresse portant un paon à ses petits",
+  "asset": "tigresse-portant-un-paon-a-ses-petits",
+  "lat": 48.86197,
+  "lon": 2.33,
+  "bearing": 299,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-015; facing towards the nearest footway, 4 m"
+ },
+ {
+  "id": "vauban",
+  "name": "Vauban",
+  "asset": "vauban",
+  "lat": 48.85794,
+  "lon": 2.31056,
+  "bearing": 134,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-015; facing towards the camera of its photo (217 m)"
+ },
+ {
   "id": "vauquelin",
   "name": "Vauquelin",
   "asset": "vauquelin",
@@ -1525,6 +3371,19 @@
    90
   ],
   "note": "img2glb paris-015; facing towards the camera of its photo (21 m)"
+ },
+ {
+  "id": "velleda",
+  "name": "Velléda",
+  "asset": "velleda",
+  "lat": 48.84623,
+  "lon": 2.3396,
+  "bearing": 182,
+  "lodRanges": [
+   30,
+   90
+  ],
+  "note": "img2glb paris-015; facing towards the nearest footway, 7 m"
  },
  {
   "id": "venus",
