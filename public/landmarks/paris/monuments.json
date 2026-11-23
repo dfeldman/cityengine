@@ -1818,6 +1818,22 @@
     "note": "Q3333171, 2002 (Gérard Collin-Thiébaut): three pale columns 5.85 m high (Wikipedia) with scrolling-name displays in blue, white and red on both broad faces. Placed on the centre of OSM way 814263041 (18.3 x 10.7 m, long axis NE-SW along the quai). Column width 0.85, depth 0.42, spacing 2.7 m and the display strip are estimated off a Commons photo; the displays are static lit dashes."
   },
   {
+    "name": "Monument du corps expéditionnaire russe",
+    "procedural": "monumentCorpsExpeditionnaireRusse",
+    "kind": "monument",
+    "lat": 48.8644,
+    "lon": 2.3108,
+    "rotateDeg": 0,
+    "size": [
+      4.8,
+      2.8
+    ],
+    "height": 3.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Monument à la mémoire du corps expéditionnaire russe (Q18168657), place du Canada / cours la Reine: Sourovtsev's 2011 bronze soldier with his grazing horse on a low black granite plinth with a French bronze plaque and a Russian lettered cap band. Placed on Wikidata's point (no OSM building there). Plinth ~3.0 x 1.24 x 1.0 m and the 1.9 m group estimated off Commons photographs (Monument Corps expéditionnaire russe Paris 1-3), not surveyed; which long face is the plaque face (here south) is a guess. The group is Modly russe-soldat-cheval (paris-statues.json)."
+  },
+  {
     "name": "Fontaine du square Lamartine",
     "procedural": "fontaineSquareLamartine",
     "kind": "fountain",

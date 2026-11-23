@@ -754,6 +754,22 @@
     "asset": "komitas-statue2"
   },
   {
+    "id": "russe-soldat-cheval",
+    "name": "Monument du corps expéditionnaire russe: soldier and horse",
+    "attach": {
+      "to": "Monument du corps expéditionnaire russe",
+      "at": [
+        0,
+        1.72,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Sourovtsev's bronze Russian soldier with his horse (2011). assetkit img2glb guided from Commons 'Monument Corps expéditionnaire russe Paris 1.jpg'; published in assetkit-models-paris. Height 1.9 m (soldier's head) estimated.",
+    "asset": "russe-soldat-cheval"
+  },
+  {
     "id": "pere-couple",
     "name": "Monument aux morts du Père-Lachaise: the couple in the doorway",
     "attach": {
