@@ -390,6 +390,30 @@
     "asset": "gaillon-dauphin"
   },
   {
+    "id": "pastorale-group",
+    "name": "Fontaine Pastorale: shepherd",
+    "attach": { "to": "Fontaine Pastorale", "at": [-0.35, 1.55, 0.42], "bearing": 180 },
+    "range": 150,
+    "note": "The shepherd with his staff (the id says group; the single-image model kept only him). assetkit img2glb guided from Commons 'Fontaine Pastorale.jpg'",
+    "asset": "pastorale-group"
+  },
+  {
+    "id": "pastorale-sheep",
+    "name": "Fontaine Pastorale: sheep",
+    "attach": { "to": "Fontaine Pastorale", "at": [-0.95, 1.55, 0.42], "bearing": 180 },
+    "range": 150,
+    "note": "The grazing sheep at the shepherd's feet. assetkit img2glb guided from Commons 'Fontaine Pastorale.jpg'",
+    "asset": "pastorale-sheep"
+  },
+  {
+    "id": "pastorale-girl",
+    "name": "Fontaine Pastorale: girl",
+    "attach": { "to": "Fontaine Pastorale", "at": [0.9, 1.55, 0.42], "bearing": 180 },
+    "range": 150,
+    "note": "The standing girl facing the shepherd. assetkit img2glb guided from Commons 'Fontaine Pastorale.jpg'",
+    "asset": "pastorale-girl"
+  },
+  {
     "id": "sainte-genevieve-lion-c",
     "name": "Fontaine Sainte-Geneviève: lion mascaron (centre)",
     "attach": { "to": "Fontaine Sainte-Geneviève", "at": [0, 0.86, 2.5], "bearing": 180 },

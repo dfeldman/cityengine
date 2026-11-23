@@ -1311,6 +1311,22 @@
     "note": "Visconti's wall fountain of 1828 on the south face of the corner house in the place Gaillon (Wikidata Q579833): shell-headed niche between two Corinthian columns, entablature, attic with the MDCCCXXVII dedication and two urns, two-tier basin on balusters, a putto on a dolphin on the upper bowl (Modly, gaillon-dauphin). The host house (OSM way 54531802, apartments) is NOT claimed; the model starts at its south face (y 949.3 in the paris-centre frame), centred on its middle (x 169.1). Dimensions are scaled off two Commons photos against column spacing ~4 m, not surveyed; lower rim ~1.5 m is the shakiest figure."
   },
   {
+    "name": "Fontaine Pastorale",
+    "procedural": "fontainePastorale",
+    "kind": "fountain",
+    "lat": 48.853827,
+    "lon": 2.334044,
+    "front": 192.6,
+    "size": [
+      3.8,
+      2.8
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Desruelles' high relief of 1923 (shepherd, sheep, girl) in Chauvigny stone on a wall fountain built 1925 by the architect Ollivier, against the south face of the church Saint-Germain-des-Prés' chapel wall in the square Félix-Desruelles (Wikidata Q3076051; the Wikidata point lies 4 m south of the wall). Placed on the south edge of OSM wall way 1461285705 / building strip way 1461285706 (osmium), front bearing 192.6 off that edge; the church wall is the church model's and OSM's, not claimed. Base, three rosette spouts, trough, water and slab are procedural, scaled off two Commons photographs against the figures taken as ~1.4 m tall (not surveyed; the slab height is a guess); the relief group is a Modly model (statues manifest pastorale-group)."
+  },
+  {
     "name": "Fontaine Sainte-Geneviève",
     "procedural": "fontaineSainteGenevieve",
     "kind": "fountain",
