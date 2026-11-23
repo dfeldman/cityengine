@@ -1909,6 +1909,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Monument aux victimes de l'Opéra-Comique",
+    "procedural": "monumentVictimesOperaComique",
+    "kind": "monument",
+    "lat": 48.85922,
+    "lon": 2.39846,
+    "rotateDeg": 0,
+    "size": [
+      3.4,
+      3.4
+    ],
+    "height": 2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q15156006 (1888), common grave of the 25 May 1887 Opéra-Comique fire in Père-Lachaise division 96, on Wikidata's point. Form read off two Commons photos (Division 96 - Opéra-Comique 01, 03): two broad grey stone steps with a thick round-shouldered inscribed stele; no sculpture, so no Modly piece. Dimensions (steps ~2.9 x 2.7 m, stele ~1.35 m) and the facing direction are estimated by eye, not surveyed."
+  },
+  {
     "name": "Fontaine du jardin Villemin",
     "procedural": "fontaineJardinVillemin",
     "kind": "fontaine",
