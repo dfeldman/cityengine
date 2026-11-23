@@ -676,6 +676,22 @@
     "range": 250,
     "note": "Raoul Larche's Seine reclining among putti and reeds, seated on the basin's south rim facing north. assetkit img2glb guided (Hunyuan 2.1) from Commons 'Paris 8e - Fontaine Miroir d'eau ... Groupe sud 01' cropped to the group; published in assetkit-models-paris. The putti are blobby; the model carries a slab base",
     "asset": "miroir-sud"
+  },
+  {
+    "id": "soldatsnoirs-femme",
+    "name": "Monument aux soldats noirs morts pour la France: the woman in relief",
+    "attach": {
+      "to": "Monument aux soldats noirs morts pour la France",
+      "at": [
+        0.12,
+        1.95,
+        -0.14
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "The standing woman of the bas-relief (Biaggi). assetkit img2glb guided from Commons 'Aux soldats noirs morts pour la France.jpg', background painted out by hand (second attempt; the first, from the raw crop, lost the head); published in assetkit-models-paris. Half-relief with a thin stone backing.",
+    "asset": "soldatsnoirs-femme"
   }
 
 ]

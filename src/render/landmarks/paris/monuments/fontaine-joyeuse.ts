@@ -22,7 +22,7 @@ export const HX = 1.7
 export const HZ = 1.0
 
 // tunables
-const HOUSE_Z = 1.0           // the host houses' face (local z), not claimed
+export const HOUSE_Z = 1.0           // the host houses' face (local z), not claimed
 const BACK_Z = 0.45           // the slab's back, 0.55 in front of the house face
 const WALL_FRONT = -0.35      // the slab's front plane (pilasters stand proud of it)
 const NICHE_BACK = 0.30       // niche back plane

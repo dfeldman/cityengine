@@ -1497,5 +1497,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Boitel's stone edicule of 1847 at 41 rue de Turenne (Q3076142, also Fontaine Saint-Louis): fluted pilasters on pedestals, entablature with the arms of Paris, archivolt over a semi-domed niche, iron grille, lobed tazza over a half-round basin, the zinc child with a jar (Modly joyeuse-enfant). Real one is recessed into the house; here it stands about 1 m proud, its back 0.55 m in front of the house face (OSM building ways at x about 2369.7 not claimed; the face line and its 92 degree normal read off the OSM polygon, so the model centre is 1 m east of it). Width ~3.3 m from frwiki (about 3 m) and photos; heights scaled against a scooter, not surveyed."
+  },
+  {
+    "name": "Monument aux soldats noirs morts pour la France",
+    "procedural": "monumentSoldatsNoirs",
+    "kind": "monument",
+    "lat": 48.833299,
+    "lon": 2.466115,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      4.4
+    ],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Stele in the Jardin d'agronomie tropicale (Q17745972, OSM memorial node, memorial=stele; Wikidata gives 48.8332 2.4661): a pale stone slab with a bas-relief of a woman beside a Poilu's helmet, on an inscribed die, three steps and a low wing wall each side. Placed on the OSM node; facing south (away from the Pavillon de l'Indochine, per the 1900s postcard) is a guess. Dimensions by eye off Commons photographs (die ~2 m wide), not surveyed. The woman is Modly soldatsnoirs-femme (paris-statues.json)."
   }
 ]
