@@ -1566,6 +1566,25 @@
     "note": "Davioud's basin (1862) in the place Edmond-Rostand, 6e, with Crauk's bronze Triton and nereid holding a shell (Q3076290; OSM way 685770760, fountain+water+wall height 0.5, ring radius ~7 m measured). Rim width, the 8 support blocks and the ring of small jets are by eye off Commons photos; the group is Modly soufflot-triton."
   },
   {
+    "name": "Fontaine de l'Avril",
+    "procedural": "fontaineAvril",
+    "kind": "fountain",
+    "osm": [
+      "way/262367200"
+    ],
+    "lat": 48.865286,
+    "lon": 2.296716,
+    "rotateDeg": 0,
+    "size": [
+      9.4,
+      9.4
+    ],
+    "height": 5.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Pierre Roche's Art nouveau fountain of 1906 in the square Brignole-Galliera beside the Palais Galliera, 16e (Q3076179; OSM way 262367200, fountain+water, ring radius ~4.5 m measured, centred on the ring, ~3 m from the Wikidata point). Procedural: low round basin, two stone drums, tapering verdigris pylon with a leafy collar. Heights, pylon width and rim are by eye off Commons photos (Fontaine d'Avril - Galliera, Statue 01) against the Palais Galliera plinth, not surveyed. The bronze girl with the flower hat is Modly avril-fillette."
+  },
+  {
     "name": "Fontaine des Ambassadeurs",
     "procedural": "fontaineAmbassadeurs",
     "kind": "fountain",

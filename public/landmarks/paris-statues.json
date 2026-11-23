@@ -702,6 +702,22 @@
     "asset": "dejean-pelican"
   },
   {
+    "id": "avril-fillette",
+    "name": "Fontaine de l'Avril: girl with flower hat",
+    "asset": "avril-fillette",
+    "attach": {
+      "to": "Fontaine de l'Avril",
+      "at": [
+        0,
+        3.91,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Pierre Roche's bronze girl on the pylon (1906). assetkit img2glb guided from Commons 'Paris 16e - Square Brignole-Galliera - Fontaine de l'Avril - Statue 01' (CC0). Facing bearing is a guess."
+  },
+  {
     "id": "soufflot-triton",
     "name": "Fontaine du Bassin Soufflot: triton and nereid",
     "asset": "soufflot-triton",
