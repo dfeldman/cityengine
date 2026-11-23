@@ -1639,6 +1639,25 @@
     "note": "Pierre Roche's Art nouveau fountain of 1906 in the square Brignole-Galliera beside the Palais Galliera, 16e (Q3076179; OSM way 262367200, fountain+water, ring radius ~4.5 m measured, centred on the ring, ~3 m from the Wikidata point). Procedural: low round basin, two stone drums, tapering verdigris pylon with a leafy collar. Heights, pylon width and rim are by eye off Commons photos (Fontaine d'Avril - Galliera, Statue 01) against the Palais Galliera plinth, not surveyed. The bronze girl with the flower hat is Modly avril-fillette."
   },
   {
+    "name": "Fontaine de la place François-Ier",
+    "procedural": "fontainePlaceFrancoisIer",
+    "kind": "fountain",
+    "osm": [
+      "way/553172931"
+    ],
+    "lat": 48.866199,
+    "lon": 2.307814,
+    "rotateDeg": 0,
+    "size": [
+      6,
+      6
+    ],
+    "height": 3.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Davioud's fountain with Murguet's sculpture (1865), made for the place de la Madeleine and moved here about 1909 (Q3076214; its twin is in the place Santiago-du-Chili; frwiki). Centred on the OSM basin way 553172931 (water=basin, ring radius ~2.8 m measured). Procedural: round basin, lobed foot and four plinth blocks, gadrooned drum, the vasque with lion-head spouts, openwork gallery and falls, a plain shaft. Heights and the vasque width are scaled off Commons photos (vue globale, socle, haut) against the basin ring, not surveyed. Modly: francois-ier-griffon (four winged griffins) and francois-ier-fut (shaft with four paired masks and the flared openwork cup)."
+  },
+  {
     "name": "Fontaine des Ambassadeurs",
     "procedural": "fontaineAmbassadeurs",
     "kind": "fountain",

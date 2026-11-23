@@ -750,6 +750,46 @@
     "asset": "dejean-pelican"
   },
   {
+    "id": "francois-ier-fut",
+    "name": "Fontaine de la place François-Ier: shaft with masks and flared cup",
+    "asset": "francois-ier-fut",
+    "attach": { "to": "Fontaine de la place François-Ier", "at": [0, 1.98, 0], "bearing": 0 },
+    "range": 250,
+    "note": "Murguet's marble shaft with four paired female masks and swags under the flared openwork cup (1865). assetkit img2glb guided from Commons 'Fontaine de la Place François Ier Paris 8e haut'."
+  },
+  {
+    "id": "francois-ier-griffon-n",
+    "name": "Fontaine de la place François-Ier: winged griffin (north)",
+    "asset": "francois-ier-griffon",
+    "attach": { "to": "Fontaine de la place François-Ier", "at": [0, 0.9, 0.62], "bearing": 0 },
+    "range": 250,
+    "note": "One of four seated winged griffins round the drum; one model placed 4x. assetkit img2glb guided from Commons '... Paris 8e socle'."
+  },
+  {
+    "id": "francois-ier-griffon-e",
+    "name": "Fontaine de la place François-Ier: winged griffin (east)",
+    "asset": "francois-ier-griffon",
+    "attach": { "to": "Fontaine de la place François-Ier", "at": [0.62, 0.9, 0], "bearing": 90 },
+    "range": 250,
+    "note": "Second of four griffins (same model)."
+  },
+  {
+    "id": "francois-ier-griffon-s",
+    "name": "Fontaine de la place François-Ier: winged griffin (south)",
+    "asset": "francois-ier-griffon",
+    "attach": { "to": "Fontaine de la place François-Ier", "at": [0, 0.9, -0.62], "bearing": 180 },
+    "range": 250,
+    "note": "Third of four griffins (same model)."
+  },
+  {
+    "id": "francois-ier-griffon-w",
+    "name": "Fontaine de la place François-Ier: winged griffin (west)",
+    "asset": "francois-ier-griffon",
+    "attach": { "to": "Fontaine de la place François-Ier", "at": [-0.62, 0.9, 0], "bearing": 270 },
+    "range": 250,
+    "note": "Fourth of four griffins (same model)."
+  },
+  {
     "id": "avril-fillette",
     "name": "Fontaine de l'Avril: girl with flower hat",
     "asset": "avril-fillette",
