@@ -430,6 +430,14 @@
     "asset": "jdp-lion"
   },
   {
+    "id": "porte-doree-athena",
+    "name": "Fontaine de la Porte Dorée: Athena",
+    "attach": { "to": "Fontaine de la Porte Dorée", "at": [33.6, 7.76, 0], "bearing": 270 },
+    "range": 300,
+    "note": "Drivier's gilded bronze Athena (La France apportant la paix et la prospérité aux colonies, 1931), ~5 m with the spear, on the column at the cascade's high end, facing down the cascade. assetkit img2glb guided from Commons 'Athena porte dorée2.JPG' and 'Athena porte doree.jpg'; published in assetkit-models-paris. Not in the img2glb batch pool (checked)",
+    "asset": "porte-doree-athena"
+  },
+  {
     "id": "reine-mascaron-e",
     "name": "Fontaine de la Reine: mascaron (east corbel)",
     "attach": {

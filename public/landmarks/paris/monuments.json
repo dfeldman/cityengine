@@ -1566,6 +1566,25 @@
     "note": "Davioud's basin (1862) in the place Edmond-Rostand, 6e, with Crauk's bronze Triton and nereid holding a shell (Q3076290; OSM way 685770760, fountain+water+wall height 0.5, ring radius ~7 m measured). Rim width, the 8 support blocks and the ring of small jets are by eye off Commons photos; the group is Modly soufflot-triton."
   },
   {
+    "name": "Fontaine de la Porte Dorée",
+    "procedural": "fontainePorteDoree",
+    "kind": "fountain",
+    "osm": [
+      "way/130888780"
+    ],
+    "lat": 48.835209,
+    "lon": 2.407495,
+    "front": 208.7,
+    "size": [
+      73,
+      11
+    ],
+    "height": 14,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Cascade fountain of 1931 (Q3076201, place Édouard-Renard) with Drivier's gilded Athena on a granite column at its high end. Axis, 7 steps of 8.2 m, the 4 m channel and the column's node from OSM way 130888780 (osmium, 2026-11-23); the ground climbs 2.2 m foot to column (terrain). Cheek widths, the 8 m top pool, column 1.7 x 3.4 m and the gilt base are by eye off Commons photos, not surveyed. The Athena is Modly (statues manifest porte-doree-athena)."
+  },
+  {
     "name": "Fontaine de l'Avril",
     "procedural": "fontaineAvril",
     "kind": "fountain",
