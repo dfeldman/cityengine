@@ -1540,6 +1540,25 @@
     "note": "Raoul Larche's fountain of 1900-1901 in the square Jean-Perrin beside the Grand Palais (Q3076034): a lobed oval marble basin with the Seine and her tributaries seated on its rim. Plan = OSM ways 66758129 (outer) and 66758138 (water), measured; rim height 0.6 m and group sizes by eye against Commons photos. The sculpture groups are Modly pieces in paris-statues.json."
   },
   {
+    "name": "L'Embâcle (Daudelin, place du Québec)",
+    "procedural": "fontaineEmbacle",
+    "kind": "fountain",
+    "osm": [
+      "way/664223075"
+    ],
+    "lat": 48.853555,
+    "lon": 2.333224,
+    "rotateDeg": 0,
+    "size": [
+      7.2,
+      4.8
+    ],
+    "height": 2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Charles Daudelin's 1984 fountain-sculpture in the place du Québec (Q3076308): bronze plates tilted up out of the paving round a shallow pool. All procedural (src/render/landmarks/paris/monuments/minor/fontaine-embacle.ts, kit tiltedSlab). Position and pool footprint from OSM way 664223075 (the Wikidata/list coordinate 48.85330,2.33306 is ~28 m south, inside an apartment block, so it was not used). Plate count, tilts, sizes and the ~1.6 m peak are by eye off two Commons photos, not surveyed."
+  },
+  {
     "name": "Fontaine de Joyeuse",
     "procedural": "fontaineJoyeuse",
     "kind": "fountain",

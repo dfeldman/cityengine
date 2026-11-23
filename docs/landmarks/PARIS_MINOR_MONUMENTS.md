@@ -328,3 +328,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - Fontaine de la Paix (Q3076202): modelled (monuments/minor/fontaine-paix.ts, monuments.json; Modly pieces: none, the four reliefs are shallow panels)
 - Fontaine de Diane (Q3076128): modelled (src/render/landmarks/paris/monuments/minor/fontaine-diane.ts + kit hittorffFountain, public/landmarks/paris/monuments.json; Modly pieces: diane-diane, published)
 - Fontaine des Ambassadeurs: modelled (monuments/minor/fontaine-ambassadeurs.ts, monuments.json; Modly pieces: ambassadeurs-nymphe)
+- L'Embâcle (Q3076308): modelled (monuments/minor/fontaine-embacle.ts, monuments.json, kit tiltedSlab; Modly pieces: none, bronze plates are flat slabs; the list's coordinate was 28 m south inside a block, position taken from OSM way 664223075)

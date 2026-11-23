@@ -326,3 +326,28 @@ export function hittorffFountain(out: MeshBuilder, cx: number, cz: number, y0: n
   prism(out, cx, cz, tuft + 0.1, tuft + 0.38, 0.38, 14, o.metal, FIXED, 0.3, true)
   return { rim: rimY, plinthTop: tuft + 0.38 }
 }
+
+/** A flat rectangular slab `len` long × `wid` wide × `thick` thick, its low end's centre at (ax, ay, az), rising along heading `yawDeg` (0 = +x, 90 = +z) at `pitchDeg`; top face `c`, edges and underside darker. */
+export function tiltedSlab(out: MeshBuilder, ax: number, ay: number, az: number, o: {
+  yawDeg: number; pitchDeg: number; len: number; wid: number; thick: number; c: Rgb; roll?: number
+}): void {
+  const y = (o.yawDeg * Math.PI) / 180, p = (o.pitchDeg * Math.PI) / 180
+  const d: V3 = [Math.cos(y), 0, Math.sin(y)]
+  const u: V3 = [d[0] * Math.cos(p), Math.sin(p), d[2] * Math.cos(p)]
+  const w: V3 = [-Math.sin(y), 0, Math.cos(y)]
+  const n: V3 = [-d[0] * Math.sin(p), Math.cos(p), -d[2] * Math.sin(p)]
+  const C = (a: number, b: number, t: number): V3 => [
+    ax + u[0] * a * o.len + w[0] * (b - 0.5) * o.wid + n[0] * t * o.thick,
+    ay + u[1] * a * o.len + w[1] * (b - 0.5) * o.wid + n[1] * t * o.thick,
+    az + u[2] * a * o.len + w[2] * (b - 0.5) * o.wid + n[2] * t * o.thick,
+  ]
+  const side = shade(o.c, 0.78)
+  const face = (pts: V3[], nn: V3, c: Rgb): void => out.quad(pts, nn, UV, c, FIXED)
+  const neg = (v: V3): V3 => [-v[0], -v[1], -v[2]]
+  face([C(0, 0, 1), C(1, 0, 1), C(1, 1, 1), C(0, 1, 1)], n, o.c)
+  face([C(0, 0, 0), C(1, 0, 0), C(1, 1, 0), C(0, 1, 0)], neg(n), shade(o.c, 0.6))
+  face([C(1, 0, 0), C(1, 1, 0), C(1, 1, 1), C(1, 0, 1)], u, side)
+  face([C(0, 0, 0), C(0, 1, 0), C(0, 1, 1), C(0, 0, 1)], neg(u), side)
+  face([C(0, 0, 0), C(1, 0, 0), C(1, 0, 1), C(0, 0, 1)], neg(w), shade(o.c, 0.7))
+  face([C(0, 1, 0), C(1, 1, 0), C(1, 1, 1), C(0, 1, 1)], w, shade(o.c, 0.7))
+}
