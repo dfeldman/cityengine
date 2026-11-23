@@ -256,7 +256,7 @@ export { UV }
 /** A Hittorff fountain of the Champs-Élysées gardens (Diane, Ambassadeurs, Cirque, Grille du Coq) about (cx, cz) from y0: a low round basin of radius `basinR` (wall `wall` high, rim `rim` wide, floor `floor` under y0+wall), an octagonal metal pedestal `pedW` across and `pedH` high with a raised panel and scallop on each face, a foliage neck with `dolphins` dolphins, a wide shallow vasque (radius `vasqueR`) carrying `masks` lion-mask lugs, a falling ring of water into the basin and a jet from the middle. Returns the vasque rim height; the group stands on a reed tuft + round plinth at `top` (own height returned as `plinthTop`). */
 export function hittorffFountain(out: MeshBuilder, cx: number, cz: number, y0: number, o: {
   basinR: number; wall?: number; rim?: number; pedW?: number; pedH?: number; neckH?: number; vasqueR?: number; vasqueDepth?: number
-  masks?: number; dolphins?: number; fall?: number; stone: Rgb; metal: Rgb; water: Rgb; jet: Rgb; pedBase?: number
+  masks?: number; dolphins?: number; fall?: number; jetH?: number; stone: Rgb; metal: Rgb; water: Rgb; jet: Rgb; pedBase?: number
 }): { rim: number; plinthTop: number } {
   const wall = o.wall ?? 0.75, rim = o.rim ?? 0.32
   const pedW = o.pedW ?? 1.5, pedH = o.pedH ?? 0.85, neckH = o.neckH ?? 0.95
@@ -316,6 +316,13 @@ export function hittorffFountain(out: MeshBuilder, cx: number, cz: number, y0: n
   // water: a thin ring of falls from the vasque lip into the basin, and a jet at the tuft
   const fall = o.fall ?? 0.05
   jetRing(out, cx, cz, 56, vR * 1.0, rimY - 0.05, Math.min(o.basinR - rim - 0.15, vR + 0.35), y0 + wall - 0.06, { rise: fall, r: 0.02, c: o.jet })
+  // no sculpture (Grille du Coq): a short metal boss and one plain jet from the middle
+  if (o.jetH !== undefined) {
+    prism(out, cx, cz, rimY - 0.05, rimY + 0.12, 0.3, 12, shade(o.metal, 0.9), FIXED, 0.22, true)
+    lathe(out, cx, cz, [[0.05, rimY + 0.1], [0.035, rimY + 0.1 + o.jetH * 0.6], [0.02, rimY + 0.1 + o.jetH]], 8, o.jet)
+    jetRing(out, cx, cz, 10, 0.12, rimY + 0.1 + o.jetH, 0.7, rimY - 0.04, { rise: 0.25, r: 0.014, c: o.jet })
+    return { rim: rimY, plinthTop: rimY + 0.12 }
+  }
   // the tuft of reeds and the round plinth for the sculpture
   const tuft = rimY + 0.04
   prism(out, cx, cz, rimY, tuft + 0.1, 0.5, 12, shade(o.metal, 0.9), FIXED, 0.42, true)

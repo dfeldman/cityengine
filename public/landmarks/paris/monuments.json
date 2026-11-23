@@ -1664,6 +1664,25 @@
     "note": "Hittorff's fountain of 1840 (Q3076128; also fontaine Ledoyen) in the jardin des Champs-Élysées, sister of the Cirque, Ambassadeurs and Grille du Coq fountains (kit routine hittorffFountain). Basin radius 3.0 m from OSM way 1136105125 (claimed); wall, octagonal pedestal, neck, vasque (~3.7 m across), 12 lion-mask lugs and reed tuft are by eye off Commons photos 'Fontaine de Diane Paris 8e 001-003', not surveyed. Desprez's Diane (~1.8 m) is Modly diane-diane."
   },
   {
+    "name": "Fontaine de la Grille du Coq",
+    "procedural": "fontaineGrilleCoq",
+    "kind": "fountain",
+    "osm": [
+      "way/67092064"
+    ],
+    "lat": 48.8683806,
+    "lon": 2.3147856,
+    "rotateDeg": 0,
+    "size": [
+      6.4,
+      6.4
+    ],
+    "height": 3.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Hittorff's fountain of 1840 (Q3076190) facing the Grille du Coq of the Elysee garden, the one sister of Diane/Cirque/Ambassadeurs with no sculpture (kit hittorffFountain with a plain jet). Position and 3.0 m basin radius from OSM way 67092064 (claimed); Wikidata/frwiki coordinates (48.8674, 2.3180) just copy the Ambassadeurs fountain and are wrong. Pedestal, neck, vasque and jet sizes copy the sister fountains, by eye, not surveyed. No Modly piece."
+  },
+  {
     "name": "Fontaine du Théâtre-Français — Nymphe marine",
     "procedural": "fontaineTheatreFrancaisMarine",
     "kind": "fountain",

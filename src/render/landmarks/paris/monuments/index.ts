@@ -55,6 +55,7 @@ import { fontaineBassinSoufflot } from './minor/fontaine-bassin-soufflot.ts'
 import { fontaineCirque } from './minor/fontaine-cirque.ts'
 import { fontaineAmbassadeurs } from './minor/fontaine-ambassadeurs.ts'
 import { fontaineDiane } from './minor/fontaine-diane.ts'
+import { fontaineGrilleCoq } from './minor/fontaine-grille-coq.ts'
 import { fontaineTheatreFrancaisMarine, fontaineTheatreFrancaisFluviale } from './minor/fontaine-theatre-francais.ts'
 import { monumentSoldatsNoirs } from './minor/monument-soldats-noirs.ts'
 import { monumentKomitas } from './minor/monument-komitas.ts'
@@ -104,6 +105,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineGavarni,
   fontaineDiane,
   fontaineAmbassadeurs,
+  fontaineGrilleCoq,
   fontaineCirque,
   fontaineTheatreFrancaisMarine,
   fontaineTheatreFrancaisFluviale,
