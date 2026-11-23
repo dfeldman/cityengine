@@ -329,7 +329,11 @@ function statueFile(city: string): { file: string; entries: StatueEntry[] } | nu
   const spec = CITIES.find((c) => c.id === city)
   for (const n of spec?.region ? [city, spec.region] : [city]) {
     const f = resolve(LANDMARKS, `${n}-statues.json`)
-    if (existsSync(f)) return { file: `${n}-statues.json`, entries: JSON.parse(readFileSync(f, 'utf8')) as StatueEntry[] }
+    if (!existsSync(f)) continue
+    // (and the generated img2glb statues beside it, as statueManifest() reads them: tools/img2glb-statues.ts)
+    const g = resolve(LANDMARKS, `${n}-statues-img2glb.json`)
+    const more = existsSync(g) ? JSON.parse(readFileSync(g, 'utf8')) as StatueEntry[] : []
+    return { file: `${n}-statues.json`, entries: [...JSON.parse(readFileSync(f, 'utf8')) as StatueEntry[], ...more] }
   }
   return null
 }

@@ -45,7 +45,9 @@ export interface ModelInfo {
   scale: { axis: 'x' | 'y' | 'z'; metres: number }
   /** metres from the model's lowest point up to its waterline (ships) */
   draft?: number
-  plinth?: [number, number, number]
+  /** its pedestal: tools/modelpack writes the size a game draws ([w, d, h] m); assetkit img2glb writes whether it has one
+   *  (`included` in the model, `needed` with the size and colour to draw, `none`), from `img2glb sizes` */
+  plinth?: [number, number, number] | { state: 'included' | 'needed' | 'none'; size?: [number, number, number]; colour?: string; from?: string }
   material: string
   /** the LOD files there are (0 = most detailed) */
   lods: { lod: number; triangles: number; tex: number }[]

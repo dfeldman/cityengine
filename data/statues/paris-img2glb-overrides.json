@@ -1,0 +1,209 @@
+{
+ "a-la-memoire-de-theophile-alexandre-steinlen": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "ambroise-thomas": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "antinous": {
+  "skip": "the same model as antinous-gros, apollon-du-belvedere-mazeline, uranie (one photo for several works): which it shows is unchecked"
+ },
+ "antinous-gros": {
+  "skip": "the same model as antinous, apollon-du-belvedere-mazeline, uranie (one photo for several works): which it shows is unchecked"
+ },
+ "apollon-du-belvedere-mazeline": {
+  "skip": "the same model as antinous, antinous-gros, uranie (one photo for several works): which it shows is unchecked"
+ },
+ "au-planteur": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "aux-oubliees-et-oublies": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "barriere-du-trone-philippe-auguste": {
+  "skip": "the same model as barriere-du-trone-saint-louis (one photo for several works): which it shows is unchecked"
+ },
+ "barriere-du-trone-saint-louis": {
+  "skip": "the same model as barriere-du-trone-philippe-auguste (one photo for several works): which it shows is unchecked"
+ },
+ "bassin-des-lezards": {
+  "skip": "the same model as bassin-des-lezards-marsy (one photo for several works): which it shows is unchecked"
+ },
+ "bassin-des-lezards-marsy": {
+  "skip": "the same model as bassin-des-lezards (one photo for several works): which it shows is unchecked"
+ },
+ "boileau": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "charles-baudelaire": {
+  "turn": 180
+ },
+ "chevalier-de-la-barre": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "claude-bernard": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)",
+  "turn": 180
+ },
+ "daphne": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "denis-papin": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "diderot": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "fenelon": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "flore-farnese": {
+  "skip": "the same model as flore-farnese-raon (one photo for several works): which it shows is unchecked"
+ },
+ "flore-farnese-raon": {
+  "skip": "the same model as flore-farnese (one photo for several works): which it shows is unchecked"
+ },
+ "georges-brassens": {
+  "skip": "its photo and model are the bull of Parc Georges-Brassens, which the landmark \"Parc Georges-Brassens: the bull on the east\" draws"
+ },
+ "harde-de-cerfs": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "hercule-et-le-taureau-de-crete": {
+  "skip": "the same model as l-homme (one photo for several works): which it shows is unchecked"
+ },
+ "hippomene": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "isocrate": {
+  "skip": "the same model as ulysse (one photo for several works): which it shows is unchecked"
+ },
+ "jeanne-d-albret": {
+  "skip": "bad model (review r1: made from a print or portrait, fragments, or a slab fused in)"
+ },
+ "l-abondance-injalbert": {
+  "skip": "bad model (review r2)"
+ },
+ "l-apporteur-de-l-espoir": {
+  "skip": "bad model (review r3)",
+  "turn": 180,
+  "photo": "back"
+ },
+ "l-arbre-neuronal": {
+  "skip": "bad model (review r3)"
+ },
+ "l-homme": {
+  "skip": "the same model as hercule-et-le-taureau-de-crete (one photo for several works): which it shows is unchecked"
+ },
+ "l-oiseau-de-feu": {
+  "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "la-charite-duret": {
+  "skip": "bad model (review r3)"
+ },
+ "la-clef-de-sol": {
+  "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "la-diagonale": {
+  "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "la-france-moderne": {
+  "turn": 180
+ },
+ "la-garonne": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "la-grande-musicienne": {
+  "skip": "bad model (review r3)"
+ },
+ "la-jeunesse-poisson": {
+  "skip": "bad model (review r3)"
+ },
+ "la-loire": {
+  "skip": "photo shows a river boat (sizes reader)"
+ },
+ "la-marne": {
+  "skip": "photo shows an album page (sizes reader)"
+ },
+ "la-spirale": {
+  "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "le-chapeau-de-clown": {
+  "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "le-melancolique": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "le-passe-muraille": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "le-point-du-jour": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "le-pouce": {
+  "skip": "sparse skeleton mesh (sizes reader)"
+ },
+ "le-remouleur": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "le-renard": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "le-rhone": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "leon-blum": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "les-fils-de-cain": {
+  "photo": "back"
+ },
+ "les-jardins": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "les-mangoustes-de-beauvais": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "les-poings-d-eau": {
+  "skip": "model includes a van (sizes reader)"
+ },
+ "les-taureaux": {
+  "skip": "the same model as les-taureaux-bonheur (one photo for several works): which it shows is unchecked"
+ },
+ "les-taureaux-bonheur": {
+  "skip": "the same model as les-taureaux (one photo for several works): which it shows is unchecked"
+ },
+ "les-trois-ombres": {
+  "skip": "photo shows something else (sizes reader)"
+ },
+ "monument-a-barye": {
+  "skip": "broken, fragmented mesh (sizes reader)"
+ },
+ "monument-du-corps-expeditionnaire-russe": {
+  "skip": "flat slab, no figures (sizes reader)"
+ },
+ "n-ud": {
+  "skip": "bad model (review r3)"
+ },
+ "pouce": {
+  "skip": "only a fragment (sizes reader)"
+ },
+ "ragtime": {
+  "skip": "a Fontaine Stravinsky piece: one photo of the whole fountain made the same model for all six, and the landmark \"Fontaine Stravinsky\" stands there"
+ },
+ "silene-portant-bacchus": {
+  "skip": "photo shows a bearded head, not the group (sizes reader)"
+ },
+ "silene-portant-bacchus-keller": {
+  "skip": "photo shows a bearded head, not the group (sizes reader)"
+ },
+ "tigrane": {
+  "skip": "the same model as le-melancolique (one photo for several works): which it shows is unchecked"
+ },
+ "ulysse": {
+  "skip": "the same model as isocrate (one photo for several works): which it shows is unchecked"
+ },
+ "uranie": {
+  "skip": "the same model as antinous, antinous-gros, apollon-du-belvedere-mazeline (one photo for several works): which it shows is unchecked"
+ }
+}

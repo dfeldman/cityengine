@@ -4,8 +4,8 @@
  * A GLB holds its textures and a full-resolution mesh, so it costs real memory; the pool keeps AT MOST
  * `MAX_LOADED` in the scene (24 since 2026-10-26; it began at 3, user 2026-09-22), the nearest within
  * each one's range, loading one at a time and letting go of one only when it is well out of range or a
- * nearer one needs its place. The pedestals are procedural and always there — cheap, and a plinth without
- * its statue for a moment reads as a plinth, not as a hole.
+ * nearer one needs its place. The pedestals are procedural and there whenever the statue is near (PLINTH_RANGE) — cheap,
+ * and a plinth without its statue for a moment reads as a plinth, not as a hole.
  *
  * Where a statue goes: its own lat/lon, standing on its pedestal and facing `bearing` (compass degrees); or
  * ATTACHED to a procedural landmark (`attach.to`), at a point in that landmark's own frame once it is placed —
@@ -69,6 +69,9 @@ export interface StatueEntry {
   /** stands on a deck this many metres above sea level (the landmarks' `deckAbove`): a plaza on piles, which the ground
    *  under it — the flattened sea bed — knows nothing of (Gandhi on the Ferry Plaza deck, 2026-10-18) */
   deckAbove?: number
+  /** stands this many metres over the ground: on top of the structure the city draws under it from OSM (a bridge pylon,
+   *  a column — the Renommées on the Pont Alexandre III's 17 m pylons, tools/img2glb-statues.ts) */
+  raise?: number
   /** …or on a procedural landmark: at [x, y, z] in its frame (−z is its front), facing `bearing` in that frame */
   attach?: { to: string; at: [number, number, number]; bearing: number; draped?: boolean }
   /** how far away it is loaded (m); a tall one is seen from further */
@@ -82,6 +85,10 @@ export interface StatueEntry {
  *  each other and the four nearest were all lanterns, so the pagoda showed its stand-in "unless I get extremely close"
  *  (owner, 2026-10-26). A lantern's LOD 0 is ~250 kB; the ships keep their own short ranges.) */
 export const MAX_LOADED = 24
+/** pedestals are drawn within this many metres (or the statue's own range, if longer): with the ~700 img2glb statues
+ *  (public/landmarks/paris-statues-img2glb.json, 2026-11) a few hundred stone blocks across the city were draw calls
+ *  from everywhere */
+export const PLINTH_RANGE = 350
 
 interface Placement { x: number; y: number; z: number; rotation: number }
 
@@ -93,6 +100,8 @@ interface Slot {
   lod: number
   loading: boolean
   failed: boolean
+  /** its procedural pedestal, drawn only within PLINTH_RANGE */
+  plinth?: Mesh
 }
 /**
  * An UNTEXTURED model's metal (assetkit `extra.model.material`, assetmgr's SHADER_PRESETS): most AI statues are bare
@@ -160,7 +169,15 @@ export class Statues {
       const e = s.e
       if (e.lat === undefined || e.lon === undefined) continue
       const p = proj.toLocal({ lat: e.lat, lon: e.lon })
-      const ground = seaLevel !== null && (e.float || e.deckAbove !== undefined) ? seaLevel + (e.deckAbove ?? 0) : terrain.heightAt(p.x, p.z)
+      const ground = (seaLevel !== null && (e.float || e.deckAbove !== undefined) ? seaLevel + (e.deckAbove ?? 0) : terrain.heightAt(p.x, p.z)) + (e.raise ?? 0)
+      // its pedestal: the entry's, or (an img2glb model) the one its index says it needs — `img2glb sizes`, the owner's
+      // review page: the index is the one source. (modelpack's [w, d, h] in the index is not read: SF's entries say theirs.)
+      const ip = e.asset ? modelInfo(e.asset)?.plinth : undefined
+      // (not for one `raise`d onto a structure: that is its pedestal)
+      if (!e.plinth && !e.raise && ip && !Array.isArray(ip) && ip.state === 'needed' && ip.size) {
+        e.plinth = ip.size
+        e.plinthColour ??= ip.colour
+      }
       const top = e.plinth ? e.plinth[2] : 0
       // (an asset's front is its index's, read when it loads: the rotation is finished then)
       s.at = { x: p.x, y: ground + top, z: p.z, rotation: e.front ? rotationFor(e.front, e.bearing ?? 0) : (((e.bearing ?? 0) * Math.PI) / 180) }
@@ -180,6 +197,8 @@ export class Statues {
         m.renderingGroupId = 3
         m.isPickable = false
         m.freezeWorldMatrix()
+        m.setEnabled(false)
+        s.plinth = m
       }
     }
   }
@@ -211,6 +230,7 @@ export class Statues {
     }
     const dist = (s: Slot): number => (s.at ? Math.hypot(s.at.x - eye.x, s.at.z - eye.z) : Infinity)
     const range = (s: Slot): number => s.e.lodRanges?.at(-1) ?? s.e.range ?? 300
+    for (const s of this.slots) if (s.plinth) s.plinth.setEnabled(dist(s) < Math.max(PLINTH_RANGE, range(s)))
     const ranked = this.slots.filter((s) => s.at && !s.failed && dist(s) < range(s)).sort((a, b) => dist(a) - dist(b))
     const wanted = new Set(ranked.slice(0, MAX_LOADED))
     // let go first: out of range (with a margin), or not among the nearest while one of those waits for room
@@ -305,16 +325,23 @@ export class Statues {
   }
 }
 
-/** The statues for a city or its region: `landmarks/<name>-statues.json`, or none. */
+/** The statues for a city or its region: `landmarks/<name>-statues.json`, or none — and beside it, the generated
+ *  `landmarks/<name>-statues-img2glb.json` (tools/img2glb-statues.ts: assetkit's photo-made statues, placed by script). */
 export async function statueManifest(base: string, city: string, region?: string): Promise<StatueEntry[]> {
-  for (const name of region ? [city, region] : [city]) {
+  const read = async (file: string): Promise<StatueEntry[] | null> => {
     try {
-      const r = await fetch(new URL(`landmarks/${name}-statues.json`, base).href)
+      const r = await fetch(new URL(`landmarks/${file}`, base).href)
       const text = await r.text()
+      // (the dev server answers a missing file with index.html)
       if (r.ok && text.trimStart().startsWith('[')) return JSON.parse(text) as StatueEntry[]
     } catch {
-      // the next
+      // none
     }
+    return null
+  }
+  for (const name of region ? [city, region] : [city]) {
+    const own = await read(`${name}-statues.json`)
+    if (own) return [...own, ...((await read(`${name}-statues-img2glb.json`)) ?? [])]
   }
   return []
 }
