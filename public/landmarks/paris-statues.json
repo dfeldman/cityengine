@@ -596,6 +596,22 @@
     "range": 150,
     "note": "The pelican piercing its breast on the sphere that crowns the fountain (Malric). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Dejean Paris 3.jpg' and 'Fontaine Dejean.jpg'; the cut-out carries a little of the sphere at its foot; published in assetkit-models-paris",
     "asset": "dejean-pelican"
+  },
+  {
+    "id": "gavarni-statue",
+    "name": "Monument à Gavarni: the statue of Gavarni",
+    "attach": {
+      "to": "Monument à Gavarni",
+      "at": [
+        0,
+        6.6,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Denys Puech's half-length Gavarni reading. assetkit img2glb guided from the Commons photo 'Monument Gavarni 2021-06-27 - 5' with the sky painted out by hand (pale marble on pale sky had cut out as a bed); published in assetkit-models-paris. Includes a stub of the cornice it sits on",
+    "asset": "gavarni-statue"
   }
 
 ]

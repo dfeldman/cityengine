@@ -1414,5 +1414,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "The fountain of 1906 (Q3076301) in the round planter of place Georges-Mulot, 15e, on the site of the first artesian well; OSM way 252282895 (natural=water, the 3.4 m planter circle) claimed. Square ashlar shaft with four engaged corner columns, plinth, oval medallions on the four faces, cornice, stepped stone cap and ball. Heights and widths are scaled off the Commons photo 'Fontaine du Puits de Grenelle.jpg' against the mascaron (~0.33 m) and plinth (~2.1 m), not surveyed; medallions/frames are shallow relief kept procedural. The bronze mascaron (south face) is a procedural stand-in: three Modly attempts (hunyuan21, trellis2 x2) from the only usable photo (~140 px of face) gave flat slabs, so none is published."
+  },
+  {
+    "name": "Monument à Gavarni",
+    "procedural": "fontaineGavarni",
+    "kind": "fountain",
+    "lat": 48.87840,
+    "lon": 2.33756,
+    "rotateDeg": 0,
+    "size": [
+      7.2,
+      7.2
+    ],
+    "height": 7.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Denys Puech and Henri Guillaume's monument of 1904 (Q3076026, OSM node tagged amenity=fountain) in the middle of the place Saint-Georges roundabout: iron railing, round basin, square plinth with a bronze mask on two sides, a stout round column carrying Gavarni's carnival figures in high relief, frieze, cornice and the half-length statue of Gavarni. Dimensions scaled by eye off Commons photos (Monument Gavarni 2021-06-27 -3/-5, Fontaine Gavarni Paris 9e) against the railing (~1 m); about 7.4 m in all, not surveyed. Which way the front faces is a guess (-z). No OSM building ways under it."
   }
 ]
