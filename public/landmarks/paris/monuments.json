@@ -2067,5 +2067,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Cénotaphe de Charles Baudelaire (Q3010223, José de Charmoy, 1902), Montparnasse cemetery division 27, at the end of the avenue Transversale against the boundary wall. Placed on the OSM memorial=sculpture node (the Wikidata point is ~4 m off); no OSM building way to claim. Procedural: inscribed slab with a sloping mossy top, plinth, plain stele with coping; the poet-and-genie relief and the recumbent wrapped figure are Modly pieces (baudelaire-poete, baudelaire-gisant in paris-statues.json). Sizes (stele ~3.6 m x 1.3 m, slab ~2.0 x 1.6 x 0.6 m) are scaled by eye off Commons photos against the wall's courses, not surveyed. Front faces bearing ~295 deg (toward the avenue end), a reading of the avenue's direction."
+  },
+  {
+    "name": "Fontaine-labyrinthe (place des Fêtes)",
+    "procedural": "fontaineLabyrinthe",
+    "kind": "fountain",
+    "lat": 48.87674,
+    "lon": 2.39389,
+    "rotateDeg": 0,
+    "size": [
+      21.6,
+      21.6
+    ],
+    "height": 1.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Marta Pan's fountain-labyrinth (competition 1980, inaugurated 1986/87; Wikidata Q635634): five eccentric concentric granite walls, each broken by a gap on alternating sides, cobbled floor; dry since ~2015 so no water. Radii, wall height (~0.55 m) and gap angles estimated from one Commons photograph against a car, not surveyed; the orientation (rotateDeg 0) and the amphitheatre steps on one side are not modelled. No OSM way to claim (only points nearby). Purely structural, no Modly piece."
   }
 ]
