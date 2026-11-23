@@ -278,3 +278,4 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - mur pour la Paix (Q3327987): skipped: dismantled June 2020 (frwiki); not on site, relocation to avenue de Breteuil annulled 2023
 - barrière Saint-Martin (Q1240015): already modelled as rotondeVillette (src/render/landmarks/paris/museums/rotonde-villette.ts, museums.json "Rotonde de la Villette")
 - Fontaine Dejean (Q3076013): modelled (src/render/landmarks/paris/monuments/fontaine-dejean.ts, public/landmarks/paris/monuments.json; Modly pieces: dejean-pelican, published, placed in public/landmarks/paris-statues.json)
+- fontaine de Jarente (Q1435786): modelled (src/render/landmarks/paris/monuments/fontaine-jarente.ts, public/landmarks/paris/monuments.json; Modly pieces: none, the shell cartouche is shallow relief kept procedural)

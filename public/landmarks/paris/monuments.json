@@ -1307,6 +1307,22 @@
     "note": "Formigé's fountain of 1906 (Q3076013, OSM node 2482248710) in the square de la place Pasdeloup beside the Cirque d'Hiver: octagonal base with carved frieze, two scallop shells, gadrooned bowl, tapering shaft with Dejean's oval portrait medallion and inscription, acanthus vase and sphere under a pelican (Modly, dejean-pelican). No OSM way to claim (a node). Heights and widths are scaled off Commons photos against the medallion (~0.4 m) and base (~1 m across), not surveyed; the facing (medallion to the south) is a guess."
   },
   {
+    "name": "Fontaine de Jarente",
+    "procedural": "fontaineJarente",
+    "kind": "fountain",
+    "lat": 48.855739,
+    "lon": 2.363460,
+    "front": 207,
+    "size": [
+      5.4,
+      3.2
+    ],
+    "height": 9.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The 1783 stone pavilion closing the impasse de la Poissonnerie off the rue de Jarente (Wikidata Q1435786), 4.7 m wide like OSM's end wall (the host houses are OSM ways 56045039 / 1174634452, not claimed; the model stands 0.6 m in front of their face). Rusticated pilasters, entablature, pediment with a shell cartouche, stepped pyramid roof, cartouche panel, plain tablet, mask spout and trough, all procedural (the cartouche is shallow relief: no Modly piece). Dimensions scaled off Commons photographs against the side doors and the OSM wall width, not surveyed; roof heights are guessed; front bearing 207 read from the end wall's normal."
+  },
+  {
     "name": "Fontaine du Marché-aux-Carmes",
     "procedural": "fontaineMarcheCarmes",
     "kind": "fountain",
