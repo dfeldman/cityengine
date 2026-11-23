@@ -1962,5 +1962,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Obelisk of 1731 (Q3411287, Slodtz brothers) on the central island of the carrefour de la Pyramide, Wikidata coordinates; no OSM building there. Three round steps, rusticated square pedestal with banded courses, tapering shaft, rocaille cartouche on each face (shallow relief, procedural), ball and gilt spike. No height is written anywhere: ~17 m total, pedestal ~5 m, steps ~11 m across are scaled by eye off Commons Paris - Pyramide du bois de Vincennes - 020. No Modly pieces: only shallow reliefs."
+  },
+  {
+    "name": "Tombe d'Héloïse et Abélard",
+    "procedural": "tombeHeloiseAbelard",
+    "kind": "monument",
+    "osm": [
+      "way/313811735"
+    ],
+    "lat": 48.859193,
+    "lon": 2.391914,
+    "rotateDeg": 20,
+    "size": [
+      5.4,
+      5.9
+    ],
+    "height": 6.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Monument funéraire d'Héloïse et Abélard (Q3323370), Père-Lachaise division 7: Lenoir's neo-Gothic open chapel of 1817 (OSM way 313811735, a 5.4 x 5.9 m ring that is the iron fence, tagged building=tomb). Pointed arcades on corner piers and colonnettes, steep slate roof with two gables (trefoil window, roundels, saints, pinnacles, gargoyles), tomb chest inside under the two recumbent effigies (procedural blocks: three Modly attempts at the pair failed, one a split chest-and-figures slab, one a trellis2 box, one a head and hand only). Plan from the OSM ring; body ~3.1 x 3.9 m and height ~6 m scaled by eye off Commons photos, not surveyed. Front (gable) faces bearing ~200 deg, a guess."
   }
 ]
