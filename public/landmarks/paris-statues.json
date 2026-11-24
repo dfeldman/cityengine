@@ -926,6 +926,18 @@
     "asset": "vel-dhiv-spitzer-groupe"
   },
   {
+    "id": "jeanne-augustin-equestre",
+    "name": "Jeanne d'Arc équestre (place Saint-Augustin): horse and rider",
+    "attach": {
+      "to": "Jeanne d'Arc équestre (place Saint-Augustin)",
+      "at": [0, 3.5, 0],
+      "bearing": 90
+    },
+    "range": 250,
+    "note": "Paul Dubois's rearing-horse bronze (1896). assetkit img2glb guided from Commons 'Jeanne d'Arc Paris Paul Dubois.jpg'. Height 4.1 m (to the sword tip) estimated. at.y = pedestal top (G 0.5 + 3.0)",
+    "asset": "jeanne-augustin-equestre"
+  },
+  {
     "id": "komitas-statue2",
     "name": "Monument à Komitas: the bronze statue",
     "attach": {

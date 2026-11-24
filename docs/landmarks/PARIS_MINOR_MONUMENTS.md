@@ -451,4 +451,5 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - La Porte de l'Enfer: skipped: inside the Musée Rodin's paid garden, not visible from the street (Rodin museum already in museums.json)
 - Au Gagne Petit (no Wikidata id): skipped: a figure on a shop front (avenue de l'Opéra), façade sculpture, which this list leaves out on purpose
 - Folie Titon: skipped: nothing of the 18th-century folie stands (the Réveillon factory quadrilatère is long gone); only commemorative plaques at 31 bis rue de Montreuil mark the 1783 balloon flight, so there is no building to model (OSM has just a historic=monument node, Q3074958)
+- Statue équestre de Jeanne D'Arc (place Saint-Augustin): modelled (minor/monument-jeanne-arc-saint-augustin.ts, monuments.json; Modly pieces: jeanne-augustin-equestre, published; the batch asset statue-equestre-de-jeanne-d-arc was never placed, left unused)
 - Fontaine de Neptune (no Wikidata id): the same fountain as fontaine de la rue Cherche-Midi (Q16928450), skipped above (closed courtyard of 86 rue du Cherche-Midi)

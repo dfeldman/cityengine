@@ -70,6 +70,7 @@ import { fontaineDejean } from './minor/fontaine-dejean.ts'
 import { fontaineGavarni } from './minor/fontaine-gavarni.ts'
 import { fontaineSaussure } from './minor/fontaine-saussure.ts'
 import { fontaineBassinSoufflot } from './minor/fontaine-bassin-soufflot.ts'
+import { monumentJeanneArcSaintAugustin } from './minor/monument-jeanne-arc-saint-augustin.ts'
 import { fontaineAvril } from './minor/fontaine-avril.ts'
 import { fontainePlaceFrancoisIer } from './minor/fontaine-place-francois-ier.ts'
 import { fontainePorteDoree } from './minor/fontaine-porte-doree.ts'
@@ -200,6 +201,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineTheatreFrancaisFluviale,
   monumentSoldatsNoirs,
   monumentKomitas,
+  monumentJeanneArcSaintAugustin,
   tombeDragon,
   memorialAf447,
   memorialCharmElCheikh,
