@@ -2030,6 +2030,25 @@
     "note": "Charles-Auguste Lebourg's standing bronze Jeanne d'Arc (OSM node 6414628699, tourism=artwork) on a round limestone pedestal on the traffic island where the boulevard Saint-Marcel meets the rue Jeanne-d'Arc, 13e; no OSM building under it. Pedestal ~3.1 m tall, ~2.2 m across the foot, statue ~2.1 m (banner to ~2.6 m): all scaled by eye off one 2008 Commons photo (Statuaire de Jeanne dArc, Boulevard Saint-Marcel), not surveyed. The face toward the viewer in that photo is taken as south; unverified. Figure: Modly jeanne-marcel-statue (paris-statues.json)."
   },
   {
+    "name": "Monument à Barye",
+    "procedural": "monumentBarye",
+    "osm": [
+      "way/92316091"
+    ],
+    "kind": "monument",
+    "lat": 48.850073,
+    "lon": 2.359679,
+    "rotateDeg": 0,
+    "size": [
+      7.6,
+      5.8
+    ],
+    "height": 5.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Stanislas Bernier's 1894 monument to Antoine-Louis Barye (Q18168658), square Barye, eastern tip of the Île Saint-Louis. Placed on OSM way 92316091 (7.6 x 5.9 m outline, claimed). Stone pylon ~2.1 x 1.6 x 4.4 m on a two-step platform with the portrait medallion on the front, the bronze Theseus and Bienor group on top, a seated stone allegory with a child on a rock block (right), a bronze lion on a ledge (left). All dimensions and the front facing south are estimated off Commons photos, not surveyed. Sculpture: Modly barye-theseus, barye-seated, barye-lion (paris-statues.json)."
+  },
+  {
     "name": "Monument à Komitas",
     "procedural": "monumentKomitas",
     "kind": "monument",
