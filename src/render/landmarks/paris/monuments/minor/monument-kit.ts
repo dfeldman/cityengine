@@ -358,3 +358,18 @@ export function tiltedSlab(out: MeshBuilder, ax: number, ay: number, az: number,
   face([C(0, 0, 0), C(1, 0, 0), C(1, 0, 1), C(0, 0, 1)], neg(w), shade(o.c, 0.7))
   face([C(0, 1, 0), C(1, 1, 0), C(1, 1, 1), C(0, 1, 1)], w, shade(o.c, 0.7))
 }
+
+/** A stadium (oblong with semicircular ends) plan, anticlockwise: long axis x, half-length `hl` over all, half-width `hw`, centred (cx, cz); `n` segments per end. */
+export function stadiumPlan(cx: number, cz: number, hl: number, hw: number, n = 10): P2[] {
+  const o: P2[] = []
+  const s = hl - hw
+  for (let i = 0; i <= n; i++) {
+    const a = -Math.PI / 2 + (i / n) * Math.PI
+    o.push({ x: cx + s + Math.cos(a) * hw, z: cz + Math.sin(a) * hw })
+  }
+  for (let i = 0; i <= n; i++) {
+    const a = Math.PI / 2 + (i / n) * Math.PI
+    o.push({ x: cx - s + Math.cos(a) * hw, z: cz + Math.sin(a) * hw })
+  }
+  return o
+}

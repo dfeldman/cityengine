@@ -2260,6 +2260,26 @@
     "note": "The wall fountain of the Jardin des plantes' north entrance (Q137838758, 40 rue Geoffroy-Saint-Hilaire): the retaining wall of Rohault de Fleury's 1834 reservoir, a stone wall with a round arch over a brick cul-de-four, a round basin before it and a lion-head spout; the two bronze lions of Jacquemart (1857/1860) stand on its top corners (Modly jdp-lion, placed from paris-statues.json). OSM way 97183056 (building named Fontaine aux Lions, 8.5 m front edge) claimed; origin = middle of its SE front edge (the polygon lies NW of it), front bearing 151. Wall 8.3 m wide, ~3.3 m high with cornice, arch 3.7 m wide, basin 4.6 m across: scaled off Commons photographs (bollards ~1 m), not surveyed."
   },
   {
+    "name": "Fontaine des Arts-et-Métiers",
+    "procedural": "fontaineArtsMetiers",
+    "kind": "fountain",
+    "osm": [
+      "way/30612728",
+      "way/30612729"
+    ],
+    "lat": 48.867162,
+    "lon": 2.353824,
+    "rotateDeg": 21,
+    "size": [
+      23,
+      36
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Davioud's two oblong Jura-stone basins of 1860 in the square Émile-Chautemps facing the Conservatoire (Q3076248; OSM water ways 30612728 north, 30612729 south: 20.4 x 6.6 m ovals, 27.7 m apart, axes at bearing 111 deg, measured). Each has a stone plinth with a round pedestal, cup and vasque with a jet, and two seated bronzes back to back: Agriculture and Travail (Gumery, north), Mercure and Euterpe (Ottin, south), all four Modly models (arts-metiers-*). Plinth, pedestal and wall heights are by eye off Commons photos against the figures (~1 m), not surveyed."
+  },
+  {
     "name": "Fontaine du square Tolstoï",
     "procedural": "fontaineSquareTolstoi",
     "kind": "fountain",

@@ -1530,6 +1530,38 @@
     "note": "The poet's wrapped recumbent figure on the slab, head toward the stele. assetkit img2glb guided, 2nd attempt, from Commons 'Baudelaire's grave 01.jpg' (the 1st, from the 2024 front photo, made a standing hooded man). Height 0.4 m estimated; bearing 270 is a guess to lay it along z."
   },
   {
+    "id": "arts-metiers-travail",
+    "name": "Fontaine des Arts-et-Métiers: le Travail (Gumery, north basin, west end)",
+    "asset": "arts-metiers-travail",
+    "attach": { "to": "Fontaine des Arts-et-Métiers", "at": [-1.45, 1.45, 13.85], "bearing": 335 },
+    "range": 250,
+    "note": "Seated bronze allegory on the plinth ledge. assetkit img2glb guided from Commons photos; published in assetkit-models-paris"
+  },
+  {
+    "id": "arts-metiers-agriculture",
+    "name": "Fontaine des Arts-et-Métiers: l'Agriculture (Gumery, north basin, east end)",
+    "asset": "arts-metiers-agriculture",
+    "attach": { "to": "Fontaine des Arts-et-Métiers", "at": [1.45, 1.45, 13.85], "bearing": 25 },
+    "range": 250,
+    "note": "Seated bronze allegory on the plinth ledge. assetkit img2glb guided from Commons photos; published in assetkit-models-paris"
+  },
+  {
+    "id": "arts-metiers-euterpe",
+    "name": "Fontaine des Arts-et-Métiers: Euterpe (Ottin, south basin, west end)",
+    "asset": "arts-metiers-euterpe",
+    "attach": { "to": "Fontaine des Arts-et-Métiers", "at": [-1.45, 1.45, -13.85], "bearing": 205 },
+    "range": 250,
+    "note": "Seated bronze allegory on the plinth ledge. assetkit img2glb guided from Commons photos; published in assetkit-models-paris"
+  },
+  {
+    "id": "arts-metiers-mercure",
+    "name": "Fontaine des Arts-et-Métiers: Mercure (Ottin, south basin, east end)",
+    "asset": "arts-metiers-travail",
+    "attach": { "to": "Fontaine des Arts-et-Métiers", "at": [1.45, 1.45, -13.85], "bearing": 155 },
+    "range": 250,
+    "note": "STAND-IN: Mercure (Ottin) wants his own Modly model, but three attempts from the only usable Commons photo failed (the cut-out kept the pedestal and falling water), so the seated male bronze of le Travail is reused here."
+  },
+  {
     "id": "tolstoi-femme-enfant",
     "name": "Fontaine du square Tolstoï: Femme et enfant (Cassou, 1934)",
     "asset": "tolstoi-femme-enfant",
