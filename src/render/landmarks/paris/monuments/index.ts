@@ -140,22 +140,13 @@ import { fontaineMarcheCarmes } from './minor/fontaine-marche-carmes.ts'
 import { fontainePastorale } from './minor/fontaine-pastorale.ts'
 import { fontaineSquareTolstoi } from './minor/fontaine-square-tolstoi.ts'
 import { danseFontaineEmergente } from './minor/danse-fontaine-emergente.ts'
-  fontaineTrevise,
-  fontaineBaqueIssy,
-  fontaineEugeneDelacroix,
-  fontainePolypores,
 import { fusillesCascade } from './minor/fusilles-cascade.ts'
-  fontaineEugeneDelacroix,
 import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
 import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
 import { fontaineChateauEau } from './fontaine-chateau-eau.ts'
 import { fontaineLionsNubie } from './minor/fontaine-lions-nubie.ts'
-  fontaineRoseauxArgent,
-  fontaineTrevise,
 import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
-  fontaineBaqueIssy,
 import { hautesHerbes } from './hautes-herbes.ts'
-  fontainePolypores,
 import { murDesFederes } from './minor/mur-des-federes.ts'
 import { araigneeRouge, domeImax, lePouce } from './la-defense.ts'
 import { cnitVault } from '../defense-famous/cnitVault.ts'
@@ -327,4 +318,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   troneColumnSaintLouis,
   valDeGrace,
   washingtonIena,
+  fontaineTrevise,
+  fontaineEugeneDelacroix,
+  fontaineBaqueIssy,
+  fontainePolypores,
 }
