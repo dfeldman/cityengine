@@ -2081,6 +2081,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Monument aux combattants de la campagne de Tunisie",
+    "procedural": "monumentCampagneTunisie",
+    "kind": "monument",
+    "lat": 48.8625,
+    "lon": 2.3045,
+    "rotateDeg": 0,
+    "size": [
+      6.2,
+      3
+    ],
+    "height": 1.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q23639904, the 1942-1943 Tunisian campaign memorial on the Cours Albert-1er lawn (Wikidata coordinates; no OSM building or memorial way there, nothing to claim). Three stepped pink-granite slabs at the west end with an inscription and a bronze portrait medallion, a long green table to the east, a green railing on the south and east: read off the Commons 2015 photos (Monument en souvenir de la campagne de Tunisie, 1-6); overall ~5.6 x 2.2 m and ~1 m high are estimated against the hedge behind, not surveyed; the east-west axis and steps at the west are read from the photos' view north across the lawn. No figures, so no Modly piece."
+  },
+  {
     "name": "L'Arc (Urs Fischer, parvis Alan-Turing)",
     "procedural": "sculptureLArc",
     "kind": "monument",
