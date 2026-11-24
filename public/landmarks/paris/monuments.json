@@ -1893,6 +1893,25 @@
     "note": "Q95124483, 2018 (Phileas architecture): a 280 m long, 1.30 m high wall of dark blue steel plates carrying the 94,415 names, along the boulevard de Ménilmontant face of the Père-Lachaise wall (OSM way 13859706 runs (4181,-34)-(4099,221) in game metres, 283 m, which matches). Placed along that wall 0.9 m street-side of the OSM line, front facing WSW toward the boulevard (Wikidata's point sits on the wall, 33 m from the carriageway). Length and height are written figures; plate pitch, lettering and plinth guessed; the wall climbs 3.9 m north (baked ground at the wall, tools/at-point.ts) so the builder steps each plate up by the RISE table. No sculpture, so no Modly piece."
   },
   {
+    "name": "Monument aux Volontaires américains",
+    "procedural": "monumentVolontairesAmericains",
+    "kind": "monument",
+    "osm": [
+      "way/79657347"
+    ],
+    "lat": 48.86775,
+    "lon": 2.29503,
+    "rotateDeg": 270,
+    "size": [
+      5.7,
+      3.5
+    ],
+    "height": 5.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Jean Boucher's monument of 1923 to the American volunteers of 1914-17 (Q19945167) in the square Thomas-Jefferson, on OSM building way 79657347 (3.5 x 5.7 m, long side N-S; claimed so it is not drawn as a generic block). Procedural: two steps, a figure ledge, a pale limestone block with plinth course, cornice, carved wing rows and an attic plinth. Front facing west (toward the square's long axis and the steps' side) is a guess, turned to 270 after a first shot showed the east face is the plain back. Heights scaled by eye off Commons photos, not surveyed. Modly: volontaires-groupe (the relief group, French and American soldiers clasping hands before a winged Victory) and volontaires-soldat (the bronze soldier with raised arm)."
+  },
+  {
     "name": "Monument à Komitas",
     "procedural": "monumentKomitas",
     "kind": "monument",

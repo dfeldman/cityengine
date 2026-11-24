@@ -870,6 +870,22 @@
     "asset": "soldatsnoirs-femme"
   },
   {
+    "id": "volontaires-groupe",
+    "name": "Monument aux Volontaires américains: the relief group",
+    "asset": "volontaires-groupe",
+    "attach": { "to": "Monument aux Volontaires américains", "at": [0, 1.08, -2.15], "bearing": 0 },
+    "range": 250,
+    "note": "The French and American soldiers clasping hands in front of the winged Victory, high relief on the front of the block (Boucher, 1923); made as a free-standing group set against the face. assetkit img2glb guided trellis2 (2nd attempt; the default model lost the centre figure) from two Commons photos ('Monument aux volontaire américains.jpg', '... juin 2014.jpeg'); the draped centre is rough. Published in assetkit-models-paris."
+  },
+  {
+    "id": "volontaires-soldat",
+    "name": "Monument aux Volontaires américains: the bronze soldier",
+    "asset": "volontaires-soldat",
+    "attach": { "to": "Monument aux Volontaires américains", "at": [0, 4.13, 0], "bearing": 0 },
+    "range": 250,
+    "note": "Jean Boucher's bronze American soldier, right arm raised with his cap, on the attic plinth of the monument (1923). assetkit img2glb guided from Commons 'Monument aux volontaires américains juin 2014.jpeg'; published in assetkit-models-paris. Height 2.4 m estimated (raised arm included)."
+  },
+  {
     "id": "komitas-statue2",
     "name": "Monument à Komitas: the bronze statue",
     "attach": {
