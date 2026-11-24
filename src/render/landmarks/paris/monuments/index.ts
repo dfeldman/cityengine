@@ -85,6 +85,7 @@ import { fontaineSquareLamartine } from './minor/fontaine-square-lamartine.ts'
 import { tombeDantan } from './minor/tombe-dantan.ts'
 import { monumentMortsPereLachaise } from './minor/monument-morts-pere-lachaise.ts'
 import { tombeHeloiseAbelard } from './minor/tombe-heloise-abelard.ts'
+import { monumentTravailleursMunicipaux } from './minor/monument-travailleurs-municipaux.ts'
 import { tombeGaspardMonge } from './minor/tombe-gaspard-monge.ts'
 import { monumentAssistancePublique } from './minor/monument-assistance-publique.ts'
 import { tombeCenotapheBaudelaire } from './minor/tombe-cenotaphe-baudelaire.ts'
@@ -181,6 +182,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   tombeLaFontaineMoliere,
   monumentBazarCharite,
   monumentVictimesJuin,
+  monumentTravailleursMunicipaux,
   monumentAssistancePublique,
   tombeCenotapheBaudelaire,
   fontaineMiroirEau,

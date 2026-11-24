@@ -2328,6 +2328,22 @@
     "note": "Père-Lachaise division 25: the matching tombs of La Fontaine (Q3323381) and Molière (Q3323385, the Wikidata item the monuments list calls La Fontaine; both items share 48.86111, 2.39489), moved here together in 1817. Two pale-limestone trough sarcophagi on stepped plinths with a tilted plaque on a corbel at one end and a dark bronze panel on the side, behind a low iron rail. No OSM building way. Sizes by eye from Commons photos (Tombe la fontaine.jpg; Paris Père Lachaise La Fontaine et Molière.JPG); side-by-side spacing, orientation (plaque end toward -z) and the fence are guesses, the fox-and-stork relief is not visible in the photos so is not drawn. No Modly pieces: nothing in the round."
   },
   {
+    "name": "Monument aux travailleurs municipaux (Père-Lachaise)",
+    "procedural": "monumentTravailleursMunicipaux",
+    "kind": "monument",
+    "lat": 48.86271,
+    "lon": 2.39276,
+    "rotateDeg": 0,
+    "size": [
+      4.8,
+      4.8
+    ],
+    "height": 6.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q15156042, Père-Lachaise, on Wikidata's point at a bend of the cemetery road; no OSM building way (only tomb/memorial nodes nearby). The City of Paris's memorial to its employees killed on duty (sewermen, street cleaners, gardeners). Form read off Commons Monument aux travailleurs municipaux 06, 10, 12, 14, 19: pale-limestone obelisk with name panels on a pedestal, panelled double door on the base, two piers with medallions, low curved wall behind, and a veiled seated mourner with a palm (Modly piece travailleurs-figure). Dimensions by eye (Wikidata says ~5 m tall), facing direction is a guess."
+  },
+  {
     "name": "Monument aux victimes de Juin (Père-Lachaise)",
     "procedural": "monumentVictimesJuin",
     "kind": "monument",

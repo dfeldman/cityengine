@@ -1624,6 +1624,14 @@
     "attach": { "to": "Monument aux morts pour la France en opérations extérieures", "at": [0, 0.95, 0], "bearing": 0 },
     "range": 250,
     "note": "The bronze group of six soldiers bearing an invisible coffin, on the plaza's middle. assetkit img2glb guided from Commons 'Monument aux morts pour la France en OPEX - Statue - Paris 15 - Aout 2022 - Djiril5c - 3.jpg'; published in assetkit-models-paris"
+  },
+  {
+    "id": "travailleurs-figure",
+    "name": "Monument aux travailleurs municipaux: veiled mourner",
+    "asset": "travailleurs-figure",
+    "attach": { "to": "Monument aux travailleurs municipaux (Père-Lachaise)", "at": [0, 1.25, -0.5], "bearing": 180 },
+    "range": 250,
+    "note": "The veiled seated woman with a palm against the pedestal front. assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux travailleurs municipaux 10.jpg'; height 1.5 m by eye."
   }
 
 
