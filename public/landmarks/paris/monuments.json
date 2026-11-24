@@ -2708,6 +2708,19 @@
     "note": "Q96099792 (labelled the Charm el-Cheikh crash memorial; Wikidata/OSM call the stele Vol 708 West Caribbean, Q2320123), Père-Lachaise division 77, avenue circulaire; placed on the OSM memorial node. Form off Commons Père-Lachaise - Division 72/77 - Vol 708 West Caribbean 01/02: round grey granite disc, black polished centre slab (map of Martinique, title, list of crashes) between two taller grey slabs of names angled inward, small stump at left, dark plaque let into the disc. All procedural, no sculpture. Dimensions by eye (disc ~2.5 m across), not surveyed; facing direction is a guess. No OSM building way to claim."
   },
   {
+    "name": "Fontaine Alfred-Stevens",
+    "procedural": "fontaineAlfredStevens",
+    "kind": "fountain",
+    "lat": 48.88174,
+    "lon": 2.33856,
+    "front": 104,
+    "size": [10.4, 4],
+    "height": 8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Disused wall fountain closing the dead-end rue Alfred-Stevens (9e, no Wikidata id; fr.wikipedia rue Alfred-Stevens: 'fontaine Alfred-Stevens, aujourd'hui désaffectée, qui ferme la rue'). A freestanding screen wall across the street end: yellow footing, cream upper wall with two pink panels, central pavilion with arched blank panel and segmental pediment, console with mascaron over a niche and a round-fronted basin. Form and proportions read off Commons P1150212/P1150214 Paris IX fontaine Alfred-Stevens rwk against the ~10 m street width; not surveyed. Mascaron is the Modly piece alfred-stevens-mascaron. Facing = along the street toward the boulevard (OSM way 23762997 bearing ~104)."
+  },
+  {
     "name": "Fontaine Saussure (square Paul-Paray)",
     "procedural": "fontaineSaussure",
     "kind": "fountain",

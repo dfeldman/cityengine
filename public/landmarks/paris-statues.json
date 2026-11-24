@@ -374,6 +374,14 @@
     "asset": "moliere-muse"
   },
   {
+    "id": "alfred-stevens-mascaron",
+    "name": "Fontaine Alfred-Stevens: mascaron",
+    "attach": { "to": "Fontaine Alfred-Stevens", "at": [0, 2.0, 0.65], "bearing": 180 },
+    "range": 120,
+    "note": "The carved mascaron with its console that spouts into the basin. assetkit img2glb guided from Commons P1150214 Paris IX fontaine Alfred-Stevens detail rwk.jpg; published in assetkit-models-paris",
+    "asset": "alfred-stevens-mascaron"
+  },
+  {
     "id": "gaillon-dauphin",
     "name": "Fontaine Gaillon: putto on a dolphin",
     "attach": {

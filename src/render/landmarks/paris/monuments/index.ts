@@ -48,6 +48,7 @@ import { fontaineRoseauxArgent } from './minor/fontaine-roseaux-argent.ts'
 import { fontaineBaqueIssy } from './minor/fontaine-baque-issy.ts'
 import { fontainePolypores } from './minor/fontaine-polypores.ts'
 import { fontaineLabyrinthe } from './minor/fontaine-labyrinthe.ts'
+import { fontaineAlfredStevens } from './minor/fontaine-alfred-stevens.ts'
 import { fontainePaix } from './minor/fontaine-paix.ts'
 import { fontaineMoliere } from './minor/fontaine-moliere.ts'
 import { fontaineGaillon } from './minor/fontaine-gaillon.ts'
@@ -169,6 +170,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineReine,
   fontaineDuCoq,
   fontaineGaillon,
+  fontaineAlfredStevens,
   fontainePreSaintGervais,
   steleGenocideTutsi,
   fontaineVertBois,
