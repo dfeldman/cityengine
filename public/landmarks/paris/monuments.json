@@ -1241,6 +1241,22 @@
     "note": "Visconti's cast-iron fountain of 1844 in the square Louvois (Wikidata Q3076038; sculptor Klagmann): octagonal basin (OSM way 26277959, ~6 m flat to centre, a sloppy polygon so +-1 m; vertices near east, hence front 25), square pedestal with four tritons on dolphins, a wide bowl with zodiac band and mascarons, an upper pedestal, the four river goddesses back to back under the top bowl. Basin from OSM; bowls, pedestals and the ~8.5 m total height scaled off Commons photographs against the 3.6 m goddess group, not surveyed. Goddesses and top bowl are a Modly model (statues manifest: louvois-group), the tritons likewise (louvois-triton)."
   },
   {
+    "name": "Fontaine Baqué (rue Prudent-Jassedé, Issy)",
+    "procedural": "fontaineBaqueIssy",
+    "kind": "fountain",
+    "lat": 48.82324,
+    "lon": 2.2752,
+    "rotateDeg": 0,
+    "size": [
+      8,
+      7
+    ],
+    "height": 3.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Pierre Baqué's 1992 fountain (stainless steel and masonry) in the stepped pedestrian rue Prudent-Jassedé, Issy-les-Moulineaux; OSM node 4962502455 'Fontaine'. Round brick-lipped basin with leaning steel spikes, three tall banded-drum columns (two carrying a lintel), four stumps. Only two Commons photos (from above): sizes and the layout's orientation are guessed; no Modly pieces (the steel spikes are procedural)."
+  },
+  {
     "name": "Fontaine des Polypores (rue Modigliani)",
     "procedural": "fontainePolypores",
     "kind": "fountain",
