@@ -2376,6 +2376,22 @@
     "note": "Q15156018, division 6, chemin de Lesseps, on Wikidata's point (no OSM building way there; the nearby OSM points are trees and tombs). The City of Paris's stele for the dead of June 1832. Form read off Commons Division 6 - Monument aux victimes de juin 01 and 02: rock-faced plinth, tall panel with three name columns under three wreath medallions, dedication band, die with a shallow wreath-and-eagle relief over the motto, cornice with low gable; the relief is shallow so no Modly piece. All dimensions (panel ~1.6 m wide, total ~4.6 m) and the facing direction are estimated by eye, not surveyed."
   },
   {
+    "name": "Monument funéraire de Legru et Lhenoret (Père-Lachaise)",
+    "procedural": "tombeLegruLhenoret",
+    "kind": "tomb",
+    "lat": 48.8601,
+    "lon": 2.38933,
+    "rotateDeg": 0,
+    "size": [
+      3.3,
+      1.44
+    ],
+    "height": 2.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3323384, division 1, just north of the cemetery's south entrance (no OSM building way there). Form read off Commons Division 1 - Legru et Lhenoret 01/03 and Tombe Legru-Lhenoret 03: low two-step plinth, a round drum at each end carrying a seated bronze woman (Modly pieces legru-femme-gauche / legru-femme-droite), pale scrolled stele with an oval medallion between them, sloped slab in front, a bronze chain slung between the drums. Sizes (stele ~1.0 m wide, ~1.9 m high, plinth ~3.3 m) and the facing (south, towards the entrance) are estimated by eye, not surveyed."
+  },
+  {
     "name": "Monument de l'Assistance publique (Père-Lachaise)",
     "procedural": "monumentAssistancePublique",
     "kind": "monument",

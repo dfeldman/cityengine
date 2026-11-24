@@ -1640,6 +1640,22 @@
     "attach": { "to": "Monument aux travailleurs municipaux (Père-Lachaise)", "at": [0, 1.25, -0.5], "bearing": 180 },
     "range": 250,
     "note": "The veiled seated woman with a palm against the pedestal front. assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux travailleurs municipaux 10.jpg'; height 1.5 m by eye."
+  },
+  {
+    "id": "legru-femme-gauche",
+    "name": "Legru-Lhenoret tomb: woman holding the chain (left)",
+    "asset": "legru-femme-gauche",
+    "attach": { "to": "Monument funéraire de Legru et Lhenoret (Père-Lachaise)", "at": [-0.98, 1.38, 0], "bearing": 180 },
+    "range": 250,
+    "note": "Seated bronze woman on the left drum reaching to the stele, chain in her hands. assetkit img2glb guided from Commons 'Père-Lachaise - Division 1 - Legru et Lhenoret 03.jpg'; height 1.25 m by eye."
+  },
+  {
+    "id": "legru-femme-droite",
+    "name": "Legru-Lhenoret tomb: woman reaching out (right)",
+    "asset": "legru-femme-droite",
+    "attach": { "to": "Monument funéraire de Legru et Lhenoret (Père-Lachaise)", "at": [0.98, 1.38, 0], "bearing": 180 },
+    "range": 250,
+    "note": "Seated bronze woman on the right drum, arm stretched to the stele. assetkit img2glb guided from Commons 'Père-Lachaise - Division 1 - Legru et Lhenoret 03.jpg'; height 1.25 m by eye."
   }
 
 
