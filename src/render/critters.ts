@@ -191,7 +191,7 @@ export class Critters {
     const r = rng(seed)
     const x0 = cx * CELL, z0 = cz * CELL, out: Group[] = []
     const edges = this.city.edgeObjectsNear(x0 + CELL / 2, z0 + CELL / 2).filter((e) => {
-      if (e.onModel) return false
+      if ((e as { onModel?: boolean }).onModel) return false // (onModel lands with the birds work's package.ts)
       const q = e.points
       for (let i = 0; i + 1 < q.length; i += 2) if (q[i] >= x0 && q[i] < x0 + CELL && q[i + 1] >= z0 && q[i + 1] < z0 + CELL) return true
       return false
