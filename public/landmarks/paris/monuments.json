@@ -2081,6 +2081,23 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Le Kiosque des Noctambules (bouche de métro Palais-Royal)",
+    "procedural": "kiosqueNoctambules",
+    "kind": "monument",
+    "lat": 48.863124,
+    "lon": 2.3360857,
+    "rotateDeg": 0,
+    "size": [
+      7.6,
+      4
+    ],
+    "height": 3.6,
+    "sign": false,
+    "coversRaised": true,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Othoniel's 2000 entrance to Palais-Royal-Musée du Louvre métro, placed on OSM node 681677352 (railway=subway_entrance, place Colette), which coversRaised suppresses as the generic entrance. Two beaded cupolas (r 1.55 and 1.15 m) on aluminium wire over a stair 5.6 x 2 m, a beaded arch between; every size, colour mix and the stair's axis (east-west) are guessed by eye, not surveyed, no photo read."
+  },
+  {
     "name": "Tombe du Dragon (Père-Lachaise)",
     "procedural": "tombeDragon",
     "kind": "monument",
