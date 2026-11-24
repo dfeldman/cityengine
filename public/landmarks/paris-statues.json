@@ -938,6 +938,14 @@
     "asset": "jeanne-augustin-equestre"
   },
   {
+    "id": "barye-theseus",
+    "name": "Monument à Barye: Theseus and the centaur Bienor",
+    "attach": { "to": "Monument à Barye", "at": [0, 5.35, 0], "bearing": 180 },
+    "range": 250,
+    "note": "Bernier's 1894 monument carries a cast of Barye's Theseus fighting the centaur Bienor (bronze, top of the pylon). assetkit img2glb guided from Commons 'Monument à Barye 2012.jpg'. Height 1.7 m estimated; at.y = G 0.5 + builder topY 4.85.",
+    "asset": "barye-theseus"
+  },
+  {
     "id": "komitas-statue2",
     "name": "Monument à Komitas: the bronze statue",
     "attach": {
