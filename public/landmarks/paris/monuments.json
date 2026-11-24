@@ -3024,5 +3024,404 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Q96601813: tomb of the general, mayor of Neuilly 1888-1901, in the cimetière ancien de Neuilly, 1903, Paul Friesé (architect) and Pierre Granet (sculptor). A pale sarcophagus with a cross, a square pillar carrying a bust, two urn posts, a kerb; the mourning girl and the bust are Modly pieces. Read off one Commons photo (Tombe Général Henrion-Berthier); all sizes estimated against the planting, not surveyed; orientation (back to the cemetery wall, facing south-east) is a guess."
+  },
+  {
+    "name": "Versailles: Bassin de la Pyramide",
+    "procedural": "versaillesPyramide",
+    "kind": "fountain",
+    "osm": [
+      "way/124531640"
+    ],
+    "lat": 48.806485,
+    "lon": 2.121067,
+    "front": 180,
+    "size": [
+      21,
+      21
+    ],
+    "height": 9,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Girardon's Pyramide (1670s): OSM ring ~10 m radius (the bake draws the water). Stone rim, stepped island, four tritons' plinths with stand-in figures (Modly queued), then four marble bowls on stems with small stand-in crayfish and dolphins. Radii and heights are guessed off Commons photos (tiers 3.7/2.8/2.0/1.3 m); tritons attach at PYRAMIDE_TRITONS in versailles/minor/north-axis.ts."
+  },
+  {
+    "name": "Versailles: Bain des Nymphes de Diane",
+    "procedural": "versaillesNymphes",
+    "kind": "fountain",
+    "osm": [
+      "way/23707418"
+    ],
+    "lat": 48.806678,
+    "lon": 2.121192,
+    "front": 180,
+    "size": [
+      16,
+      16
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "OSM ring: a 13.8 m square turned 21.7 degrees off north, in line with the Allée d'Eau (water by the bake). Stone rim and, on the far (north-east) side, a retaining wall with Girardon's lead relief (1668-70) in a moulded frame; the relief here is a stand-in of seven low figures (Modly relief queued). Which side holds the wall is a guess."
+  },
+  {
+    "name": "Versailles: Allée d'Eau, les Marmousets",
+    "procedural": "versaillesAlleeEau",
+    "kind": "fountain",
+    "lat": 48.807485,
+    "lon": 2.121672,
+    "front": 180,
+    "size": [
+      125,
+      160
+    ],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The 22 small white-marble basins of the Allée d'Eau (OSM way/124531622, 132 m, bearing 22.05 degrees), at the positions of the 22 'Trois ...' fountain nodes (7 pairs on the walk, 4 pairs fanning out at its foot); each a rim, its own water sheet (no OSM water here), a drum and three bronze stand-in children (Modly queued). Way not claimed (it is the walk)."
+  },
+  {
+    "name": "Versailles: Bassin du Dragon",
+    "procedural": "versaillesDragon",
+    "kind": "fountain",
+    "osm": [
+      "way/124531629"
+    ],
+    "lat": 48.808169,
+    "lon": 2.122099,
+    "front": 180,
+    "size": [
+      42,
+      42
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "OSM ring ~20 m radius (water and jets by the bake). Stone curb, a stepped central plinth with a gilt stand-in dragon, four plinths with stand-in dolphin-and-putti groups on a 8.5 m ring (guessed). The Dragon group is queued for Modly."
+  },
+  {
+    "name": "Versailles: Bassin de Latone",
+    "procedural": "bassinDeLatone",
+    "kind": "fountain",
+    "osm": [
+      "way/13645589"
+    ],
+    "lat": 48.80551,
+    "lon": 2.11769,
+    "rotateDeg": 0,
+    "size": [
+      29.0,
+      37.7
+    ],
+    "height": 8.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Parterre de Latone (Marsy brothers 1668-70). Rim on OSM's way/13645589 outline (29 x 38 m measured); four concentric marble tiers (radii 9.6/7.0/4.7/2.9 m, ~1 m each, by eye), a rocky pedestal, gilded-lead frogs/lizards as lumps on the lips, and a plain stand-in for Latona and her children (FIGURE.on in the builder; remove when the Modly group guided-queue.md lands). Water and jets belong to the bake and versailles-fountains.py."
+  },
+  {
+    "name": "Versailles: Bassin des Lézards (south)",
+    "procedural": "bassinDesLezards",
+    "kind": "fountain",
+    "osm": [
+      "way/40409120"
+    ],
+    "lat": 48.805343,
+    "lon": 2.116737,
+    "rotateDeg": 0,
+    "size": [
+      14.6,
+      14.6
+    ],
+    "height": 1.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Marsy 1666-70. Low coping on OSM's ring (~14.5 m across, wall height tag 0.1), a central rock with lead lizards, frogs and turtles as lumps (by eye)."
+  },
+  {
+    "name": "Versailles: Bassin des Lézards (north)",
+    "procedural": "bassinDesLezards",
+    "kind": "fountain",
+    "osm": [
+      "way/40409122"
+    ],
+    "lat": 48.806048,
+    "lon": 2.117166,
+    "rotateDeg": 0,
+    "size": [
+      14.6,
+      14.6
+    ],
+    "height": 1.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Twin of the south Bassin des Lézards, on its own OSM ring (way/40409122)."
+  },
+  {
+    "name": "Versailles: Bassin de Bacchus (Automne)",
+    "procedural": "versaillesBassinBacchus",
+    "kind": "fountain",
+    "lat": 48.804246,
+    "lon": 2.115231,
+    "rotateDeg": 0,
+    "size": [20.4, 20.4],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887459. Curb round OSM's octagonal water (way/124531625, centred on it), rock island, stand-in for Marsy's gilded-lead Bacchus group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de Cérès (Été)",
+    "procedural": "versaillesBassinCeres",
+    "kind": "fountain",
+    "lat": 48.807508,
+    "lon": 2.117242,
+    "rotateDeg": 0,
+    "size": [20.4, 20.4],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887473. Curb round OSM's octagonal water (way/124531626, centred on it), rock island, stand-in for Regnaudin's gilded-lead Cérès group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de Flore (Printemps)",
+    "procedural": "versaillesBassinFlore",
+    "kind": "fountain",
+    "lat": 48.808191,
+    "lon": 2.114681,
+    "rotateDeg": 0,
+    "size": [16.6, 16.6],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887478. Curb round OSM's round water (way/124531627, centred on it), rock island, stand-in for Tuby's gilded-lead Flore group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de Saturne (Hiver)",
+    "procedural": "versaillesBassinSaturne",
+    "kind": "fountain",
+    "lat": 48.804941,
+    "lon": 2.112691,
+    "rotateDeg": 0,
+    "size": [17.6, 17.6],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887493. Curb round OSM's round water (way/95475805, centred on it), rock island, stand-in for Girardon's gilded-lead Saturne group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin d'Apollon",
+    "procedural": "versaillesBassinApollon",
+    "kind": "fountain",
+    "lat": 48.807352,
+    "lon": 2.110707,
+    "rotateDeg": 0,
+    "size": [80, 114],
+    "height": 6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887454. Stone curb round OSM's quatrefoil water (relation 6356905: outer way/124531624, island way/224643672; centred on the water's bbox), a kerbed island, a stone drum and a STAND-IN for Tuby's gilded-lead Apollo chariot group (four horses, tritons, dolphins; Modly queued, attach APOLLON_STAND_AT in versailles/minor/bassin-apollon.ts). Curb size and group proportions guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin du Miroir",
+    "procedural": "versaillesBassinMiroir",
+    "kind": "fountain",
+    "lat": 48.804080,
+    "lon": 2.112551,
+    "rotateDeg": 0,
+    "size": [78, 96],
+    "height": 1,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Stone curb round OSM's way/5013340 water (centred on its bbox; the spike in the mapped ring is kept), on the Ile royale beside the Tapis vert; no structure on the lawn itself. Vases skipped. Curb size guessed; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Parterre d'Eau, bassin du Midi",
+    "procedural": "versaillesParterreMidi",
+    "lat": 48.804851,
+    "lon": 2.119021,
+    "rotateDeg": 0,
+    "sign": false,
+    "size": [86, 56],
+    "height": 3,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Parterre d'Eau's south basin (OSM 'Bassin du Midi'; the two great basins of the terrace are the Midi and the Nord): a 2.3 m white-marble coping round the scalloped water, a raised lip, and twelve pedestals on it at the OSM artwork nodes within 1.5 m of the edge (Loire, Rhone, Saone and nymph-and-children groups, incl. 'Trois enfants tenant une guirlande' node/6468279376). Bronzes are plain stand-ins; Modly river figure queued (guided-queue.md). Coping width, heights and pedestal sizes are estimated from photos, not surveyed (versailles/minor/parterre-basins.ts, CFG)."
+  },
+  {
+    "name": "Versailles: Parterre d'Eau, bassin du Nord",
+    "procedural": "versaillesParterreNord",
+    "lat": 48.805367,
+    "lon": 2.119344,
+    "rotateDeg": 0,
+    "sign": false,
+    "size": [86, 56],
+    "height": 3,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Parterre d'Eau's north basin (OSM 'Bassin du Nord'): coping and twelve pedestals at the OSM artwork nodes on its edge (Seine, Marne, Garonne, Dordogne, Loiret and the nymph-and-children groups). Same builder family as the Midi (versailles/minor/parterre-basins.ts); bronzes are stand-ins until the Modly models; sizes estimated."
+  },
+  {
+    "name": "Versailles: Fontaine du Point du Jour",
+    "procedural": "versaillesPointDuJour",
+    "lat": 48.804667,
+    "lon": 2.118185,
+    "rotateDeg": 0,
+    "sign": false,
+    "size": [19, 17],
+    "height": 3,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine du Point du Jour, west end of the Parterre d'Eau (Q15940457): a marble coping round the small basin and two pedestals at the OSM nodes for Houzeau's 'Tigre terrassant un ours' and the 'Limier terrassant un cerf'. Beasts are stand-ins; Modly pieces queued. Sizes estimated."
+  },
+  {
+    "name": "Versailles: Fontaine du Soir",
+    "procedural": "versaillesFontaineDuSoir",
+    "lat": 48.805896,
+    "lon": 2.118931,
+    "rotateDeg": 0,
+    "sign": false,
+    "size": [19, 17],
+    "height": 3,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine du Soir, Parterre du Nord end of the Parterre d'Eau (Q38298874): a marble coping and two pedestals at the OSM sculpture nodes for the lion groups (lion and boar, lion and wolf). Stand-ins; Modly piece queued. Sizes estimated."
+  },
+  {
+    "name": "Versailles: Bassin des Couronnes (est)",
+    "procedural": "versaillesCouronnes",
+    "lat": 48.806096,
+    "lon": 2.12149,
+    "rotateDeg": 0,
+    "sign": false,
+    "size": [16, 16],
+    "height": 3,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "One of the two Bassins des Couronnes in the Parterre du Nord (OSM way/92619334): a stone curb round the round basin and three low plinths in the water, with a plain stand-in for each triton/siren group holding a crown (Modly group queued). Positions of the plinths are guessed; sizes estimated."
+  },
+  {
+    "name": "Versailles: Bassin des Couronnes (ouest)",
+    "procedural": "versaillesCouronnesOuest",
+    "lat": 48.806401,
+    "lon": 2.120355,
+    "rotateDeg": 0,
+    "sign": false,
+    "size": [15, 15],
+    "height": 3,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The second Bassin des Couronnes (OSM way/92619350), same builder as the other (versailles/minor/parterre-basins.ts)."
+  },
+  {
+    "name": "Versailles: Bosquet du Théâtre d'Eau (Belles Danses)",
+    "procedural": "versaillesTheatreEau",
+    "kind": "fountain",
+    "lat": 48.807875,
+    "lon": 2.118903,
+    "rotateDeg": 0,
+    "size": [34, 28],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Kerb round OSM's pool (way/501237487, the water's node mean) and Jean-Michel Othoniel's three Belles Danses (2015) as strands of gilded beads spiralling up ~4 m; shapes and sizes guessed from photos, positions in the pool guessed. The bake draws the water; the bosquet's lawn tiers are not modelled."
+  },
+  {
+    "name": "Versailles: Bassin des Enfants dorés",
+    "procedural": "versaillesEnfantsDores",
+    "kind": "fountain",
+    "lat": 48.808237,
+    "lon": 2.118098,
+    "rotateDeg": 0,
+    "size": [16, 17],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Kerb round OSM's basin (way/124536153) and eight stand-in gilded children on the kerb (the real lead putti are queued for Modly). Sizes guessed; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bosquet des Trois Fontaines",
+    "procedural": "versaillesTroisFontaines",
+    "kind": "fountain",
+    "lat": 48.807273,
+    "lon": 2.120642,
+    "rotateDeg": 0,
+    "size": [34, 62],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Kerbs round OSM's three stepped basins (ways 92619280, 92619249, 193502508), each at the ground height under it. Heights and widths guessed; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin des Dômes",
+    "procedural": "versaillesBassinDomes",
+    "kind": "fountain",
+    "lat": 48.807507,
+    "lon": 2.113466,
+    "rotateDeg": 0,
+    "size": [22, 22],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "White marble balustrade (plinth, balusters, rail, urned piers at the corners) round OSM's basin (way/124531671). Heights guessed from photos; the bake draws the water; the bas-reliefs are not modelled."
+  },
+  {
+    "name": "Versailles: Bassin de l'Obélisque",
+    "procedural": "versaillesObeliscBasin",
+    "kind": "fountain",
+    "lat": 48.809424,
+    "lon": 2.113728,
+    "rotateDeg": 0,
+    "size": [40, 44],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Stepped kerb round OSM's long octagonal basin (way/124531638); the sheaf of jets is the bake's. Step sizes guessed."
+  },
+  {
+    "name": "Versailles: Bassin du Dauphin",
+    "procedural": "versaillesBassinDauphin",
+    "kind": "fountain",
+    "lat": 48.805405,
+    "lon": 2.114462,
+    "rotateDeg": 0,
+    "size": [14, 14],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Plain kerb round OSM's basin (way/95475829). Guessed heights; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de la France triomphante",
+    "procedural": "versaillesBassinFranceTriomphante",
+    "kind": "fountain",
+    "lat": 48.807705,
+    "lon": 2.122499,
+    "rotateDeg": 0,
+    "size": [12, 12],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Kerb round OSM's basin (way/92619237) of the Bosquet de l'Arc de Triomphe and a rock stand-in for Tuby's group. Guessed; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Fontaine Saint-Louis",
+    "procedural": "versaillesFontaineSaintLouis",
+    "kind": "fountain",
+    "osm": ["way/74631328"],
+    "lat": 48.798982,
+    "lon": 2.12425,
+    "front": 180,
+    "size": [7.3, 4.6],
+    "height": 5.8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine Saint-Louis, place Saint-Louis (Q22923944, Mérimée PA00087690, c.1750-75, Hubert Pluyette): a rusticated stone niche pavilion against the corner of a house, facing the place (south). Footprint from OSM way/74631328 (7.3 x 4.6 m); a semicircular-headed niche with its trough in the middle bay, lower wings, a lead roof falling to the house; the niche back is 3.7 m in from the front, well clear of the house wall. Heights and proportions estimated from one Commons photograph, not surveyed."
+  },
+  {
+    "name": "Versailles: Fontaine des Quatre Pavés",
+    "procedural": "versaillesFontaineQuatrePaves",
+    "kind": "fountain",
+    "osm": ["way/74626210"],
+    "lat": 48.796539,
+    "lon": 2.126547,
+    "front": 336,
+    "size": [8.6, 8.5],
+    "height": 7.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Fontaine des Quatre Pavés, carré Saint-Louis (Q22923943, Mérimée PA00087689, MH 1908): a free-standing square pavilion (OSM way/74626210 'Maison de l'Habitat Ancien', 8.6 x 8.5 m, claimed so no generic block is drawn) of banded ashlar with a big arched niche flanked by carved frieze panels, a window in each upper bay, a deep cornice and flat roof. Which face is the front is a guess (north-north-west, toward the rue d'Anjou); the other sides carry windows only. Heights from one Commons photograph against people, not surveyed."
   }
 ]
