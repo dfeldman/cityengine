@@ -1744,6 +1744,14 @@
     "attach": { "to": "Monument à Eugène Delacroix (Jardin du Luxembourg)", "at": [0, 1.82, 0.2], "bearing": 180 },
     "range": 250,
     "note": "Dalou's three bronze figures on the plinth at the pedestal's foot; img2glb guided from Commons photographs; 2.6 m by eye."
+  },
+  {
+    "id": "trevise-graces",
+    "name": "Fontaine de Trévise: the three women",
+    "asset": "trevise-graces",
+    "attach": { "to": "Fontaine de Trévise (cité de Trévise)", "at": [0, 2.93, 0], "bearing": 0 },
+    "range": 250,
+    "note": "Three draped women standing back to back on the die, holding the small upper bowl; assetkit img2glb guided from Commons 'Fontaine Trévise - Paris IX (FR75) - 2025-04-21 - 4 and 6.jpg'; 1.45 m by eye."
   }
 
 

@@ -2754,5 +2754,18 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "OSM way 1255942976 (amenity=fountain, name Fontaine Saussure, no Wikidata id): wide shallow pale-tile pool in the square Paul-Paray between rue de Saussure and rue des Tapisseries, 17e. Outline is OSM's; the form (straight tiled back wall, central stone ring, pale blocks, copper-brown lumps) is read off ONE Commons photo (Fontaine Rue Tapisseries 2021-08-21 1). Which side the wall is on, and all heights, are guesses. Ring is procedural (a plain hoop), no Modly piece. The game-supplied point (z 3125) is ~19 m north of the real fountain."
+  },
+  {
+    "name": "Fontaine de Trévise (cité de Trévise)",
+    "procedural": "fontaineTrevise",
+    "kind": "fountain",
+    "lat": 48.87491,
+    "lon": 2.34684,
+    "rotateDeg": 0,
+    "size": [4, 4],
+    "height": 5.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Cast-iron fountain in the railed central garden of the cité de Trévise, 9e (no Wikidata id; fr.wikipedia cité de Trévise: a private gated close of 1838-40, opened to traffic in the 1950s, public since 1983, so it can be ridden into). No pool: a square plinth, scrolled pedestal, wide shallow bowl, a die and three women standing together holding a small upper bowl. Form read off six Commons photos (Fontaine Trévise - Paris IX (FR75) - 2025-04-21 - 1..6); dimensions (~5 m total, bowl ~3.2 m across, women ~1.45 m) estimated against the building behind, not surveyed. The garden is OSM way 83432479 (leisure=garden, ~14x18 m), the fountain at its centre; no building way under it. The three women with the top bowl are a Modly model (statues manifest: trevise-graces)."
   }
 ]
