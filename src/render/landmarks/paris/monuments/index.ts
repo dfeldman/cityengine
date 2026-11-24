@@ -85,6 +85,7 @@ import { fontaineJardinVillemin } from './minor/fontaine-jardin-villemin.ts'
 import { monumentMemorialAlgerie } from './minor/monument-memorial-algerie.ts'
 import { monumentCorpsExpeditionnaireRusse } from './minor/monument-corps-expeditionnaire-russe.ts'
 import { monumentMortsParisiensWw1 } from './minor/monument-morts-parisiens-ww1.ts'
+import { tombeAbbeDelille } from './minor/tombe-abbe-delille.ts'
 import { obelisquePyramideVincennes } from './minor/obelisque-pyramide-vincennes.ts'
 import { monumentDefenseursBelfort } from './minor/monument-defenseurs-belfort.ts'
 import { fontaineSquareLamartine } from './minor/fontaine-square-lamartine.ts'
@@ -196,6 +197,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentBazarCharite,
   monumentVictimesJuin,
   tombeLegruLhenoret,
+  tombeAbbeDelille,
   monumentTravailleursMunicipaux,
   monumentSiegeParis1870,
   monumentDefenseursBelfort,

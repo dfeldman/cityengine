@@ -2424,6 +2424,25 @@
     "note": "Q15156018, division 6, chemin de Lesseps, on Wikidata's point (no OSM building way there; the nearby OSM points are trees and tombs). The City of Paris's stele for the dead of June 1832. Form read off Commons Division 6 - Monument aux victimes de juin 01 and 02: rock-faced plinth, tall panel with three name columns under three wreath medallions, dedication band, die with a shallow wreath-and-eagle relief over the motto, cornice with low gable; the relief is shallow so no Modly piece. All dimensions (panel ~1.6 m wide, total ~4.6 m) and the facing direction are estimated by eye, not surveyed."
   },
   {
+    "name": "Tombe de l'abbé Delille (Père-Lachaise)",
+    "procedural": "tombeAbbeDelille",
+    "kind": "tomb",
+    "osm": [
+      "way/1210797358"
+    ],
+    "lat": 48.86049,
+    "lon": 2.39293,
+    "rotateDeg": 243,
+    "size": [
+      3.7,
+      3
+    ],
+    "height": 2.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3323390, division 11, avenue Delille. Claims OSM building way 1210797358 (3.66 x 2.98 m, gabled, the tomb's plot). Form from Commons 'Delille div. 11 Père-Lachaise' and Guyot's drawing: a plain stone tomb house with cornice, low gable and blank front panel in a railed plot on a low kerb. Sizes (tomb 2.4 x 1.4 m, ~1.9 m high) by eye; front faces the avenue (bearing ~63, a guess). No sculpture."
+  },
+  {
     "name": "Monument funéraire de Legru et Lhenoret (Père-Lachaise)",
     "procedural": "tombeLegruLhenoret",
     "kind": "tomb",
