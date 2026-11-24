@@ -1225,6 +1225,22 @@
     "note": "Jantzen and Theimer's mastaba-like tower of 1989 in the Champ de Mars (Wikidata Q3323344). Placed on the centre of OSM way 369434380 (a 14.5 m square podium turned 45 deg; osmium, 2026-11-22), the front (−z) the south-west face toward the Champ de Mars at bearing 225, the bronze door on the back. Podium from OSM; the tower (~7.2 m wide, 12 m tall), the two bronze obelisks (~14.5 m) and the figures' places are scaled off one wide photograph against the figures, not surveyed; the seals, triangle and sundial are stand-ins. The figures are Modly models (statues manifest: droits-group, droits-toga)."
   },
   {
+    "name": "Fontaine aux roseaux d'argent",
+    "procedural": "fontaineRoseauxArgent",
+    "kind": "fountain",
+    "lat": 48.850895,
+    "lon": 2.344367,
+    "size": [
+      15,
+      15
+    ],
+    "height": 2.8,
+    "front": 287,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Brigitte Nahon's c. 2000 fountain (Wikidata Q18146923) in the rose garden of the Jardin médiéval du musée de Cluny (public, outdoors): a narrow timber-edged channel ~12 m long ending in a clump of twisting stainless-steel reeds with glass beads, two glass light wells and a plaque at the near end. The Wikidata point is rounded (48.851, 2.344); placed on the wooden-edged band an IGN ortho shows in the garden's east bed, running WNW-ESE, the reeds at the WNW end (front = 287): the channel's exact spot and which end the reeds are on are guessed. Dimensions scaled off two Commons photos against the planks (+-30 %). The thin steel blades are procedural ribbons (too thin for Modly); no OSM way is mapped for it."
+  },
+  {
     "name": "Fontaine Louvois",
     "procedural": "fontaineLouvois",
     "kind": "fountain",
