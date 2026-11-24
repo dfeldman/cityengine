@@ -2492,5 +2492,21 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Q3323421, Léon Baudry (1934; fr.wikipedia: a stone wall ~10 m long with a high-relief frieze of the Congo-Nile column, 6 French soldiers and 6 tirailleurs in profile, a route map behind, and a bronze shield naming Marchand and his officers at the right end; on avenue Daumesnil facing the Palais de la Porte Dorée). Claims OSM memorial way 62819232 (12.47 x 1.94 m, long axis bearing 299 deg). Procedural: two steps, wall, cornice, map panel, shield and inscription; the frieze is blocky stand-in figures (the only Commons photo, Monument_Mission_Marchand_Paris_1.jpg, shows just the shield end, so nothing to give Modly). Heights and wall thickness scaled by eye off that photo; the front facing NNE (rotateDeg 151) is inferred from the palace opposite."
+  },
+  {
+    "name": "Monument aux soldats morts pendant le siège de Paris 1870-1871 (Père-Lachaise)",
+    "procedural": "monumentSiegeParis1870",
+    "kind": "monument",
+    "lat": 48.86339,
+    "lon": 2.39082,
+    "rotateDeg": 0,
+    "size": [
+      8.4,
+      3.2
+    ],
+    "height": 4.8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q94696967, Père-Lachaise division 72 (Wikidata label is the Buzenval national-guards memorial, 1877). Form read off Commons Père-Lachaise - Division 72 - Siège de Paris 02, Bataille de Buzenval 01 and the Buzenval 2020 photo: grey-limestone pylon with dentil cornice, hipped cap, wreath roundel, dedication and carved palm; low wing walls with garland-and-rosette frieze; iron railing across the front. All relief is shallow, so no Modly piece. Dimensions by eye against the ~1.1 m railing, not surveyed; facing direction is a guess. No OSM building way."
   }
 ]
