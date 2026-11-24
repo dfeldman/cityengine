@@ -2097,6 +2097,25 @@
     "note": "Q23639904, the 1942-1943 Tunisian campaign memorial on the Cours Albert-1er lawn (Wikidata coordinates; no OSM building or memorial way there, nothing to claim). Three stepped pink-granite slabs at the west end with an inscription and a bronze portrait medallion, a long green table to the east, a green railing on the south and east: read off the Commons 2015 photos (Monument en souvenir de la campagne de Tunisie, 1-6); overall ~5.6 x 2.2 m and ~1 m high are estimated against the hedge behind, not surveyed; the east-west axis and steps at the west are read from the photos' view north across the lawn. No figures, so no Modly piece."
   },
   {
+    "name": "Monument à Adolphe Alphand (avenue Foch)",
+    "procedural": "monumentAlphand",
+    "osm": [
+      "way/80376667"
+    ],
+    "kind": "monument",
+    "lat": 48.873676,
+    "lon": 2.289861,
+    "rotateDeg": 0,
+    "size": [
+      12,
+      7.2
+    ],
+    "height": 5.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Dalou's 1899 white-marble monument to Adolphe Alphand on the north lawn of the avenue Foch (16e): a shallow concave wall with relief-carved workmen between two end piers, a stepped pedestal with inscription and the city's arms, Alphand standing on top. Claims OSM way 80376667 (cadastre outline of the monument, ~12 x 6 m, concave front toward the south, centred 48.873676 2.289861; the way is also tagged Q23593222 and the avenue Foch axis lies south, so it faces south, rotateDeg 0). Dimensions scaled by eye off Commons 'Monument Alphand (2).jpg' (wall ~9 m chord, ~2.1 m high, piers ~2.5 m, pedestal ~2.5 m, Alphand ~2.2 m); heights are guessed. The relief figures are procedural blades; Alphand and the left group are Modly pieces alphand-figure, alphand-left (paris-statues.json); the right-hand group is a blocky procedural stand-in after three failed Modly attempts (cut-out slabs)."
+  },
+  {
     "name": "L'Arc (Urs Fischer, parvis Alan-Turing)",
     "procedural": "sculptureLArc",
     "kind": "monument",
