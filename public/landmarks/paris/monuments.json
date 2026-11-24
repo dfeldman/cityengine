@@ -2973,5 +2973,37 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Q96117713, a grey granite grave in Père-Lachaise division 82 with a pale cream cross laid flat on the slab and a copper plaque, read off one Commons photo (Division 82 - Résistance 01). Grave ~2.2 x 1.1 m, ~0.6 m high and cross ~1.2 x 1.2 m are estimated against neighbouring tombs, not surveyed; its orientation is a guess; no OSM building there. Placed on the row's coordinates."
+  },
+  {
+    "name": "Monument de Solidarność (esplanade des Invalides)",
+    "procedural": "monumentSolidarnosc",
+    "kind": "monument",
+    "lat": 48.85887,
+    "lon": 2.31446,
+    "rotateDeg": 0,
+    "size": [
+      3.8,
+      3.4
+    ],
+    "height": 0.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q112865915: a low pale limestone slab on the ground at the north end of the rue de Constantine side of the esplanade, a square notch for a plane tree, a dark bronze plaque set flat with a red and white edge and a small Polish flag mark. Read off Commons 'Monument de Solidarność (1)'; slab ~3.4 x 3.0 m, 0.45 m high and the notch are estimated against benches and the tree, not surveyed; orientation and which corner holds the tree are guesses. No OSM way for it; placed on the row's coordinates."
+  },
+  {
+    "name": "Monument du Général Henrion-Bertier (cimetière ancien de Neuilly)",
+    "procedural": "monumentHenrionBertier",
+    "kind": "monument",
+    "lat": 48.88110,
+    "lon": 2.26522,
+    "rotateDeg": 0,
+    "size": [
+      3.4,
+      2.4
+    ],
+    "height": 2.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q96601813: tomb of the general, mayor of Neuilly 1888-1901, in the cimetière ancien de Neuilly, 1903, Paul Friesé (architect) and Pierre Granet (sculptor). A pale sarcophagus with a cross, a square pillar carrying a bust, two urn posts, a kerb; the mourning girl and the bust are Modly pieces. Read off one Commons photo (Tombe Général Henrion-Berthier); all sizes estimated against the planting, not surveyed; orientation (back to the cemetery wall, facing south-east) is a guess."
   }
 ]

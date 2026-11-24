@@ -70,6 +70,8 @@ import { fontaineDejean } from './minor/fontaine-dejean.ts'
 import { fontaineGavarni } from './minor/fontaine-gavarni.ts'
 import { fontaineSaussure } from './minor/fontaine-saussure.ts'
 import { pavillonPetiteMairie } from './minor/pavillon-petite-mairie.ts'
+import { monumentSolidarnosc } from './minor/monument-solidarnosc.ts'
+import { monumentHenrionBertier } from './minor/monument-henrion-bertier.ts'
 import { monumentAlphand } from './minor/monument-alphand.ts'
 import { monumentCampagneTunisie } from './minor/monument-campagne-tunisie.ts'
 import { sculptureLArc } from './minor/sculpture-l-arc.ts'
@@ -218,6 +220,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentJeanneArcSaintAugustin,
   monumentJeanneArcSaintMarcel,
   monumentJeunesResistants,
+  monumentSolidarnosc,
+  monumentHenrionBertier,
   tombeDragon,
   sculptureLArc,
   kiosqueNoctambules,
