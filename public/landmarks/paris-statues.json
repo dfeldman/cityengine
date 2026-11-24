@@ -822,6 +822,22 @@
     "note": "Crauk's bronze group on its slab. assetkit img2glb guided from Commons 'Fontaine du bassin Soufflot Paris 6e' with the background painted out by hand"
   },
   {
+    "id": "ephresienne-figure",
+    "name": "Fontaine Ephrésienne: seated figure",
+    "asset": "ephresienne-figure",
+    "attach": {
+      "to": "Fontaine Ephrésienne",
+      "at": [
+        0,
+        3.6,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Jeanclos's seated bronze figure on top of the column. assetkit img2glb guided from the one Commons photo 'La fontaine Jeanclos, Paris, stalingrad'"
+  },
+  {
     "id": "gavarni-statue",
     "name": "Monument à Gavarni: the statue of Gavarni",
     "attach": {

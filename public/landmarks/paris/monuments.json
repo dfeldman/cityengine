@@ -1630,6 +1630,25 @@
     "note": "Denys Puech and Henri Guillaume's monument of 1904 (Q3076026, OSM node tagged amenity=fountain) in the middle of the place Saint-Georges roundabout: iron railing, round basin, square plinth with a bronze mask on two sides, a stout round column carrying Gavarni's carnival figures in high relief, frieze, cornice and the half-length statue of Gavarni. Dimensions scaled by eye off Commons photos (Monument Gavarni 2021-06-27 -3/-5, Fontaine Gavarni Paris 9e) against the railing (~1 m); about 7.4 m in all, not surveyed. Which way the front faces is a guess (-z). No OSM building ways under it."
   },
   {
+    "name": "Fontaine Ephrésienne",
+    "procedural": "fontaineEphresienne",
+    "kind": "fountain",
+    "osm": [
+      "way/1056726015"
+    ],
+    "lat": 48.884116,
+    "lon": 2.369251,
+    "rotateDeg": 0,
+    "size": [
+      3.6,
+      3.6
+    ],
+    "height": 4.8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Georges Jeanclos's fountain of 1989 (with Bernard Huet) on the place de la Bataille-de-Stalingrad (OSM way 1056726015, a ~3 m ring, no Wikidata): a low round basin, a bronze column studded with bosses and a seated bronze figure on top. One Commons photo (La fontaine Jeanclos, Paris, stalingrad); column and figure heights read off it, guessed."
+  },
+  {
     "name": "Fontaine du Bassin Soufflot",
     "procedural": "fontaineBassinSoufflot",
     "kind": "fountain",
