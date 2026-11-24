@@ -2312,6 +2312,22 @@
     "note": "Père-Lachaise division 25: the matching tombs of La Fontaine (Q3323381) and Molière (Q3323385, the Wikidata item the monuments list calls La Fontaine; both items share 48.86111, 2.39489), moved here together in 1817. Two pale-limestone trough sarcophagi on stepped plinths with a tilted plaque on a corbel at one end and a dark bronze panel on the side, behind a low iron rail. No OSM building way. Sizes by eye from Commons photos (Tombe la fontaine.jpg; Paris Père Lachaise La Fontaine et Molière.JPG); side-by-side spacing, orientation (plaque end toward -z) and the fence are guesses, the fox-and-stork relief is not visible in the photos so is not drawn. No Modly pieces: nothing in the round."
   },
   {
+    "name": "Monument aux victimes de Juin (Père-Lachaise)",
+    "procedural": "monumentVictimesJuin",
+    "kind": "monument",
+    "lat": 48.859084,
+    "lon": 2.393726,
+    "rotateDeg": 0,
+    "size": [
+      3.2,
+      3
+    ],
+    "height": 4.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q15156018, division 6, chemin de Lesseps, on Wikidata's point (no OSM building way there; the nearby OSM points are trees and tombs). The City of Paris's stele for the dead of June 1832. Form read off Commons Division 6 - Monument aux victimes de juin 01 and 02: rock-faced plinth, tall panel with three name columns under three wreath medallions, dedication band, die with a shallow wreath-and-eagle relief over the motto, cornice with low gable; the relief is shallow so no Modly piece. All dimensions (panel ~1.6 m wide, total ~4.6 m) and the facing direction are estimated by eye, not surveyed."
+  },
+  {
     "name": "Monument aux victimes non reconnues de l'incendie du Bazar de la Charité",
     "procedural": "monumentBazarCharite",
     "kind": "monument",
