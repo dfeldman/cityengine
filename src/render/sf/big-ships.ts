@@ -38,6 +38,8 @@ export const BIG_SIZES = {
 } as const
 /** the carrier's flight deck: its width, how far it overhangs, how many aircraft are parked */
 const CARRIER = { deck: 77, angle: 0.16, aircraft: 22, deckY: 19 }
+/** how far deck markings stand proud of a flight deck: enough to stay clear of it in depth from far off */
+const MARK_LIFT = 0.12
 const AMPHIB = { deckY: 17, aircraft: 12 }
 
 /** a flat slab over a convex polygon (x, z), from y0 to y1, its top in `top` and its edge in `side` */
@@ -138,8 +140,8 @@ export function destroyer(out: MeshBuilder, L: number = BIG_SIZES.destroyer.L, B
   }
   // the aft deckhouse and the hangar, the flight deck behind them with its markings
   box(out, 0, free + 3, -L * 0.29, B * 0.4, 3, L * 0.06, HAZE, F)
-  box(out, 0, free + 0.03, -h + L * 0.08, B * 0.3, 0.02, L * 0.05, MARK_W, F)
-  box(out, 0, free + 0.05, -h + L * 0.08, B * 0.27, 0.02, L * 0.045, NAVY_DECK, F)
+  box(out, 0, free + MARK_LIFT, -h + L * 0.08, B * 0.3, 0.02, L * 0.05, MARK_W, F)
+  box(out, 0, free + MARK_LIFT + 0.05, -h + L * 0.08, B * 0.27, 0.02, L * 0.045, NAVY_DECK, F)
   for (const sd of [-1, 1]) railing(out, sd * (B / 2 - 0.3), free, -h + 2, h - L * 0.25, HAZE)
 }
 
@@ -167,16 +169,16 @@ export function carrier(out: MeshBuilder, L: number = BIG_SIZES.carrier.L, B: nu
   hull(out, L, B, -1, y - 3, shape, HAZE, null, 0, null)
   box(out, 0, 0, -6, B / 2 - 0.05, 0.6, h - L * 0.22, DARK, F)
   // the hangar's sides up to the flight deck, and the flight deck: wider than the hull, its angled deck out to port
-  box(out, 0, y - 2.5, -4, B / 2 + 4, 2.5, h - 30, HAZE, F)
+  box(out, 0, y - 3.1, -4, B / 2 + 4, 1.9, h - 30, HAZE, F)  // tops out under the deck slab, not in its plane
   const W = CARRIER.deck / 2
   const deck: [number, number][] = [[B / 2 + 8, -h + 2], [B / 2 + 10, h - 70], [8, h], [-12, h], [-B / 2 - 1, h - 60],
     [-W, -h + 120], [-W + 4, -h + 30], [-B / 2 - 2, -h + 2]]
   slab(out, deck, y - 1.2, y, FLIGHT_DECK, HAZE)
   // the markings: the angled deck's centreline and edges, the bow cats' tracks
   const ang = CARRIER.angle
-  for (let t = -120; t < 120; t += 14) box(out, -12 - Math.sin(ang) * t, y + 0.03, -h + 150 + Math.cos(ang) * t, 0.4, 0.02, 4, MARK_W, F)
-  for (const sd of [-1, 1]) box(out, sd * 5 + 2, y + 0.03, h - 50, 0.3, 0.02, 40, MARK_Y, F)
-  box(out, -12 + Math.sin(ang) * 0, y + 0.02, -h + 40, 12, 0.02, 0.4, MARK_W, F)
+  for (let t = -120; t < 120; t += 14) box(out, -12 - Math.sin(ang) * t, y + MARK_LIFT, -h + 150 + Math.cos(ang) * t, 0.4, 0.02, 4, MARK_W, F)
+  for (const sd of [-1, 1]) box(out, sd * 5 + 2, y + MARK_LIFT, h - 50, 0.3, 0.02, 40, MARK_Y, F)
+  box(out, -12, y + MARK_LIFT, -h + 40, 12, 0.02, 0.4, MARK_W, F)
   // the island to starboard: block, bridge glass, mast and radars
   const ix = B / 2 + 4, iz = -L * 0.12
   box(out, ix, y + 9, iz, 4, 9, 14, HAZE, F)
@@ -209,10 +211,10 @@ export function amphib(out: MeshBuilder, L: number = BIG_SIZES.amphib.L, B: numb
   // the landing spots down the port side
   for (let k = 0; k < 6; k++) {
     const z = h - 40 - k * 36
-    box(out, -W + 9, y + 0.03, z, 7, 0.02, 0.25, MARK_W, F)
-    box(out, -W + 9, y + 0.03, z, 0.25, 0.02, 7, MARK_W, F)
+    box(out, -W + 9, y + MARK_LIFT, z, 7, 0.02, 0.25, MARK_W, F)
+    box(out, -W + 9, y + MARK_LIFT, z, 0.25, 0.02, 7, MARK_W, F)
   }
-  box(out, 2, y + 0.02, 0, 0.3, 0.02, h - 12, MARK_Y, F)
+  box(out, 2, y + MARK_LIFT, 0, 0.3, 0.02, h - 12, MARK_Y, F)
   // the island
   const ix = W - 5, iz = -L * 0.02
   box(out, ix, y + 8, iz, 4.2, 8, 22, HAZE, F)

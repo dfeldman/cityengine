@@ -13,7 +13,7 @@ import { enceinteVincennes } from './enceinte.ts'
 import { hippodromeVincennes } from './hippodrome.ts'
 import { kagyuDzong, pagodeVincennes } from './pagode.ts'
 import { pavillonsVincennes } from './pavillons.ts'
-import { grandeSerre } from './zoo.ts'
+import { belvedere, grandeSerre, grandeVoliere } from './zoo.ts'
 
 export const PARIS_VINCENNES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   chapelleVincennes,
@@ -21,6 +21,8 @@ export const PARIS_VINCENNES: Record<string, (out: MeshBuilder, fit: Fit) => voi
   enceinteVincennes,
   espaceDelta,
   grandeSerre,
+  grandeVoliere,
+  belvedere,
   hippodromeVincennes,
   kagyuDzong,
   pagodeVincennes,

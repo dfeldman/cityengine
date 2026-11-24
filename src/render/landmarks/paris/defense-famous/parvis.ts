@@ -206,3 +206,69 @@ export function parvisPaving(out: MeshBuilder, fit: Fit): void {
   }
   for (const z of PAVE_STRIPS_Z) if (Math.abs(z) < fit.hz) alongX(z - PAVE_STRIP_W / 2, z + PAVE_STRIP_W / 2, PAVE_STRIP)
 }
+
+/**
+ * The west parvis as one granite field (owner, 2026-11-16: "patchy grass peeks through everywhere ruining the massive concrete
+ * expanse look"). The bake lays OSM's scrub beds and level-mixed pedestrian areas here as green and pink patches; the real
+ * plaza between the Arche, CNIT, Quatre Temps and Cœur Défense is unbroken pale granite. A box entry of its own, cut into
+ * SLAB_STEP pieces that follow the ground; a piece over steps or a kerb (PAVE_MAX_RISE) is left out. Joint lines every
+ * SLAB_GRID in both directions, darker bands every PAVE_BAND_EVERY like the axis paving.
+ */
+const SLAB_STEP = 3
+const SLAB_LIFT = 0.25
+const SLAB_SAMPLE = 10
+const SLAB_PCT = 0.9
+const SLAB_MAX_SLOPE = 0.015
+const SLAB_GRID = 18
+const SLAB_STONE: Rgb = [0.4, 0.37, 0.34]
+const SLAB_JOINT: Rgb = [0.3, 0.27, 0.25]
+const SLAB_JOINT_W = 0.5
+const SLAB_TONE = 0.03
+
+export function parvisSlab(out: MeshBuilder, fit: Fit): void {
+  // one plane fitted to the ground (least squares on a SLAB_SAMPLE grid), lifted to the SLAB_PCT share of the samples:
+  // the deck's ground wobbles ~2 m and a slab that followed it broke up into holes with the bake's lawns poking through
+  const g = fit.groundAt
+  const pts: [number, number, number][] = []
+  for (let x = -fit.hx; x <= fit.hx; x += SLAB_SAMPLE) for (let z = -fit.hz; z <= fit.hz; z += SLAB_SAMPLE) {
+    const v = g ? g(x, z) : NaN
+    if (Number.isFinite(v)) pts.push([x, z, v])
+  }
+  let a = 0, b = 0, c0 = fit.grade ?? 0
+  if (pts.length > 10) {
+    let sxx = 0, szz = 0, sxz = 0, sx = 0, sz = 0, sy = 0, sxy = 0, szy = 0
+    for (const [x, z, v] of pts) { sxx += x * x; szz += z * z; sxz += x * z; sx += x; sz += z; sy += v; sxy += x * v; szy += z * v }
+    const n = pts.length, mx = sx / n, mz = sz / n, my = sy / n
+    const cxx = sxx / n - mx * mx, czz = szz / n - mz * mz, cxz = sxz / n - mx * mz, cxy = sxy / n - mx * my, czy = szy / n - mz * my
+    const det = cxx * czz - cxz * cxz || 1
+    a = (cxy * czz - czy * cxz) / det; b = (czy * cxx - cxy * cxz) / det; c0 = my - a * mx - b * mz
+    a = Math.max(-SLAB_MAX_SLOPE, Math.min(SLAB_MAX_SLOPE, a)); b = Math.max(-SLAB_MAX_SLOPE, Math.min(SLAB_MAX_SLOPE, b)); c0 = my - a * mx - b * mz
+    const res = pts.map(([x, z, v]) => v - (a * x + b * z + c0)).sort((p, q) => p - q)
+    c0 += res[Math.min(res.length - 1, Math.floor(res.length * SLAB_PCT))]
+  }
+  // follows the ground the rider stands on: a fitted plane lifted over the deck's bumps buried riders and NPCs in it
+  // (owner, 2026-11-16); SLAB_LIFT clears the bake's lawns, which stand ~0.1 m proud of that ground
+  const y = (x: number, z: number): number => { const v = g ? g(x, z) : NaN; return (Number.isFinite(v) ? v : a * x + b * z + c0) + SLAB_LIFT }
+  const quad = (x0: number, z0: number, x1: number, z1: number, c: Rgb, dy = 0): void => {
+    const p: [number, number][] = [[x0, z1], [x1, z1], [x1, z0], [x0, z0]]
+    const ys = p.map(([x, z]) => y(x, z) + dy)
+    out.quad(p.map(([x, z], i) => [x, ys[i], z]) as [number, number, number][], [0, 1, 0], UV, c, FIXED)
+  }
+  for (let x = -fit.hx; x < fit.hx; x += SLAB_STEP) for (let z = -fit.hz; z < fit.hz; z += SLAB_STEP) {
+    const t = 1 + (Math.sin(x * 0.37 + z * 0.71) * 0.5) * SLAB_TONE * 2
+    quad(x, z, Math.min(x + SLAB_STEP, fit.hx), Math.min(z + SLAB_STEP, fit.hz), [SLAB_STONE[0] * t, SLAB_STONE[1] * t, SLAB_STONE[2] * t])
+  }
+  const lines = (along: 'x' | 'z'): void => {
+    const span = along === 'x' ? fit.hz : fit.hx, run = along === 'x' ? fit.hx : fit.hz
+    for (let k = -span + SLAB_GRID, n = 1; k < span; k += SLAB_GRID, n++) {
+      const band = n % Math.round(PAVE_BAND_EVERY / SLAB_GRID) === 0
+      const w = band ? PAVE_BAND_W : SLAB_JOINT_W, c = band ? PAVE_BAND : SLAB_JOINT
+      for (let u = -run; u < run; u += SLAB_STEP) {
+        const u1 = Math.min(u + SLAB_STEP, run)
+        if (along === 'x') quad(u, k - w / 2, u1, k + w / 2, c, 0.02)
+        else quad(k - w / 2, u, k + w / 2, u1, c, 0.02)
+      }
+    }
+  }
+  lines('x'); lines('z')
+}

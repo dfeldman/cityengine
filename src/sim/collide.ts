@@ -27,6 +27,8 @@ export const SIZE = {
   bus: { len: 12, wid: 2.55 },
   bike: { len: 1.8, wid: 0.6 },
   runner: { len: 0.6, wid: 0.6 },
+  /** a walked dog (render/dog-walks.ts): a lab's length, a little wider than its body */
+  dog: { len: 0.9, wid: 0.4 },
 } as const
 
 export const boxOf = (x: number, z: number, heading: number, size: { len: number; wid: number }): Box =>
@@ -57,6 +59,27 @@ export function overlap(a: Box, b: Box): boolean {
   const [bfx, bfz, brx, brz] = axes(b)
   for (const [ax, az] of [[afx, afz], [arx, arz], [bfx, bfz], [brx, brz]] as const) {
     if (Math.abs(dx * ax + dz * az) > radius(a, ax, az) + radius(b, ax, az)) return false
+  }
+  return true
+}
+
+/** the lead's thickness for a hit, metres: a bike's bars catch a lead a hand's width off its centre line */
+export const LEAD_REACH = 0.08
+
+/** Does a ground segment a→b (a dog's lead) cross box `b`, grown by `reach`? Tested in the box's own frame (slab clip). */
+export function segmentHits(b: Box, ax: number, az: number, bx: number, bz: number, reach = LEAD_REACH): boolean {
+  const [fx, fz, rx, rz] = axes(b)
+  const p0 = [(ax - b.x) * fx + (az - b.z) * fz, (ax - b.x) * rx + (az - b.z) * rz]
+  const p1 = [(bx - b.x) * fx + (bz - b.z) * fz, (bx - b.x) * rx + (bz - b.z) * rz]
+  const half = [b.halfLen + reach, b.halfWid + reach]
+  let t0 = 0, t1 = 1
+  for (let i = 0; i < 2; i++) {
+    const d = p1[i] - p0[i]
+    if (Math.abs(d) < 1e-9) { if (Math.abs(p0[i]) > half[i]) return false; continue }
+    let ta = (-half[i] - p0[i]) / d, tb = (half[i] - p0[i]) / d
+    if (ta > tb) [ta, tb] = [tb, ta]
+    t0 = Math.max(t0, ta); t1 = Math.min(t1, tb)
+    if (t0 > t1) return false
   }
   return true
 }

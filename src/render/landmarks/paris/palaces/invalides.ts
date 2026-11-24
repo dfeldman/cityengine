@@ -11,6 +11,12 @@ const FIXED = 0
 /** the design footprint: OSM relation 1463538's box turned 4° to the hôtel's axes (local −z faces bearing 4, the esplanade) */
 const HX = 136.8
 const HZ = 128.2
+/**
+ * The carriage gate under the frontispiece, opened through the north range into the cour d'honneur so the court can be
+ * ridden (owner, 2026-11-20: "important for bikes to see the cour d'honneur even if technically unrealistic"). On the
+ * door's axis; the ride through it is overrides.ts `walks` 'Cour d'honneur'.
+ */
+export const GATE = { x: -3, w: 4.4, h: 7.0 }
 
 /**
  * The Hôtel des Invalides (Libéral Bruant, 1671–76; Saint-Louis-des-Soldats, Bruant and Hardouin-Mansart, 1676–79):
@@ -60,7 +66,7 @@ function draw(out: MeshBuilder): void {
   ]
   for (const [i, { r, faces }] of mains.entries()) {
     // (window surrounds on the north front only: round the side courts they cost more than they show)
-    range(out, r[0], r[1], r[2], r[3], p, i === 0 ? main : { ...main, bay: 4.0, faces, frames: false, storeys: [{ ...main.storeys[0], arched: false }, ...main.storeys.slice(1)] })
+    range(out, r[0], r[1], r[2], r[3], p, i === 0 ? { ...main, gate: GATE } : { ...main, bay: 4.0, faces, frames: false, storeys: [{ ...main.storeys[0], arched: false }, ...main.storeys.slice(1)] })
     hipRoof(out, r[0], r[1], r[2], r[3], 20, 9, p.slate, 0.3)
   }
   // the pavilions at the ends of the north front, standing forward, with their own steeper roofs
@@ -86,10 +92,13 @@ function draw(out: MeshBuilder): void {
       const t = t0 + step * (i + 0.5)
       // the head of the court is the clock pavilion: no arcade across its middle
       if (f === '-z' && Math.abs(t + 2.1) < 13) continue
-      archOn(out, f, plane, t, 0, 3.1, 5.6, p.dark, 0.08)
+      const gate = f === '+z' && Math.abs(t - GATE.x) < GATE.w / 2 + 1.55
+      if (!gate) archOn(out, f, plane, t, 0, 3.1, 5.6, p.dark, 0.08)
       archOn(out, f, plane, t, 7.0, 2.9, 4.8, p.dark, 0.08)
       rectOn(out, f, plane, t - 0.8, t + 0.8, 14.3, 16.8, p.glass, 0.08)
-      if (i < n - 1) rectOn(out, f, plane, t + step / 2 - 0.45, t + step / 2 + 0.45, 0, 13.0, p.trim, 0.12)   // the piers
+      const pier = t + step / 2
+      const overGate = f === '+z' && Math.abs(pier - GATE.x) < GATE.w / 2 + 0.45
+      if (i < n - 1) rectOn(out, f, plane, pier - 0.45, pier + 0.45, overGate ? GATE.h + 0.3 : 0, 13.0, p.trim, 0.12)   // the piers
     }
     // the gallery floor between the storeys, and a cornice over the arcades
     const flat = f === '-z' || f === '+z'
@@ -149,7 +158,7 @@ function frontispiece(out: MeshBuilder, p: Pal): void {
   const x1 = 7.0
   const xm = (x0 + x1) / 2
   const z0 = -128.2
-  range(out, x0, x1, z0, -116, p, { eaves: 20, bay: 20, storeys: [], faces: ['-z'], quoins: true, cornice: 0.8 })
+  range(out, x0, x1, z0, -116, p, { eaves: 20, bay: 20, storeys: [], faces: ['-z'], quoins: true, cornice: 0.8, gate: GATE })
   // the round-headed gable rising into the roof, its barrel roof back to the ridge
   const R = (x1 - x0) / 2
   const seg = 12
@@ -174,8 +183,11 @@ function frontispiece(out: MeshBuilder, p: Pal): void {
   prism(out, xm - 0.2, z0 - 0.35, 18.7, 20.6, 0.4, 6, p.trim, FIXED, 0.28)                       // the king
   for (const s of [-1, 1]) prism(out, xm + s * 3.4, z0 - 0.3, 15.0, 18.4, 0.42, 6, p.trim, FIXED, 0.3)   // the Virtues
   // the great arch below it, the door at its foot, and the paired pilasters either side
-  archOn(out, '-z', z0, xm, 0, 6.4, 14.2, shade(p.stone, 0.62), 0.06)
-  archOn(out, '-z', z0, xm, 0, 3.6, 6.4, p.dark, 0.1)
+  // (the recess round the gate, not across it: jambs either side, the rest of the arch over its head)
+  const recess = shade(p.stone, 0.62), ga = GATE.x - GATE.w / 2, gb = GATE.x + GATE.w / 2, spring = GATE.h - GATE.w / 2
+  rectOn(out, '-z', z0, xm - 3.2, ga, 0, spring, recess, 0.06)
+  rectOn(out, '-z', z0, gb, xm + 3.2, 0, spring, recess, 0.06)
+  archOn(out, '-z', z0, xm, spring, 6.4, 14.2 - spring, recess, 0.06)
   for (const t of [x0 + 1.6, x1 - 1.6]) pairOn(out, '-z', z0, t, 0.6, 19.4, 0.42, p.trim, 1.3)
   // Mars and Minerva on their pedestals by the door
   for (const s of [-1, 1]) statue(out, xm + s * 5.6, z0 - 1.4, 0, 3.4, p.trim)

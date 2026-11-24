@@ -88,12 +88,12 @@ export function carve(out: MeshBuilder, planes: Plane[], box: { x0: number; x1: 
  * Cuts every `DECK_WAYS` stretch that enters this model's footprint through it. Call after the model is drawn. Nothing
  * happens without a placed model (`fit.toLocal`: tests, a bare ?model=) or when no way touches the footprint.
  */
-export function cutDeckWays(out: MeshBuilder, fit: Fit): void {
+export function cutDeckWays(out: MeshBuilder, fit: Fit, ways: DeckWay[] = DECK_WAYS): void {
   if (!fit.toLocal || fit.baseY === undefined || !fit.ring || fit.ring.length < 3) return
   const ring = fit.ring
   const side = hex(PASS_LINING), roof = hex(PASS_SOFFIT)
   const linings: (() => void)[] = []   // drawn after every cut, or a later segment's slot would eat an earlier one's lining
-  for (const way of DECK_WAYS) {
+  for (const way of ways) {
     const pts = way.pts.map(([x, z, y]) => ({ ...fit.toLocal!(x, z), y: y - fit.baseY! }))
     const half = way.width / 2 + PASS_EXTRA_W / 2
     for (let i = 1; i < pts.length; i++) {

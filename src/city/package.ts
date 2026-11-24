@@ -36,6 +36,8 @@ export interface PackedEdge {
    * polygons the tile carries, so it costs nothing in the package and follows a re-bake automatically.
    */
   park?: boolean
+  /** on a model's own paved level (city/model-walks.ts): its heights are the level's, the ground under it a pit. Not baked: set as the tile loads */
+  onModel?: boolean
   name?: string
   foot: boolean
   /**
@@ -54,6 +56,8 @@ export interface PackedEdge {
   /** OSM `service=*`: a parking aisle or a driveway is not a street */
   service?: string
   oneway?: boolean
+  /** a listed La Défense walkway's look (data/defense-walkways.json): absent = a concrete slab */
+  walkStyle?: 'steel' | 'glazed' | 'timber'
   /** OSM `layer`, for keeping a bridge and the street under it apart */
   layer?: number
   bridge?: boolean

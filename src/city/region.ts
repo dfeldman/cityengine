@@ -2,6 +2,7 @@
  * A city's regional character: the palette its stone comes in, what stands on its pavements, how its
  * crossings are marked. Read from regions.json; see the note there.
  */
+import type { ModelWalkSpec } from './model-walks.ts'
 import type { TerrainTweakSpec } from './terrain-tweaks.ts'
 import regions from './regions.json' with { type: 'json' }
 import type { Palette, StyleId } from './facade.ts'
@@ -171,12 +172,15 @@ export interface Region {
   /**
    * A model that draws its own paved levels (the Trocadéro's parvis): OSM's walks on it take the model's level, its steps go (the model
    * draws the flights). Placed as the manifest places it: `at` [lat, lon], `rotateDeg`, `baseY`; each level a local rect
-   * [x0, x1, z0, z1, y at z0, y at z1] (tools/bake.ts)
+   * [x0, x1, z0, z1, y at z0, y at z1], a 7th value 1 sloping it along x (city/model-walks.ts)
    */
-  modelWalks?: { name: string; at: [number, number]; rotateDeg: number; baseY: number; lift?: number; levels: [number, number, number, number, number, number][] }[]
+  modelWalks?: (ModelWalkSpec & { name: string })[]
   levelGrounds?: { name: string; ring: [number, number][]; /** a height of its own in metres above sea level, not its edge's median */ y?: number; /** metres eased back into the ground: 12 unless it says */ fade?: number; /** [lat, lon]: level at the ground's height there, not its edge's median */ at?: [number, number] }[]
   /** runtime pits and the like in the fine ground (city/terrain-tweaks.ts) */
   terrainTweaks?: TerrainTweakSpec[]
+  /** baked areas of kind `from` whose pieces centre inside `ring` ([lat, lon]) are drawn as `to` instead, as their tile loads:
+   *  a mis-tagged OSM polygon fixed without a rebake (render/city.ts ingest) */
+  retypeAreas?: { name: string; from: string; to: 'park' | 'grass' | 'paved'; ring: [number, number][] }[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -302,6 +306,7 @@ export function region(id: string | undefined): Region {
     deckZones: own?.deckZones ?? base.deckZones,
     bandExclude: own?.bandExclude ?? base.bandExclude,
     terrainTweaks: own?.terrainTweaks ?? base.terrainTweaks,
+    retypeAreas: own?.retypeAreas ?? base.retypeAreas,
     modelWalks: own?.modelWalks ?? base.modelWalks,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,

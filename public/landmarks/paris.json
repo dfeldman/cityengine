@@ -12,7 +12,10 @@
     "osm": [
       "way/55742120",
       "way/1205045978",
-      "way/1205045979"
+      "way/1205045979",
+      "way/55742124",
+      "way/1205245696",
+      "way/55750696"
     ],
     "name": "Église Saint-Merri",
     "procedural": "saintMerri",
@@ -774,7 +777,8 @@
       "way/54175265",
       "way/54175266",
       "way/54175277",
-      "way/54175280"
+      "way/54175280",
+      "way/1196823187"
     ],
     "lat": 48.867492,
     "lon": 2.329414,
@@ -935,10 +939,11 @@
     "lon": 2.314969,
     "rotateDeg": 90,
     "size": [
-      130,
-      90
+      140,
+      92
     ],
-    "note": "The Ionic colonnade, the great arched entrance with its gilded gate, the ribbed dome; front to the Avenue Winston-Churchill (west)."
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Ionic colonnade, the great arched entrance with its gilded gate, the ribbed dome; front to the Avenue Winston-Churchill (west). Rebuilt 2026-11-16 as the D: front bar, two wings, the semicircular peristyle garden court."
   },
   {
     "name": "Colonnes de Buren",
@@ -1004,14 +1009,16 @@
   {
     "name": "École Militaire — portico",
     "procedural": "ecoleMilitairePortico",
-    "lat": 48.852678,
-    "lon": 2.303212,
+    "lat": 48.85258,
+    "lon": 2.303366,
     "rotateDeg": 134,
     "size": [
-      36,
-      16
+      44,
+      44
     ],
-    "note": "The central frontispiece: ten Corinthian columns over two storeys and the pediment, to the Champ de Mars."
+    "height": 38,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The central pavilion (rebuilt 2026-11-17, ecole-militaire.ts): eight free-standing Corinthian columns over two storeys, the entablature across the front, the pediment, the attic and the quadrangular slate dome with its clocks and lantern. Centred on the OSM pavilion block (dome peak 37 m by IGN MNS); the old origin sat 15.6 m in front of it."
   },
   {
     "name": "Rue de Rivoli — arcades",
@@ -1119,6 +1126,19 @@
     "stone": false,
     "baseY": 0.45,
     "note": "The gilded flame on its dark drum and granite star above the Alma tunnel. baseY is the tunnel lid's deck (package bridge 900000000000019, LID y 0.45): the terrain under the footprint is the tunnel floor at -6.7, and the drape sank the model into the tunnel (owner, 2026-11-20)."
+  },
+  {
+    "name": "Canyoneaustrate",
+    "procedural": "canyoneaustrate",
+    "lat": 48.8377287,
+    "lon": 2.3796483,
+    "rotateDeg": 0,
+    "size": [42, 42],
+    "height": 5,
+    "stone": false,
+    "sign": false,
+    "baseY": -0.4,
+    "note": "Gérard Singer's concrete canyon fountain (1988), Parc de Bercy by the Accor Arena: strata cut from the IGN lidar surface model (render/landmarks/fountains/). The lat/lon is the lidar grid's centre; regions.json levels the paved square under baseY and digs a pit under the canyon (owner, 2026-11-21)."
   },
   {
     "name": "Hôtel de la Marine and Hôtel de Crillon",
@@ -1322,12 +1342,11 @@
     "osm": [
       "relation/967664"
     ],
-    "restyle": "classical",
-    "roof": "mansard",
-    "levels": 3,
-    "note": "The Mint on the Quai de Conti, beside the Institut: a long plain classical front with its projecting centre. Slate on it (Batch 1, 2026-10-31).",
-    "roofHeight": 3.5,
-    "roofColour": "#4b5359"
+    "procedural": "hotelMonnaie",
+    "front": 41,
+    "height": 26,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Mint on the Quai de Conti: rusticated arcaded base, two storeys of tall windows, balustrade, slate behind, and the six-column Ionic avant-corps in the middle. Own builder (rebuild, 2026-11-16) on relation 967664; front bearing 41 (the quai side, found from the OSM ring)."
   },
   {
     "name": "Place des Victoires — facades",
@@ -1399,7 +1418,8 @@
     "lon": 2.2874,
     "rotateDeg": 134,
     "stone": false,
-    "note": "Stand-in for the user's model (MODELS_NEEDED.md): Foch on horseback, facing the Eiffel Tower."
+    "note": "Procedural pedestal (8 m tall per fr.wikipedia, shaft ~1.8 x 3.2 m on a 2.8 x 4.6 plinth and 5 x 7.6 m platform, estimated from a Commons photo against a seated person; constants FOCH_SOCLE in equestrian.ts); the bronze (Wlérick/Martin, cast 1951, walking horse facing the Eiffel Tower) is a stand-in horseman while FOCH_DRAW_STANDIN is true, to be replaced by the Modly piece foch-trocadero attached on top (queued in guided-queue).",
+    "madeBy": "claude-sonnet-5-5"
   },
   {
     "include": "paris/stations.json"
@@ -1609,7 +1629,11 @@
   },
   {
     "osm": [
-      "way/63564122"
+      "way/63564122",
+      "way/1218291726",
+      "way/1218291727",
+      "way/1218291730",
+      "way/1218291731"
     ],
     "name": "Hôtel de Roquelaure",
     "procedural": "hotelRoquelaure",
@@ -1649,7 +1673,8 @@
   },
   {
     "osm": [
-      "way/84323015"
+      "way/84323015",
+      "way/267383088"
     ],
     "name": "Hôtel de Günsburg",
     "procedural": "hotelGunsburg",

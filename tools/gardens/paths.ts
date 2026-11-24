@@ -20,6 +20,11 @@ export const MIN_RIDDEN_M_PER_HA = 60
 export const MIN_AREA = 400
 /** the round walk, this far in from the ring */
 export const INSET = 2.5
+/**
+ * gardens whose round walk keeps further in (m, pulled towards the middle like INSET): the esplanade's south edge is the
+ * Invalides moat, its parapet and the batterie's cannon, and at INSET the walk ran along them (owner, 2026-11-20)
+ */
+export const INSET_BY: Record<string, number> = { 'Les Invalides: the forecourt': 15 }
 /** a connector reaches this far for a street or path */
 export const CONNECT_M = 35
 /** gardens not given walks: their "gravel" is a lake's shore, a forest's rides, or a forecourt OSM already paves */
@@ -100,9 +105,10 @@ export function gardenPaths(origin: { lat: number; lon: number }, edges: Edge[],
     if (ridden / (Math.abs(A / 2) / 1e4) >= MIN_RIDDEN_M_PER_HA) continue
 
     // the round walk: each corner pulled INSET towards the middle
+    const inset = INSET_BY[g.name] ?? INSET
     const loop = ring.map((p) => {
       const d = Math.hypot(p.x - c.x, p.z - c.z)
-      const k = d > INSET * 2 ? (d - INSET) / d : 0.5
+      const k = d > inset * 2 ? (d - inset) / d : 0.5
       return { x: c.x + (p.x - c.x) * k, z: c.z + (p.z - c.z) * k }
     })
     // the garden's axes: the principal directions of its ring

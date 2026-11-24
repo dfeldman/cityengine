@@ -12090,6 +12090,72 @@
           "path": "models/common/deer.glb"
         }
       }
+    },
+    {
+      "id": "animal-doe",
+      "name": "doe (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo doe, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/doe-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/doe-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "doe"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-0929374fe9-animal-doe.glb",
+          "hash": "0929374fe9c026cf5cc79503a4b82fe0110b5fc7a2d6436c61acf362d1ba894a",
+          "size": 686736,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/doe.glb"
+        }
+      }
+    },
+    {
+      "id": "animal-fawn",
+      "name": "fawn (animal)",
+      "folder": "animals",
+      "notes": "The owner's Tripo fawn, packed by tools/animals/pack.ts; rigged and animated (idle, browse, walk) by tools/animals/fawn-clips.py.",
+      "type": "3d",
+      "subtype": "animal",
+      "generator": {
+        "script": "streetrunner/tools/animals/pack.ts",
+        "params": {
+          "clips": "tools/animals/fawn-clips.py"
+        }
+      },
+      "assetKeywords": [
+        "animal",
+        "fawn"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-b044e94ad1-animal-fawn.glb",
+          "hash": "b044e94ad119beee5155f2e9ae77ca19c0876137c9284bb3326cd4211aeee905",
+          "size": 894092,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "models/common/fawn.glb"
+        }
+      }
     }
   ]
 }

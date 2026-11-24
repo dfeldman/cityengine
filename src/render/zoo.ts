@@ -133,6 +133,17 @@ export const SPECIES: Record<string, Species> = {
     file: 'common/deer.glb', size: 2.25, yaw: 0, walk: 0.7, turn: 0.6, rest: [8, 25], odds: { walk: 0.3, idle: 0.3 },
     roam: { margin: 3, spacing: 4, walk: [6, 25] }, habitat: 'land',
   },
+  // Tripo's doe, rigged by tools/animals/doe-clips.py: ~1.1 m at the shoulder (0.47 units), ~2.0 m long; faces −y like the stag
+  doe: {
+    file: 'common/doe.glb', size: 2.2, yaw: 0, walk: 0.7, turn: 0.6, rest: [8, 25], odds: { walk: 0.3, idle: 0.3 },
+    roam: { margin: 3, spacing: 4, walk: [6, 25] }, habitat: 'land',
+  },
+  // Tripo's fawn (tools/animals/fawn-clips.py): ~0.7 m at the shoulder, ~1.1 m long, skittish; walks at the doe's speed
+  // with quicker steps so it keeps up
+  fawn: {
+    file: 'common/fawn.glb', size: 1.05, yaw: 0, walk: 0.7, turn: 1.0, rest: [4, 14], odds: { walk: 0.35, idle: 0.3 },
+    roam: { margin: 2, spacing: 3, walk: [6, 25] }, habitat: 'land',
+  },
   bear: {
     file: 'common/bear.glb', size: 2.1, yaw: 0, walk: 0.65, turn: 0.6, rest: [8, 25], odds: { walk: 0.35, idle: 0.25 },
     roam: { margin: 2.5, spacing: 4, walk: [5, 20] },
@@ -342,6 +353,15 @@ const PARIS_BIRDS: Herd[] = [
   { name: 'saint-cloud-deer', species: 'deer', paddock: patch(48.831657, 2.189005, DEER_R), sizes: flock(2, 0.08) },
   { name: 'fausses-reposes-deer-1', species: 'deer', paddock: patch(48.823199, 2.173146, DEER_R), sizes: flock(3, 0.08) },
   { name: 'fausses-reposes-deer-2', species: 'deer', paddock: patch(48.826766, 2.166269, DEER_R), sizes: flock(2, 0.08) },
+  // …and with them hinds and their fawns, on the same ground (a fawn keeps near: same spot, its own herd)
+  { name: 'meudon-does', species: 'doe', paddock: patch(48.802856, 2.214149, DEER_R), sizes: flock(3, 0.06) },
+  { name: 'meudon-fawns', species: 'fawn', paddock: patch(48.802856, 2.214149, DEER_R), sizes: [1] },
+  { name: 'saint-cloud-does', species: 'doe', paddock: patch(48.831657, 2.189005, DEER_R), sizes: flock(2, 0.06) },
+  { name: 'saint-cloud-fawns', species: 'fawn', paddock: patch(48.831657, 2.189005, DEER_R), sizes: [1] },
+  { name: 'fausses-reposes-does-1', species: 'doe', paddock: patch(48.823199, 2.173146, DEER_R), sizes: flock(3, 0.06) },
+  { name: 'fausses-reposes-fawns-1', species: 'fawn', paddock: patch(48.823199, 2.173146, DEER_R), sizes: [1, 0.9] },
+  { name: 'fausses-reposes-does-2', species: 'doe', paddock: patch(48.826766, 2.166269, DEER_R), sizes: flock(2, 0.06) },
+  { name: 'fausses-reposes-fawns-2', species: 'fawn', paddock: patch(48.826766, 2.166269, DEER_R), sizes: [1] },
 ]
 
 /** Parc zoologique de Paris: the OSM sand polygon south of the giraffe plain (natural=sand, 2 980 m², simplified to 1.5 m) */

@@ -32,6 +32,12 @@ export interface BalloonSpec {
   offBanner: string
 }
 
+/**
+ * how near the pad is near enough to board, metres (owner, 2026-11-18: "impossible to get close enough to the Ballon to actually
+ * ride it": the Ballon's pad is 18 m off the nearest footway, the Vasque's 31, and the wheels' 35 left no slack)
+ */
+export const BALLOON_NEAR = 60
+
 /** tunables: the real Ballon goes to 150 m in ~6 min; shortened so it goes up and down every few minutes */
 export const BALLON_DE_PARIS: BalloonSpec = {
   id: 'ballon', name: 'Ballon de Paris', lat: 48.841365, lon: 2.273985, moored: 0.55, top: 150,
@@ -128,7 +134,7 @@ export class Balloon implements Ride {
 
   private view(dwelling: boolean): VehicleView {
     const y = this.base.y + this.spec.moored + this.height() + this.spec.floor
-    return { id: `${this.spec.id}:0`, kind: 'wheel', x: this.base.x, z: this.base.z, y, heading: 0, speed: 0, dwelling, name: this.spec.name }
+    return { id: `${this.spec.id}:0`, kind: 'wheel', x: this.base.x, z: this.base.z, y, heading: 0, speed: 0, dwelling, name: this.spec.name, near: BALLOON_NEAR }
   }
 
   /** boardable while moored; aboard, the one being ridden */

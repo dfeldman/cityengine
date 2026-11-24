@@ -5,12 +5,13 @@
 import { packPoints, type PackedGarden } from '../../src/city/package.ts'
 import { GARDENS } from './paris.ts'
 import type { GardenPlan, LL } from './plan.ts'
+import type { TreeForm } from '../../src/city/tree-forms.ts'
 import { inside } from '../../src/city/park-planting.ts'
 
 type Local = { x: number; z: number }
 type Way = { id: number; geometry?: { lat: number; lon: number }[]; tags?: Record<string, string> }
 
-export interface TreeRow { points: Local[]; spacing: number; h?: number; form?: 'plane'; /** OSM's: a plan's clearMapped takes it, as it takes the mapped trees */ osm?: true
+export interface TreeRow { points: Local[]; spacing: number; h?: number; form?: TreeForm; /** OSM's: a plan's clearMapped takes it, as it takes the mapped trees */ osm?: true
   /** where a tree of the row may stand (a plan's `rowClear`): the bake drops the others */
   keep?: (p: Local) => boolean }
 

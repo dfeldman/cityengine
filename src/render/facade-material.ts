@@ -37,6 +37,7 @@ attribute vec3 position;
 attribute vec3 normal;
 attribute vec2 uv;
 attribute vec4 color;      // rgb = the building's palette tint, a = which page to sample
+attribute vec2 uv2;        // weathering: the building's foot height (mesh frame) and its seed, 0 seed = none (buildings.ts)
 uniform mat4 worldViewProjection;
 uniform mat4 world;
 varying vec2 vUV;
@@ -45,10 +46,12 @@ varying vec3 vTint;
 varying float vKind;
 varying float vDepth;
 varying vec3 vWorld;
+varying vec2 vFoot;        // height above the building's foot, its seed
 
 
 void main(void) {
   vec4 wp = world * vec4(position, 1.0);
+  vFoot = vec2(position.y - uv2.x, uv2.y);
   gl_Position = worldViewProjection * vec4(position, 1.0);
   vUV = uv;
   vNormal = normalize(mat3(world) * normal);
@@ -81,6 +84,31 @@ uniform vec3 zenith;
 uniform vec3 horizon;
 uniform float night;
 uniform float flatGround;  // 1 for the ground variant: parks and pavements, drawn without culling
+uniform float weathering;  // 0..1, Menu → Settings → Graphics → Weathering
+varying vec2 vFoot;
+
+/*
+ * WEATHERING (owner, 2026-11-18: "better materials… building weathering"). A painted page tiles the same at the
+ * pavement as under the cornice, and a whole wall comes out one even fill. Real walls are dirtiest where the street
+ * splashes them, streaked where rain runs off, patchy where they were repaired, and no two buildings are quite the
+ * same colour. Each a strength; all scaled by \`weathering\`.
+ */
+#define W_GRIME_H 1.15     // metres of street grime at a wall's foot (ragged: 0.75..1.25 of this)
+#define W_GRIME_DARK 0.24  // how much darker at the very foot
+#define W_GRIME_DESAT 0.35 // and how much greyer
+#define W_STREAK 0.11      // run-off streaks down the wall
+#define W_PATCH 0.07       // low-frequency patchiness (repairs, damp, sun-bleaching)
+#define W_TONE 0.075       // each building's own brightness, ±
+#define W_WARM 0.035       // and its own warmth, ±
+#define W_BOUNCE 0.20      // sunlight the street throws back up on the lowest storeys
+#define W_BOUNCE_H 4.0     // metres it fades over
+
+float wHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float wNoise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(wHash(i), wHash(i + vec2(1.0, 0.0)), f.x), mix(wHash(i + vec2(0.0, 1.0)), wHash(i + vec2(1.0, 1.0)), f.x), f.y);
+}
 
 // The sky, as a function of direction. There is no environment map — a city of this size cannot afford one
 // per material and would not gain much — so the sky is the same two-colour gradient the ambient term uses,
@@ -215,10 +243,34 @@ void main(void) {
     // whole city came out high-key and flat: pale stone, pale render, pale concrete, no material reading as
     // darker than any other. This is the exposure the painted pages are actually meant to be seen at.
     vec3 base = albedo.rgb * mix(vec3(1.0), vTint, albedo.a) * 0.80;
+    float wk = weathering * step(0.0005, vFoot.y) * (1.0 - flatGround);
+    float h = vFoot.x;
+    float onWall = (1.0 - smoothstep(0.35, 0.7, abs(n.y))) * wk;
+    if (wk > 0.0) {
+      float seed = vFoot.y;
+      vec2 tng = normalize(vec2(-n.z, n.x) + vec2(1e-5, 0.0));
+      float along = dot(vWorld.xz, tng);   // metres along the wall
+      // the building's own tone and warmth
+      float warm = (fract(seed * 7.31) - 0.5) * 2.0 * W_WARM;
+      base *= (1.0 + W_TONE * (seed * 2.0 - 1.0) * wk) * (1.0 + vec3(warm, 0.0, -warm) * wk);
+      // patches, at two scales
+      float blot = wNoise(vec2(along, h) / 3.5 + seed * 17.0) * 0.65 + wNoise(vec2(along, h) / 0.9 + seed * 5.0) * 0.35;
+      base *= 1.0 - W_PATCH * (blot - 0.5) * 2.0 * onWall;
+      // run-off: thin streaks of varying width, each fading in and out down the wall
+      float streak = pow(wNoise(vec2(along * 1.6, seed * 31.0)), 4.0) * (0.55 + 0.45 * wNoise(vec2(along * 1.6, h / 5.0 + seed * 3.0)));
+      base *= 1.0 - W_STREAK * streak * onWall * step(0.3, h);
+      // street grime at the foot, with a ragged top
+      float edge = W_GRIME_H * (0.75 + 0.5 * wNoise(vec2(along * 1.3, seed * 9.0)));
+      float grime = (1.0 - smoothstep(0.0, edge, h)) * step(-0.5, h) * onWall;
+      vec3 grey = mix(base, vec3(dot(base, vec3(0.333))), W_GRIME_DESAT) * vec3(0.99, 0.96, 0.91);
+      base = mix(base, grey * (1.0 - W_GRIME_DARK), grime);
+    }
     float sun = max(dot(n, -normalize(sunDir)), 0.0);
     // a hemisphere term so north-facing walls are sky-lit rather than black
     float up = n.y * 0.5 + 0.5;
     lit = base * (mix(groundColour, skyColour, up) + sunColour * sun);
+    // the sunlit street lights the bottom of the walls from below
+    if (wk > 0.0) lit += base * sunColour * groundColour * W_BOUNCE * exp(-max(h, 0.0) / W_BOUNCE_H) * onWall;
     // the glow a lit street throws back onto the walls above it
     if (night > 0.01) lit += base * vec3(0.16, 0.13, 0.09) * night;
   }
@@ -422,9 +474,9 @@ export function facadeMaterial(scene: Scene, styleId: string, assetBase: string,
   }
 
   const mat = new ShaderMaterial(name, scene, 'facade', {
-    attributes: ['position', 'normal', 'uv', 'color'],
+    attributes: ['position', 'normal', 'uv', 'color', 'uv2'],
     uniforms: ['world', 'worldViewProjection', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
-      'fogColour', 'fogDensity', 'eye', 'zenith', 'horizon', 'night', 'flatGround'],
+      'fogColour', 'fogDensity', 'eye', 'zenith', 'horizon', 'night', 'flatGround', 'weathering'],
     samplers: ['wallTex', 'atlasTex'],
   })
 
@@ -457,7 +509,15 @@ export function facadeMaterial(scene: Scene, styleId: string, assetBase: string,
   return mat
 }
 
+/** Weathering strength, 0..1 (the shader's W_ constants say what it does); set before the first facade material is made. */
+let WEATHERING = 1
+export function setWeathering(v: number, scene?: Scene): void {
+  WEATHERING = v
+  if (scene) for (const m of scene.materials) if (m.name.startsWith('facade:')) (m as ShaderMaterial).setFloat('weathering', v)
+}
+
 export function applyLook(mat: ShaderMaterial, look: SkyLook): void {
+  mat.setFloat('weathering', WEATHERING)
   mat.setVector3('sunDir', look.sun)
   mat.setColor3('sunColour', look.sunColour)
   mat.setColor3('skyColour', look.skyColour)

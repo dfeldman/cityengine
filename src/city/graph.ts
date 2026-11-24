@@ -44,6 +44,8 @@ export interface Edge {
   raised?: boolean
   /** through a park (package.ts `park`): what walks it stands on the park's raw ground, as its trail is drawn */
   park?: boolean
+  /** on a model's own paved level (package.ts `onModel`): what walks or rides it stands on its heights, not the sunk ground */
+  onModel?: boolean
   /** never on the bike ride graph (the Seine band's motorway/trunk ways and road tunnels: PackedEdge.noBike) */
   noBike?: boolean
   /**

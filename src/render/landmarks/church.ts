@@ -141,6 +141,9 @@ export interface Walls {
 }
 
 /** One place of worship, in slots. **Every key is required; any value but `nave`, `front` and `walls` may be null.** */
+/** how far a projecting transept arm stands out past the body, as a fraction of the footprint's width */
+const TRANSEPT_OUT = 0.3
+
 export interface ChurchSpec {
   nave: Nave
   aisles: Aisles | null
@@ -754,8 +757,11 @@ function build(out: MeshBuilder, L: number, W: number, H: number, spec: ChurchSp
   const roofM: Surface = walls.material === 'stucco' ? 'tile' : 'tile'
 
   /* ---- the plan, in metres, all of it from L, W and the counts */
-  const naveHalf = aisles ? W * 0.29 : W * 0.5
-  const aisleHalf = W * 0.5
+  // projecting arms stand out TRANSEPT_OUT*W beyond the body, and the outline's box takes them in, so the body is drawn
+  // narrower by that much: the cross then ends on the footprint instead of 30% past it into the street (#201)
+  const bodyScale = transept && transept.ends === 'projecting' ? 1 / (1 + 2 * TRANSEPT_OUT) : 1
+  const naveHalf = (aisles ? W * 0.29 : W * 0.5) * bodyScale
+  const aisleHalf = W * 0.5 * bodyScale
   const chancelLen = chancel ? Math.min(L * 0.2, W * 0.9) : 0
   const zFront = -L / 2
   const zBack = L / 2 - chancelLen
@@ -840,7 +846,7 @@ function build(out: MeshBuilder, L: number, W: number, H: number, spec: ChurchSp
 
   /* ---- the transept */
   if (transept) {
-    const tHalf = transept.ends === 'projecting' ? aisleHalf + W * 0.3 : aisleHalf
+    const tHalf = transept.ends === 'projecting' ? aisleHalf + W * TRANSEPT_OUT * bodyScale : aisleHalf
     const tz = zBack - bodyLen * 0.22
     const tLen = Math.min(bodyLen * 0.3, W * 0.7)
     const tRise = nave.roof === 'flat' ? 0 : (tLen / 2) * PITCH[nave.pitch]

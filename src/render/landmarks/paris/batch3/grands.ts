@@ -396,7 +396,8 @@ export function samaritaineRivoli(out: MeshBuilder, fit: Fit): void {
       q.quad([a0, a1, [a.x + tx * u1, H + 1, a.z + tz * u1], [a.x + tx * u0, H + 1, a.z + tz * u0]], [0, 1, 0], UV, hex('#8c8d88'), 0)
     }
     // the Samaritaine's own name, small, in its sans over the door
-    lettersAlong(q, { x: a.x + nx * 3.8, z: a.z + nz * 3.8 }, { x: b.x + nx * 3.8, z: b.z + nz * 3.8 }, L / 2, 4.9, 'SAMARITAINE', { h: 0.9, c: hex('#d9dcd6'), wide: 0.7, tag: EMIT, d: 0.05 })
+    // (b to a: lettersAlong reads the right way round from the side of (tz, −tx), and this wall's outward side is the other)
+    lettersAlong(q, { x: b.x + nx * 3.8, z: b.z + nz * 3.8 }, { x: a.x + nx * 3.8, z: a.z + nz * 3.8 }, L / 2, 4.9, 'SAMARITAINE', { h: 0.9, c: hex('#d9dcd6'), wide: 0.7, tag: EMIT, d: 0.05 })
   })
 }
 

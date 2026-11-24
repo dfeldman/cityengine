@@ -35,11 +35,15 @@ export const ML_DECK_END = 25, ML_DECK_END_MIN = 0.2
 /** segments longer than this are split (m) before the solve */
 export const ML_DENSIFY = Number(process.env.ML_DENSIFY ?? 5)
 /** the ground's grid (m), its tile (cells), the corridor's pad over the way's half-width (m), the skirt back to the lidar (m) */
+/** a padded trench floor wins over a neighbour's corridor inside its own width (ML_TRENCH_FLOOR_WINS=0 off) */
+export const ML_TRENCH_FLOOR_WINS = process.env.ML_TRENCH_FLOOR_WINS !== '0'
 export const ML_CELL = 1, ML_TILE = 64, ML_BED_PAD = 0.4, ML_TRENCH_PAD = 1.5, ML_SKIRT = Number(process.env.ML_SKIRT ?? 4)
 /** a bridge outline's pad (m) and a deck way's (over its half-width) inside which the lidar is the structure, not the ground */
 export const ML_STRUCT_PAD = 1.5, ML_DECK_PAD = 1.5
 /** under a deck within this of the lidar there (a lid, a bridge's end on land) the ground is filled to ML_FILL_UNDER under it (m) */
 export const ML_FLUSH = 1.5, ML_FILL_UNDER = 0.25
+/** twin trench carriageways (same name, both cut, vertices this near, m) are tied together this many times a vertex's hold weight */
+export const ML_TWIN_D = 8, ML_TWIN_TIE = Number(process.env.ML_TWIN_TIE ?? 2)
 /** the band's edge: the pass fades out over this many metres outside it. (25 m left the Pont National's left-bank approach to the old
  *  passes' ground, 2–3 m under the footways on it: 4 floating footways, 8 steep pieces and the Allée Paris-Ivry's 38 % drop; at 60 m,
  *  1, 4 and none) */
@@ -192,7 +196,7 @@ class TGrid {
 }
 
 /** a segment index for corridors (10 m cells) */
-interface CSeg { ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number; e: PackedEdge; cut?: boolean }
+interface CSeg { ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number; e: PackedEdge; cut?: boolean; floor?: boolean }
 class SegIndex {
   private cells = new Map<number, CSeg[]>()
   private k(gx: number, gz: number): number { return (gx + 32768) * 65536 + (gz + 32768) }
@@ -475,6 +479,36 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     }
     idx.push(ids)
   }
+  // TWIN TRENCH CARRIAGEWAYS (2026-11-16, the Avenue de New York's north-east mouth, 48.860864, 2.291706): a dual carriageway's two
+  // halves in one trench came in with their own held heights — one mouth's road ramped by the lid, the other following the trench
+  // floor — 1.3–1.8 m apart side by side, and the ground between their corridors stood as a jagged bank in the median. A cut
+  // vertex is tied to the nearest vertex of a same-named cut way within ML_TWIN_D m, ML_TWIN_TIE × its hold weight: the halves meet
+  // within a fifth of their difference
+  let nTwin = 0
+  if (ML_TWIN_TIE > 0) {
+    const cv: { x: number; z: number; v: number; e: PackedEdge; w: number }[] = [], cb = new Map<string, number[]>()
+    solveEdges.forEach((e, ei) => {
+      if (!(e.cut || e.trench) || !e.name || FOOT.test(e.kind) || e.kind === 'steps') return
+      const n = e.heights!.length
+      for (let i = 0; i < n; i++) {
+        const a = i > 0 ? Math.hypot(e.points[2 * i] - e.points[2 * i - 2], e.points[2 * i + 1] - e.points[2 * i - 1]) : 0
+        const b = i < n - 1 ? Math.hypot(e.points[2 * i + 2] - e.points[2 * i], e.points[2 * i + 3] - e.points[2 * i + 1]) : 0
+        const p = { x: e.points[2 * i], z: e.points[2 * i + 1], v: idx[ei][i], e, w: ML_W_CUT * Math.max(0.5, (a + b) / 2) }
+        const k = `${Math.floor(p.x / 10)},${Math.floor(p.z / 10)}`; (cb.get(k) ?? cb.set(k, []).get(k)!).push(cv.length); cv.push(p)
+      }
+    })
+    for (const p of cv) {
+      let best: typeof p | null = null, bd = ML_TWIN_D
+      for (let gx = -1; gx <= 1; gx++) for (let gz = -1; gz <= 1; gz++) for (const j of cb.get(`${Math.floor(p.x / 10) + gx},${Math.floor(p.z / 10) + gz}`) ?? []) {
+        const q = cv[j]
+        if (q.e === p.e || q.v === p.v || q.e.name !== p.e.name) continue
+        const d = Math.hypot(q.x - p.x, q.z - p.z); if (d < bd) { bd = d; best = q }
+      }
+      if (!best) continue
+      const k = ML_TWIN_TIE * Math.min(p.w, best.w)
+      nb[p.v].set(best.v, (nb[p.v].get(best.v) ?? 0) + k); nb[best.v].set(p.v, (nb[best.v].get(p.v) ?? 0) + k); nTwin++
+    }
+  }
   const nv = vx.length, h0 = new Float64Array(nv)
   for (let v = 0; v < nv; v++) h0[v] = D[v] > 0 ? B[v] / D[v] : 0
   const dbgPts = process.env.ML_DEBUG ? process.env.ML_DEBUG.split(';').map((q) => q.split(',').map(Number)) : []
@@ -519,7 +553,7 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
       e.heights[i] = Math.round((e.heights[0] + (e.heights[n - 1] - e.heights[0]) * c[i] / (c[n - 1] || 1)) * 100) / 100; flat++
     }
   }
-  log(`multi-level: ${flat} stair vertices laid straight; ${stiff} steep links stiffened; ${shared} deck vertices raised to their structure's deck; ${solveEdges.length} ways, ${nv} unknowns (${added} vertices added); lidar-pulled ${cnt.mnt} (foot tunnels ${cnt.foot}), held ${cnt.hold}, blind under structures ${cnt.blind}, kept ${cnt.keep} (of them seen but > ${ML_TRUST} m off: ${cnt.covered}); ${moved} vertices moved, max ${maxMove.toFixed(1)} m`)
+  log(`multi-level: ${flat} stair vertices laid straight; ${nTwin} twin trench ties; ${stiff} steep links stiffened; ${shared} deck vertices raised to their structure's deck; ${solveEdges.length} ways, ${nv} unknowns (${added} vertices added); lidar-pulled ${cnt.mnt} (foot tunnels ${cnt.foot}), held ${cnt.hold}, blind under structures ${cnt.blind}, kept ${cnt.keep} (of them seen but > ${ML_TRUST} m off: ${cnt.covered}); ${moved} vertices moved, max ${maxMove.toFixed(1)} m`)
 
   const freeSteps = new Set<PackedEdge>()
   /** the cuttings made at covered pieces' approaches (no trench pad) */
@@ -742,7 +776,7 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
     // (not an approach cutting: it has no walls to stand behind, and its padded floor sank the end of the sidewalk beside the Pont
     //  National's bike ramp 2.2 m)
     const tr = !!(e.cut || e.trench), halfT = tr && !approaches.has(e) ? half + ML_TRENCH_PAD : half
-    for (let i = 2; i < e.points.length; i += 2) grade.add({ ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half: halfT, e, cut: tr || (ML_STEPS_NO_SKIRT && e.kind === 'steps') }, halfT + ML_SKIRT)
+    for (let i = 2; i < e.points.length; i += 2) grade.add({ ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half: halfT, e, cut: tr || (ML_STEPS_NO_SKIRT && e.kind === 'steps'), floor: ML_TRENCH_FLOOR_WINS && halfT > half }, halfT + ML_SKIRT)
   }
   /** the corridor at (x, z): the nearest at-grade way's height and how far outside its corridor the point is (≤ 0 inside) */
   const ML_TIE = process.env.ML_TIE !== '0'
@@ -750,20 +784,28 @@ export function multiLevel(inp: MultiLevelInput): MultiLevel {
   //  corridor, 1.8 m higher, which won on edge distance and buried it). Under a structure only: by the quay walls it moved the step
   //  between a lower and an upper corridor off the wall line, and 14 more wall gaps opened on seine-centre-mini)
   const corridor = (x: number, z: number, reach = ML_SKIRT): { h: number; d: number; cut?: boolean } | null => {
-    let best: { h: number; d: number; cut?: boolean; c: number; half: number } | null = null
+    let best: { h: number; d: number; cut?: boolean; c: number; half: number; floor?: boolean } | null = null
     for (const s of (reach > ML_SKIRT ? gradeFar : grade).near(x, z)) {
       const q = segDist(x, z, s.ax, s.az, s.bx, s.bz), d = q.d - s.half
+      // (A TRENCH'S FLOOR IS ITS OWN, ML_TRENCH_FLOOR_WINS, 2026-11-16, owner at the Pont d'Iéna's right-bank head: "the tunnel isn't
+      //  deep enough so bits poke into the ground". A padded trench floor lost its outer 1.5 m to the street beside it, whose padded
+      //  corridor (a wide sidewalk) reached in nearer by edge distance, and the place's level came down a metre in front of the trench
+      //  wall: grass strips and an ashlar bank inside the Avenue de New York's tunnel. Inside its padded width the trench floor wins over
+      //  any corridor that is not a floor too. The trench's own wall lines run inside that width, so they do not stop it either.)
+      const onFloor = !!s.floor && d <= 0
+      if (best && best.floor && !onFloor) continue
       if (d > reach) continue
       // (not across a wall line: a footway along a retaining wall's top, at the Pont d'Iéna's right bank, laid its corridor 1.2 m past
       //  the line and moved the wall's step out over the lower quai's road, a 6 m slope of grass in front of the stone)
-      if (d > -ML_BED_PAD && walledOff(x, z, s.ax + (s.bx - s.ax) * q.t, s.az + (s.bz - s.az) * q.t)) continue
+      if (d > -ML_BED_PAD && !onFloor && walledOff(x, z, s.ax + (s.bx - s.ax) * q.t, s.az + (s.bz - s.az) * q.t)) continue
+      if (onFloor && best && !best.floor) best = null
       // (…and anywhere, inside the DRAWN width of two ways, the way whose centreline is nearer: a Pont National flight's top and its bike
       //  ramp lay a metre under a wider neighbour's corridor)
       const bothOn = best !== null && d <= -ML_BED_PAD && best.d <= -ML_BED_PAD
       // (the NARROWER way, where one lies inside the other's drawn width: a path inside a wide boulevard's footprint is the more specific
       //  — the Pont National's bike ramp runs inside the Bd Jean Simon's 19 m and a metre under it, and was buried; ML_ON_NARROW)
       const narrower = ML_ON_NARROW && bothOn && Math.abs(s.half - best!.half) > ML_NARROW_DIFF
-      if (!best || (narrower ? s.half < best.half : (ML_ON_CENTRE && bothOn) || (ML_TIE && d <= 0 && best.d <= 0 && underStructure(x, z)) ? q.d < best.c : d < best.d)) best = { h: s.ha + (s.hb - s.ha) * q.t, d, cut: s.cut, c: q.d, half: s.half }
+      if (!best || (narrower ? s.half < best.half : (ML_ON_CENTRE && bothOn) || (ML_TIE && d <= 0 && best.d <= 0 && underStructure(x, z)) ? q.d < best.c : d < best.d)) best = { h: s.ha + (s.hb - s.ha) * q.t, d, cut: s.cut, c: q.d, half: s.half, floor: onFloor }
     }
     return best
   }

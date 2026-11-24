@@ -66,6 +66,8 @@ export interface ZoneProps {
   buildings?: 'presidio' | 'mediterranean' | 'navy' | 'marin'
   /** 'bike': the trails here (footways, paths, tracks with a riding surface) join the BIKE network (tools/bake.ts) */
   trails?: 'bike'
+  /** with `trails`: a trail that runs through a building's footprint, or in a tunnel, stays a footway (tools/trail-clear.ts) */
+  trailsClearBuildings?: boolean
   exclude?: string[]
   /** 'waves': surf breaks on the shore here — foam and spray along the coastline (render/surf.ts) */
   water?: 'calm' | 'waves' | 'beach'

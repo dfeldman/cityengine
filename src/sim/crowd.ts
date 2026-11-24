@@ -22,6 +22,8 @@ import { exits, type CityGraph, type Edge } from '../city/graph.ts'
 import { pointAlong } from './navigate.ts'
 import { profileAt } from '../city/terrain.ts'
 
+/** fraction of its walking pace a walker keeps on a flight of steps (#282) */
+const STEPS_SPEED = 0.4
 export interface Walker {
   /**
    * Who this is, for as long as they exist. NOT their position in the crowd's array: walkers are added
@@ -82,6 +84,14 @@ export interface Walker {
   /** their place across the group's formation now (`across × dir`), eased: a group turning round at a dead end
    * swapped sides in one frame */
   formNow?: number
+  /**
+   * A dog on a lead (render/dog-walks.ts draws it): `seed` picks which dog, `side` which hand it is on (+1 the
+   * walker's right), `across` its place across the group's formation in the same units as `across`.
+   */
+  dog?: { seed: number; side: 1 | -1; across: number }
+  /** the dog's spot this frame, on the pavement beside them, and how far ahead of that it walks (narrow pavements: in front) */
+  dogAt?: Point
+  dogLead?: number
 }
 
 export interface CrowdConfig { perKm: number; range: number }
@@ -118,10 +128,24 @@ const PARIS_TOPS = ['#1c2541', '#1c2541', '#101114', '#101114', '#2b2d31', '#4a4
 const PARIS_BOTTOMS = ['#111111', '#111111', '#1f2937', '#263066', '#0d1233', '#3b4a63', '#2e2a26', '#4a4e57', '#c8b596']
 let tops = TOPS
 let bottoms = BOTTOMS
-/** the city's own colours for its people (game.ts, by region): Paris's, or everyone's */
-export function crowdLook(region: string | undefined): void {
+/**
+ * DOGS (owner, 2026-11-20): the share of ALL people — runners and cyclists included — out walking a dog. Only a walking
+ * group's first member ever has one (runners never do), so the chance per group is the share over the groups per person.
+ */
+export const DOG_SHARE: Record<string, number> = { paris: 0.05, 'san-francisco': 0.08 }
+/** walking groups per person on a street: ~77 % of people walk (1 in 7 cycles, 1 in 12 runs), 2.15 to a group */
+const GROUPS_PER_PERSON = 0.36
+/** a dog walks this far across from the hand holding it (metres): the pair is this much wider than a person */
+export const DOG_GAP = 0.7
+/** under this between them across (a narrow pavement), the dog walks in front instead, this far ahead */
+const DOG_MIN_GAP = 0.45
+const DOG_FRONT = 0.9
+let dogShare = 0.08
+/** the city's own colours for its people (game.ts, by region): Paris's, or everyone's — and how many walk dogs */
+export function crowdLook(region: string | undefined, dogs?: number): void {
   tops = region === 'paris' ? PARIS_TOPS : TOPS
   bottoms = region === 'paris' ? PARIS_BOTTOMS : BOTTOMS
+  dogShare = dogs ?? DOG_SHARE[region ?? ''] ?? 0.08
 }
 /** a little darker or lighter, per person */
 const jitter = (r: () => number, hex: string): string => {
@@ -571,6 +595,18 @@ export class Crowd {
             across: abreast ? (k - (size - 1) / 2) * 0.62 : 0,
           })
         }
+        /*
+         * A dog, held by the group's first member on the group's outside (+across is the walker's LEFT, so the first
+         * member of an abreast group is its right-hand end). The people keep their places — shifting them over by half
+         * the dog's gap put them in one another's way (tests/crowd.test.ts) — and the dog is kept inside the pavement
+         * below, or put in front of them where it is too narrow.
+         */
+        if (r() < Math.min(1, dogShare / GROUPS_PER_PERSON)) {
+          const seed = Math.floor(r() * 1e6)
+          const side: 1 | -1 = abreast && size > 1 ? 1 : r() < 0.5 ? 1 : -1
+          const lead = this.walkers[this.walkers.length - size]
+          lead.dog = { seed, side, across: lead.across - side * DOG_GAP }
+        }
       }
     }
 
@@ -588,7 +624,7 @@ export class Crowd {
     const width = new Map<number, number>()      // a group's half-width across
     for (const w of this.walkers) {
       const lid = w.leader !== undefined && byId.has(w.leader) ? w.leader : w.id
-      width.set(lid, Math.max(width.get(lid) ?? 0.3, Math.abs(w.across) + 0.3))
+      width.set(lid, Math.max(width.get(lid) ?? 0.3, Math.abs(w.across) + 0.3, w.dog ? Math.abs(w.dog.across) + 0.35 : 0))
     }
     for (const list of lanes.values()) {
       if (list.length < 2) { for (const w of list) this.goals.set(w.id, { dodge: 0, speed: w.speed }); continue }
@@ -687,9 +723,11 @@ export class Crowd {
         // eased: a sidestep over about a second, not a jump — quicker when it is the rider coming
         const rate = w.yielding ? 2.2 : 0.8
         w.dodge += Math.max(-dt * rate, Math.min(dt * rate, goal.dodge - w.dodge))
-        w.s += w.dir * goal.speed * dt
+        // on a flight of steps everyone slows to a climb, runners most of all (#282)
+        const onSteps = e.kind === 'steps' ? STEPS_SPEED : 1
+        w.s += w.dir * goal.speed * onSteps * dt
         // the legs swing at a rate that suits the speed, or the walk looks like skating; a runner's faster
-        w.phase += dt * goal.speed * (w.kind === 'run' ? 3.2 : w.kind === 'cycle' ? 1.6 : 4.4)
+        w.phase += dt * goal.speed * (e.kind === 'steps' ? STEPS_SPEED : 1) * (w.kind === 'run' ? 3.2 : w.kind === 'cycle' ? 1.6 : 4.4)
         if (w.s < 0 || w.s > e.length) this.carryOn(w, e)
       }
       // they may have walked onto the next street; that street is theirs now, and so is its geometry
@@ -717,7 +755,7 @@ export class Crowd {
        * where a pavement would be, walkers on the Pont Marie stood on the Seine beside it. On a footpath
        * they walk down the middle of it; on a street, out on the pavement.
        */
-      const lane = w.kind === 'cycle' ? Math.max(0.7, eNow.width / 2 - 0.9)
+      const lane = w.kind === 'cycle' ? Math.max(0.7, eNow.width / 2 - (eNow.foot || eNow.park ? 0.9 : CYCLE_KERB_GAP))
         : eNow.foot ? 0
         : this.bridge(eNow) ? Math.max(0.6, eNow.width / 2 - 0.5) : eNow.width / 2 + eNow.walk * 0.5
       // the group's formation and the sidestep, kept inside the pavement (or the path) — and a little past its
@@ -745,10 +783,19 @@ export class Crowd {
       // onto the pavement: `side` is relative to the STREET, so it does not change when they turn round
       const l = lane * w.side + off
       w.at = { x: p.x - dz * l, z: p.z + dx * l }
+      if (w.dog) {
+        // the dog beside them, inside the same pavement; squeezed against them by a narrow one, it goes in front
+        const dogOff = Math.max(-halfWalk, Math.min(halfWalk, off + (w.dog.across - w.across) * w.dir))
+        const ld = lane * w.side + dogOff
+        const front = Math.abs(dogOff - off) < DOG_MIN_GAP
+        w.dogAt = front ? w.at : { x: p.x - dz * ld, z: p.z + dx * ld }
+        w.dogLead = front ? DOG_FRONT : 0
+      }
       w.nx = -dz
       w.nz = dx
       // on a bridge, the pavement is 0.15 m above the deck's own height (render/bridges.ts)
-      w.y = eNow.raised ? profileAt(eNow.points, eNow.heights, w.s).y + (eNow.foot ? 0.05 : 0.15) : undefined
+      // (and on a model's own paved level, whose ground is sunk under it: the Trocadéro's parvis, city/model-walks.ts)
+      w.y = eNow.raised || eNow.onModel ? profileAt(eNow.points, eNow.heights, w.s).y + (eNow.foot ? 0.05 : 0.15) : undefined
       w.level = eNow.heights?.length ? profileAt(eNow.points, eNow.heights, w.s).y : undefined
       w.park = !!eNow.park
 
@@ -768,6 +815,12 @@ export class Crowd {
     this.first = false
   }
 }
+
+/**
+ * How far in from the kerb a crowd cyclist on a street rides (2026-11-17, #164): the kerb bays' parked cars (about 2 m deep) are
+ * where the old 0.9 m put them, so they rode through the cars. Paths and park ways keep 0.9.
+ */
+const CYCLE_KERB_GAP = 2.5
 
 /** One person's colours, in both forms. */
 const SPORT_TOPS = ['#1f6bff', '#22c7ee', '#e03131', '#e5157f', '#ffd42a', '#12a874', '#ffffff', '#111111']

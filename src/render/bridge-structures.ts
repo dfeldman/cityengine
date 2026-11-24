@@ -23,13 +23,14 @@
  */
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
-import { MeshBuilder } from './buildings.ts'
+import { MeshBuilder, capPolygon } from './buildings.ts'
 import { cartoonMaterial, surfaceTag } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge, type PackedRail } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { axisAlong, axisOf, straightOutline } from '../city/bridge-axis.ts'
 import { railOverbridge } from './rail-overbridge.ts'
+import { rouelle } from './bridge-rouelle.ts'
 
 type Rgb = [number, number, number]
 type P = { x: number; z: number }
@@ -86,6 +87,11 @@ export interface StructureStyle {
   horsemen?: boolean
   /** the Pont Alexandre III's gilded nymphs at the crown of the arch, on each face */
   nymphs?: boolean
+  /**
+   * the bridge's roadway is a freeway's (the Périphérique's Ponts Amont and Aval, the A13's viaduct): its motorway ways set the structure's axis, extent and deck
+   * height, as a street's would. Without it a freeway way is left out of both (a slip road or a crossing freeway is not this bridge's deck).
+   */
+  freewayDeck?: boolean
 }
 
 const LIMESTONE: Rgb = [0.82, 0.78, 0.69]
@@ -108,8 +114,18 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
   //  fr.wikipedia and the IGN aerial. A concrete or steel beam bridge of the 1960s drew as a Second Empire arcade; the Mirabeau as five stone arches, not its 32, 93, 32 of steel)
   'Pont Mirabeau': { kind: 'iron', spans: [32.4, 93, 32.4], rise: 0.17, shape: 'segment', cutwater: 'pointed', pier: 0.05, parapet: 'iron', lamps: 'lantern', ribs: 5, iron: [0.2, 0.27, 0.27], figures: true },
   'Pont de Grenelle': { kind: 'iron', arches: 2, rise: 0.12, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', ribs: 6, iron: STEEL },
+  // (OSM's outline is now named for the Cadets de Saumur, 2026-11-16: under the old key alone it drew as the default stone arcade)
+  'Pont de Grenelle - Cadets de Saumur': { kind: 'iron', arches: 2, rise: 0.12, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern', ribs: 6, iron: STEEL },
   'Pont du Garigliano': { kind: 'girder', pierAt: [0.28, 0.72], depth: 2.6, parapet: 'iron', lamps: 'modern', iron: STEEL },
   'Pont Charles de Gaulle': { kind: 'girder', pierAt: [0.26, 0.74], depth: 2.2, parapet: 'iron', lamps: 'modern', iron: [0.8, 0.82, 0.82] },
+  // (the Seine's motorway bridges, 2026-11-16, fr.wikipedia + the freewayDeck field: they drew no structure at all, only the freeway viaduct renderer's slab and piers)
+  // Pont Amont, 1967-69, reinforced-concrete beam, 270 m on 4 spans, 42 m wide, 4.5 m deep; the Pont Aval, 1964-68 (Luc Arsène-Henry), concrete box girder, 312.5 m, 35 m wide
+  // (pier positions are not on either page: evenly spaced, tune pierAt)
+  'Pont Amont': { kind: 'girder', pierAt: [0.25, 0.5, 0.75], depth: 4.5, parapet: 'stone', lamps: 'none', iron: CONCRETE, freewayDeck: true },
+  'Pont Aval': { kind: 'girder', pierAt: [0.25, 0.5, 0.75], depth: 3.6, parapet: 'stone', lamps: 'none', iron: CONCRETE, freewayDeck: true },
+  // Viaduc de Saint-Cloud (A13), 1972-74, Daniel Badani: prestressed-concrete box girder of precast segments 3.6 m deep, 1,100 m, 20.4 m wide; 7 spans of 20-102 m over the Seine
+  // (529 m) and 9 of 26-87 m on the access viaduct (554 m): sixteen spans, drawn as evenly spaced piers (their order along the outline is not on the page)
+  'Viaduc de Saint-Cloud': { kind: 'girder', pierAt: Array.from({ length: 15 }, (_, i) => (i + 1) / 16), depth: 3.6, parapet: 'stone', lamps: 'none', iron: CONCRETE, freewayDeck: true },
   'Pont de Bercy': { kind: 'stone', arches: 5, rise: 0.5, shape: 'round', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
   'Pont de Tolbiac': { kind: 'stone', arches: 5, rise: 0.55, shape: 'round', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
   'Pont National': { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
@@ -158,6 +174,9 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
 const BANK_PIER = 2.5, DRY_CLEAR = 2.6
 /** …the bank pier's land face stands this far out in the river from its edge, so the lower quai's path runs under the arch, not into its foot (owner, 2026-11-08, Pont National) */
 const BANK_PIER_OUT = 5
+/** an at-grade way crossing under the structure with this much headroom under its deck opens an arch over it (m), padded this far past its kerb (m);
+ *  a dry arch over one springs this far over it, a flat soffit where the deck allows no more (m) */
+const BR_WAY_CLEAR = 2.2, BR_WAY_PAD = 0.5, BR_WAY_HEAD = 2.4
 const DEFAULT_OVER_WATER: StructureStyle = { kind: 'stone', span: 28, rise: 0.55, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' }
 /** a bridge over a road or a quay only: a plain stone-faced slab, as the ways drew it before */
 const DEFAULT_OVER_LAND: StructureStyle = { kind: 'girder', parapet: 'stone', lamps: 'none', iron: [0.66, 0.62, 0.55] }
@@ -175,7 +194,7 @@ export { axisOf }
  * leap of 140 m, a deck hung from two steel bows: fr.wikipedia, "without intermediate support". It drew as the Line 6 viaduct's supports every 20 m across
  * the river. The viaduct's own deck stays (render/bridges.ts), without its supports over the span.
  */
-export const RAIL_ARCHES = new Set(["Viaduc d'Austerlitz"])
+export const RAIL_ARCHES = new Set(["Viaduc d'Austerlitz", 'Pont Rouelle'])
 
 /** a bridge structure's deck profile: a running median over ±DECK_MEDIAN metre bins, then a mean over ±DECK_MEAN (no sawtooth parapet) */
 export const DECK_MEDIAN = 3, DECK_MEAN = 0
@@ -185,6 +204,8 @@ export const BRIDGE_Z_OFFSET = 1, BRIDGE_Z_UNITS = 4
  *  given). At [0.5, 0.49, 0.46] it showed as pale wedges on the road where the ways' surfaces stop short of the structure's end — the
  *  Pont Marie's and the Pont de Sully's (2026-11-16) */
 export const DECK_TOP: Rgb = [0.33, 0.33, 0.31]
+/** a styled bridge's whole outline capped under its deck top (m under it): on/off */
+export const OUTLINE_CAP = false, OUTLINE_CAP_DOWN = 0.04
 
 function railArch(out: MeshBuilder, ring: P[], rails: PackedRail[], wetAt: (x: number, z: number) => number | null): void {
   const ax = axisOf(ring)
@@ -288,7 +309,7 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
           let ax = 0, az = 0
           for (const q of ring) { ax += q.x; az += q.z }
           ax /= ring.length; az /= ring.length
-          if (ax >= rect.x0 && ax < rect.x1 && az >= rect.z0 && az < rect.z1) railArch(out, ring, near.around.rails, wetAt)
+          if (ax >= rect.x0 && ax < rect.x1 && az >= rect.z0 && az < rect.z1) (b.name === 'Pont Rouelle' ? rouelle(out, ring, near.around.rails, wetAt, (x, z) => terrain.heightAt(x, z)) : railArch(out, ring, near.around.rails, wetAt))
           continue
         }
         let cx = 0, cz = 0
@@ -433,10 +454,11 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     const k = Math.floor(e.points.length / 4) * 2
     if (inOutline(ring, e.points[k], e.points[k + 1], 1.5)) return
   }
+  const freewayDeck = !!styleFor(b, styles)?.freewayDeck
   // along the bridge's own ways, which is not always its long side (bridge-axis.ts `axisAlong`)
   const own: [P, P][] = [], roads = new Set<[P, P]>()
   for (const e of edges) {
-    if (!e.bridge || freewayKind(e)) continue
+    if (!e.bridge || (freewayKind(e) && !freewayDeck)) continue
     const pts = unpackPoints(e.points)
     for (let i = 1; i < pts.length; i++) {
       if (inOutline(ring, (pts[i - 1].x + pts[i].x) / 2, (pts[i - 1].z + pts[i].z) / 2, 0.5)) { const sg: [P, P] = [pts[i - 1], pts[i]]; own.push(sg); if (!e.foot) roads.add(sg) }
@@ -478,7 +500,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
      * its heights 16 m above the bridge's own went into the bins where it crosses, the median of two picked the higher,
      * and the structure rose to the freeway — a wall 16 m high across 22nd Street. A freeway draws its own deck.
      */
-    if (freewayKind(e)) continue
+    if (freewayKind(e) && !freewayDeck) continue
     const own = e.bridge === true
     const pts = unpackPoints(e.points)
     for (let i = 1; i < pts.length; i++) {
@@ -560,6 +582,26 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   }
   const under = (s: number): number => Math.min(groundAt(s, -hw), groundAt(s, 0), groundAt(s, hw))
   const wetUnder = (s: number): boolean => { const p = W(s, 0); return wetAt(p.x, p.z) !== null }
+  // WAYS UNDER IT (2026-11-16, owner, the Pont d'Arcole's right-bank end: "the lower quai road intersects the first bridge footing"): the
+  // open test below wants 3.4 m over the ground, and the lower quai's ramp ran under the end with 2.9 m, so the dry arch stopped a metre
+  // short of it and the abutment came down on the road. A station an at-grade way crosses under with BR_WAY_CLEAR or more is open too.
+  const wayUnder: (number | null)[] = new Array(Math.ceil(L) + 1).fill(null)
+  for (const e of edges) {
+    if (e.bridge || e.tunnel || !e.heights) continue
+    const pts = unpackPoints(e.points), half = (e.width ?? 3) / 2 + BR_WAY_PAD
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], c = pts[i], m = Math.max(1, Math.ceil(Math.hypot(c.x - a.x, c.z - a.z) / 0.5))
+      for (let k = 0; k <= m; k++) {
+        const t = k / m, x = a.x + (c.x - a.x) * t, z = a.z + (c.z - a.z) * t
+        const s = (x - O.x) * ux + (z - O.z) * uz, o = (x - O.x) * vx + (z - O.z) * vz
+        if (Math.abs(o) > hw + half || s < -half || s > L + half) continue
+        const h = e.heights[i - 1] + (e.heights[i] - e.heights[i - 1]) * t
+        if (top(s) - h < BR_WAY_CLEAR) continue
+        for (let q = Math.max(0, Math.floor(s - half)); q <= Math.min(wayUnder.length - 1, Math.ceil(s + half)); q++) wayUnder[q] = Math.min(wayUnder[q] ?? Infinity, h)
+      }
+    }
+  }
+  const wayAt = (s: number): number | null => wayUnder[Math.max(0, Math.min(wayUnder.length - 1, Math.round(s)))]
 
   // the stretches it stands clear over, where the arches go (gaps under 6 m closed)
   // …and broken at the river's edge (owner, 2026-11-07, Pont National: "the lower quai still hits the bridge"): a pier stands on the
@@ -569,7 +611,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   for (let s = 0; s <= L; s += 1) {
     const wet = wetUnder(s)
     if (wet) overWater = true
-    if (top(s) - under(s) < 3.4) continue
+    if (top(s) - under(s) < 3.4 && wayAt(s) === null) continue
     const last = open[open.length - 1]
     if (last && s - last.b <= 6 && last.wet === wet) last.b = s
     else if (last && s - last.b <= 1) { last.b = s - BANK_PIER / 2; open.push({ a: s + BANK_PIER / 2, b: s + BANK_PIER / 2, wet }) }
@@ -607,7 +649,11 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
       let deckLow = Infinity
       for (let s = q.a; s <= q.b; s += 1) deckLow = Math.min(deckLow, top(s))
       // over dry quais: sprung DRY_CLEAR over the highest of them (held 2 m under the deck), so a path near either end still clears it
-      const spring = q.wet ? low + 0.4 : Math.max(low + 0.4, Math.min(high + DRY_CLEAR, deckLow - 2))
+      let spring = q.wet ? low + 0.4 : Math.max(low + 0.4, Math.min(high + DRY_CLEAR, deckLow - 2))
+      // (…and over a way crossing under it, BR_WAY_HEAD over the highest such way: a flat soffit where the deck is too low for an arch)
+      let wayHigh = -Infinity
+      for (let s = q.a; s <= q.b; s += 1) { const h = wayAt(s); if (h !== null) wayHigh = Math.max(wayHigh, h) }
+      if (!q.wet && wayHigh > -Infinity) spring = Math.max(spring, Math.min(deckLow - 0.75, wayHigh + BR_WAY_HEAD))
       // (each arch its share of the clear length, where they are not all alike)
       const shares = style.spans?.length === m ? style.spans : null
       const sum = shares ? shares.reduce((t, v) => t + v, 0) : m
@@ -902,6 +948,20 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
   for (let s = 0; s < L - 1e-6; s += 1) {
     const s1 = Math.min(L, s + 1)
     quad([at(s, -hw, low(s) - 0.08), at(s1, -hw, low(s1) - 0.08), at(s1, hw, low(s1) - 0.08), at(s, hw, low(s) - 0.08)], [0, 1, 0], style.timber ? [0.5, 0.47, 0.42] : DECK_TOP)
+  }
+  // ---- …and over the WHOLE outline (owner, 2026-11-16, the Pont d'Iéna's right-bank head: holes in the deck beside the streets, down to
+  // the lower quai under the land arch): the strip above spans the streets' width only, and a head's outline flares wider over its land
+  // arch and stairs. Capped OUTLINE_CAP_DOWN under the strip, at the deck's level along the axis (clamped to the span).
+  if (OUTLINE_CAP && !style.timber) {
+    const cap = new MeshBuilder()
+    capPolygon(cap, ring, 0, DECK_TOP, FIXED)
+    for (let i = 0; i < cap.positions.length; i += 3) {
+      const sx = (cap.positions[i] - O.x) * ux + (cap.positions[i + 2] - O.z) * uz
+      cap.positions[i + 1] = low(Math.max(0, Math.min(L, sx))) - 0.08 - OUTLINE_CAP_DOWN
+    }
+    const n0 = out.positions.length / 3
+    out.positions.push(...cap.positions); out.normals.push(...cap.normals); out.uvs.push(...cap.uvs); out.colors.push(...cap.colors)
+    for (const ix of cap.indices) out.indices.push(ix + n0)
   }
   // the timber deck's planks: a dark seam across it every 0.3 m
   if (style.timber) {

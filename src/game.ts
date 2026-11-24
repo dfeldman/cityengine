@@ -54,8 +54,8 @@ import { regionKit } from './render/region-kits.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
 import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
-import { ambientOcclusion } from './render/depth.ts'
-import { colourGrade, GRADE, GRADE_NO_AO } from './render/grade.ts'
+import { GRADE, GRADE_NO_AO } from './render/grade.ts'
+import { postStack } from './render/post.ts'
 import { City, setupGroundLayers, BRIDGE_CROWN_REACH } from './render/city.ts'
 import { FarMassing, FAR_FOG } from './render/far-massing.ts'
 import { Crowd, crowdLook } from './sim/crowd.ts'
@@ -80,15 +80,18 @@ import { ATE_LINES, PARIS_ATE_LINES, DEFAULTS as DELIVERY_DEFAULTS, Delivery, ra
 import { DeliveryCard } from './ui/delivery-card.ts'
 import { Tunnels } from './render/tunnels.ts'
 import { Beacon } from './render/beacon.ts'
-import { SIZE, boxOf, overlap } from './sim/collide.ts'
+import { SIZE, boxOf, overlap, segmentHits } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
 import { BakedCrowd, cityClothes, peopleLights, wardrobeFor } from './render/crowd-baked.ts'
-import { Dogs } from './render/dogs.ts'
+import { DogWalks } from './render/dog-walks.ts'
 import { HERDS, Zoo } from './render/zoo.ts'
+import { Birds } from './render/birds.ts'
+import { Critters } from './render/critters.ts'
 import { waterLookup } from './render/watermask.ts'
 import { CableRiders } from './render/cable-riders.ts'
 import { FerrisWheel, ROUE_DE_PARIS, SKYSTAR } from './render/sf/ferris.ts'
 import { Balloon, BALLON_DE_PARIS, Rides, VASQUE, type Ride as BoardRide } from './render/paris/balloons.ts'
+import { PARIS_OBSERVE, type ObservePoint } from './game/observe-points.ts'
 import { PLAYER_SPOT } from './render/sf/trains.ts'
 import { normalizeSpec, randomSpec } from 'avatarkit'
 import { Rider } from './render/rider.ts'
@@ -102,7 +105,7 @@ import { Energy } from './sim/energy.ts'
 import { capTextures } from './render/texture-cap.ts'
 import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
-import { DAYLIGHT, updateEye } from './render/facade-material.ts'
+import { DAYLIGHT, setWeathering, updateEye } from './render/facade-material.ts'
 import { obscuraView } from './render/obscura.ts'
 import { bouldersLayer } from './render/boulders.ts'
 import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from './render/beach-surf.ts'
@@ -131,6 +134,7 @@ import { Navigator, pointAlong } from './sim/navigate.ts'
 import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/transit.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, exits, resolve, type CityGraph, type Edge } from './city/graph.ts'
+import { modelLevelAt, onLevels } from './city/model-walks.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
 import { isTunnel, nearestOnGraph, planRoute, tourEdgeCost, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
@@ -254,13 +258,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   setGroundStride(tier.groundStride)
   // `?keepgeo=0|1` overrides the tier, to measure what the CPU copies of the models' vertices cost
   { const k = new URLSearchParams(location.search).get('keepgeo'); setKeepGeometry(k === null ? tier.keepGeometry : k === '1') }
-  if (!tier.ao) off.add('ao')
+  // the costly finishing passes (render/post.ts) go where the AO goes; Menu → Settings → Graphics overrides below
+  if (!tier.ao) for (const n of ['ao', 'shadows', 'bloom']) off.add(n)
   // `?with=grade,plants` puts back what the tier leaves out, to measure it on a device without a code change
   const back = new Set((new URLSearchParams(location.search).get('with') ?? '').split(',').filter(Boolean))
   for (const w of tier.without) if (!back.has(w)) off.add(w)
   // Menu → Settings → Graphics → Speed streaks, and → World (ui/settings.ts): on or off over the tier's choice; an
   // explicit `?without=` still wins
   if (!settings().motion) off.add('speedlines')
+  for (const k of ['film', 'weathering', 'vignette', 'grain'] as const) if (!settings()[k]) off.add(k)
   for (const [f, names] of Object.entries(FEATURE_OFF)) {
     const v = settings()[f as keyof typeof FEATURE_OFF]
     for (const n of names) {
@@ -386,6 +392,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const baked = await loadRide(document.baseURI, opts.city, mode, src.stamp)
   if (!baked) throw new Error(`${opts.city} has no baked ride graph — npm run bake -- ${opts.city}`)
   const rides: RideGraph = baked
+  // (its walks on a model's own paved levels on those levels, as the tiles' are: city/model-walks.ts)
+  const modelLevel = index.origin ? modelLevelAt(region(index.region).modelWalks, new Projection(index.origin)) : null
+  if (modelLevel) for (const e of rides.edges.values()) if (e.foot && e.heights) { const r = onLevels(modelLevel, e.points, e.heights); if (r) { e.heights = r.heights; e.onModel = true } }
   mark('rideGraph')
 
   /*
@@ -398,6 +407,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // Menu → Settings → Graphics → Fog (owner, 2026-10-15): off clears the air — every material reads this density as
   // it is made, so like the time of day it applies from the next ride
   if (!settings().fog) DAYLIGHT.fogDensity = 0
+  // Menu → Settings → Graphics → Weathered walls (render/facade-material.ts), read as each facade material is made
+  setWeathering(off.has('weathering') ? 0 : 1)
+  if (new URLSearchParams(location.search).has('dev')) (window as unknown as { __weathering?: (v: number) => void }).__weathering = (v) => setWeathering(v, scene)
 
   const __t0 = performance.now()
   // (`limitDeviceRatio`: an iPhone's 3x is nine times the pixels — the framebuffer and every full-screen target)
@@ -896,7 +908,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('passages')
   // the MÉTROPOLITAIN lettering on the Guimard entrances (render/metrosigns.ts)
   if (region(pkg.region).pointFurniture.metro === 'guimard') {
-    city.addLayer(metroSignsLayer(scene, city.terrain, (x, z) => city.streetBearing(x, z), city.guimardAt ?? (() => true)))
+    city.addLayer(metroSignsLayer(scene, city.terrain, (x, z) => city.streetBearing(x, z), city.guimardAt ?? (() => true), (x, z) => city.metroSpot.get(`${x},${z}`) ?? null))
   }
   const sky = off.has('sky') ? null : new Sky(scene)
   // ground landmarks pave, as trees clearings (render/vegetation.ts `clear`)
@@ -925,19 +937,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     : new Landmarks(scene, { ...pkg, seaLevel: index.sea ?? null }, landmarkList, city.terrain, new URL(`landmarks/${pkg.region ?? opts.city}/`, document.baseURI).href)
   // each fitted to its own building as the tile with it arrives — the building as baked, before prepare took it out
   // the statues from the user's models, at most three in memory (render/statues.ts)
-  const statues = off.has('landmarks') ? null : new Statues(scene, await statueManifest(document.baseURI, opts.city, pkg.region),
-    pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [], index.sea ?? null)
-  ;(window as unknown as { __statues?: unknown }).__statues = statues
-  /** a pooled statue is the real figure: no generic street figure within this many metres of it */
-  const STATUE_FIGURE_CLEAR = 6
-  for (const p of statues?.positions ?? []) city.noFigureNear(p.x, p.z, STATUE_FIGURE_CLEAR)
-  if (landmarks) {
-    // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
-    // placed and before any tile is handed over — see Landmarks.covers / City.coverRaised (BUGS.md #136)
-    landmarks.onCover = (c) => city.coverRaised(c)
-    // (the trees are made further down: a paving that arrives first is queued for them)
-    landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
-    landmarks.onFootprint = (ring) => { city.noFigureIn(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
   // zoo animals at their hand-placed spots (render/zoo.ts): loaded only when the rider comes near one
   const zooWet = (() => {
     const look = waterLookup(wholeWater(pkg).map((a) => {
@@ -949,6 +948,28 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return (x: number, z: number) => look(x, z) !== null
   })()
   const zoo = off.has('zoo') ? null : new Zoo(scene, pkg.origin, city.terrain, new URL('models/', document.baseURI).href, HERDS, zooWet, (x, z) => city.waterLevelAt(x, z))
+  // pigeons, crows, gulls, sparrows and doves on the pavements and in the parks (render/birds.ts, birdkit): a flock every
+  // few minutes of riding; `?birds=1` puts one in every square, `?without=birds` none
+  const birds = off.has('birds') || off.has('life') ? null : new Birds(scene, city, pkg.region ?? '', pkg.origin, new URLSearchParams(location.search).get('birds') === '1')
+  ;(window as unknown as { __birds?: Birds | null }).__birds = birds
+  // squirrels nearly everywhere there are trees, rabbits, foxes and coyotes in the woods and scrub, the cemetery cats of
+  // Montmartre and Père-Lachaise (render/critters.ts, critterkit); `?critters=1` a group in every square, `?without=critters` none
+  const critters = off.has('critters') || off.has('life') ? null : new Critters(scene, city, pkg.region ?? '', pkg.origin, new URLSearchParams(location.search).get('critters') === '1')
+  ;(window as unknown as { __critters?: Critters | null }).__critters = critters
+  const statues = off.has('landmarks') ? null : new Statues(scene, await statueManifest(document.baseURI, opts.city, pkg.region),
+    pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [], index.sea ?? null)
+  ;(window as unknown as { __statues?: unknown }).__statues = statues
+  /** a pooled statue is the real figure: no generic street figure within this many metres of it */
+  const STATUE_FIGURE_CLEAR = 6
+  for (const p of statues?.positions ?? []) city.noFigureNear(p.x, p.z, STATUE_FIGURE_CLEAR)
+  if (landmarks) {
+    // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
+    // placed and before any tile is handed over — see Landmarks.covers / City.coverRaised (BUGS.md #136)
+    landmarks.onCover = (c) => city.coverRaised(c)
+    landmarks.passagesFor = (ring) => city.passageWaysThrough(ring)
+    // (the trees are made further down: a paving that arrives first is queued for them)
+    landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
+    landmarks.onFootprint = (ring) => { city.noFigureIn(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
     landmarks.dryAt = (x, z) => city.dryAt(x, z)
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)
@@ -1316,7 +1337,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // (`without=crowd`, iOS's ultra tier: nobody on the pavements; the cars still drive)
   const crowdLevel = off.has('crowd') ? 'none' : (new URLSearchParams(location.search).get('crowd') as 'none' | 'some' | 'busy' | 'crowded' | null) ?? level
   // the city's own colours and clothes for its people (Paris's darker, with its coats)
-  crowdLook(pkg.region)
+  crowdLook(pkg.region, new URLSearchParams(location.search).has("dogs") ? Number(new URLSearchParams(location.search).get("dogs")) || 1 : undefined)
   wardrobeFor(pkg.region)
   const crowd = new Crowd(graph, crowdN !== null
     ? { perKm: crowdN, range: Math.max(260, 26 * Math.sqrt(crowdN)) }
@@ -1477,6 +1498,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * session as a shadow with no one above it. Until they exist, the crowd is drawn as boxes.
    */
   let strangers: BakedCrowd | null = null
+  let dogs: DogWalks | null = null
   let cableRiders: CableRiders | null = null
   /** the SkyStar wheel at Fisherman's Wharf (render/sf/ferris.ts): turning, and boarded with B */
   // and La Grande Roue de Paris at the Concorde, the same ride with its own legs
@@ -1488,7 +1510,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const all: BoardRide[] = [new FerrisWheel(scene, p.x, p.z, city.terrain.heightAt(p.x, p.z), wheelSpec)]
     if (pkg.region === 'paris') for (const b of [BALLON_DE_PARIS, VASQUE]) {
       const q = proj.toLocal({ lat: b.lat, lon: b.lon })
-  let dogs: Dogs | null = null
       all.push(new Balloon(scene, q.x, q.z, city.terrain.heightAt(q.x, q.z), b))
     }
     return new Rides(all)
@@ -1508,6 +1529,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (!off.has('crowd') && !off.has('cableriders')) void c.ready.then(() => { cableRiders = new CableRiders(scene) })
     void c.ready.then(() => {
       strangers = c
+      // some strangers walk a dog on a lead (render/dog-walks.ts, dogkit dogs; who has one: sim/crowd.ts `dogShare`)
+      if (!off.has('crowd') && !off.has('dogs')) {
+        const d = new DogWalks(scene, pkg.region)
+        dogs = d
+        ;(window as unknown as { __dogs?: DogWalks }).__dogs = d
+      }
       ;(window as unknown as { crowdReady?: boolean }).crowdReady = true
     })
   })
@@ -1519,13 +1546,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   quays.plantWith((k, ps) => trees.setTrees(k, ps))
   treesReady = true
   for (const r of clearingsEarly) trees.clear(r, bridgeRings.has(r) ? BRIDGE_CROWN_REACH : 0)
-      // some strangers walk a dog (render/dogs.ts) — OFF unless asked for: the auto-rigged Tripo dogs looked bad
-      // (owner, 2026-11-20). `?dogs=N` gives one walker in N a dog, `?dogs=1` everyone
-      const share = Number(new URLSearchParams(location.search).get('dogs')) || 0
-      if (share > 0 && !off.has('crowd')) {
-        const d = new Dogs(scene, new URL('models/', document.baseURI).href, { share })
-        void d.ready.then(() => { dogs = d; (window as unknown as { __dogs?: Dogs }).__dogs = d })
-      }
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
   // (`treesReady`: the shot tools wait for it — SF's forms are forty-odd models and take a while)
@@ -1634,7 +1654,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * COUCH MODE's energy bar (sim/energy.ts): the watts typed with ↑/↓ are paid for out of it, and an empty bar caps
    * them until it has refilled a little. Shown under the speed.
    */
-  const energy = play.energy ? new Energy() : null
+  // no energy bar in dev mode (?dev=1): testing wants unlimited power (owner, 2026-11-16, PARIS_BUGS #313)
+  const energy = play.energy && new URLSearchParams(location.search).get('dev') !== '1' ? new Energy() : null
   // the bottom-left corner: the energy bar and the cash, side by side in one row, so neither can be drawn over the
   // other however wide the bar's label grows ("energy · spent"; owner, 2026-10-14: overlapping there)
   const corner = document.createElement('div')
@@ -1997,6 +2018,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   let destination: { x: number; z: number } | null = null
   let route: Route | null = null
+  nav.routeAt = (n) => route?.leave.get(n)
   let routedAt = 0
   let ownChoiceAt: number | null = null
   const replan = (): void => {
@@ -2616,7 +2638,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * phone); O lifts the paused camera to its top to look round, O or P comes back down. Heights are the viewing level,
    * metres over the ground at its foot.
    */
-  const OBSERVE = pkg.region === 'san-francisco' ? [
+  const OBSERVE = (pkg.region === 'san-francisco' ? [
     { name: 'Sutro Tower', lat: 37.75523, lon: -122.45277, top: 235 },
     { name: 'Salesforce Tower', lat: 37.78977, lon: -122.39687, top: 300 },
     { name: 'Coit Tower', lat: 37.80239, lon: -122.40582, top: 62 },
@@ -2638,10 +2660,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
      * garden's own paths are not on the ride network, and a rider dropped beside it comes out on a way ~100 m off.
      */
     { name: 'Three Gems', lat: 37.7710835, lon: -122.4695866, top: THREE_GEMS_EYE, skyspace: 'Three Gems', reach: 100 },
-  ].map((o) => ({ obscura: undefined as string | undefined, skyspace: undefined as string | undefined, reach: 150, ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
+  ] : pkg.region === 'paris' ? PARIS_OBSERVE : [] as ObservePoint[])
+    .map((o) => ({ obscura: undefined as string | undefined, skyspace: undefined as string | undefined, exact: false, aloft: false, reach: 150, ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) }))
   let observing: string | null = null
   const nearTop = (at: { x: number; z: number }): (typeof OBSERVE)[number] | null =>
-    OBSERVE.find((o) => Math.hypot(o.x - at.x, o.z - at.z) < o.reach) ?? null
+    // (the nearest in reach: La Défense's towers are 300–400 m apart, their reaches overlap)
+    OBSERVE.reduce<(typeof OBSERVE)[number] | null>((b, o) => { const d = Math.hypot(o.x - at.x, o.z - at.z); return d < o.reach && (!b || d < Math.hypot(b.x - at.x, b.z - at.z)) ? o : b }, null)
   let table: { dispose(): void } | null = null
   let turning: (() => void) | null = null
   /** off the Camera Obscura's table, by whatever way the view ended (O, ⏸, the map) */
@@ -2682,7 +2706,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (p.name === o.obscura && p.y !== undefined && p.height !== undefined) { l.x = p.x; l.z = p.z; topY = p.y + p.height + 0.6 }
         continue
       }
-      if (Math.hypot(p.x - o.x, p.z - o.z) < 40 && p.y !== undefined && p.height !== undefined) topY = Math.max(topY, p.y + p.height + 2)
+      if (!o.exact && Math.hypot(p.x - o.x, p.z - o.z) < 40 && p.y !== undefined && p.height !== undefined) topY = Math.max(topY, p.y + p.height + 2)
     }
     orbit.lift = topY - city.terrain.heightAt(o.x, o.z) - 1.5
     observing = o.name
@@ -2710,20 +2734,21 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       hud.banner('Inside Three Gems', touchScreen() ? 'the sky through the oculus · drag to look · ⏸ to come out' : 'the sky through the oculus · drag to look · O to come out', 4500)
       return
     }
-    hud.banner(`The top of ${o.name}`, touchScreen() ? 'drag to look round · ⏸ to come down' : 'drag to look round · O to come down', 4500)
+    hud.banner(o.aloft ? `Aloft in ${o.name}` : `The top of ${o.name}`, touchScreen() ? 'drag to look round · ⏸ to come down' : 'drag to look round · O to come down', 4500)
   }
   addEventListener('keydown', (e) => {
     if (e.code !== 'KeyO' || e.ctrlKey || e.metaKey || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return
     if (observing && frozen) { comeDown(); return }
-    const o = !frozen ? nearTop(lastAt) : null
+    const o = !frozen && !skystar?.aboard ? nearTop(lastAt) : null
     if (o) goUp(o)
   })
   /** once a frame, from the ride loop: the pill by a tall landmark */
   const observeTick = (at: { x: number; z: number }): void => {
     // (unpaused some other way — ⏸ on a phone, a jump on the map: the table and its turning go too)
     if (observing && !frozen) { observing = null; leaveTable() }
-    const o = frozen ? null : nearTop(at)
-    const what = o?.obscura ? `look in ${o.name}` : o?.skyspace ? `sit in ${o.name}` : `observe from the top of ${o?.name}`
+    // (not while riding a wheel or a balloon: the ride is its own view)
+    const o = frozen || skystar?.aboard ? null : nearTop(at)
+    const what = o?.obscura ? `look in ${o.name}` : o?.skyspace ? `sit in ${o.name}` : o?.aloft ? `observe from ${o.name}, aloft` : `observe from the top of ${o?.name}`
     hud.observe(o ? (touchScreen() ? `🔭 ${what[0].toUpperCase()}${what.slice(1)}` : `🔭 Press O to ${what}`) : null, o ? () => goUp(o) : undefined)
   }
   /*
@@ -3058,12 +3083,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // where the camera is LOOKING, in height: the road's own profile ahead, eased (BUGS.md #207)
   let aimY = nav.elevationAhead(12)
 
-  // Contact shadows for everything, without teaching a single shader about them. `?without=ao` turns it off.
-  if (!off.has('ao')) ambientOcclusion(scene, camera)
-  // brighter, more saturated, and anti-aliased: after the AO, the last passes (render/grade.ts)
-  if (!off.has('grade')) {
+  // Contact shadows, sun shadows, bloom, the grade and its film look, FXAA (render/post.ts) — each `?without=` by name:
+  // ao, aogeo (the AO kept on the pre-pass depth even when the shadows' geometry buffer is there), shadows, bloom, grade, film, vignette, grain
+  {
     const g = new URLSearchParams(location.search).get('grade')?.split(',').map(Number)
-    colourGrade(scene, camera, g && g.length === 3 && g.every((v) => v > 0) ? { exposure: g[0], saturation: g[1], contrast: g[2] } : off.has('ao') ? GRADE_NO_AO : GRADE)
+    postStack(scene, camera, {
+      ao: !off.has('ao'), aoGeometry: !off.has('aogeo') && !off.has('shadows'), shadows: !off.has('shadows'), bloom: !off.has('bloom'),
+      grade: !off.has('grade'), film: !off.has('film'), vignette: !off.has('vignette'), grain: !off.has('grain'),
+    }, g && g.length === 3 && g.every((v) => v > 0) ? { exposure: g[0], saturation: g[1], contrast: g[2] } : off.has('ao') ? GRADE_NO_AO : GRADE)
   }
 
   let lastState: ReturnType<typeof ride.step> | null = null
@@ -3458,13 +3485,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        * streets, so the road is drawn on the ground there — 0.4 m over the profile, measured. Ground within 1.5 m of
        * the street wins; a tunnel's cut, a bored tunnel and a bridge deck are further off and keep their profile.
        */
-      {
+      // (but on a model's own paved level the profile IS the paving, and the ground under it is sunk out of its way:
+      //  the Trocadéro's parvis, where the park's raw ground below put the rider in it to the knees — owner, 2026-11-18)
+      const onLevel = !riding && modelLevel !== null && modelLevel(at.x, at.z) !== null
+      if (!onLevel) {
         const g = city.terrain.heightAt(at.x, at.z)
         if (!riding && g > groundY && g - groundY < 1.5) groundY = g
       }
       // …and on a park's trail, on the park's own ground, where the trail and its walkers are drawn (#539): the profile is
       // the streets' levelled ground, up to 1.5 m off it over a hill in Golden Gate Park
-      if (!riding && nav.edge.foot && nav.edge.kind !== 'steps' && !nav.edge.raised && parkMap.contains(at.x, at.z, TILE)) {
+      if (!riding && !onLevel && nav.edge.foot && nav.edge.kind !== 'steps' && !nav.edge.raised && parkMap.contains(at.x, at.z, TILE)) {
         const raw = city.terrain.rawHeightAt(at.x, at.z)
         if (Math.abs(raw - groundY) < 3) groundY = raw
       }
@@ -3602,7 +3632,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         // the delivery game: its clock runs with the ride (not while frozen or paused), and it watches the rider
         if (!hold && deliveries) onDelivery(delivery.update(dt, at))
         // very late with the order on board (past the one-star mark): offer the pass, for a few seconds every minute
-        const veryLate = !hold && delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup) * 1.7
+        const veryLate = !hold && delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup, pkg.region === 'paris') * 1.7
         // the pass, as a button too: a phone has no E (owner, 2026-10-03)
         hud.action(veryLate ? `${delivery.job?.item?.emoji ?? '🍽'} Eat the ${delivery.job?.item?.name ?? 'order'}` : null, () => onDelivery(delivery.eat()))
         observeTick(at)
@@ -3672,20 +3702,39 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           for (const w of crowd.all) {
             // not the crowd's cyclists: they share the road the rider's way, and catching one up from behind was two
             // crashes in 100 s (measured) — a nuisance, not a hazard
-            if (w.kind === 'cycle' || Math.abs(w.at.x - at.x) > 2.5 || Math.abs(w.at.z - at.z) > 2.5) continue
+            // (a walker with a dog reaches further: the dog walks a lead's length off: sim/crowd.ts DOG_GAP)
+            const reach = w.dog ? 4 : 2.5
+            if (w.kind === 'cycle' || Math.abs(w.at.x - at.x) > reach || Math.abs(w.at.z - at.z) > reach) continue
             // (a walker on another level — the street over a tunnel — is not in the way)
             if (Math.abs((w.y ?? nearLevel(city.terrain.heightAt(w.at.x, w.at.z), w.level)) - nav.elevation().y) > 3.5) continue
-            if (!overlap(riderNow.box, boxOf(w.at.x, w.at.z, w.heading, SIZE.runner))) continue
+            /*
+             * …or the DOG they walk, or its LEAD strung between them (owner, 2026-11-20: "yes implement dog bump"): the
+             * dog where it is drawn (render/dog-walks.ts, wandering about its place), else its place in the crowd, and
+             * the lead as the straight line from hand to dog — a bike runs into the line however it hangs.
+             */
+            let hit: { x: number; z: number } | null = overlap(riderNow.box, boxOf(w.at.x, w.at.z, w.heading, SIZE.runner)) ? w.at : null
+            let what = w.kind === 'run' ? 'runner' : 'pedestrian'
+            if (!hit && w.dog && w.dogAt) {
+              const d = dogs?.where(w.id) ?? { ...w.dogAt, heading: w.heading, hand: [w.at.x, w.at.z] as [number, number] }
+              if (overlap(riderNow.box, boxOf(d.x, d.z, d.heading, SIZE.dog))) { hit = d; what = 'dog' }
+              else if (segmentHits(riderNow.box, d.hand[0], d.hand[1], d.x, d.z)) {
+                hit = { x: (d.hand[0] + d.x) / 2, z: (d.hand[1] + d.z) / 2 }; what = 'dog\'s lead'
+              }
+            }
+            if (!hit) continue
             graceUntil = now + 4000
             collisions += 1
             ride.halt()
-            rider?.tumble(Math.sin(heading) * (w.at.z - at.z) - Math.cos(heading) * (w.at.x - at.x) > 0 ? 1 : -1)
-            const lines = ['Sorry!', 'Watch it!', 'Excuse me!']
-            hud.banner(lines[collisions % lines.length], `clipped a ${w.kind === 'run' ? 'runner' : 'pedestrian'} · ${collisions} this ride`, 2600)
+            rider?.tumble(Math.sin(heading) * (hit.z - at.z) - Math.cos(heading) * (hit.x - at.x) > 0 ? 1 : -1)
+            // (in French in Paris: PARIS_BUGS #265)
+            const lines = what.startsWith('dog')
+              ? (pkg.region === 'paris' ? ['Mon chien !', 'Attention au chien !', 'Oh là là !'] : ['My dog!', 'Watch the dog!', 'Hey, easy!'])
+              : pkg.region === 'paris' ? ['Pardon !', 'Attention !', 'Excusez-moi !'] : ['Sorry!', 'Watch it!', 'Excuse me!']
+            hud.banner(lines[collisions % lines.length], `clipped a ${what} · ${collisions} this ride`, 2600)
             sfx.bump()
             onDelivery(delivery.collided())
             ;(window as unknown as Record<string, unknown>).__collisions = collisions
-            ;(((window as unknown as Record<string, unknown>).__collisionLog ??= []) as unknown[]).push({ kind: w.kind, riderSpeed: +riderNow.speed.toFixed(1), riderEdge: riderNow.edgeId, walkerEdge: w.edgeId })
+            ;(((window as unknown as Record<string, unknown>).__collisionLog ??= []) as unknown[]).push({ kind: what, riderSpeed: +riderNow.speed.toFixed(1), riderEdge: riderNow.edgeId, walkerEdge: w.edgeId })
             break
           }
         }
@@ -3693,6 +3742,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         // (and the players on the sports courts near the rider: sim/players.ts)
         const walkers = [...crowd.all.filter((w) => !tunnels.hides(w.edgeId)), ...courtPlayers.update(dt, at, city.courtsNear(at.x, at.z, 160))]
         strangers?.update(dt, walkers, at, city.terrain)
+        dogs?.update(dt, walkers, at, city.terrain, strangers?.drawn)
+        zoo?.update(dt, at)
+        birds?.update(dt, at)
+        critters?.update(dt, at)
         const focus = frozen ? (held ? held.to : orbit.look) : at
         // the car parks' parked cars, refreshed once a second round the rider (city/parking.ts)
         parkClock -= dt
@@ -3715,8 +3768,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           // (a bed — a deck whose trees stand close to its edge — is planted edge to edge: render/plants.ts `bedPlanting`)
           if (d.shrubs !== false) plants.addDeck(d.ring, d.y, d.keepOff !== undefined)
           if (d.trees !== false) trees.addDeck(d.ring, d.y, d.keepOff, d.spacing, d.form)
-        dogs?.update(dt, walkers, at, city.terrain, strangers?.drawn)
-        zoo?.update(dt, at)
         }
       }
       // the single plants landmarks place (Lombard Street's hydrangeas), the same way: as their tiles stream in
@@ -3820,9 +3871,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // cut the vault with its near plane — render/tunnels.ts `headroom`)
       const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
         ?? tunnels.headroom(at.x - fx * camBack, at.z - fz * camBack, camBack) ?? tunnels.headroom(at.x, at.z, 0)
+      // (a roof over the path — a canopy, a skyway — is a vault too: at 3.5 m the eye sat in it, #212/#283)
+      const roof = high || riding ? null : city.roofOver(at.x - fx * camBack, at.z - fz * camBack) ?? city.roofOver(at.x, at.z)
+      const vaultH = vault === null ? roof : roof === null ? vault : Math.min(vault, roof)
       const lift = high ? 34 : onCable ? 2.6 : riding ? 6.5
-        : Math.min(3.5 + (2.1 - 3.5) * tuck, vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0)))
-      camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vault === null ? 4 : 8))
+        : Math.min(3.5 + (2.1 - 3.5) * tuck, vaultH === null ? 3.5 : Math.max(1.9, Math.min(3.5, vaultH - 1.0)))
+      camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vaultH === null ? 4 : 8))
       // (only on the ground, the rider's own speed: not aboard, not from above)
       const felt = high || riding || speedLines === null ? 0 : (lastState?.speed ?? 0)
       camera.fov += (fovFor(felt) - camera.fov) * Math.min(1, dt * 2)
@@ -4145,7 +4199,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const top = !frozen && !transit.aboard ? nearTop(lastAt) : null
         if (observing && frozen) out.push({ id: 'observe', label: '🔭 Come down' })
         else if (top) out.push({ id: 'observe', label: `🔭 ${top.obscura ? 'Look in' : top.skyspace ? 'Sit in' : 'Observe from'} ${top.name.replace(/^the /, '')}` })
-        if (delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup) * 1.7) {
+        if (delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup, pkg.region === 'paris') * 1.7) {
           out.push({ id: 'eat', label: `${delivery.job.item?.emoji ?? '🍽'} Eat the ${delivery.job.item?.name ?? 'order'}` })
         }
         out.push({ id: 'map', label: minimap.isLarge ? '🗺️ Close the map' : '🗺️ Map' })
@@ -4157,7 +4211,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (id === 'transit') transitAction()
         else if (id === 'observe') {
           if (observing && frozen) comeDown()
-          else { const o = !frozen ? nearTop(lastAt) : null; if (o) goUp(o) }
+          else { const o = !frozen && !skystar?.aboard ? nearTop(lastAt) : null; if (o) goUp(o) }
         } else if (id === 'eat') onDelivery(delivery.eat())
         else if (id === 'map') toggleMap()
         else if (id === 'end') { tourEndOffered = false; tourCard?.hide(); endSession() }

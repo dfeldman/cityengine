@@ -160,7 +160,10 @@ export class Sky {
      * that lay further off than its own faces — about 540 m. From Twin Peaks the far back yards came out as white
      * sky between the rows of houses, which are in a later group and so stood clear of it (2026-10-05).
      */
-    scene.setRenderingOrder(0, (a, b) => (a.getMesh() === this.dome ? 0 : 1) - (b.getMesh() === this.dome ? 0 : 1))
+    // (Scene.setRenderingOrder REPLACES all three compare functions, nulling any it is not given: this call used to wipe
+    //  the skyline's transparent sort and landmarks.ts's wiped this one — so keep what the other set. BUGS #226)
+    const keepT = (scene as unknown as { _customTransparentSortCompareFn?: Record<number, ((a: never, b: never) => number) | null> })._customTransparentSortCompareFn?.[0]
+    scene.setRenderingOrder(0, (a, b) => (a.getMesh() === this.dome ? 0 : 1) - (b.getMesh() === this.dome ? 0 : 1), undefined, keepT as never)
 
     /**
      * Sky furniture gets its own material and its own rendering group.

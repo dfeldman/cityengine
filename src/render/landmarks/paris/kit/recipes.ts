@@ -14,7 +14,7 @@ import { towerRing } from '../../tower.ts'
  * (`word`, on a place of worship, is its faith: temple, synagogue, mosque, chapelle; a church has none. `noTower`: a chapel
  * hemmed in by its block, like Notre-Dame-du-Liban, whose tower would only stand through the neighbours' roofs)
  */
-export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean; /** eglise: the church's width in metres, where OSM's outline takes in a presbytery or a court and its box is far wider than the church */ width?: number; style?: Partial<Style> }
+export interface KitArgs { kind: string; p: number; word?: string; seed?: number; noTower?: boolean; /** eglise: the church's width in metres, where OSM's outline takes in a presbytery or a court and its box is far wider than the church */ width?: number; /** eglise: slots to replace in the dated spec, for a church the date cannot say (cream stone, one crossing tower) */ spec?: Partial<ChurchSpec>; style?: Partial<Style> }
 
 /** the building's materials and windows by its date: what the kinds share */
 function byDate(p: number): Pick<CivicSpec, 'wall' | 'windows' | 'roof'> {
@@ -92,7 +92,7 @@ function eglise(p: number, seed: number, big: boolean, faith: string): ChurchSpe
   }
   return {
     nave: { bays: 5, storeys: 1, roof: 'flat', pitch: 'low' }, aisles: null, transept: null, chancel: null,
-    tower: { at: 'detached', stages: 3, plan: 'square', top: 'flat' },
+    tower: { at: 'front-corner', stages: 3, plan: 'square', top: 'flat' },  // not 'detached': that stands outside the OSM footprint, in the street (#276)
     front: { kind: 'plain', portal: 'recessed', window: 'none', steps: 1 },
     walls: { material: 'precast', openings: 'square', buttresses: 'none' },
   }
@@ -113,7 +113,7 @@ function narrowed(fit: Fit, w: number): Fit {
 export function parisCivic(out: MeshBuilder, fit: Fit, a?: KitArgs): void {
   if (a?.kind === 'eglise') {
     const spec = eglise(a.p, a.seed ?? 0, fit.hx * fit.hz * 4 > 1400, a.word ?? '')
-    church(out, a.width ? narrowed(fit, a.width) : fit, a.noTower ? { ...spec, tower: null } : spec)
+    church(out, a.width ? narrowed(fit, a.width) : fit, { ...(a.noTower ? { ...spec, tower: null } : spec), ...a.spec })
     return
   }
   if (a?.kind === 'hotel') { hotel(out, fit, { p: a.p, seed: a.seed }); return }

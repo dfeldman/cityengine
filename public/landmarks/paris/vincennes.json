@@ -70,7 +70,9 @@
     "osm": [
       "way/83819059",
       "way/1458069802",
-      "way/1416533435"
+      "way/1416533435",
+      "way/1458037937",
+      "way/1458037936"
     ],
     "lat": 48.841774,
     "lon": 2.435795,
@@ -292,7 +294,7 @@
     "procedural": "grandeSerre",
     "osm": [
       "way/261443112",
-      "relation/522886224"
+      "way/403235985"
     ],
     "lat": 48.833468,
     "lon": 2.416673,
@@ -300,7 +302,44 @@
       96,
       48
     ],
-    "height": 20,
+    "height": 17,
+    "note": "vincennes/zoo.ts: lidar crown 17 m (fr.wikipedia 16 m, ~100 x 40 m), fuller shoulders, diamond lattice, glass surface.",
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc zoologique: Grande voliere",
+    "procedural": "grandeVoliere",
+    "osm": [
+      "relation/3729363"
+    ],
+    "lat": 48.833578,
+    "lon": 2.418694,
+    "size": [
+      45,
+      40
+    ],
+    "height": 16,
+    "note": "vincennes/zoo.ts: Commons view from the Grand Rocher + IGN ortho/MNS (2026-11-20): faux-rock rampart (high east, parapet on the flamingo pond's south side), 16 inward-leaning masts, a see-through NET surface (23) from crest to tips and across.",
+    "front": 0,
+    "noShops": true,
+    "madeBy": "opus"
+  },
+  {
+    "name": "Parc zoologique: Belvedere",
+    "procedural": "belvedere",
+    "osm": [
+      "way/280560862"
+    ],
+    "lat": 48.833237,
+    "lon": 2.419175,
+    "size": [
+      42,
+      52
+    ],
+    "height": 14,
+    "note": "vincennes/zoo.ts: 1934 faux-rock lookout between the flamingo pond and a planted pool; IGN MNS 2 m grid (2026-11-20) masked to OSM, trees capped; shares grand-rocher.ts rockField.",
     "front": 0,
     "noShops": true,
     "madeBy": "opus"

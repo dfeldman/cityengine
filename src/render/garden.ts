@@ -80,8 +80,8 @@ function hedgePiece(out: MeshBuilder, a: Point, b: Point, y0: number, h: number,
   const band = y0 + h * 0.3
   // (each side wound to face out: the left side a→b, the right side b→a)
   if (y0 > 1) {
-    leafySide(out, bl, al, y0, y1, nx, nz, side)
-    leafySide(out, ar, br, y0, y1, -nx, -nz, side)
+    leafySide(out, bl, al, y0, y1, nx, nz, side, capB, capA)
+    leafySide(out, ar, br, y0, y1, -nx, -nz, side, capA, capB)
   } else {
     leafFace(out, bl, al, y0, band, nx, nz, foot)
     leafFace(out, bl, al, band, y1, nx, nz, side)
@@ -90,8 +90,9 @@ function hedgePiece(out: MeshBuilder, a: Point, b: Point, y0: number, h: number,
   }
   if (y0 > 1) {
     // (a crown's top, a shallow ridge down its middle: it is leaves, not a slab)
-    const rise = 0.3 + noise(a.x, a.z) * 0.5
-    const am: V = [a.x, y1 + rise, a.z], bm: V = [b.x, y1 + rise, b.z]
+    // (each end's rise from where it stands, so the next piece's ridge starts where this one's ends: one rise a piece left notches between them)
+    const riseA = 0.3 + smooth(a.x, a.z, 4, 5) * 0.5, riseB = 0.3 + smooth(b.x, b.z, 4, 5) * 0.5, rise = (riseA + riseB) / 2
+    const am: V = [a.x, y1 + riseA, a.z], bm: V = [b.x, y1 + riseB, b.z]
     const up = hw / Math.hypot(hw, rise), lean = rise / Math.hypot(hw, rise)
     out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], bm, am], [nx * lean, up, nz * lean], UV, top, CLIPPED)
     out.quad([am, bm, [br.x, y1, br.z], [ar.x, y1, ar.z]], [-nx * lean, up, -nz * lean], UV, toned(top, 1.14), CLIPPED)
@@ -102,17 +103,151 @@ function hedgePiece(out: MeshBuilder, a: Point, b: Point, y0: number, h: number,
   if (y0 > 1) out.quad([[ar.x, y0, ar.z], [br.x, y0, br.z], [bl.x, y0, bl.z], [al.x, y0, al.z]], [0, -1, 0], UV, foot, CLIPPED)
 }
 
+/*
+ * THE CLIPPED BOX HEDGE (owner, 2026-11-18: the Champ de Mars hedges "show very visible holes": plain box prisms whose pieces did not
+ * meet — open ends where a run stopped, notches at every bend). Now one profile swept along the line: narrower at the foot, a full belly,
+ * rounded shoulders and a barely domed top, as boxwood is clipped. Rings every HEDGE_STEP m, each one's width, height and tone taken from
+ * a smooth noise of where it stands — so two pieces that share an end share that end's ring exactly, and a row has no seams. Where a
+ * row bends the pieces meet on the mitre; wherever a run just stops it is capped. Profile numbers are shares of the half-width and height.
+ */
+/** the profile, one side, from foot to crown: [share of the half-width, share of the height] */
+const HEDGE_PROFILE: [number, number][] = [[0.8, 0], [1, 0.45], [0.93, 0.84], [0.6, 0.97], [0, 1]]
+/** how far the foot is sunk into the ground, m: a slope under a 3 m piece showed light under its straight foot */
+const HEDGE_SINK = 0.06
+/** metres between rings along the line */
+const HEDGE_STEP = 2.2
+/** the smooth noise's cell along the hedge, m, and how much it varies the width, the height and the tone (±share) */
+const HEDGE_WOBBLE_CELL = 1.7
+const HEDGE_WOBBLE_W = 0.07
+const HEDGE_WOBBLE_H = 0.06
+const HEDGE_TONE = 0.1
+/** how far a side's normal leans to the sky: clipped leaves take the light from above, a hedge's shaded side is not black */
+const HEDGE_SKY = 0.7
+/** the mitre's stretch beyond which a bend is too sharp to mitre (about 130°): both pieces are capped there instead */
+const HEDGE_MITRE_MAX = 2.4
+
+/** a smooth value noise in 0..1 (bilinear over a lattice): unlike `noise` it barely moves for a point a float's width away */
+function smooth(x: number, z: number, cell: number, salt: number): number {
+  const gx = x / cell, gz = z / cell, ix = Math.floor(gx), iz = Math.floor(gz), fx = gx - ix, fz = gz - iz
+  const sx = fx * fx * (3 - 2 * fx), sz = fz * fz * (3 - 2 * fz)
+  const n = (i: number, j: number): number => noise(i + salt * 17.3, j - salt * 5.1)
+  const top = n(ix, iz) + (n(ix + 1, iz) - n(ix, iz)) * sx, bot = n(ix, iz + 1) + (n(ix + 1, iz + 1) - n(ix, iz + 1)) * sx
+  return top + (bot - top) * sz
+}
+
+/** four corners with a normal and a colour each, wound to face their mean normal */
+function smoothQuad(out: MeshBuilder, p: V[], n: V[], c: Rgb[], kind: number): void {
+  const base = out.positions.length / 3
+  for (let i = 0; i < 4; i++) {
+    out.positions.push(p[i][0], p[i][1], p[i][2])
+    out.normals.push(n[i][0], n[i][1], n[i][2])
+    out.uvs.push(UV[i][0], UV[i][1])
+    out.colors.push(c[i][0], c[i][1], c[i][2], kind)
+  }
+  const mx = n[0][0] + n[1][0] + n[2][0] + n[3][0], my = n[0][1] + n[1][1] + n[2][1] + n[3][1], mz = n[0][2] + n[1][2] + n[2][2] + n[3][2]
+  const ax = p[1][0] - p[0][0], ay = p[1][1] - p[0][1], az = p[1][2] - p[0][2]
+  const bx = p[2][0] - p[0][0], by = p[2][1] - p[0][1], bz = p[2][2] - p[0][2]
+  const facing = (ay * bz - az * by) * mx + (az * bx - ax * bz) * my + (ax * by - ay * bx) * mz
+  if (facing > 0) out.indices.push(base, base + 2, base + 1, base, base + 3, base + 2)
+  else out.indices.push(base, base + 1, base + 2, base, base + 2, base + 3)
+}
+
+/**
+ * A length of clipped hedge from a to b on the ground, `h` tall and `w` wide. `prev` is the row's direction coming into a and `next`
+ * its direction going on from b, where the row goes on (null where it stops: that end is capped). Colours: foot, side, top.
+ */
+function boxHedge(out: MeshBuilder, a: Point, b: Point, h: number, w: number, foot: Rgb, side: Rgb, top: Rgb, prev: Point | null, next: Point | null): void {
+  const L = Math.hypot(b.x - a.x, b.z - a.z)
+  if (L < 0.05) return
+  const ux = (b.x - a.x) / L, uz = (b.z - a.z) / L
+  const nx = -uz, nz = ux
+  const hw = w / 2
+  // (an end's sideways vector: the mitre where the row goes on, square where it stops)
+  const end = (d: Point | null): [number, number, boolean] => {
+    if (!d) return [nx, nz, true]
+    let mx = -d.z + nx, mz = d.x + nz
+    const m = Math.hypot(mx, mz)
+    if (m < 1e-6) return [nx, nz, true]
+    mx /= m; mz /= m
+    const s = 1 / (mx * nx + mz * nz)
+    return s > HEDGE_MITRE_MAX || s < 0 ? [nx, nz, true] : [mx * s, mz * s, false]
+  }
+  const [ax, az, capA] = end(prev), [bx, bz, capB] = end(next)
+  // (the profile's normals, from its own edges, leaned to the sky)
+  const P = HEDGE_PROFILE, K = P.length
+  const pn: [number, number][] = P.map((_, i) => {
+    const p0 = P[Math.max(0, i - 1)], p1 = P[Math.min(K - 1, i + 1)]
+    let s = (p1[1] - p0[1]) * h, y = -(p1[0] - p0[0]) * hw
+    if (i === K - 1) { s = 0; y = 1 }
+    const m = Math.hypot(s, y) || 1
+    return [s / m, y / m + HEDGE_SKY]
+  })
+  const shade: Rgb[] = P.map((_, i) => {
+    const t = i / (K - 1)
+    const from = t < 0.34 ? foot : side, to = t < 0.34 ? side : top, f = t < 0.34 ? t / 0.34 : (t - 0.34) / 0.66
+    return [from[0] + (to[0] - from[0]) * f, from[1] + (to[1] - from[1]) * f, from[2] + (to[2] - from[2]) * f]
+  })
+  const steps = Math.max(1, Math.round(L / HEDGE_STEP))
+  // ring[i] = the profile's 2K - 1 points across, left foot to right foot, with their normals and colours
+  type Ring = { p: V[]; n: V[]; c: Rgb[] }
+  const ring = (t: number): Ring => {
+    const x = a.x + (b.x - a.x) * t, z = a.z + (b.z - a.z) * t
+    // (the sideways vector, eased from a's mitre to b's: a short piece on a sharp bend never crosses itself)
+    const sx = ax + (bx - ax) * t, sz = az + (bz - az) * t
+    const ww = hw * (1 + (smooth(x, z, HEDGE_WOBBLE_CELL, 1) - 0.5) * 2 * HEDGE_WOBBLE_W)
+    const hh = h * (1 + (smooth(x, z, HEDGE_WOBBLE_CELL, 2) - 0.5) * 2 * HEDGE_WOBBLE_H)
+    const tone = 1 + (smooth(x, z, HEDGE_WOBBLE_CELL * 1.3, 3) - 0.5) * 2 * HEDGE_TONE
+    const r: Ring = { p: [], n: [], c: [] }
+    for (let j = -(K - 1); j <= K - 1; j++) {
+      const i = K - 1 - Math.abs(j), sg = j < 0 ? 1 : -1
+      const [q, y] = P[i]
+      const off = q * ww * sg
+      r.p.push([x + sx * off, y === 0 ? -HEDGE_SINK : y * hh, z + sz * off])
+      const [ns, ny] = pn[i]
+      const m = Math.hypot(ns, ny)
+      r.n.push([(nx * ns * sg) / m, ny / m, (nz * ns * sg) / m])
+      r.c.push(toned(shade[i], tone))
+    }
+    return r
+  }
+  let r0 = ring(0)
+  const first = r0
+  for (let s = 1; s <= steps; s++) {
+    const r1 = ring(s / steps)
+    for (let j = 0; j < r0.p.length - 1; j++) {
+      smoothQuad(out, [r0.p[j], r1.p[j], r1.p[j + 1], r0.p[j + 1]], [r0.n[j], r1.n[j], r1.n[j + 1], r0.n[j + 1]], [r0.c[j], r1.c[j], r1.c[j + 1], r0.c[j + 1]], CLIPPED)
+    }
+    if (s === steps && capB) hedgeCap(out, r1, ux, uz)
+    r0 = r1
+  }
+  if (capA) hedgeCap(out, first, -ux, -uz)
+}
+
+/** a hedge's end: the profile closed along the ground, in quads from the foot up, facing (ux, uz) and leaned to the sky */
+function hedgeCap(out: MeshBuilder, r: { p: V[]; c: Rgb[] }, ux: number, uz: number): void {
+  const m = Math.hypot(1, HEDGE_SKY), n: V = [ux / m, HEDGE_SKY / m, uz / m]
+  const N = r.p.length, half = (N - 1) / 2
+  // (pair the left and right sides, rung by rung: the profile is convex, so each rung's quad is too)
+  for (let k = 0; k < half; k++) {
+    const l0 = k, l1 = k + 1, r0 = N - 1 - k, r1 = N - 2 - k
+    smoothQuad(out, [r.p[l0], r.p[r0], r.p[r1], r.p[l1]], [n, n, n, n], [r.c[l0], r.c[r0], r.c[r1], r.c[l1]], CLIPPED)
+  }
+}
+
 /**
  * A pleached crown's side from a to b, facing (nx, nz): leaves, so a grid pushed in and out by where each corner stands (a piece's
  * corners meet its neighbour's) and mottled cell by cell. The clipped wall of limes is even from afar and never flat from under it.
  */
-function leafySide(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: number, nz: number, c: Rgb): void {
+function leafySide(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: number, nz: number, c: Rgb, capA = false, capB = false): void {
   const COLS = 2, ROWS = 3
   const corner = (i: number, j: number): V => {
     const u = i / COLS
     const x = a.x + (b.x - a.x) * u, z = a.z + (b.z - a.z) * u
     const y = y0 + ((y1 - y0) * j) / ROWS
-    const push = (noise(x * 1.7 + j * 3.1, z * 1.7) - 0.5) * 0.7
+    // (the top and bottom rows stay on the line, where the crown's top and underside meet them, and so does a capped end: pushed, they
+    //  opened slits of sky along the crown's edges)
+    const pinned = j === 0 || j === ROWS || (i === 0 && capA) || (i === COLS && capB)
+    const push = pinned ? 0 : (noise(x * 1.7 + j * 3.1, z * 1.7) - 0.5) * 0.7
     return [x + nx * push, y + (j > 0 && j < ROWS ? (noise(z + j, x) - 0.5) * 0.5 : 0), z + nz * push]
   }
   for (let j = 0; j < ROWS; j++) {
@@ -137,7 +272,7 @@ function topiary(out: MeshBuilder, x: number, z: number, h: number, shape: numbe
   const c = toned(YEW, 0.9 + noise(seed, 1) * 0.3)
   if (shape === 2) {
     const w = h * 0.45
-    hedgePiece(out, { x: x - w, z }, { x: x + w, z }, 0, h, w * 2, toned(c, 0.8), c, toned(c, 1.3), true, true)
+    boxHedge(out, { x: x - w, z }, { x: x + w, z }, h, w * 2, toned(c, 0.8), c, toned(c, 1.3), null, null)
     return
   }
   const sides = 8
@@ -329,7 +464,7 @@ function distanceField(open: Uint8Array, far: Float32Array, N: number): void {
   }
 }
 
-interface Piece { a: Point; b: Point; h: number; w: number; y0: number; capA: boolean; capB: boolean; post: boolean; seed: number }
+interface Piece { a: Point; b: Point; h: number; w: number; y0: number; capA: boolean; capB: boolean; /** the row's direction into a and on from b, where it goes on (a box hedge mitres there) */ prev: Point | null; next: Point | null; post: boolean; seed: number }
 interface Bed { ring: Point[]; x0: number; z0: number; x1: number; z1: number; seed: number; step: number; rim: boolean; rose?: RoseBedShape; flower?: Flower }
 
 /** A city's garden, filed by tile. */
@@ -349,6 +484,13 @@ export class GardenTiles {
       const pts = unpackPoints(row.points)
       const spacing = row.y0 ? (row.spacing ?? 4) : 0
       let run = 0, next = spacing / 2
+      // (a closed row — a square hedge — has no ends: every corner, the first one too, is a join)
+      const closed = pts.length > 3 && Math.hypot(pts[0].x - pts[pts.length - 1].x, pts[0].z - pts[pts.length - 1].z) < 0.3
+      // (each segment's direction, null for one of no length; a closed row's last runs on into its first)
+      const dir = (i: number): Point | null => {
+        const a = pts[i - 1], b = pts[i], L = Math.hypot(b.x - a.x, b.z - a.z)
+        return L < 0.05 ? null : { x: (b.x - a.x) / L, z: (b.z - a.z) / L }
+      }
       for (let i = 1; i < pts.length; i++) {
         const a = pts[i - 1], b = pts[i]
         const L = Math.hypot(b.x - a.x, b.z - a.z)
@@ -362,7 +504,9 @@ export class GardenTiles {
           run += m
           push(this.pieces, at(p.x, p.z), {
             a: p, b: q, h: row.h, w: row.w, y0: row.y0 ?? 0, post,
-            capA: i === 1 && k === 0, capB: i === pts.length - 1 && k === n - 1, seed: ri * 31 + i * 7 + k,
+            capA: i === 1 && k === 0 && !closed, capB: i === pts.length - 1 && k === n - 1 && !closed,
+            prev: k > 0 ? dir(i) : i > 1 ? dir(i - 1) : closed ? dir(pts.length - 1) : null,
+            next: k < n - 1 ? dir(i) : i < pts.length - 1 ? dir(i + 1) : closed ? dir(1) : null, seed: ri * 31 + i * 7 + k,
           })
         }
       }
@@ -434,19 +578,39 @@ export class GardenTiles {
     const onCut = (a: Point, b: Point): boolean => (Math.abs(a.x - b.x) < 0.01 && (Math.abs(a.x - x0) < 0.01 || Math.abs(a.x - x1) < 0.01))
       || (Math.abs(a.z - b.z) < 0.01 && (Math.abs(a.z - z0) < 0.01 || Math.abs(a.z - z1) < 0.01))
     let longest: { a: Point; b: Point; L: number; nx: number; nz: number } | null = null
-    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-      const p = ring[j], q = ring[i]
-      const L = Math.hypot(q.x - p.x, q.z - p.z)
-      if (L < 1.2 || onCut(p, q)) continue
-      const nx = (-(q.z - p.z) / L) * inward, nz = ((q.x - p.x) / L) * inward
-      const a = { x: p.x + nx * 0.35, z: p.z + nz * 0.35 }, b = { x: q.x + nx * 0.35, z: q.z + nz * 0.35 }
-      if (!longest || L > longest.L) longest = { a, b, L, nx, nz }
+    // (edge e runs ring[e-1] → ring[e]; an edge is planted unless it is short or the tile's cut)
+    const N = ring.length
+    const edge = (e: number): { p: Point; q: Point; L: number; ux: number; uz: number; nx: number; nz: number; on: boolean } => {
+      const p = ring[(e + N - 1) % N], q = ring[e % N], L = Math.hypot(q.x - p.x, q.z - p.z) || 1e-9
+      const ux = (q.x - p.x) / L, uz = (q.z - p.z) / L
+      return { p, q, L, ux, uz, nx: -uz * inward, nz: ux * inward, on: L >= 1.2 && !onCut(p, q) }
+    }
+    // (the hedge's line, LAWN_IN in from the edge: at a corner shared with a planted edge, on the mitre, so the two runs meet)
+    const LAWN_IN = 0.35
+    const corner = (e: { q: Point; nx: number; nz: number }, f: { nx: number; nz: number; on: boolean }): Point => {
+      let mx = e.nx, mz = e.nz
+      if (f.on) {
+        const sx = e.nx + f.nx, sz = e.nz + f.nz, m = Math.hypot(sx, sz), d = m > 1e-6 ? (sx / m) * e.nx + (sz / m) * e.nz : 0
+        if (d > 1 / HEDGE_MITRE_MAX) { mx = sx / m / d; mz = sz / m / d }
+      }
+      return { x: e.q.x + mx * LAWN_IN, z: e.q.z + mz * LAWN_IN }
+    }
+    for (let i = 0; i < N; i++) {
+      const E = edge(i)
+      if (!E.on) continue
+      const before = edge(i + N - 1), after = edge(i + 1)
+      const { L, nx, nz } = E
+      if (!longest || L > longest.L) longest = { a: { x: E.p.x + nx * LAWN_IN, z: E.p.z + nz * LAWN_IN }, b: { x: E.q.x + nx * LAWN_IN, z: E.q.z + nz * LAWN_IN }, L, nx, nz }
+      const a = corner({ q: E.p, nx, nz }, before), b = corner(E, after)
+      const dir = { x: E.ux, z: E.uz }
       const n = Math.max(1, Math.ceil(L / 3))
       for (let k = 0; k < n; k++) {
         const u = { x: a.x + ((b.x - a.x) * k) / n, z: a.z + ((b.z - a.z) * k) / n }
         const v = { x: a.x + ((b.x - a.x) * (k + 1)) / n, z: a.z + ((b.z - a.z) * (k + 1)) / n }
-        if (pick < 0.62) hedgePiece(out, u, v, 0, 0.5, 0.4, HEDGE_FOOT, HEDGE, HEDGE_TOP, false, false)
-        else hoops(out, u, v)
+        if (pick < 0.62) {
+          boxHedge(out, u, v, 0.5, 0.4, HEDGE_FOOT, HEDGE, HEDGE_TOP,
+            k > 0 ? dir : before.on ? { x: before.ux, z: before.uz } : null, k < n - 1 ? dir : after.on ? { x: after.ux, z: after.uz } : null)
+        } else hoops(out, u, v)
       }
     }
     if (longest && longest.L > 6 && pick > 0.45 && pick < 0.8) {
@@ -532,7 +696,9 @@ export class GardenTiles {
     }
 
     /** beside a walk, a station's run: what's planted on one side of the 3 m from (px, pz) along (ux, uz), `half` from the line */
-    const beside = (px: number, pz: number, ux: number, uz: number, nx: number, nz: number, half: number, chosen: number): void => {
+    // (`ahead`: the next station along the walk and its sideways vector on this side, where the walk bends before it: a hedge's piece
+    //  runs to it, so the runs round a curving path meet instead of each running 3 m straight on and notching every bend's outside)
+    const beside = (px: number, pz: number, ux: number, uz: number, nx: number, nz: number, half: number, chosen: number, ahead?: { x: number; z: number; nx: number; nz: number }): void => {
       let pick = chosen
       if (great) { if (pick < 0.45) return; pick = (pick - 0.45) / 0.55 }
       const m = manner(px, pz)
@@ -546,9 +712,10 @@ export class GardenTiles {
       if (kind === 2) { border(here, next, nx, nz, half + 0.25, half + 1.65); return }
       if (g.lawns) return
       const k = half + 0.25
-      const u = { x: px + nx * k, z: pz + nz * k }, v = { x: next.x + nx * k, z: next.z + nz * k }
+      const u = { x: px + nx * k, z: pz + nz * k }, v = ahead ? { x: ahead.x + ahead.nx * k, z: ahead.z + ahead.nz * k } : { x: next.x + nx * k, z: next.z + nz * k }
       if (kind === 3) hoops(out, u, v)
-      else hedgePiece(out, u, v, 0, 0.55, 0.42, HEDGE_FOOT, HEDGE, HEDGE_TOP, false, false)
+      // (each station's run on its own, capped: where the next one plants something else the old open end was a hole)
+      else boxHedge(out, u, v, 0.55, 0.42, HEDGE_FOOT, HEDGE, HEDGE_TOP, null, null)
     }
     /** a run is the walk's own, from where the way begins: a border stops at a junction, as a gardener's does, and a diagonal walk isn't chopped up by the world's grid */
     const RUN_ON = 18
@@ -566,7 +733,20 @@ export class GardenTiles {
           const px = a.x + ux * d, pz = a.z + uz * d
           if (!inTile(px, pz) || !inParkAt(px, pz)) continue
           const r = Math.floor((run + d) / RUN_ON)
-          for (const s of [1, -1]) beside(px, pz, ux, uz, -uz * s, ux * s, w.half, noise(Math.round(a0.x * 2) + r * 3.1 + s * 0.31, Math.round(a0.z * 2) - r * 1.7 - s * 0.17))
+          // (the next station, 3 m on along the walk: on a later segment where this one ends first)
+          let j = i, e = d + 3
+          while (j < w.pts.length - 1) {
+            const Lj = Math.hypot(w.pts[j].x - w.pts[j - 1].x, w.pts[j].z - w.pts[j - 1].z)
+            if (Lj < 0.2) { j++; continue }
+            if (e < Lj) break
+            e -= Lj; j++
+          }
+          const A = w.pts[j - 1], B = w.pts[j], Lj = Math.hypot(B.x - A.x, B.z - A.z) || 1
+          const vx = (B.x - A.x) / Lj, vz = (B.z - A.z) / Lj
+          for (const s of [1, -1]) {
+            const ahead = j === i ? undefined : { x: A.x + vx * e, z: A.z + vz * e, nx: -vz * s, nz: vx * s }
+            beside(px, pz, ux, uz, -uz * s, ux * s, w.half, noise(Math.round(a0.x * 2) + r * 3.1 + s * 0.31, Math.round(a0.z * 2) - r * 1.7 - s * 0.17), ahead)
+          }
         }
         left = d - L
         run += L
@@ -617,7 +797,7 @@ export class GardenTiles {
             const hh = 1.25 + noise(Math.floor(px / 50), Math.floor(pz / 50)) * 0.45
             const half = (L / n) / 2
             const u = { x: q.x - ux * half, z: q.z - uz * half }, v = { x: q.x + ux * half, z: q.z + uz * half }
-            if (at(u.x, u.z) >= 0.6 && at(v.x, v.z) >= 0.6) hedgePiece(out, u, v, 0, hh, 0.8, HEDGE_FOOT, HEDGE, HEDGE_TOP, true, true)
+            if (at(u.x, u.z) >= 0.6 && at(v.x, v.z) >= 0.6) boxHedge(out, u, v, hh, 0.8, HEDGE_FOOT, HEDGE, HEDGE_TOP, null, null)
           } else shrubs(px, pz, nx, nz, off - 0.8, 1.25)
         }
       }
@@ -670,7 +850,7 @@ export class GardenTiles {
       if (p.y0 > 0) {
         hedgePiece(out, p.a, p.b, p.y0, p.h, p.w, toned(LIME_FOOT, f), toned(LIME, f), toned(LIME_TOP, f), p.capA, p.capB)
         if (p.post) trunk(out, { x: (p.a.x + p.b.x) / 2, z: (p.a.z + p.b.z) / 2 }, p.y0 + 0.4)
-      } else hedgePiece(out, p.a, p.b, 0, p.h, p.w, toned(HEDGE_FOOT, f), toned(HEDGE, f), toned(HEDGE_TOP, f), p.capA, p.capB)
+      } else boxHedge(out, p.a, p.b, p.h, p.w, HEDGE_FOOT, HEDGE, HEDGE_TOP, p.prev, p.next)
     }
     for (const i of this.yews.get(k) ?? []) topiary(out, this.topiary[i], this.topiary[i + 1], this.topiary[i + 2], this.topiary[i + 3], i)
     const bx0 = tx * this.tile, bz0 = tz * this.tile
@@ -681,10 +861,12 @@ export class GardenTiles {
       else flowers(out, b.ring, b.seed, b.step, rx0, rz0, rx1, rz1)
       if (b.rim) {
         const [eh, ew] = b.flower === 'rose' ? [ROSE.EDGE_H, ROSE.EDGE_W] : [0.35, 0.3]
-        for (let i = 0, j = b.ring.length - 1; i < b.ring.length; j = i++) {
-          const a = b.ring[j], c = b.ring[i]
+        const R = b.ring, N = R.length
+        const dir = (i: number): Point => { const a = R[(i + N - 1) % N], c = R[i], L = Math.hypot(c.x - a.x, c.z - a.z) || 1; return { x: (c.x - a.x) / L, z: (c.z - a.z) / L } }
+        for (let i = 0, j = N - 1; i < N; j = i++) {
+          const a = R[j], c = R[i]
           if (Math.floor(a.x / this.tile) === tx && Math.floor(a.z / this.tile) === tz) {
-            hedgePiece(out, a, c, 0, eh, ew, HEDGE_FOOT, HEDGE, HEDGE_TOP, false, false)
+            boxHedge(out, a, c, eh, ew, HEDGE_FOOT, HEDGE, HEDGE_TOP, dir(j), dir((i + 1) % N))
           }
         }
       }

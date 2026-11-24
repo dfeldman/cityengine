@@ -552,7 +552,7 @@ export class Signs implements TileLayer {
       if (!cell) return
       signed.add(spot.building)
       board(pages.on(cell.page), spot, look.tint, cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z), fascia(spot.building), look.ink)
-      hung.push({ spot, name: poi.name, tint: look.tint, ground: terrain.heightAt(spot.x, spot.z),
+      hung.push({ spot, name: poi.name, tint: look.tint, ink: look.ink, ground: terrain.heightAt(spot.x, spot.z),
         fascia: fascia(spot.building), kind: poi.kind, real: true })
       placed++
     })
@@ -603,7 +603,7 @@ export class Signs implements TileLayer {
         if (!cell) continue
         board(pages.on(cell.page), spot, look.tint, cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z),
           fascia(b.id), look.ink)
-        hung.push({ spot, name: pickd.name, tint: look.tint, ground: terrain.heightAt(spot.x, spot.z),
+        hung.push({ spot, name: pickd.name, tint: look.tint, ink: look.ink, ground: terrain.heightAt(spot.x, spot.z),
           fascia: fascia(b.id), kind: pickd.kind, real: false })
         placed++
       }
@@ -807,8 +807,8 @@ function plaques(scene: Scene, atlas: TextAtlas, owner: string, junctions: Signe
       const h = 0.25
       const ax = -spot.nz
       const az = spot.nx
-      const px = spot.x + spot.nx * 0.06
-      const pz = spot.z + spot.nz * 0.06
+      const px = spot.x + spot.nx * PLATE_STANDOFF
+      const pz = spot.z + spot.nz * PLATE_STANDOFF
       out.on(cell.page).quad(
         [[px - ax * w, y - h, pz - az * w], [px + ax * w, y - h, pz + az * w],
          [px + ax * w, y + h, pz + az * w], [px - ax * w, y + h, pz - az * w]],
@@ -823,6 +823,8 @@ interface Hung {
   spot: Spot
   name: string
   tint: [number, number, number]
+  /** the lettering ink code of the board (frenchSign's), 0 for the atlas's own */
+  ink?: number
   ground: number
   /** the fascia's height above the ground: a hanging sign goes above it */
   fascia: number
@@ -925,9 +927,10 @@ function projectingSigns(scene: Scene, atlas: TextAtlas, owner: string, hung: Hu
     const p = (o: number, yy: number, a = 0): [number, number, number] =>
       [bx + s.nx * o + ax * a, yy, bz + s.nz * o + az * a]
     /** a panel in the wall's normal plane, from `o0` to `o1` out and `ya` to `yb` up, a face each way */
-    const panel = (o0: number, o1: number, ya: number, yb: number, cell: { u0: number; v0: number; u1: number; v1: number }, tint: [number, number, number]): void => {
-      out.quad([p(o0, ya, 0.01), p(o1, ya, 0.01), p(o1, yb, 0.01), p(o0, yb, 0.01)], [ax, 0, az], quadUV(cell), tint, 0)
-      out.quad([p(o1, ya, -0.01), p(o0, ya, -0.01), p(o0, yb, -0.01), p(o1, yb, -0.01)], [-ax, 0, -az], quadUV(cell), tint, 0)
+    const panel = (o0: number, o1: number, ya: number, yb: number, cell: { u0: number; v0: number; u1: number; v1: number }, tint: [number, number, number], inkCode = 0): void => {
+      const k = contrastInk(tint, inkCode)
+      out.quad([p(o0, ya, 0.01), p(o1, ya, 0.01), p(o1, yb, 0.01), p(o0, yb, 0.01)], [ax, 0, az], quadUV(cell), tint, k)
+      out.quad([p(o1, ya, -0.01), p(o0, ya, -0.01), p(o0, yb, -0.01), p(o1, yb, -0.01)], [-ax, 0, -az], quadUV(cell), tint, k)
     }
     let top: number
     let reach: number
@@ -964,7 +967,7 @@ function projectingSigns(scene: Scene, atlas: TextAtlas, owner: string, hung: Hu
       // quarter clockwise, which reads top to bottom only with the letters' tops on the reader's RIGHT: toward
       // the wall on one face and away from it on the other. Both faces had them the same way along the wall's
       // normal, so every blade read mirrored from both sides (BUGS.md #50) — the cell is laid with u reversed.
-      panel(0.18, 0.98, y0, y0 + 1.6, { u0: i.u1, v0: i.v0, u1: i.u0, v1: i.v1 }, h.tint)
+      panel(0.18, 0.98, y0, y0 + 1.6, { u0: i.u1, v0: i.v0, u1: i.u0, v1: i.v1 }, h.tint, h.ink ?? 0)
       panel(0.14, 1.02, y0 - 0.04, y0, blank, iron)
       panel(0.14, 1.02, y0 + 1.6, y0 + 1.64, blank, iron)
       top = y0 + 1.64
@@ -1441,6 +1444,19 @@ export function faceFor(poi: PackedPoi, index: Map<string, PackedBuilding[]>): S
   return best
 }
 
+/**
+ * How far a shop's fascia board stands off the footprint wall (2026-11-17, #234: boards sank into the facade, whose
+ * shopfront piers/fins/canopies are 0.1-0.4 m proud of the footprint ring the board is placed on), and an address plate.
+ */
+const SIGN_STANDOFF = 0.45
+const PLATE_STANDOFF = 0.12
+/** a sign's lettering ink code: its own if given, else black on a light board, white on a dark one (#176: white on beige) */
+const CONTRAST_LUM = 0.5
+function contrastInk(tint: [number, number, number], own: number): number {
+  if (own !== 0) return own
+  return 0.2126 * tint[0] + 0.7152 * tint[1] + 0.0722 * tint[2] > CONTRAST_LUM ? 0.45 : 0.9
+}
+
 /** One sign board, standing proud of the wall it is on. */
 function board(out: MeshBuilder, s: Spot, tint: [number, number, number], u0: number, v0: number,
                groundY: number, fasciaY: number, ink = 0): void {
@@ -1451,8 +1467,8 @@ function board(out: MeshBuilder, s: Spot, tint: [number, number, number], u0: nu
   const ax = -s.nz
   const az = s.nx
   // proud of the wall by more than the shopfront's own reveals, or the glazing shows through the board
-  const px = s.x + s.nx * 0.2
-  const pz = s.z + s.nz * 0.2
+  const px = s.x + s.nx * SIGN_STANDOFF
+  const pz = s.z + s.nz * SIGN_STANDOFF
   const u1 = u0 + CELL_W / PAGE
   const v1 = v0 + CELL_H / PAGE_H
   out.quad(
@@ -1460,6 +1476,6 @@ function board(out: MeshBuilder, s: Spot, tint: [number, number, number], u0: nu
      [px + ax * w, y + h, pz + az * w], [px - ax * w, y + h, pz - az * w]],
     [s.nx, 0, s.nz],
     [[u0, v1], [u1, v1], [u1, v0], [u0, v0]],
-    tint, ink,
+    tint, contrastInk(tint, ink),
   )
 }

@@ -1,7 +1,8 @@
 [
   {
     "osm": [
-      "way/288485994"
+      "way/288485994",
+      "way/1092161846"
     ],
     "name": "Columbus Tower (Sentinel Building)",
     "procedural": "columbusTower_916_kearny",

@@ -114,6 +114,7 @@
   {
     "name": "Gare Montparnasse",
     "procedural": "gareMontparnasse",
+    "madeBy": "claude-sonnet-5-5",
     "lat": 48.8401441,
     "lon": 2.3193168,
     "front": 39,

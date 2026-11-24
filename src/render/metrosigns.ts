@@ -19,12 +19,14 @@ import { drawGuimardWord } from './paris/guimard-lettering.ts'
  * street by `bearing` (the city's own streets, which are there for any tile being built).
  */
 export function metroSignsLayer(scene: Scene, terrain: Terrain, bearing: (x: number, z: number) => number,
-  isGuimard: (x: number, z: number) => boolean = () => true): TileLayer {
+  isGuimard: (x: number, z: number) => boolean = () => true,
+  spot: (x: number, z: number) => { x: number; z: number; heading: number } | null = (x, z) => ({ x, z, heading: bearing(x, z) })): TileLayer {
   let mat: StandardMaterial | null = null
   return {
     name: 'metrosigns',
     build(near) {
-      const at = near.tile.furniture.filter((f) => f.kind === 'metro' && isGuimard(f.x, f.z)).map((f) => ({ x: f.x, z: f.z, heading: bearing(f.x, f.z) }))
+      const at = near.tile.furniture.filter((f) => f.kind === 'metro' && isGuimard(f.x, f.z)).map((f) => spot(f.x, f.z))
+        .filter((m): m is { x: number; z: number; heading: number } => m !== null)
       if (at.length === 0) return []
       mat ??= signMaterial(scene)
       return [buildMetroSigns(scene, at, terrain, mat, `metrosigns:${near.key}`)]

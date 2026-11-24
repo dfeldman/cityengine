@@ -16,6 +16,7 @@
  * line would come out above the ground — is left as it was: that needs ramps down into it, which is another job.
  */
 import { unpackPoints } from '../src/city/package.ts'
+import { StreetGrade } from '../src/city/grade.ts'
 
 export interface TunnelEdge {
   id: number
@@ -54,6 +55,17 @@ export const PEAK = 8
 /** …but for a street under a great building and not a hill: the Avenue du Maine under the Gare Montparnasse (owner, 2026-10-31: "it doesn't go into the terrain"), 5.9 m of cover */
 const UNDER_A_BUILDING = new Set(['Avenue du Maine'])
 const SHALLOW_PEAK = 5
+/**
+ * A bore stays BORE_COVER under the ground over it all the way — the tube and its crown, the same 6 m the fill over a bore
+ * (tools/bake.ts OVER) raises the ground to — dipping under its straight mouth-to-mouth line where the ground is not that far over
+ * it, the dip's own grade at most BORE_GRADE, the ground read every BORE_STEP m at the line and BORE_HALF_PAD m past the road's
+ * edges either side (the fill's full-height corridor). Not within BORE_INSET of a mouth: the fill starts there too (owner,
+ * 2026-11-18, the Avenue du Maine under Place Raoul Dautry: the straight line ran 3.6–4.5 m under the lidar ground and the fill stood
+ * a 2–3 m ridge over it — "the tunnel is under the earth, not just a hill in the earth").
+ */
+export const BORE_COVER = 6, BORE_GRADE = 0.06, BORE_STEP = 5, BORE_INSET = 7, BORE_HALF_PAD = 1
+/** …and within reach of a mouth the dip grows from it at no more than this (a steeper ramp down than BORE_GRADE, as into a car park) */
+export const BORE_MOUTH_GRADE = 0.12
 /** …where "near" is this far in from either mouth */
 const MOUTH = 20
 /** a mouth with a street crossing right over it is at least this far below that street (the tube is 5.4 m high) */
@@ -95,13 +107,23 @@ function nearest(line: P[], cum: number[], q: P): { along: number; off: number }
  * `edges`; returns the ids made bores. `ground` is the terrain.
  */
 export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) => number,
-  report?: (name: string, why: string) => void, fine?: (x: number, z: number) => number): Set<number> {
+  report?: (name: string, why: string) => void, fine?: (x: number, z: number) => number,
+  /** the ground the fill over a bore will see (BORE_COVER), where it is finer than `ground`; NaN where it has none */
+  cover?: (x: number, z: number) => number,
+  /** where a later pass lays the ground over the fill's (a river band, a deck zone): no cover is asked for there */
+  laidLater?: (x: number, z: number) => boolean): Set<number> {
   const done = new Set<number>()
   const isBore = (e: TunnelEdge): boolean => !!e.tunnel && !e.foot && (STREET.has(e.kind ?? '') || BIKE_TUNNELS.has(e.name ?? ''))
   const candidates = edges.filter(isBore)
   const byNode = new Map<number, TunnelEdge[]>()
   for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
   const seen = new Set<number>()
+  /** the streets at grade the fill over a bore stops at (tools/bake.ts `streetsAtGrade`, the same ways), built when first asked */
+  let over: StreetGrade | null = null
+  const streetsOver = (): StreetGrade => {
+    if (!over) { over = new StreetGrade(); for (const o of edges) if (!o.cut && !o.bore && !o.tunnel && !o.bridge && !o.foot && o.heights?.length) over.add(o as Parameters<StreetGrade['add']>[0]) }
+    return over
+  }
   /** the streets into a lowered mouth, sloped down to it: straight from their far end, over at most 60 m */
   const approach = (node: number, y: number): void => {
     for (const o of byNode.get(node) ?? []) {
@@ -257,6 +279,42 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
       if (ground(q.x, q.z) - y(d) < COVER) { covered = false; report?.(name, `only ${(ground(q.x, q.z) - y(d)).toFixed(1)} m of ground over it ${Math.round(d)} m in`) }
     }
     if (!covered) continue
+    /*
+     * DEEP ENOUGH (BORE_COVER): the dip under the straight line that keeps the cover, as the smallest dip over every sample's need
+     * whose grade stays within BORE_GRADE — a forward and a backward pass — and none at the mouths themselves.
+     */
+    const coverAt = (x: number, z: number): number => { const a = ground(x, z), b = cover ? cover(x, z) : NaN; return Number.isFinite(b) ? Math.max(a, b) : a }
+    const half = Math.max(...order.map(({ e }) => (e.width ?? 6) / 2 + Math.max(e.walk ?? 0, 0.6))) + BORE_HALF_PAD
+    const ns = Math.max(1, Math.ceil(L / BORE_STEP)), ds = Array.from({ length: ns + 1 }, (_, i) => (i * L) / ns)
+    const dip = ds.map((d) => {
+      if (d < BORE_INSET || d > L - BORE_INSET) return 0
+      const q = nearestPoint(line, cum, d), q2 = nearestPoint(line, cum, Math.min(L, d + 1)), q1 = nearestPoint(line, cum, Math.max(0, d - 1))
+      const tl = Math.hypot(q2.x - q1.x, q2.z - q1.z) || 1, nx = -(q2.z - q1.z) / tl, nz = (q2.x - q1.x) / tl
+      // (the lowest ground the fill would raise: not where a street at grade runs over the bore, where the fill stops at the street
+      //  and the tube is only drawn from inside — the Tunnel des Tuileries under the upper quay, less than 6 m over its lower one)
+      let g = Infinity
+      for (const s of [0, half, -half]) {
+        const x = q.x + nx * s, z = q.z + nz * s
+        if (laidLater?.(x, z) || streetsOver().at(x, z) !== null) continue
+        const v = coverAt(x, z); if (Number.isFinite(v)) g = Math.min(g, v)
+      }
+      return Number.isFinite(g) ? Math.max(0, y(d) + BORE_COVER - g) : 0
+    })
+    const need = [...dip]
+    for (let i = 1; i <= ns; i++) dip[i] = Math.max(dip[i], dip[i - 1] - BORE_GRADE * (ds[i] - ds[i - 1]))
+    for (let i = ns - 1; i >= 0; i--) dip[i] = Math.max(dip[i], dip[i + 1] - BORE_GRADE * (ds[i + 1] - ds[i]))
+    // (none at the mouths, and near one no more than BORE_MOUTH_GRADE of it: what the ground asks for beyond that is the portal's
+    //  face, the fill's to make — the ground just inside a mouth is never 6 m over the road)
+    for (let i = 0; i <= ns; i++) dip[i] = Math.min(dip[i], BORE_MOUTH_GRADE * Math.min(ds[i], L - ds[i]))
+    const deepest = Math.max(...dip)
+    let short = 0, shortAt = 0
+    for (let i = 0; i <= ns; i++) if (need[i] - dip[i] > short) { short = need[i] - dip[i]; shortAt = ds[i] }
+    const straight = y
+    const yd = (d: number): number => {
+      const f = Math.max(0, Math.min(ns, (d / (L || 1)) * ns)), i = Math.min(ns - 1, Math.floor(f))
+      return straight(d) - (dip[i] + (dip[i + 1] - dip[i]) * (f - i))
+    }
+    if (deepest > 0.05) report?.(name, `the street is a bore dipped up to ${deepest.toFixed(1)} m under its straight line to keep ${BORE_COVER} m of ground over it${short > 0.3 ? ` (still ${short.toFixed(1)} m short ${Math.round(Math.min(shortAt, L - shortAt))} m from a mouth: the fill's)` : ''}`)
     // (only now, a bore for certain, are the streets into a lowered mouth sloped down to it)
     for (const [n, y] of lowered) approach(n, y)
     /*
@@ -282,7 +340,7 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
     // (each edge's heights in its own point order: `nearest` measures along from mouth 0 whichever way it runs)
     for (const { e } of order) {
       const p = unpackPoints(e.points)
-      e.heights = p.map((q) => Math.round(y(nearest(line, cum, q).along) * 100) / 100)
+      e.heights = p.map((q) => Math.round(yd(nearest(line, cum, q).along) * 100) / 100)
       e.bore = true
       done.add(e.id)
     }
@@ -294,7 +352,7 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
       // (its two ends a little further: at a mouth a pavement turns to meet the sidewalk outside — Broadway's south one
       //  ends 11 m off the line, and left out it was a footway over the top of the hill, 15 m above the tunnel)
       if (near.some((n, i) => n.off > (i === 0 || i === near.length - 1 ? BESIDE + 6 : BESIDE))) continue
-      f.heights = near.map((n) => Math.round(y(n.along) * 100) / 100)
+      f.heights = near.map((n) => Math.round(yd(n.along) * 100) / 100)
       f.bore = true
       done.add(f.id)
       /*
@@ -616,6 +674,8 @@ export const LID_DECK_MIN = 2.5
 export const LID_EMBANK = Number(process.env.LID_EMBANK ?? 2)
 /** …and the road into it, LID_RAMP out (the mean of its two ends), no more than this under that street: it came at grade */
 export const LID_GRADE = Number(process.env.LID_GRADE ?? 3)
+/** a refused lid chain this close (m, mean offset) to a same-named lid chain, of a length within LID_TWIN_LEN of it and LID_TWIN_SIDE of its points beside it (not past its ends), is its twin (lidTunnels) */
+export const LID_TWIN = Number(process.env.LID_TWIN ?? 30), LID_TWIN_LEN = 0.35, LID_TWIN_SIDE = 0.7
 /** a road out of a lid's mouth shorter than this, to no other road, is a stub and dropped */
 const LID_STUB = 15
 /** a way on a lid's slab is a deck to this far past the slab's edge (more, and a way alongside the edge became a deck drawn with its own structure) */
@@ -655,7 +715,25 @@ export function lidTunnels(edges: TunnelEdge[], report?: (name: string, why: str
   const beside: { x: number; z: number; h: number; r: number }[] = []
   const decks: { line: P[]; cum: number[]; ys: number[]; L: number; half: number; chain: Set<TunnelEdge>; top: number }[] = []
   const mouthY = new Map<number, number>()
-  for (const start of edges) {
+  /*
+   * TWIN CARRIAGEWAYS (2026-11-16, the Avenue de New York under the Place de Varsovie): a dual carriageway's two halves are two
+   * chains, and each was judged alone. In paris-centre the northbound half failed the at-grade test by a hair (its road 100 m out
+   * at 1.5 / 1.1 under a street over it at 4.3: mean 1.3, the limit 1.3) while the southbound half passed, so one lane ran in the
+   * open trench and the other stayed a tunnel inside it, with a portal and a wall slab standing in the trench and its mouth
+   * connectors stepping −0.5 → +1.4 m. A chain refused only for that test is tried again once every chain has been judged, and is a
+   * lid if a same-named lid chain runs beside it (LID_TWIN m apart on average, lengths within LID_TWIN_LEN).
+   */
+  const graded: TunnelEdge[] = [], lidLines: { name: string; line: P[]; cum: number[]; L: number }[] = []
+  const twinOf = (name: string, line: P[], L: number): boolean => lidLines.some((t) => {
+    if (t.name !== name || Math.abs(t.L - L) > LID_TWIN_LEN * Math.max(t.L, L)) return false
+    // (side by side, not end to end: the Périphérique's lids follow one another under one name)
+    let s = 0, n = 0, inside = 0
+    for (const q of line) { const h = nearest(t.line, t.cum, q); s += h.off; n++; if (h.along > 2 && h.along < t.L - 2) inside++ }
+    return n > 0 && s / n < LID_TWIN && inside >= LID_TWIN_SIDE * n
+  })
+  for (const pass of [0, 1]) {
+  if (pass === 1) { if (!graded.length) break; seen.clear() }
+  for (const start of pass === 0 ? edges : graded) {
     if (!isT(start) || seen.has(start.id)) continue
     const chain: TunnelEdge[] = []
     const todo = [start]
@@ -756,7 +834,11 @@ export function lidTunnels(edges: TunnelEdge[], report?: (name: string, why: str
       return best
     })
     const known = level.filter((h) => Number.isFinite(h))
-    if (!known.length || known.reduce((a, b) => a + b, 0) / known.length < top - LID_GRADE) { report?.(name, `its road ${LID_RAMP} m out is at ${level.map((h) => h.toFixed(1)).join(' / ')}, under the street over it at ${top.toFixed(1)}: not a lid`); continue }
+    if (!known.length || known.reduce((a, b) => a + b, 0) / known.length < top - LID_GRADE) {
+      if (pass === 0) { report?.(name, `its road ${LID_RAMP} m out is at ${level.map((h) => h.toFixed(1)).join(' / ')}, under the street over it at ${top.toFixed(1)}: not a lid`); if (known.length) graded.push(start); continue }
+      if (!twinOf(name, line, L)) continue
+      report?.(name, `its twin carriageway is a lid: a lid too`)
+    }
     const ys = heres.map((here) => Math.min(here, lidY))
     let ramped = 0
     mouths.forEach((n, mi) => {
@@ -816,6 +898,8 @@ export function lidTunnels(edges: TunnelEdge[], report?: (name: string, why: str
     if (LID_OPEN) decks.push({ line, cum, ys, L, half: Math.max(...order.map((e) => e.width ?? 8)) / 2, chain: new Set(order), top })
     if (LID_OPEN) mouths.forEach((n, mi) => mouthY.set(n, ys[mi]))
     report?.(name, `lid tunnel, ${Math.round(L)} m: ridden ${LID_CLEAR} m under the street over it at ${top.toFixed(1)}, ground beside ${gBeside.toFixed(1)} (mouths ${ys.map((y) => y.toFixed(1)).join(' / ')}), ${ramped} way(s) ramped down to it`)
+    lidLines.push({ name, line, cum, L })
+  }
   }
   /*
    * Every other road out of a lid's mouth comes down to it as well (the Quai de Bercy's link between its two trenches'

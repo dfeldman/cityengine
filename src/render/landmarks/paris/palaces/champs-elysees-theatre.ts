@@ -9,7 +9,7 @@ const FIXED = 0
 /** the design footprint: OSM way 69486335's box turned to the avenue (local −z faces bearing 142.4, the Avenue Montaigne) */
 const HX = 22.3
 const HZ = 46.3
-const MARBLE = hex('#cdd0ce')
+const MARBLE = hex('#bdc0bd')
 const GILT = hex('#caa548')
 const GREEN = hex('#3e5548')
 
@@ -37,7 +37,7 @@ export function theatreChampsElysees(out: MeshBuilder, fit: Fit): void {
 }
 
 function draw(out: MeshBuilder): void {
-  const p = palette('#cdd0ce', '#737676')
+  const p = palette('#bdc0bd', '#737676')
   // ---- the body behind: the marble plan with its plain windows, the stage house rising out of it
   extrude(out, [PLAN], p, { eaves: 24, bay: 4.4, win: 1.6, rise: 0.6, inset: 0.3, dormers: false,
     storeys: [{ y: 6.5, h: 2.4 }, { y: 11, h: 3.2 }, { y: 16, h: 2.4 }, { y: 20.2, h: 2 }] })
@@ -85,7 +85,7 @@ function draw(out: MeshBuilder): void {
   const fw = (span - 0.8) / 3
   for (let k = 0; k < 3; k++) {
     const x0 = first + 0.2 + k * (fw + 0.2)
-    rectOn(out, '-z', z, x0, x0 + fw, fy0, fy1, shade(MARBLE, 0.74), 0.015)
+    rectOn(out, '-z', z, x0, x0 + fw, fy0, fy1, shade(MARBLE, 0.6), 0.015)
     figures(out, z, x0, x0 + fw, fy0, fy1, k)
   }
   // ---- the foot: the doors, the flat canopy, its green top and the gilt name
@@ -140,7 +140,7 @@ function drumPane(out: MeshBuilder, cx: number, cz: number, R: number, a: number
  * another across the panel, drawn as tapering limbs. The middle panel is Apollo, upright between the muses.
  */
 function figures(out: MeshBuilder, z: number, x0: number, x1: number, y0: number, y1: number, k: number): void {
-  const pale = shade(MARBLE, 1.1)
+  const pale = shade(MARBLE, 1.22)
   const w = x1 - x0
   const n = k === 1 ? 5 : 4
   const lean = k === 0 ? 0.35 : k === 2 ? -0.35 : 0

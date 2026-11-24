@@ -50,7 +50,8 @@ export function gareMontparnasse(out: MeshBuilder): void {
   capPolygon(out, hall, 15.5, hex('#8b8d8c'), CONCRETE)
   const zAt = frontOr(hall, -157)
   // the two pylons, and the glazed vault between them with the name across it
-  const pyl = [-42, 36]
+  // (pylons measured off the Commons front photo against the slab's 167 m: centres at about x −41 and +76, 117 m apart)
+  const pyl = [-42, 76]
   for (const x of pyl) {
     const z = zAt(x)
     block(out, x - 5, x + 5, z - 2, z + 8, 0, 29, concrete)

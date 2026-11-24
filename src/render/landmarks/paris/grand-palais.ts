@@ -143,6 +143,17 @@ export function grandPalais(out: MeshBuilder, fit: Fit): void {
       beam(out, [x, y0 + 0.1, z0], [x, y1 + 0.1, z1], 0.22, iron)
     }
   }
+  // the vault's two ends: the glass gable walls (#314) — a fan of glazing from the crown's foot down to the springing, with iron mullions
+  for (const [vx, sgn] of [[vx0, -1], [vx1, 1]] as const) {
+    const hub: [number, number, number] = [vx, wall + 1.4 + rise * 0.5, vz]
+    for (let k = 0; k < seg; k++) {
+      const [z0, y0] = arc(k)
+      const [z1, y1] = arc(k + 1)
+      out.quad(sgn > 0 ? [hub, [vx, y0, z0], [vx, y1, z1], [vx, y1, z1]] : [hub, [vx, y1, z1], [vx, y0, z0], [vx, y0, z0]], [sgn, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], glass, FIXED)
+      beam(out, hub, [vx, y0, z0], 0.12, iron)
+    }
+    block(out, vx - 0.1, vx + 0.1, vz - R, vz + R, wall + 1.2, wall + 1.5, iron)
+  }
   // the vault's ridge and its two eaves, in iron
   beam(out, [vx0, wall + 1.4 + rise + 0.2, vz], [vx1, wall + 1.4 + rise + 0.2, vz], 0.3, iron)
 

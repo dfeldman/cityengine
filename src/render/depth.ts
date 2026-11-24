@@ -16,13 +16,18 @@
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline'
 import type { Camera } from '@babylonjs/core/Cameras/camera'
 import type { Scene } from '@babylonjs/core/scene'
+import type { GeometryBufferRenderer } from '@babylonjs/core/Rendering/geometryBufferRenderer'
 
-export function ambientOcclusion(scene: Scene, camera: Camera): SSAO2RenderingPipeline | null {
+/**
+ * `gbuf`: depth from a GeometryBufferRenderer, which draws every mesh whatever its material (render/post.ts says why the
+ * default pre-pass depth misses this city's ShaderMaterials). Without one, the pre-pass, as before.
+ */
+export function ambientOcclusion(scene: Scene, camera: Camera, gbuf: GeometryBufferRenderer | null = null): SSAO2RenderingPipeline | null {
   if (!SSAO2RenderingPipeline.IsSupported) return null
 
   // Half-resolution: AO is a low-frequency signal and nobody can tell, and it is the difference between
   // affordable and not on the machines this runs on.
-  const ssao = new SSAO2RenderingPipeline('ssao', scene, { ssaoRatio: 0.5, blurRatio: 1 }, [camera])
+  const ssao = new SSAO2RenderingPipeline('ssao', scene, { ssaoRatio: 0.5, blurRatio: 1 }, [camera], gbuf ?? false)
   /*
    * Tuned down hard from the first attempt. At full strength a large flat facade a few metres from the
    * camera reads as occluded along its whole length — a whole building goes nearly black — which is not

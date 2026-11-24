@@ -22,6 +22,7 @@ const FIXED = 0
  * retaining walls (the 53-step lateral flights at z 76, the 38-step flights along x ±49, the walls at z 82 and x ±55.6).
  * The Fontaine de Varsovie below z 116 is another builder's.
  */
+/** the gilded figures' pedestals (OSM's artwork nodes in this frame) and whether the statue pool draws the figures */
 const PARVIS_FIGURE_X = 23.1
 const PARVIS_FIGURE_Z0 = -16.3
 const PARVIS_FIGURE_DZ = 10.77
@@ -33,13 +34,13 @@ export function trocaderoParvis(out: MeshBuilder): void {
   // artwork nodes, 2026-11-23: x ±23.1 in front of the head pavilions' parvis faces, z −16.3…16.0; they had stood at ±15.5).
   // The figures are Modly models in the statue pool (paris-statues.json `trocadero-*`) on these pedestals' tops (y 2.5)
   for (const sx of [-1, 1]) {
-      if (PARVIS_MODLY_FIGURES) continue
     for (let i = 0; i < 4; i++) {
       const x = sx * PARVIS_FIGURE_X
       const z = PARVIS_FIGURE_Z0 + i * PARVIS_FIGURE_DZ
       block(out, x - 1.1, x + 1.1, z - 1.1, z + 1.1, 0, 0.35, shade(stone, 0.92))
       block(out, x - 0.85, x + 0.85, z - 0.85, z + 0.85, 0.35, 2.3, stone)
       block(out, x - 0.95, x + 0.95, z - 0.95, z + 0.95, 2.3, 2.5, shade(stone, 1.03))
+      if (PARVIS_MODLY_FIGURES) continue
       // a standing figure, facing the axis: the robe widening to the feet, the torso, an arm raised
       prism(out, x, z, 2.5, 4.3, 0.42, 8, gilt, FIXED, 0.3)
       prism(out, x, z, 4.3, 5.0, 0.3, 8, gilt, FIXED, 0.24)
@@ -63,7 +64,7 @@ function flightZ(out: MeshBuilder, x0: number, x1: number, z0: number, z1: numbe
   for (let i = 0; i < n; i++) {
     const a = z0 + ((z1 - z0) * i) / n, b = z0 + ((z1 - z0) * (i + 1)) / n
     const y = y0 + ((y1 - y0) * (i + 0.5)) / n
-    block(out, x0, x1, Math.min(a, b), Math.max(a, b), DEEP, y, shade(c, i % 2 ? 0.97 : 1))
+    stoneBlock(out, x0, x1, Math.min(a, b), Math.max(a, b), DEEP, y, shade(c, i % 2 ? 0.9 : 1))
   }
 }
 /** The same along x. */
@@ -71,7 +72,7 @@ function flightX(out: MeshBuilder, x0: number, x1: number, z0: number, z1: numbe
   for (let i = 0; i < n; i++) {
     const a = x0 + ((x1 - x0) * i) / n, b = x0 + ((x1 - x0) * (i + 1)) / n
     const y = y0 + ((y1 - y0) * (i + 0.5)) / n
-    block(out, Math.min(a, b), Math.max(a, b), z0, z1, DEEP, y, shade(c, i % 2 ? 0.97 : 1))
+    stoneBlock(out, Math.min(a, b), Math.max(a, b), z0, z1, DEEP, y, shade(c, i % 2 ? 0.9 : 1))
   }
 }
 /** A stone balustrade along x (at z) or along z (at x): plinth, balusters, rail. */
@@ -90,6 +91,10 @@ function pipeRail(out: MeshBuilder, alongX: boolean, a0: number, a1: number, at:
   for (let u = a0; u <= a1 + 0.01; u += 2) B(u - 0.03, u + 0.03, at - 0.03, at + 0.03, y, y + 1)
   B(a0, a1, at - 0.035, at + 0.035, y + 0.97, y + 1.03)
   B(a0, a1, at - 0.025, at + 0.025, y + 0.5, y + 0.55)
+}
+/** a block in the granite page (the flights and the paving: in flat colour the sun blew them out white, 2026-11-16), treads alternating in shade */
+function stoneBlock(out: MeshBuilder, x0: number, x1: number, z0: number, z1: number, y0: number, y1: number, c: Rgb): void {
+  box(out, (x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2, (x1 - x0) / 2, (y1 - y0) / 2, (z1 - z0) / 2, c, surfaceTag('granite'))
 }
 /** A paved field, a block down to the mass, its square panels bordered in grey. */
 function paving(out: MeshBuilder, x0: number, x1: number, z0: number, z1: number, y: number, panel: number): void {

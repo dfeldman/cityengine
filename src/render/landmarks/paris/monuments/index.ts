@@ -9,7 +9,9 @@ import { saintEustache } from './saint-eustache.ts'
 import { carrouselArch, porteSaintDenis, porteSaintMartin } from './gates.ts'
 import { montparnasseFull } from './modern.ts'
 import { grandeArche } from '../defense-famous/grandeArche.ts'
-import { bassinTakis, fontaineAgam, parvisPaving } from '../defense-famous/parvis.ts'
+import { bassinTakis, fontaineAgam, parvisPaving, parvisSlab } from '../defense-famous/parvis.ts'
+import { defenseToscano, defenseMiro, defensePouvreau, defenseLieuxDuCorps, defenseHercules, defenseDameLune, defenseTerreDerbre, defenseGrenouille, defenseOphelie, defenseDanse, defenseSomnambule, defenseHommesCite, defenseCorolles, defenseDialogue } from '../defense-famous/works/figurativeEast.ts'
+import { defenseBeauTemps, defenseBronzeVoyageur, defenseColosse, defenseConnaissance, defenseEnvol, defenseIkaria, defensePoire, defenseQuatreTetes, defenseSerpent, defenseTelephone, defenseTindaro } from '../defense-famous/works/figurativeWest.ts'
 import { pantheonFull } from './pantheon.ts'
 import { lionDeBelfort, triompheRepublique, troneColumnPhilippeAuguste, troneColumnSaintLouis } from './statues.ts'
 import { sacreCoeurFull } from './sacre-coeur.ts'
@@ -44,16 +46,16 @@ import { fontaineStravinsky } from './fontaine-stravinsky.ts'
 import { saintAlexandreNevsky } from './saint-alexandre-nevsky.ts'
 import { fontaineDuPalmier } from './fontaine-palmier.ts'
 import { fontaineLouvois } from './minor/fontaine-louvois.ts'
-import { fontaineTrevise } from './minor/fontaine-trevise.ts'
-import { fontaineEugeneDelacroix } from './minor/fontaine-eugene-delacroix.ts'
 import { fontaineRoseauxArgent } from './minor/fontaine-roseaux-argent.ts'
+import { fontaineTrevise } from './minor/fontaine-trevise.ts'
 import { fontaineBaqueIssy } from './minor/fontaine-baque-issy.ts'
+import { fontaineEugeneDelacroix } from './minor/fontaine-eugene-delacroix.ts'
 import { fontainePolypores } from './minor/fontaine-polypores.ts'
 import { fontaineLabyrinthe } from './minor/fontaine-labyrinthe.ts'
-import { fontaineAlfredStevens } from './minor/fontaine-alfred-stevens.ts'
 import { fontainePaix } from './minor/fontaine-paix.ts'
 import { fontaineMoliere } from './minor/fontaine-moliere.ts'
 import { fontaineGaillon } from './minor/fontaine-gaillon.ts'
+import { fontaineAlfredStevens } from './minor/fontaine-alfred-stevens.ts'
 import { fontaineSainteGenevieve } from './minor/fontaine-sainte-genevieve.ts'
 import { fontaineArtsMetiers } from './minor/fontaine-arts-metiers.ts'
 import { fontaineLionsJardinPlantes } from './minor/fontaine-lions-jardin-plantes.ts'
@@ -63,70 +65,76 @@ import { fontainePuitsButteAuxCailles } from './minor/fontaine-puits-butte-aux-c
 import { fontaineDuCoq } from './minor/fontaine-du-coq.ts'
 import { fontaineVertBois } from './minor/fontaine-vert-bois.ts'
 import { fontainePreSaintGervais } from './minor/fontaine-pre-saint-gervais.ts'
-import { fontaineBaleineBleue } from './minor/fontaine-baleine-bleue.ts'
-import { fontaineEphresienne } from './minor/fontaine-ephresienne.ts'
+import { regardMaussins } from './minor/regard-maussins.ts'
 import { fontaineChildebert } from './minor/fontaine-childebert.ts'
 import { fontaineDejean } from './minor/fontaine-dejean.ts'
 import { fontaineGavarni } from './minor/fontaine-gavarni.ts'
-import { fontaineSaussure } from './minor/fontaine-saussure.ts'
-import { pavillonPetiteMairie } from './minor/pavillon-petite-mairie.ts'
-import { monumentSolidarnosc } from './minor/monument-solidarnosc.ts'
-import { monumentHenrionBertier } from './minor/monument-henrion-bertier.ts'
-import { monumentAlphand } from './minor/monument-alphand.ts'
-import { monumentCampagneTunisie } from './minor/monument-campagne-tunisie.ts'
-import { sculptureLArc } from './minor/sculpture-l-arc.ts'
-import { kiosqueNoctambules } from './minor/kiosque-noctambules.ts'
-import { monumentJeunesResistants } from './minor/monument-jeunes-resistants.ts'
-import { monumentPortVendresMaillol } from './minor/monument-port-vendres-maillol.ts'
-import { monumentBarye } from './minor/monument-barye.ts'
 import { fontaineBassinSoufflot } from './minor/fontaine-bassin-soufflot.ts'
-import { monumentJeanneArcSaintMarcel } from './minor/monument-jeanne-arc-saint-marcel.ts'
-import { monumentJeanneArcSaintAugustin } from './minor/monument-jeanne-arc-saint-augustin.ts'
+import { bassinDeLatone, bassinDesLezards } from '../versailles/minor/bassin-latone.ts'
+import { fontaineEphresienne } from './minor/fontaine-ephresienne.ts'
 import { fontaineAvril } from './minor/fontaine-avril.ts'
 import { fontainePlaceFrancoisIer } from './minor/fontaine-place-francois-ier.ts'
 import { fontainePorteDoree } from './minor/fontaine-porte-doree.ts'
+import { fontaineSaussure } from './minor/fontaine-saussure.ts'
+import { fontaineBaleineBleue } from './minor/fontaine-baleine-bleue.ts'
 import { fontaineCirque } from './minor/fontaine-cirque.ts'
 import { fontaineAmbassadeurs } from './minor/fontaine-ambassadeurs.ts'
 import { fontaineDiane } from './minor/fontaine-diane.ts'
 import { fontaineGrilleCoq } from './minor/fontaine-grille-coq.ts'
 import { fontaineTheatreFrancaisMarine, fontaineTheatreFrancaisFluviale } from './minor/fontaine-theatre-francais.ts'
-import { pavillonReunion } from './minor/pavillon-reunion.ts'
-import { tombeDragon } from './minor/tombe-dragon.ts'
-import { monumentExpansionColoniale } from './minor/monument-expansion-coloniale.ts'
 import { monumentSoldatsNoirs } from './minor/monument-soldats-noirs.ts'
-import { memorialCharmElCheikh } from './minor/memorial-charm-el-cheikh.ts'
-import { memorialAf447 } from './minor/memorial-af447.ts'
-import { steleGenocideTutsi } from './minor/stele-genocide-tutsi.ts'
-import { monumentBancsPyramideNoire } from './minor/monument-bancs-pyramide-noire.ts'
-import { arcDeplace } from './minor/arc-deplace.ts'
-import { jardinMemorialVelDHiv, monumentVelDHiv } from './minor/memorial-vel-d-hiv.ts'
+import { pavillonReunion } from './minor/pavillon-reunion.ts'
+import { pavillonPetiteMairie } from './minor/pavillon-petite-mairie.ts'
+import { monumentExpansionColoniale } from './minor/monument-expansion-coloniale.ts'
 import { monumentKomitas } from './minor/monument-komitas.ts'
-import { monumentMissionMarchand } from './minor/monument-mission-marchand.ts'
-import { monumentSoldatsTchecoslovaques } from './minor/monument-soldats-tchecoslovaques.ts'
+import { versaillesBassinBacchus, versaillesBassinCeres, versaillesBassinFlore, versaillesBassinSaturne } from '../versailles/minor/bassins-saisons.ts'
+import { versaillesTheatreEau, versaillesEnfantsDores, versaillesTroisFontaines, versaillesBassinDomes, versaillesObeliscBasin, versaillesBassinDauphin, versaillesBassinFranceTriomphante } from '../versailles/minor/bosquets.ts'
+import { versaillesBassinApollon, versaillesBassinMiroir } from '../versailles/minor/bassin-apollon.ts'
+import { versaillesAlleeEau, versaillesDragon, versaillesNymphes, versaillesPyramide } from '../versailles/minor/north-axis.ts'
+import { monumentCampagneTunisie } from './minor/monument-campagne-tunisie.ts'
+import { monumentBarye } from './minor/monument-barye.ts'
+import { monumentPortVendresMaillol } from './minor/monument-port-vendres-maillol.ts'
+import { monumentAlphand } from './minor/monument-alphand.ts'
+import { monumentJeanneArcSaintAugustin } from './minor/monument-jeanne-arc-saint-augustin.ts'
+import { monumentJeanneArcSaintMarcel } from './minor/monument-jeanne-arc-saint-marcel.ts'
+import { monumentJeunesResistants } from './minor/monument-jeunes-resistants.ts'
+import { monumentSolidarnosc } from './minor/monument-solidarnosc.ts'
+import { monumentHenrionBertier } from './minor/monument-henrion-bertier.ts'
+import { tombeDragon } from './minor/tombe-dragon.ts'
+import { sculptureLArc } from './minor/sculpture-l-arc.ts'
+import { kiosqueNoctambules } from './minor/kiosque-noctambules.ts'
+import { memorialAf447 } from './minor/memorial-af447.ts'
+import { memorialCharmElCheikh } from './minor/memorial-charm-el-cheikh.ts'
+import { jardinMemorialVelDHiv, monumentVelDHiv } from './minor/memorial-vel-d-hiv.ts'
 import { monumentVolontairesAmericains } from './minor/monument-volontaires-americains.ts'
 import { monumentVictimesOperaComique } from './minor/monument-victimes-opera-comique.ts'
 import { monumentMortsAfriqueDuNord } from './minor/monument-morts-afrique-du-nord.ts'
+import { monumentSoldatsTchecoslovaques } from './minor/monument-soldats-tchecoslovaques.ts'
+import { steleGenocideTutsi } from './minor/stele-genocide-tutsi.ts'
+import { monumentMissionMarchand } from './minor/monument-mission-marchand.ts'
 import { fontaineOctaveGreard } from './minor/fontaine-octave-greard.ts'
 import { fontaineJardinVillemin } from './minor/fontaine-jardin-villemin.ts'
 import { monumentMemorialAlgerie } from './minor/monument-memorial-algerie.ts'
 import { monumentCorpsExpeditionnaireRusse } from './minor/monument-corps-expeditionnaire-russe.ts'
 import { monumentMortsParisiensWw1 } from './minor/monument-morts-parisiens-ww1.ts'
-import { tombeAbbeDelille } from './minor/tombe-abbe-delille.ts'
 import { obelisquePyramideVincennes } from './minor/obelisque-pyramide-vincennes.ts'
-import { monumentDefenseursBelfort } from './minor/monument-defenseurs-belfort.ts'
 import { fontaineSquareLamartine } from './minor/fontaine-square-lamartine.ts'
-import { tombeDantan } from './minor/tombe-dantan.ts'
-import { monumentSiegeParis1870 } from './minor/monument-siege-paris-1870.ts'
 import { monumentMortsPereLachaise } from './minor/monument-morts-pere-lachaise.ts'
-import { tombeLegruLhenoret } from './minor/tombe-legru-lhenoret.ts'
 import { tombeHeloiseAbelard } from './minor/tombe-heloise-abelard.ts'
-import { monumentTravailleursMunicipaux } from './minor/monument-travailleurs-municipaux.ts'
 import { tombeGaspardMonge } from './minor/tombe-gaspard-monge.ts'
-import { monumentAssistancePublique } from './minor/monument-assistance-publique.ts'
+import { tombeDantan } from './minor/tombe-dantan.ts'
 import { tombeCenotapheBaudelaire } from './minor/tombe-cenotaphe-baudelaire.ts'
-import { monumentVictimesJuin } from './minor/monument-victimes-juin.ts'
 import { tombeLaFontaineMoliere } from './minor/tombe-la-fontaine-moliere.ts'
 import { monumentBazarCharite } from './minor/monument-bazar-charite.ts'
+import { monumentVictimesJuin } from './minor/monument-victimes-juin.ts'
+import { tombeLegruLhenoret } from './minor/tombe-legru-lhenoret.ts'
+import { tombeAbbeDelille } from './minor/tombe-abbe-delille.ts'
+import { monumentTravailleursMunicipaux } from './minor/monument-travailleurs-municipaux.ts'
+import { monumentSiegeParis1870 } from './minor/monument-siege-paris-1870.ts'
+import { monumentDefenseursBelfort } from './minor/monument-defenseurs-belfort.ts'
+import { monumentBancsPyramideNoire } from './minor/monument-bancs-pyramide-noire.ts'
+import { arcDeplace } from './minor/arc-deplace.ts'
+import { monumentAssistancePublique } from './minor/monument-assistance-publique.ts'
 import { fontaineMiroirEau } from './minor/fontaine-miroir-eau.ts'
 import { fontaineEmbacle } from './minor/fontaine-embacle.ts'
 import { bassinRondPalais, bassinOvalePalais } from './minor/fontaine-bassins-palais.ts'
@@ -134,11 +142,11 @@ import { fontaineGrenelle } from './minor/fontaine-grenelle.ts'
 import { fontaineJarente } from './minor/fontaine-jarente.ts'
 import { fontainePetiteHalle } from './minor/fontaine-petite-halle.ts'
 import { fontaineJoyeuse } from './minor/fontaine-joyeuse.ts'
-import { monumentOpex } from './minor/monument-opex.ts'
 import { fontaineReservoirMontmartre } from './minor/fontaine-reservoir-montmartre.ts'
 import { fontaineMarcheCarmes } from './minor/fontaine-marche-carmes.ts'
 import { fontainePastorale } from './minor/fontaine-pastorale.ts'
 import { fontaineSquareTolstoi } from './minor/fontaine-square-tolstoi.ts'
+import { monumentOpex } from './minor/monument-opex.ts'
 import { danseFontaineEmergente } from './minor/danse-fontaine-emergente.ts'
 import { fusillesCascade } from './minor/fusilles-cascade.ts'
 import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
@@ -148,68 +156,66 @@ import { fontaineLionsNubie } from './minor/fontaine-lions-nubie.ts'
 import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
 import { hautesHerbes } from './hautes-herbes.ts'
 import { murDesFederes } from './minor/mur-des-federes.ts'
+import { versaillesParterreMidi, versaillesParterreNord, versaillesPointDuJour, versaillesFontaineDuSoir, versaillesCouronnes, versaillesCouronnesOuest } from '../versailles/minor/parterre-basins.ts'
+import { versaillesPavillonFrancais, versaillesPavillonFrais, versaillesBuffetEau, versaillesFontaineAmour, versaillesFontaineEnfantsOiseaux, versaillesFontaineEnfantsPoissons, versaillesRimPlatFond, versaillesRimFerACheval, versaillesRimTrefle, versaillesRimPetiteGerbe, versaillesRimLaocoon } from '../versailles/minor/trianon-garden.ts'
+import { versaillesFontaineQuatrePaves, versaillesFontaineSaintLouis } from '../versailles/minor/fontaines-saint-louis.ts'
 import { araigneeRouge, domeImax, lePouce } from './la-defense.ts'
 import { cnitVault } from '../defense-famous/cnitVault.ts'
 import { quatreTemps } from '../defense-famous/quatreTemps.ts'
 import { tourFirst } from '../defense-famous/tourFirst.ts'
-import { regardMaussins } from './minor/regard-maussins.ts'
-import { bassinDeLatone, bassinDesLezards } from '../versailles/minor/bassin-latone.ts'
-import { versaillesBassinBacchus, versaillesBassinCeres, versaillesBassinFlore, versaillesBassinSaturne } from '../versailles/minor/bassins-saisons.ts'
-import { versaillesTheatreEau, versaillesEnfantsDores, versaillesTroisFontaines, versaillesBassinDomes, versaillesObeliscBasin, versaillesBassinDauphin, versaillesBassinFranceTriomphante } from '../versailles/minor/bosquets.ts'
-import { versaillesBassinApollon, versaillesBassinMiroir } from '../versailles/minor/bassin-apollon.ts'
-import { versaillesAlleeEau, versaillesDragon, versaillesNymphes, versaillesPyramide } from '../versailles/minor/north-axis.ts'
-import { versaillesParterreMidi, versaillesParterreNord, versaillesPointDuJour, versaillesFontaineDuSoir, versaillesCouronnes, versaillesCouronnesOuest } from '../versailles/minor/parterre-basins.ts'
-import { versaillesPavillonFrancais, versaillesPavillonFrais, versaillesBuffetEau, versaillesFontaineAmour, versaillesFontaineEnfantsOiseaux, versaillesFontaineEnfantsPoissons, versaillesRimPlatFond, versaillesRimFerACheval, versaillesRimTrefle, versaillesRimPetiteGerbe, versaillesRimLaocoon } from '../versailles/minor/trianon-garden.ts'
-import { versaillesFontaineQuatrePaves, versaillesFontaineSaintLouis } from '../versailles/minor/fontaines-saint-louis.ts'
+import { perspectiveKaravan, totemCastelbajac, chaiseRouge, gaullePuteaux, martyrsResistance, gaulleCourbevoie, jauresPuteaux, perronetStatue, lechevallierBust, oiseauJaz } from '../defense-famous/works/memorials.ts'
+import { burenCarrefour, burenRonde,cheminees, signauxLumineux, slatSerra, utsurohiMiyawaki, voitureLampadaireBufalino } from '../defense-famous/works/abstractWest.ts'
+import { afterOlympia, bancPublic, bc1Jakober, cubeSphereGold, defonce, nympheasPhilolaos, oiseauMecanique, pointCroissance, sculpteurDeNuages, tracesDeNosPeres, venetLignes } from '../defense-famous/works/abstractEast.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  fontaineBaleineBleue,
   araigneeRouge,
-  pavillonPetiteMairie,
   arenesLutece,
   carrouselArch,
   chapelleExpiatoire,
   chapelleSalpetriere,
   cnitVault,
   domeImax,
-  fontaineSaussure,
   fers,
   fontaineChateauEau,
   fontaineLionsNubie,
   fontaineDuPalmier,
   fontaineQuatreSaisons,
-  fontainePaix,
   fontaineLouvois,
   fontaineRoseauxArgent,
+  fontaineTrevise,
+  fontaineBaqueIssy,
+  fontaineEugeneDelacroix,
+  fontainePolypores,
   fontaineLabyrinthe,
-  fontaineLionsJardinPlantes,
+  fontainePaix,
+  fontaineMoliere,
+  fontaineGaillon,
+  fontaineAlfredStevens,
   fontainePastorale,
   fontaineSquareTolstoi,
   monumentOpex,
   fontaineSainteGenevieve,
   fontaineArtsMetiers,
-  fontaineMoliere,
-  pavillonReunion,
-  monumentExpansionColoniale,
+  fontaineLionsJardinPlantes,
+  fontaineReine,
   fontaineParadis,
   fontainePuitsButteAuxCailles,
-  fontaineReine,
   fontaineDuCoq,
-  fontaineGaillon,
-  fontaineAlfredStevens,
-  fontainePreSaintGervais,
-  steleGenocideTutsi,
   fontaineVertBois,
+  fontainePreSaintGervais,
+  regardMaussins,
   fontaineChildebert,
   fontaineDejean,
   fontaineGavarni,
   fontaineBassinSoufflot,
+  bassinDeLatone,
+  bassinDesLezards,
   fontaineEphresienne,
-  monumentMissionMarchand,
-  fontainePlaceFrancoisIer,
   fontaineAvril,
-  monumentSoldatsTchecoslovaques,
+  fontainePlaceFrancoisIer,
   fontainePorteDoree,
+  fontaineSaussure,
+  fontaineBaleineBleue,
   fontaineCirque,
   fontaineAmbassadeurs,
   fontaineDiane,
@@ -217,7 +223,27 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineTheatreFrancaisMarine,
   fontaineTheatreFrancaisFluviale,
   monumentSoldatsNoirs,
+  pavillonReunion,
+  pavillonPetiteMairie,
+  monumentExpansionColoniale,
   monumentKomitas,
+  versaillesBassinBacchus,
+  versaillesBassinCeres,
+  versaillesBassinFlore,
+  versaillesBassinSaturne,
+  versaillesTheatreEau,
+  versaillesEnfantsDores,
+  versaillesTroisFontaines,
+  versaillesBassinDomes,
+  versaillesObeliscBasin,
+  versaillesBassinDauphin,
+  versaillesBassinFranceTriomphante,
+  versaillesBassinApollon,
+  versaillesBassinMiroir,
+  versaillesPyramide,
+  versaillesNymphes,
+  versaillesAlleeEau,
+  versaillesDragon,
   monumentCampagneTunisie,
   monumentBarye,
   monumentPortVendresMaillol,
@@ -234,10 +260,12 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   memorialCharmElCheikh,
   jardinMemorialVelDHiv,
   monumentVelDHiv,
-  tombeDantan,
   monumentVolontairesAmericains,
   monumentVictimesOperaComique,
   monumentMortsAfriqueDuNord,
+  monumentSoldatsTchecoslovaques,
+  steleGenocideTutsi,
+  monumentMissionMarchand,
   fontaineOctaveGreard,
   fontaineJardinVillemin,
   monumentMemorialAlgerie,
@@ -248,6 +276,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentMortsPereLachaise,
   tombeHeloiseAbelard,
   tombeGaspardMonge,
+  tombeDantan,
+  tombeCenotapheBaudelaire,
   tombeLaFontaineMoliere,
   monumentBazarCharite,
   monumentVictimesJuin,
@@ -259,7 +289,6 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentBancsPyramideNoire,
   arcDeplace,
   monumentAssistancePublique,
-  tombeCenotapheBaudelaire,
   fontaineMiroirEau,
   fontaineEmbacle,
   bassinRondPalais,
@@ -278,8 +307,30 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineVarsovie,
   grandeArche,
   fontaineAgam,
+  defenseBeauTemps, defenseBronzeVoyageur, defenseColosse, defenseConnaissance, defenseEnvol, defenseIkaria, defensePoire, defenseQuatreTetes, defenseSerpent, defenseTelephone, defenseTindaro,
+  defenseToscano, defenseMiro, defensePouvreau, defenseLieuxDuCorps, defenseHercules, defenseDameLune, defenseTerreDerbre, defenseGrenouille, defenseOphelie, defenseDanse, defenseSomnambule, defenseHommesCite, defenseCorolles, defenseDialogue,
   bassinTakis,
   parvisPaving,
+  parvisSlab,
+  burenCarrefour,
+  perspectiveKaravan, totemCastelbajac, chaiseRouge, gaullePuteaux, martyrsResistance, gaulleCourbevoie, jauresPuteaux, perronetStatue, lechevallierBust, oiseauJaz,
+  burenRonde,
+  cheminees,
+  signauxLumineux,
+  slatSerra,
+  utsurohiMiyawaki,
+  voitureLampadaireBufalino,
+  afterOlympia,
+  bancPublic,
+  bc1Jakober,
+  cubeSphereGold,
+  defonce,
+  nympheasPhilolaos,
+  oiseauMecanique,
+  pointCroissance,
+  sculpteurDeNuages,
+  tracesDeNosPeres,
+  venetLignes,
   grandeMosquee,
   jeanSansPeur,
   laTrinite,
@@ -290,8 +341,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentMoncey,
   monumentPasteur,
   montparnasseFull,
-  moulinGalette,
   murDesFederes,
+  moulinGalette,
   moulinRadet,
   notreDameDeLorette,
   pantheonFull,
@@ -326,31 +377,6 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   troneColumnPhilippeAuguste,
   troneColumnSaintLouis,
   valDeGrace,
-  washingtonIena,
-  fontaineTrevise,
-  fontaineEugeneDelacroix,
-  fontaineBaqueIssy,
-  fontainePolypores,
-  regardMaussins,
-  bassinDeLatone,
-  bassinDesLezards,
-  versaillesBassinBacchus,
-  versaillesBassinCeres,
-  versaillesBassinFlore,
-  versaillesBassinSaturne,
-  versaillesTheatreEau,
-  versaillesEnfantsDores,
-  versaillesTroisFontaines,
-  versaillesBassinDomes,
-  versaillesObeliscBasin,
-  versaillesBassinDauphin,
-  versaillesBassinFranceTriomphante,
-  versaillesBassinApollon,
-  versaillesBassinMiroir,
-  versaillesPyramide,
-  versaillesNymphes,
-  versaillesAlleeEau,
-  versaillesDragon,
   versaillesParterreMidi,
   versaillesParterreNord,
   versaillesPointDuJour,
@@ -370,4 +396,5 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   versaillesRimLaocoon,
   versaillesFontaineQuatrePaves,
   versaillesFontaineSaintLouis,
+  washingtonIena,
 }

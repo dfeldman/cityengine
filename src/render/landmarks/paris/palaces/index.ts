@@ -63,6 +63,9 @@ import { courComptes } from './cour-comptes.ts'
 import { decouverte } from './decouverte.ts'
 import { rochechouart } from './rochechouart.ts'
 import { hotelToulouse } from './hotel-toulouse.ts'
+import { hotelMonnaie } from './hotel-monnaie.ts'
+import { hotelBeauvau } from './hotel-beauvau.ts'
+import { hotelSale } from './hotel-sale.ts'
 import { grandsMoulins } from './grands-moulins.ts'
 
 export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
@@ -138,5 +141,8 @@ export const PARIS_PALACES: Record<string, (out: MeshBuilder, fit: Fit) => void>
   decouverte,
   rochechouart,
   hotelToulouse,
+  hotelMonnaie,
+  hotelBeauvau,
+  hotelSale,
   grandsMoulins,
 }

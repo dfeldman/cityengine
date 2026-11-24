@@ -195,6 +195,30 @@
     "note": "Yaacov Agam's 1977 mosaic basin on the parvis: kerb, coloured bands in the floor, rows of jets. Fitted to OSM way 19464174 (osmium, local pbf). Low kerb only, so the dalle stays rideable round it.",
     "madeBy": "claude-opus-5-5"
   },
+  {"name": "La Défense: Tindaro", "procedural": "defenseTindaro", "kind": "sculpture", "lat": 48.89222, "lon": 2.23389, "rotateDeg": 0, "size": [3.2, 3.0], "height": 4, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Igor Mitoraj's Tindaro (1997), bronze half-mask head; list E coordinates (no OSM node). Plinth and 2.8 m head are estimates off the Frankfurt cast; stand-in until Modly defense-tindaro-head. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Ikaria", "procedural": "defenseIkaria", "kind": "sculpture", "lat": 48.8952959, "lon": 2.2369998, "rotateDeg": 0, "size": [3.6, 2.6], "height": 6.2, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Igor Mitoraj's Ikaria (1987), OSM node 1296639389 (level 1, the dalle): winged female bronze ~3 m (estimate off the Frankfurt cast); stand-in until Modly defense-ikaria-figure. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Colosse", "procedural": "defenseColosse", "kind": "sculpture", "lat": 48.8949381, "lon": 2.2378428, "rotateDeg": 0, "size": [3.4, 2.8], "height": 6.2, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Igor Mitoraj's Colosse (a.k.a. Icare, 2001), OSM node 1296639523: bronze figure; ~4 m is a guess (no free photo); stand-in only. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Les Quatre Têtes", "procedural": "defenseQuatreTetes", "kind": "sculpture", "lat": 48.8942, "lon": 2.2365, "rotateDeg": 0, "size": [2.4, 2.0], "height": 1.8, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Emily Young's Les Quatre Têtes (2002, marble): only one head is outdoors (Triangle de l'Arche entrance), drawn; the other three are in lobbies. Smooth face, rough rock sides. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Le Téléphone", "procedural": "defenseTelephone", "kind": "sculpture", "lat": 48.8956678, "lon": 2.2375431, "rotateDeg": 0, "size": [3.2, 2.6], "height": 3.4, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "André Barelier's Le Téléphone (1999) at OSM node 9723755716 'Bronze' (same work; duplicate Bronze entry removed): verdigris bronze man with a bundle phoning inside a cubist booth frame, dark plinth, ~3 m; photo-checked (Panoramax, blog). defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: La Connaissance", "procedural": "defenseConnaissance", "kind": "sculpture", "lat": 48.8958, "lon": 2.23639, "rotateDeg": 0, "size": [2.6, 1.6], "height": 5.6, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Paul Flury's La Connaissance (2003, list E): two painted cast-iron slabs 5.5 m high, red and blue (parisladefense.com), not a figure. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Serpent", "procedural": "defenseSerpent", "kind": "sculpture", "lat": 48.8893017, "lon": 2.2283797, "rotateDeg": 0, "size": [7, 3.2], "height": 1, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Laurence Rieti's mosaic Serpent, OSM node 2347599757 (layer 2): S-curved mosaic tube ~6 m, drawn procedurally; shape and size guessed. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Le Beau Temps Pourchassant la Tempête", "procedural": "defenseBeauTemps", "kind": "sculpture", "osm": ["way/292301720"], "height": 3, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Apel·les Fenosa's bronze, OSM way 292301720 (building=yes, claimed so no generic block draws): stone block and a 2.2 m bronze stand-in; form guessed. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: L'Envol", "procedural": "defenseEnvol", "kind": "sculpture", "osm": ["way/300835189"], "height": 3.6, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Étienne Pirot's L'Envol, OSM way 300835189 (not Lhoste's Quatre Temps work): a 3.2 m bronze stand-in on a plinth; form guessed. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Poire", "procedural": "defensePoire", "kind": "sculpture", "osm": ["way/300815336"], "height": 3.2, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Laurence Rieti's mosaic-covered Poire, OSM way 300815336 (building=yes, claimed): pear ~2.6 m in mosaic patches, procedural; size guessed. defense-famous/works/figurativeWest.ts."},
+  {"name": "La Défense: Le Grand Toscano", "procedural": "defenseToscano", "kind": "sculpture", "lat": 48.8921427, "lon": 2.2417516, "rotateDeg": 0, "size": [6, 6], "height": 4.4, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Igor Mitoraj's Le grand Toscano (1983, bronze), OSM way 186981695: PHOTO-CORRECTED 2026-11-24 (parisladefense.com): a headless black-bronze torso with broken shoulders on a granite block, ~3.7 m; stand-in. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Deux personnages fantastiques", "procedural": "defenseMiro", "kind": "sculpture", "lat": 48.890588, "lon": 2.240438, "rotateDeg": 0, "size": [5, 11], "height": 12.5, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Joan Miró's Couple d'amoureux jouant avec des fleurs d'amandier (1976, painted polyester), OSM way 186981682 (height 12): PHOTO-CORRECTED 2026-11-24 (parisladefense.com, 'Personnages fantastiques', blue/yellow/red): A = yellow column with a big blue round head and red eye (8.6 m); B = tall blue tapering body with a horn and a red beaked head (12 m); 6 m apart on z; heights from the page's '12 m'. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Stèle Pouvreau", "procedural": "defensePouvreau", "kind": "sculpture", "lat": 48.8917, "lon": 2.2405, "rotateDeg": 0, "size": [2, 2], "height": 1, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Paul Belmondo's stele for Emmanuel Pouvreau (2007): PHOTO-CORRECTED 2026-11-24 (parisladefense.com): a bronze portrait medallion on a ~0.9 m granite block on the Cnit parapet, not a tall stele. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Les Lieux du corps", "procedural": "defenseLieuxDuCorps", "kind": "sculpture", "lat": 48.8931, "lon": 2.24167, "rotateDeg": 0, "size": [6, 2.4], "height": 3.4, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Léonardo Delfino's Les Lieux du corps (1980/83, polyester): PHOTO-CORRECTED 2026-11-24 (parisladefense.com): a dark cluster of ~6 mushroom-capped organic columns on a long plinth in a pool; Modly would do the detail. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Hercules in the Wind", "procedural": "defenseHercules", "kind": "sculpture", "lat": 48.8947, "lon": 2.2418, "rotateDeg": 0, "size": [3, 3], "height": 4, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Léo Caillard's Hercules in the Wind (2024, steel and resin, permanent per parisladefense.com, foot of Latitude): bust > 3 m high, 2 m wide; PHOTO-CORRECTED 2026-11-24: bright white bearded bust with wind-streamed locks on a ~1.2 m white pedestal; stand-in (face needs Modly). defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Dame Lune", "procedural": "defenseDameLune", "kind": "sculpture", "lat": 48.8894, "lon": 2.24222, "rotateDeg": 0, "size": [3, 3], "height": 4.8, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Julio Silva's Dame Lune (1977, Carrara marble, 4.5 x 1.2 m): PHOTO-CORRECTED 2026-11-24: a white S-curved marble column ending in a big round disc (smiling moon face / hand); procedural enough, no Modly. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: La Terre", "procedural": "defenseTerreDerbre", "kind": "sculpture", "lat": 48.8900598, "lon": 2.2469756, "rotateDeg": 0, "size": [6, 3.4], "height": 7, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Louis Derbré's La Terre (1972/78), OSM nodes 3102964592 and 6808297456 (the same work): PHOTO-CORRECTED 2026-11-24: two verdigris-bronze figures forming a vertical ring (page says ~9 m; 5.5 m ring assumed from the photo); procedural ring, no Modly. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Fontaine des corolles", "procedural": "defenseCorolles", "kind": "sculpture", "lat": 48.8908, "lon": 2.24556, "rotateDeg": 0, "size": [9, 9], "height": 5.6, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Louis Leygue's Fontaine des corolles (1973, copper alloy, painted): PHOTO-CORRECTED 2026-11-24: a large black sculpture of three tilted pierced petal-bowls on one column in a square pool. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: La Danse", "procedural": "defenseDanse", "kind": "sculpture", "lat": 48.8892, "lon": 2.246, "rotateDeg": 0, "size": [16, 2], "height": 1.6, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Shelomo Selinger's La Danse (1983, tinted concrete): PHOTO-CORRECTED 2026-11-24: FOUR planter blocks carved with intertwined figures (page: four figures), 3.6 x 1.2 x 0.9 m each; procedural. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Le Somnambule", "procedural": "defenseSomnambule", "kind": "sculpture", "lat": 48.8894, "lon": 2.24889, "rotateDeg": 0, "size": [4, 3], "height": 5.2, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Henri de Miller's Le Somnambule (1983): PHOTO-CORRECTED 2026-11-24: a slender dark bronze figure leaning out with arms flung wide, balanced on a sphere on a cube; thin strut stand-in is enough. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: La Grenouille", "procedural": "defenseGrenouille", "kind": "sculpture", "osm": ["way/186981691"], "height": 2, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Claude Torricini's La Grenouille (1987, fontaine à boire, bronze), OSM way 186981691 (building=yes, claimed): PHOTO-CORRECTED 2026-11-24: ~1.4 m bronze frog (a small frog in its open mouth spits the water) on a stepped round fountain with curved granite benches round it. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Ophélie", "procedural": "defenseOphelie", "kind": "sculpture", "lat": 48.8886, "lon": 2.24722, "rotateDeg": 0, "size": [6, 2], "height": 3, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Apel·les Fenosa's Ophélie (1951, cast 1987): PHOTO-CORRECTED 2026-11-24: two dark bronze relief slabs (~1 x 1.9 m) in an ivy-capped granite wall, not a reclining figure; procedural. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: Les Hommes de la cité", "procedural": "defenseHommesCite", "kind": "sculpture", "lat": 48.8886, "lon": 2.24944, "rotateDeg": 0, "size": [7, 3], "height": 2.6, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "France and Hughes Siptrott's Les Hommes de la cité (1995, polychrome bronze): PHOTO-CORRECTED 2026-11-24: eight over-life-size coated walkers in a loose group on a paved court; stand-in lathes, Modly would add the coats. defense-famous/works/figurativeEast.ts."},
+  {"name": "La Défense: La Fontaine du dialogue", "procedural": "defenseDialogue", "kind": "sculpture", "lat": 48.8886, "lon": 2.25278, "rotateDeg": 0, "size": [9, 9], "height": 3.6, "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Gualtiero Busato's La Fontaine du dialogue (1989, gilt-patina bronze, ~2 m): PHOTO-CORRECTED 2026-11-24: two talking figures atop a tall dark relief column in a round court ringed by curved granite benches; no rectangular basin. defense-famous/works/figurativeEast.ts."},
   {
     "name": "Parvis de La Défense — paving",
     "procedural": "parvisPaving",
@@ -208,6 +232,21 @@
     "madeBy": "claude-opus-5-5"
   },
   {
+    "name": "Parvis de La Défense — west granite field",
+    "procedural": "parvisSlab",
+    "lat": 48.89175,
+    "lon": 2.23885,
+    "rotateDeg": 206,
+    "size": [
+      330,
+      200
+    ],
+    "height": 1,
+    "sign": false,
+    "madeBy": "claude-opus-5-5",
+    "note": "covers the bake's scrub/pedestrian patches with one granite field; owner 2026-11-16"
+  },
+  {
     "name": "Bassin Takis",
     "procedural": "bassinTakis",
     "osm": ["way/19463289"],
@@ -218,6 +257,107 @@
     "height": 9,
     "note": "Takis's 1988 pool of 49 signaux lumineux: steel stems 3-9 m with coloured lamps, standing in a dark basin. Fitted to OSM way 19463289 (osmium, local pbf). Low kerb only.",
     "madeBy": "claude-opus-5-5"
+  },
+  {
+    "name": "La Défense: Signaux Lumineux (Takis)",
+    "procedural": "signauxLumineux",
+    "kind": "sculpture",
+    "lat": 48.893142,
+    "lon": 2.235153,
+    "rotateDeg": 0,
+    "size": [30, 30],
+    "height": 13,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Takis, Signaux lumineux (1990), OSM way 186981679 (26 x 15 m, axis 55 deg). Wikipedia fr: metal rods topped by bright geometric flashing lamps. Sourced (parisladefense, artatsite): 17 masts 6.5-11.5 m. GUESSED: row layout, lamp shapes/colours."
+  },
+  {"name": "La Défense: Perspective Karavan", "procedural": "perspectiveKaravan", "kind": "installation", "lat": 48.89433, "lon": 2.22216, "rotateDeg": 0, "size": [150, 300], "height": 11, "osm": ["way/300822587", "way/214852483", "way/214852485", "way/214852486", "way/214852488", "way/214852489", "way/214852490", "way/214852492", "way/214852493", "way/214852494", "way/214852496", "way/214852497", "way/214852498", "way/545471066", "way/545471067", "way/545471068", "way/545471069", "way/545471070", "way/545471071"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Dani Karavan's Esplanade Charles-de-Gaulle / Perspective (1989-2000, 8 x 175 x 286 m), OSM way 300822587. Drawn: the 6 lit 10 m columns (white and pale-green glass bands, from Karavan's own photos) and 12 lit 3.1 m glass blocks of the OSM ways, claimed; the rest (tracks, cedar, granite, text) not drawn. defense-famous/works/memorials.ts."},
+  {"name": "La Défense: Totem (Castelbajac)", "procedural": "totemCastelbajac", "kind": "sculpture", "lat": 48.8919422, "lon": 2.2214403, "rotateDeg": 0, "size": [4, 4], "height": 5, "osm": ["node/2958486146"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "Castelbajac's Totem 'Giga la vie' (OSM n2958486146, bronze). No photo found: 4.5 m stack of four coloured blocks on a plinth, GUESSED; stand-in until Modly. memorials.ts."},
+  {"name": "La Défense: Grande chaise rouge", "procedural": "chaiseRouge", "kind": "installation", "lat": 48.8826846, "lon": 2.230641, "rotateDeg": 0, "size": [3, 3], "height": 3.4, "osm": ["node/13115292324"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n13115292324 (installation, surveyed 2025): a giant red chair; size 3.2 m GUESSED, no photo found. memorials.ts."},
+  {"name": "Puteaux: Monument Général de Gaulle", "procedural": "gaullePuteaux", "kind": "memorial", "lat": 48.8838057, "lon": 2.2329576, "rotateDeg": 0, "size": [9, 5], "height": 8.2, "osm": ["node/2155909509"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n2155909509 (memorial=bust): per a waymarking photo, a pale stone wall (6 x 4 m, GUESSED) with a bronze relief bust and an 8 m steel Cross of Lorraine (sourced); the bust is a relief, no Modly. memorials.ts."},
+  {"name": "Puteaux: Monument des Martyrs de la Résistance", "procedural": "martyrsResistance", "kind": "memorial", "lat": 48.8835449, "lon": 2.2331298, "rotateDeg": 0, "size": [4, 3], "height": 3.4, "osm": ["node/2155909506"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n2155909506 (memorial=sculpture): low base and a sculpture, GUESSED, no photo; Modly stand-in. memorials.ts."},
+  {"name": "Courbevoie: Général de Gaulle stèle", "procedural": "gaulleCourbevoie", "kind": "memorial", "lat": 48.8951272, "lon": 2.2503674, "rotateDeg": 0, "size": [3, 3], "height": 2.4, "osm": ["node/1491925145"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n1491925145 (memorial=stele, inscription 'Face aux grands périls, le salut n'est que dans la grandeur'): stone stele, size GUESSED, no photo. memorials.ts."},
+  {"name": "Puteaux: Jean Jaurès", "procedural": "jauresPuteaux", "kind": "statue", "lat": 48.881749, "lon": 2.2388279, "rotateDeg": 0, "size": [3, 3], "height": 3.6, "osm": ["node/13022876349"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n13022876349 (statue, stone): pedestal and a 1.9 m stand-in figure, GUESSED, no photo; Modly stand-in. memorials.ts."},
+  {"name": "Courbevoie: Jean-Rodolphe Perronet", "procedural": "perronetStatue", "kind": "statue", "lat": 48.8872927, "lon": 2.2551261, "rotateDeg": 0, "size": [3, 3], "height": 4.2, "osm": ["node/8640934930"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n8640934930 (artwork statue): stone figure (1981 antique-dealer purchase) on an inscribed pedestal in a U of two pilasters, read off Commons photos (Statue Perronnet.jpg, CC BY-SA TCY); 1.8 m figure is a Modly stand-in (photo queued). memorials.ts."},
+  {"name": "Puteaux: Lucien Lechevallier", "procedural": "lechevallierBust", "kind": "bust", "lat": 48.8847721, "lon": 2.227267, "rotateDeg": 0, "size": [2, 2], "height": 2, "osm": ["node/12163125514"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n12163125514 (bust, Puteaux parks director; not related to the Polypores fountain): small bust on a pedestal, GUESSED; Modly stand-in. memorials.ts."},
+  {"name": "La Défense: Oiseau de Jaz", "procedural": "oiseauJaz", "kind": "installation", "lat": 48.883442, "lon": 2.238899, "rotateDeg": 0, "size": [22, 18], "height": 2.2, "osm": ["node/12946032150", "node/12946032151"], "sign": false, "madeBy": "claude-sonnet-5-5", "note": "OSM n12946032150 + n12946032151 (installation, 2025): two birds 17 m apart; form unknown, a bird on a post each GUESSED; stand-in. memorials.ts."},
+  {
+    "name": "La Défense: Slat (Serra)",
+    "procedural": "slatSerra",
+    "kind": "sculpture",
+    "lat": 48.8936956,
+    "lon": 2.2355703,
+    "rotateDeg": 0,
+    "size": [10, 10],
+    "height": 12,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Richard Serra, Slat (OSM node 7437390233, steel, set up 2008): five leaning Cor-ten plates forming an open prism ~12 m. GUESSED: plate width 3.4 m, pentagon radius 2.6 m, lean 1.2 m."
+  },
+  {
+    "name": "La Défense: Le Carrefour aux 50 piliers (Buren)",
+    "procedural": "burenCarrefour",
+    "kind": "installation",
+    "lat": 48.8925,
+    "lon": 2.2368,
+    "rotateDeg": 0,
+    "size": [30, 14],
+    "height": 3.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Daniel Buren, 50 striped pillars (position from Wikipedia fr list; not in OSM). Sourced: 50 existing posts sleeved in 26.1 cm Dibond with 8.7 cm stripes (2017). GUESSED: 5 x 10 grid at 2.7 m, uniform 3 m height."
+  },
+  {
+    "name": "La Défense: La Ronde des manches à air (Buren)",
+    "procedural": "burenRonde",
+    "kind": "installation",
+    "lat": 48.89244,
+    "lon": 2.23731,
+    "rotateDeg": 0,
+    "size": [34, 34],
+    "height": 10,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Daniel Buren, ring of 16 lit windsocks on 10 m steel poles (OSM nodes 8907141908..8907169523, aeroway=windsock height=10; ring 30 m across). Ring 30.56 m; socks ~4 m, ring-striped colour/white, hanging (Panoramax photo)."
+  },
+  {
+    "name": "La Défense: Utsurohi (Miyawaki)",
+    "procedural": "utsurohiMiyawaki",
+    "kind": "sculpture",
+    "lat": 48.893034,
+    "lon": 2.23749,
+    "rotateDeg": 0,
+    "size": [38, 38],
+    "height": 9,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Aiko Miyawaki, Utsurohi - Dessin au ciel (1988), OSM way 186981705 (36 x 17 m, axis 62 deg). Wikipedia fr: 30 linked steel columns 30 cm across clad in crystallised glass, joined by steel rods. GUESSED: 3 x 10 layout, 3.5-9 m heights, rod pattern."
+  },
+  {
+    "name": "La Défense: Les Cheminées (Philolaos)",
+    "procedural": "cheminees",
+    "kind": "sculpture",
+    "lat": 48.8889567,
+    "lon": 2.2387843,
+    "rotateDeg": 0,
+    "size": [22, 12],
+    "height": 8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Philolaos, Les Cheminées (1973), OSM nodes 5705436105 and 5705436106, 12 m apart, man_made=chimney. Covers both. Form wholly GUESSED: two clusters of three concrete stacks, 4.5-7.5 m."
+  },
+  {
+    "name": "La Défense: La voiture sur le lampadaire (Bufalino)",
+    "procedural": "voitureLampadaireBufalino",
+    "kind": "installation",
+    "lat": 48.8924384,
+    "lon": 2.2339822,
+    "rotateDeg": 0,
+    "size": [5, 5],
+    "height": 5.8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Benedetto Bufalino, a car on a street-lamp pole (OSM node 8641700148, 2019). Sourced: white Peugeot 406 upside down on a ~4 m pole (5 m overall); the car is the generic car, turned over."
   },
   {
     "name": "Grande Arche de la Défense",
@@ -369,7 +509,8 @@
     "name": "Église Saint-Germain-des-Prés",
     "procedural": "saintGermainDesPres",
     "osm": [
-      "way/62287173"
+      "way/62287173",
+      "way/62287189"
     ],
     "lat": 48.853956,
     "lon": 2.334457,
@@ -1634,6 +1775,79 @@
     "note": "Girard's fountain of 1811 (fontaine du Château d'eau, Q3076267) in the Place de la Fontaine-aux-Lions, La Villette; OSM way 81752247 (a 0.6 m wall outline, ~26 m across, claimed). Pool, two round steps, four diagonal piers, core and two-tazza plume are by eye from Commons photographs (Fontaine Château Eau Pierre Simon Girard Paris 1-4): radii and heights are guesses, only the 26 m outline is measured. The eight cast-iron lions (two a pier) are Modly pieces attached from paris-statues.json at LION_AT."
   },
   {
+    "name": "Versailles: Bassin de la Pyramide",
+    "procedural": "versaillesPyramide",
+    "kind": "fountain",
+    "osm": [
+      "way/124531640"
+    ],
+    "lat": 48.806485,
+    "lon": 2.121067,
+    "front": 180,
+    "size": [
+      21,
+      21
+    ],
+    "height": 9,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Girardon's Pyramide (1670s): OSM ring ~10 m radius (the bake draws the water). Stone rim, stepped island, four tritons' plinths with stand-in figures (Modly queued), then four marble bowls on stems with small stand-in crayfish and dolphins. Radii and heights are guessed off Commons photos (tiers 3.7/2.8/2.0/1.3 m); tritons attach at PYRAMIDE_TRITONS in versailles/minor/north-axis.ts."
+  },
+  {
+    "name": "Versailles: Bain des Nymphes de Diane",
+    "procedural": "versaillesNymphes",
+    "kind": "fountain",
+    "osm": [
+      "way/23707418"
+    ],
+    "lat": 48.806678,
+    "lon": 2.121192,
+    "front": 180,
+    "size": [
+      16,
+      16
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "OSM ring: a 13.8 m square turned 21.7 degrees off north, in line with the Allée d'Eau (water by the bake). Stone rim and, on the far (north-east) side, a retaining wall with Girardon's lead relief (1668-70) in a moulded frame; the relief here is a stand-in of seven low figures (Modly relief queued). Which side holds the wall is a guess."
+  },
+  {
+    "name": "Versailles: Allée d'Eau, les Marmousets",
+    "procedural": "versaillesAlleeEau",
+    "kind": "fountain",
+    "lat": 48.807485,
+    "lon": 2.121672,
+    "front": 180,
+    "size": [
+      125,
+      160
+    ],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The 22 small white-marble basins of the Allée d'Eau (OSM way/124531622, 132 m, bearing 22.05 degrees), at the positions of the 22 'Trois ...' fountain nodes (7 pairs on the walk, 4 pairs fanning out at its foot); each a rim, its own water sheet (no OSM water here), a drum and three bronze stand-in children (Modly queued). Way not claimed (it is the walk)."
+  },
+  {
+    "name": "Versailles: Bassin du Dragon",
+    "procedural": "versaillesDragon",
+    "kind": "fountain",
+    "osm": [
+      "way/124531629"
+    ],
+    "lat": 48.808169,
+    "lon": 2.122099,
+    "front": 180,
+    "size": [
+      42,
+      42
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "OSM ring ~20 m radius (water and jets by the bake). Stone curb, a stepped central plinth with a gilt stand-in dragon, four plinths with stand-in dolphin-and-putti groups on a 8.5 m ring (guessed). The Dragon group is queued for Modly."
+  },
+  {
     "name": "Fontaine du puits de Grenelle",
     "procedural": "fontaineGrenelle",
     "kind": "fountain",
@@ -1704,6 +1918,63 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Davioud's basin (1862) in the place Edmond-Rostand, 6e, with Crauk's bronze Triton and nereid holding a shell (Q3076290; OSM way 685770760, fountain+water+wall height 0.5, ring radius ~7 m measured). Rim width, the 8 support blocks and the ring of small jets are by eye off Commons photos; the group is Modly soufflot-triton."
+  },
+  {
+    "name": "Versailles: Bassin de Latone",
+    "procedural": "bassinDeLatone",
+    "kind": "fountain",
+    "osm": [
+      "way/13645589"
+    ],
+    "lat": 48.80551,
+    "lon": 2.11769,
+    "rotateDeg": 0,
+    "size": [
+      29.0,
+      37.7
+    ],
+    "height": 8.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Parterre de Latone (Marsy brothers 1668-70). Rim on OSM's way/13645589 outline (29 x 38 m measured); four concentric marble tiers (radii 9.6/7.0/4.7/2.9 m, ~1 m each, by eye), a rocky pedestal, gilded-lead frogs/lizards as lumps on the lips, and a plain stand-in for Latona and her children (FIGURE.on in the builder; remove when the Modly group guided-queue.md lands). Water and jets belong to the bake and versailles-fountains.py."
+  },
+  {
+    "name": "Versailles: Bassin des Lézards (south)",
+    "procedural": "bassinDesLezards",
+    "kind": "fountain",
+    "osm": [
+      "way/40409120"
+    ],
+    "lat": 48.805343,
+    "lon": 2.116737,
+    "rotateDeg": 0,
+    "size": [
+      14.6,
+      14.6
+    ],
+    "height": 1.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Marsy 1666-70. Low coping on OSM's ring (~14.5 m across, wall height tag 0.1), a central rock with lead lizards, frogs and turtles as lumps (by eye)."
+  },
+  {
+    "name": "Versailles: Bassin des Lézards (north)",
+    "procedural": "bassinDesLezards",
+    "kind": "fountain",
+    "osm": [
+      "way/40409122"
+    ],
+    "lat": 48.806048,
+    "lon": 2.117166,
+    "rotateDeg": 0,
+    "size": [
+      14.6,
+      14.6
+    ],
+    "height": 1.5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Twin of the south Bassin des Lézards, on its own OSM ring (way/40409122)."
   },
   {
     "name": "Fontaine de la Porte Dorée",
@@ -2082,6 +2353,84 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Stanislas Bernier's 1894 monument to Antoine-Louis Barye (Q18168658), square Barye, eastern tip of the Île Saint-Louis. Placed on OSM way 92316091 (7.6 x 5.9 m outline, claimed). Stone pylon ~2.1 x 1.6 x 4.4 m on a two-step platform with the portrait medallion on the front, the bronze Theseus and Bienor group on top, a seated stone allegory with a child on a rock block (right), a bronze lion on a ledge (left). All dimensions and the front facing south are estimated off Commons photos, not surveyed. Sculpture: Modly barye-theseus, barye-seated, barye-lion (paris-statues.json)."
+  },
+  {
+    "name": "Versailles: Bassin de Bacchus (Automne)",
+    "procedural": "versaillesBassinBacchus",
+    "kind": "fountain",
+    "lat": 48.804246,
+    "lon": 2.115231,
+    "rotateDeg": 0,
+    "size": [20.4, 20.4],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887459. Curb round OSM's octagonal water (way/124531625, centred on it), rock island, stand-in for Marsy's gilded-lead Bacchus group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de Cérès (Été)",
+    "procedural": "versaillesBassinCeres",
+    "kind": "fountain",
+    "lat": 48.807508,
+    "lon": 2.117242,
+    "rotateDeg": 0,
+    "size": [20.4, 20.4],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887473. Curb round OSM's octagonal water (way/124531626, centred on it), rock island, stand-in for Regnaudin's gilded-lead Cérès group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de Flore (Printemps)",
+    "procedural": "versaillesBassinFlore",
+    "kind": "fountain",
+    "lat": 48.808191,
+    "lon": 2.114681,
+    "rotateDeg": 0,
+    "size": [16.6, 16.6],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887478. Curb round OSM's round water (way/124531627, centred on it), rock island, stand-in for Tuby's gilded-lead Flore group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin de Saturne (Hiver)",
+    "procedural": "versaillesBassinSaturne",
+    "kind": "fountain",
+    "lat": 48.804941,
+    "lon": 2.112691,
+    "rotateDeg": 0,
+    "size": [17.6, 17.6],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887493. Curb round OSM's round water (way/95475805, centred on it), rock island, stand-in for Girardon's gilded-lead Saturne group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin d'Apollon",
+    "procedural": "versaillesBassinApollon",
+    "kind": "fountain",
+    "lat": 48.807352,
+    "lon": 2.110707,
+    "rotateDeg": 0,
+    "size": [80, 114],
+    "height": 6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q2887454. Stone curb round OSM's quatrefoil water (relation 6356905: outer way/124531624, island way/224643672; centred on the water's bbox), a dark wet island (OSM way/224643672) and a gilded procedural STAND-IN for Tuby's Apollo chariot group (four rearing horses, Apollo, two tritons, dolphins; ~10 m wide, ~4.5 m above the water, facing east; switch STANDIN in the builder; Modly queued, attach APOLLON_STAND_AT in versailles/minor/bassin-apollon.ts). Curb size and group proportions guessed from photos; the bake draws the water."
+  },
+  {
+    "name": "Versailles: Bassin du Miroir",
+    "procedural": "versaillesBassinMiroir",
+    "kind": "fountain",
+    "lat": 48.804080,
+    "lon": 2.112551,
+    "rotateDeg": 0,
+    "size": [78, 96],
+    "height": 1,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Stone curb round OSM's way/5013340 water (centred on its bbox; the spike in the mapped ring is kept), on the Ile royale beside the Tapis vert; no structure on the lawn itself. Vases skipped. Curb size guessed; the bake draws the water."
   },
   {
     "name": "Monument à Komitas",
@@ -3026,214 +3375,6 @@
     "note": "Q96601813: tomb of the general, mayor of Neuilly 1888-1901, in the cimetière ancien de Neuilly, 1903, Paul Friesé (architect) and Pierre Granet (sculptor). A pale sarcophagus with a cross, a square pillar carrying a bust, two urn posts, a kerb; the mourning girl and the bust are Modly pieces. Read off one Commons photo (Tombe Général Henrion-Berthier); all sizes estimated against the planting, not surveyed; orientation (back to the cemetery wall, facing south-east) is a guess."
   },
   {
-    "name": "Versailles: Bassin de la Pyramide",
-    "procedural": "versaillesPyramide",
-    "kind": "fountain",
-    "osm": [
-      "way/124531640"
-    ],
-    "lat": 48.806485,
-    "lon": 2.121067,
-    "front": 180,
-    "size": [
-      21,
-      21
-    ],
-    "height": 9,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Girardon's Pyramide (1670s): OSM ring ~10 m radius (the bake draws the water). Stone rim, stepped island, four tritons' plinths with stand-in figures (Modly queued), then four marble bowls on stems with small stand-in crayfish and dolphins. Radii and heights are guessed off Commons photos (tiers 3.7/2.8/2.0/1.3 m); tritons attach at PYRAMIDE_TRITONS in versailles/minor/north-axis.ts."
-  },
-  {
-    "name": "Versailles: Bain des Nymphes de Diane",
-    "procedural": "versaillesNymphes",
-    "kind": "fountain",
-    "osm": [
-      "way/23707418"
-    ],
-    "lat": 48.806678,
-    "lon": 2.121192,
-    "front": 180,
-    "size": [
-      16,
-      16
-    ],
-    "height": 5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "OSM ring: a 13.8 m square turned 21.7 degrees off north, in line with the Allée d'Eau (water by the bake). Stone rim and, on the far (north-east) side, a retaining wall with Girardon's lead relief (1668-70) in a moulded frame; the relief here is a stand-in of seven low figures (Modly relief queued). Which side holds the wall is a guess."
-  },
-  {
-    "name": "Versailles: Allée d'Eau, les Marmousets",
-    "procedural": "versaillesAlleeEau",
-    "kind": "fountain",
-    "lat": 48.807485,
-    "lon": 2.121672,
-    "front": 180,
-    "size": [
-      125,
-      160
-    ],
-    "height": 3,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "The 22 small white-marble basins of the Allée d'Eau (OSM way/124531622, 132 m, bearing 22.05 degrees), at the positions of the 22 'Trois ...' fountain nodes (7 pairs on the walk, 4 pairs fanning out at its foot); each a rim, its own water sheet (no OSM water here), a drum and three bronze stand-in children (Modly queued). Way not claimed (it is the walk)."
-  },
-  {
-    "name": "Versailles: Bassin du Dragon",
-    "procedural": "versaillesDragon",
-    "kind": "fountain",
-    "osm": [
-      "way/124531629"
-    ],
-    "lat": 48.808169,
-    "lon": 2.122099,
-    "front": 180,
-    "size": [
-      42,
-      42
-    ],
-    "height": 5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "OSM ring ~20 m radius (water and jets by the bake). Stone curb, a stepped central plinth with a gilt stand-in dragon, four plinths with stand-in dolphin-and-putti groups on a 8.5 m ring (guessed). The Dragon group is queued for Modly."
-  },
-  {
-    "name": "Versailles: Bassin de Latone",
-    "procedural": "bassinDeLatone",
-    "kind": "fountain",
-    "osm": [
-      "way/13645589"
-    ],
-    "lat": 48.80551,
-    "lon": 2.11769,
-    "rotateDeg": 0,
-    "size": [
-      29.0,
-      37.7
-    ],
-    "height": 8.0,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Parterre de Latone (Marsy brothers 1668-70). Rim on OSM's way/13645589 outline (29 x 38 m measured); four concentric marble tiers (radii 9.6/7.0/4.7/2.9 m, ~1 m each, by eye), a rocky pedestal, gilded-lead frogs/lizards as lumps on the lips, and a plain stand-in for Latona and her children (FIGURE.on in the builder; remove when the Modly group guided-queue.md lands). Water and jets belong to the bake and versailles-fountains.py."
-  },
-  {
-    "name": "Versailles: Bassin des Lézards (south)",
-    "procedural": "bassinDesLezards",
-    "kind": "fountain",
-    "osm": [
-      "way/40409120"
-    ],
-    "lat": 48.805343,
-    "lon": 2.116737,
-    "rotateDeg": 0,
-    "size": [
-      14.6,
-      14.6
-    ],
-    "height": 1.5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Marsy 1666-70. Low coping on OSM's ring (~14.5 m across, wall height tag 0.1), a central rock with lead lizards, frogs and turtles as lumps (by eye)."
-  },
-  {
-    "name": "Versailles: Bassin des Lézards (north)",
-    "procedural": "bassinDesLezards",
-    "kind": "fountain",
-    "osm": [
-      "way/40409122"
-    ],
-    "lat": 48.806048,
-    "lon": 2.117166,
-    "rotateDeg": 0,
-    "size": [
-      14.6,
-      14.6
-    ],
-    "height": 1.5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Twin of the south Bassin des Lézards, on its own OSM ring (way/40409122)."
-  },
-  {
-    "name": "Versailles: Bassin de Bacchus (Automne)",
-    "procedural": "versaillesBassinBacchus",
-    "kind": "fountain",
-    "lat": 48.804246,
-    "lon": 2.115231,
-    "rotateDeg": 0,
-    "size": [20.4, 20.4],
-    "height": 5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Q2887459. Curb round OSM's octagonal water (way/124531625, centred on it), rock island, stand-in for Marsy's gilded-lead Bacchus group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
-  },
-  {
-    "name": "Versailles: Bassin de Cérès (Été)",
-    "procedural": "versaillesBassinCeres",
-    "kind": "fountain",
-    "lat": 48.807508,
-    "lon": 2.117242,
-    "rotateDeg": 0,
-    "size": [20.4, 20.4],
-    "height": 5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Q2887473. Curb round OSM's octagonal water (way/124531626, centred on it), rock island, stand-in for Regnaudin's gilded-lead Cérès group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
-  },
-  {
-    "name": "Versailles: Bassin de Flore (Printemps)",
-    "procedural": "versaillesBassinFlore",
-    "kind": "fountain",
-    "lat": 48.808191,
-    "lon": 2.114681,
-    "rotateDeg": 0,
-    "size": [16.6, 16.6],
-    "height": 5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Q2887478. Curb round OSM's round water (way/124531627, centred on it), rock island, stand-in for Tuby's gilded-lead Flore group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
-  },
-  {
-    "name": "Versailles: Bassin de Saturne (Hiver)",
-    "procedural": "versaillesBassinSaturne",
-    "kind": "fountain",
-    "lat": 48.804941,
-    "lon": 2.112691,
-    "rotateDeg": 0,
-    "size": [17.6, 17.6],
-    "height": 5,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Q2887493. Curb round OSM's round water (way/95475805, centred on it), rock island, stand-in for Girardon's gilded-lead Saturne group (Modly queued). Curb and island sizes guessed from photos; the bake draws the water."
-  },
-  {
-    "name": "Versailles: Bassin d'Apollon",
-    "procedural": "versaillesBassinApollon",
-    "kind": "fountain",
-    "lat": 48.807352,
-    "lon": 2.110707,
-    "rotateDeg": 0,
-    "size": [80, 114],
-    "height": 6,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Q2887454. Stone curb round OSM's quatrefoil water (relation 6356905: outer way/124531624, island way/224643672; centred on the water's bbox), a dark wet island (OSM way/224643672) and a gilded procedural STAND-IN for Tuby's Apollo chariot group (four rearing horses, Apollo, two tritons, dolphins; ~10 m wide, ~4.5 m above the water, facing east; switch STANDIN in the builder; Modly queued, attach APOLLON_STAND_AT in versailles/minor/bassin-apollon.ts). Curb size and group proportions guessed from photos; the bake draws the water."
-  },
-  {
-    "name": "Versailles: Bassin du Miroir",
-    "procedural": "versaillesBassinMiroir",
-    "kind": "fountain",
-    "lat": 48.804080,
-    "lon": 2.112551,
-    "rotateDeg": 0,
-    "size": [78, 96],
-    "height": 1,
-    "sign": false,
-    "madeBy": "claude-sonnet-5-5",
-    "note": "Stone curb round OSM's way/5013340 water (centred on its bbox; the spike in the mapped ring is kept), on the Ile royale beside the Tapis vert; no structure on the lawn itself. Vases skipped. Curb size guessed; the bake draws the water."
-  },
-  {
     "name": "Versailles: Parterre d'Eau, bassin du Midi",
     "procedural": "versaillesParterreMidi",
     "lat": 48.804851,
@@ -3304,6 +3445,127 @@
     "height": 3,
     "madeBy": "claude-sonnet-5-5",
     "note": "The second Bassin des Couronnes (OSM way/92619350), same builder as the other (versailles/minor/parterre-basins.ts)."
+  },
+  {
+    "name": "Pavillon français (Petit Trianon)",
+    "procedural": "versaillesPavillonFrancais",
+    "osm": ["way/194534704"],
+    "lat": 48.81519,
+    "lon": 2.107497,
+    "size": [21.2, 21.1],
+    "height": 11,
+    "note": "Gabriel's cross-plan pavilion of 1750 in the French garden (OSM way/194534704): plan from OSM, 6.1 m walls, tall windows, balustraded roof with statue and urn stand-ins at the arm ends. Heights and window sizes guessed from Commons photos (versailles/minor/trianon-garden.ts).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Pavillon frais (Petit Trianon)",
+    "procedural": "versaillesPavillonFrais",
+    "osm": ["relation/16125820"],
+    "lat": 48.814623,
+    "lon": 2.107753,
+    "front": 344.3,
+    "size": [15.0, 13.8],
+    "height": 8,
+    "note": "Gabriel's Pavillon frais (1751, rebuilt 2008): sage-green salon, two treillage piers with urns, lattice galleries forward. Placed on OSM's outline centre and turned 15.7 degrees to face NNW like OSM's outline; sizes guessed from a Commons photo (versailles/minor/trianon-garden.ts).",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Buffet d'eau (Grand Trianon)",
+    "procedural": "versaillesBuffetEau",
+    "lat": 48.816944,
+    "lon": 2.101861,
+    "size": [14.0, 13.5],
+    "height": 7,
+    "note": "Hardouin-Mansart's 1703 buffet d'eau (OSM relation/9087525): stepped red-marble wall, shell basins, gilded stand-in figures; the coping follows OSM's outline, the bake draws the pool. Dimensions guessed from a Commons photo.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Fontaine de l'Amour assis sur un dauphin (Petit Trianon)",
+    "procedural": "versaillesFontaineAmour",
+    "lat": 48.815085,
+    "lon": 2.105568,
+    "size": [6.0, 6.0],
+    "height": 3,
+    "kind": "garden",
+    "note": "Marsy's bronze Love on a dolphin in a 4 m round basin (OSM node/11026542613, basin way/1202901627): coping, drum, procedural dolphin and cupid stand-in.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Fontaine des Trois enfants jouant avec des oiseaux (Petit Trianon)",
+    "procedural": "versaillesFontaineEnfantsOiseaux",
+    "lat": 48.815387,
+    "lon": 2.108485,
+    "size": [12.5, 12.4],
+    "height": 3,
+    "kind": "garden",
+    "note": "Rousseau's lead group in a 10.5 m round basin (OSM node/11026527973, basin way/92619339): coping, rock and three stand-in children.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Fontaine des Trois enfants jouant avec des poissons (Petit Trianon)",
+    "procedural": "versaillesFontaineEnfantsPoissons",
+    "lat": 48.814916,
+    "lon": 2.107634,
+    "size": [11.9, 12.3],
+    "height": 3,
+    "kind": "garden",
+    "note": "Rousseau's lead group in an octagonal basin (OSM node/11026527975, basin way/124534928): coping, rock and three stand-in children.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Bassin du Plat-Fond (rebord)",
+    "procedural": "versaillesRimPlatFond",
+    "lat": 48.816109,
+    "lon": 2.100606,
+    "size": [71.0, 54.8],
+    "height": 2,
+    "kind": "garden",
+    "note": "Stone coping along OSM's Bassin du Plat-Fond outline (way/124531641); the bake draws the water.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Bassin du Fer à Cheval (rebord)",
+    "procedural": "versaillesRimFerACheval",
+    "lat": 48.814408,
+    "lon": 2.102645,
+    "size": [49.5, 46.7],
+    "height": 2,
+    "kind": "garden",
+    "note": "Stone coping along OSM's Bassin du Fer à Cheval outline (way/124531630); the bake draws the water.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Bassin du Trèfle (rebord)",
+    "procedural": "versaillesRimTrefle",
+    "lat": 48.817195,
+    "lon": 2.106505,
+    "size": [73.0, 74.5],
+    "height": 2,
+    "kind": "garden",
+    "note": "Stone coping along OSM's Bassin du Trèfle outline (way/427280006); the bake draws the water.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Bassin de la Petite Gerbe (rebord)",
+    "procedural": "versaillesRimPetiteGerbe",
+    "lat": 48.816491,
+    "lon": 2.101539,
+    "size": [19.2, 19.1],
+    "height": 2,
+    "kind": "garden",
+    "note": "Stone coping along OSM's Bassin de la Petite Gerbe outline (way/124531628); the bake draws the water.",
+    "madeBy": "claude-sonnet-5-5"
+  },
+  {
+    "name": "Bassin du Parterre de Laocoon (rebord)",
+    "procedural": "versaillesRimLaocoon",
+    "lat": 48.816097,
+    "lon": 2.10501,
+    "size": [18.6, 23.8],
+    "height": 2,
+    "kind": "garden",
+    "note": "Stone coping along OSM's Bassin du Parterre de Laocoon outline (way/124535280); the bake draws the water.",
+    "madeBy": "claude-sonnet-5-5"
   },
   {
     "name": "Versailles: Bosquet du Théâtre d'Eau (Belles Danses)",
@@ -3423,5 +3685,154 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Fontaine des Quatre Pavés, carré Saint-Louis (Q22923943, Mérimée PA00087689, MH 1908): a free-standing square pavilion (OSM way/74626210 'Maison de l'Habitat Ancien', 8.6 x 8.5 m, claimed so no generic block is drawn) of banded ashlar with a big arched niche flanked by carved frieze panels, a window in each upper bay, a deep cornice and flat roof. Which face is the front is a guess (north-north-west, toward the rue d'Anjou); the other sides carry windows only. Heights from one Commons photograph against people, not surveyed."
+  },
+  {
+    "name": "La Défense: Point – Croissance (Lim Dong-lak)",
+    "procedural": "pointCroissance",
+    "kind": "sculpture",
+    "lat": 48.890123,
+    "lon": 2.242552,
+    "rotateDeg": 0,
+    "size": [10, 10],
+    "height": 5.2,
+    "osm": ["way/186981700"],
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Lim Dong-lak, Point Growth / Point - Croissance / Les Totems poétiques (1999-2006), OSM way 186981700 (bronze, ~1 m footprint). PHOTO-CORRECTED 2026-11-24 (parisladefense.com: stainless steel, 2007, foot of Opus 12): one mirror-polished steel sphere ~2.5 m with a thin black wavy shoot curling up from it, ~5.6 m."
+  },
+  {
+    "name": "La Défense: La Défonce (Morellet)",
+    "procedural": "defonce",
+    "kind": "sculpture",
+    "lat": 48.889700,
+    "lon": 2.243700,
+    "rotateDeg": 0,
+    "size": [18, 22],
+    "height": 6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "François Morellet, La Défonce (1990; Wikipedia fr): a rectangular grid of steel bars, tilted and half buried, one bar piercing a nearby building. PHOTO-CORRECTED 2026-11-24 (parisladefense.com): dark-maroon square-section bars forming a slanted rectangle (two long rails + cross bars, ~25 m x 8 m, rising ~8 m) beside/over the glass FNAC pavilion (OSM way, axis 25.6 deg, centre 12.5 m north of the entry point); high end east is a guess."
+  },
+  {
+    "name": "La Défense: Sculpture de Bernar Venet (Doubles lignes indéterminées)",
+    "procedural": "venetLignes",
+    "kind": "sculpture",
+    "lat": 48.888055,
+    "lon": 2.246879,
+    "rotateDeg": 0,
+    "size": [22, 22],
+    "height": 7,
+    "osm": ["way/644867658"],
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Bernar Venet, Doubles lignes indéterminées (1988), OSM way 644867658 (steel, ~18 x 18 m footprint; rust-coloured overlapping lines per Wikipedia fr). PHOTO-CORRECTED 2026-11-24 (parisladefense.com: painted steel, 12 m per the page, ~6-7 m by the photos): thick BLACK bands looping in a tangle on a round stone platform; five tilted loops."
+  },
+  {
+    "name": "La Défense: Le Sculpteur de nuages (Atila)",
+    "procedural": "sculpteurDeNuages",
+    "kind": "sculpture",
+    "lat": 48.890600,
+    "lon": 2.245800,
+    "rotateDeg": 0,
+    "size": [10, 10],
+    "height": 4.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Atila, Le Sculpteur de nuages (1972). PHOTO-CORRECTED 2026-11-24 (parisladefense.com): a kiosk-sized box clad in enamelled lava tiles painted as a colourful fresco, not a kinetic mast; patchwork colours seeded, box 8x5x4.6 m."
+  },
+  {
+    "name": "La Défense: Dans les traces de nos pères (Jankovic)",
+    "procedural": "tracesDeNosPeres",
+    "kind": "sculpture",
+    "lat": 48.889300,
+    "lon": 2.246900,
+    "rotateDeg": 0,
+    "size": [5, 3],
+    "height": 4.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Josef Jankovic (1988, concrete/polyester/paint). PHOTO-CORRECTED 2026-11-24 (parisladefense.com): two huge pairs of red-brown legs on a stone plinth, a child climbing out between the parents' legs; not blocks."
+  },
+  {
+    "name": "La Défense: After Olympia (Caro)",
+    "procedural": "afterOlympia",
+    "kind": "sculpture",
+    "lat": 48.893060,
+    "lon": 2.240560,
+    "rotateDeg": 0,
+    "size": [24, 4],
+    "height": 4.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Anthony Caro, After Olympia (1985-86, varnished rusted steel, 23 m long; parisladefense.com photos). MOVED 2026-11-24 to the inventory point (Parvis, by the CNIT: its photos show the CNIT sign close behind; the official page says Parvis since 2016, so the Wikipedia point beside Point-Croissance 300 m east is dropped; OSM has no Caro). Long slab base with a seeded assemblage peaking in the middle; axis along x, unverified."
+  },
+  {
+    "name": "La Défense: Cube Sphère Gold (Cyril Lancelin)",
+    "procedural": "cubeSphereGold",
+    "kind": "sculpture",
+    "lat": 48.889500,
+    "lon": 2.249700,
+    "rotateDeg": 0,
+    "size": [5, 5],
+    "height": 3.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Cyril Lancelin, Cube Sphère Gold (2021, electro-polished steel; parisladefense.com photos, in the 2022 set). PHOTO-CORRECTED 2026-11-24: a cube of ~150 mirror-gold balls in a 6x6x6 lattice with tunnels in all three directions, 3.2 m, on a low plinth."
+  },
+  {
+    "name": "La Défense: BC1 (Ben Jakober)",
+    "procedural": "bc1Jakober",
+    "kind": "sculpture",
+    "lat": 48.887970,
+    "lon": 2.246020,
+    "rotateDeg": 0,
+    "size": [6, 6],
+    "height": 4.2,
+    "osm": ["node/13346241461"],
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Ben Jakober, BC1 (1987-88, painted steel from iron rollers, ~3 t; OSM node 13346241461). PHOTO-CORRECTED 2026-11-24 (parisladefense.com): a dark open-lattice 'American football helmet' dome on a stone slab in a lawn bed; not a cube."
+  },
+  {
+    "name": "La Défense: Banc public (Lilian Bourgeat)",
+    "procedural": "bancPublic",
+    "kind": "sculpture",
+    "lat": 48.888290,
+    "lon": 2.249290,
+    "rotateDeg": 0,
+    "size": [7, 4],
+    "height": 2.3,
+    "osm": ["node/8640934932"],
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Lilian Bourgeat, Banc public (2018, OSM node 8640934932), an oversize bench. PHOTO-CORRECTED 2026-11-24 (parisladefense.com: 2.5 x a park bench): green slats on white legs, ~5 m long, seat 1.15 m, back 2.2 m."
+  },
+  {
+    "name": "La Défense: Les Nymphéas (Philolaos)",
+    "procedural": "nympheasPhilolaos",
+    "kind": "fountain",
+    "lat": 48.889860,
+    "lon": 2.245570,
+    "rotateDeg": 0,
+    "size": [9, 9],
+    "height": 1.6,
+    "osm": ["node/14108166201"],
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Philolaos, Les Nymphéas (1989, OSM node 14108166201 fountain). PHOTO-CORRECTED 2026-11-24 (parisladefense.com, stainless steel): raised concrete trough with a few folded stainless petal-flowers, not lily pads."
+  },
+  {
+    "name": "La Défense: L'Oiseau mécanique (Philolaos)",
+    "procedural": "oiseauMecanique",
+    "kind": "sculpture",
+    "lat": 48.889940,
+    "lon": 2.245640,
+    "rotateDeg": 0,
+    "size": [6, 6],
+    "height": 4.5,
+    "osm": ["node/14108166301"],
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Philolaos, L'Oiseau mécanique (1972, OSM node 14108166301). PHOTO-CORRECTED 2026-11-24 (parisladefense.com, stainless steel): a cluster of six big tilted stainless cones/sails, 2.4-4.3 m, on a low planter, not a bird body."
   }
 ]

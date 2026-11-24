@@ -806,3 +806,169 @@ clear depth (render/city.ts `setupGroundLayers`), so what a later group draws sh
   `LID_*` constants in render/city.ts). Foot ways on lids are still decks.
 - **Bake:** the lidar rule (`ML_UNDER_MNT_DH`) now stands down inside a lid's outline too (it would sink the ground to the trench floor
   under lids more than 60 m from the river). Needs the next paris-centre rebake.
+
+### Round 8: the plazas and bridgeheads pass (2026-11-16, owner: "make the plazas and bridgeheads look AMAZING")
+
+`tools/site-sheet.ts` photographs many sites from one page load: per site four rider-height views round it and a high oblique, a
+labelled sheet each, and `--probe=1` writes what 15 pixels of every cell hit (index.txt). Survey lists: every Seine bridge's two heads
+12 m past the outline's ends (122 sites, from the package's bridge outlines) and sixteen plazas. A Sonnet reviewer ranked the defects.
+
+- **Banks are ashlar (render, Paris).** The commonest flaw (16 of 28 sheets) was the ground's stone on steep faces: wavy beige courses
+  with sawtooth edges, decided per triangle. The base ground now carries its steepness per vertex (render/city.ts, colour alpha −1..−2,
+  `CLIFF_GRADE_*`) and Paris's stone is dressed ashlar (`CLIFF_COURSE`, `CLIFF_BLOCK`, `CLIFF_MORTAR`, `CLIFF_ASHLAR` in
+  render/road-material.ts): staggered blocks along a fixed world direction (the face's own direction from screen derivatives jittered
+  at a lumpy bank's triangle edges and speckled), no grass texture under it. Other cities keep the old courses.
+- **Road tunnel mouths (render).** The portal's bank of earth behind it (for a railway into a hill) stood up as a 7 m dark-green wedge
+  at road mouths under lids and bridgeheads (Varsovie, Saint-Cloud, Billancourt): roads get none. A road's portal is built only where
+  the street behind stands `ROAD_PORTAL_SUNK` 3.5 m over it; on short underpasses it stood on the open road as a block.
+- **Pale landmark paving.** The Étoile's rings are granite setts and darker flags (they lit to a cream disc); the Trocadéro parvis's
+  paving is in the granite page and a warmer limestone (flat colour blew out white).
+- **Step walls (bake, `tools/step-walls.ts`, off: `SW=1` turns it on).** The fine ground's steps as quay walls (mid-height contour,
+  smoothed tops, a paved side required). On neuilly-mini it made a clean wall along a building's foot but walled lawn bumps in
+  crenellations, and the banks the sheets showed are long embankment slopes it does not find. Left off.
+- Checked: SF's Lombard, Filbert Steps, Taylor at Green and Twin Peaks unchanged.
+- **Lid tops, second pass.** At the slab's edges the lid top and the base ground met in one plane in the base group, and the painted
+  layers' material writes no depth, so the ground drawn after tore the top in patches (the Varsovie sheet's "torn crater"). The lid top
+  has its own material, written into depth with `LID_TOP_ZOFFSET`, and is laid in the surface most of its streets use (setts at the
+  Place de Varsovie), so the gaps between the place's layers read as the place.
+- **Round two of the survey** (all 122 heads and 16 plazas after these changes): every bank flagged in round one now reads as ashlar.
+  The remaining flags were mostly the survey camera inside a model (a deck, a parapet, a quay wall, a building: probe hits at 0–2 m),
+  not geometry; the Pont du Carrousel's "striped wall" is the Louvre's rusticated Grande Galerie.
+- **Walls' surface.** The streets' retaining walls and the trench walls were built with surface index 0, not a defined page, and the
+  landmark material drew them in a dark bark-like grain (owner's shots at the Pont d'Iéna and a tunnel mouth, "really bad"). They are
+  ashlar (stone, caps) and concrete (trench faces, copings), railings metal.
+- **Plazas, third round** (after the shadow fix: a landmark's shadow is now the hull of its own vertices slid along the sun when that is
+  smaller than its footprint's, `LM_SHADOW_*` in render/landmarks.ts — the Monument à la République's square slab is gone): Varsovie,
+  Trocadéro, Étoile and République better; Résistance, Saint-Michel, Défense, Bastille, Vosges clean.
+- **Open (owner, 2026-11-16 evening):** holes in the Pont d'Iéna's right-bank head deck seen from the bridge, an elevated walk there, a
+  bad tunnel mouth with a wall slab standing in the trench (location to find), and moored boats inside the quay walls at
+  48.862981, 2.296962 (Port Debilly; "now" — check whether today's rebake moved the walls).
+- **Later the same evening.** Hand-placed boats are pushed out until their beam is also `HAND_WALL_CLEAR` 1.5 m off a quay wall's land
+  side (render/boats.ts; Port Debilly). A carriageway's triangles steeper than `ROAD_MAX_GRADE` 1.0 are dropped (a ramp piece's asphalt
+  stood as a wall across the Avenue de New York's trench at its north-east mouth, 48.860864, 2.291706). Still open there: the left
+  carriageway stops short of the portal, where the bake gives the mouth's short connector pieces −0.5 → +1.4 m.
+  **The Pont d'Iéna's right-bank head** (owner's "holes in the surface"): not holes. The bake fills the ground up to the deck round the
+  street decks (flush-deck fill) and it dips into a pit toward the land arch, its steep sides drawn as stone. A bake job (Round 6's
+  "bridgehead pavements" item). A cap over a styled bridge's whole outline was tried (`OUTLINE_CAP`, render/bridge-structures.ts) and
+  changed nothing there: off.
+
+### Round 9: the two bridgehead leftovers (2026-11-16, night)
+
+- **Both owner reports came from a paris-centre bake without the multi-level pass.** The paris-centre being served was baked at
+  22:32 UTC (bake 20261116T2232) by the La Défense session, with `npm run bake paris-centre --no-audit` and without `BDTOPO_BAND=1`.
+  Its log has no "seine band" lines and no "multi-level:" lines, and its tiles come to 299 MB against 380 MB for the 20:44 bake. In
+  that data:
+  - The Pont d'Iéna right-bank crossings and sidewalks stand at 7.5 m, 4 m over the lidar (3.3–3.5) and 3.4 m over the deck. These
+    are the owner's "elevated walk".
+  - The ground is filled up round them and dips into the "pit" toward the land arch.
+  - The ground under the Place de Varsovie's lid is the lid's top instead of the trench.
+  - The Avenue de New York's northbound tunnel stands at the lid's level (4.10).
+  The 20:44 bake (backup ~/cityengine-bake-backups/paris-centre-20261116c) has the footways at 3.6–3.9 and the tunnel at
+  −2.8 … −3.6. A fresh bir-hakeim-mini (current code, `BDTOPO_BAND=1`) is clean from the owner's deck view: paving and decks, no
+  fill, no pit. The far side, from the place back toward the bridge, is clean too. **The elevated walk is not right: it is an
+  artefact of that bake.** paris-centre needs restoring from backup c or rebaking with `BDTOPO_BAND=1`: the owner's call.
+- **Twin lid chains (bake, tools/tunnels.ts `lidTunnels`).** The Avenue de New York's two halves under the Place de Varsovie are
+  judged as separate chains. In paris-centre (both the 20:44 and the 22:32 bakes) the northbound half failed the at-grade test by a
+  hair: its road 100 m out is at 1.5 / 1.1, mean 1.3, against a limit of 1.3 (the street over it is 4.3). It stayed a tunnel inside
+  the open trench, with a portal and a wall in the trench, while the southbound half became a trench road. A chain refused only by
+  that test is now tried again after every chain has been judged. It becomes a lid when a lid chain of the same name runs beside it:
+  mean offset under `LID_TWIN` 30 m, length within `LID_TWIN_LEN` 35 %, and `LID_TWIN_SIDE` 70 % of its points beside the other
+  chain rather than past its ends (the Périphérique's lids follow one another under one name, end to end). A synthetic check pairs
+  side-by-side twins and leaves end-to-end chains alone. bir-hakeim-mini already accepted both halves (its log is unchanged). Needs
+  the paris-centre rebake.
+- **Twin trench carriageways (bake, tools/multilevel.ts).** The two halves come into the solve with their own held heights: one
+  mouth's road ramped by the lid, the other following the trench floor. Side by side they stood 1.3 m apart (−1.44 / −2.75 at
+  210, 280 on the mini), and the ground between their corridors showed as a jagged bank with holes in the median. Each cut vertex is
+  now tied to the nearest vertex of a same-named cut way within `ML_TWIN_D` 8 m, at `ML_TWIN_TIE` 2 × its hold weight
+  (`multi-level: … N twin trench ties`). On the mini they now sit at −2.02 / −2.17 and the median is a flat strip to the lid. The
+  mini's only cut ways are the Avenue de New York's 8 pieces, so nothing else there moved. Needs the paris-centre rebake.
+- **Still at the north-east mouth (render, src/render/city.ts trench walls, not changed):** under the lid's edge each half's inner
+  trench wall rises to the slab (`lidOver`) and stands as a dark block in the median. Just outside the lid, a thin pale wall end
+  shows edge-on. The real underpass may have a central wall; check a photo before removing it.
+
+### Round 9: the plaza leftovers (2026-11-16, night)
+
+The round-3 plaza review's leftovers, render-side (no bake):
+
+- **Place de Varsovie, the deck-grey slabs.** The pieces of the place's streets either side of the lid (364441, 192676, 192683, 364447,
+  152491) are flagged ramps with every height on the ground, and went to `deck()`: flat PARIS_DECK slabs in the setts. A carriage way's
+  ramp within `LID_FLUSH_PAD` 15 m of a lid (`LID_FLUSH_RAMPS` turns it off) whose every height is within `LID_FLUSH_DH` 0.3 m of the ground is laid like a street on
+  the lid (`lidroad:`), at its own heights (render/city.ts, decks loop, `flushRamp`).
+- **Parvis Notre-Dame and Saint-Michel, the floating grey bars.** Foot ways flagged ramps with every vertex on the ground (within
+  `FLUSH_FOOT_DH` 0.4 m; the parvis's 167255, 165475's tail, Saint-Michel's 166757) went to `deck()` too, and a deck, linear between
+  vertices 5 m apart, stood up to 0.8 m over the paving's dips. In Paris they are no longer raised at all (`FLUSH_FOOT_RAMPS`, where
+  `raisedIds` is filled) and are painted as ordinary footways. (Laid as strips in their own surface first, they crossed the parvis as
+  gravel bands.)
+- **Place de l'Alma, the dark band.** Not a seam with the bridge: the bake's lid outline stops 4 m short of the trench's north wall, and
+  between the slab and the Avenue de New York the eye looked 3.6 m down into the trench. The lid top is laid over its outline grown
+  `LID_GROW` 6 m across its long sides (`LID_GROW_EDGE` 25 m or longer; the short ends are the portals) and keeps, outside the outline,
+  only triangles over ground `LID_GROW_DH` 1 m or more under it; `liftOnLids` lifts the place's layers lying down in that band too
+  (`growRing`). Then a blue line with white dashes across the place: the lid's own slab (`bridges:`, render/bridge-structures.ts) has
+  its top 0–2 cm under the lid top, over the lid top's depth copy in the structures' group; that copy now stands `LID_OCC_G3_LIFT`
+  1.5 cm over the top (the other groups' copies stay `LID_OCC_SINK` under it). A faint dashed marking still crosses the near place
+  after that: a lid road's own marking or the slab still showing, not checked — re-check after the band rebake.
+- **Shadows (Concorde, Vendôme).** A landmark's shadow from its own shape is now a hull per chunk: its parts (triangles joined by
+  shared corners) cut into `LM_SHADOW_CHUNK` 8 m chunks by where each triangle stands, each casting the hull of its vertices at their
+  feet and slid along the sun (`modelShadowHulls`, `LM_SHADOW_PARTS`). They overlap without darkening twice (shadowMaterial's depth
+  test). Used when the hull of all of them is smaller than the footprint's; past `LM_SHADOW_MAX_PARTS` 500 chunks or
+  `LM_SHADOW_MAX_VERTS` the one hull of everything, as before. The Place de la Concorde's one hull spanned the obelisk, the fountains
+  and every lamp, and per part its moats' balustrades (a ring) still cast their hull across the place. The Colonne Vendôme's was a
+  37 m strip draped at its six corners only: its middle sank under the place's ground and its far end lay alone on the paving as a
+  dark slab. Landmark shadows are now split, longest edge first, to `LM_SHADOW_EDGE` 3 m before draping, or coarser so as to stay
+  within `LM_SHADOW_MAX_TRIS` 300 a landmark (`bisectLong`). Quartering to 3 m (coplanar.ts `subdivideLong`) gave the Dôme des
+  Invalides 865k triangles; now 307 landmark shadows round the Concorde total 67k. Heights are each vertex's over the ground under it,
+  not over the model's base: on Lombard Street (SF) the downhill beds stood 20 m "high" and cast a dark polygon across the street.
+  The Concorde's band was its FOOTPRINT's shadow: the model is fitted to the obelisk's ~10 m OSM base, slid at 31 m, a 10 m strip
+  across the place. The model's hulls are now used when they cover less than the footprint together (`unionArea`, on a grid) or the
+  model reaches past `LM_SHADOW_SPREAD` 3× the footprint's area, and only with `LM_SHADOW_STACK_MAX` 100 hulls or fewer (the Vendôme's
+  443 overlapping hulls, draped apart, multiplied to a black beam; it keeps its footprint's strip). Hulls past `LM_SHADOW_MAX_PARTS`
+  are keyed by chunk alone. **Not re-shot after this last change** (usage limit): re-survey concorde and vendome.
+- **Châtelet's "pale box"**: the Théâtre du Châtelet's low corner block on the avenue side of its front (OSM way 248804634, a 5 m block
+  with a terrace; render/landmarks/paris/palaces/chatelet.ts). Real; left.
+- **The band is now the default (owner, 2026-11-16: "make the proper bake settings the default").** A city whose region has a
+  `riverLevel` (every Paris city: region `paris`) bakes with the Seine band and the multi-level pass unless `BDTOPO_BAND=0`
+  (`bandOn` in tools/bake.ts; `bake --rides` follows the same rule). SF, New York and Chicago are unchanged. The 22:32 bake is
+  backed up at ~/cityengine-bake-backups/paris-centre-20261116d-nomultilevel; paris-centre was rebaked with no flag in the
+  environment: bake 20261117T0352-3dra, 496 MB, the band and the multi-level pass ran (441 twin trench ties; the Avenue de New
+  York's second carriageway "its twin carriageway is a lid: a lid too", both lids ridden 4.6 m under the place). Shots: the
+  Pont d'Iéna's right-bank head runs flat from the deck onto the Place de Varsovie, with no pit, fill or raised walk; the
+  Avenue de New York's two carriageways are level into the lid. The median wall block under the lid's edge is still there.
+  Note for look-at: `--from` is x,z,height.
+- **Survey.** Two rounds of all 16 plazas (Sonnet review). Fixed: Varsovie's slabs, the Alma band, the Parvis's bars, Saint-Michel's
+  slab (a flush foot ramp, 166757), Vendôme's detached slab. Left at severity 1–2: the obelisk's shadow; a pale corridor wedge beside
+  Varsovie's lid; Concorde's sand-yellow `areas` patches; Bastille's Y-shaped dark patch; Italie's dark rectangle in the oblique (none
+  checked closely). **The Défense parvis** now stands a slab above the rider's eye at the survey's south camera (another session's
+  uncommitted `parvisSlab` in render/landmarks/paris/defense-famous/parvis.ts, fitted at the 90th percentile of the ground): not
+  touched here.
+- **Caveat: the bake.** Every paris-centre shot this round came from bake 20261116T2232, made without the multi-level pass
+  (BDTOPO_BAND off). The Varsovie and Alma lid and deck fixes were measured on it and are unverified on the band bake; re-survey both
+  after the rebake.
+- SF (Lombard, Filbert Steps, Taylor at Green, Twin Peaks) against round 8's sheets: the same, except Lombard's brick now lies evenly in
+  its beds' shadow instead of a lit diagonal band.
+
+
+### Round 10: the owner's reports on the default-band paris-centre (2026-11-16, late)
+- **Fixed (render, no rebake): the Pont d'Arcole's right-bank end, "the lower quai road intersects the first bridge footing"
+  (48.855709, 2.351085).** The bake is right there: the ground under the outline is the path's own height (−1.5 / −0.65). In
+  `render/bridge-structures.ts` the open test wanted 3.4 m between the deck and the ground. The lower quai's ramp
+  (960000000000360) crosses under the end with 2.9 m, so the dry arch stopped at s 86 and the solid abutment came down on the ramp at
+  s 87–89. Now a station an at-grade way crosses under with `BR_WAY_CLEAR` (2.2 m) or more is open, padded `BR_WAY_PAD` past its
+  kerb. A dry arch over such a way springs `BR_WAY_HEAD` (2.4 m) over the highest one, capped at the deck less 0.75, which makes a
+  flat soffit. Arcole's dry span now runs 76.8–90 with its soffit at about 1.5–1.7.
+- **Open: boxy ground patches in the Seine (owner: moving boats caught by the lidar), the grass at 48.856969, 2.346347.** At the
+  point itself the package has riverbed (−7.7). A scan of the land inside the river outlines finds 295 blobs over 30 m², but the
+  renderer clamps every river-outline cell under the sheet (`RIVER_CLAMP`) except on a quay wall's land side. So a visible patch has
+  to be outside the outline (a hole) or on a wall's land side. That needs a patch's exact coordinate.
+- **The Pont d'Iéna right-bank head and the Pont de l'Alma, "the tunnel isn't deep enough, bits poke into the ground"
+  (partly done, bake, not in paris-centre yet).** Inside the Avenue de New York's tunnel (paris-centre, camera -2950,38 looking SW),
+  grass strips and an ashlar bank stood in front of the trench walls, and a grass wedge came through near the top.
+  - Cause: the trench road's padded floor (`ML_TRENCH_PAD`, which runs to 4.1 m from the centreline) lost its outer metre or two to
+    the street beside it. That street's padded corridor (a wide sidewalk) won the corridor test on edge distance. So the place's
+    level (3.6–4.0) came down at about 2.5–3 m from the centre, at the render's trench wall (2.5 m) instead of behind it. The
+    Alma's Voie Georges-Pompidou (195364) has the same fault: its outer side stops at 2.5 m.
+  - Fix (`tools/multilevel.ts` corridor, `ML_TRENCH_FLOOR_WINS`, on by default, `=0` turns it off): inside its padded width a
+    trench floor wins over any corridor that isn't a floor, and wall lines inside that width don't stop it.
+  - On bir-hakeim-mini the step moved out about 0.6 m, behind the wall. The same tunnel view on the mini shows a broad grass slope
+    in the median that is there with the rule off too: the mini doesn't reproduce the paris-centre view, and the slope is a
+    `retaining` mesh. It is not the park-bank slope: capping that changed nothing, so the cap was reverted. **Not verified in
+    paris-centre**, which needs a rebake. bir-hakeim-mini is currently baked with `ML_TRENCH_FLOOR_WINS=0`.

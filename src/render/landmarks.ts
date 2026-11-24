@@ -18,6 +18,7 @@
  * toward the camera along its true direction and scaled by the same factor — so its bearing and angular size
  * are exactly right from wherever the rider is, and it never slides along the horizon as they ride.
  */
+import { cutDeckWays, type DeckWay } from './landmarks/paris/defense3/passages.ts'
 import type { TreeForm } from '../city/tree-forms.ts'
 import type { KitArgs } from './landmarks/paris/kit/recipes.ts'
 import { dropCoincidentFaces, subdivideLong } from './landmarks/coplanar.ts'
@@ -30,11 +31,150 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import type { Scene } from '@babylonjs/core/scene'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
-import { MeshBuilder } from './buildings.ts'
+import { MeshBuilder, capPolygon } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { fogIsOff } from './photo.ts'
-import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
+import { SHADOW_Y, shadowHull, shadowMaterial, shadowOffset } from './shadows.ts'
+/** a landmark's shadow from its own vertices over this height (m), from at most this many of them */
+const LM_SHADOW_MIN_H = 1.5, LM_SHADOW_PTS = 6000
+/*
+ * A SHADOW PER PART (2026-11-16, the plazas' third survey: the Place de la Concorde's one hull spanned the obelisk, both fountains and
+ * every lamp, a dark polygon across the place; the Colonne Vendôme's filled the wedge from its pedestal to Napoleon). Every part of a
+ * model (its triangles joined by shared corners) casts the hull of its own vertices over LM_SHADOW_MIN_H m, at their feet and slid
+ * along the sun; the hulls overlap without darkening twice (shadowMaterial's depth test). Each part is cut into LM_SHADOW_CHUNK m chunks
+ * by where its triangles stand; a model of more than LM_SHADOW_MAX_PARTS chunks casts one hull of everything, as before.
+ * LM_SHADOW_PARTS false: one hull of the whole model.
+ */
+const LM_SHADOW_PARTS = true, LM_SHADOW_MAX_PARTS = 500, LM_SHADOW_CHUNK = 8, LM_SHADOW_EDGE = 3
+/** a shadow's triangles are split (longest edge first) to LM_SHADOW_EDGE m, or coarser so that it has about LM_SHADOW_MAX_TRIS; a model
+ *  of more than LM_SHADOW_MAX_VERTS vertices casts the one hull of a sample of them (LM_SHADOW_PTS) */
+const LM_SHADOW_MAX_TRIS = 300, LM_SHADOW_MAX_VERTS = 150_000
+function bisectLong(mb: MeshBuilder, minEdge: number): void {
+  const P = mb.positions, N = mb.normals, U = mb.uvs, C = mb.colors, I = mb.indices.splice(0)
+  // (the edge: LM_SHADOW_EDGE, or 1.5× coarser until a dry run of the splitting gives LM_SHADOW_MAX_TRIS or fewer)
+  type V = [number, number]
+  const count = (a: V, b: V, c: V, e: number, depth: number, budget: { n: number }): void => {
+    if (budget.n > cap) return
+    const ab = Math.hypot(a[0] - b[0], a[1] - b[1]), bc = Math.hypot(b[0] - c[0], b[1] - c[1]), ca = Math.hypot(c[0] - a[0], c[1] - a[1]), m = Math.max(ab, bc, ca)
+    if (m <= e || depth > 14) { budget.n++; return }
+    const h = (p: V, q: V): V => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]
+    if (m === ab) { const q = h(a, b); count(a, q, c, e, depth + 1, budget); count(q, b, c, e, depth + 1, budget) }
+    else if (m === bc) { const q = h(b, c); count(b, q, a, e, depth + 1, budget); count(q, c, a, e, depth + 1, budget) }
+    else { const q = h(c, a); count(c, q, b, e, depth + 1, budget); count(q, a, b, e, depth + 1, budget) }
+  }
+  const at = (i: number): V => [P[i * 3], P[i * 3 + 2]]
+  // (never under the triangles it starts with: a shadow of many hulls is already past the budget, and 12 tries would split none)
+  const cap = Math.max(LM_SHADOW_MAX_TRIS, Math.ceil((I.length / 3) * 1.5))
+  let max = minEdge
+  for (let tries = 0; tries < 12; tries++, max *= 1.5) {
+    const budget = { n: 0 }
+    for (let t = 0; t < I.length && budget.n <= cap; t += 3) count(at(I[t]), at(I[t + 1]), at(I[t + 2]), max, 0, budget)
+    if (budget.n <= cap) break
+  }
+  const cw = C.length / (P.length / 3)
+  const mid = (a: number, b: number): number => {
+    const k = P.length / 3
+    for (let d = 0; d < 3; d++) { P.push((P[a * 3 + d] + P[b * 3 + d]) / 2); N.push((N[a * 3 + d] + N[b * 3 + d]) / 2) }
+    for (let d = 0; d < 2; d++) U.push((U[a * 2 + d] + U[b * 2 + d]) / 2)
+    for (let d = 0; d < cw; d++) C.push((C[a * cw + d] + C[b * cw + d]) / 2)
+    return k
+  }
+  const len = (a: number, b: number): number => Math.hypot(P[a * 3] - P[b * 3], P[a * 3 + 2] - P[b * 3 + 2])
+  const split = (a: number, b: number, c: number, depth: number): void => {
+    const ab = len(a, b), bc = len(b, c), ca = len(c, a), m = Math.max(ab, bc, ca)
+    if (m <= max || depth > 14) { mb.indices.push(a, b, c); return }
+    if (m === ab) { const q = mid(a, b); split(a, q, c, depth + 1); split(q, b, c, depth + 1) }
+    else if (m === bc) { const q = mid(b, c); split(b, q, a, depth + 1); split(q, c, a, depth + 1) }
+    else { const q = mid(c, a); split(c, q, b, depth + 1); split(q, a, b, depth + 1) }
+  }
+  for (let t = 0; t < I.length; t += 3) split(I[t], I[t + 1], I[t + 2], 0)
+}
+/** the area a set of rings covers together (m²), counted on a grid of about LM_SHADOW_AREA_CELLS cells over their boxes */
+const LM_SHADOW_AREA_CELLS = 40_000, LM_SHADOW_STACK_MAX = 100, LM_SHADOW_SPREAD = 3
+function unionArea(rings: { x: number; z: number }[][]): number {
+  let box = 0
+  const boxes = rings.map((r) => {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const p of r) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
+    box += (x1 - x0) * (z1 - z0)
+    return { x0, x1, z0, z1 }
+  })
+  const c = Math.max(0.5, Math.sqrt(box / LM_SHADOW_AREA_CELLS)), hit = new Set<string>()
+  const inside = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+    let ins = false
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) ins = !ins
+    return ins
+  }
+  rings.forEach((r, k) => {
+    const b = boxes[k]
+    for (let gx = Math.floor(b.x0 / c); gx <= Math.floor(b.x1 / c); gx++) for (let gz = Math.floor(b.z0 / c); gz <= Math.floor(b.z1 / c); gz++) {
+      const key = `${gx},${gz}`
+      if (!hit.has(key) && inside(r, (gx + 0.5) * c, (gz + 0.5) * c)) hit.add(key)
+    }
+  })
+  return hit.size * c * c
+}
+/** what the last model's shadow came to (dev: window.__lmShadow by name) */
+const lastShadowInfo = { chunks: 0, whole: false }
+function modelShadowHulls(mb: MeshBuilder, scale: number, cosR: number, sinR: number, ox: number, oz: number,
+                          off: { x: number; z: number }, baseY: number, groundAt: (x: number, z: number) => number): { x: number; z: number }[][] {
+  const P = mb.positions, n = P.length / 3, I = mb.indices
+  const wx = (i: number): number => ox + (P[i * 3] * cosR + P[i * 3 + 2] * sinR) * scale
+  const wz = (i: number): number => oz + (-P[i * 3] * sinR + P[i * 3 + 2] * cosR) * scale
+  // (each vertex's height over the ground under it, not over the model's base: on a hill — Lombard Street's beds, SF — the downhill
+  //  parts stood 20 m "high" over the base and cast long dark shadows across the street)
+  lastShadowInfo.whole = false; lastShadowInfo.chunks = 0
+  const hs = new Float32Array(n)
+  for (let i = 0; i < n; i++) hs[i] = Math.max(0, baseY + P[i * 3 + 1] * scale - groundAt(wx(i), wz(i)))
+  const high = (i: number): boolean => hs[i] >= LM_SHADOW_MIN_H
+  const slid = (i: number): { x: number; z: number } => { const h = hs[i] * 0.85; return { x: wx(i) + off.x * h, z: wz(i) + off.z * h } }
+  const whole = (): { x: number; z: number }[][] => {
+    lastShadowInfo.whole = true
+    const pts: { x: number; z: number }[] = [], stride = Math.max(1, Math.floor(n / LM_SHADOW_PTS))
+    for (let i = 0; i < n; i += stride) if (high(i)) pts.push({ x: wx(i), z: wz(i) }, slid(i))
+    return pts.length >= 6 ? [shadowHull(pts, 0, off)] : []
+  }
+  if (!LM_SHADOW_PARTS || n > LM_SHADOW_MAX_VERTS) return whole()
+  const up = new Int32Array(n).map((_, i) => i)
+  const find = (i: number): number => { while (up[i] !== i) { up[i] = up[up[i]]; i = up[i] } return i }
+  const join = (a: number, b: number): void => { const ra = find(a), rb = find(b); if (ra !== rb) up[ra] = rb }
+  for (let t = 0; t < I.length; t += 3) {
+    let first = -1
+    for (let k = 0; k < 3; k++) { const v = I[t + k]; if (!high(v)) continue; if (first < 0) first = v; else join(first, v) }
+  }
+  // (and vertices at the same corner whatever triangle they belong to: a builder's boxes share no indices)
+  const byPos = new Map<string, number>()
+  for (let i = 0; i < n; i++) {
+    if (!high(i)) continue
+    const key = `${Math.round(P[i * 3] * 100)},${Math.round(P[i * 3 + 1] * 100)},${Math.round(P[i * 3 + 2] * 100)}`
+    const o = byPos.get(key)
+    if (o === undefined) byPos.set(key, i); else join(o, i)
+  }
+  // (each part cut into LM_SHADOW_CHUNK m chunks by where its triangles stand: a non-convex part — the Concorde's balustrades round
+  //  its moats, an L or a ring — cast its convex hull across the whole place as one dark band)
+  // (past LM_SHADOW_MAX_PARTS, every part in a chunk together: a place of many small parts, the Concorde's lamps and columns, is
+  //  bounded by its area; past it again, one hull of everything)
+  const chunk = (byPart: boolean): Map<string, { x: number; z: number }[]> | null => {
+    const parts = new Map<string, { x: number; z: number }[]>()
+    for (let t = 0; t < I.length; t += 3) {
+      const v = [I[t], I[t + 1], I[t + 2]], h = v.find(high)
+      if (h === undefined) continue
+      const gx = Math.floor((wx(v[0]) + wx(v[1]) + wx(v[2])) / 3 / LM_SHADOW_CHUNK), gz = Math.floor((wz(v[0]) + wz(v[1]) + wz(v[2])) / 3 / LM_SHADOW_CHUNK)
+      const key = byPart ? `${find(h)},${gx},${gz}` : `${gx},${gz}`
+      let pts = parts.get(key)
+      if (!pts) { if (parts.size >= LM_SHADOW_MAX_PARTS) return null; parts.set(key, (pts = [])) }
+      for (const q of v) pts.push({ x: wx(q), z: wz(q) }, slid(q))
+    }
+    return parts
+  }
+  const parts = chunk(true) ?? chunk(false)
+  if (!parts) return whole()
+  lastShadowInfo.chunks = parts.size
+  const out: { x: number; z: number }[][] = []
+  for (const pts of parts.values()) { const h = shadowHull(pts, 0, off); if (h.length >= 3) out.push(h) }
+  return out
+}
 import { offsetRing } from './landmarks/parts.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
@@ -809,6 +949,12 @@ export class Landmarks {
    * trees through Cupid's Span (2026-10-03). Not for an AREA — a plaza, a garden, a park — whose own trees stand in it.
    */
   onFootprint: ((ring: { x: number; z: number }[]) => void) | null = null
+  /**
+   * The street passages (package edges `passage`) that run through a world-frame footprint, as deck ways (x, z, street y).
+   * A landmark that replaces a building has none of the city's arches cut in its walls, so each one is carved through the
+   * model after it is built (owner, 2026-11-16: "we've kept the curtain wall, creating the appearance of crashing through a wall").
+   */
+  passagesFor: ((ring: { x: number; z: number }[]) => DeckWay[]) | null = null
   /** is (x, z) known dry land (the city's water pieces)? for `waterOnly`; set by game.ts */
   dryAt: ((x: number, z: number) => boolean) | null = null
 
@@ -933,26 +1079,37 @@ export class Landmarks {
     this.water = new Water(scene)
 
     // ---- the skyline
-    const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
-    skyMat.setFloat('fogDensity', 0.00002)
     /*
-     * Drawn only where the group-0 ground has not (GROUND_STENCIL, city.ts): at SKYLINE_R it is nearer than most of
-     * that ground, so depth cannot hide its sunk foot. For the stencil to be written first it must draw after the
-     * ground AND the (alpha-blended) sea, so it joins group 0's transparent queue (its alpha is 1, so it still
-     * reads as solid) and is sorted to the very end of it.
+     * One material per stand-in, not a shared one: each is fogged for its own true distance, and Babylon does not
+     * re-upload a shared material's uniforms between consecutive meshes (the cached material is unchanged), so with
+     * one material every tower drew with the first one's fog — La Défense unhazed and black from the Champ de Mars.
      */
-    const st = skyMat.stencil
-    st.enabled = true
-    st.func = Constants.NOTEQUAL
-    st.funcRef = GROUND_STENCIL
-    st.funcMask = 0xff
-    st.mask = 0x00
-    st.opStencilFail = Constants.KEEP
-    st.opDepthFail = Constants.KEEP
-    st.opStencilDepthPass = Constants.KEEP
-    skyMat.needAlphaBlending = () => true
+    const skyMaterial = (name: string) => {
+      const mat = cartoonMaterial(scene, `cartoonSkyline:${name}`, false)
+      mat.setFloat('fogDensity', 0.00002)
+      /*
+       * Drawn only where the group-0 ground has not (GROUND_STENCIL, city.ts): at SKYLINE_R it is nearer than most of
+       * that ground, so depth cannot hide its sunk foot. For the stencil to be written first it must draw after the
+       * ground AND the (alpha-blended) sea, so it joins group 0's transparent queue (its alpha is 1, so it still
+       * reads as solid) and is sorted to the very end of it.
+       */
+      const st = mat.stencil
+      st.enabled = true
+      st.func = Constants.NOTEQUAL
+      st.funcRef = GROUND_STENCIL
+      st.funcMask = GROUND_STENCIL
+      st.mask = 0x00
+      st.opStencilFail = Constants.KEEP
+      st.opDepthFail = Constants.KEEP
+      st.opStencilDepthPass = Constants.KEEP
+      mat.needAlphaBlending = () => true
+      return mat
+    }
     const isSky = (m: { getMesh(): { name: string } }) => m.getMesh().name.startsWith('skyline:')
-    scene.setRenderingOrder(0, undefined, undefined, (a, b) => {
+    // (the dome FIRST in the opaque queue, as sky.ts sets it: setRenderingOrder replaces all three compares, and
+    //  leaving this one undefined let the dome paint over the far ground AFTER it wrote the skyline's stencil — the
+    //  ground hid the towers' feet and showed as sky, so La Défense floated. BUGS #226)
+    scene.setRenderingOrder(0, (a, b) => (a.getMesh().name === 'sky' ? 0 : 1) - (b.getMesh().name === 'sky' ? 0 : 1), undefined, (a, b) => {
       const sa = isSky(a), sb = isSky(b)
       return sa === sb ? RenderingGroup.defaultTransparentSortCompare(a, b) : sa ? 1 : -1
     })
@@ -971,6 +1128,7 @@ export class Landmarks {
       // the fog it gets, set just before its own draw: the shared material's density, scaled so that its fake depth
       // (it is drawn shrunk to about R metres out) fogs it as its true distance would
       const item = { fog: 0 }
+      const skyMat = skyMaterial(s.name)
       m.onBeforeRenderObservable.add(() => skyMat.setFloat('fogDensity', fogIsOff() ? 0 : item.fog))
       shed(m)
       m.material = skyMat
@@ -1352,6 +1510,10 @@ export class Landmarks {
       // (one builder's bug must not take the city down with it: a throw here stopped the game loading, 2026-10-16 —
       // the model is skipped, said so, and the city's own building, already suppressed, is the price)
       try { build(mb, built, e.kit) } catch (err) { console.error(`landmark ${e.name} (${e.procedural}) failed to build:`, err); return }
+      if (this.passagesFor && !spans && built.ring && built.toLocal && !/^(plaza|garden|park)$/.test(e.kind ?? '') && !/plaza|park|garden|square|parvis|deck|podium/i.test(`${e.name} ${e.procedural ?? ''}`)) {
+        const ways = this.passagesFor(under.map((q) => ({ x: q.x + ox, z: q.z + oz })))
+        if (ways.length) cutDeckWays(mb, built, ways)
+      }
       // faces lying inside larger coplanar ones — a box's floor on the deck under it, two abutting boxes' touching
       // faces, a band drawn twice — fight, drawn double-sided as landmarks are: dropped (landmarks/coplanar.ts)
       const tc = performance.now()
@@ -1472,10 +1634,32 @@ export class Landmarks {
       const mh = modelHeight(mb)
       // (…nor one that says it casts none: a cascade down a hillside is not a box, and its footprint's shadow, draped only
       //  at its corners, lay across Strawberry Hill as dark planes through the slope — Huntington Falls, 2026-10-05)
-      if (e.baseY === undefined && e.deckAbove === undefined && e.shadow !== false && mh >= 6) addShadow(shadows, under, mh * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
+      if (e.baseY === undefined && e.deckAbove === undefined && e.shadow !== false && mh >= 6) {
+        /*
+         * FROM THE MODEL'S OWN SHAPE where that is smaller (2026-11-16, the plazas pass: the Monument à la République, a column on a
+         * pedestal, cast its whole 20 m footprint at its full height, a dark square slab across the place). The hull of every vertex
+         * over LM_SHADOW_MIN_H m, at its foot and slid along the sun by its height: a solid block gives what the footprint gives, a
+         * column a tapering wedge. Whichever of the two is smaller in area is drawn.
+         */
+        const off = shadowOffset(DAYLIGHT.sun)
+        const area = (r: { x: number; z: number }[]): number => { let a = 0; for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z } return Math.abs(a / 2) }
+        const fromFoot = shadowHull(under, mh * 0.85, off), fromModel = modelShadowHulls(mb, scale, cosR, sinR, cx + ox, cz + oz, off, y, (qx, qz) => this.terrain.heightAt(qx, qz))
+        if (typeof location !== 'undefined' && location.search.includes('dev=1')) ((globalThis as unknown as { __lmShadow?: Record<string, unknown> }).__lmShadow ??= {})[e.name] = { ...lastShadowInfo, hulls: fromModel.length, rings: fromModel, foot: fromFoot, union: unionArea(fromModel), footArea: area(fromFoot) }
+        // (whether to use it is decided on the area its hulls cover together, on a grid: summed, their overlaps lost the Colonne Vendôme
+        //  to its footprint; as the hull of all of them, the Concorde's lamps and fountains 128 m apart lost to the place's footprint,
+        //  which then cast the whole place slid at the obelisk's height — a dark band across it)
+        // (…only when few: hundreds of overlapping hulls, draped apart, multiply to black — the Colonne Vendôme's beam; and also when the
+        //  model reaches far past its footprint, LM_SHADOW_SPREAD × its area — the Concorde, fitted to the obelisk's base)
+        const fa = area(fromFoot)
+        if (fromModel.length && fromModel.length <= LM_SHADOW_STACK_MAX && (unionArea(fromModel) < fa || area(shadowHull(fromModel.flat(), 0, off)) > LM_SHADOW_SPREAD * fa)) for (const r of fromModel) capPolygon(shadows, r, SHADOW_Y, [0.85, 0, 0], 0, 1)
+        else capPolygon(shadows, fromFoot, SHADOW_Y, [0.85, 0, 0], 0, 1)
+      }
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
         this.placing?.meshes.push(sm)
+        // (draped at every LM_SHADOW_EDGE m, not only at its corners: the Colonne Vendôme's 37 m strip, a plane between its ends, sank
+        //  under the place's ground in the middle and its far end lay alone on the paving as a dark slab)
+        bisectLong(shadows, LM_SHADOW_EDGE)
         this.terrain.drape(shadows.positions)
         shadows.toVertexData().applyToMesh(sm)
         sm.material = shadowMaterial(this.scene)

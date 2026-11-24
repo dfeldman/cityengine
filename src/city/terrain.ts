@@ -24,6 +24,8 @@ import { applyTweaks, type TerrainTweak } from './terrain-tweaks.ts'
 
 /** how many vertices `Terrain.drapeSteps` drapes between pauses */
 export const DRAPE_SLICE = 128
+/** a ground block coarser than this that a terrain tweak reaches is resampled to it before the tweak is applied (metres) */
+export const TWEAK_STEP = 4
 
 export interface PackedTerrain {
   /** south-west corner of the grid, in local metres */
@@ -89,7 +91,7 @@ export interface TileTerrain {
 }
 
 /** A tile block as the sampler holds it: the heights as an `Int16Array`, which is 4x the JSON array's heap. */
-interface Block { step: number; cols: number; dm: Int16Array }
+interface Block { step: number; cols: number; dm: Int16Array; /** the shipped step, when a tweak resampled it (TWEAK_STEP) */ src?: number }
 
 /**
  * Height lookup by bilinear interpolation.
@@ -148,10 +150,27 @@ export class Terrain {
     // game.ts registers every fetched tile and `City.ingest` registers the full ones again; copying the
     // heights twice is pure waste, and `City` is also used without game.ts, so neither call can go
     const had = this.blocks.get(k)
-    if (had && had.step === b.step && had.cols === b.cols) return
-    const dm = Int16Array.from(b.dm)
-    if (this.tweaks.length) applyTweaks(this.tweaks, dm, b.cols, b.step, tx * this.tile, tz * this.tile)
-    this.blocks.set(k, { step: b.step, cols: b.cols, dm })
+    if (had && (had.src ?? had.step) === b.step && (had.src !== undefined || had.cols === b.cols)) return
+    let dm = Int16Array.from(b.dm), step = b.step, cols = b.cols
+    if (this.tweaks.length) {
+      // a coarse block a tweak reaches is resampled first: on 20 m posts a pit's one deep post pulled the ground down for
+      // 20 m all round it (the Canyoneaustrate's rim, 2026-11-22)
+      const ox = tx * this.tile, oz = tz * this.tile, span = (cols - 1) * step
+      if (step > TWEAK_STEP && this.tweaks.some((t) => t.x1 >= ox && t.x0 <= ox + span && t.z1 >= oz && t.z0 <= oz + span)) {
+        const n = Math.round(span / TWEAK_STEP) + 1, f = new Int16Array(n * n)
+        for (let r = 0; r < n; r++) {
+          const gz = Math.min(cols - 1.000001, (r * TWEAK_STEP) / step), r0 = Math.floor(gz), fz = gz - r0
+          for (let c = 0; c < n; c++) {
+            const gx = Math.min(cols - 1.000001, (c * TWEAK_STEP) / step), c0 = Math.floor(gx), fx = gx - c0
+            const a = dm[r0 * cols + c0], bb = dm[r0 * cols + c0 + 1], cc = dm[(r0 + 1) * cols + c0], d = dm[(r0 + 1) * cols + c0 + 1]
+            f[r * n + c] = Math.round((a * (1 - fx) + bb * fx) * (1 - fz) + (cc * (1 - fx) + d * fx) * fz)
+          }
+        }
+        dm = f; step = span / (n - 1); cols = n
+      }
+      applyTweaks(this.tweaks, dm, cols, step, ox, oz)
+    }
+    this.blocks.set(k, step !== b.step ? { step, cols, dm, src: b.step } : { step, cols, dm })
     this.onTile?.(tx, tz)
   }
 

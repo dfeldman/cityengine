@@ -112,6 +112,41 @@ export function registerRing(ring: P2[], fit: Fit): Frame {
   }
 }
 
+/**
+ * registerRing for a footprint too ROUND for its principal axis to mean anything (the Grande volière, 55 x 58 m: the
+ * moments put its east wall on the south, 2026-11-20). Where the loader gives `fit.toLocal` (city x east, z north →
+ * model frame), east and north are taken from it outright and only the area centroids are matched (or, with no
+ * footprint, the ring's origin is the entry's lat/lon); elsewhere it is registerRing.
+ */
+export function registerRingEN(ring: P2[], fit: Fit): Frame {
+  const base = registerRing(ring, fit)
+  if (!fit.toLocal) return base
+  const o = fit.toLocal(0, 0), ex = fit.toLocal(1, 0), nz = fit.toLocal(0, 1)
+  const a = ex.x - o.x, d = ex.z - o.z, b = nz.x - o.x, f = nz.z - o.z
+  // no footprint (the OSM way was not baked, so the entry is placed at its lat/lon and turned by `front`): the ring's
+  // own origin is that lat/lon, the model's origin, and only the turn needs undoing (the Belvédère, 2026-11-20)
+  if (!fit.ring || fit.ring.length < 3) {
+    const y0 = base.y0
+    return { p: (e, n, h) => [a * e + b * n, y0 + h, d * e + f * n], n: (v) => [a * v[0] + b * v[1], v[2], d * v[0] + f * v[1]], xz: (e, n) => ({ x: a * e + b * n, z: d * e + f * n }), y0 }
+  }
+  const centroid = (pts: P2[]): P2 => {
+    let A = 0, cx = 0, cy = 0
+    for (let i = 0; i < pts.length; i++) {
+      const [x0, y0] = pts[i], [x1, y1] = pts[(i + 1) % pts.length], k = x0 * y1 - x1 * y0
+      A += k; cx += (x0 + x1) * k; cy += (y0 + y1) * k
+    }
+    return [cx / (3 * A), cy / (3 * A)]
+  }
+  const [re, rn] = centroid(ring), [gx, gz] = centroid(fit.ring.map((q) => [q.x, q.z] as P2))
+  const c = gx - (a * re + b * rn), g = gz - (d * re + f * rn), y0 = base.y0
+  return {
+    p: (e, n, h) => [a * e + b * n + c, y0 + h, d * e + f * n + g],
+    n: (v) => [a * v[0] + b * v[1], v[2], d * v[0] + f * v[1]],
+    xz: (e, n) => ({ x: a * e + b * n + c, z: d * e + f * n + g }),
+    y0,
+  }
+}
+
 /** anticlockwise in east/north (east × north = up) */
 export function ccwEN(r: P2[]): P2[] {
   let A = 0

@@ -166,36 +166,8 @@ export function daumesnilTemple(out: MeshBuilder, fit: Fit): void {
   out.water.push({ kind: 'splash', at: [0, y - 0.8, -7.6], r: 1.6 })
 }
 
-/**
- * LE GRAND ROCHER DE VINCENNES (Charles Letrosne, 1934; the zoo's, OSM's way/262416016): 65 m of artificial rock on a concrete frame, standing over the trees east of the lake: far and away the oddest thing on Paris's eastern skyline, seen from the Périphérique and the Porte Dorée.
- * In for the Parc Floral (owner: "highly visible and unusual"). Sits on the fringe, 700 m past the box, and only as a silhouette: a stepped mass of huge crags, the pale crust going grey, the viewing platform on top. Tripo could do it better; this has the outline.
- */
-export function grandRocher(out: MeshBuilder, fit: Fit): void {
-  const y = fit.grade ?? 0, H = 65, ROCK = hex('#6e6a60')
-  const rocks: Rock[] = []
-  const tiers = 13
-  for (let c = 0; c < tiers; c++) {
-    const t = c / (tiers - 1)
-    // a broad foot, a waist, the head: the crust pushed out in shoulders
-    const R = Math.pow(1 - t, 1.25) * 34 + 4.5 + Math.sin(t * Math.PI * 3) * 2.2
-    const n = Math.max(5, Math.round(R * 0.55))
-    for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2 + c * 0.7, m = 0.85 + hash(i, c) * 0.3
-      const off = t < 0.5 ? 0 : Math.sin(c) * 2.5
-      rocks.push([Math.cos(a) * R * m + off, c * (H - 6) / tiers + hash(c, i) * 1.5, Math.sin(a) * R * m, 6.2 - t * 2.6 + hash(i + 3, c) * 2, 4.4 + hash(c + 1, i) * 1.6, 6 - t * 2.6 + hash(i, c + 2) * 2])
-    }
-  }
-  // the core behind the crags, so there's no daylight through it
-  for (let k = 0; k < 6; k++) {
-    const t0 = k / 6, t1 = (k + 1) / 6
-    prism(out, 0, 0, y + t0 * (H - 3), y + t1 * (H - 3), Math.pow(1 - t0, 1.25) * 30 + 3, 10, shade(ROCK, 0.68), surfaceTag('rock'), Math.pow(1 - t1, 1.25) * 30 + 3)
-  }
-  pile(out, y, rocks, ROCK)
-  // the top's platform and its rail
-  prism(out, 0, 0, y + H - 3, y + H - 2, 4.5, 10, hex('#6c6a64'), surfaceTag('concrete'))
-  for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2; prism(out, Math.cos(a) * 4.3, Math.sin(a) * 4.3, y + H - 2, y + H - 0.9, 0.04, 4, hex('#272a2c'), 0) }
-  prism(out, 0, 0, y + H - 1, y + H - 0.9, 4.4, 10, hex('#272a2c'), 0)
-}
+/** LE GRAND ROCHER DE VINCENNES: measured off the lidar now, in ../vincennes/grand-rocher.ts */
+export { grandRocher } from '../vincennes/grand-rocher.ts'
 
 /* ------------------------------------------------------------------------------------------- Île Saint-Germain */
 

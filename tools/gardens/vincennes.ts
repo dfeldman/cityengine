@@ -8,6 +8,7 @@
  */
 import { frame, rect, type Frame, type GardenPlan, type LL } from './plan.ts'
 import { OUTLINES } from './vincennes-outlines.ts'
+import type { TreeForm } from '../../src/city/tree-forms.ts'
 
 // ---- tunables
 /** the Vallée des fleurs' gardens (Iris, Tulipes, Dahlias): parallel beds along the garden's axis, a grass walk between */
@@ -20,8 +21,29 @@ const BEARING: Record<string, number> = {
 const AQUATIQUE = { step: 7, h: 1.8 }
 /** the Jardin tropical: the main alley down its axis and the cross alley, gravel `w` wide, lined with trees; lawns either side */
 const TROPICAL = { alley: 6, cross: 5, treeStep: 9, treeH: 15, lawnInset: 8, shrubStep: 12, shrubH: 2 }
-/** the Arboretum: specimen trees on a loose grid (jittered), glades of open lawn where the hash leaves gaps */
-const ARBORETUM = { grid: 16, jitter: 5, keep: 0.65, hMin: 10, hMax: 24, margin: 8 }
+/**
+ * the Arboretum de Paris (paris.fr: ~12 ha, ~1 200 trees, 654 taxa in 110 genera; en.wikipedia says ~2 000): specimen trees on a
+ * loose grid (jittered), planted BY FAMILY, each labelled, with the conifers in the middle. `core` is the conifers' share of the
+ * outline's half-size; `glade` is the chance a `gladeCell`-m cell is left as open lawn (the prairie calcaire, the pond's margins)
+ */
+const ARBORETUM = { grid: 11, jitter: 4, keep: 0.72, margin: 6, core: 0.4, glade: 0.16, gladeCell: 38 }
+/**
+ * the families round the conifers, a sector each, clockwise from north, with the forms the renderer draws them as: no layout was
+ * found beyond "conifers at the centre" (2026-11-16), so the order is a plausible one — the big Fagaceae on the open side, the small
+ * Rosaceae and magnolias where they'd be seen from the paths, the willows and poplars toward the water
+ */
+const FAMILIES: { name: string; mix: [TreeForm, number][]; h: [number, number] }[] = [
+  { name: 'Fagaceae (oaks, beeches)', mix: [['oak', 1]], h: [16, 26] },
+  { name: 'Sapindaceae (maples, horse chestnuts)', mix: [['deciduous', 1]], h: [12, 20] },
+  { name: 'Rosaceae (cherries, crabs, rowans, pears)', mix: [['blossom', 3], ['deciduous', 1]], h: [6, 11] },
+  { name: 'Oleaceae (ashes, lilacs)', mix: [['deciduous', 3], ['blossom', 1]], h: [10, 20] },
+  { name: 'Magnoliaceae, Cercidiphyllaceae, Nyssaceae', mix: [['laurel', 2], ['deciduous', 1]], h: [8, 16] },
+  { name: 'Salicaceae, Betulaceae (willows, poplars, birches, alders)', mix: [['weeping', 2], ['columnar', 2], ['deciduous', 1]], h: [12, 22] },
+  { name: 'Ulmaceae, Malvaceae (elms, limes)', mix: [['deciduous', 1]], h: [14, 22] },
+]
+/** the pinetum: larches, firs, cunninghamia, cedars, pines; the cypresses; a few fastigiate ones */
+const CONIFERS: [TreeForm, number][] = [['pine', 6], ['cypress', 3], ['columnar', 1]]
+const CONIFER_H: [number, number] = [14, 26]
 /** the École Du Breuil: nursery rows of young trees, beds between */
 const BREUIL = { rowGap: 6, step: 4, h: 5, margin: 6, bedEvery: 3 }
 
@@ -115,15 +137,35 @@ function tropical(): GardenPlan {
   return { name: "Jardin d'agronomie tropicale", ring: g.ll, gravel, lawn, rows, topiary }
 }
 
-/** the Arboretum: specimen trees, one each, on a jittered grid, the gaps its glades */
+/** pick from a weighted mix with a hash in [0, 1) */
+const pick = (mix: [TreeForm, number][], r: number): TreeForm => {
+  const total = mix.reduce((s, [, w]) => s + w, 0)
+  let t = r * total
+  for (const [f, w] of mix) { if ((t -= w) < 0) return f }
+  return mix[mix.length - 1][0]
+}
+
+/** the Arboretum: specimen trees, one each, on a jittered grid — the conifers in the middle, the families in sectors round them, glades between */
 function arboretum(): GardenPlan {
   const g = garden('w91280888'), A = ARBORETUM, [u0, u1, v0, v1] = g.box, rows: NonNullable<GardenPlan['rows']> = []
+  const cu = (u0 + u1) / 2, cv = (v0 + v1) / 2, hu = (u1 - u0) / 2, hv = (v1 - v0) / 2
   for (let u = u0 + A.margin; u < u1 - A.margin; u += A.grid) for (let v = v0 + A.margin; v < v1 - A.margin; v += A.grid) {
     if (hash(u, v) > A.keep) continue
+    if (hash(Math.floor(u / A.gladeCell) + 0.3, Math.floor(v / A.gladeCell) + 0.7) < A.glade) continue
     const pu = u + (hash(v, u) - 0.5) * 2 * A.jitter, pv = v + (hash(u + 1, v) - 0.5) * 2 * A.jitter
     if (!g.inside(pu, pv) || !g.inside(pu - A.margin, pv) || !g.inside(pu + A.margin, pv)) continue
+    const du = (pu - cu) / hu, dv = (pv - cv) / hv, rn = Math.hypot(du, dv), r = hash(pv, pu)
+    let form: TreeForm, h: number
+    if (rn < A.core + (hash(pu * 0.1, pv * 0.1) - 0.5) * 0.08) {
+      form = pick(CONIFERS, r); h = CONIFER_H[0] + hash(pu + 3, pv) * (CONIFER_H[1] - CONIFER_H[0])
+    } else {
+      // the sector, clockwise from the frame's +u (its north), its edges ragged by a few metres
+      const ang = (Math.atan2(dv, du) + Math.PI * 2 + (hash(pu, pv + 9) - 0.5) * 0.12) % (Math.PI * 2)
+      const fam = FAMILIES[Math.floor((ang / (Math.PI * 2)) * FAMILIES.length) % FAMILIES.length]
+      form = pick(fam.mix, r); h = fam.h[0] + hash(pu + 3, pv) * (fam.h[1] - fam.h[0])
+    }
     const p = g.f(pu, pv)
-    rows.push({ line: [p, g.f(pu + 0.5, pv)], spacing: 4, h: A.hMin + hash(pv, pu) * (A.hMax - A.hMin) })
+    rows.push({ line: [p, g.f(pu + 0.5, pv)], spacing: 4, h, form })
   }
   return { name: 'Arboretum de Paris', ring: g.ll, clearMapped: true, lawn: [g.ll], rows }
 }

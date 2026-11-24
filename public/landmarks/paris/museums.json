@@ -119,12 +119,10 @@
     "osm": [
       "way/57745739"
     ],
-    "restyle": "classical",
-    "roof": "hipped",
-    "levels": 3,
-    "eaves": 14,
-    "roofHeight": 8,
-    "roofColour": "#4e555d",
+    "procedural": "hotelSale",
+    "front": 132,
+    "height": 19,
+    "madeBy": "claude-sonnet-5-5",
     "note": "The Hôtel Salé (1659), the Musée national Picasso-Paris, in the Rue de Thorigny: the hôtels' dressed stone and a steep slate roof. OSM leaves the building unnamed (way 57745739, inside the museum's site way 57745741), so the hôtels' regular expression never reached it."
   },
   {
@@ -645,7 +643,8 @@
     "procedural": "mairie1er",
     "osm": [
       "relation/538908",
-      "way/53770906"
+      "way/53770906",
+      "way/1197114602"
     ],
     "lat": 48.859932,
     "lon": 2.341332,

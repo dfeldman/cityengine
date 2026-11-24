@@ -425,9 +425,16 @@ function wing(out: MeshBuilder, A: P, B: P, D: number, o: WingOpts): void {
   const h = D / 2
   const g = o.gates ?? []
   // the faces. `gates` count from A along the wing; going back on the left, from the other end
-  along(out, [A[0] + rx * h, A[1] + rz * h], [B[0] + rx * h, B[1] + rz * h], (q) => o.right(q, L, g, D))
-  along(out, [B[0] - rx * h, B[1] - rz * h], [A[0] - rx * h, A[1] - rz * h], (q) => o.left(q, L, g.map((k) => ({ ...k, x: L - k.x })), D))
+  // (each face's top, read off what it drew: a roof that starts above a lower face floated over a gap, owner #229)
+  const topOf = (t: MeshBuilder): number => { let m = -Infinity; for (let i = 1; i < t.positions.length; i += 3) m = Math.max(m, t.positions[i]); return m }
+  let topR = Infinity, topL = Infinity
+  along(out, [A[0] + rx * h, A[1] + rz * h], [B[0] + rx * h, B[1] + rz * h], (q) => { o.right(q, L, g, D); topR = topOf(q) })
+  along(out, [B[0] - rx * h, B[1] - rz * h], [A[0] - rx * h, A[1] - rz * h], (q) => { o.left(q, L, g.map((k) => ({ ...k, x: L - k.x })), D); topL = topOf(q) })
   const q = new MeshBuilder()
+  // the wall carried up plain to where the roof starts, on a side whose face stops short of it (the right is −z here, the left +z)
+  const rise = o.roofY ?? o.eaves
+  if (topR < rise - 0.02) q.quad([[0, topR, -h], [L, topR, -h], [L, rise, -h], [0, rise, -h]], [0, 0, -1], UV, STONE, FIXED)
+  if (topL < rise - 0.02) q.quad([[L, topL, h], [0, topL, h], [0, rise, h], [L, rise, h]], [0, 0, 1], UV, STONE, FIXED)
   // the ends (x along the wing, z = 0 its axis)
   if (o.ends) {
     q.quad([[0, LOW, -h], [0, LOW, h], [0, o.eaves, h], [0, o.eaves, -h]], [-1, 0, 0], UV, STONE, FIXED)

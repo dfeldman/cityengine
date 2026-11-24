@@ -154,6 +154,11 @@ export interface RangeOpts {
   pediments?: boolean
   /** trim colour for window surrounds */
   frames?: boolean
+  /**
+   * A carriage gate through the range along z, at x, `w` wide and `h` to the crown of its round head: open below the
+   * springing (a ride goes through it), the head a shadowed half-disc on both faces. No windows over it.
+   */
+  gate?: { x: number; w: number; h: number }
 }
 
 /**
@@ -162,9 +167,19 @@ export interface RangeOpts {
  * `mansard`, `terrace`).
  */
 export function range(out: MeshBuilder, x0: number, x1: number, z0: number, z1: number, p: Pal, o: RangeOpts): void {
-  block(out, x0, x1, z0, z1, 0, o.eaves, p.stone)
-  const faces = o.faces ?? ALL
+  const g = o.gate
   const win = o.win ?? Math.min(1.7, o.bay * 0.45)
+  if (g) {
+    const a = g.x - g.w / 2, b = g.x + g.w / 2, spring = g.h - g.w / 2
+    block(out, x0, a, z0, z1, 0, o.eaves, p.stone)
+    block(out, b, x1, z0, z1, 0, o.eaves, p.stone)
+    block(out, a, b, z0, z1, spring, o.eaves, p.stone)
+    for (const [f, plane] of [['-z', z0], ['+z', z1]] as const) archOn(out, f, plane, g.x, spring, g.w, g.w / 2, shade(p.stone, 0.35), 0.1)
+  } else block(out, x0, x1, z0, z1, 0, o.eaves, p.stone)
+  /** a window on a z face that would sit over the gate's opening */
+  const overGate = (f: F, t: number, y: number): boolean =>
+    !!g && (f === '-z' || f === '+z') && y < g.h + 0.5 && Math.abs(t - g.x) < g.w / 2 + win / 2 + 0.4
+  const faces = o.faces ?? ALL
   for (const f of faces) {
     const plane = f === '-z' ? z0 : f === '+z' ? z1 : f === '-x' ? x0 : x1
     const t0 = f === '-z' || f === '+z' ? x0 : z0
@@ -177,6 +192,7 @@ export function range(out: MeshBuilder, x0: number, x1: number, z0: number, z1: 
       const sill = s.y + (s.sill ?? 0.9)
       for (let i = 0; i < n; i++) {
         const t = t0 + 0.6 + step * (i + 0.5)
+        if (overGate(f, t, sill)) continue
         if (o.frames !== false) rectOn(out, f, plane, t - win / 2 - 0.22, t + win / 2 + 0.22, sill - 0.2, sill + s.h + 0.18, p.trim, 0.05)
         if (s.arched) archOn(out, f, plane, t, sill, win, s.h, p.glass, 0.09)
         else rectOn(out, f, plane, t - win / 2, t + win / 2, sill, sill + s.h, p.glass, 0.09)

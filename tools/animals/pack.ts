@@ -45,6 +45,8 @@ export const ANIMALS: { id: string; file: string; tris?: number; front?: '-x' | 
   { id: 'lion', file: 'lion.glb', tex: 1024, clips: 'lion-clips.py' },
   { id: 'bear', file: 'bear.glb', tex: 1024, clips: 'bear-clips.py' },
   { id: 'deer', file: 'buck.glb', tex: 1024, clips: 'deer-clips.py' },
+  { id: 'doe', file: 'doe.glb', tex: 1024, clips: 'doe-clips.py' },
+  { id: 'fawn', file: 'fawn.glb', tex: 1024, clips: 'fawn-clips.py' },
 ]
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ sharp })

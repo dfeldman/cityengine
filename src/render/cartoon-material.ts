@@ -170,6 +170,7 @@ vec3 mirrorTile(vec2 cell, vec3 n, vec3 tt, vec3 bt, vec3 c) {
 vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   vec2 p = faceCoords(n);
   float vert = abs(n.y) < 0.7 ? 1.0 : 0.0;
+  if (sid > 22.5) return c;   // 23 NET: its see-through is the discard in main()
   if (sid > 21.5) {
     // 22 SETTS: granite cobbles, the château terraces of Saint-Cloud (owner, 2026-11-04: "everything in the allées area
     // seems to be cobblestone"). Stones SETT_W x SETT_D in staggered courses, each its own tone of the colour given, a
@@ -472,8 +473,20 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   float board = fract(p.y / 0.15);
   return c * (0.93 + 0.07 * smoothstep(0.0, 0.25, board)) * mix(1.0, 0.95 + 0.1 * hash2(vec2(floor(p.y / 0.15), floor(p.x / 4.0))), nearFade(15.0, 40.0));
 }
+// a 4x4 ordered-dither threshold in [0, 1), for the NET's screen door
+float bayer2(vec2 a) { a = floor(a); return fract(dot(a, vec2(0.5, a.y * 0.75))); }
+float bayer4(vec2 a) { return bayer2(0.5 * a) * 0.25 + bayer2(a); }
 void main(void) {
   vec3 n = normalize(vNormal);
+  /*
+   * 23 NET: an aviary's stainless mesh, drawn as a screen door (no blending, so no sorting): a share of its pixels
+   * kept, the rest discarded so what is behind shows through. Face on the mesh is mostly holes; edge on, the wires
+   * close up, so the share kept rises at grazing angles, as a real net greys over where you see it slantwise.
+   */
+  if (vSurface > 22.5) {
+    float edgeOn = 1.0 - abs(dot(n, vView));
+    if (bayer4(gl_FragCoord.xy) > mix(0.3, 0.8, edgeOn * edgeOn)) discard;
+  }
   float sun = max(dot(n, -normalize(sunDir)), 0.0);
   // banded rather than smooth: the step is what makes it read as drawn rather than rendered
   sun = smoothstep(0.0, 0.02, sun - 0.5) * 0.55 + sun * 0.45;
@@ -551,7 +564,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, moucharabieh: 19, tessera: 20, locks: 21, setts: 22 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15, clipped: 16, blossom: 17, mirror: 18, moucharabieh: 19, tessera: 20, locks: 21, setts: 22, net: 23 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 
@@ -585,7 +598,7 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
   // the monuments' pale surfaces as dressed stone (BUGS.md #8); everything else stays flat
   mat.setFloat('stone', name === 'cartoonLandmark' || name === 'cartoonBridge' ? 1 : 0)
   // floodlit after dark: the monuments, the bridge structures, and the skyline's far landmarks and bridges
-  mat.setFloat('flood', name === 'cartoonLandmark' || name === 'cartoonBridge' || name === 'cartoonSkyline' ? 1 : 0)
+  mat.setFloat('flood', name === 'cartoonLandmark' || name === 'cartoonBridge' || name.startsWith('cartoonSkyline') ? 1 : 0)
   mat.backFaceCulling = true
   /**
    * An explicit depth function, so nothing inherits one.

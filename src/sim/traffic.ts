@@ -186,6 +186,8 @@ const CAR_COLOURS: [number, number, number][] = [
 
 /** bumper to bumper at a standstill, metres; the centre-to-centre gap adds both vehicles' half-lengths */
 const BUMPER = 3
+/** cars turn round only at a street's true end (#273); false restores turning round wherever a car has no way on */
+const U_TURN_ONLY_AT_DEAD_END = true
 /** how far out a car chooses its turn */
 const CHOOSE = 40
 /**
@@ -1426,7 +1428,10 @@ export class Traffic {
         const room = !(lanes.get(`${e.id}:${back}`) ?? []).some((o) => Math.abs(o.s - v.s) < this.halfLen(v) + this.halfLen(o) + BUMPER + 6)
         // …but not a bus: a 12 m bus swinging 180° on the spot is worse to look at than the turn it is not making,
         // so it stands at the end of its run until the 35 s valve in `update` retires it out of view
-        if (v.kind !== 'bus' && toGo - this.halfLen(v) < 2.5 && v.speed < 0.3 && room && allowed(e, back)) {
+        // a U-turn only where the street truly ends (no other edge at the node): where there are exits the car may
+        // not use (one-way, car-free, a tile not streamed in yet) it waits and is retired, rather than reversing mid-city
+        const trueDeadEnd = !U_TURN_ONLY_AT_DEAD_END || !(this.g.nodes.get(node)?.edges.some((id) => id !== e.id) ?? false)
+        if (v.kind !== 'bus' && trueDeadEnd && toGo - this.halfLen(v) < 2.5 && v.speed < 0.3 && room && allowed(e, back)) {
           v.dir = back
           v.next = undefined
           v.stoppedAt = undefined

@@ -6,7 +6,7 @@ import { box, prism } from '../../../models.ts'
 import type { Fit } from '../../fit.ts'
 import { block, dome, hex, placed, shade, type Rgb } from '../../kit.ts'
 import { MeshBuilder as MB } from '../../../buildings.ts'
-import { archOn, balustrade, dormers, fitted, hipRoof, mansard, pairOn, palette, pavilionRoof, pedimentOn, range, rectOn, slabOn, type Pal } from '../palaces/common.ts'
+import { archOn, balustrade, fitted, hipRoof, mansard, pairOn, palette, pavilionRoof, pedimentOn, range, rectOn, slabOn, statue, type Pal } from '../palaces/common.ts'
 import { EMIT, lettersOn, litOn } from '../palaces/showfront.ts'
 
 const GOLD_LETTER: Rgb = [0.62, 0.48, 0.2], RED_NEON = hex('#d83a2b'), WARM = hex('#c98f4e')
@@ -24,48 +24,66 @@ function tricolore(out: MeshBuilder, x: number, z: number, y: number, h: number,
 /* --------------------------------------------------------------------------------------------------- Quai d'Orsay */
 
 /**
- * THE HÔTEL DU MINISTRE DES AFFAIRES ÉTRANGÈRES, "le Quai d'Orsay" (Jacques Lacornée, 1845–55; OSM way/448794899, 78 × 39 m; aerial 48.8618 2.3145; the palaces' restyle had it as three storeys under a mansard and a rider took it for an apartment block). Severe, uniform, cream, as the owner has the core: two tall storeys over a rusticated ground floor to the quay, the paired columns of the five-bay centre and its balcony, the end pavilions a little proud under their own steep roofs, the balustraded attic; the garden front's bow (the salon de l'Horloge's rotunda) on the south. −z to the Seine.
+ * THE HÔTEL DU MINISTRE DES AFFAIRES ÉTRANGÈRES, "le Quai d'Orsay" (Jacques Lacornée, 1845–55; OSM way/448794899, 78 × 39 m; aerial 48.8618 2.3145; the palaces' restyle had it as three storeys under a mansard and a rider took it for an apartment block). Rebuilt 2026-11-16 off a Commons photograph from the quay (the audit's "short hip-roofed block" was the centre-pavilion-and-mansard invention): NOT symmetric. A run of eleven bays with free columns between the tall first-floor windows, the frieze of round windows over them and a balustraded roof line; the tall west pavilion (+x, the photograph's right) with its columned balcony and great arched window; a lower return beyond it; the small east pavilion; the garden front's bow (the salon de l'Horloge's rotunda) on the south. −z to the Seine.
  */
 export function quaiOrsay(out: MeshBuilder, fit: Fit): void {
-  const HX = 38.8, HZ = 19.4, E = 19.5
+  const HX = 38.8, HZ = 19.4
   fitted(out, fit, HX, HZ, (q) => {
-    const p = palette('#dcd1b9', '#4b5257')
-    const st = [{ y: 0.5, h: 3.7, arched: true, sill: 0.6 }, { y: 6.6, h: 5.2, sill: 0.5 }, { y: 13.7, h: 3.1, sill: 0.6 }]
-    range(q, -HX + 11, HX - 11, -HZ, HZ, p, { eaves: E, storeys: st, bay: 4.4, win: 2, rustic: 0.62, rusticTo: 5.9, cornice: 0.7, quoins: false, frames: true, faces: ['-z', '+z'] })
-    for (const s of [-1, 1]) {
-      const a = s < 0 ? -HX : HX - 11, b = a + 11
-      range(q, a, b, -HZ - 0.9, HZ + 0.9, p, { eaves: E + 0.8, storeys: st, bay: 3.6, win: 1.9, rustic: 0.62, rusticTo: 5.9, cornice: 0.8, quoins: true })
-      pavilionRoof(q, a, b, -HZ - 0.9, HZ + 0.9, E + 0.8, 6.4, p, { top: 1.6, crest: true })
-      balustrade(q, a + 0.2, b - 0.2, -HZ - 0.9, HZ + 0.9, E + 0.8, p, { sides: ['-z'], h: 0.8 })
+    const p = palette('#d9cdb4', '#4b5257')
+    // ---- tunable (Commons: "Ministère français des Affaires Etrangères … Quai d'Orsay Paris", from the quay; x runs west, so the tall pavilion is on the right of the photograph)
+    const E = 17.6, EP = 20.6, EE = 18.8          // eaves of the run, of the west pavilion, of the east pavilion
+    const XE = -27, XW = 14, XP = 30.5            // the run's limits; the west pavilion's body ends at XP and a lower return follows to HX
+    const PROUD = 1.0, OCULUS = 0.78, RUN_PITCH = 1.8, RUN_ZINC: Rgb = [0.5, 0.53, 0.55]   // the run's roof is a low zinc one, paler than the pavilions' slate (IGN ortho)
+    const st = [{ y: 0.5, h: 3.7, arched: true, sill: 0.6 }, { y: 6.6, h: 5.2, sill: 0.5 }]
+    // the run: a rusticated ground floor, the tall first-floor windows between free columns, the frieze of round windows, the balustraded roof line
+    range(q, XE, XW, -HZ, HZ, p, { eaves: E, storeys: st, bay: 3.6, win: 1.6, rustic: 0.62, rusticTo: 5.9, cornice: 0.5, frames: true, faces: ['-z', '+z'] })
+    const n = 11, step = (XW - XE - 1.2) / n, z = -HZ - 0.45
+    for (let i = 0; i <= n; i++) {
+      const t = XE + 0.6 + step * i
+      prism(q, t, z, 6.3, 13.4, 0.3, 8, p.trim)
+      box(q, t, 6.1, z, 0.42, 0.2, 0.42, p.trim, 0)
+      box(q, t, 13.5, z, 0.44, 0.2, 0.44, p.trim, 0)
     }
-    // the centre: a slab proud of the wall, its balcony, paired columns between the tall windows
-    const C = 12.5
-    slabOn(q, '-z', -HZ, -C, C, 0, E + 1, 1.3, p.stone)
-    const z = -HZ - 1.3
-    for (let y = 0.62; y < 5.9; y += 0.62) rectOn(q, '-z', z, -C, C, y - 0.07, y + 0.07, p.deep, 0.035)
-    const bays = 5
-    for (let i = 0; i < bays; i++) {
-      const t = -C + (2 * C * (i + 0.5)) / bays
-      archOn(q, '-z', z, t, 0.6, 2.8, 4.4, p.glass, 0.09)
-      rectOn(q, '-z', z, t - 1.25, t + 1.25, 6.8, 12.1, p.trim, 0.05)
-      rectOn(q, '-z', z, t - 1.02, t + 1.02, 7, 12, p.glass, 0.09)
-      pedimentOn(q, '-z', z, t - 1.4, t + 1.4, 12.3, 0.8, 0.2, p.trim)
-      rectOn(q, '-z', z, t - 0.9, t + 0.9, 14.2, 16.8, p.glass, 0.09)
+    slabOn(q, '-z', -HZ, XE, XW, 13.7, 14.4, 0.85, p.trim)
+    for (let i = 0; i < n; i++) {
+      const t = XE + 0.6 + step * (i + 0.5)
+      const zz = -HZ - 0.06
+      for (let k = 0; k < 10; k++) {
+        const a0 = (k / 10) * Math.PI * 2, a1 = ((k + 1) / 10) * Math.PI * 2
+        q.quad([[t, 15.5, zz], [t + Math.cos(a0) * OCULUS, 15.5 + Math.sin(a0) * OCULUS, zz], [t + Math.cos(a1) * OCULUS, 15.5 + Math.sin(a1) * OCULUS, zz], [t, 15.5, zz]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], p.glass, 0)
+        q.quad([[t + Math.cos(a0) * OCULUS, 15.5 + Math.sin(a0) * OCULUS, zz - 0.02], [t + Math.cos(a0) * (OCULUS + 0.22), 15.5 + Math.sin(a0) * (OCULUS + 0.22), zz - 0.02], [t + Math.cos(a1) * (OCULUS + 0.22), 15.5 + Math.sin(a1) * (OCULUS + 0.22), zz - 0.02], [t + Math.cos(a1) * OCULUS, 15.5 + Math.sin(a1) * OCULUS, zz - 0.02]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], p.trim, 0)
+      }
     }
-    for (let i = 0; i <= bays; i++) pairOn(q, '-z', z, -C + (2 * C * i) / bays, 6.1, 13.2, 0.3, p.trim, 0.85)
-    // the balcony on its consoles
-    block(q, -C - 0.3, C + 0.3, z - 1.1, z, 5.9, 6.2, p.trim)
-    for (let t = -C; t <= C + 0.01; t += 0.5) block(q, t - 0.05, t + 0.05, z - 1.05, z - 0.95, 6.2, 7, p.deep)
-    block(q, -C - 0.3, C + 0.3, z - 1.1, z - 0.9, 7, 7.15, p.trim)
-    block(q, -C - 0.4, C + 0.4, z - 0.3, z + 0.05, 13.2, 13.9, p.trim)
-    // the attic's balustrade and the roof, the centre's raised
-    balustrade(q, -HX + 11, HX - 11, -HZ, HZ, E, p, { sides: ['-z', '+z'], h: 0.8 })
-    balustrade(q, -C, C, z, z + 1.3, E + 1, p, { sides: ['-z'], h: 0.8 })
-    mansard(q, -HX + 11, HX - 11, -HZ + 0.6, HZ - 0.6, E, 4.2, 1.2, p.slate, 2.4)
-    dormers(q, '-z', -HZ + 1.8, -HX + 11.5, -C, E + 1, 4.4, p, { round: true })
-    dormers(q, '-z', -HZ + 1.8, C, HX - 11.5, E + 1, 4.4, p, { round: true })
-    pavilionRoof(q, -C + 1, C - 1, -HZ - 0.4, -2, E + 1, 7.4, p, { top: 3 })
-    tricolore(q, 0, -HZ + 8, E + 8, 5, 1.9)
+    // the first-floor balcony rail along the run
+    slabOn(q, '-z', -HZ, XE, XW, 5.9, 6.2, 0.55, p.trim)
+    rectOn(q, '-z', -HZ - 0.5, XE, XW, 6.2, 7.0, p.deep, 0.02)
+    balustrade(q, XE, XW, -HZ, HZ, E, p, { sides: ['-z', '+z'], h: 0.95 })
+    hipRoof(q, XE + 0.4, XW - 0.4, -HZ + 1.2, HZ - 1.2, E, RUN_PITCH, RUN_ZINC, 0)
+    for (const x of [-20, -9, 3]) for (const zc of [-4, 5]) block(q, x - 0.7, x + 0.7, zc - 0.5, zc + 0.5, E + 1, E + 4.6, p.deep)
+    // the west pavilion: proud of the run, the columned balcony, the great arched window, statues in their niches, a roof of its own
+    range(q, XW, XP, -HZ - PROUD, HZ, p, { eaves: EP, storeys: [{ y: 0.5, h: 3.7, arched: true, sill: 0.6 }, { y: 6.6, h: 4.4, sill: 0.5 }, { y: 13.4, h: 4.2, sill: 0.5 }], bay: 3.4, win: 1.5, rustic: 0.62, rusticTo: 5.9, cornice: 0.7, quoins: true, frames: true, faces: ['-z', '+z', '+x'] })
+    const zp = -HZ - PROUD
+    const cw = (XW + XP) / 2
+    archOn(q, '-z', zp, cw, 7.4, 3.0, 7.6, p.glass, 0.1)
+    archOn(q, '-z', zp, cw, 7.1, 3.8, 8.6, p.deep, 0.07)
+    for (const s of [-1, 1]) { archOn(q, '-z', zp, cw + s * 4.4, 8.2, 1.1, 2.9, p.deep, 0.1); statue(q, cw + s * 4.4, zp - 0.25, 8.0, 2.0, p.trim) }
+    pairOn(q, '-z', zp, XW + 1.3, 6.3, 17.2, 0.3, p.trim, 0.9)
+    pairOn(q, '-z', zp, XP - 1.3, 6.3, 17.2, 0.3, p.trim, 0.9)
+    block(q, XW - 0.4, XP + 0.4, zp - 1.1, zp, 5.9, 6.2, p.trim)
+    for (let t = XW; t <= XP + 0.01; t += 0.55) block(q, t - 0.05, t + 0.05, zp - 1.05, zp - 0.95, 6.2, 7, p.deep)
+    block(q, XW - 0.4, XP + 0.4, zp - 1.1, zp - 0.9, 7, 7.15, p.trim)
+    balustrade(q, XW, XP, zp, HZ, EP, p, { sides: ['-z', '+x'], h: 0.95 })
+    pavilionRoof(q, XW + 0.8, XP - 0.8, zp + 0.6, HZ - 3, EP, 5.2, p, { top: 4 })
+    // the lower return beyond it
+    range(q, XP, HX, -HZ, HZ, p, { eaves: E + 0.4, storeys: st, bay: 3.4, win: 1.5, rustic: 0.62, rusticTo: 5.9, cornice: 0.6, frames: true })
+    balustrade(q, XP, HX, -HZ, HZ, E + 0.4, p, { sides: ['-z', '+x'], h: 0.95 })
+    hipRoof(q, XP + 0.4, HX - 0.4, -HZ + 1.2, HZ - 1.2, E + 0.4, 3.0, p.slate, 0)
+    // the east pavilion: smaller, a little proud, its own steep roof
+    range(q, -HX, XE, -HZ - 0.6, HZ, p, { eaves: EE, storeys: [{ y: 0.5, h: 3.7, arched: true, sill: 0.6 }, { y: 6.6, h: 5.2, sill: 0.5 }], bay: 3.3, win: 1.5, rustic: 0.62, rusticTo: 5.9, cornice: 0.7, quoins: true, frames: true, faces: ['-z', '+z', '-x'] })
+    archOn(q, '-z', -HZ - 0.6, -HX + 4.3, 12.2, 1.2, 3.4, p.deep, 0.09)
+    balustrade(q, -HX, XE, -HZ - 0.6, HZ, EE, p, { sides: ['-z', '-x'], h: 0.95 })
+    pavilionRoof(q, -HX + 0.8, XE - 0.8, -HZ - 0.2, HZ - 3, EE, 4.6, p, { top: 3 })
+    tricolore(q, 6, -HZ + 8, E + 3.2, 5, 1.9)
     // the garden's bow, three storeys of it, on the south
     const R = 8.5, Z = HZ + 0.5
     prism(q, 0, Z, 0, E, R, 18, p.stone)
@@ -73,13 +91,11 @@ export function quaiOrsay(out: MeshBuilder, fit: Fit): void {
     prism(q, 0, Z, E, E + 3.2, R, 18, p.slate, 0, 2.5)
     for (let k = 1; k < 9; k++) {
       const a = (k / 9) * Math.PI, x = -Math.cos(a) * R, zz = Z + Math.sin(a) * R, cx = -Math.cos(a), cz = Math.sin(a)
-      for (const [y0, y1, w] of [[1, 5, 1.5], [6.8, 12.3, 1.6], [14, 17, 1.2]] as const) {
+      for (const [y0, y1, w] of [[1, 5, 1.5], [6.8, 12.3, 1.6], [14, 16.5, 1.2]] as const) {
         const ex = cz * w / 2, ez = -(-cx) * w / 2
         q.quad([[x - ex + cx * 0.08, y0, zz + ez * -1 + cz * 0.08], [x + ex + cx * 0.08, y0, zz + ez + cz * 0.08], [x + ex + cx * 0.08, y1, zz + ez + cz * 0.08], [x - ex + cx * 0.08, y1, zz + ez * -1 + cz * 0.08]], [cx, 0, cz], [[0, 0], [1, 0], [1, 1], [0, 1]], p.glass, 0)
       }
     }
-    // the sign of a ministry on its door: only the plaque; a rider reads the flag
-    rectOn(q, '-z', z, -1.3, 1.3, 5.1, 5.75, p.deep, 0.1)
   })
 }
 
@@ -105,10 +121,12 @@ export function conseilDoor(out: MeshBuilder, fit: Fit): void {
  */
 // OSM's block (27 corners, 2 600 m²) is far from its 83 × 38 m box, and the hall filled the box into the street (owner, 2026-11-05)
 const PLEYEL_ACROSS = 0.8, PLEYEL_ALONG = 1
+// the box's front corner stood 4-8 m into the Faubourg (owner #231, 2026-11-16): the front is set back from the box, the marquee kept short and its name on its face
+const PLEYEL_SETBACK = 4.5, PLEYEL_MARQUEE = 1.4
 export function sallePleyel(out: MeshBuilder, fit: Fit): void {
   const HX = 19, HZ = 41.4
   fitted(out, { ...fit, hx: fit.hx * PLEYEL_ACROSS, hz: fit.hz * PLEYEL_ALONG }, HX, HZ, (q) => {
-    const p = palette('#d9cfb8', '#50565a'), z = -HZ, E = 30
+    const p = palette('#d9cfb8', '#50565a'), z = -HZ + PLEYEL_SETBACK, E = 30
     block(q, -HX, HX, z, HZ, 0, E, p.stone)
     // the dark base, the doors with their warm light, the marquee
     rectOn(q, '-z', z, -HX, HX, 0, 5.4, hex('#1e1f20'), 0.08)
@@ -117,9 +135,9 @@ export function sallePleyel(out: MeshBuilder, fit: Fit): void {
       litOn(q, '-z', z, t - 1.4, t + 1.4, 0.2, 3.5, WARM, 0.12)
       rectOn(q, '-z', z, t - 0.05, t + 0.05, 0.2, 3.5, hex('#2b2118'), 0.15)
     }
-    block(q, -13.5, 13.5, z - 2.5, z, 3.8, 4.25, hex('#38332b'))
-    block(q, -13.7, 13.7, z - 2.7, z - 2.3, 3.75, 4.95, hex('#1b1b1c'))
-    lettersOn(q, '-z', z - 2.7, 0, 3.95, 'SALLE PLEYEL', { h: 0.8, c: hex('#e9d6a8'), wide: 0.6, th: 0.12, gap: 0.16, tag: EMIT, d: 0.03 })
+    block(q, -13.5, 13.5, z - PLEYEL_MARQUEE + 0.2, z, 3.8, 4.25, hex('#38332b'))
+    block(q, -13.7, 13.7, z - PLEYEL_MARQUEE, z - PLEYEL_MARQUEE + 0.4, 3.75, 4.95, hex('#1b1b1c'))
+    lettersOn(q, '-z', z - PLEYEL_MARQUEE, 0, 3.95, 'SALLE PLEYEL', { h: 0.8, c: hex('#e9d6a8'), wide: 0.6, th: 0.12, gap: 0.16, tag: EMIT, d: 0.03 })
     // the piers and the strips, each three bays a group, the name of the house cut in the frieze
     const bays = 11, step = (2 * HX) / bays
     for (let i = 0; i < bays; i++) {

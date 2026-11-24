@@ -200,7 +200,8 @@
  },
  {
   "osm": [
-   "way/23757577"
+   "way/23757577",
+   "way/321684332"
   ],
   "name": "Rotonde 56",
   "procedural": "parisCivic",
@@ -516,7 +517,8 @@
  },
  {
   "osm": [
-   "way/40579763"
+   "way/40579763",
+   "way/1198066997"
   ],
   "name": "MK2 Odéon (côté Saint-Michel)",
   "procedural": "parisCivic",
@@ -872,7 +874,8 @@
  },
  {
   "osm": [
-   "way/42741412"
+   "way/42741412",
+   "way/321684340"
   ],
   "name": "Rotonde 65",
   "procedural": "parisCivic",
@@ -889,7 +892,8 @@
  },
  {
   "osm": [
-   "way/42741413"
+   "way/42741413",
+   "way/321684342"
   ],
   "name": "Rotonde 55",
   "procedural": "parisCivic",
@@ -922,7 +926,8 @@
  },
  {
   "osm": [
-   "way/42741416"
+   "way/42741416",
+   "way/321704805"
   ],
   "name": "Rotonde 46",
   "procedural": "parisCivic",
@@ -939,7 +944,8 @@
  },
  {
   "osm": [
-   "way/42741422"
+   "way/42741422",
+   "way/321704790"
   ],
   "name": "fac 42741422",
   "procedural": "parisCivic",
@@ -988,7 +994,8 @@
  },
  {
   "osm": [
-   "way/42741431"
+   "way/42741431",
+   "way/321704798"
   ],
   "name": "Rotonde 42",
   "procedural": "parisCivic",
@@ -1021,7 +1028,8 @@
  },
  {
   "osm": [
-   "way/42741433"
+   "way/42741433",
+   "way/321704802"
   ],
   "name": "Rotonde32",
   "procedural": "parisCivic",
@@ -1086,7 +1094,10 @@
  },
  {
   "osm": [
-   "way/42741438"
+   "way/42741438",
+   "way/321737313",
+   "way/321737312",
+   "way/321737314"
   ],
   "name": "fac 42741438",
   "procedural": "parisCivic",
@@ -1118,7 +1129,8 @@
  },
  {
   "osm": [
-   "way/42741446"
+   "way/42741446",
+   "way/321704794"
   ],
   "name": "Rotonde 22",
   "procedural": "parisCivic",
@@ -1167,7 +1179,8 @@
  },
  {
   "osm": [
-   "way/42741452"
+   "way/42741452",
+   "way/321704795"
   ],
   "name": "Rotonde 12",
   "procedural": "parisCivic",
@@ -1200,7 +1213,8 @@
  },
  {
   "osm": [
-   "way/42741457"
+   "way/42741457",
+   "way/321704788"
   ],
   "name": "Rotonde 16",
   "procedural": "parisCivic",
@@ -1233,7 +1247,8 @@
  },
  {
   "osm": [
-   "way/42741459"
+   "way/42741459",
+   "way/321704787"
   ],
   "name": "Rotonde 26",
   "procedural": "parisCivic",
@@ -1266,7 +1281,8 @@
  },
  {
   "osm": [
-   "way/42741462"
+   "way/42741462",
+   "way/321704803"
   ],
   "name": "Rotonde 13",
   "procedural": "parisCivic",
@@ -1299,7 +1315,8 @@
  },
  {
   "osm": [
-   "way/42741464"
+   "way/42741464",
+   "way/321704799"
   ],
   "name": "Rotonde 14",
   "procedural": "parisCivic",
@@ -1332,7 +1349,8 @@
  },
  {
   "osm": [
-   "way/42741466"
+   "way/42741466",
+   "way/321704796"
   ],
   "name": "Rotonde 15",
   "procedural": "parisCivic",
@@ -1666,7 +1684,9 @@
  },
  {
   "osm": [
-   "relation/403146"
+   "relation/403146",
+   "way/1197828218",
+   "way/1197828219"
   ],
   "name": "Hôtel de Sully",
   "procedural": "parisCivic",
@@ -3440,7 +3460,8 @@
  },
  {
   "osm": [
-   "way/55302135"
+   "way/55302135",
+   "way/1324235153"
   ],
   "name": "Hôtel de Bretonvilliers",
   "procedural": "parisCivic",
@@ -3570,7 +3591,8 @@
  },
  {
   "osm": [
-   "way/55353485"
+   "way/55353485",
+   "way/1092963727"
   ],
   "name": "Bibliothèque Sainte-Barbe - Université Sorbonne-Nouvelle",
   "procedural": "parisCivic",
@@ -3587,7 +3609,8 @@
  },
  {
   "osm": [
-   "way/55353487"
+   "way/55353487",
+   "way/1202493351"
   ],
   "name": "Bibliothèque Cujas - Université Paris 1 Panthéon-Sorbonne",
   "procedural": "parisCivic",
@@ -4525,7 +4548,9 @@
  },
  {
   "osm": [
-   "way/56163068"
+   "way/56163068",
+   "way/1198064408",
+   "way/1198064418"
   ],
   "name": "Résidence des Célestins",
   "procedural": "parisCivic",
@@ -4559,7 +4584,8 @@
  },
  {
   "osm": [
-   "relation/574749"
+   "relation/574749",
+   "way/1198064433"
   ],
   "name": "Hôtel Nicolai",
   "procedural": "parisCivic",
@@ -4773,7 +4799,9 @@
  },
  {
   "osm": [
-   "way/56457516"
+   "way/56457516",
+   "way/1017205517",
+   "way/1017205516"
   ],
   "name": "ecole 56457516",
   "procedural": "parisCivic",
@@ -4822,7 +4850,8 @@
  },
  {
   "osm": [
-   "way/56671696"
+   "way/56671696",
+   "way/1124889073"
   ],
   "name": "ecole 56671696",
   "procedural": "parisCivic",
@@ -4887,7 +4916,8 @@
  },
  {
   "osm": [
-   "relation/550856"
+   "relation/550856",
+   "way/1206253700"
   ],
   "name": "Hôtel de Montmor",
   "procedural": "parisCivic",
@@ -5238,7 +5268,13 @@
  },
  {
   "osm": [
-   "way/57380586"
+   "way/57380586",
+   "way/1001801241",
+   "way/1001801242",
+   "way/1001801238",
+   "way/1001801237",
+   "way/57380597",
+   "way/1001801240"
   ],
   "name": "Mairie de Paris Centre",
   "procedural": "parisCivic",
@@ -5271,7 +5307,8 @@
  },
  {
   "osm": [
-   "relation/551427"
+   "relation/551427",
+   "way/1550894081"
   ],
   "name": "Hôtel de Sauroy",
   "procedural": "parisCivic",
@@ -5465,7 +5502,8 @@
  },
  {
   "osm": [
-   "way/57720415"
+   "way/57720415",
+   "way/1206655686"
   ],
   "name": "Hôtel d'Assy",
   "procedural": "parisCivic",
@@ -5579,7 +5617,8 @@
  },
  {
   "osm": [
-   "relation/551434"
+   "relation/551434",
+   "way/1119479199"
   ],
   "name": "Hôtel d'Almeyras",
   "procedural": "parisCivic",
@@ -5643,7 +5682,9 @@
  },
  {
   "osm": [
-   "relation/551549"
+   "relation/551549",
+   "way/1237884703",
+   "way/1237884701"
   ],
   "name": "Hôtel de Camillac",
   "procedural": "parisCivic",
@@ -5691,7 +5732,8 @@
  },
  {
   "osm": [
-   "way/57781646"
+   "way/57781646",
+   "way/948833976"
   ],
   "name": "Hôtel de Marle",
   "procedural": "parisCivic",
@@ -5755,7 +5797,8 @@
  },
  {
   "osm": [
-   "relation/551566"
+   "relation/551566",
+   "way/1409976606"
   ],
   "name": "Hôtel d'Ecquevilly",
   "procedural": "parisCivic",
@@ -6006,7 +6049,8 @@
  },
  {
   "osm": [
-   "way/60204329"
+   "way/60204329",
+   "way/1148999140"
   ],
   "name": "Maison des Mines et des Ponts et Chaussées",
   "procedural": "parisCivic",
@@ -6073,7 +6117,8 @@
  },
  {
   "osm": [
-   "way/60264990"
+   "way/60264990",
+   "way/1155917561"
   ],
   "name": "Maison du sculpteur Rude",
   "procedural": "parisCivic",
@@ -6502,7 +6547,9 @@
  },
  {
   "osm": [
-   "way/62376350"
+   "way/62376350",
+   "way/938527730",
+   "way/938527729"
   ],
   "name": "Régie immobilière de la Ville de Paris",
   "procedural": "parisCivic",
@@ -7386,7 +7433,8 @@
  },
  {
   "osm": [
-   "way/63201035"
+   "way/63201035",
+   "way/1017678595"
   ],
   "name": "hopital 63201035",
   "procedural": "parisCivic",
@@ -7618,7 +7666,8 @@
  },
  {
   "osm": [
-   "way/63202689"
+   "way/63202689",
+   "way/1124517609"
   ],
   "name": "Hôtel de Rosambo",
   "procedural": "parisCivic",
@@ -7852,7 +7901,8 @@
  },
  {
   "osm": [
-   "way/63203479"
+   "way/63203479",
+   "way/1213645160"
   ],
   "name": "ecole 63203479",
   "procedural": "parisCivic",
@@ -7986,7 +8036,8 @@
  },
  {
   "osm": [
-   "way/63212050"
+   "way/63212050",
+   "way/1070055438"
   ],
   "name": "ecole 63212050",
   "procedural": "parisCivic",
@@ -8088,7 +8139,8 @@
  },
  {
   "osm": [
-   "way/63212659"
+   "way/63212659",
+   "way/63236498"
   ],
   "name": "ecole 63212659",
   "procedural": "parisCivic",
@@ -9130,7 +9182,8 @@
  },
  {
   "osm": [
-   "way/63240688"
+   "way/63240688",
+   "way/63242544"
   ],
   "name": "Centre médical Atlas",
   "procedural": "parisCivic",
@@ -10504,7 +10557,8 @@
  },
  {
   "osm": [
-   "way/63646922"
+   "way/63646922",
+   "way/1082424520"
   ],
   "name": "Église Notre-Dame d'Espérance",
   "procedural": "parisCivic",
@@ -10755,7 +10809,8 @@
  },
  {
   "osm": [
-   "way/63649490"
+   "way/63649490",
+   "way/659610852"
   ],
   "name": "ecole 63649490",
   "procedural": "parisCivic",
@@ -11158,7 +11213,8 @@
  },
  {
   "osm": [
-   "way/64037719"
+   "way/64037719",
+   "way/1119037607"
   ],
   "name": "ecole 64037719",
   "procedural": "parisCivic",
@@ -11325,7 +11381,8 @@
  },
  {
   "osm": [
-   "way/64038903"
+   "way/64038903",
+   "way/1119037624"
   ],
   "name": "ecole 64038903",
   "procedural": "parisCivic",
@@ -12144,7 +12201,8 @@
  },
  {
   "osm": [
-   "way/64859360"
+   "way/64859360",
+   "relation/2212707"
   ],
   "name": "Aide et Éducation",
   "procedural": "parisCivic",
@@ -12308,7 +12366,8 @@
  },
  {
   "osm": [
-   "way/65089512"
+   "way/65089512",
+   "way/1429680781"
   ],
   "name": "ministere 65089512",
   "procedural": "parisCivic",
@@ -16211,7 +16270,8 @@
  },
  {
   "osm": [
-   "way/70000420"
+   "way/70000420",
+   "way/279765980"
   ],
   "name": "ecole 70000420",
   "procedural": "parisCivic",
@@ -16294,7 +16354,8 @@
  },
  {
   "osm": [
-   "way/70000622"
+   "way/70000622",
+   "way/1031033513"
   ],
   "name": "ecole 70000622",
   "procedural": "parisCivic",
@@ -17205,7 +17266,8 @@
  },
  {
   "osm": [
-   "way/70147142"
+   "way/70147142",
+   "way/868237761"
   ],
   "name": "Église Saint-Germain-de-Charonne",
   "procedural": "parisCivic",
@@ -17261,7 +17323,7 @@
   "procedural": "parisCivic",
   "kit": {
    "kind": "ministere",
-   "p": 99,
+   "p": 3,
    "word": "MINISTÈRE DE L'INTÉRIEUR",
    "seed": 7284
   },
@@ -23297,7 +23359,8 @@
  },
  {
   "osm": [
-   "way/78533932"
+   "way/78533932",
+   "way/1211355563"
   ],
   "name": "Résidence Vincent Auriol",
   "procedural": "parisCivic",
@@ -23314,7 +23377,8 @@
  },
  {
   "osm": [
-   "way/78534142"
+   "way/78534142",
+   "way/871913066"
   ],
   "name": "Gaston Cordier",
   "procedural": "parisCivic",
@@ -23616,7 +23680,8 @@
  },
  {
   "osm": [
-   "way/78535782"
+   "way/78535782",
+   "way/1227155611"
   ],
   "name": "Marguerite Bottard",
   "procedural": "parisCivic",
@@ -24053,7 +24118,9 @@
  },
  {
   "osm": [
-   "way/79083253"
+   "way/79083253",
+   "way/1015909061",
+   "way/1015909060"
   ],
   "name": "caserne 79083253",
   "procedural": "parisCivic",
@@ -25705,7 +25772,8 @@
  },
  {
   "osm": [
-   "way/79611483"
+   "way/79611483",
+   "way/887004997"
   ],
   "name": "Copernic",
   "procedural": "parisCivic",
@@ -26244,7 +26312,8 @@
  },
  {
   "osm": [
-   "way/79633332"
+   "way/79633332",
+   "way/1000791447"
   ],
   "name": "ecole 79633332",
   "procedural": "parisCivic",
@@ -26361,7 +26430,8 @@
  },
  {
   "osm": [
-   "way/79633974"
+   "way/79633974",
+   "way/1127628707"
   ],
   "name": "Résidence Le Maine",
   "procedural": "parisCivic",
@@ -26579,7 +26649,8 @@
  },
  {
   "osm": [
-   "way/79687884"
+   "way/79687884",
+   "way/1170986837"
   ],
   "name": "Centre des finances publiques",
   "procedural": "parisCivic",
@@ -27924,7 +27995,16 @@
   "kit": {
    "kind": "eglise",
    "p": 3,
-   "seed": 2560
+   "seed": 2560,
+   "spec": {
+    "nave": {"bays": 5, "storeys": 1, "roof": "gable", "pitch": "moderate"},
+    "aisles": null,
+    "transept": {"ends": "projecting"},
+    "chancel": {"kind": "square"},
+    "tower": {"at": "crossing", "stages": 1, "plan": "square", "top": "pyramid"},
+    "front": {"kind": "pediment", "portal": "single", "window": "oculus", "steps": 3},
+    "walls": {"material": "limestone", "openings": "round", "buttresses": "plain", "colour": [0.9, 0.84, 0.66]}
+   }
   },
   "height": 15.3,
   "front": 114,
@@ -30254,7 +30334,8 @@
  },
  {
   "osm": [
-   "way/83792386"
+   "way/83792386",
+   "way/1322901083"
   ],
   "name": "fac 83792386",
   "procedural": "parisCivic",
@@ -35265,7 +35346,9 @@
  },
  {
   "osm": [
-   "way/149275354"
+   "way/149275354",
+   "way/149274897",
+   "way/149277314"
   ],
   "name": "Médiathèque du patrimoine et de la photographie",
   "procedural": "parisCivic",
@@ -35819,7 +35902,8 @@
  },
  {
   "osm": [
-   "way/195220622"
+   "way/195220622",
+   "way/195220626"
   ],
   "name": "CGR Cinéma - Paris Les Lilas",
   "procedural": "parisCivic",
@@ -36339,7 +36423,12 @@
  },
  {
   "osm": [
-   "way/235158675"
+   "way/235158675",
+   "way/1170345976",
+   "way/1170345975",
+   "way/30926196",
+   "way/1170345974",
+   "way/1170345970"
   ],
   "name": "ecole 235158675",
   "procedural": "parisCivic",
@@ -36894,7 +36983,8 @@
  },
  {
   "osm": [
-   "relation/1100897"
+   "relation/1100897",
+   "way/262720406"
   ],
   "name": "Hôtel Élysée Palace",
   "procedural": "parisCivic",
@@ -37147,7 +37237,10 @@
  },
  {
   "osm": [
-   "way/283801197"
+   "way/283801197",
+   "way/283801216",
+   "way/283801211",
+   "way/283801207"
   ],
   "name": "Manufacture Nationale de Sèvres (ancien)",
   "procedural": "parisCivic",
@@ -38173,7 +38266,8 @@
  },
  {
   "osm": [
-   "way/379162385"
+   "way/379162385",
+   "relation/5613632"
   ],
   "name": "Gymnase Joliot-Curie",
   "procedural": "parisCivic",
@@ -38206,7 +38300,8 @@
  },
  {
   "osm": [
-   "way/395238277"
+   "way/395238277",
+   "way/79626805"
   ],
   "name": "Préfecture de police",
   "procedural": "parisCivic",
@@ -38223,7 +38318,8 @@
  },
  {
   "osm": [
-   "way/396564611"
+   "way/396564611",
+   "way/132288143"
   ],
   "name": "Centre de Secours contre l'incendie",
   "procedural": "parisCivic",
@@ -39084,7 +39180,9 @@
  },
  {
   "osm": [
-   "way/548454527"
+   "way/548454527",
+   "way/1015094049",
+   "way/1015094048"
   ],
   "name": "Direction constructions publiques et architecture",
   "procedural": "parisCivic",
@@ -39452,7 +39550,8 @@
  },
  {
   "osm": [
-   "way/627611667"
+   "way/627611667",
+   "way/1227155609"
   ],
   "name": "Accueil",
   "procedural": "parisCivic",
@@ -41020,7 +41119,8 @@
  },
  {
   "osm": [
-   "way/919780635"
+   "way/919780635",
+   "way/919780633"
   ],
   "name": "fac 919780635",
   "procedural": "parisCivic",
@@ -41502,7 +41602,9 @@
  },
  {
   "osm": [
-   "way/1041940607"
+   "way/1041940607",
+   "relation/1000403",
+   "way/1556595422"
   ],
   "name": "Crèche collective municipale Marcel Achard",
   "procedural": "parisCivic",
@@ -41872,7 +41974,8 @@
  },
  {
   "osm": [
-   "way/1153053258"
+   "way/1153053258",
+   "way/59718578"
   ],
   "name": "Bibliothèque Rainer Maria Rilke",
   "procedural": "parisCivic",
@@ -42514,7 +42617,12 @@
  },
  {
   "osm": [
-   "relation/3370912"
+   "relation/3370912",
+   "way/1206655691",
+   "way/1206655687",
+   "way/1206655689",
+   "way/1206655688",
+   "way/1206655690"
   ],
   "name": "Hôtel de Breteuil",
   "procedural": "parisCivic",
@@ -42546,7 +42654,8 @@
  },
  {
   "osm": [
-   "way/1459909250"
+   "way/1459909250",
+   "way/1457299737"
   ],
   "name": "Hôtel de Retz",
   "procedural": "parisCivic",

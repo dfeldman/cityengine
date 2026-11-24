@@ -41,11 +41,27 @@ export interface Settings {
   people: Feature
   cars: Feature
   details: Feature
+  /**
+   * THE PICTURE'S FINISH (render/post.ts; owner, 2026-11-18: "shaders, effects, or postprocessing… allow them to be
+   * toggled"). The costly three follow the tier on `auto` (desktop on, phones off); the film look, vignette and grain
+   * cost next to nothing and are plain on/off.
+   */
+  ao: Feature
+  shadows: Feature
+  bloom: Feature
+  film: boolean
+  /** grime, streaks and tone on every building's walls (render/facade-material.ts) */
+  weathering: boolean
+  vignette: boolean
+  grain: boolean
 }
 export type Feature = 'auto' | 'on' | 'off'
 
 /** the game's subsystems (`?without=` names, game.ts `off`) each world setting switches */
-export const FEATURE_OFF: Record<'trees' | 'people' | 'details', string[]> = {
+export const FEATURE_OFF: Record<'trees' | 'people' | 'details' | 'ao' | 'shadows' | 'bloom', string[]> = {
+  ao: ['ao'],
+  shadows: ['shadows'],
+  bloom: ['bloom'],
   trees: ['trees', 'plants'],
   people: ['crowd', 'beachcrowd'],
   details: ['signs', 'furniture', 'fountains', 'flags'],
@@ -53,7 +69,8 @@ export const FEATURE_OFF: Record<'trees' | 'people' | 'details', string[]> = {
 
 const KEY = 'cycledash.settings'
 const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', touch: false, steering: 'auto', quality: 'auto', motion: true, fog: true, farCity: 'auto', time: 'auto', weather: 'auto',
-  trees: 'auto', people: 'auto', cars: 'auto', details: 'auto' }
+  trees: 'auto', people: 'auto', cars: 'auto', details: 'auto',
+  ao: 'auto', shadows: 'auto', bloom: 'auto', film: true, weathering: true, vignette: true, grain: true }
 
 let current: Settings | null = null
 const listeners = new Set<(s: Settings) => void>()
@@ -122,6 +139,12 @@ export const SETTING_DEFS: SettingDef[] = [
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] }),
   def({ key: 'motion', group: 'Graphics', label: 'Speed streaks', applies: 'ride',
     choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] }),
+  ...(['ao', 'shadows', 'bloom'] as const).map((key) => def({ key, group: 'Graphics', applies: 'ride',
+    label: { ao: 'Ambient occlusion', shadows: 'Sun shadows', bloom: 'Bloom' }[key],
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] })),
+  ...(['weathering', 'film', 'vignette', 'grain'] as const).map((key) => def({ key, group: 'Graphics', applies: 'ride',
+    label: { weathering: 'Weathered walls', film: 'Film colour', vignette: 'Vignette', grain: 'Film grain' }[key],
+    choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] })),
   def({ key: 'steering', group: 'Controls', label: 'Steering', applies: 'ride',
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'held', label: 'Hold to steer' }, { value: 'junctions', label: 'Pick at junctions' }] }),
   def({ key: 'controls', group: 'Controls', label: 'Effort slider', applies: 'now',

@@ -14,8 +14,21 @@ export function parisFlora(): Flora {
     street: [['sf_plane', 6], ['sf_plane_pollard', 3], ['beech', 2], ['elm', 2], ['ash', 2], ['maple', 1]],
     park: [['oak', 4], ['beech', 3], ['sf_plane', 3], ['elm', 2], ['maple', 1], ['scots_pine', 1]],
     // (a row a landmark asks to be planes: the Jardin des Plantes' allées. Otherwise the park pool, oaks and pines among it)
-    forms: { plane: [['sf_plane', 3], ['sf_plane_pollard', 1]] },
-    formModels: { plane: 2 },
+    // (and a collection that asks for a kind of tree: the Arboretum de Paris, planted by family — tools/gardens/vincennes.ts.
+    // Its firs and cunninghamias take the black and Scots pines; its larger cypresses the broad one; the columnar cypress
+    // and the Lombardy poplar are its fastigiate trees; the Rosaceae its blossom; the magnolias the glossy laurel)
+    forms: {
+      plane: [['sf_plane', 3], ['sf_plane_pollard', 1]],
+      pine: [['scots_pine', 2], ['black_pine', 1]],
+      cypress: [['sf_cypress', 1], ['cypress', 1]],
+      columnar: [['poplar', 1], ['cypress', 1]],
+      weeping: [['sf_pepper', 1]],
+      blossom: [['sf_blossom', 1]],
+      laurel: [['sf_laurel', 1]],
+      oak: [['oak', 2], ['beech', 1]],
+      deciduous: [['maple', 2], ['birch', 1], ['ash', 1], ['elm', 1]],
+    },
+    formModels: { plane: 2, pine: 2, cypress: 2, columnar: 2, weeping: 2, blossom: 2, laurel: 2, oak: 2, deciduous: 3 },
     library: 'sftrees',
   }
 }

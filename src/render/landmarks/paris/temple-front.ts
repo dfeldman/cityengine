@@ -138,7 +138,5 @@ export function assembleePortico(out: MeshBuilder, fit: Fit): void {
   temple(out, fit, { peripteral: false, front: 12, col: 16, podium: 5, width: 48 })
 }
 
-/** The École Militaire's frontispiece to the Champ de Mars: ten Corinthian columns and the pediment. */
-export function ecoleMilitairePortico(out: MeshBuilder, fit: Fit): void {
-  temple(out, fit, { peripteral: false, front: 10, col: 13, podium: 1.2, width: 34 })
-}
+/** The École Militaire's central pavilion on the Champ de Mars (its own file, 2026-11-17: ecole-militaire.ts). */
+export { ecoleMilitairePortico } from './ecole-militaire.ts'

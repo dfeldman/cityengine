@@ -52,7 +52,9 @@
     "name": "Église Notre-Dame-du-Travail",
     "procedural": "notreDameDuTravail",
     "osm": [
-      "way/79687825"
+      "way/79687825",
+      "way/1324873362",
+      "way/1324873363"
     ],
     "front": 324.8,
     "height": 25,

@@ -232,7 +232,7 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 222 | Sainte-Bathilde | statue | Victor Thérasse | street | 48.84759, 2.33815 | 3 |
 | 223 | Sainte-Beuve | statue | Denys Puech | street | 48.84469, 2.33312 | 3 |
 | 224 | Sainte-Clotilde | statue | Jean-Baptiste Klagmann | street | 48.84763, 2.33634 | 2 |
-| 225 | Sainte-Geneviève | statue | Michel Mercier | street | 48.84711, 2.33862 |  |
+| 225 | Sainte-Geneviève | statue | Michel Mercier | street | 48.84711, 2.33862 | 3 |
 | 226 | Scheurer-Kestner | statue | Aimé Jules Dalou | street | 48.84648, 2.33717 | 4 |
 | 227 | Science et Mystère | statue | Jean-Louis-Désiré Schroeder | street | 48.84245, 2.35915 | 4 |
 | 228 | Statue de Bela Bartok | statue | Imre Varga | street | 48.85097, 2.28572 | 1 |
@@ -255,7 +255,7 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 1 | Agrippine d'après l'antique | sculpture | Robert Doisy | street | 48.86401, 2.32407 | 0 |
 | 2 | Alphand | monument | Aimé-Jules Dalou | street | 48.87367, 2.28986 | 2 |
 | 3 | Angel Bear | sculpture | Richard Texier | street | 48.88003, 2.35482 | 0 |
-| 4 | Apollon | sculpture | Paul Belmondo | street | 48.86507, 2.32519 |  |
+| 4 | Apollon | sculpture | Paul Belmondo | street | 48.86507, 2.32519 | 1 |
 | 5 | Athéna | sculpture | Philippe-Laurent Roland | street | 48.86223, 2.31905 | 0 |
 | 6 | Aux Enfants du XII ARRt morts pour la France | sculpture | Raphaël Hubert | street | 48.84121, 2.38769 | 3 |
 | 7 | Aux oubliées et oubliés ! | sculpture | Jean-Luc Verna | street | 48.85075, 2.36828 | 4 |
@@ -271,8 +271,8 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 17 | Comptine | sculpture | Anne Rochett | street | 48.86320, 2.32529 | 1 |
 | 18 | Confidence | sculpture | Daniel Dezeuz | street | 48.86291, 2.32743 | 0 |
 | 19 | Consigne à vie | sculpture | Arman | street | 48.87557, 2.32423 | 1 |
-| 20 | Drame au Desert | sculpture | Henri Fouques | street | 48.84801, 2.30227 |  |
-| 21 | Ève | sculpture | Auguste Rodin | street | 48.86397, 2.32275 |  |
+| 20 | Drame au Desert | sculpture | Henri Fouques | street | 48.84801, 2.30227 | 4 |
+| 21 | Ève | sculpture | Auguste Rodin | street | 48.86397, 2.32275 | 2 |
 | 22 | Figure Couchee | sculpture | Henry Moore | street | 48.86378, 2.32359 | 0 |
 | 23 | Fontaine aux Lions | fountain |  | street | 48.88957, 2.39227 | 4 |
 | 24 | Fontaine de Jarente | fountain |  | street | 48.85574, 2.36346 | 4 |
@@ -330,8 +330,8 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 76 | La sphère des droits de l'homme | sculpture | Walter De Maria | street | 48.86148, 2.31854 | 4 |
 | 77 | La Tour d'exercice | sculpture | Wang Du | street | 48.88435, 2.28910 | 0 |
 | 78 | Lafayette and Washington | sculpture | Frédéric Auguste Bartholdi | street | 48.86832, 2.29303 | 4 |
-| 79 | Le Baiser | sculpture | Auguste Rodin | street | 48.86397, 2.32179 |  |
-| 80 | Le Bel Costumé | sculpture | Jean Dubuffet | street | 48.86428, 2.32609 |  |
+| 79 | Le Baiser | sculpture | Auguste Rodin | street | 48.86397, 2.32179 | 3 |
+| 80 | Le Bel Costumé | sculpture | Jean Dubuffet | street | 48.86428, 2.32609 | 0 |
 | 81 | Le Centaure | sculpture | César | street | 48.85192, 2.32957 | 1 |
 | 82 | Le Cheval à la Herse | sculpture | Pierre Louis Rouillard | street | 48.86052, 2.32559 | 4 |
 | 83 | Le Combat du Centaure | sculpture | Gustave Crauk | street | 48.85060, 2.33222 | 1 |
@@ -347,7 +347,7 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 93 | Le Triomphe de Silène | sculpture | Jules Dalou | street | 48.84765, 2.33317 | 4 |
 | 94 | Les Arbres | sculpture | Boris LE JEUNE | street | 48.88275, 2.29308 | 0 |
 | 95 | Les Fils de Caïn | sculpture | Paul Landowski | street | 48.86146, 2.32910 | 1 |
-| 96 | Lion | sculpture | Giuseppe Franchi | street | 48.86392, 2.32160 |  |
+| 96 | Lion | sculpture | Giuseppe Franchi | street | 48.86392, 2.32160 | 4 |
 | 97 | Lion et lionne se disputant un sanglier | sculpture | Auguste Caïn | street | 48.86510, 2.32728 | 4 |
 | 98 | Ludovic Trarieux | sculpture | Jean Boucher | street | 48.83436, 2.33144 | 4 |
 | 99 | Madame Boucicaut et Madame de Hirsch | sculpture | Paul Moreau | street | 48.85152, 2.32637 | 4 |
@@ -365,7 +365,7 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 111 | Pierre Corneille | sculpture | Gabriel Rispal | street | 48.84672, 2.34580 | 1 |
 | 112 | Poème mythique | sculpture | Jimenez Deridia | street | 48.88601, 2.29016 | 0 |
 | 113 | Pomone | sculpture | François Barois | street | 48.86411, 2.32441 | 4 |
-| 114 | Pomone | sculpture | Robert Wlérick | street | 48.86199, 2.28911 |  |
+| 114 | Pomone | sculpture | Robert Wlérick | street | 48.86199, 2.28911 | 0 |
 | 115 | Pomone drapée | sculpture | Émile Godard | street | 48.86133, 2.33179 | 4 |
 | 116 | Quelque chose de... | sculpture | Bertrand Lavier | street | 48.83989, 2.37890 | 0 |
 | 117 | Retour de Chasse | sculpture | Antonin Carles | street | 48.86358, 2.33150 | 4 |
@@ -376,7 +376,7 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 122 | Statue de Frémiet | sculpture | Henri Greber | street | 48.84356, 2.36400 | 4 |
 | 123 | Statue de Maria Deraismes | statue |  | street | 48.89380, 2.32652 | 1 |
 | 124 | Statue du Maréchal Ney | sculpture | François Rude | street | 48.84004, 2.33634 | 4 |
-| 125 | Statue équestre de Jeanne D'Arc | statue |  | street | 48.87545, 2.31945 |  |
+| 125 | Statue équestre de Jeanne D'Arc | statue |  | street | 48.87545, 2.31945 | 3 |
 | 126 | Statue équestre du duc d'Orléans | statue |  | street | 48.88968, 2.27644 | 1 |
 | 127 | Stèle | sculpture | Liuba Kirova | street | 48.84822, 2.35967 | 0 |
 | 128 | The Welcoming Hands | sculpture | Louise Bourgeois | street | 48.86530, 2.32295 | 1 |
@@ -412,394 +412,394 @@ The rank: in the middle of a place, beside a rideable street, a known sculptor, 
 | 158 | Dans le bonheur | statue | Diadji Diop | street | 48.83509, 2.40855 | 0 |
 | 159 | David | statue |  | street | 48.84690, 2.33797 | 4 |
 | 160 | Denis Papin | statue | Célestin Anatole Calmels | street | 48.81902, 2.31944 | 2 |
-| 161 | Diane à la biche | statue |  | street | 48.84603, 2.33714 |  |
+| 161 | Diane à la biche | statue |  | street | 48.84603, 2.33714 | 4 |
 | 162 | Édith Piaf 1915 1963 | statue | Lisbeth Delisle | street | 48.86481, 2.40534 | 0 |
 | 163 | Fénelon | sculpture |  | street | 48.85087, 2.33332 | 3 |
 | 164 | Ferdinand Fabre | statue |  | street | 48.84476, 2.33555 | 3 |
 | 165 | Fléchier | sculpture |  | street | 48.85086, 2.33324 | 3 |
 | 166 | Flore | statue |  | street | 48.84657, 2.33652 | 4 |
 | 167 | Folie Titon | monument |  | street | 48.85053, 2.38584 | 1 |
-| 168 | Fontaine Boucherat | fountain |  | street | 48.86456, 2.36459 |  |
-| 169 | Fontaine Charlemagne | fountain |  | street | 48.85407, 2.36120 |  |
-| 170 | Fontaine de Diane | fountain |  | street | 48.86592, 2.31696 |  |
-| 171 | Fontaine de l'Avril | fountain |  | street | 48.86529, 2.29671 |  |
-| 172 | Fontaine de Mars | fountain |  | street | 48.85839, 2.30238 |  |
-| 173 | Fontaine des Ambassadeurs | fountain |  | street | 48.86735, 2.31800 |  |
-| 174 | Fontaine des Fleuves | fountain |  | street | 48.86599, 2.32151 |  |
-| 175 | Fontaine des Mers | fountain |  | street | 48.86496, 2.32075 |  |
-| 176 | Fontaine des Quatre Saisons | fountain |  | street | 48.85469, 2.32511 |  |
-| 177 | Fontaine du Château d'eau | sculpture |  | street | 48.83960, 2.39581 |  |
-| 178 | Fontaine du Cirque | fountain |  | street | 48.86896, 2.31295 |  |
-| 179 | Fontaine du Fellah | fountain |  | street | 48.84879, 2.32107 |  |
-| 180 | Fontaine du Théâtre Français - Nymphe marine | fountain |  | street | 48.86367, 2.33501 |  |
-| 181 | Fontaine Sainte-Geneviève | fountain |  | street | 48.84730, 2.34850 |  |
-| 182 | Général Dumas | statue |  | street | 48.88271, 2.31083 |  |
-| 183 | Hector Berlioz | statue |  | street | 48.88318, 2.32988 |  |
-| 184 | Ikaria | sculpture | Igor Mitoraj | street | 48.89530, 2.23700 |  |
-| 185 | J.J. Rousseau | statue |  | street | 48.84591, 2.34540 |  |
-| 186 | José Gervasio Artigas | bust | José Luis Zorrilla de San Martín | street | 48.86981, 2.29590 |  |
-| 187 | Junon, Reine du Ciel | statue |  | street | 48.84706, 2.33608 |  |
-| 188 | La Défense de Paris | sculpture | Louis-Ernest Barrias | street | 48.89026, 2.24331 |  |
-| 189 | La Grenouille | sculpture | Claude Torricini | street | 48.88882, 2.24715 |  |
-| 190 | La Grisette de 1830 | statue |  | street | 48.86860, 2.36745 |  |
-| 191 | La Jeunesse | statue | Alexandre Descatoire | street | 48.86262, 2.28816 |  |
-| 192 | La Petite Mairie | monument |  | street | 48.84887, 2.37822 |  |
-| 193 | La République | statue |  | street | 48.85776, 2.33593 |  |
-| 194 | La Seine | statue |  | street | 48.86447, 2.30254 |  |
-| 195 | Lafayette | statue |  | street | 48.86447, 2.31187 |  |
-| 196 | Lamartine | sculpture |  | street | 48.86455, 2.27494 |  |
-| 197 | Lavoisier | statue | Auguste Ottin | street | 48.81896, 2.31962 |  |
-| 198 | Le Charmeur de Serpent | statue |  | street | 48.86427, 2.33742 |  |
-| 199 | Le Moretti | sculpture | Raymond Moretti | street | 48.88906, 2.24786 |  |
-| 200 | Le Pouce | sculpture | César | street | 48.89355, 2.23875 |  |
-| 201 | Léon Blum | statue |  | street | 48.85830, 2.37984 |  |
-| 202 | Lille | statue |  | street | 48.86620, 2.32267 |  |
-| 203 | Louve Romaine Allaitant Rémus et Romulus | statue |  | street | 48.85003, 2.34390 |  |
-| 204 | Lyon | statue |  | street | 48.86444, 2.32166 |  |
-| 205 | Marseille | statue |  | street | 48.86423, 2.32123 |  |
-| 206 | Mihai Eminescu | statue |  | street | 48.84925, 2.34676 |  |
-| 207 | Minerve | statue |  | street | 48.84729, 2.33657 |  |
-| 208 | Molière | statue | Armand Toussaint | street | 48.81873, 2.31946 |  |
-| 209 | Montaigne assis | statue |  | street | 48.84993, 2.34400 |  |
-| 210 | Monument à Alexandre Ier de Yougoslavie et Pierre Ier de Serbie | statue |  | street | 48.86346, 2.26813 |  |
-| 211 | Monument de la reconnaissance de la Belgique à la France | statue |  | street | 48.86493, 2.30292 |  |
-| 212 | Nantes | statue |  | street | 48.86511, 2.31956 |  |
-| 213 | Obélisque de Louxor | monument |  | street | 48.86548, 2.32113 |  |
-| 214 | Paul Deroulède | statue |  | street | 48.87585, 2.31984 |  |
-| 215 | Pouce | statue | Cesar | street | 48.82526, 2.23171 |  |
-| 216 | René Goscinny | statue |  | street | 48.85694, 2.27493 |  |
-| 217 | Rouen | statue |  | street | 48.86672, 2.32101 |  |
-| 218 | Saint-Denis | statue |  | street | 48.88820, 2.33720 |  |
-| 219 | Saint-François-Régis Clet | statue |  | street | 48.84788, 2.32208 |  |
-| 220 | Sarah Bernhardt | statue |  | street | 48.88215, 2.31068 |  |
-| 221 | Simón Bolívar | statue |  | street | 48.86452, 2.31421 |  |
-| 222 | Souvenir | sculpture |  | place | 48.83821, 2.32613 |  |
-| 223 | Statue d'Urbain Le Verrier | statue |  | street | 48.83682, 2.33653 |  |
-| 224 | Statue de Bernard Palissy | statue | Louis Barrias;Thiébaut | street | 48.85370, 2.33463 |  |
-| 225 | Statue de Dalida | statue |  | street | 48.88855, 2.33807 |  |
-| 226 | Statue de José de San Martín | statue |  | street | 48.82069, 2.33818 |  |
-| 227 | Statue de Jules Simon | statue |  | street | 48.87656, 2.31813 |  |
-| 228 | Statue de la Liberté | statue | Auguste Bartholdi | street | 48.84638, 2.33315 |  |
-| 229 | Statue de Louis XIV | statue | Antoine Coysevox | street | 48.85713, 2.36264 |  |
-| 230 | Statue de Maryse Bastié | statue |  | street | 48.83729, 2.27209 |  |
-| 231 | Stefan Zweig | statue |  | street | 48.84837, 2.33345 |  |
-| 232 | Strasbourg | statue |  | street | 48.86585, 2.32269 |  |
-| 233 | Tour Eiffel | monument |  | street | 48.85826, 2.29451 |  |
-| 234 | Venus | statue |  | street | 48.84694, 2.33643 |  |
-| 235 | Vénus au Dauphin | statue |  | street | 48.84683, 2.33606 |  |
-| 236 | André Le Nôtre | bust | Antoine Coysevox | street | 48.86508, 2.32286 |  |
-| 237 | Antoine de Saint-Exupéry | sculpture | Madeleine Tézenas Du Montcel | street | 48.85757, 2.31109 |  |
-| 238 | Auguste Comte | sculpture |  | street | 48.84877, 2.34210 |  |
-| 239 | Baleine Bleue | sculpture |  | street | 48.84472, 2.38751 |  |
-| 240 | Baron Haussmann | sculpture | François Cogné | street | 48.87532, 2.31641 |  |
-| 241 | Belle | statue | Achiam | street | 48.82030, 2.26602 |  |
-| 242 | Berty Albrecht (1893-1943) | sculpture |  | street | 48.84025, 2.37971 |  |
-| 243 | Buste d'August Strindberg | bust | Carl Eldh | street | 48.85122, 2.33551 |  |
-| 244 | Carpeaux au travail | statue | Antoine Bourdelle | street | 48.84119, 2.30026 |  |
-| 245 | Chapelle Saint-Louis de la Salpêtrière | monument |  | street | 48.83898, 2.36416 |  |
-| 246 | Charles Baudelaire | bust | Pierre-Félix Fix-Masseau | street | 48.84459, 2.33472 |  |
-| 247 | Charles Gounod | bust | Antonin Mercié | street | 48.87902, 2.30969 |  |
-| 248 | Clotilde de Vaux | statue | Décio Villarès | street | 48.85769, 2.36834 |  |
-| 249 | Couple de lutteurs corps à corps (série Nouba) | statue | Ousman Sow | street | 48.86314, 2.33810 |  |
-| 250 | Dante | statue | Jean-Paul Augé | street | 48.84933, 2.34515 |  |
-| 251 | Docteur Guillaume Dupuytren | statue | Max Barneaud | street | 48.85478, 2.34891 |  |
-| 252 | Édouard Pailleron | bust | Léopold Bernstamm | street | 48.87932, 2.31170 |  |
-| 253 | Elie Wiesel | bust | Denis Chetboune | street | 48.86405, 2.36111 |  |
-| 254 | En mémoire des animaux de guerre | statue | Gérard Collin-Thiébaut | street | 48.85123, 2.32614 |  |
-| 255 | Europe | statue | Pierre Margara | street | 48.82546, 2.39460 |  |
-| 256 | Eurydice mordue par un serpent | statue | Charles-François Leboeuf | street | 48.86691, 2.33944 |  |
-| 257 | Flore | statue | Marcel Gimond | street | 48.86255, 2.28826 |  |
-| 258 | Fontaine du Marché-aux-Carmes | bust | Alexandre-Évariste Fragonard | street | 48.85689, 2.33681 |  |
-| 259 | Francis Garnier | sculpture |  | street | 48.84024, 2.33676 |  |
-| 260 | François Coppée | sculpture |  | street | 48.85164, 2.31422 |  |
-| 261 | Frédéric Chopin | bust | Boleslaw Syrewicz | street | 48.84585, 2.33345 |  |
-| 262 | Gabriel Vicaire | bust | Jean-Antoine Injalbert | street | 48.84724, 2.33349 |  |
-| 263 | Génie au trident | statue | André Massoulle | street | 48.86313, 2.31379 |  |
-| 264 | Gustave Flaubert | bust | Jean-Baptiste Clesinger | street | 48.84613, 2.33928 |  |
-| 265 | Guy de Maupassant | bust | Raoul Verlet | street | 48.87995, 2.30991 |  |
-| 266 | Henri Mürger | bust | Théophile-Henri Bouillon | street | 48.84864, 2.33869 |  |
-| 267 | Hommage à Paul Celan | sculpture | Alexander Polzin | street | 48.86157, 2.35459 |  |
-| 268 | Homme couché nu | statue | Lucien Gibert | street | 48.89477, 2.33462 |  |
-| 269 | Jacques Lipchitz | sculpture | Arbit Blatas | street | 48.83576, 2.24134 |  |
-| 270 | L'accueillant | sculpture | Jean Dubuffet | near | 48.87986, 2.40277 |  |
-| 271 | L'Agriculture et l'Industrie | statue | Charles Gumery | street | 48.86728, 2.35389 |  |
-| 272 | L'âne | sculpture |  | street | 48.83121, 2.30089 |  |
-| 273 | L'apporteur de l'espoir | sculpture | Denis Monfleur | street | 48.84266, 2.36654 |  |
-| 274 | L'Aurore | sculpture |  | street | 48.84154, 2.33685 |  |
-| 275 | L'Enfance de Bacchus | statue | Pierre Traverse | street | 48.88257, 2.39740 |  |
-| 276 | L'Enfant au crabe | statue | Léopold Morice | street | 48.86413, 2.31386 |  |
-| 277 | L’Enfant au poisson | statue | André Massoulle | street | 48.86414, 2.31332 |  |
-| 278 | L'Equité | statue | Jean-Louis Jaley | street | 48.85615, 2.34331 |  |
-| 279 | L'Éspérance | statue | Joseph-Silvestre Brun | street | 48.84668, 2.34784 |  |
-| 280 | L'Instant Rond | statue | Patrice Tabart | street | 48.85740, 2.36078 |  |
-| 281 | L'ordre public | statue | Raymond Gaispard | street | 48.86166, 2.31850 |  |
-| 282 | La Campagne | statue | Paul Cornet | street | 48.86242, 2.28847 |  |
-| 283 | La Charité | statue | Charles-René Laitié | street | 48.84666, 2.34782 |  |
-| 284 | La Force | statue | Jean-Louis Jaley | street | 48.85620, 2.34335 |  |
-| 285 | La Montmartoise | statue | Théophile Camel | street | 48.89177, 2.33207 |  |
-| 286 | La Nuit | sculpture |  | street | 48.84395, 2.33700 |  |
-| 287 | La Protection | statue | François Jouffroy | street | 48.85625, 2.34339 |  |
-| 288 | La Prudence | statue | Augustin Dumont | street | 48.85644, 2.34354 |  |
-| 289 | La Vérité | statue | Augustin Dumont | street | 48.85639, 2.34351 |  |
-| 290 | La Victoire ou l'Hommage à l'abolition de l'esclavage | sculpture | Yvan Maston | street | 48.87606, 2.36094 |  |
-| 291 | Le Châtiment | statue | François Jouffroy | street | 48.85634, 2.34347 |  |
-| 292 | Le Crépuscule | sculpture |  | street | 48.84283, 2.33693 |  |
-| 293 | Le Faune dansant | sculpture | Georges Chauvel | street | 48.83718, 2.21417 |  |
-| 294 | Le Globe symbolique | sculpture |  | street | 48.84937, 2.30483 |  |
-| 295 | Le Gouffre | statue | Sylvain Kinsburger | street | 48.88009, 2.38200 |  |
-| 296 | Le grand Toscano | sculpture | Igos Mitoraj | street | 48.89215, 2.24175 |  |
-| 297 | Le Jour | sculpture |  | street | 48.84222, 2.33689 |  |
-| 298 | Le Kiosque des Noctambules - Bouche de Métro | sculpture |  | street | 48.86313, 2.33606 |  |
-| 299 | Le Matin | statue | Pryas | street | 48.86248, 2.28837 |  |
-| 300 | Le Nil | sculpture | Lorenzo Ottone | street | 48.86441, 2.32343 |  |
-| 301 | Le Printemps | statue | Paul Niclausse | street | 48.86218, 2.28793 |  |
-| 302 | Le prophète | statue | Léopold Kretz | street | 48.83960, 2.32656 |  |
-| 303 | Le Suffrage Universel | statue | Raymond Gaispard | street | 48.86164, 2.31864 |  |
-| 304 | Léda et son Cygne | statue | Valois | street | 48.84806, 2.33935 |  |
-| 305 | Les fruits | statue | Félix Desruelles | street | 48.86212, 2.28804 |  |
-| 306 | Les jardins | statue | Robert Couturier | street | 48.86225, 2.28783 |  |
-| 307 | Les oiseaux | statue | Louis Brasseur | street | 48.86232, 2.28772 |  |
-| 308 | Lion | statue | Isidore Bonheur | street | 48.85627, 2.34330 |  |
-| 309 | Louis Ratisbonne | bust | Emile Soldi | street | 48.84523, 2.33454 |  |
-| 310 | Maréchal de Lattre de Tassigny | statue | Philippe Kaeppelin | street | 48.82383, 2.27263 |  |
-| 311 | Mercure et la Musique | statue | Auguste Ottin | street | 48.86705, 2.35375 |  |
-| 312 | Molosse | sculpture | André Abbal | street | 48.83334, 2.35126 |  |
-| 313 | Mongolian | statue | Shen HongBiao | street | 48.84458, 2.34292 |  |
-| 314 | Monument à Barye | monument |  | street | 48.85007, 2.35968 |  |
-| 315 | Monument à Émile Levassor | sculpture |  | street | 48.87660, 2.28034 |  |
-| 316 | Monument à la Mission Flatters | sculpture |  | street | 48.82261, 2.33769 |  |
-| 317 | Monument de l’amiral Gaspard de Coligny | statue | Gustave Crauk | street | 48.86145, 2.33975 |  |
-| 318 | Monument des Droits de l'Homme | monument |  | street | 48.85524, 2.30111 |  |
-| 319 | Néréide | statue | André Massoulle | street | 48.86312, 2.31316 |  |
-| 320 | Nymphes de la Neva avec les armes de la Russie | statue | Georges Récipon | street | 48.86367, 2.31382 |  |
-| 321 | Nymphes de la Seine avec les armes de Paris | statue | Georges Récipon | street | 48.86367, 2.31327 |  |
-| 322 | Ours brun | statue | Georges Lucien Guyot | street | 48.84491, 2.35979 |  |
-| 323 | PAJARO XIII | sculpture | Jouan Soriano | street | 48.81858, 2.34083 |  |
-| 324 | Parole portée à la mémoire des victimes du terrorisme | statue | Nicolas Alquin | street | 48.85455, 2.31030 |  |
-| 325 | Paul Verlaine | bust | Auguste de Niederhausen Rodo | street | 48.84734, 2.33329 |  |
-| 326 | Philippe Auguste | statue | Augustin Dumont | street | 48.84798, 2.39843 |  |
-| 327 | Saint Benoît | statue | Séraphin Denécheau | street | 48.84661, 2.34837 |  |
-| 328 | Saint Etienne | statue | A-H Fromanger | street | 48.84640, 2.34842 |  |
-| 329 | Saint Louis | statue | Antoine Étex | street | 48.84834, 2.39850 |  |
-| 330 | Saint Paul | statue | Jean-Baptiste Révillon | street | 48.85118, 2.33448 |  |
-| 331 | Saint Vincent de Paul assis, tenant des petits enfants | statue | Émilien Cabuchet | street | 48.85118, 2.33462 |  |
-| 332 | Sainte Thérèse de l'enfant Jésus | statue | A.Roché | street | 48.84641, 2.34791 |  |
-| 333 | Sainte-Germaine | sculpture |  | street | 48.83634, 2.28711 |  |
-| 334 | Salon | statue | Alison Saar | street | 48.86548, 2.31855 |  |
-| 335 | Signaux Lumineux | sculpture | Takis | street | 48.89314, 2.23515 |  |
-| 336 | Statue de Beaumarchais | sculpture |  | street | 48.85355, 2.36712 |  |
-| 337 | Statue de Georges Bernanos | statue | William Chattaway | street | 48.84058, 2.33730 |  |
-| 338 | Statue du Docteur Philippe Pinel | sculpture |  | street | 48.84045, 2.36265 |  |
-| 339 | Statue les Naufrages | sculpture |  | street | 48.82213, 2.33963 |  |
-| 340 | Vauban | sculpture |  | street | 48.85794, 2.31056 |  |
-| 341 | Victoire de la fontaine du Palmier | statue | Louis-Simon Boizot | street | 48.85753, 2.36242 |  |
-| 342 | Vierge à l'Enfant | statue | D. Foyatier | street | 48.84646, 2.34856 |  |
-| 343 | Zeus | statue | Atelier blam | street | 48.86584, 2.35551 |  |
+| 168 | Fontaine Boucherat | fountain |  | street | 48.86456, 2.36459 | 1 |
+| 169 | Fontaine Charlemagne | fountain |  | street | 48.85407, 2.36120 | 3 |
+| 170 | Fontaine de Diane | fountain |  | street | 48.86592, 2.31696 | 3 |
+| 171 | Fontaine de l'Avril | fountain |  | street | 48.86529, 2.29671 | 3 |
+| 172 | Fontaine de Mars | fountain |  | street | 48.85839, 2.30238 | 3 |
+| 173 | Fontaine des Ambassadeurs | fountain |  | street | 48.86735, 2.31800 | 3 |
+| 174 | Fontaine des Fleuves | fountain |  | street | 48.86599, 2.32151 | 4 |
+| 175 | Fontaine des Mers | fountain |  | street | 48.86496, 2.32075 | 4 |
+| 176 | Fontaine des Quatre Saisons | fountain |  | street | 48.85469, 2.32511 | 4 |
+| 177 | Fontaine du Château d'eau | sculpture |  | street | 48.83960, 2.39581 | 4 |
+| 178 | Fontaine du Cirque | fountain |  | street | 48.86896, 2.31295 | 4 |
+| 179 | Fontaine du Fellah | fountain |  | street | 48.84879, 2.32107 | 3 |
+| 180 | Fontaine du Théâtre Français - Nymphe marine | fountain |  | street | 48.86367, 2.33501 | 1 |
+| 181 | Fontaine Sainte-Geneviève | fountain |  | street | 48.84730, 2.34850 | 4 |
+| 182 | Général Dumas | statue |  | street | 48.88271, 2.31083 | 1 |
+| 183 | Hector Berlioz | statue |  | street | 48.88318, 2.32988 | 4 |
+| 184 | Ikaria | sculpture | Igor Mitoraj | street | 48.89530, 2.23700 | 0 |
+| 185 | J.J. Rousseau | statue |  | street | 48.84591, 2.34540 | 1 |
+| 186 | José Gervasio Artigas | bust | José Luis Zorrilla de San Martín | street | 48.86981, 2.29590 | 4 |
+| 187 | Junon, Reine du Ciel | statue |  | street | 48.84706, 2.33608 | 4 |
+| 188 | La Défense de Paris | sculpture | Louis-Ernest Barrias | street | 48.89026, 2.24331 | 4 |
+| 189 | La Grenouille | sculpture | Claude Torricini | street | 48.88882, 2.24715 | 0 |
+| 190 | La Grisette de 1830 | statue |  | street | 48.86860, 2.36745 | 4 |
+| 191 | La Jeunesse | statue | Alexandre Descatoire | street | 48.86262, 2.28816 | 2 |
+| 192 | La Petite Mairie | monument |  | street | 48.84887, 2.37822 | 4 |
+| 193 | La République | statue |  | street | 48.85776, 2.33593 | 1 |
+| 194 | La Seine | statue |  | street | 48.86447, 2.30254 | 2 |
+| 195 | Lafayette | statue |  | street | 48.86447, 2.31187 | 2 |
+| 196 | Lamartine | sculpture |  | street | 48.86455, 2.27494 | 3 |
+| 197 | Lavoisier | statue | Auguste Ottin | street | 48.81896, 2.31962 | 2 |
+| 198 | Le Charmeur de Serpent | statue |  | street | 48.86427, 2.33742 | 4 |
+| 199 | Le Moretti | sculpture | Raymond Moretti | street | 48.88906, 2.24786 | 0 |
+| 200 | Le Pouce | sculpture | César | street | 48.89355, 2.23875 | 1 |
+| 201 | Léon Blum | statue |  | street | 48.85830, 2.37984 | 4 |
+| 202 | Lille | statue |  | street | 48.86620, 2.32267 | 4 |
+| 203 | Louve Romaine Allaitant Rémus et Romulus | statue |  | street | 48.85003, 2.34390 | 1 |
+| 204 | Lyon | statue |  | street | 48.86444, 2.32166 | 4 |
+| 205 | Marseille | statue |  | street | 48.86423, 2.32123 | 4 |
+| 206 | Mihai Eminescu | statue |  | street | 48.84925, 2.34676 | 0 |
+| 207 | Minerve | statue |  | street | 48.84729, 2.33657 | 4 |
+| 208 | Molière | statue | Armand Toussaint | street | 48.81873, 2.31946 | 3 |
+| 209 | Montaigne assis | statue |  | street | 48.84993, 2.34400 | 2 |
+| 210 | Monument à Alexandre Ier de Yougoslavie et Pierre Ier de Serbie | statue |  | street | 48.86346, 2.26813 | 1 |
+| 211 | Monument de la reconnaissance de la Belgique à la France | statue |  | street | 48.86493, 2.30292 | 4 |
+| 212 | Nantes | statue |  | street | 48.86511, 2.31956 | 4 |
+| 213 | Obélisque de Louxor | monument |  | street | 48.86548, 2.32113 | 4 |
+| 214 | Paul Deroulède | statue |  | street | 48.87585, 2.31984 | 1 |
+| 215 | Pouce | statue | Cesar | street | 48.82526, 2.23171 | 2 |
+| 216 | René Goscinny | statue |  | street | 48.85694, 2.27493 | 0 |
+| 217 | Rouen | statue |  | street | 48.86672, 2.32101 | 3 |
+| 218 | Saint-Denis | statue |  | street | 48.88820, 2.33720 | 0 |
+| 219 | Saint-François-Régis Clet | statue |  | street | 48.84788, 2.32208 | 2 |
+| 220 | Sarah Bernhardt | statue |  | street | 48.88215, 2.31068 | 1 |
+| 221 | Simón Bolívar | statue |  | street | 48.86452, 2.31421 | 2 |
+| 222 | Souvenir | sculpture |  | place | 48.83821, 2.32613 | 0 |
+| 223 | Statue d'Urbain Le Verrier | statue |  | street | 48.83682, 2.33653 | 1 |
+| 224 | Statue de Bernard Palissy | statue | Louis Barrias;Thiébaut | street | 48.85370, 2.33463 | 1 |
+| 225 | Statue de Dalida | statue |  | street | 48.88855, 2.33807 | 3 |
+| 226 | Statue de José de San Martín | statue |  | street | 48.82069, 2.33818 | 4 |
+| 227 | Statue de Jules Simon | statue |  | street | 48.87656, 2.31813 | 2 |
+| 228 | Statue de la Liberté | statue | Auguste Bartholdi | street | 48.84638, 2.33315 | 0 |
+| 229 | Statue de Louis XIV | statue | Antoine Coysevox | street | 48.85713, 2.36264 | 1 |
+| 230 | Statue de Maryse Bastié | statue |  | street | 48.83729, 2.27209 | 0 |
+| 231 | Stefan Zweig | statue |  | street | 48.84837, 2.33345 | 1 |
+| 232 | Strasbourg | statue |  | street | 48.86585, 2.32269 | 4 |
+| 233 | Tour Eiffel | monument |  | street | 48.85826, 2.29451 | 2 |
+| 234 | Venus | statue |  | street | 48.84694, 2.33643 | 4 |
+| 235 | Vénus au Dauphin | statue |  | street | 48.84683, 2.33606 | 2 |
+| 236 | André Le Nôtre | bust | Antoine Coysevox | street | 48.86508, 2.32286 | 3 |
+| 237 | Antoine de Saint-Exupéry | sculpture | Madeleine Tézenas Du Montcel | street | 48.85757, 2.31109 | 0 |
+| 238 | Auguste Comte | sculpture |  | street | 48.84877, 2.34210 | 2 |
+| 239 | Baleine Bleue | sculpture |  | street | 48.84472, 2.38751 | 0 |
+| 240 | Baron Haussmann | sculpture | François Cogné | street | 48.87532, 2.31641 | 0 |
+| 241 | Belle | statue | Achiam | street | 48.82030, 2.26602 | 0 |
+| 242 | Berty Albrecht (1893-1943) | sculpture |  | street | 48.84025, 2.37971 | 4 |
+| 243 | Buste d'August Strindberg | bust | Carl Eldh | street | 48.85122, 2.33551 | 2 |
+| 244 | Carpeaux au travail | statue | Antoine Bourdelle | street | 48.84119, 2.30026 | 0 |
+| 245 | Chapelle Saint-Louis de la Salpêtrière | monument |  | street | 48.83898, 2.36416 | 4 |
+| 246 | Charles Baudelaire | bust | Pierre-Félix Fix-Masseau | street | 48.84459, 2.33472 | 2 |
+| 247 | Charles Gounod | bust | Antonin Mercié | street | 48.87902, 2.30969 | 2 |
+| 248 | Clotilde de Vaux | statue | Décio Villarès | street | 48.85769, 2.36834 | 4 |
+| 249 | Couple de lutteurs corps à corps (série Nouba) | statue | Ousman Sow | street | 48.86314, 2.33810 | 0 |
+| 250 | Dante | statue | Jean-Paul Augé | street | 48.84933, 2.34515 | 1 |
+| 251 | Docteur Guillaume Dupuytren | statue | Max Barneaud | street | 48.85478, 2.34891 | 0 |
+| 252 | Édouard Pailleron | bust | Léopold Bernstamm | street | 48.87932, 2.31170 | 0 |
+| 253 | Elie Wiesel | bust | Denis Chetboune | street | 48.86405, 2.36111 | 3 |
+| 254 | En mémoire des animaux de guerre | statue | Gérard Collin-Thiébaut | street | 48.85123, 2.32614 | 0 |
+| 255 | Europe | statue | Pierre Margara | street | 48.82546, 2.39460 | 0 |
+| 256 | Eurydice mordue par un serpent | statue | Charles-François Leboeuf | street | 48.86691, 2.33944 | 0 |
+| 257 | Flore | statue | Marcel Gimond | street | 48.86255, 2.28826 | 0 |
+| 258 | Fontaine du Marché-aux-Carmes | bust | Alexandre-Évariste Fragonard | street | 48.85689, 2.33681 | 4 |
+| 259 | Francis Garnier | sculpture |  | street | 48.84024, 2.33676 | 3 |
+| 260 | François Coppée | sculpture |  | street | 48.85164, 2.31422 | 4 |
+| 261 | Frédéric Chopin | bust | Boleslaw Syrewicz | street | 48.84585, 2.33345 | 3 |
+| 262 | Gabriel Vicaire | bust | Jean-Antoine Injalbert | street | 48.84724, 2.33349 | 3 |
+| 263 | Génie au trident | statue | André Massoulle | street | 48.86313, 2.31379 | 0 |
+| 264 | Gustave Flaubert | bust | Jean-Baptiste Clesinger | street | 48.84613, 2.33928 | 0 |
+| 265 | Guy de Maupassant | bust | Raoul Verlet | street | 48.87995, 2.30991 | 3 |
+| 266 | Henri Mürger | bust | Théophile-Henri Bouillon | street | 48.84864, 2.33869 | 4 |
+| 267 | Hommage à Paul Celan | sculpture | Alexander Polzin | street | 48.86157, 2.35459 | 0 |
+| 268 | Homme couché nu | statue | Lucien Gibert | street | 48.89477, 2.33462 | 0 |
+| 269 | Jacques Lipchitz | sculpture | Arbit Blatas | street | 48.83576, 2.24134 | 4 |
+| 270 | L'accueillant | sculpture | Jean Dubuffet | near | 48.87986, 2.40277 | 0 |
+| 271 | L'Agriculture et l'Industrie | statue | Charles Gumery | street | 48.86728, 2.35389 | 0 |
+| 272 | L'âne | sculpture |  | street | 48.83121, 2.30089 | 0 |
+| 273 | L'apporteur de l'espoir | sculpture | Denis Monfleur | street | 48.84266, 2.36654 | 2 |
+| 274 | L'Aurore | sculpture |  | street | 48.84154, 2.33685 | 4 |
+| 275 | L'Enfance de Bacchus | statue | Pierre Traverse | street | 48.88257, 2.39740 | 0 |
+| 276 | L'Enfant au crabe | statue | Léopold Morice | street | 48.86413, 2.31386 | 0 |
+| 277 | L’Enfant au poisson | statue | André Massoulle | street | 48.86414, 2.31332 | 0 |
+| 278 | L'Equité | statue | Jean-Louis Jaley | street | 48.85615, 2.34331 | 0 |
+| 279 | L'Éspérance | statue | Joseph-Silvestre Brun | street | 48.84668, 2.34784 | 0 |
+| 280 | L'Instant Rond | statue | Patrice Tabart | street | 48.85740, 2.36078 | 0 |
+| 281 | L'ordre public | statue | Raymond Gaispard | street | 48.86166, 2.31850 | 0 |
+| 282 | La Campagne | statue | Paul Cornet | street | 48.86242, 2.28847 | 0 |
+| 283 | La Charité | statue | Charles-René Laitié | street | 48.84666, 2.34782 | 0 |
+| 284 | La Force | statue | Jean-Louis Jaley | street | 48.85620, 2.34335 | 0 |
+| 285 | La Montmartoise | statue | Théophile Camel | street | 48.89177, 2.33207 | 0 |
+| 286 | La Nuit | sculpture |  | street | 48.84395, 2.33700 | 3 |
+| 287 | La Protection | statue | François Jouffroy | street | 48.85625, 2.34339 | 0 |
+| 288 | La Prudence | statue | Augustin Dumont | street | 48.85644, 2.34354 | 0 |
+| 289 | La Vérité | statue | Augustin Dumont | street | 48.85639, 2.34351 | 1 |
+| 290 | La Victoire ou l'Hommage à l'abolition de l'esclavage | sculpture | Yvan Maston | street | 48.87606, 2.36094 | 1 |
+| 291 | Le Châtiment | statue | François Jouffroy | street | 48.85634, 2.34347 | 0 |
+| 292 | Le Crépuscule | sculpture |  | street | 48.84283, 2.33693 | 4 |
+| 293 | Le Faune dansant | sculpture | Georges Chauvel | street | 48.83718, 2.21417 | 0 |
+| 294 | Le Globe symbolique | sculpture |  | street | 48.84937, 2.30483 | 0 |
+| 295 | Le Gouffre | statue | Sylvain Kinsburger | street | 48.88009, 2.38200 | 0 |
+| 296 | Le grand Toscano | sculpture | Igos Mitoraj | street | 48.89215, 2.24175 | 0 |
+| 297 | Le Jour | sculpture |  | street | 48.84222, 2.33689 | 4 |
+| 298 | Le Kiosque des Noctambules - Bouche de Métro | sculpture |  | street | 48.86313, 2.33606 | 4 |
+| 299 | Le Matin | statue | Pryas | street | 48.86248, 2.28837 | 0 |
+| 300 | Le Nil | sculpture | Lorenzo Ottone | street | 48.86441, 2.32343 | 4 |
+| 301 | Le Printemps | statue | Paul Niclausse | street | 48.86218, 2.28793 | 0 |
+| 302 | Le prophète | statue | Léopold Kretz | street | 48.83960, 2.32656 | 0 |
+| 303 | Le Suffrage Universel | statue | Raymond Gaispard | street | 48.86164, 2.31864 | 0 |
+| 304 | Léda et son Cygne | statue | Valois | street | 48.84806, 2.33935 | 0 |
+| 305 | Les fruits | statue | Félix Desruelles | street | 48.86212, 2.28804 | 1 |
+| 306 | Les jardins | statue | Robert Couturier | street | 48.86225, 2.28783 | 1 |
+| 307 | Les oiseaux | statue | Louis Brasseur | street | 48.86232, 2.28772 | 0 |
+| 308 | Lion | statue | Isidore Bonheur | street | 48.85627, 2.34330 | 0 |
+| 309 | Louis Ratisbonne | bust | Emile Soldi | street | 48.84523, 2.33454 | 3 |
+| 310 | Maréchal de Lattre de Tassigny | statue | Philippe Kaeppelin | street | 48.82383, 2.27263 | 0 |
+| 311 | Mercure et la Musique | statue | Auguste Ottin | street | 48.86705, 2.35375 | 4 |
+| 312 | Molosse | sculpture | André Abbal | street | 48.83334, 2.35126 | 0 |
+| 313 | Mongolian | statue | Shen HongBiao | street | 48.84458, 2.34292 | 0 |
+| 314 | Monument à Barye | monument |  | street | 48.85007, 2.35968 | 2 |
+| 315 | Monument à Émile Levassor | sculpture |  | street | 48.87660, 2.28034 | 3 |
+| 316 | Monument à la Mission Flatters | sculpture |  | street | 48.82261, 2.33769 | 3 |
+| 317 | Monument de l’amiral Gaspard de Coligny | statue | Gustave Crauk | street | 48.86145, 2.33975 | 0 |
+| 318 | Monument des Droits de l'Homme | monument |  | street | 48.85524, 2.30111 | 0 |
+| 319 | Néréide | statue | André Massoulle | street | 48.86312, 2.31316 | 2 |
+| 320 | Nymphes de la Neva avec les armes de la Russie | statue | Georges Récipon | street | 48.86367, 2.31382 | 0 |
+| 321 | Nymphes de la Seine avec les armes de Paris | statue | Georges Récipon | street | 48.86367, 2.31327 | 4 |
+| 322 | Ours brun | statue | Georges Lucien Guyot | street | 48.84491, 2.35979 | 0 |
+| 323 | PAJARO XIII | sculpture | Jouan Soriano | street | 48.81858, 2.34083 | 1 |
+| 324 | Parole portée à la mémoire des victimes du terrorisme | statue | Nicolas Alquin | street | 48.85455, 2.31030 | 0 |
+| 325 | Paul Verlaine | bust | Auguste de Niederhausen Rodo | street | 48.84734, 2.33329 | 4 |
+| 326 | Philippe Auguste | statue | Augustin Dumont | street | 48.84798, 2.39843 | 1 |
+| 327 | Saint Benoît | statue | Séraphin Denécheau | street | 48.84661, 2.34837 | 0 |
+| 328 | Saint Etienne | statue | A-H Fromanger | street | 48.84640, 2.34842 | 4 |
+| 329 | Saint Louis | statue | Antoine Étex | street | 48.84834, 2.39850 | 0 |
+| 330 | Saint Paul | statue | Jean-Baptiste Révillon | street | 48.85118, 2.33448 | 0 |
+| 331 | Saint Vincent de Paul assis, tenant des petits enfants | statue | Émilien Cabuchet | street | 48.85118, 2.33462 | 0 |
+| 332 | Sainte Thérèse de l'enfant Jésus | statue | A.Roché | street | 48.84641, 2.34791 | 0 |
+| 333 | Sainte-Germaine | sculpture |  | street | 48.83634, 2.28711 | 4 |
+| 334 | Salon | statue | Alison Saar | street | 48.86548, 2.31855 | 0 |
+| 335 | Signaux Lumineux | sculpture | Takis | street | 48.89314, 2.23515 | 0 |
+| 336 | Statue de Beaumarchais | sculpture |  | street | 48.85355, 2.36712 | 4 |
+| 337 | Statue de Georges Bernanos | statue | William Chattaway | street | 48.84058, 2.33730 | 0 |
+| 338 | Statue du Docteur Philippe Pinel | sculpture |  | street | 48.84045, 2.36265 | 1 |
+| 339 | Statue les Naufrages | sculpture |  | street | 48.82213, 2.33963 | 3 |
+| 340 | Vauban | sculpture |  | street | 48.85794, 2.31056 | 1 |
+| 341 | Victoire de la fontaine du Palmier | statue | Louis-Simon Boizot | street | 48.85753, 2.36242 | 1 |
+| 342 | Vierge à l'Enfant | statue | D. Foyatier | street | 48.84646, 2.34856 | 0 |
+| 343 | Zeus | statue | Atelier blam | street | 48.86584, 2.35551 | 0 |
 
 ## C: if models turn up (489)
 
 | # | Work | Kind | Sculptor | Seen from | lat, lon | Photos |
 |---|---|---|---|---|---|---|
-| 1 | Adam | sculpture | Rodin | street | 48.85550, 2.31673 |  |
-| 2 | Alliance 2020 | sculpture | Victoire d'Harcourt | street | 48.84594, 2.31463 |  |
-| 3 | Andrieu d'Andres | sculpture | Rodin | street | 48.85444, 2.31617 |  |
-| 4 | Aphrodite | sculpture | Rodin | street | 48.85513, 2.31522 |  |
-| 5 | Au grand Saint-Antoine | statue |  | street | 48.86994, 2.35288 |  |
-| 6 | Aux victimes des Révolutions | sculpture | Paul Moreau-Vauthier | street | 48.86357, 2.39115 |  |
-| 7 | Baby Bear | sculpture | Bordalo II | street | 48.82825, 2.37798 |  |
-| 8 | Balzac | sculpture | Rodin | street | 48.85542, 2.31532 |  |
-| 9 | buffet d'eau | sculpture | Félix Févola | street | 48.86417, 2.29715 |  |
-| 10 | Buste de Frédérick Lemaître | bust |  | street | 48.86892, 2.36719 |  |
-| 11 | Cariatide à l'urne | sculpture | Rodin | street | 48.85503, 2.31548 |  |
-| 12 | Cariatide à la pierre | sculpture | Rodin | street | 48.85496, 2.31607 |  |
-| 13 | Cariatides | sculpture | Jean Louis Brian | street | 48.86022, 2.33650 |  |
-| 14 | César Franck | sculpture | Alfred Lenoir | street | 48.85897, 2.31987 |  |
-| 15 | Cheval du Monument au général Alvear | sculpture | Antoine Bourdelle | street | 48.84305, 2.31864 |  |
-| 16 | Claude Gelée dit le Lorrain | sculpture | Rodin | street | 48.85414, 2.31514 |  |
-| 17 | Cristal Cheminée | sculpture | Pascale Marthine Tayou | street | 48.89637, 2.39865 |  |
-| 18 | Cybele | sculpture | Rodin | street | 48.85514, 2.31594 |  |
-| 19 | Cyprian Norwid | sculpture | Aleksander Sliwa | street | 48.82816, 2.37721 |  |
-| 20 | Demeure I | sculpture | Etienne Martin | street | 48.84763, 2.36109 |  |
-| 21 | Dispatchwork | sculpture | Jan Vormann | street | 48.89150, 2.38644 |  |
-| 22 | En attendant le mo(nu)ment | sculpture | Société Réaliste | street | 48.87415, 2.37329 |  |
-| 23 | Eustache de Saint-Pierre | sculpture | Rodin | street | 48.85466, 2.31639 |  |
-| 24 | Eve | sculpture | Rodin | street | 48.85543, 2.31672 |  |
-| 25 | Fresque de Gischia | sculpture | Léon Gischia | street | 48.84651, 2.35508 |  |
-| 26 | Galerie des Rois | statue |  | street | 48.85328, 2.34911 |  |
-| 27 | Granit | sculpture | Ruggero Pazzi | street | 48.84720, 2.36122 |  |
-| 28 | Herakles Archer | sculpture | Antoine Bourdelle | street | 48.83955, 2.31748 |  |
-| 29 | Hercule et le taureau de Crète | sculpture | Albert Pommier | street | 48.86183, 2.28798 |  |
-| 30 | Hommage à Cézanne | sculpture | Aristide Maillol | street | 48.86280, 2.33142 |  |
-| 31 | Homme au Bras levé | sculpture | Olivier Brice | street | 48.86815, 2.34850 |  |
-| 32 | Homo consummator deperditus | sculpture | Ngoc Duong Varoqui | street | 48.84176, 2.34035 |  |
-| 33 | Hydrorrhage | sculpture | Jean-Robert Ipoustéguy | street | 48.84817, 2.35994 |  |
-| 34 | Idee di pietra | sculpture | Giuseppe Penone | street | 48.86298, 2.34223 |  |
-| 35 | Jacques de Wissant | sculpture | Rodin | street | 48.85426, 2.31631 |  |
-| 36 | Jean d'Aire | sculpture | Auguste Rodin | street | 48.85416, 2.31609 |  |
-| 37 | Jean de Fiennes | sculpture | Rodin | street | 48.85476, 2.31623 |  |
-| 38 | Jeanette | sculpture | Paul Belmondo | street | 48.86510, 2.32522 |  |
-| 39 | Jeanne d'Arc 1412-1431 | sculpture | Charles-Auguste Lebourg | street | 48.83832, 2.35703 |  |
-| 40 | José Martí | bust |  | street | 48.88609, 2.29026 |  |
-| 41 | L'Amérique du Sud | sculpture | Aimé Millet | street | 48.86005, 2.32493 |  |
-| 42 | L'amour | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85957, 2.35164 |  |
-| 43 | L'arbre De La Paix | sculpture | Hedva Ser | street | 48.86394, 2.27644 |  |
-| 44 | L'Arbre Neuronal | sculpture | Marc Vellay | street | 48.85414, 2.32526 |  |
-| 45 | L'Arc | sculpture | Urs Fischer | street | 48.83446, 2.37031 |  |
-| 46 | L'arche de la fraternité | sculpture | Georges Rousse | street | 48.82377, 2.36205 |  |
-| 47 | L'Art | sculpture | Auguste Ottin | street | 48.86024, 2.33643 |  |
-| 48 | L'Asie | sculpture | Alexandre Falguière | street | 48.86002, 2.32503 |  |
-| 49 | L'éléphant | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85946, 2.35154 |  |
-| 50 | L’enfant au crabe | sculpture | Lépold Morice | street | 48.86419, 2.31328 |  |
-| 51 | L'Équilibre | sculpture | André Hogommat | street | 48.89697, 2.30983 |  |
-| 52 | L'hiver | sculpture | Jean Raon | street | 48.86464, 2.32479 |  |
-| 53 | L'Homme | sculpture | Pierre Traverse | street | 48.86156, 2.28912 |  |
-| 54 | L'Homme qui roule | sculpture | Bertrand Besse-Saige;Guy Taburiaux | street | 48.83533, 2.36418 |  |
-| 55 | L'Océanie | sculpture | Mathurin Moreau | street | 48.86006, 2.32489 |  |
-| 56 | L'oiseau | sculpture | Niki de Saint Phalle | street | 48.83917, 2.32908 |  |
-| 57 | L'Oiseau de feu | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85957, 2.35155 |  |
-| 58 | L'ombre | sculpture | Rodin | street | 48.85399, 2.31568 |  |
-| 59 | La clef de sol | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85953, 2.35161 |  |
-| 60 | La diagonale | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85939, 2.35150 |  |
-| 61 | La Femme | sculpture | Daniel Bacqué | street | 48.86171, 2.28935 |  |
-| 62 | La Femme maure | sculpture | Anna Quinquaud | street | 48.86414, 2.29704 |  |
-| 63 | La France de Charlemagne | sculpture | Alfred Lenoir | street | 48.86430, 2.31394 |  |
-| 64 | La grenouille | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85962, 2.35151 |  |
-| 65 | La Jeune Vendangeuse | sculpture | Pierre Vigoureux | street | 48.86388, 2.29773 |  |
-| 66 | La Jeunesse | sculpture | Pierre Poisson | street | 48.86102, 2.29068 |  |
-| 67 | La légende de la mer | sculpture | Alfred Janniot | street | 48.86425, 2.29732 |  |
-| 68 | La légende de la terre | sculpture | Alfred Janniot | street | 48.86417, 2.29696 |  |
-| 69 | La Méditation | sculpture | Rodin | street | 48.85419, 2.31540 |  |
-| 70 | La mort | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85959, 2.35148 |  |
-| 71 | La Muse Whistler | sculpture | Rodin | street | 48.85516, 2.31571 |  |
-| 72 | La Porte de l'Enfer | sculpture | Rodin | street | 48.85547, 2.31673 |  |
-| 73 | La Science | sculpture | Eugène Guillaume | street | 48.84225, 2.35666 |  |
-| 74 | La Sculpture et la Peinture | sculpture | Jean Louis Brian | street | 48.86021, 2.33654 |  |
-| 75 | La sirène | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85935, 2.35146 |  |
-| 76 | La spirale | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85959, 2.35160 |  |
-| 77 | La Victoire du droit | sculpture | Antoine Bourdelle | street | 48.84316, 2.31807 |  |
-| 78 | La vie | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85945, 2.35148 |  |
-| 79 | Lavoisier | sculpture | Zadkine | street | 48.86051, 2.31683 |  |
-| 80 | Le beau rêveur | sculpture | Arne Quinze | street | 48.83008, 2.29198 |  |
-| 81 | Le chapeau de clown | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85940, 2.35134 |  |
-| 82 | Le Chat | sculpture | Niki de Saint Phalle | street | 48.83962, 2.32605 |  |
-| 83 | Le cœur | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85943, 2.35143 |  |
-| 84 | Le Génie du Repos Eternel | sculpture | Rodin | street | 48.85402, 2.31536 |  |
-| 85 | Le Grand Signe | sculpture | Marta Colvin | street | 48.84799, 2.36017 |  |
-| 86 | Le petit théâtre de Jean Arp | sculpture | Jean Arp | street | 48.84760, 2.35490 |  |
-| 87 | Le Prométhée | sculpture | Zadkine | street | 48.85422, 2.33339 |  |
-| 88 | Le renard | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85945, 2.35136 |  |
-| 89 | Le rossignol | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85948, 2.35140 |  |
-| 90 | Le serpent | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85953, 2.35150 |  |
-| 91 | Le Travail manuel | sculpture | Auguste Ottin | street | 48.86019, 2.33666 |  |
-| 92 | Les Amours | sculpture | Henri Désiré Gauquié | street | 48.86317, 2.31379 |  |
-| 93 | Les Amours | sculpture | Henri Désiré Gauquié | street | 48.86419, 2.31391 |  |
-| 94 | Les Bourgeois de Calais | sculpture | Rodin | street | 48.85573, 2.31638 |  |
-| 95 | Les chasseurs d'aigles | sculpture | Jules Coutan | street | 48.84296, 2.36244 |  |
-| 96 | Les cinq ailes | sculpture | Alexander Calder | street | 48.84717, 2.35887 |  |
-| 97 | Les Mangoustes de Beauvais | sculpture | Stefan Rinck | street | 48.85418, 2.32511 |  |
-| 98 | Les Métamètres | sculpture | Évariste Richer | street | 48.85965, 2.35922 |  |
-| 99 | Les Trois Ombres | sculpture | Rodin | street | 48.85551, 2.31637 |  |
-| 100 | Lion | sculpture | Giuseppe Franchi | street | 48.86618, 2.32333 |  |
-| 101 | Lion au serpent | sculpture | Antoine-Louis Barye | street | 48.86331, 2.32325 |  |
-| 102 | Maquette du "Triomphe de la République" | sculpture | Jules Dalou | street | 48.86570, 2.31546 |  |
-| 103 | Meditation Avec Bras | sculpture | Auguste Rodin | street | 48.86397, 2.32281 |  |
-| 104 | Melmoth | sculpture | Reinhoud d'Haese | street | 48.84833, 2.35959 |  |
-| 105 | Mobiles de Steiner | sculpture | Adam Steiner | street | 48.84604, 2.35628 |  |
-| 106 | Mon Fils Marin | sculpture | Chana ORLOFF | street | 48.82753, 2.33225 |  |
-| 107 | Monument à Victor Hugo | sculpture | Rodin | street | 48.85409, 2.31624 |  |
-| 108 | Mosaïque et bassin d'André Baudoin | sculpture | André Baudoin | street | 48.84764, 2.35699 |  |
-| 109 | Naïade | sculpture | Pierre-Philippe Mignot | street | 48.86122, 2.35795 |  |
-| 110 | ONU Corée | sculpture | Roger Kressmann | street | 48.85394, 2.35662 |  |
-| 111 | Open Book | sculpture | Diane Maclean | street | 48.89340, 2.31202 |  |
-| 112 | Orphée | sculpture | Rodin | street | 48.85431, 2.31577 |  |
-| 113 | Paralum (Mosaïque) de Vasarely | sculpture | Viktor Vasarely | street | 48.84830, 2.35584 |  |
-| 114 | Pierre de Wissant | sculpture | Rodin | street | 48.85486, 2.31644 |  |
-| 115 | Promesse de Bonheur | sculpture | Maria Papa Rostkowska | street | 48.86205, 2.31821 |  |
-| 116 | Ragtime | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85939, 2.35141 |  |
-| 117 | Regard des Maussins | monument |  | street | 48.87750, 2.40698 |  |
-| 118 | Renzo Piano & Richard Rogers | sculpture | Xavier Veilhan | street | 48.86011, 2.35080 |  |
-| 119 | Rik de Hop La Houppe | sculpture | Martial Raysse | street | 48.83271, 2.37515 |  |
-| 120 | Rulpidon | sculpture | Ulysse Lacoste | street | 48.84421, 2.34435 |  |
-| 121 | Saint-Georges terrassant le dragon | sculpture | Appel·les Fenosa | street | 48.85802, 2.35661 |  |
-| 122 | Sculpture | sculpture | Márta Pán | street | 48.84689, 2.36166 |  |
-| 123 | Sous le Chapeau | sculpture | Andras Lapis | street | 48.84912, 2.33264 |  |
-| 124 | Statue de l'archange saint-Michel terrassant le dragon | statue |  | street | 48.85085, 2.35048 |  |
-| 125 | Structure architecturale | sculpture | Francesco Marino Di Teana | street | 48.84752, 2.36094 |  |
-| 126 | Taureau et Daim | sculpture | Paul Jouve | street | 48.86144, 2.28921 |  |
-| 127 | Temple de l'Amour | monument |  | street | 48.88913, 2.25797 |  |
-| 128 | Thémis | sculpture | Jean-Antoine Houdon | street | 48.86239, 2.31856 |  |
-| 129 | Turenne enfant | sculpture | Lucien-Benoit Hercule | street | 48.86246, 2.36449 |  |
-| 130 | Ugolin et ses Enfants | sculpture | Rodin | street | 48.85409, 2.31554 |  |
-| 131 | Vertebrata | sculpture | Quentin Garel | street | 48.84272, 2.35849 |  |
-| 132 | Wings | sculpture | Norman Wah Man Ko | street | 48.84643, 2.35663 |  |
-| 133 | Action | sculpture | Alfred Janniot | street | 48.87165, 2.21398 |  |
-| 134 | Alençon | sculpture | René Leleu | street | 48.87161, 2.21351 |  |
-| 135 | Alice Guy | statue |  | street | 48.89679, 2.35900 |  |
-| 136 | Alice Milliat | statue |  | street | 48.89815, 2.35917 |  |
-| 137 | Andrés Bello | bust |  | street | 48.88608, 2.28998 |  |
-| 138 | Antoine Parmentier | statue |  | street | 48.88445, 2.26941 |  |
-| 139 | Astrid, Reine des Belges (1905 - 1935) | statue | R. Couveirgnes | street | 48.81932, 2.34066 |  |
-| 140 | Athlète | statue | Gaston Cadenat | street | 48.87862, 2.24532 |  |
-| 141 | Auguste Bartholdi | statue |  | street | 48.83724, 2.32999 |  |
-| 142 | Aux travailleurs Chinois pendant la Première Guerre Mondiale | statue |  | street | 48.84532, 2.37248 |  |
-| 143 | Benjamín Vicuña Mackenna | bust |  | street | 48.88616, 2.29009 |  |
-| 144 | Bir Hakeim | sculpture | Raymond Martin | street | 48.87168, 2.21428 |  |
-| 145 | Bossuet | sculpture |  | street | 48.85089, 2.33327 |  |
-| 146 | Buchenwald-Dora | statue |  | street | 48.86017, 2.39980 |  |
-| 147 | Buste d'André Gill | statue |  | street | 48.88284, 2.34035 |  |
-| 148 | Buste de Marc Seguin | statue |  | street | 48.86709, 2.35428 |  |
-| 149 | Casabianca | sculpture | Georges Saupique | street | 48.87159, 2.21328 |  |
-| 150 | Cassino | sculpture | Ulysse Gemignani | street | 48.87167, 2.21421 |  |
-| 151 | Champollion | statue |  | street | 48.84893, 2.34545 |  |
-| 152 | Chiquito de Cambo 1881 - 1950 | bust |  | street | 48.83814, 2.26505 |  |
-| 153 | Christine de Pizan | statue |  | street | 48.89551, 2.35910 |  |
-| 154 | Daubenton | statue |  | street | 48.87889, 2.26394 |  |
-| 155 | Déportation | sculpture | Henri Lagriffoul | street | 48.87162, 2.21366 |  |
-| 156 | Édicule Guimard | sculpture | Hector Guimard | street | 48.84494, 2.40130 |  |
-| 157 | Ernest Rousselle | bust |  | street | 48.82937, 2.34854 |  |
-| 158 | Ève au rocher | statue |  | street | 48.85416, 2.31572 |  |
-| 159 | Fezzan | sculpture | Aimé Bizette-Lindet | street | 48.87166, 2.21406 |  |
-| 160 | Flore | statue |  | street | 48.84872, 2.33601 |  |
-| 161 | Fontaine | fountain |  | street | 48.82324, 2.27520 |  |
-| 162 | Fontaine Alfred Stevens | fountain |  | street | 48.88174, 2.33856 |  |
-| 163 | Fontaine de la Baleine Bleue | fountain |  | street | 48.84472, 2.38753 |  |
-| 164 | Fontaine de Trévise | fountain |  | street | 48.87491, 2.34684 |  |
-| 165 | Fontaine des Mers | fountain |  | street | 48.86570, 2.32110 |  |
-| 166 | Fontaine Ephrésienne | fountain |  | street | 48.88412, 2.36925 |  |
-| 167 | Fontaine Guy Lartigue | fountain |  | street | 48.83933, 2.35007 |  |
-| 168 | Fontaine Saint Julien Le Pauvre | fountain |  | street | 48.85227, 2.34772 |  |
-| 169 | Fontaine Saussure | fountain |  | street | 48.88860, 2.30752 |  |
-| 170 | Fontaine, Place des Grès | sculpture | Daniel Milhaud | street | 48.85897, 2.40594 |  |
-| 171 | Fronton du Palais de L'Industrie - La France couronnant de lauriers, l'Art et l'Industrie | statue | Elias Robert & Georges Diebold | street | 48.83508, 2.21988 |  |
-| 172 | Fusillés | sculpture | Maurice Calka | street | 48.87166, 2.21413 |  |
-| 173 | Général Diego Brosset | bust |  | street | 48.85506, 2.28900 |  |
-| 174 | Général Francisco de Miranda | statue |  | street | 48.88616, 2.29014 |  |
-| 175 | Général Leclerc | statue |  | street | 48.82483, 2.27359 |  |
-| 176 | Gisèle Halimi | statue |  | street | 48.89677, 2.35946 |  |
-| 177 | Grand Commandement Blanc | bust |  | street | 48.86425, 2.32239 |  |
-| 178 | Groupe de trois athlètes femmes au repos | statue | Lucien Gibert | street | 48.81660, 2.34688 |  |
-| 179 | Groupe de trois athlètes hommes au repos | statue | Lucien Gibert | street | 48.81674, 2.34741 |  |
-| 180 | Gustave Eiffel | bust |  | street | 48.85873, 2.29449 |  |
-| 181 | Henri de Monantheuil | statue |  | street | 48.84907, 2.34489 |  |
-| 182 | J. H. Mansart | statue |  | street | 48.85444, 2.31186 |  |
-| 183 | Jacques Cartier | bust |  | street | 48.86501, 2.31058 |  |
-| 184 | Jean Baptiste Carpeaux | statue |  | street | 48.89179, 2.33142 |  |
-| 185 | Jean-Marie Vianney, curé d'Ars | statue |  | street | 48.85115, 2.33440 |  |
-| 186 | Jeanne Barret | statue |  | street | 48.89552, 2.35955 |  |
-| 187 | Jeunesse | statue | Achiam | street | 48.81272, 2.23346 |  |
-| 188 | José Enrique Rodó | bust |  | street | 48.88612, 2.29023 |  |
-| 189 | Juan Montalvo | bust |  | street | 48.88611, 2.29000 |  |
-| 190 | Jules Bastien-Lepage | statue | Auguste Rodin | street | 48.82563, 2.21718 |  |
-| 191 | Jules Bastien-Lepage | statue |  | street | 48.85444, 2.31640 |  |
-| 192 | Justo Sierra | bust |  | street | 48.88606, 2.29026 |  |
-| 193 | L'Araignée Rouge | sculpture | Alexander Calder | street | 48.89131, 2.24163 |  |
-| 194 | L'homme supérieur | statue | Étienne Béothy | street | 48.81415, 2.30748 |  |
-| 195 | La femme au coquillage | statue | Émile Fernand-Dubois | street | 48.81742, 2.31670 |  |
-| 196 | La Terre | statue | Derbé | street | 48.89006, 2.24698 |  |
-| 197 | Le Défi du soleil | statue | Gérard Garouste | street | 48.83609, 2.21603 |  |
-| 198 | Le jeune homme à la flûte | statue | Guillaume Werle | street | 48.81168, 2.31724 |  |
-| 199 | Le Second Versant de la Vie | statue | Henri-Edouard Vernhes | street | 48.83915, 2.21745 |  |
-| 200 | Les Forces aériennes françaises libres | sculpture | Claude Grange | street | 48.87163, 2.21374 |  |
+| 1 | Adam | sculpture | Rodin | street | 48.85550, 2.31673 | 0 |
+| 2 | Alliance 2020 | sculpture | Victoire d'Harcourt | street | 48.84594, 2.31463 | 0 |
+| 3 | Andrieu d'Andres | sculpture | Rodin | street | 48.85444, 2.31617 | 4 |
+| 4 | Aphrodite | sculpture | Rodin | street | 48.85513, 2.31522 | 0 |
+| 5 | Au grand Saint-Antoine | statue |  | street | 48.86994, 2.35288 | 1 |
+| 6 | Aux victimes des Révolutions | sculpture | Paul Moreau-Vauthier | street | 48.86357, 2.39115 | 0 |
+| 7 | Baby Bear | sculpture | Bordalo II | street | 48.82825, 2.37798 | 0 |
+| 8 | Balzac | sculpture | Rodin | street | 48.85542, 2.31532 | 0 |
+| 9 | buffet d'eau | sculpture | Félix Févola | street | 48.86417, 2.29715 | 0 |
+| 10 | Buste de Frédérick Lemaître | bust |  | street | 48.86892, 2.36719 | 3 |
+| 11 | Cariatide à l'urne | sculpture | Rodin | street | 48.85503, 2.31548 | 2 |
+| 12 | Cariatide à la pierre | sculpture | Rodin | street | 48.85496, 2.31607 | 1 |
+| 13 | Cariatides | sculpture | Jean Louis Brian | street | 48.86022, 2.33650 | 1 |
+| 14 | César Franck | sculpture | Alfred Lenoir | street | 48.85897, 2.31987 | 3 |
+| 15 | Cheval du Monument au général Alvear | sculpture | Antoine Bourdelle | street | 48.84305, 2.31864 | 0 |
+| 16 | Claude Gelée dit le Lorrain | sculpture | Rodin | street | 48.85414, 2.31514 | 0 |
+| 17 | Cristal Cheminée | sculpture | Pascale Marthine Tayou | street | 48.89637, 2.39865 | 0 |
+| 18 | Cybele | sculpture | Rodin | street | 48.85514, 2.31594 | 1 |
+| 19 | Cyprian Norwid | sculpture | Aleksander Sliwa | street | 48.82816, 2.37721 | 4 |
+| 20 | Demeure I | sculpture | Etienne Martin | street | 48.84763, 2.36109 | 0 |
+| 21 | Dispatchwork | sculpture | Jan Vormann | street | 48.89150, 2.38644 | 0 |
+| 22 | En attendant le mo(nu)ment | sculpture | Société Réaliste | street | 48.87415, 2.37329 | 0 |
+| 23 | Eustache de Saint-Pierre | sculpture | Rodin | street | 48.85466, 2.31639 | 3 |
+| 24 | Eve | sculpture | Rodin | street | 48.85543, 2.31672 | 0 |
+| 25 | Fresque de Gischia | sculpture | Léon Gischia | street | 48.84651, 2.35508 | 0 |
+| 26 | Galerie des Rois | statue |  | street | 48.85328, 2.34911 | 3 |
+| 27 | Granit | sculpture | Ruggero Pazzi | street | 48.84720, 2.36122 | 0 |
+| 28 | Herakles Archer | sculpture | Antoine Bourdelle | street | 48.83955, 2.31748 | 1 |
+| 29 | Hercule et le taureau de Crète | sculpture | Albert Pommier | street | 48.86183, 2.28798 | 3 |
+| 30 | Hommage à Cézanne | sculpture | Aristide Maillol | street | 48.86280, 2.33142 | 0 |
+| 31 | Homme au Bras levé | sculpture | Olivier Brice | street | 48.86815, 2.34850 | 0 |
+| 32 | Homo consummator deperditus | sculpture | Ngoc Duong Varoqui | street | 48.84176, 2.34035 | 0 |
+| 33 | Hydrorrhage | sculpture | Jean-Robert Ipoustéguy | street | 48.84817, 2.35994 | 0 |
+| 34 | Idee di pietra | sculpture | Giuseppe Penone | street | 48.86298, 2.34223 | 0 |
+| 35 | Jacques de Wissant | sculpture | Rodin | street | 48.85426, 2.31631 | 4 |
+| 36 | Jean d'Aire | sculpture | Auguste Rodin | street | 48.85416, 2.31609 | 4 |
+| 37 | Jean de Fiennes | sculpture | Rodin | street | 48.85476, 2.31623 | 2 |
+| 38 | Jeanette | sculpture | Paul Belmondo | street | 48.86510, 2.32522 | 0 |
+| 39 | Jeanne d'Arc 1412-1431 | sculpture | Charles-Auguste Lebourg | street | 48.83832, 2.35703 | 0 |
+| 40 | José Martí | bust |  | street | 48.88609, 2.29026 | 2 |
+| 41 | L'Amérique du Sud | sculpture | Aimé Millet | street | 48.86005, 2.32493 | 1 |
+| 42 | L'amour | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85957, 2.35164 | 0 |
+| 43 | L'arbre De La Paix | sculpture | Hedva Ser | street | 48.86394, 2.27644 | 0 |
+| 44 | L'Arbre Neuronal | sculpture | Marc Vellay | street | 48.85414, 2.32526 | 1 |
+| 45 | L'Arc | sculpture | Urs Fischer | street | 48.83446, 2.37031 | 0 |
+| 46 | L'arche de la fraternité | sculpture | Georges Rousse | street | 48.82377, 2.36205 | 0 |
+| 47 | L'Art | sculpture | Auguste Ottin | street | 48.86024, 2.33643 | 0 |
+| 48 | L'Asie | sculpture | Alexandre Falguière | street | 48.86002, 2.32503 | 0 |
+| 49 | L'éléphant | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85946, 2.35154 | 0 |
+| 50 | L’enfant au crabe | sculpture | Lépold Morice | street | 48.86419, 2.31328 | 0 |
+| 51 | L'Équilibre | sculpture | André Hogommat | street | 48.89697, 2.30983 | 0 |
+| 52 | L'hiver | sculpture | Jean Raon | street | 48.86464, 2.32479 | 0 |
+| 53 | L'Homme | sculpture | Pierre Traverse | street | 48.86156, 2.28912 | 3 |
+| 54 | L'Homme qui roule | sculpture | Bertrand Besse-Saige;Guy Taburiaux | street | 48.83533, 2.36418 | 0 |
+| 55 | L'Océanie | sculpture | Mathurin Moreau | street | 48.86006, 2.32489 | 1 |
+| 56 | L'oiseau | sculpture | Niki de Saint Phalle | street | 48.83917, 2.32908 | 0 |
+| 57 | L'Oiseau de feu | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85957, 2.35155 | 1 |
+| 58 | L'ombre | sculpture | Rodin | street | 48.85399, 2.31568 | 0 |
+| 59 | La clef de sol | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85953, 2.35161 | 1 |
+| 60 | La diagonale | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85939, 2.35150 | 1 |
+| 61 | La Femme | sculpture | Daniel Bacqué | street | 48.86171, 2.28935 | 0 |
+| 62 | La Femme maure | sculpture | Anna Quinquaud | street | 48.86414, 2.29704 | 0 |
+| 63 | La France de Charlemagne | sculpture | Alfred Lenoir | street | 48.86430, 2.31394 | 4 |
+| 64 | La grenouille | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85962, 2.35151 | 0 |
+| 65 | La Jeune Vendangeuse | sculpture | Pierre Vigoureux | street | 48.86388, 2.29773 | 0 |
+| 66 | La Jeunesse | sculpture | Pierre Poisson | street | 48.86102, 2.29068 | 1 |
+| 67 | La légende de la mer | sculpture | Alfred Janniot | street | 48.86425, 2.29732 | 0 |
+| 68 | La légende de la terre | sculpture | Alfred Janniot | street | 48.86417, 2.29696 | 0 |
+| 69 | La Méditation | sculpture | Rodin | street | 48.85419, 2.31540 | 1 |
+| 70 | La mort | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85959, 2.35148 | 0 |
+| 71 | La Muse Whistler | sculpture | Rodin | street | 48.85516, 2.31571 | 4 |
+| 72 | La Porte de l'Enfer | sculpture | Rodin | street | 48.85547, 2.31673 | 4 |
+| 73 | La Science | sculpture | Eugène Guillaume | street | 48.84225, 2.35666 | 0 |
+| 74 | La Sculpture et la Peinture | sculpture | Jean Louis Brian | street | 48.86021, 2.33654 | 0 |
+| 75 | La sirène | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85935, 2.35146 | 0 |
+| 76 | La spirale | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85959, 2.35160 | 1 |
+| 77 | La Victoire du droit | sculpture | Antoine Bourdelle | street | 48.84316, 2.31807 | 0 |
+| 78 | La vie | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85945, 2.35148 | 0 |
+| 79 | Lavoisier | sculpture | Zadkine | street | 48.86051, 2.31683 | 0 |
+| 80 | Le beau rêveur | sculpture | Arne Quinze | street | 48.83008, 2.29198 | 0 |
+| 81 | Le chapeau de clown | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85940, 2.35134 | 1 |
+| 82 | Le Chat | sculpture | Niki de Saint Phalle | street | 48.83962, 2.32605 | 0 |
+| 83 | Le cœur | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85943, 2.35143 | 0 |
+| 84 | Le Génie du Repos Eternel | sculpture | Rodin | street | 48.85402, 2.31536 | 3 |
+| 85 | Le Grand Signe | sculpture | Marta Colvin | street | 48.84799, 2.36017 | 0 |
+| 86 | Le petit théâtre de Jean Arp | sculpture | Jean Arp | street | 48.84760, 2.35490 | 0 |
+| 87 | Le Prométhée | sculpture | Zadkine | street | 48.85422, 2.33339 | 0 |
+| 88 | Le renard | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85945, 2.35136 | 1 |
+| 89 | Le rossignol | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85948, 2.35140 | 0 |
+| 90 | Le serpent | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85953, 2.35150 | 0 |
+| 91 | Le Travail manuel | sculpture | Auguste Ottin | street | 48.86019, 2.33666 | 0 |
+| 92 | Les Amours | sculpture | Henri Désiré Gauquié | street | 48.86317, 2.31379 | 0 |
+| 93 | Les Amours | sculpture | Henri Désiré Gauquié | street | 48.86419, 2.31391 | 0 |
+| 94 | Les Bourgeois de Calais | sculpture | Rodin | street | 48.85573, 2.31638 | 4 |
+| 95 | Les chasseurs d'aigles | sculpture | Jules Coutan | street | 48.84296, 2.36244 | 0 |
+| 96 | Les cinq ailes | sculpture | Alexander Calder | street | 48.84717, 2.35887 | 0 |
+| 97 | Les Mangoustes de Beauvais | sculpture | Stefan Rinck | street | 48.85418, 2.32511 | 1 |
+| 98 | Les Métamètres | sculpture | Évariste Richer | street | 48.85965, 2.35922 | 0 |
+| 99 | Les Trois Ombres | sculpture | Rodin | street | 48.85551, 2.31637 | 4 |
+| 100 | Lion | sculpture | Giuseppe Franchi | street | 48.86618, 2.32333 | 0 |
+| 101 | Lion au serpent | sculpture | Antoine-Louis Barye | street | 48.86331, 2.32325 | 2 |
+| 102 | Maquette du "Triomphe de la République" | sculpture | Jules Dalou | street | 48.86570, 2.31546 | 0 |
+| 103 | Meditation Avec Bras | sculpture | Auguste Rodin | street | 48.86397, 2.32281 | 0 |
+| 104 | Melmoth | sculpture | Reinhoud d'Haese | street | 48.84833, 2.35959 | 0 |
+| 105 | Mobiles de Steiner | sculpture | Adam Steiner | street | 48.84604, 2.35628 | 0 |
+| 106 | Mon Fils Marin | sculpture | Chana ORLOFF | street | 48.82753, 2.33225 | 0 |
+| 107 | Monument à Victor Hugo | sculpture | Rodin | street | 48.85409, 2.31624 | 3 |
+| 108 | Mosaïque et bassin d'André Baudoin | sculpture | André Baudoin | street | 48.84764, 2.35699 | 0 |
+| 109 | Naïade | sculpture | Pierre-Philippe Mignot | street | 48.86122, 2.35795 | 0 |
+| 110 | ONU Corée | sculpture | Roger Kressmann | street | 48.85394, 2.35662 | 4 |
+| 111 | Open Book | sculpture | Diane Maclean | street | 48.89340, 2.31202 | 0 |
+| 112 | Orphée | sculpture | Rodin | street | 48.85431, 2.31577 | 1 |
+| 113 | Paralum (Mosaïque) de Vasarely | sculpture | Viktor Vasarely | street | 48.84830, 2.35584 | 0 |
+| 114 | Pierre de Wissant | sculpture | Rodin | street | 48.85486, 2.31644 | 4 |
+| 115 | Promesse de Bonheur | sculpture | Maria Papa Rostkowska | street | 48.86205, 2.31821 | 0 |
+| 116 | Ragtime | sculpture | Jean Tinguely; Niki de Saint Phalle | street | 48.85939, 2.35141 | 1 |
+| 117 | Regard des Maussins | monument |  | street | 48.87750, 2.40698 | 4 |
+| 118 | Renzo Piano & Richard Rogers | sculpture | Xavier Veilhan | street | 48.86011, 2.35080 | 3 |
+| 119 | Rik de Hop La Houppe | sculpture | Martial Raysse | street | 48.83271, 2.37515 | 0 |
+| 120 | Rulpidon | sculpture | Ulysse Lacoste | street | 48.84421, 2.34435 | 0 |
+| 121 | Saint-Georges terrassant le dragon | sculpture | Appel·les Fenosa | street | 48.85802, 2.35661 | 0 |
+| 122 | Sculpture | sculpture | Márta Pán | street | 48.84689, 2.36166 | 0 |
+| 123 | Sous le Chapeau | sculpture | Andras Lapis | street | 48.84912, 2.33264 | 0 |
+| 124 | Statue de l'archange saint-Michel terrassant le dragon | statue |  | street | 48.85085, 2.35048 | 0 |
+| 125 | Structure architecturale | sculpture | Francesco Marino Di Teana | street | 48.84752, 2.36094 | 0 |
+| 126 | Taureau et Daim | sculpture | Paul Jouve | street | 48.86144, 2.28921 | 3 |
+| 127 | Temple de l'Amour | monument |  | street | 48.88913, 2.25797 | 4 |
+| 128 | Thémis | sculpture | Jean-Antoine Houdon | street | 48.86239, 2.31856 | 0 |
+| 129 | Turenne enfant | sculpture | Lucien-Benoit Hercule | street | 48.86246, 2.36449 | 1 |
+| 130 | Ugolin et ses Enfants | sculpture | Rodin | street | 48.85409, 2.31554 | 4 |
+| 131 | Vertebrata | sculpture | Quentin Garel | street | 48.84272, 2.35849 | 0 |
+| 132 | Wings | sculpture | Norman Wah Man Ko | street | 48.84643, 2.35663 | 0 |
+| 133 | Action | sculpture | Alfred Janniot | street | 48.87165, 2.21398 | 0 |
+| 134 | Alençon | sculpture | René Leleu | street | 48.87161, 2.21351 | 1 |
+| 135 | Alice Guy | statue |  | street | 48.89679, 2.35900 | 0 |
+| 136 | Alice Milliat | statue |  | street | 48.89815, 2.35917 | 4 |
+| 137 | Andrés Bello | bust |  | street | 48.88608, 2.28998 | 2 |
+| 138 | Antoine Parmentier | statue |  | street | 48.88445, 2.26941 | 0 |
+| 139 | Astrid, Reine des Belges (1905 - 1935) | statue | R. Couveirgnes | street | 48.81932, 2.34066 | 0 |
+| 140 | Athlète | statue | Gaston Cadenat | street | 48.87862, 2.24532 | 0 |
+| 141 | Auguste Bartholdi | statue |  | street | 48.83724, 2.32999 | 0 |
+| 142 | Aux travailleurs Chinois pendant la Première Guerre Mondiale | statue |  | street | 48.84532, 2.37248 | 0 |
+| 143 | Benjamín Vicuña Mackenna | bust |  | street | 48.88616, 2.29009 | 3 |
+| 144 | Bir Hakeim | sculpture | Raymond Martin | street | 48.87168, 2.21428 | 1 |
+| 145 | Bossuet | sculpture |  | street | 48.85089, 2.33327 | 1 |
+| 146 | Buchenwald-Dora | statue |  | street | 48.86017, 2.39980 | 0 |
+| 147 | Buste d'André Gill | statue |  | street | 48.88284, 2.34035 | 0 |
+| 148 | Buste de Marc Seguin | statue |  | street | 48.86709, 2.35428 | 2 |
+| 149 | Casabianca | sculpture | Georges Saupique | street | 48.87159, 2.21328 | 1 |
+| 150 | Cassino | sculpture | Ulysse Gemignani | street | 48.87167, 2.21421 | 1 |
+| 151 | Champollion | statue |  | street | 48.84893, 2.34545 | 0 |
+| 152 | Chiquito de Cambo 1881 - 1950 | bust |  | street | 48.83814, 2.26505 | 1 |
+| 153 | Christine de Pizan | statue |  | street | 48.89551, 2.35910 | 0 |
+| 154 | Daubenton | statue |  | street | 48.87889, 2.26394 | 0 |
+| 155 | Déportation | sculpture | Henri Lagriffoul | street | 48.87162, 2.21366 | 0 |
+| 156 | Édicule Guimard | sculpture | Hector Guimard | street | 48.84494, 2.40130 | 0 |
+| 157 | Ernest Rousselle | bust |  | street | 48.82937, 2.34854 | 4 |
+| 158 | Ève au rocher | statue |  | street | 48.85416, 2.31572 | 1 |
+| 159 | Fezzan | sculpture | Aimé Bizette-Lindet | street | 48.87166, 2.21406 | 1 |
+| 160 | Flore | statue |  | street | 48.84872, 2.33601 | 0 |
+| 161 | Fontaine | fountain |  | street | 48.82324, 2.27520 | 0 |
+| 162 | Fontaine Alfred Stevens | fountain |  | street | 48.88174, 2.33856 | 0 |
+| 163 | Fontaine de la Baleine Bleue | fountain |  | street | 48.84472, 2.38753 | 0 |
+| 164 | Fontaine de Trévise | fountain |  | street | 48.87491, 2.34684 | 4 |
+| 165 | Fontaine des Mers | fountain |  | street | 48.86570, 2.32110 | 4 |
+| 166 | Fontaine Ephrésienne | fountain |  | street | 48.88412, 2.36925 | 0 |
+| 167 | Fontaine Guy Lartigue | fountain |  | street | 48.83933, 2.35007 | 0 |
+| 168 | Fontaine Saint Julien Le Pauvre | fountain |  | street | 48.85227, 2.34772 | 0 |
+| 169 | Fontaine Saussure | fountain |  | street | 48.88860, 2.30752 | 0 |
+| 170 | Fontaine, Place des Grès | sculpture | Daniel Milhaud | street | 48.85897, 2.40594 | 1 |
+| 171 | Fronton du Palais de L'Industrie - La France couronnant de lauriers, l'Art et l'Industrie | statue | Elias Robert & Georges Diebold | street | 48.83508, 2.21988 | 0 |
+| 172 | Fusillés | sculpture | Maurice Calka | street | 48.87166, 2.21413 | 0 |
+| 173 | Général Diego Brosset | bust |  | street | 48.85506, 2.28900 | 4 |
+| 174 | Général Francisco de Miranda | statue |  | street | 48.88616, 2.29014 | 3 |
+| 175 | Général Leclerc | statue |  | street | 48.82483, 2.27359 | 0 |
+| 176 | Gisèle Halimi | statue |  | street | 48.89677, 2.35946 | 0 |
+| 177 | Grand Commandement Blanc | bust |  | street | 48.86425, 2.32239 | 0 |
+| 178 | Groupe de trois athlètes femmes au repos | statue | Lucien Gibert | street | 48.81660, 2.34688 | 0 |
+| 179 | Groupe de trois athlètes hommes au repos | statue | Lucien Gibert | street | 48.81674, 2.34741 | 0 |
+| 180 | Gustave Eiffel | bust |  | street | 48.85873, 2.29449 | 4 |
+| 181 | Henri de Monantheuil | statue |  | street | 48.84907, 2.34489 | 0 |
+| 182 | J. H. Mansart | statue |  | street | 48.85444, 2.31186 | 0 |
+| 183 | Jacques Cartier | bust |  | street | 48.86501, 2.31058 | 4 |
+| 184 | Jean Baptiste Carpeaux | statue |  | street | 48.89179, 2.33142 | 0 |
+| 185 | Jean-Marie Vianney, curé d'Ars | statue |  | street | 48.85115, 2.33440 | 0 |
+| 186 | Jeanne Barret | statue |  | street | 48.89552, 2.35955 | 0 |
+| 187 | Jeunesse | statue | Achiam | street | 48.81272, 2.23346 | 0 |
+| 188 | José Enrique Rodó | bust |  | street | 48.88612, 2.29023 | 3 |
+| 189 | Juan Montalvo | bust |  | street | 48.88611, 2.29000 | 2 |
+| 190 | Jules Bastien-Lepage | statue | Auguste Rodin | street | 48.82563, 2.21718 | 0 |
+| 191 | Jules Bastien-Lepage | statue |  | street | 48.85444, 2.31640 | 4 |
+| 192 | Justo Sierra | bust |  | street | 48.88606, 2.29026 | 2 |
+| 193 | L'Araignée Rouge | sculpture | Alexander Calder | street | 48.89131, 2.24163 | 0 |
+| 194 | L'homme supérieur | statue | Étienne Béothy | street | 48.81415, 2.30748 | 0 |
+| 195 | La femme au coquillage | statue | Émile Fernand-Dubois | street | 48.81742, 2.31670 | 0 |
+| 196 | La Terre | statue | Derbé | street | 48.89006, 2.24698 | 0 |
+| 197 | Le Défi du soleil | statue | Gérard Garouste | street | 48.83609, 2.21603 | 0 |
+| 198 | Le jeune homme à la flûte | statue | Guillaume Werle | street | 48.81168, 2.31724 | 0 |
+| 199 | Le Second Versant de la Vie | statue | Henri-Edouard Vernhes | street | 48.83915, 2.21745 | 0 |
+| 200 | Les Forces aériennes françaises libres | sculpture | Claude Grange | street | 48.87163, 2.21374 | 1 |
 
 (289 more, by the same rule: rerun the tool to change the cut.)
 
@@ -809,252 +809,252 @@ The park, the old town and the Trianons (box 2.06,48.79,2.145,48.83), every name
 
 | # | Work | Kind | Sculptor | Seen from | lat, lon | Photos |
 |---|---|---|---|---|---|---|
-| 1 | Amphitrite | statue | Jacques Bourdet;Nicolas Massé;Michel Anguier | unbaked | 48.80768, 2.11354 |  |
-| 2 | Apollon servi par les nymphes | statue | François Girardon;Thomas Regnaudin | unbaked | 48.80664, 2.11857 |  |
-| 3 | Bassin de Latone | fountain | Gilles Guérin;les frères Marsy | unbaked | 48.80551, 2.11769 |  |
-| 4 | Callisto | statue | Anselme Flamen | unbaked | 48.80750, 2.11374 |  |
-| 5 | Galatée | statue | Jean-Baptiste Tuby | unbaked | 48.80769, 2.11343 |  |
-| 6 | Ino et Mélicerte | statue | Pierre Granier | unbaked | 48.80693, 2.11139 |  |
-| 7 | L'Enlèvement de Proserpine par Pluton | statue | François Girardon | unbaked | 48.80616, 2.11240 |  |
-| 8 | La Renommée du Roi | statue | Domenico Guidi | unbaked | 48.80959, 2.12296 |  |
-| 9 | Milon de Crotone | statue | Pierre Puget | unbaked | 48.80580, 2.11571 |  |
-| 10 | Nymphe à la coquille Borghèse | statue | Antoine Coysevox;Auguste Suchetet | unbaked | 48.80657, 2.11693 |  |
-| 11 | Paetus et Arria Ludovisi | statue | François Lespingola | unbaked | 48.80625, 2.11636 |  |
-| 12 | Persée et Andromède | statue | Pierre Puget | unbaked | 48.80619, 2.11593 |  |
-| 13 | Statue équestre de Louis XIV | statue | Pierre Cartellier;Louis Petitot | unbaked | 48.80329, 2.12598 |  |
-| 14 | Statue équestre de Louis XIV sous les traits de Marcus Curtius | statue | Bernin et Girardon | unbaked | 48.79391, 2.11330 |  |
-| 15 | Vénus accroupie | statue | Antoine Coysevox | unbaked | 48.80565, 2.12039 |  |
-| 16 | Acis | statue | Jean-Baptiste Tuby | unbaked | 48.80744, 2.11322 |  |
-| 17 | Antinoüs du Belvédère | statue | Jean-Balthazar Keller | unbaked | 48.80468, 2.12013 |  |
-| 18 | Apollon du Belvédère | statue | Jean-Balthazar Keller | unbaked | 48.80500, 2.12033 |  |
-| 19 | Apollon sur son char | statue | Jean-Baptiste Tuby | unbaked | 48.80735, 2.11070 |  |
-| 20 | Bacchus au repos | statue | Jean-Balthazar Keller | unbaked | 48.80524, 2.12047 |  |
-| 21 | Cléopâtre du Belvédère | statue | Corneille Van Clève | unbaked | 48.80450, 2.11839 |  |
-| 22 | Flore Farnèse | statue | Jean Raon | unbaked | 48.80422, 2.10987 |  |
-| 23 | Hercule Farnèse | statue | Jean Cornu | unbaked | 48.80511, 2.11042 |  |
-| 24 | La Dordogne | statue | Antoine Coysevox | unbaked | 48.80514, 2.11982 |  |
-| 25 | La Garonne | statue | Antoine Coysevox | unbaked | 48.80531, 2.11993 |  |
-| 26 | La Loire | statue | Thomas Regnaudin | unbaked | 48.80508, 2.11854 |  |
-| 27 | La Marne | statue | Étienne Le Hongre | unbaked | 48.80542, 2.11876 |  |
-| 28 | La Saône | statue | Jean-Baptiste Tuby | unbaked | 48.80462, 2.11950 |  |
-| 29 | La Seine | statue | Étienne Le Hongre | unbaked | 48.80559, 2.11886 |  |
-| 30 | Le Loiret | statue | Thomas Regnaudin | unbaked | 48.80556, 2.11930 |  |
-| 31 | Le Point du Jour | statue | Legros | unbaked | 48.80733, 2.11341 |  |
-| 32 | Le Rémouleur | statue | François Girardon | unbaked | 48.80557, 2.12068 |  |
-| 33 | Le Rhône | statue | Jean-Baptiste Tuby | unbaked | 48.80480, 2.11960 |  |
-| 34 | Silène portant Bacchus | statue | Simon Mazière | unbaked | 48.80466, 2.11698 |  |
-| 35 | Silène portant Bacchus | statue | Jean-Balthazar Keller | unbaked | 48.80443, 2.11998 |  |
-| 36 | Apollon | statue |  | unbaked | 48.80401, 2.11324 |  |
-| 37 | Bacchus | statue |  | unbaked | 48.80656, 2.11054 |  |
-| 38 | Bassin d'Apollon | fountain |  | unbaked | 48.80737, 2.11072 |  |
-| 39 | Bassin d'Encelade | fountain |  | unbaked | 48.80820, 2.11258 |  |
-| 40 | Bassin de Neptune | fountain |  | unbaked | 48.80883, 2.12253 |  |
-| 41 | Bassin du Dragon | fountain |  | unbaked | 48.80818, 2.12210 |  |
-| 42 | Bassin du Miroir | fountain |  | unbaked | 48.80399, 2.11276 |  |
-| 43 | Mercure | sculpture | Corneille Van Clève | unbaked | 48.80512, 2.11573 |  |
-| 44 | Silène portant Bacchus | statue |  | unbaked | 48.80797, 2.11144 |  |
-| 45 | Vénus | statue |  | unbaked | 48.80372, 2.11306 |  |
-| 46 | Abbaye Notre-Dame-des-Anges (ancienne) | monument |  | unbaked | 48.80358, 2.06270 |  |
-| 47 | Appolonius | bust | Barthélémy de Mélo | unbaked | 48.80678, 2.11950 |  |
-| 48 | Arion | statue | Jean Raon | unbaked | 48.80757, 2.11372 |  |
-| 49 | Aristée et Protée | statue | Sébastien Slodtz | unbaked | 48.80733, 2.11164 |  |
-| 50 | Bacchante | bust | Jean Dedieu | unbaked | 48.80648, 2.11657 |  |
-| 51 | Cérès | bust | Jean-Baptiste Poultier | unbaked | 48.80673, 2.11683 |  |
-| 52 | Diogène | bust | Matthieu Lespagnandelle | unbaked | 48.80676, 2.11673 |  |
-| 53 | École spéciale militaire (ancienne maison royale de Saint-Louis) | monument |  | unbaked | 48.80025, 2.06604 |  |
-| 54 | Flore | bust | Marc Arcis;Simon Mazière | unbaked | 48.80672, 2.11110 |  |
-| 55 | Fontaine des Quatre Pavés | fountain |  | unbaked | 48.79654, 2.12655 |  |
-| 56 | Fontaine Saint-Louis | fountain |  | unbaked | 48.79898, 2.12424 |  |
-| 57 | Hercule | bust | Louis Le Conte | unbaked | 48.80631, 2.11646 |  |
-| 58 | Isocrate | bust | Pierre Granier | unbaked | 48.80687, 2.11946 |  |
-| 59 | Junon | bust | Jean-Jacques Clérion | unbaked | 48.80775, 2.11159 |  |
-| 60 | Jupiter | bust | Jean-Jacques Clérion | unbaked | 48.80762, 2.11165 |  |
-| 61 | L'Aurore | statue | Philippe Magnier | unbaked | 48.80751, 2.11320 |  |
-| 62 | Lazare Hoche | statue |  | unbaked | 48.80606, 2.12785 |  |
-| 63 | Le colérique | sculpture |  | unbaked | 48.80684, 2.12108 |  |
-| 64 | Lysias | bust | Jean Dedieu | unbaked | 48.80700, 2.11965 |  |
-| 65 | Pan | bust | Simon Mazière | unbaked | 48.80681, 2.11126 |  |
-| 66 | Pomone | bust | Étienne Le Hongre | unbaked | 48.80663, 2.11068 |  |
-| 67 | Sphinx chevauché par un Amour | statue | Jacques Houzeau;Louis Lerambert | unbaked | 48.80409, 2.11977 |  |
-| 68 | Syrinx | bust | Simon Mazière | unbaked | 48.80748, 2.11169 |  |
-| 69 | Temple de l'Amour | monument |  | unbaked | 48.81609, 2.11213 |  |
-| 70 | Théophraste | bust | Simon Hurtrelle | unbaked | 48.80695, 2.11952 |  |
-| 71 | Ulysse | bust | Philippe_Magnier | unbaked | 48.80695, 2.11986 |  |
-| 72 | Vertumne | bust | Étienne Le Hongre | unbaked | 48.80786, 2.11147 |  |
-| 73 | Achille à Scyros | statue | Vigier | unbaked | 48.80681, 2.11200 |  |
-| 74 | Amazone | statue | Buirette | unbaked | 48.80672, 2.11236 |  |
-| 75 | Artemise | statue | Armand Lefebvre;Desjardins | unbaked | 48.80714, 2.11221 |  |
-| 76 | Bassin des Couronnes | fountain | Le Hongre;Jean-Baptiste Tuby | unbaked | 48.80610, 2.12149 |  |
-| 77 | Bassin des Couronnes | fountain | Le Hongre;Jean-Baptiste Tuby | unbaked | 48.80640, 2.12035 |  |
-| 78 | Bassin des Lézards | fountain | Gaspard Marsy;Balthazar Marsy | unbaked | 48.80534, 2.11674 |  |
-| 79 | Bassin des Lézards | fountain | Gaspard Marsy;Balthazar Marsy | unbaked | 48.80605, 2.11717 |  |
-| 80 | Buffet d'eau | sculpture | Jules-Hardouin Mansart;Louis Garnier;Jean Hardy;Jean de Lapierre;Robert Le Lorrain;Jean-Louis Lemoyne;Simon Mazière;Corneille Van Clève | unbaked | 48.81693, 2.10188 |  |
-| 81 | Cérès Mattei, dite aussi Faustine | statue | François Lespingola | unbaked | 48.80939, 2.12172 |  |
-| 82 | Cléopâtre Mourant | statue | Jean-Baptiste Goy | unbaked | 48.80853, 2.10932 |  |
-| 83 | Cyparisse | statue | Flamen | unbaked | 48.80704, 2.11256 |  |
-| 84 | Deux Amours et un enfant soufflant dans une conque | statue | Corneille Van Clève | unbaked | 48.80543, 2.11980 |  |
-| 85 | Deux Amours et une fillette tenant un miroir | statue | Jean-Baptiste Poultier | unbaked | 48.80491, 2.11948 |  |
-| 86 | Deux Amours, un enfant et deux dauphins | statue | François Lespingola;Michel Monier | unbaked | 48.80460, 2.11929 |  |
-| 87 | Didon | statue | Jean-Baptiste Poultier | unbaked | 48.80644, 2.11339 |  |
-| 88 | Flegmatique | statue | Lespagnandelle | unbaked | 48.80631, 2.12189 |  |
-| 89 | Fontaine de l’Amour assis sur un dauphin | fountain | Gaspard Marsy | unbaked | 48.81508, 2.10558 |  |
-| 90 | Gladiateur combattant | statue | Nicolas Coustou | unbaked | 48.80315, 2.11685 |  |
-| 91 | Junon Cesi, dite aussi Bérénice | statue | François Lespingola | unbaked | 48.80888, 2.12369 |  |
-| 92 | L'Amérique | statue | Gilles Guérin | unbaked | 48.80674, 2.12029 |  |
-| 93 | L'Asie | statue | Roger | unbaked | 48.80637, 2.12166 |  |
-| 94 | L'Automne | statue | Thomas Regnaudin | unbaked | 48.80680, 2.12005 |  |
-| 95 | L'été | statue | Hutinot | unbaked | 48.80667, 2.12052 |  |
-| 96 | L'hiver | statue | François Girardon | unbaked | 48.80661, 2.12074 |  |
-| 97 | La Fidélité | statue | Armand Lefebvre | unbaked | 48.80600, 2.11506 |  |
-| 98 | La Fourberie | statue | Le Conte | unbaked | 48.80633, 2.11524 |  |
-| 99 | Le Mélancolique | statue | Michel de la Perdrix | unbaked | 48.80587, 2.11873 |  |
-| 100 | Le Poème Héroïque | statue | Drouilly | unbaked | 48.80625, 2.12212 |  |
-| 101 | Leucothée | statue | Rayol | unbaked | 48.80733, 2.11351 |  |
-| 102 | Limier terrassant un cerf | statue | Jacques Houzeau | unbaked | 48.80467, 2.11827 |  |
-| 103 | Molière | statue | Xavier Veilhan | unbaked | 48.80009, 2.12800 |  |
-| 104 | Nymphe et Amour | statue | Étienne Le Hongre | unbaked | 48.80466, 2.11905 |  |
-| 105 | Nymphe et Amour tenant un carquois | statue | Jean Raon | unbaked | 48.80504, 2.11899 |  |
-| 106 | Nymphe et Amour tenant une guirlande de fleurs | statue | Jean Raon | unbaked | 48.80524, 2.11912 |  |
-| 107 | Nymphe et enfant à la conque | statue | Philippe Magnier | unbaked | 48.80549, 2.11956 |  |
-| 108 | Nymphe et enfant au trident | statue | Philippe Magnier | unbaked | 48.80490, 2.11843 |  |
-| 109 | Nymphe et enfant tenant des oiseaux | statue | Pierre Legros | unbaked | 48.80518, 2.11937 |  |
-| 110 | Nymphe et jeune triton | statue | Pierre Legros | unbaked | 48.80498, 2.11924 |  |
-| 111 | Nymphe et Zéphyr | statue | Étienne Le Hongre | unbaked | 48.80473, 2.11880 |  |
-| 112 | Poème satyrique | statue | Buyster | unbaked | 48.80643, 2.12144 |  |
-| 113 | Site historique de l'Hôpital Richaud | monument |  | unbaked | 48.80798, 2.13398 |  |
-| 114 | Tigre terrassant un ours | statue | Jacques Houzeau | unbaked | 48.80461, 2.11824 |  |
-| 115 | Trois enfants tenant une guirlande | statue | Pierre Laviron;Pierre Legros | unbaked | 48.80511, 2.11875 |  |
-| 116 | Un Amour tenant un flambeau et deux enfants | statue | Pierre Granier | unbaked | 48.80531, 2.11887 |  |
-| 117 | Un Amour tenant un oiseau et deux enfants | statue | Jean Degoullons | unbaked | 48.80511, 2.11961 |  |
-| 118 | Un Amour tenant un oiseau et deux enfants, dont un assis | statue | Simon Mazière | unbaked | 48.80479, 2.11856 |  |
-| 119 | Un Amour, deux enfants et un cygne | statue | Jacques Buirette;François Lespingola | unbaked | 48.80562, 2.11907 |  |
-| 120 | Vénus Richelieu | statue | Pierre Legros | unbaked | 48.80611, 2.11466 |  |
-| 121 | Achéloüs | sculpture | Simon Mazière | unbaked | 48.80547, 2.11594 |  |
-| 122 | Afonso Henrique Le Conquérent | sculpture | Jano Aão Gutileiro | unbaked | 48.80082, 2.12985 |  |
-| 123 | Amours | sculpture | François Girardon | unbaked | 48.81649, 2.10154 |  |
-| 124 | Amours | sculpture | François Girardon | unbaked | 48.81623, 2.10028 |  |
-| 125 | ANCHIMOLE, DIT AUSSI MORPHÉE | sculpture | Nicolas Poussin | unbaked | 48.80555, 2.11480 |  |
-| 126 | Antinoüs | sculpture | Pierre Le Gros | unbaked | 48.80474, 2.11671 |  |
-| 127 | Antinoüs | sculpture | Pierre Le Gros | unbaked | 48.80606, 2.11862 |  |
-| 128 | Apollon du Belvédère | sculpture | Pierre Mazeline | unbaked | 48.80495, 2.11594 |  |
-| 129 | BACCHANTE, DITE AUSSI POMONE | sculpture | Pierre Laviron | unbaked | 48.80559, 2.11495 |  |
-| 130 | Bacchus | sculpture | Granier | unbaked | 48.80642, 2.11805 |  |
-| 131 | Bacchus | sculpture | Louis-Aimé Lejeune | unbaked | 48.80819, 2.11054 |  |
-| 132 | Castor et Pollux | sculpture | Antoine Coysevox | unbaked | 48.80557, 2.11594 |  |
-| 133 | Circlè | sculpture | Laurent Magnier | unbaked | 48.80499, 2.11576 |  |
-| 134 | Dragon | sculpture | Jean Hardy | unbaked | 48.81608, 2.10034 |  |
-| 135 | Faune | sculpture | Domenico Guidi | unbaked | 48.80687, 2.11592 |  |
-| 136 | Faune à la Flûte | sculpture | Simon Hurtrelle | unbaked | 48.80634, 2.11830 |  |
-| 137 | Faustine | sculpture | Regnaudin | unbaked | 48.80649, 2.11778 |  |
-| 138 | Femme drapée | statue |  | unbaked | 48.80359, 2.11269 |  |
-| 139 | Femme drapée | statue |  | unbaked | 48.80429, 2.11310 |  |
-| 140 | Feu | sculpture | Nicolas Dossier | unbaked | 48.80467, 2.11778 |  |
-| 141 | Flore | sculpture | Lacroix | unbaked | 48.80719, 2.11578 |  |
-| 142 | Génie conduisant un dragon marin | sculpture | Edmé Bouchardon | unbaked | 48.80830, 2.12341 |  |
-| 143 | Hercule | sculpture | René Grégoire | unbaked | 48.80704, 2.10878 |  |
-| 144 | Hercule au serpent | sculpture | Poussin | unbaked | 48.80523, 2.11490 |  |
-| 145 | Hercule Commode | sculpture | Coustou | unbaked | 48.80655, 2.11753 |  |
-| 146 | HERCULE, DIT AUSSI VERTUMNE | sculpture | Nicolas Poussin | unbaked | 48.80549, 2.11501 |  |
-| 147 | L'Abondance | sculpture | L’Abondance | unbaked | 48.80416, 2.12220 |  |
-| 148 | L'Afrique | sculpture | Jean Cornu;Sibrayque | unbaked | 48.80621, 2.11925 |  |
-| 149 | L'Air | sculpture | Le Hongre | unbaked | 48.80581, 2.11885 |  |
-| 150 | L'Eau | sculpture | Legros | unbaked | 48.80457, 2.11825 |  |
-| 151 | L'Europe | sculpture | Pierre Mazeline | unbaked | 48.80607, 2.11916 |  |
-| 152 | L’Hiver | sculpture | Jean-Baptiste Théodon | unbaked | 48.80577, 2.11468 |  |
-| 153 | La Clarté | sculpture | Lazzaro Baldi | unbaked | 48.80833, 2.10994 |  |
-| 154 | La Nuit | sculpture | Jean Raon | unbaked | 48.80636, 2.11933 |  |
-| 155 | La Paix | sculpture | Jean-Baptiste Tuby | unbaked | 48.80441, 2.12235 |  |
-| 156 | La Terre | sculpture | Benoît Massou | unbaked | 48.80650, 2.11942 |  |
-| 157 | Le Couple | sculpture | Jano Ayrel | unbaked | 48.80089, 2.12974 |  |
-| 158 | Le Gladiateur mourant Ludovisi | sculpture | Monier | unbaked | 48.80507, 2.11600 |  |
-| 159 | Le Midi ou Vénus | sculpture | Marsy | unbaked | 48.80592, 2.11907 |  |
-| 160 | Le Poème Lyrique | sculpture | Tuby | unbaked | 48.80476, 2.11804 |  |
-| 161 | Le Poéme pastoral | sculpture | Pierre Granier | unbaked | 48.80665, 2.11951 |  |
-| 162 | Le Poing | sculpture | César Baldaccini | unbaked | 48.80185, 2.06670 |  |
-| 163 | Le Point du Jour | sculpture | Marsy | unbaked | 48.80476, 2.11821 |  |
-| 164 | Le Printemps | sculpture | Laurent Magnier | unbaked | 48.80469, 2.11833 |  |
-| 165 | Le sanguin | sculpture | Jouvenet | unbaked | 48.80674, 2.12142 |  |
-| 166 | Le Soir | sculpture | Desjardins | unbaked | 48.80580, 2.11899 |  |
-| 167 | Les Chevaux du soleil | sculpture | Gilles Guérin | unbaked | 48.80659, 2.11846 |  |
-| 168 | Marsyas et Olympe | sculpture | Jean-Baptiste Goy | unbaked | 48.80423, 2.11669 |  |
-| 169 | Minerve | sculpture | Guidi | unbaked | 48.80528, 2.11489 |  |
-| 170 | Neptune et Amphitrite | sculpture | Lambert-Sigisbert Adam & Nicolas Sébastien Adam | unbaked | 48.80856, 2.12235 |  |
-| 171 | Océan | sculpture | Jean-Baptiste Lemoyne | unbaked | 48.80864, 2.12153 |  |
-| 172 | Pan | sculpture | Domenico Guidi | unbaked | 48.80695, 2.11597 |  |
-| 173 | Pandore | sculpture | Pierre Legros | unbaked | 48.80530, 2.11584 |  |
-| 174 | Platon | sculpture | Joseph Rayol | unbaked | 48.80503, 2.11567 |  |
-| 175 | Pomone | sculpture | Nicolas Poussin | unbaked | 48.80545, 2.11487 |  |
-| 176 | Protée | sculpture | Edmé Bouchardon | unbaked | 48.80824, 2.12301 |  |
-| 177 | Taridate | sculpture | Antoine André | unbaked | 48.80464, 2.11752 |  |
-| 178 | Tigrane | sculpture | Mathieu Lespagnandelle | unbaked | 48.80620, 2.11847 |  |
-| 179 | Uranie | sculpture | Martin Cartier | unbaked | 48.80488, 2.11620 |  |
-| 180 | Vénus Callipyge | sculpture | Jean-Jacques Clérion | unbaked | 48.80461, 2.11725 |  |
-| 181 | Apollon à la Lyre | statue |  | unbaked | 48.80826, 2.11024 |  |
-| 182 | Bassin de l'Encelade | fountain |  | unbaked | 48.80820, 2.11258 |  |
-| 183 | Bassin du Midi | fountain |  | unbaked | 48.80486, 2.11902 |  |
-| 184 | Bassin du Nord | fountain |  | unbaked | 48.80536, 2.11934 |  |
-| 185 | Faune au Chevreau | statue |  | unbaked | 48.80634, 2.11377 |  |
-| 186 | Fontaine de la rue de l'Ermitage | fountain |  | unbaked | 48.81632, 2.12174 |  |
-| 187 | Hercule et Télèphe | statue |  | unbaked | 48.80667, 2.11397 |  |
-| 188 | Junon | statue |  | unbaked | 48.80644, 2.11486 |  |
-| 189 | Laocoon | statue |  | unbaked | 48.81633, 2.10520 |  |
-| 190 | Personnage romain | statue |  | unbaked | 48.80841, 2.10970 |  |
-| 191 | Statue de Jean-Baptiste de la Quintinie | statue |  | unbaked | 48.79909, 2.12137 |  |
-| 192 | Statue de Jules Hardouin-Mansart | statue |  | unbaked | 48.80589, 2.14119 |  |
-| 193 | statue de l'Abbé de l'Epée | statue |  | unbaked | 48.79863, 2.12400 |  |
-| 194 | Statue de Le Nôtre | statue |  | unbaked | 48.80548, 2.14118 |  |
-| 195 | Vénus Médicis | statue |  | unbaked | 48.80677, 2.11359 |  |
-| 196 | Adrastée | sculpture |  | unbaked | 48.80692, 2.11590 |  |
-| 197 | Antinoüs du Belvédère | sculpture |  | unbaked | 48.80554, 2.11159 |  |
-| 198 | Aruncus | sculpture |  | unbaked | 48.80503, 2.11422 |  |
-| 199 | Aux victimes des bombardements 39-45 | sculpture |  | unbaked | 48.79932, 2.06953 |  |
-| 200 | Empereur romain | sculpture |  | unbaked | 48.80812, 2.11086 |  |
-| 201 | Femme à l’enfant | sculpture |  | unbaked | 48.80697, 2.10909 |  |
-| 202 | Ganymède et Zeus | sculpture |  | unbaked | 48.80669, 2.11702 |  |
-| 203 | Génocide de Arméniens de 1915 | sculpture |  | unbaked | 48.80086, 2.12954 |  |
-| 204 | Grotte | sculpture |  | unbaked | 48.80664, 2.11853 |  |
-| 205 | Hercule Mazarin | sculpture |  | unbaked | 48.80690, 2.10938 |  |
-| 206 | Junon | sculpture |  | unbaked | 48.80711, 2.10849 |  |
-| 207 | L'abondance | sculpture |  | unbaked | 48.80712, 2.11604 |  |
-| 208 | L'amour se taillant un arc dans la massue d'Hercule | sculpture |  | unbaked | 48.81609, 2.11212 |  |
-| 209 | Méléagre | sculpture |  | unbaked | 48.80568, 2.11188 |  |
-| 210 | Mercure | sculpture |  | unbaked | 48.80911, 2.11701 |  |
-| 211 | Personnage romain | sculpture |  | unbaked | 48.80676, 2.11000 |  |
-| 212 | Podalire | sculpture |  | unbaked | 48.80740, 2.11568 |  |
-| 213 | Uranie | sculpture |  | unbaked | 48.80662, 2.11727 |  |
-| 214 | Agrippine | bust |  | unbaked | 48.81698, 2.10462 |  |
-| 215 | Alexandre le Grand | bust |  | unbaked | 48.80569, 2.11147 |  |
-| 216 | Alexandre le Grand | bust |  | unbaked | 48.81699, 2.10479 |  |
-| 217 | Antonin | bust |  | unbaked | 48.81665, 2.10487 |  |
-| 218 | Apollon | bust |  | unbaked | 48.80575, 2.11141 |  |
-| 219 | Caracalla | bust |  | unbaked | 48.81696, 2.10452 |  |
-| 220 | Claude | bust |  | unbaked | 48.81684, 2.10488 |  |
-| 221 | Cléopatre/Lucrèce | bust |  | unbaked | 48.81683, 2.10418 |  |
-| 222 | Démostène | bust |  | unbaked | 48.81693, 2.10483 |  |
-| 223 | Didon | bust |  | unbaked | 48.81651, 2.10485 |  |
-| 224 | Esculape | bust |  | unbaked | 48.81644, 2.10483 |  |
-| 225 | Faune | bust |  | unbaked | 48.81932, 2.11230 |  |
-| 226 | Femme romaine | bust |  | unbaked | 48.81661, 2.10487 |  |
-| 227 | Femme Romaine | bust |  | unbaked | 48.81645, 2.10482 |  |
-| 228 | Femme Romaine | bust |  | unbaked | 48.81675, 2.10403 |  |
-| 229 | Femme, dite à tort l'Europe | bust |  | unbaked | 48.81694, 2.10448 |  |
-| 230 | Général Borgnis-Desbordes | bust |  | unbaked | 48.79519, 2.12242 |  |
-| 231 | Hadrien | bust |  | unbaked | 48.81680, 2.10412 |  |
-| 232 | Hadrien, dit à tort Antonin le Pieux | bust |  | unbaked | 48.80586, 2.11164 |  |
-| 233 | Hannibal, dit à tort Octavien | bust |  | unbaked | 48.80553, 2.11199 |  |
-| 234 | Jeune Romain | bust |  | unbaked | 48.81676, 2.10405 |  |
-| 235 | L'Afrique | bust |  | unbaked | 48.81697, 2.10457 |  |
-| 236 | L'Amérique | bust |  | unbaked | 48.81677, 2.10409 |  |
-| 237 | L'Asie | bust |  | unbaked | 48.81690, 2.10485 |  |
-| 238 | L'Europe | bust |  | unbaked | 48.81647, 2.10483 |  |
-| 239 | Marc Aurèle | bust |  | unbaked | 48.80536, 2.11182 |  |
-| 240 | Mithridate | bust |  | unbaked | 48.81656, 2.10486 |  |
-| 241 | Néron jeune, dit à tort Géta | bust |  | unbaked | 48.81687, 2.10428 |  |
-| 242 | Personnage antique, dit à tort Hannibal | bust |  | unbaked | 48.80547, 2.11205 |  |
-| 243 | Personnage romain, dit à tort Septime Sévère | bust |  | unbaked | 48.80580, 2.11171 |  |
-| 244 | Scipion | bust |  | unbaked | 48.81698, 2.10467 |  |
-| 245 | Statue du Général De Gaulle | bust |  | unbaked | 48.79995, 2.06591 |  |
-| 246 | Vitellius | bust |  | unbaked | 48.81685, 2.10423 |  |
+| 1 | Amphitrite | statue | Jacques Bourdet;Nicolas Massé;Michel Anguier | unbaked | 48.80768, 2.11354 | 3 |
+| 2 | Apollon servi par les nymphes | statue | François Girardon;Thomas Regnaudin | unbaked | 48.80664, 2.11857 | 3 |
+| 3 | Bassin de Latone | fountain | Gilles Guérin;les frères Marsy | unbaked | 48.80551, 2.11769 | 3 |
+| 4 | Callisto | statue | Anselme Flamen | unbaked | 48.80750, 2.11374 | 4 |
+| 5 | Galatée | statue | Jean-Baptiste Tuby | unbaked | 48.80769, 2.11343 | 4 |
+| 6 | Ino et Mélicerte | statue | Pierre Granier | unbaked | 48.80693, 2.11139 | 2 |
+| 7 | L'Enlèvement de Proserpine par Pluton | statue | François Girardon | unbaked | 48.80616, 2.11240 | 2 |
+| 8 | La Renommée du Roi | statue | Domenico Guidi | unbaked | 48.80959, 2.12296 | 3 |
+| 9 | Milon de Crotone | statue | Pierre Puget | unbaked | 48.80580, 2.11571 | 3 |
+| 10 | Nymphe à la coquille Borghèse | statue | Antoine Coysevox;Auguste Suchetet | unbaked | 48.80657, 2.11693 | 4 |
+| 11 | Paetus et Arria Ludovisi | statue | François Lespingola | unbaked | 48.80625, 2.11636 | 1 |
+| 12 | Persée et Andromède | statue | Pierre Puget | unbaked | 48.80619, 2.11593 | 4 |
+| 13 | Statue équestre de Louis XIV | statue | Pierre Cartellier;Louis Petitot | unbaked | 48.80329, 2.12598 | 4 |
+| 14 | Statue équestre de Louis XIV sous les traits de Marcus Curtius | statue | Bernin et Girardon | unbaked | 48.79391, 2.11330 | 4 |
+| 15 | Vénus accroupie | statue | Antoine Coysevox | unbaked | 48.80565, 2.12039 | 4 |
+| 16 | Acis | statue | Jean-Baptiste Tuby | unbaked | 48.80744, 2.11322 | 1 |
+| 17 | Antinoüs du Belvédère | statue | Jean-Balthazar Keller | unbaked | 48.80468, 2.12013 | 3 |
+| 18 | Apollon du Belvédère | statue | Jean-Balthazar Keller | unbaked | 48.80500, 2.12033 | 1 |
+| 19 | Apollon sur son char | statue | Jean-Baptiste Tuby | unbaked | 48.80735, 2.11070 | 1 |
+| 20 | Bacchus au repos | statue | Jean-Balthazar Keller | unbaked | 48.80524, 2.12047 | 3 |
+| 21 | Cléopâtre du Belvédère | statue | Corneille Van Clève | unbaked | 48.80450, 2.11839 | 4 |
+| 22 | Flore Farnèse | statue | Jean Raon | unbaked | 48.80422, 2.10987 | 4 |
+| 23 | Hercule Farnèse | statue | Jean Cornu | unbaked | 48.80511, 2.11042 | 2 |
+| 24 | La Dordogne | statue | Antoine Coysevox | unbaked | 48.80514, 2.11982 | 4 |
+| 25 | La Garonne | statue | Antoine Coysevox | unbaked | 48.80531, 2.11993 | 3 |
+| 26 | La Loire | statue | Thomas Regnaudin | unbaked | 48.80508, 2.11854 | 4 |
+| 27 | La Marne | statue | Étienne Le Hongre | unbaked | 48.80542, 2.11876 | 2 |
+| 28 | La Saône | statue | Jean-Baptiste Tuby | unbaked | 48.80462, 2.11950 | 4 |
+| 29 | La Seine | statue | Étienne Le Hongre | unbaked | 48.80559, 2.11886 | 4 |
+| 30 | Le Loiret | statue | Thomas Regnaudin | unbaked | 48.80556, 2.11930 | 4 |
+| 31 | Le Point du Jour | statue | Legros | unbaked | 48.80733, 2.11341 | 1 |
+| 32 | Le Rémouleur | statue | François Girardon | unbaked | 48.80557, 2.12068 | 3 |
+| 33 | Le Rhône | statue | Jean-Baptiste Tuby | unbaked | 48.80480, 2.11960 | 4 |
+| 34 | Silène portant Bacchus | statue | Simon Mazière | unbaked | 48.80466, 2.11698 | 2 |
+| 35 | Silène portant Bacchus | statue | Jean-Balthazar Keller | unbaked | 48.80443, 2.11998 | 2 |
+| 36 | Apollon | statue |  | unbaked | 48.80401, 2.11324 | 2 |
+| 37 | Bacchus | statue |  | unbaked | 48.80656, 2.11054 | 2 |
+| 38 | Bassin d'Apollon | fountain |  | unbaked | 48.80737, 2.11072 | 3 |
+| 39 | Bassin d'Encelade | fountain |  | unbaked | 48.80820, 2.11258 | 4 |
+| 40 | Bassin de Neptune | fountain |  | unbaked | 48.80883, 2.12253 | 3 |
+| 41 | Bassin du Dragon | fountain |  | unbaked | 48.80818, 2.12210 | 4 |
+| 42 | Bassin du Miroir | fountain |  | unbaked | 48.80399, 2.11276 | 4 |
+| 43 | Mercure | sculpture | Corneille Van Clève | unbaked | 48.80512, 2.11573 | 3 |
+| 44 | Silène portant Bacchus | statue |  | unbaked | 48.80797, 2.11144 | 1 |
+| 45 | Vénus | statue |  | unbaked | 48.80372, 2.11306 | 1 |
+| 46 | Abbaye Notre-Dame-des-Anges (ancienne) | monument |  | unbaked | 48.80358, 2.06270 | 4 |
+| 47 | Appolonius | bust | Barthélémy de Mélo | unbaked | 48.80678, 2.11950 | 4 |
+| 48 | Arion | statue | Jean Raon | unbaked | 48.80757, 2.11372 | 3 |
+| 49 | Aristée et Protée | statue | Sébastien Slodtz | unbaked | 48.80733, 2.11164 | 4 |
+| 50 | Bacchante | bust | Jean Dedieu | unbaked | 48.80648, 2.11657 | 1 |
+| 51 | Cérès | bust | Jean-Baptiste Poultier | unbaked | 48.80673, 2.11683 | 4 |
+| 52 | Diogène | bust | Matthieu Lespagnandelle | unbaked | 48.80676, 2.11673 | 3 |
+| 53 | École spéciale militaire (ancienne maison royale de Saint-Louis) | monument |  | unbaked | 48.80025, 2.06604 | 3 |
+| 54 | Flore | bust | Marc Arcis;Simon Mazière | unbaked | 48.80672, 2.11110 | 3 |
+| 55 | Fontaine des Quatre Pavés | fountain |  | unbaked | 48.79654, 2.12655 | 3 |
+| 56 | Fontaine Saint-Louis | fountain |  | unbaked | 48.79898, 2.12424 | 3 |
+| 57 | Hercule | bust | Louis Le Conte | unbaked | 48.80631, 2.11646 | 4 |
+| 58 | Isocrate | bust | Pierre Granier | unbaked | 48.80687, 2.11946 | 4 |
+| 59 | Junon | bust | Jean-Jacques Clérion | unbaked | 48.80775, 2.11159 | 3 |
+| 60 | Jupiter | bust | Jean-Jacques Clérion | unbaked | 48.80762, 2.11165 | 4 |
+| 61 | L'Aurore | statue | Philippe Magnier | unbaked | 48.80751, 2.11320 | 4 |
+| 62 | Lazare Hoche | statue |  | unbaked | 48.80606, 2.12785 | 3 |
+| 63 | Le colérique | sculpture |  | unbaked | 48.80684, 2.12108 | 4 |
+| 64 | Lysias | bust | Jean Dedieu | unbaked | 48.80700, 2.11965 | 4 |
+| 65 | Pan | bust | Simon Mazière | unbaked | 48.80681, 2.11126 | 3 |
+| 66 | Pomone | bust | Étienne Le Hongre | unbaked | 48.80663, 2.11068 | 4 |
+| 67 | Sphinx chevauché par un Amour | statue | Jacques Houzeau;Louis Lerambert | unbaked | 48.80409, 2.11977 | 1 |
+| 68 | Syrinx | bust | Simon Mazière | unbaked | 48.80748, 2.11169 | 3 |
+| 69 | Temple de l'Amour | monument |  | unbaked | 48.81609, 2.11213 | 4 |
+| 70 | Théophraste | bust | Simon Hurtrelle | unbaked | 48.80695, 2.11952 | 4 |
+| 71 | Ulysse | bust | Philippe_Magnier | unbaked | 48.80695, 2.11986 | 4 |
+| 72 | Vertumne | bust | Étienne Le Hongre | unbaked | 48.80786, 2.11147 | 3 |
+| 73 | Achille à Scyros | statue | Vigier | unbaked | 48.80681, 2.11200 | 0 |
+| 74 | Amazone | statue | Buirette | unbaked | 48.80672, 2.11236 | 0 |
+| 75 | Artemise | statue | Armand Lefebvre;Desjardins | unbaked | 48.80714, 2.11221 | 0 |
+| 76 | Bassin des Couronnes | fountain | Le Hongre;Jean-Baptiste Tuby | unbaked | 48.80610, 2.12149 | 0 |
+| 77 | Bassin des Couronnes | fountain | Le Hongre;Jean-Baptiste Tuby | unbaked | 48.80640, 2.12035 | 0 |
+| 78 | Bassin des Lézards | fountain | Gaspard Marsy;Balthazar Marsy | unbaked | 48.80534, 2.11674 | 4 |
+| 79 | Bassin des Lézards | fountain | Gaspard Marsy;Balthazar Marsy | unbaked | 48.80605, 2.11717 | 4 |
+| 80 | Buffet d'eau | sculpture | Jules-Hardouin Mansart;Louis Garnier;Jean Hardy;Jean de Lapierre;Robert Le Lorrain;Jean-Louis Lemoyne;Simon Mazière;Corneille Van Clève | unbaked | 48.81693, 2.10188 | 4 |
+| 81 | Cérès Mattei, dite aussi Faustine | statue | François Lespingola | unbaked | 48.80939, 2.12172 | 0 |
+| 82 | Cléopâtre Mourant | statue | Jean-Baptiste Goy | unbaked | 48.80853, 2.10932 | 0 |
+| 83 | Cyparisse | statue | Flamen | unbaked | 48.80704, 2.11256 | 0 |
+| 84 | Deux Amours et un enfant soufflant dans une conque | statue | Corneille Van Clève | unbaked | 48.80543, 2.11980 | 0 |
+| 85 | Deux Amours et une fillette tenant un miroir | statue | Jean-Baptiste Poultier | unbaked | 48.80491, 2.11948 | 0 |
+| 86 | Deux Amours, un enfant et deux dauphins | statue | François Lespingola;Michel Monier | unbaked | 48.80460, 2.11929 | 0 |
+| 87 | Didon | statue | Jean-Baptiste Poultier | unbaked | 48.80644, 2.11339 | 1 |
+| 88 | Flegmatique | statue | Lespagnandelle | unbaked | 48.80631, 2.12189 | 1 |
+| 89 | Fontaine de l’Amour assis sur un dauphin | fountain | Gaspard Marsy | unbaked | 48.81508, 2.10558 | 2 |
+| 90 | Gladiateur combattant | statue | Nicolas Coustou | unbaked | 48.80315, 2.11685 | 0 |
+| 91 | Junon Cesi, dite aussi Bérénice | statue | François Lespingola | unbaked | 48.80888, 2.12369 | 0 |
+| 92 | L'Amérique | statue | Gilles Guérin | unbaked | 48.80674, 2.12029 | 1 |
+| 93 | L'Asie | statue | Roger | unbaked | 48.80637, 2.12166 | 1 |
+| 94 | L'Automne | statue | Thomas Regnaudin | unbaked | 48.80680, 2.12005 | 1 |
+| 95 | L'été | statue | Hutinot | unbaked | 48.80667, 2.12052 | 0 |
+| 96 | L'hiver | statue | François Girardon | unbaked | 48.80661, 2.12074 | 0 |
+| 97 | La Fidélité | statue | Armand Lefebvre | unbaked | 48.80600, 2.11506 | 0 |
+| 98 | La Fourberie | statue | Le Conte | unbaked | 48.80633, 2.11524 | 0 |
+| 99 | Le Mélancolique | statue | Michel de la Perdrix | unbaked | 48.80587, 2.11873 | 1 |
+| 100 | Le Poème Héroïque | statue | Drouilly | unbaked | 48.80625, 2.12212 | 1 |
+| 101 | Leucothée | statue | Rayol | unbaked | 48.80733, 2.11351 | 0 |
+| 102 | Limier terrassant un cerf | statue | Jacques Houzeau | unbaked | 48.80467, 2.11827 | 1 |
+| 103 | Molière | statue | Xavier Veilhan | unbaked | 48.80009, 2.12800 | 0 |
+| 104 | Nymphe et Amour | statue | Étienne Le Hongre | unbaked | 48.80466, 2.11905 | 1 |
+| 105 | Nymphe et Amour tenant un carquois | statue | Jean Raon | unbaked | 48.80504, 2.11899 | 0 |
+| 106 | Nymphe et Amour tenant une guirlande de fleurs | statue | Jean Raon | unbaked | 48.80524, 2.11912 | 1 |
+| 107 | Nymphe et enfant à la conque | statue | Philippe Magnier | unbaked | 48.80549, 2.11956 | 1 |
+| 108 | Nymphe et enfant au trident | statue | Philippe Magnier | unbaked | 48.80490, 2.11843 | 0 |
+| 109 | Nymphe et enfant tenant des oiseaux | statue | Pierre Legros | unbaked | 48.80518, 2.11937 | 0 |
+| 110 | Nymphe et jeune triton | statue | Pierre Legros | unbaked | 48.80498, 2.11924 | 0 |
+| 111 | Nymphe et Zéphyr | statue | Étienne Le Hongre | unbaked | 48.80473, 2.11880 | 1 |
+| 112 | Poème satyrique | statue | Buyster | unbaked | 48.80643, 2.12144 | 0 |
+| 113 | Site historique de l'Hôpital Richaud | monument |  | unbaked | 48.80798, 2.13398 | 4 |
+| 114 | Tigre terrassant un ours | statue | Jacques Houzeau | unbaked | 48.80461, 2.11824 | 1 |
+| 115 | Trois enfants tenant une guirlande | statue | Pierre Laviron;Pierre Legros | unbaked | 48.80511, 2.11875 | 0 |
+| 116 | Un Amour tenant un flambeau et deux enfants | statue | Pierre Granier | unbaked | 48.80531, 2.11887 | 0 |
+| 117 | Un Amour tenant un oiseau et deux enfants | statue | Jean Degoullons | unbaked | 48.80511, 2.11961 | 0 |
+| 118 | Un Amour tenant un oiseau et deux enfants, dont un assis | statue | Simon Mazière | unbaked | 48.80479, 2.11856 | 0 |
+| 119 | Un Amour, deux enfants et un cygne | statue | Jacques Buirette;François Lespingola | unbaked | 48.80562, 2.11907 | 0 |
+| 120 | Vénus Richelieu | statue | Pierre Legros | unbaked | 48.80611, 2.11466 | 2 |
+| 121 | Achéloüs | sculpture | Simon Mazière | unbaked | 48.80547, 2.11594 | 0 |
+| 122 | Afonso Henrique Le Conquérent | sculpture | Jano Aão Gutileiro | unbaked | 48.80082, 2.12985 | 0 |
+| 123 | Amours | sculpture | François Girardon | unbaked | 48.81649, 2.10154 | 0 |
+| 124 | Amours | sculpture | François Girardon | unbaked | 48.81623, 2.10028 | 0 |
+| 125 | ANCHIMOLE, DIT AUSSI MORPHÉE | sculpture | Nicolas Poussin | unbaked | 48.80555, 2.11480 | 0 |
+| 126 | Antinoüs | sculpture | Pierre Le Gros | unbaked | 48.80474, 2.11671 | 2 |
+| 127 | Antinoüs | sculpture | Pierre Le Gros | unbaked | 48.80606, 2.11862 | 2 |
+| 128 | Apollon du Belvédère | sculpture | Pierre Mazeline | unbaked | 48.80495, 2.11594 | 1 |
+| 129 | BACCHANTE, DITE AUSSI POMONE | sculpture | Pierre Laviron | unbaked | 48.80559, 2.11495 | 0 |
+| 130 | Bacchus | sculpture | Granier | unbaked | 48.80642, 2.11805 | 1 |
+| 131 | Bacchus | sculpture | Louis-Aimé Lejeune | unbaked | 48.80819, 2.11054 | 0 |
+| 132 | Castor et Pollux | sculpture | Antoine Coysevox | unbaked | 48.80557, 2.11594 | 0 |
+| 133 | Circlè | sculpture | Laurent Magnier | unbaked | 48.80499, 2.11576 | 0 |
+| 134 | Dragon | sculpture | Jean Hardy | unbaked | 48.81608, 2.10034 | 0 |
+| 135 | Faune | sculpture | Domenico Guidi | unbaked | 48.80687, 2.11592 | 4 |
+| 136 | Faune à la Flûte | sculpture | Simon Hurtrelle | unbaked | 48.80634, 2.11830 | 0 |
+| 137 | Faustine | sculpture | Regnaudin | unbaked | 48.80649, 2.11778 | 0 |
+| 138 | Femme drapée | statue |  | unbaked | 48.80359, 2.11269 | 1 |
+| 139 | Femme drapée | statue |  | unbaked | 48.80429, 2.11310 | 1 |
+| 140 | Feu | sculpture | Nicolas Dossier | unbaked | 48.80467, 2.11778 | 1 |
+| 141 | Flore | sculpture | Lacroix | unbaked | 48.80719, 2.11578 | 4 |
+| 142 | Génie conduisant un dragon marin | sculpture | Edmé Bouchardon | unbaked | 48.80830, 2.12341 | 0 |
+| 143 | Hercule | sculpture | René Grégoire | unbaked | 48.80704, 2.10878 | 0 |
+| 144 | Hercule au serpent | sculpture | Poussin | unbaked | 48.80523, 2.11490 | 0 |
+| 145 | Hercule Commode | sculpture | Coustou | unbaked | 48.80655, 2.11753 | 0 |
+| 146 | HERCULE, DIT AUSSI VERTUMNE | sculpture | Nicolas Poussin | unbaked | 48.80549, 2.11501 | 0 |
+| 147 | L'Abondance | sculpture | L’Abondance | unbaked | 48.80416, 2.12220 | 4 |
+| 148 | L'Afrique | sculpture | Jean Cornu;Sibrayque | unbaked | 48.80621, 2.11925 | 1 |
+| 149 | L'Air | sculpture | Le Hongre | unbaked | 48.80581, 2.11885 | 2 |
+| 150 | L'Eau | sculpture | Legros | unbaked | 48.80457, 2.11825 | 4 |
+| 151 | L'Europe | sculpture | Pierre Mazeline | unbaked | 48.80607, 2.11916 | 1 |
+| 152 | L’Hiver | sculpture | Jean-Baptiste Théodon | unbaked | 48.80577, 2.11468 | 0 |
+| 153 | La Clarté | sculpture | Lazzaro Baldi | unbaked | 48.80833, 2.10994 | 0 |
+| 154 | La Nuit | sculpture | Jean Raon | unbaked | 48.80636, 2.11933 | 1 |
+| 155 | La Paix | sculpture | Jean-Baptiste Tuby | unbaked | 48.80441, 2.12235 | 4 |
+| 156 | La Terre | sculpture | Benoît Massou | unbaked | 48.80650, 2.11942 | 1 |
+| 157 | Le Couple | sculpture | Jano Ayrel | unbaked | 48.80089, 2.12974 | 0 |
+| 158 | Le Gladiateur mourant Ludovisi | sculpture | Monier | unbaked | 48.80507, 2.11600 | 0 |
+| 159 | Le Midi ou Vénus | sculpture | Marsy | unbaked | 48.80592, 2.11907 | 0 |
+| 160 | Le Poème Lyrique | sculpture | Tuby | unbaked | 48.80476, 2.11804 | 0 |
+| 161 | Le Poéme pastoral | sculpture | Pierre Granier | unbaked | 48.80665, 2.11951 | 0 |
+| 162 | Le Poing | sculpture | César Baldaccini | unbaked | 48.80185, 2.06670 | 0 |
+| 163 | Le Point du Jour | sculpture | Marsy | unbaked | 48.80476, 2.11821 | 2 |
+| 164 | Le Printemps | sculpture | Laurent Magnier | unbaked | 48.80469, 2.11833 | 0 |
+| 165 | Le sanguin | sculpture | Jouvenet | unbaked | 48.80674, 2.12142 | 1 |
+| 166 | Le Soir | sculpture | Desjardins | unbaked | 48.80580, 2.11899 | 4 |
+| 167 | Les Chevaux du soleil | sculpture | Gilles Guérin | unbaked | 48.80659, 2.11846 | 0 |
+| 168 | Marsyas et Olympe | sculpture | Jean-Baptiste Goy | unbaked | 48.80423, 2.11669 | 0 |
+| 169 | Minerve | sculpture | Guidi | unbaked | 48.80528, 2.11489 | 0 |
+| 170 | Neptune et Amphitrite | sculpture | Lambert-Sigisbert Adam & Nicolas Sébastien Adam | unbaked | 48.80856, 2.12235 | 1 |
+| 171 | Océan | sculpture | Jean-Baptiste Lemoyne | unbaked | 48.80864, 2.12153 | 0 |
+| 172 | Pan | sculpture | Domenico Guidi | unbaked | 48.80695, 2.11597 | 1 |
+| 173 | Pandore | sculpture | Pierre Legros | unbaked | 48.80530, 2.11584 | 0 |
+| 174 | Platon | sculpture | Joseph Rayol | unbaked | 48.80503, 2.11567 | 0 |
+| 175 | Pomone | sculpture | Nicolas Poussin | unbaked | 48.80545, 2.11487 | 0 |
+| 176 | Protée | sculpture | Edmé Bouchardon | unbaked | 48.80824, 2.12301 | 0 |
+| 177 | Taridate | sculpture | Antoine André | unbaked | 48.80464, 2.11752 | 0 |
+| 178 | Tigrane | sculpture | Mathieu Lespagnandelle | unbaked | 48.80620, 2.11847 | 1 |
+| 179 | Uranie | sculpture | Martin Cartier | unbaked | 48.80488, 2.11620 | 1 |
+| 180 | Vénus Callipyge | sculpture | Jean-Jacques Clérion | unbaked | 48.80461, 2.11725 | 0 |
+| 181 | Apollon à la Lyre | statue |  | unbaked | 48.80826, 2.11024 | 0 |
+| 182 | Bassin de l'Encelade | fountain |  | unbaked | 48.80820, 2.11258 | 4 |
+| 183 | Bassin du Midi | fountain |  | unbaked | 48.80486, 2.11902 | 4 |
+| 184 | Bassin du Nord | fountain |  | unbaked | 48.80536, 2.11934 | 4 |
+| 185 | Faune au Chevreau | statue |  | unbaked | 48.80634, 2.11377 | 0 |
+| 186 | Fontaine de la rue de l'Ermitage | fountain |  | unbaked | 48.81632, 2.12174 | 3 |
+| 187 | Hercule et Télèphe | statue |  | unbaked | 48.80667, 2.11397 | 0 |
+| 188 | Junon | statue |  | unbaked | 48.80644, 2.11486 | 0 |
+| 189 | Laocoon | statue |  | unbaked | 48.81633, 2.10520 | 0 |
+| 190 | Personnage romain | statue |  | unbaked | 48.80841, 2.10970 | 0 |
+| 191 | Statue de Jean-Baptiste de la Quintinie | statue |  | unbaked | 48.79909, 2.12137 | 0 |
+| 192 | Statue de Jules Hardouin-Mansart | statue |  | unbaked | 48.80589, 2.14119 | 2 |
+| 193 | statue de l'Abbé de l'Epée | statue |  | unbaked | 48.79863, 2.12400 | 0 |
+| 194 | Statue de Le Nôtre | statue |  | unbaked | 48.80548, 2.14118 | 0 |
+| 195 | Vénus Médicis | statue |  | unbaked | 48.80677, 2.11359 | 0 |
+| 196 | Adrastée | sculpture |  | unbaked | 48.80692, 2.11590 | 0 |
+| 197 | Antinoüs du Belvédère | sculpture |  | unbaked | 48.80554, 2.11159 | 0 |
+| 198 | Aruncus | sculpture |  | unbaked | 48.80503, 2.11422 | 0 |
+| 199 | Aux victimes des bombardements 39-45 | sculpture |  | unbaked | 48.79932, 2.06953 | 0 |
+| 200 | Empereur romain | sculpture |  | unbaked | 48.80812, 2.11086 | 0 |
+| 201 | Femme à l’enfant | sculpture |  | unbaked | 48.80697, 2.10909 | 0 |
+| 202 | Ganymède et Zeus | sculpture |  | unbaked | 48.80669, 2.11702 | 0 |
+| 203 | Génocide de Arméniens de 1915 | sculpture |  | unbaked | 48.80086, 2.12954 | 0 |
+| 204 | Grotte | sculpture |  | unbaked | 48.80664, 2.11853 | 4 |
+| 205 | Hercule Mazarin | sculpture |  | unbaked | 48.80690, 2.10938 | 0 |
+| 206 | Junon | sculpture |  | unbaked | 48.80711, 2.10849 | 0 |
+| 207 | L'abondance | sculpture |  | unbaked | 48.80712, 2.11604 | 0 |
+| 208 | L'amour se taillant un arc dans la massue d'Hercule | sculpture |  | unbaked | 48.81609, 2.11212 | 4 |
+| 209 | Méléagre | sculpture |  | unbaked | 48.80568, 2.11188 | 0 |
+| 210 | Mercure | sculpture |  | unbaked | 48.80911, 2.11701 | 0 |
+| 211 | Personnage romain | sculpture |  | unbaked | 48.80676, 2.11000 | 0 |
+| 212 | Podalire | sculpture |  | unbaked | 48.80740, 2.11568 | 0 |
+| 213 | Uranie | sculpture |  | unbaked | 48.80662, 2.11727 | 0 |
+| 214 | Agrippine | bust |  | unbaked | 48.81698, 2.10462 | 0 |
+| 215 | Alexandre le Grand | bust |  | unbaked | 48.80569, 2.11147 | 0 |
+| 216 | Alexandre le Grand | bust |  | unbaked | 48.81699, 2.10479 | 0 |
+| 217 | Antonin | bust |  | unbaked | 48.81665, 2.10487 | 0 |
+| 218 | Apollon | bust |  | unbaked | 48.80575, 2.11141 | 1 |
+| 219 | Caracalla | bust |  | unbaked | 48.81696, 2.10452 | 0 |
+| 220 | Claude | bust |  | unbaked | 48.81684, 2.10488 | 0 |
+| 221 | Cléopatre/Lucrèce | bust |  | unbaked | 48.81683, 2.10418 | 0 |
+| 222 | Démostène | bust |  | unbaked | 48.81693, 2.10483 | 0 |
+| 223 | Didon | bust |  | unbaked | 48.81651, 2.10485 | 0 |
+| 224 | Esculape | bust |  | unbaked | 48.81644, 2.10483 | 0 |
+| 225 | Faune | bust |  | unbaked | 48.81932, 2.11230 | 0 |
+| 226 | Femme romaine | bust |  | unbaked | 48.81661, 2.10487 | 0 |
+| 227 | Femme Romaine | bust |  | unbaked | 48.81645, 2.10482 | 0 |
+| 228 | Femme Romaine | bust |  | unbaked | 48.81675, 2.10403 | 0 |
+| 229 | Femme, dite à tort l'Europe | bust |  | unbaked | 48.81694, 2.10448 | 0 |
+| 230 | Général Borgnis-Desbordes | bust |  | unbaked | 48.79519, 2.12242 | 0 |
+| 231 | Hadrien | bust |  | unbaked | 48.81680, 2.10412 | 0 |
+| 232 | Hadrien, dit à tort Antonin le Pieux | bust |  | unbaked | 48.80586, 2.11164 | 0 |
+| 233 | Hannibal, dit à tort Octavien | bust |  | unbaked | 48.80553, 2.11199 | 0 |
+| 234 | Jeune Romain | bust |  | unbaked | 48.81676, 2.10405 | 0 |
+| 235 | L'Afrique | bust |  | unbaked | 48.81697, 2.10457 | 0 |
+| 236 | L'Amérique | bust |  | unbaked | 48.81677, 2.10409 | 0 |
+| 237 | L'Asie | bust |  | unbaked | 48.81690, 2.10485 | 0 |
+| 238 | L'Europe | bust |  | unbaked | 48.81647, 2.10483 | 0 |
+| 239 | Marc Aurèle | bust |  | unbaked | 48.80536, 2.11182 | 0 |
+| 240 | Mithridate | bust |  | unbaked | 48.81656, 2.10486 | 0 |
+| 241 | Néron jeune, dit à tort Géta | bust |  | unbaked | 48.81687, 2.10428 | 0 |
+| 242 | Personnage antique, dit à tort Hannibal | bust |  | unbaked | 48.80547, 2.11205 | 0 |
+| 243 | Personnage romain, dit à tort Septime Sévère | bust |  | unbaked | 48.80580, 2.11171 | 0 |
+| 244 | Scipion | bust |  | unbaked | 48.81698, 2.10467 | 0 |
+| 245 | Statue du Général De Gaulle | bust |  | unbaked | 48.79995, 2.06591 | 0 |
+| 246 | Vitellius | bust |  | unbaked | 48.81685, 2.10423 | 0 |
 
 ## D: added by hand (Louvre and Tuileries, 2026-11-20)
 

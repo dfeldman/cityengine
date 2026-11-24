@@ -1,12 +1,23 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import { classicalColumn } from '../column.ts'
-import { beam, block, hex, shade } from '../kit.ts'
+import { beam, block, dome, hex, shade } from '../kit.ts'
 import type { Fit } from '../fit.ts'
-import { arcade, archRing } from './palaces/common.ts'
+import { arcade, archRing, extrude, palette, pts } from './palaces/common.ts'
 import { Relief, figure } from './minor/sculpt.ts'
 
 const FIXED = 0
+// ---- tunable: the plan, metres off the 2024 IGN aerial; local x runs south, z east, (0, 0) at the entry's lat/lon, front (the avenue) at −z
+const HX = 70, HZ = 46                  // the front bar: 140 m along the avenue, its face at z = −46
+const BAR_Z = -14.5                     // the bar's back wall
+const WING_EAVE = 13, WING_RISE = 3.2   // the wings stand lower than the bar's 17 m
+const WING = [-66, -20, -40, 45, 36, 45, 45, 34, 60, -20]    // x, z pairs: the outline behind the bar
+const COURT_R = 30, COURT_Z = -14       // the garden: a half disc against the bar's back wall
+const ROT_NE: [number, number] = [-29, 39]
+const ROT_SE: [number, number] = [38, 34]
+const ROT_R = 6.2
+const DOME_R = 4.6, DOME_H = 4.4
+const COL_N = 22                        // columns of the garden's peristyle
 
 /**
  * The Petit Palais (Girault, 1900), across the avenue from the Grand Palais (PARIS_EXPAND §5 A). The gist:
@@ -27,19 +38,23 @@ export function petitPalais(out: MeshBuilder, fit: Fit): void {
   const stone = hex('#c6bca6')
   const deep = shade(stone, 0.82)
   const shadow: Rgb = [0.32, 0.31, 0.3]
-  const slate = hex('#6c747a')
+  const slate = hex('#4f565b')
   const gold: Rgb = [0.86, 0.68, 0.28]
-  const hx = Math.min(Math.max(fit.hx, 55), 70)
-  const hz = Math.min(Math.max(fit.hz, 38), 48)
+  // the plan is drawn in metres off the IGN aerial, so the footprint's own size is not asked (the entry's size is its claim only)
+  void fit
+  const hx = HX
+  const hz = HZ
   const front = -hz
   const wall = 17
-  // the body, round the courtyard garden (a solid block here: the court is out of sight from the avenue)
-  block(out, -hx, hx, front + 3, hz, 0, wall, stone)
-  block(out, -hx - 0.3, hx + 0.3, front + 2.6, hz + 0.3, wall, wall + 1, deep)
+  // the front bar along the avenue, its back wall at BAR_Z; behind it the D: two wings round the semicircular garden court
+  const barZ = BAR_Z
+  block(out, -hx, hx, front + 3, barZ, 0, wall, stone)
+  block(out, -hx - 0.3, hx + 0.3, front + 2.6, barZ + 0.3, wall, wall + 1, deep)
+  wings(out)
   // the slate roofs, hipped, behind the balustrade
   const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
   out.quad([[-hx, wall + 1, front + 3], [hx, wall + 1, front + 3], [hx - 5, wall + 6, front + 8], [-hx + 5, wall + 6, front + 8]], [0, 0.7, -0.7], UVQ, slate, FIXED)
-  block(out, -hx + 5, hx - 5, front + 8, hz - 5, wall + 1, wall + 6, slate)
+  block(out, -hx + 5, hx - 5, front + 8, barZ - 5, wall + 1, wall + 6, slate)
   // the balustrade along the front
   block(out, -hx, hx, front + 2.4, front + 3.2, wall + 1, wall + 1.25, shade(stone, 1.03))
   for (let x = -hx + 0.3; x < hx; x += 0.45) box(out, x, wall + 1.7, front + 2.8, 0.07, 0.45, 0.07, stone, FIXED)
@@ -67,6 +82,9 @@ export function petitPalais(out: MeshBuilder, fit: Fit): void {
     block(out, xa, xb, front - 1, front + 4, 0, wall + 3, stone)
     block(out, xa - 0.3, xb + 0.3, front - 1.3, front + 4, wall + 3, wall + 4, deep)
     const cx = (xa + xb) / 2
+    // the small ribbed dome behind each end pavilion's pediment (Commons: the dark ribbed domes at the front's ends)
+    prism(out, cx, front + 11, wall + 4, wall + 6.5, DOME_R, 12, stone, FIXED)
+    dome(out, cx, front + 11, wall + 6.5, DOME_R * 0.96, DOME_H, hex('#4a5156'), 12, shade(stone, 1.05))
     block(out, cx - 2, cx + 2, front - 1.05, front - 1, 3, wall - 2, shadow)
     prism(out, cx, front - 1.02, wall - 2, wall - 0.4, 2, 10, shadow, FIXED, 0.4)
   }
@@ -170,4 +188,27 @@ export function petitPalais(out: MeshBuilder, fit: Fit): void {
   prism(out, 0, dz, wall + 20, wall + 23, 1.1, 8, stone, FIXED, 0.9)
   prism(out, 0, dz, wall + 23, wall + 24.5, 0.9, 8, slate, FIXED, 0.1)
   prism(out, 0, dz, wall + 24.5, wall + 25.5, 0.1, 6, gold, FIXED, 0.02)
+}
+
+/** the two wings round the garden, the peristyle on the court, and the round pavilions at the wings' ends */
+function wings(out: MeshBuilder): void {
+  const p = palette('#d4c8ac', '#4a5156')
+  const court: { x: number; z: number }[] = []
+  for (let i = 0; i <= 16; i++) { const a = -Math.PI / 2 + (i / 16) * Math.PI; court.push({ x: Math.sin(a) * COURT_R, z: COURT_Z + Math.cos(a) * COURT_R }) }
+  extrude(out, [pts(WING), court], p, { eaves: WING_EAVE, storeys: [{ y: 1.0, h: 7.2, sill: 0.4 }], bay: 4.6, win: 2, rise: WING_RISE, inset: 2.2, dormers: false })
+  // the Ionic peristyle round the court, under a plain entablature
+  for (let i = 1; i < COL_N; i++) {
+    const a = -Math.PI / 2 + (i / COL_N) * Math.PI
+    classicalColumn(out, Math.sin(a) * (COURT_R - 1.3), COURT_Z + Math.cos(a) * (COURT_R - 1.3), 0.4, 7.4, 0.36, shade(p.stone, 1.08), { order: 'ionic', tier: 'mid', heading: a })
+  }
+  for (let i = 0; i < 16; i++) {
+    const a0 = -Math.PI / 2 + (i / 16) * Math.PI, a1 = -Math.PI / 2 + ((i + 1) / 16) * Math.PI
+    beam(out, [Math.sin(a0) * (COURT_R - 1.3), 7.9, COURT_Z + Math.cos(a0) * (COURT_R - 1.3)], [Math.sin(a1) * (COURT_R - 1.3), 7.9, COURT_Z + Math.cos(a1) * (COURT_R - 1.3)], 0.5, shade(p.stone, 0.95))
+  }
+  // the round pavilions at the wings' far ends: a drum, its cornice, a low slate dome
+  for (const [x, z] of [ROT_NE, ROT_SE]) {
+    prism(out, x, z, 0, WING_EAVE + 3, ROT_R, 14, p.stone, FIXED)
+    prism(out, x, z, WING_EAVE + 2.4, WING_EAVE + 3.4, ROT_R + 0.5, 14, p.trim, FIXED)
+    dome(out, x, z, WING_EAVE + 3.4, ROT_R * 0.92, 3.4, p.slate, 14, shade(p.stone, 1.05))
+  }
 }

@@ -136,7 +136,42 @@ export const COURSE_GAIN = Math.PI / 6
 /** …and straight enough to be a street, not an arc of the ring: end to end at least this share of its length */
 export const COURSE_STRAIGHT = 0.9
 
+/** S-JOGS (owner, 2026-11-16, "zigzag"): a short edge between two corners that turn opposite ways, whose streets either side run
+ *  nearly parallel (Rue de Rivoli at Rue Perrault: an 18 m link bulging 9 m off the street), is cut across as one curve. */
+/** the longest edge a jog may be (m) */
+export const JOG_MAX_EDGE = 35
+/** the most the link may sit off the line of the street in (m) */
+export const JOG_MAX_OFFSET = 16
+/** the streets either side must head within this of each other (rad), measured over JOG_REACH */
+export const JOG_MAX_HEADING_DIFF = (30 * Math.PI) / 180
+/** the corners of a jog turn between ARC_MIN and this (rad) */
+export const JOG_MAX_TURN = (70 * Math.PI) / 180
+/** metres either side the curve starts, and over which the street's own heading is read */
+export const JOG_RUNUP = 12
+export const JOG_RUNOUT = 30
+export const JOG_REACH = 40
+/** the lean radius shown through a jog (m) */
+const JOG_LEAN_R = 40
+
+/** A jog, cut straight: a cubic Bézier from the street before to the street after, over the whole short edge. */
+interface Jog {
+  aId: number
+  eId: number
+  cId: number
+  /** the node the rider enters the link at, and leaves it by */
+  u: number
+  v: number
+  ta: number
+  tc: number
+  total: number
+  pts: [Point, Point, Point, Point]
+  sign: number
+}
+
 export class Navigator {
+  /** the planned route's exit at a node, if any: a jog is cut only where the rider is to go through it (the GPS sets this) */
+  routeAt: ((nodeId: number) => number | undefined) | null = null
+  private jog: Jog | null = null
   private readonly g: CityGraph
   /** the heading on the last long edge, or after the rider's own last turn (THE COURSE) */
   private course: number | null = null
@@ -187,6 +222,7 @@ export class Navigator {
     this.pos = { ...pos }
     this.wantEdge = null
     this.committed = null
+    this.jog = null
   }
 
   /** The map edge under the rider — the ride edge's own id on a map graph. */
@@ -668,6 +704,12 @@ export class Navigator {
     if (this.shown === null) this.shown = target
     else this.shown += Math.max(-0.6 * metres, Math.min(0.6 * metres, target - this.shown))
     this.prepareArc(speed)
+    // off the jog: forget it (a turn taken at its far end leaves it too)
+    if (this.jog && this.jogDistance() === null) {
+      const e = this.edge
+      const nodeAhead = this.pos.reversed ? e.a : e.b
+      if (!(e.id === this.jog.aId && nodeAhead === this.jog.u)) this.jog = null
+    }
     // off the corner just taken: forget it
     if (this.arcBehind) {
       const e = this.edge
@@ -817,6 +859,9 @@ export class Navigator {
     const theta = Math.abs(chosen.angle)
     if (theta < ARC_MIN || theta > Math.PI - 0.05) return
     const out = this.g.edges.get(chosen.edgeId)!
+    if (this.jog && this.jog.aId === e.id && this.jog.u === nodeId) return
+    const jog = this.makeJog(e, nodeId, chosen, out, commit)
+    if (jog) { this.jog = jog; return }
     const half = Math.tan(theta / 2)
     let t = cornerRadius(theta) * half
     t = Math.min(t, 0.45 * Math.min(e.length, out.length), commit)
@@ -830,6 +875,61 @@ export class Navigator {
     }
   }
 
+  /** the S-jog the rider is about to ride through at `u`, if the corner there and the one after it cancel (see JOG_MAX_EDGE) */
+  private makeJog(a: CityGraph['edges'] extends Map<number, infer E> ? E : never, u: number, chosen: Exit, link: typeof a, commit: number): Jog | null {
+    if (link.length > JOG_MAX_EDGE || Math.abs(chosen.angle) > JOG_MAX_TURN) return null
+    const v = link.a === u ? link.b : link.a
+    if (v === u) return null
+    // the way through the far corner: the route's exit if it has one, else the one a rider holding straight would take
+    const xs2 = this.exitsOf(this.g, v, link.id)
+    const want = this.routeAt?.(v)
+    const x2 = want !== undefined ? xs2.find((x) => x.edgeId === want) ?? exits(this.g, v, link.id).find((x) => x.edgeId === want)
+      : this.pick(xs2, 'straight', v, link.id) ?? undefined
+    if (!x2 || Math.abs(x2.angle) < ARC_MIN || Math.abs(x2.angle) > JOG_MAX_TURN || Math.sign(x2.angle) === Math.sign(chosen.angle)) return null
+    const c = this.g.edges.get(x2.edgeId)!
+    if (c.id === link.id || c.id === a.id) return null
+    // the street's own heading either side, over a stretch, not the last few metres (a bend in the first ones is the jog)
+    const la = Math.min(JOG_REACH, a.length), lc = Math.min(JOG_REACH, c.length)
+    const aEnd = a.b === u
+    const aFar = pointAlong(a.points, aEnd ? a.length - la : la)
+    const un = aEnd ? a.points[a.points.length - 1] : a.points[0]
+    const vn = c.a === v ? c.points[0] : c.points[c.points.length - 1]
+    const cFar = pointAlong(c.points, c.a === v ? lc : c.length - lc)
+    const hA = Math.atan2(un.x - aFar.x, un.z - aFar.z)
+    const hC = Math.atan2(cFar.x - vn.x, cFar.z - vn.z)
+    if (Math.abs(angleDiff(hA, hC)) > JOG_MAX_HEADING_DIFF) return null
+    const vp = link.a === v ? link.points[0] : link.points[link.points.length - 1]
+    const off = Math.abs((vp.x - un.x) * Math.cos(hA) - (vp.z - un.z) * Math.sin(hA))
+    if (off > JOG_MAX_OFFSET) return null
+    const ta = Math.min(JOG_RUNUP, 0.45 * a.length, commit), tc = Math.min(JOG_RUNOUT, 0.45 * c.length)
+    if (ta < 3 || tc < 3) return null
+    const p0 = pointAlong(a.points, aEnd ? a.length - ta : ta)
+    const p3 = pointAlong(c.points, c.a === v ? tc : c.length - tc)
+    // the curve leaves and joins the streets along their own heading AT those points, so no kink there
+    const pb = pointAlong(a.points, aEnd ? a.length - ta - 3 : ta + 3)
+    const pc = pointAlong(c.points, c.a === v ? tc + 3 : c.length - tc - 3)
+    const h0 = Math.atan2(p0.x - pb.x, p0.z - pb.z), h3 = Math.atan2(pc.x - p3.x, pc.z - p3.z)
+    const k = distance(p0, p3) / 3
+    const p1 = { x: p0.x + Math.sin(h0) * k, z: p0.z + Math.cos(h0) * k }
+    const p2 = { x: p3.x - Math.sin(h3) * k, z: p3.z - Math.cos(h3) * k }
+    return { aId: a.id, eId: link.id, cId: c.id, u, v, ta, tc, total: ta + link.length + tc, pts: [p0, p1, p2, p3], sign: Math.sign(chosen.angle) }
+  }
+
+  /** metres along the jog the rider is, or null if not on it */
+  private jogDistance(): number | null {
+    const j = this.jog
+    if (!j) return null
+    const e = this.edge
+    const nodeAhead = this.pos.reversed ? e.a : e.b
+    const nodeBehind = this.pos.reversed ? e.b : e.a
+    const from = this.pos.reversed ? e.length - this.pos.s : this.pos.s
+    const toEnd = e.length - from
+    if (e.id === j.aId && nodeAhead === j.u && toEnd < j.ta) return j.ta - toEnd
+    if (e.id === j.eId && nodeBehind === j.u) return j.ta + from
+    if (e.id === j.cId && nodeBehind === j.v && from < j.tc) return j.ta + this.g.edges.get(j.eId)!.length + from
+    return null
+  }
+
   /**
    * Where the rider is DRAWN: on the rounded corner when they are on one, else exactly `at()`. A view on the
    * graph position — `s`, `at()` and everything the tests pin are untouched — so a bike takes a right angle
@@ -837,6 +937,20 @@ export class Navigator {
    */
   smoothed(): { point: Point; heading: number; lean: number } {
     const e = this.edge
+    const jd = this.jogDistance()
+    if (jd !== null) {
+      const j = this.jog!
+      const [q0, q1, q2, q3] = j.pts
+      const u = Math.max(0, Math.min(1, jd / j.total)), w = 1 - u
+      const b0 = w * w * w, b1 = 3 * w * w * u, b2 = 3 * w * u * u, b3 = u * u * u
+      const point = { x: b0 * q0.x + b1 * q1.x + b2 * q2.x + b3 * q3.x, z: b0 * q0.z + b1 * q1.z + b2 * q2.z + b3 * q3.z }
+      const dx = 3 * w * w * (q1.x - q0.x) + 6 * w * u * (q2.x - q1.x) + 3 * u * u * (q3.x - q2.x)
+      const dz = 3 * w * w * (q1.z - q0.z) + 6 * w * u * (q2.z - q1.z) + 3 * u * u * (q3.z - q2.z)
+      const heading = Math.atan2(dx, dz)
+      const lean = -j.sign * Math.min(MAX_LEAN, Math.atan((this.speed * this.speed) / (JOG_LEAN_R * 9.81)))
+      const off = (this.shown ?? ((this.edge.lane ?? 0) + this.offset)) + this.easeAt()
+      return { point: { x: point.x + Math.cos(heading) * off, z: point.z - Math.sin(heading) * off }, heading, lean }
+    }
     let arc: Arc | null = null
     let d = 0
     const toEnd = this.pos.reversed ? this.pos.s : e.length - this.pos.s

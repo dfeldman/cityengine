@@ -273,8 +273,7 @@
     "range": 120,
     "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
     "asset": "louvois-triton"
-  }
-,
+  },
   {
     "id": "louvois-triton-2",
     "name": "Fontaine Louvois: triton on a dolphin 2",
@@ -290,8 +289,7 @@
     "range": 120,
     "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
     "asset": "louvois-triton"
-  }
-,
+  },
   {
     "id": "louvois-triton-3",
     "name": "Fontaine Louvois: triton on a dolphin 3",
@@ -307,8 +305,7 @@
     "range": 120,
     "note": "Klagmann's triton riding a dolphin at a corner of the lower pedestal (one model, four placements). assetkit img2glb guided (Hunyuan 2.1) from Commons 'Fontaine Louvois - Paris II (FR75) - 2024-12-08 - 3.jpg'; published in assetkit-models-paris",
     "asset": "louvois-triton"
-  }
-,
+  },
   {
     "id": "louvois-triton-4",
     "name": "Fontaine Louvois: triton on a dolphin 4",
@@ -950,6 +947,18 @@
     "asset": "monument-port-vendres-maillol-figure"
   },
   {
+    "id": "alphand-figure",
+    "name": "Monument à Adolphe Alphand: Alphand standing",
+    "attach": {
+      "to": "Monument à Adolphe Alphand (avenue Foch)",
+      "at": [0.08, 3.39, 0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Dalou's standing Alphand (1899), hat in hand. assetkit img2glb guided from Commons 'Monument Alphand (2).jpg' (cropped). Height 2.2 m estimated. at.y = G 0.5 + steps 0.34 + pedestal 2.55 (builder FIGURE_AT).",
+    "asset": "alphand-figure"
+  },
+  {
     "id": "barye-theseus",
     "name": "Monument à Barye: Theseus and the centaur Bienor",
     "attach": { "to": "Monument à Barye", "at": [0, 5.35, 0], "bearing": 180 },
@@ -964,6 +973,18 @@
     "range": 250,
     "note": "Stone seated figure with a child on the rock block at the right of the pylon. assetkit img2glb guided from Commons 'P1280342 Paris IV square Barye monument Barye rwk.jpg'. Height 1.5 m estimated; at = builder SEATED_AT.",
     "asset": "barye-seated"
+  },
+  {
+    "id": "alphand-left",
+    "name": "Monument à Adolphe Alphand: the left group of collaborators",
+    "attach": {
+      "to": "Monument à Adolphe Alphand (avenue Foch)",
+      "at": [-0.95, 1.95, -0.05],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Dalou's left-hand group (an engineer in a frock coat with a smaller figure beside him) leaning on the pedestal ledge. assetkit img2glb guided from a crop of Commons 'Monument Alphand (2).jpg'. Height 2.2 m estimated. at.y = G 0.5 + steps 0.34 + pedestal tier 0.95 (builder LEFT_AT).",
+    "asset": "alphand-left"
   },
   {
     "id": "komitas-statue2",
@@ -1828,29 +1849,5 @@
     "attach": { "to": "Monument du Général Henrion-Bertier (cimetière ancien de Neuilly)", "at": [0.4, 2.12, 0.3], "bearing": 0 },
     "range": 250,
     "note": "The general's bust on the pillar; assetkit img2glb guided from Commons 'Tombe Général Henrion-Berthier', 0.55 m"
-  },
-  {
-    "id": "alphand-figure",
-    "name": "Monument à Adolphe Alphand: Alphand standing",
-    "attach": {
-      "to": "Monument à Adolphe Alphand (avenue Foch)",
-      "at": [0.08, 3.39, 0],
-      "bearing": 180
-    },
-    "range": 250,
-    "note": "Dalou's standing Alphand (1899), hat in hand. assetkit img2glb guided from Commons 'Monument Alphand (2).jpg' (cropped). Height 2.2 m estimated. at.y = G 0.5 + steps 0.34 + pedestal 2.55 (builder FIGURE_AT).",
-    "asset": "alphand-figure"
-  },
-  {
-    "id": "alphand-left",
-    "name": "Monument à Adolphe Alphand: the left group of collaborators",
-    "attach": {
-      "to": "Monument à Adolphe Alphand (avenue Foch)",
-      "at": [-0.95, 1.95, -0.05],
-      "bearing": 180
-    },
-    "range": 250,
-    "note": "Dalou's left-hand group (an engineer in a frock coat with a smaller figure beside him) leaning on the pedestal ledge. assetkit img2glb guided from a crop of Commons 'Monument Alphand (2).jpg'. Height 2.2 m estimated. at.y = G 0.5 + steps 0.34 + pedestal tier 0.95 (builder LEFT_AT).",
-    "asset": "alphand-left"
   }
 ]

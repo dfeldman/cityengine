@@ -8,5 +8,5 @@
   { "osm": ["way/320721969"], "procedural": "b1_tower_320721969", "plan": "union", "name": "Way 320721969", "height": 91 },
   { "osm": ["way/197462674"], "procedural": "holidayInnPodium", "name": "Holiday Inn Golden Gateway podium", "height": 10 },
   { "osm": ["way/436473931"], "procedural": "holidayInnTower", "name": "Holiday Inn Golden Gateway", "height": 101 },
-  { "osm": ["way/255960463"], "procedural": "somaGrand", "name": "Soma Grand", "height": 92 }
+  { "osm": ["way/255960463", "way/783200255", "way/783200253"], "procedural": "somaGrand", "name": "Soma Grand", "height": 92 }
 ]

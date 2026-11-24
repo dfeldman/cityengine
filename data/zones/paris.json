@@ -30,13 +30,20 @@
    "props": {
     "thicket": {
      "density": 0.005,
-     "h": [
-      12,
-      22
-     ]
+     "h": [12, 22]
     }
    },
    "ring": [[48.878111, 2.378371], [48.877718, 2.378439], [48.877411, 2.378579], [48.877088, 2.378828], [48.876761, 2.379218], [48.876593, 2.379511], [48.876371, 2.380044], [48.876169, 2.38107], [48.87622, 2.381153], [48.876613, 2.381001], [48.877027, 2.380937], [48.877397, 2.380957], [48.877764, 2.381063], [48.878138, 2.381288], [48.878421, 2.38156], [48.878704, 2.381955], [48.878881, 2.382288], [48.879069, 2.382749], [48.879275, 2.383436], [48.879436, 2.38423], [48.879531, 2.384918], [48.879667, 2.386893], [48.879666, 2.389219], [48.87969, 2.389237], [48.88292, 2.385542], [48.882782, 2.38424], [48.882623, 2.383417], [48.882258, 2.38233], [48.881739, 2.38133], [48.881372, 2.380794], [48.880623, 2.379956], [48.879833, 2.379246], [48.87878, 2.378536], [48.878527, 2.378422]]
+  },
+  {
+   "ref": "la-defense-dalle-trails",
+   "name": "La Défense: dalle footways open to bikes",
+   "note": "owner, 2026-11-16, 48.887532, 2.229794: a path not marked as a bike route left a long disconnected segment; 'perhaps we should allow biking on footpaths in parts of la defense like we do in ordinary parks'. Ring: the dalle from the Arche to the Esplanade, Courbevoie to Puteaux edges.",
+   "priority": 1,
+   "props": {
+    "trails": "bike"
+   },
+   "ring": [[48.896, 2.2265], [48.8975, 2.24], [48.8935, 2.253], [48.888, 2.253], [48.885, 2.239], [48.886, 2.2265]]
   },
   {
    "ref": "garden-trails-arboretum-de-versailles-chevreloup",
@@ -1047,6 +1054,7 @@
     "trails": "bike"
    },
    "ring": [[48.873507, 2.257382], [48.873424, 2.257555], [48.873202, 2.257472], [48.872884, 2.257582], [48.872568, 2.25807], [48.872791, 2.258315], [48.872769, 2.259742], [48.872991, 2.260472], [48.87303, 2.260448], [48.873094, 2.260584], [48.87354, 2.26093], [48.874049, 2.26103], [48.874184, 2.260539], [48.874335, 2.259642], [48.874363, 2.258954], [48.874333, 2.258494], [48.874263, 2.258177], [48.874139, 2.257848], [48.873939, 2.257544]]
-  }
+  },
+  {"ref": "vincennes-zoo-trails", "name": "Parc zoologique de Paris: paths open to bikes, kept clear of its buildings", "note": "owner, 2026-11-22: 'make trails in the Paris zoos rideable and make sure they don't collide with any buildings. We're adding zoo animals so we want the rider to be able to actually see them. Vincennes zoo is most important'. Ring: OSM tourism=zoo, simplified 2.5 m. trailsClearBuildings: a path running more than TRAIL_CLEAR_M through a footprint (the Grande volière's boardwalk, the Grand Rocher's tunnel, the Grande Serre) or a tunnel stays a footway (tools/trail-clear.ts). The Ménagerie's paths are already open by garden-trails-jardin-des-plantes and cross no building.", "priority": 1, "props": {"trails": "bike", "trailsClearBuildings": true}, "ring": [[48.833119, 2.414118], [48.832841, 2.414743], [48.832262, 2.415802], [48.831401, 2.41705], [48.830739, 2.417875], [48.830245, 2.418394], [48.829648, 2.418866], [48.828981, 2.419256], [48.828987, 2.41965], [48.829566, 2.420033], [48.830074, 2.420273], [48.830927, 2.420457], [48.831584, 2.420454], [48.832849, 2.420241], [48.833743, 2.420261], [48.834202, 2.420185], [48.834594, 2.419924], [48.834564, 2.419853], [48.834619, 2.41963], [48.834668, 2.4196], [48.834078, 2.417783], [48.833768, 2.416632], [48.833651, 2.416031], [48.833478, 2.414297], [48.83317, 2.41414]]}
  ]
 }

@@ -88,7 +88,7 @@
       89
     ],
     "height": 65,
-    "note": "batch4/bois.ts: 65 m of the zoo's concrete rock, on OSM's Grand Rocher (way/262416016, 77 × 89 m, 60 m, and what the bake made of its base). On the fringe; a skyline thing, for the Porte Dorée and the lake. In for the Parc Floral, off the map.",
+    "note": "vincennes/grand-rocher.ts: a 2 m heightfield off IGN LiDAR HD (main peak 64 m, SE peak 49 m, west pyramid 32 m, apron), masked to OSM's outline, tree canopy cut by the orthophoto; registerRing for east/north.",
     "madeBy": "claude-opus-5-5"
   },
   {

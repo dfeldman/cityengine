@@ -253,6 +253,7 @@
       "way/448794899"
     ],
     "procedural": "quaiOrsay",
+    "madeBy": "claude-sonnet-5-5",
     "front": 7,
     "height": 29,
     "note": "Lacornée's Second Empire palace of the ministry on the Quai d'Orsay: batch6/fronts.ts, the restyle's three storeys under a mansard made an apartment block of it (Batch 6, 2026-10-31)."
@@ -273,6 +274,23 @@
     ],
     "height": 26,
     "note": "Replaces the `classical` restyle on the same relation. Way 54046037 (named Hôtel de Toulouse in OSM) is the relation's outer ring, so one footprint. Placed on its box turned to the Rue Croix-des-Petits-Champs (osmium, 2026-10-30), −z bearing 110. The long elevation and the door at no. 39 from Commons \"Façade principale BDF\" and \"Façade de la Banque de France, angle de la rue Baillif et de la rue Croix-des-Petits-Champs\"; the other fronts unchecked. Mansart's hôtel and the Galerie Dorée are inside the block and not drawn."
+  },
+  {
+    "name": "Hôtel de Beauvau (Ministère de l'Intérieur)",
+    "procedural": "hotelBeauvau",
+    "osm": [
+      "way/67353073"
+    ],
+    "lat": 48.871409,
+    "lon": 2.316683,
+    "rotateDeg": 296,
+    "size": [
+      43.6,
+      13.8
+    ],
+    "height": 19,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The Hôtel de Beauvau itself (OSM way 67353073, the 43 x 14 m bar the cadastre draws at the Faubourg end of the ministry's plot; way 67353152 is the whole plot). Gate and court front only: the ministry behind is the generic block. Placed at the bar's box, +z bearing 296 so the court front looks ESE. Rebuild 2026-11-16."
   },
   {
     "name": "Théâtre de l'Odéon",
@@ -417,6 +435,7 @@
       57.1
     ],
     "height": 28,
+    "madeBy": "claude-sonnet-5-5",
     "note": "Bernier's Salle Favart. Placed on OSM way 54572719's box turned 15.5° to its axes (osmium, 2026-10-29), front (−z) to the Place Boieldieu, bearing 195.5: the perron, the three arched doorways, the great windows between paired Corinthian columns, the attic of windows and caryatids, the statues in the side niches, the mansard and the stage house."
   },
   {
@@ -1129,7 +1148,8 @@
     "name": "Écuries de la Reine",
     "procedural": "versaillesEcuriesReine",
     "osm": [
-      "relation/1148826"
+      "relation/1148826",
+      "relation/5176013"
     ],
     "height": 17,
     "note": "The old stables of the King, then the Queen (1672), now the Cour d’appel: stone, three storeys and a mansard. Drawn on its OSM plan with its courts (versailles/dependances-plan.ts, registered by enframe.ts); dressing in versailles/communs.ts, heights from the levels tag and the literature, not the lidar.",

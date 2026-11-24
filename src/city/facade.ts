@@ -223,6 +223,8 @@ export interface FacadePlan {
   glassTint?: string
   /** this building's own dressing, for the styles that have one (`DRESSERS`) */
   dress?: Dress
+  /** no outside fire escapes whatever the style or dress says (Paris has none: PARIS_BUGS #169) */
+  noFireEscape?: boolean
 }
 
 /**
@@ -1191,7 +1193,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
    * is remembered by, and nowhere else has it.
    */
   // (not on a hospital, a school, a church: St Mary's and CPMC wore the tenement's ladders, 2026-10-04)
-  if (st.features?.fireEscape && (plan.dress?.fireEscape ?? true) && role.face && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
+  if (st.features?.fireEscape && (plan.dress?.fireEscape ?? true) && !plan.noFireEscape && role.face && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
     const b0 = Math.floor((bays - 2) / 2)
     const fx0 = margin + b0 * bayW
     const fx1 = fx0 + 2 * bayW
@@ -1213,7 +1215,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   // (a label's count of stacks replaces the style's bays: Dress.bayStacks, drawn in dressWall)
   const ownBays = plan.dress?.bayStacks === undefined
   if (ownBays && st.features?.bayWindows === 'stacks' && role.face && !plan.institution && bays >= 4 && plan.storeys.length >= 3) {
-    const esc = st.features.fireEscape && bays >= 3 ? Math.floor((bays - 2) / 2) : -99
+    const esc = st.features.fireEscape && !plan.noFireEscape && bays >= 3 ? Math.floor((bays - 2) / 2) : -99
     for (let b = 0; b + 2 <= bays; b += 3) {
       if (b <= esc + 1 && b + 2 > esc) continue          // not across the fire escape
       for (const s of plan.storeys) {
@@ -1351,7 +1353,7 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
         x0: x - half, x1: x + half, colour: d.fins ? trim : wall })
     }
   }
-  if (d.fireEscape && !style(plan.style).features?.fireEscape && bays >= 3 && plan.storeys.length >= 3) {
+  if (d.fireEscape && !plan.noFireEscape && !style(plan.style).features?.fireEscape && bays >= 3 && plan.storeys.length >= 3) {
     const b0 = Math.floor((bays - 2) / 2)
     for (const s of plan.storeys) {
       if (s.index < 1) continue

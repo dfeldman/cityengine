@@ -328,7 +328,8 @@
     "name": "Orgues de Flandre slab 64040660",
     "procedural": "flandreSlab",
     "osm": [
-      "way/64040660"
+      "way/64040660",
+      "way/976141561"
     ],
     "front": 0,
     "height": 17,

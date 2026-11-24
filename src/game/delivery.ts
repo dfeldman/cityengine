@@ -351,7 +351,7 @@ export class Delivery {
   }
 
   /** the time a job should take at `pace` m/s (the rating's yardstick): for "very late" */
-  static expected(job: Job, pace: number): number { return (job.metres * 1.35) / pace + 15 }
+  static expected(job: Job, pace: number, paris = false): number { return ((job.metres * 1.35) / pace + 15) * (paris ? PARIS_TIME_FACTOR : 1) }
 
   /**
    * A collision (game.ts, when the rider goes down): a FRAGILE item already picked up is spoiled and the job is off.
@@ -496,8 +496,11 @@ export const PARIS_ATE_LINES = ['Où est ma pizza?? Merde!', 'Vous avez MANGÉ?!
 export const ATE_LINES = ['Where is my food?? Never ordering again.', 'Did you EAT it? One star.', 'The app says delivered. My plate says otherwise.',
   'I can see crumbs in your beard on the doorbell camera.', 'Refund requested. Courier reported.']
 
+/** Paris's allowance multiplier (2026-11-17, #233): denser, slower streets, lights and crowds; the time budget grows by this */
+export const PARIS_TIME_FACTOR = 1.8
+
 export function rate(job: Job, seconds: number, bumps: number, level: number, pace: number, pick = Math.random(), paris = false): Rating {
-  const expected = Delivery.expected(job, pace)
+  const expected = Delivery.expected(job, pace, paris)
   const r = seconds / expected
   let stars = r <= 0.8 ? 5 : r <= 1.0 ? 4 : r <= 1.3 ? 3 : r <= 1.7 ? 2 : 1
   stars = Math.max(1, stars - bumps)

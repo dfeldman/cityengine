@@ -117,8 +117,14 @@ const FREEWAY = new Set(['motorway', 'motorway_link'])
  * ground, through the roadways under them (2026-09-30). This far up anywhere along it, it is drawn as a bridge.
  */
 const EMBANKMENT = 3.5
-function standsClear(f: Frame[], ground: (x: number, z: number) => number): boolean {
-  for (const fr of f) if (fr.y - ground(fr.x, fr.z) > EMBANKMENT) return true
+/** a footway this far over the ground is a walkway on piers, not on a bank; its piers this far apart */
+export const DECK_TRIM_ENDS_ONLY = true
+const WALK_POST_EVERY = 1.5, WALK_GLAZED_H = 2.6
+const WALK_GLASS: Rgb = [0.55, 0.68, 0.72]
+const WALK_IRON: Rgb = [0.17, 0.2, 0.19]
+const FOOT_SLAB_CLEAR = 1.2, FOOT_PIER_EVERY = 10
+function standsClear(f: Frame[], ground: (x: number, z: number) => number, clear = EMBANKMENT): boolean {
+  for (const fr of f) if (fr.y - ground(fr.x, fr.z) > clear) return true
   return false
 }
 
@@ -139,7 +145,9 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
    */
   if (onGroundStreet) {
     const whole = frames(pts, e.heights)
-    const runs = sampledRuns(whole, (fr) => !onGroundStreet(fr.x, fr.z, fr.y))
+    // (trimmed at its ENDS only: a stretch over a street in the middle is the deck crossing it — the La Défense walkways over the
+    //  Boulevard Patrick Devedjian clear it by 1.2 m in the bake, and cut there they were short pieces with gaps, owner 2026-11-17)
+    const runs = DECK_TRIM_ENDS_ONLY ? endRuns(whole, (fr) => !onGroundStreet(fr.x, fr.z, fr.y)) : sampledRuns(whole, (fr) => !onGroundStreet(fr.x, fr.z, fr.y))
     const total = whole[whole.length - 1].s
     if (!(runs.length === 1 && runs[0][0].s < 0.01 && runs[0][runs[0].length - 1].s > total - 0.01)) {
       for (const run of runs) {
@@ -260,7 +268,7 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
         if (fr.y - 1.25 - ground(cx, cz) > 1) pier(out, cx, cz, ground(cx, cz) - 0.5, fr.y - 1.25, 0.22, 0.22, Math.atan2(fr.nx, fr.nz))
       }
     }
-  } else if (e.bridge || standsClear(f, ground)) {
+  } else if (e.bridge || standsClear(f, ground, e.foot ? FOOT_SLAB_CLEAR : EMBANKMENT)) {
     // the slab's fascia and soffit
     wall(out, f, -outer - 0.3, -0.9, top, STONE, -1)
     wall(out, f, outer + 0.3, -0.9, top, STONE, 1)
@@ -271,14 +279,37 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
       const o0 = side * outer
       const o1 = side * (outer + 0.3)
       for (const run of openRuns(f, side * (outer + 0.8), beside)) {
-        wall(out, run, o0, top, top + 1.1, STONE, side === -1 ? 1 : -1)
-        wall(out, run, o1, top, top + 1.1, STONE, side)
-        strip(out, run, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, STONE)
+        if (e.walkStyle === 'steel' || e.walkStyle === 'timber') {
+          // a listed La Défense walkway in steel: an openwork railing, a top rail, a mid rail and posts (WALK_POST_EVERY)
+          const r1 = side * (outer + 0.06)
+          wall(out, run, r1, top + 1.02, top + 1.1, WALK_IRON, side)
+          wall(out, run, o0, top + 1.02, top + 1.1, WALK_IRON, side === -1 ? 1 : -1)
+          wall(out, run, r1, top + 0.45, top + 0.5, WALK_IRON, side)
+          const len = run[run.length - 1].s
+          for (let s0 = run[0].s; s0 <= len; s0 += WALK_POST_EVERY) {
+            const fr = frameAt(run, s0)
+            pier(out, fr.x + fr.nx * side * (outer + 0.03), fr.z + fr.nz * side * (outer + 0.03), fr.y + top, fr.y + top + 1.1, 0.04, 0.04, 0)
+          }
+        } else if (e.walkStyle === 'glazed') {
+          // a covered walkway: glass walls to WALK_GLAZED_H and a roof over them
+          wall(out, run, o0, top, top + WALK_GLAZED_H, WALK_GLASS, side === -1 ? 1 : -1)
+          wall(out, run, o0, top, top + WALK_GLAZED_H, WALK_GLASS, side)
+          wall(out, run, o0, top + WALK_GLAZED_H, top + WALK_GLAZED_H + 0.3, STONE, side)
+        } else {
+          wall(out, run, o0, top, top + 1.1, STONE, side === -1 ? 1 : -1)
+          wall(out, run, o1, top, top + 1.1, STONE, side)
+          strip(out, run, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, STONE)
+        }
       }
     }
-    // piers every 25 m, down to the ground or the river bed
+    if (e.walkStyle === 'glazed') strip(out, f, -outer - 0.2, outer + 0.2, top + WALK_GLAZED_H + 0.3, STONE)
+    // piers every 25 m, down to the ground or the river bed; a footway's every FOOT_PIER_EVERY, and one under a short piece at least
+    // (La Défense's walkways up to the Devedjian footbridge, 48.8924, 2.2456, are ways 2–9 m long: with the first pier 12.5 m in, none
+    //  had one, and the people on them walked on a floating ribbon — owner, 2026-11-17)
     const total = f[f.length - 1].s
-    for (let s = 12.5; s < total - 6; s += 25) {
+    const every = e.foot ? FOOT_PIER_EVERY : 25
+    const first = e.foot && total < every ? total / 2 : every / 2
+    for (let s = first; s < total - Math.min(6, total / 2 - 0.01); s += every) {
       let k = 1
       while (k < f.length - 1 && f[k].s < s) k++
       const p = f[k - 1]
@@ -469,6 +500,18 @@ function sampledRuns(f: Frame[], open: (fr: Frame) => boolean): Frame[][] {
   }
   if (cur.length >= 2) runs.push(cur)
   return runs
+}
+
+/** Like `sampledRuns`, but only the closed stretches that reach an end are dropped: one run from the first open sample to the last. */
+function endRuns(f: Frame[], open: (fr: Frame) => boolean): Frame[][] {
+  const total = f[f.length - 1].s
+  const n = Math.max(1, Math.ceil(total / 2))
+  const all: Frame[] = []
+  for (let i = 0; i <= n; i++) all.push(frameAt(f, (total * i) / n))
+  let a = 0, b = all.length - 1
+  while (a <= b && !open(all[a])) a++
+  while (b >= a && !open(all[b])) b--
+  return b - a >= 1 ? [all.slice(a, b + 1)] : []
 }
 
 function openRuns(f: Frame[], offset: number, beside?: (x: number, z: number, y: number) => boolean): Frame[][] {

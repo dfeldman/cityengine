@@ -3011,7 +3011,8 @@
   },
   {
     "osm": [
-      "way/68851055"
+      "way/68851055",
+      "way/691708873"
     ],
     "name": "La Défense: WhiteOverGlass (unnamed block, 41 m)",
     "procedural": "d3cWhiteOverGlass",
@@ -3021,7 +3022,8 @@
   },
   {
     "osm": [
-      "way/68851156"
+      "way/68851156",
+      "way/329160731"
     ],
     "name": "La Défense: BalconyEstate (unnamed block, 6 m)",
     "procedural": "d3cBalconyEstate",

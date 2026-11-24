@@ -13,8 +13,8 @@
  */
 import { Projection } from '../city/geo.ts'
 import { squareBenches } from './paris/square-benches.ts'
-import { levelPlanTweaks, prepareTweaks } from '../city/terrain-tweaks.ts'
-import { modelLevelTest } from '../city/model-walks.ts'
+import { inRing, levelPlanTweaks, prepareTweaks } from '../city/terrain-tweaks.ts'
+import { modelLevelAt } from '../city/model-walks.ts'
 /** the street figures a landmark or pooled statue may already draw (see `City.figureFree`) */
 /** metres round a landmark's footprint where its own figure/pedestal stands (the Molière statue's point is 6 m out, in front) */
 const FIGURE_PAD = 6
@@ -46,6 +46,7 @@ import { straightOutline } from '../city/bridge-axis.ts'
 import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { court } from './sports.ts'
+import { surfaceTag } from './cartoon-material.ts'
 import { groundLayerMaterial, roadMaterial, CLIFF_SURFACES, CLIFF_GRADE_FROM, CLIFF_GRADE_TO, CLIFF_GRADE_RUN } from './road-material.ts'
 import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
@@ -64,6 +65,7 @@ import { specialFor, specialLook } from '../city/specials.ts'
 import { areaPalettes, handLook } from '../city/hand-looks.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
+import { sliverTamed, snappedMinHeight } from './sliver.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
 import { WallGround, WG_ON, refineAtWallsSteps } from '../city/wall-ground.ts'
 import { wallsFirst } from './depth-copies.ts'
@@ -209,6 +211,8 @@ const OVERLAY_MAX_GRADE = 1.5
  * triangle of the corridor or the pavements steeper than STREET_LAYER_MAX_GRADE is dropped, and the bank shows its own ground.
  */
 const STREET_LAYER_MAX_GRADE = 0.6
+/** a carriageway's triangle steeper than this is dropped (no road is: SF's steepest is 0.315) */
+const ROAD_MAX_GRADE = 1.0
 function dropSteep(out: MeshBuilder, maxGrade = OVERLAY_MAX_GRADE): number {
   const P = out.positions, I = out.indices, keep: number[] = []
   let n = 0
@@ -1692,6 +1696,9 @@ if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>
 /** where the corner fill put a fire alarm box (Region `pointFurniture.callBoxFill`), for the shot tools: the first 500 */
 const CALLBOX_FILL: [number, number][] = []
 if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>).__callBoxFill = CALLBOX_FILL
+/** metres within which one bike-hoop / two-wheeler node is part of an already drawn row (#293) */
+const STAND_GAP_BIKE = 9
+const STAND_GAP_MOTO = 7
 function skippedIf(why: string | null, x: number, z: number, what: string): boolean {
   if (why === null) return false
   SKIPPED.n++
@@ -1749,6 +1756,11 @@ function splitLong(e: PackedEdge): PackedEdge[] {
   return out
 }
 
+/** a building part whose underside is this high (m) can be a roof over the path; below, a kerb-high plinth; above, a tower's podium (#212, #283) */
+const ROOF_OVER_MIN = 2.2
+const ROOF_OVER_MAX = 9
+/** how far past a part's outline the camera already counts as under it (m) */
+const ROOF_OVER_PAD = 0.5
 export class City {
   private readonly scene: Scene
   private readonly pkg: CityPackage
@@ -1771,21 +1783,23 @@ export class City {
   private wallace: WallaceFountains | null = null
   /** which Paris métro entrances are Guimard's (render/paris/guimard-sites.ts); set by game.ts, the rest are `parisEntrance` */
   guimardAt: ((x: number, z: number) => boolean) | null = null
+  /** where each metro entrance was actually drawn (moved off the road / out of a block; absent = not drawn), by OSM node; the METROPOLITAIN boards follow it */
+  readonly metroSpot = new Map<string, { x: number; z: number; heading: number }>()
   /** the red Wallace fountain (render/paris/wallace.ts RED_WALLACE), in local metres; set by game.ts */
   redWallace: { x: number; z: number } | null = null
   /** edges that are structures (bridges, ramps) rather than painted ground; see render/bridges.ts */
   readonly raisedIds = new Set<number>()
   /** walks on a model's own paved levels (region `modelWalks`, city/model-walks.ts): the model draws their surface */
   private onModelCache = new Map<number, boolean>()
-  private onModelTest: ((x: number, z: number) => boolean) | null | undefined
+  private onModelTest: ((x: number, z: number) => number | null) | null | undefined
   private onModelLevel(e: PackedEdge): boolean {
     if (!e.foot) return false
-    if (this.onModelTest === undefined) this.onModelTest = this.pkg.origin ? modelLevelTest(this.region.modelWalks, new Projection(this.pkg.origin)) : null
+    if (this.onModelTest === undefined) this.onModelTest = this.pkg.origin ? modelLevelAt(this.region.modelWalks, new Projection(this.pkg.origin)) : null
     if (!this.onModelTest) return false
     let v = this.onModelCache.get(e.id)
     if (v === undefined) {
       const ps = unpackPoints(e.points)
-      v = ps.filter((q) => this.onModelTest!(q.x, q.z)).length * 2 >= ps.length
+      v = ps.filter((q) => this.onModelTest!(q.x, q.z) !== null).length * 2 >= ps.length
       this.onModelCache.set(e.id, v)
     }
     return v
@@ -1950,7 +1964,7 @@ export class City {
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number; lid?: number }>()
   /** the lids' outlines alone (a few dozen in Paris), for the layers laid on their tops (LID_TOP_GROUND) */
-  private readonly lidList: { id: number; ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number; y: number; segs?: { ax: number; az: number; bx: number; bz: number; ha: number; hb: number }[] }[] = []
+  private readonly lidList: { id: number; ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number; y: number; segs?: { ax: number; az: number; bx: number; bz: number; ha: number; hb: number }[]; surface?: string; grown?: { x: number; z: number }[] }[] = []
   /**
    * The street level on a lid at (x, z): the nearest street on it (its own profile), else the slab's. The slab lies at its LOW streets'
    * level (tools/bake.ts LID_LEVEL_Q) and the streets crossing it stand up to 2 m higher as decks: a plaza laid at the slab's level ran
@@ -1959,7 +1973,7 @@ export class City {
   private lidLevel(o: City['lidList'][number], x: number, z: number): number {
     if (!o.segs || o.segs.length === 0) {
       const segs: NonNullable<typeof o.segs> = []
-      const seen = new Set<number>()
+      const seen = new Set<number>(), surf = new Map<string, number>()
       for (let tx = Math.floor(o.x0 / TILE); tx <= Math.floor(o.x1 / TILE); tx++) for (let tz = Math.floor(o.z0 / TILE); tz <= Math.floor(o.z1 / TILE); tz++) {
         for (const e of this.edgesIn.get(key(tx, tz)) ?? []) {
           if (seen.has(e.id) || !e.heights || e.tunnel || e.trench || e.cut || steeperThanWall(e)) continue
@@ -1970,10 +1984,13 @@ export class City {
             if (!inOutline(o.ring, mx, mz, 0.5)) continue
             if (Math.abs((e.heights[i - 1] + e.heights[i]) / 2 - o.y) > LID_STREET_DH) continue
             segs.push({ ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, ha: e.heights[i - 1], hb: e.heights[i] })
+            if (!e.foot) { const sf = drawnSurface(e); surf.set(sf, (surf.get(sf) ?? 0) + Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z)) }
           }
         }
       }
       o.segs = segs
+      // (its top in the surface most of its streets are laid in: the Place de Varsovie's setts between its streets, not concrete)
+      o.surface = [...surf].sort((a, b) => b[1] - a[1])[0]?.[0]
     }
     let best = Infinity, h = o.y
     for (const s of o.segs) {
@@ -2004,14 +2021,27 @@ export class City {
     }
     return null
   }
+  /** a ramp whose every height is within LID_FLUSH_DH of the ground, and if `nearLid`, near a lid (its bbox within LID_FLUSH_PAD m of one's): see the decks loop */
+  private flushRamp(e: PackedEdge, nearLid: boolean): boolean {
+    if (!e.heights || (nearLid && this.lidList.length === 0)) return false
+    const p = unpackPoints(e.points)
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of p) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    if (nearLid && !this.lidList.some((o) => x1 >= o.x0 - LID_FLUSH_PAD && x0 <= o.x1 + LID_FLUSH_PAD && z1 >= o.z0 - LID_FLUSH_PAD && z0 <= o.z1 + LID_FLUSH_PAD)) return false
+    const dh = nearLid ? LID_FLUSH_DH : FLUSH_FOOT_DH
+    return p.every((q, i) => Math.abs(e.heights![i] - this.terrain.heightAt(q.x, q.z)) <= dh)
+  }
   private liftOnLids(P: number[]): void {
     if (!LID_TOP_GROUND || this.lidList.length === 0) return
     for (let i = 0; i < P.length; i += 3) {
       const x = P[i], z = P[i + 2]
       for (const o of this.lidList) {
-        if (x < o.x0 || x > o.x1 || z < o.z0 || z > o.z1 || !inOutline(o.ring, x, z, 0)) continue
+        if (x < o.x0 - LID_GROW || x > o.x1 + LID_GROW || z < o.z0 - LID_GROW || z > o.z1 + LID_GROW) continue
+        const inside = inOutline(o.ring, x, z, 0)
+        // (…and in the band the top reaches past its outline over the trench, what lies down in it: see `growRing`)
+        if (!inside && !(LID_GROW > 0 && inOutline(o.grown ??= growRing(o.ring, LID_GROW, LID_GROW_EDGE), x, z, 0))) continue
         const top = this.lidLevel(o, x, z) - LID_TOP_SINK + LID_LAYER_LIFT
-        if (P[i + 1] < top) P[i + 1] = top
+        if (inside ? P[i + 1] < top : P[i + 1] < top - LID_GROW_DH) P[i + 1] = top
         break
       }
     }
@@ -2200,6 +2230,10 @@ export class City {
     this.region = region(pkg.region)
     // the runtime pits in the fine ground (city/terrain-tweaks.ts), before any tile's block lands
     if (pkg.origin) this.terrain.tweaks = prepareTweaks([...levelPlanTweaks(this.region.levelPlans), ...(this.region.terrainTweaks ?? [])], new Projection(pkg.origin), (x, z) => this.terrain.rawHeightAt(x, z))
+    if (pkg.origin) {
+      const proj = new Projection(pkg.origin)
+      this.retypes = (this.region.retypeAreas ?? []).map((r) => ({ from: r.from, to: r.to, ring: r.ring.flatMap(([lat, lon]) => { const q = proj.toLocal({ lat, lon }); return [q.x, q.z] }) }))
+    }
     // the ground at the quay walls read side by side (city/wall-ground.ts), after the tweaks have read it as shipped
     if (WG_ON && pkg.quayWalls?.length) this.terrain.walls = new WallGround(pkg.quayWalls)
     if (pkg.quayWalls?.length) this.waterWalls = new WallGround(pkg.quayWalls, WATER_WALL_LAND)
@@ -2330,7 +2364,19 @@ export class City {
     this.light.add(k)
   }
 
+  /** regions.json `retypeAreas`, in local metres: set with the tweaks */
+  private retypes: { from: string; to: PackedArea['kind']; ring: number[] }[] = []
+
   ingest(t: TileData): void {
+    for (const r of this.retypes) {
+      for (const a of t.areas) {
+        if (a.kind !== r.from) continue
+        const p = unpackPoints(a.ring)
+        let x = 0, z = 0
+        for (const q of p) { x += q.x; z += q.z }
+        if (p.length && inRing(r.ring, x / p.length, z / p.length)) { a.kind = r.to; delete (a as { level?: number }).level }
+      }
+    }
     if (this.light.has(t.key)) {
       this.light.delete(t.key)
       const [tx, tz] = t.key.split(',').map(Number)
@@ -2376,7 +2422,9 @@ export class City {
     for (const whole of t.edges) {
       if (!onSurface(whole) || this.edgeSeen.has(whole.id)) continue
       this.edgeSeen.add(whole.id)
-      const raised = isRaised(whole, this.terrain)
+      // (a foot ramp lying on the ground at every vertex is a footway on it, painted like any other: the Parvis Notre-Dame's paths,
+      //  drawn as decks linear between vertices 5 m apart, floated up to 0.8 m over the paving's dips as grey bars — FLUSH_FOOT_RAMPS)
+      const raised = isRaised(whole, this.terrain) && !(FLUSH_FOOT_RAMPS && this.region.viaduct === 'paris' && whole.foot && whole.ramp && !whole.bridge && whole.kind !== 'steps' && this.flushRamp(whole, false))
       if (raised) this.raisedIds.add(whole.id)
       // (a long ground way in pieces, each drawn by the tile it starts in: see `splitLong`)
       for (const e of raised ? [whole] : splitLong(whole)) {
@@ -3093,6 +3141,22 @@ export class City {
       }
     }
     return top
+  }
+
+  /**
+   * The soffit (metres above the ground there) of a canopy, skyway or deck-level building part over (x, z), or null:
+   * a stacked part that starts above head height but low enough that the chase camera's 3.5 m eye would sit in it
+   * (BUGS #212 Coulee verte, #283 La Defense skyway). The caller keeps the eye under it.
+   */
+  roofOver(x: number, z: number): number | null {
+    const [cx, cz] = tileOf(x, z)
+    let low: number | null = null
+    for (const b of this.buildingsIn.get(key(cx, cz)) ?? []) {
+      const m = b.minHeight ?? 0
+      if (m < ROOF_OVER_MIN || m > ROOF_OVER_MAX || !withinRing(b.ring, x, z, ROOF_OVER_PAD)) continue
+      low = low === null ? m : Math.min(low, m)
+    }
+    return low
   }
 
   /** How far a street is cut back at this node; 0 where it simply ends or bends. */
@@ -3981,32 +4045,59 @@ export class City {
     yield 'lid tops'
     if (LID_TOP_GROUND && this.lidList.length && !this.off.has('walks')) {
       const [lkx, lkz] = k.split(',').map(Number)
-      const tops = new MeshBuilder()
+      const topsBy = new Map<string, MeshBuilder>()
       for (const o of this.lidList) {
         let cx = 0, cz = 0
         for (const q of o.ring) { cx += q.x; cz += q.z }
         cx /= o.ring.length; cz /= o.ring.length
         if (Math.floor(cx / TILE) !== lkx || Math.floor(cz / TILE) !== lkz) continue
-        const i0 = tops.positions.length
-        capPolygon(tops, o.ring, 0, PAVEMENT, 0)
+        this.lidLevel(o, cx, cz)
+        const sf = o.surface ?? 'concrete', tops = topsBy.get(sf) ?? topsBy.set(sf, new MeshBuilder()).get(sf)!
+        const i0 = tops.positions.length, t0 = tops.indices.length
+        /*
+         * OUT TO THE TRENCH'S WALLS (the Place de l'Alma, sheet cell 2: a dark band across the place). The bake's outline stopped 4 m
+         * short of the trench's north wall, and between the slab and the Avenue de New York the eye looked down 3.6 m into the trench.
+         * The top is laid over the outline grown LID_GROW m across its long sides (LID_GROW_EDGE m or longer: the short ends are the
+         * portals, where the trench is open) and keeps, outside the outline, only triangles over ground LID_GROW_DH m or more under it.
+         */
+        capPolygon(tops, LID_GROW > 0 ? growRing(o.ring, LID_GROW, LID_GROW_EDGE) : o.ring, 0, PAVEMENT, 0)
         // (in triangles LID_TOP_EDGE m on a side, each corner at the street level there: lidLevel)
         yield* subdivideSteps(tops, LID_TOP_EDGE)
         for (let i = i0; i < tops.positions.length; i += 3) tops.positions[i + 1] = this.lidLevel(o, tops.positions[i], tops.positions[i + 2]) - LID_TOP_SINK
+        if (LID_GROW > 0) {
+          const P = tops.positions, keep: number[] = []
+          for (let t = t0; t < tops.indices.length; t += 3) {
+            const [a, b2, c2] = [tops.indices[t], tops.indices[t + 1], tops.indices[t + 2]]
+            const mx = (P[a * 3] + P[b2 * 3] + P[c2 * 3]) / 3, mz = (P[a * 3 + 2] + P[b2 * 3 + 2] + P[c2 * 3 + 2]) / 3
+            const low = [a, b2, c2].every((v) => this.terrain.heightAt(P[v * 3], P[v * 3 + 2]) < P[v * 3 + 1] - LID_GROW_DH)
+            if (inOutline(o.ring, mx, mz, 0) || low) keep.push(a, b2, c2)
+          }
+          tops.indices.length = t0
+          tops.indices.push(...keep)
+        }
       }
-      if (tops.triangles > 0) {
-        const m = new Mesh(`lidtop:${k}`, this.scene)
+      for (const [sf, tops] of topsBy) {
+        if (tops.triangles === 0) continue
+        const m = new Mesh(`lidtop:${sf}:${k}`, this.scene)
         tops.toVertexData().applyToMesh(m)
-        m.material = groundLayerMaterial(this.scene, this.roadAssets, 'concrete', 'corridor')
+        // (its own material: written into depth and pulled LID_TOP_ZOFFSET toward the eye, so the ground meeting it at the slab's edges, in
+        //  the same group, yields to it; the painted layers' material writes no depth, and the ground drawn after it tore it in patches —
+        //  the "torn crater" in the Place de Varsovie's sheet)
+        const lm = roadMaterial(this.scene, sf, this.roadAssets, `lidtop:${sf}`)
+        lm.zOffset = LID_TOP_ZOFFSET
+        m.material = lm
         m.renderingGroupId = GROUP.base
         m.isPickable = false
         meshes.push(m)
         const occM = (this.scene.getMaterialByName('occluder') as StandardMaterial | null) ?? (() => { const mm = new StandardMaterial('occluder', this.scene); mm.disableColorWrite = true; mm.disableLighting = true; mm.backFaceCulling = false; return mm })()
         for (const g of [GROUP.areas, GROUP.road, GROUP.building]) {
-          const c = m.clone(`ground:occluder:lidtop:${g}:${k}`)
+          const c = m.clone(`ground:occluder:lidtop:${g}:${sf}:${k}`)
           if (!c) continue
           c.material = occM
           c.renderingGroupId = g
-          c.position.y = -LID_OCC_SINK
+          // (in the structures' group just OVER the top: the lid's own slab there, render/bridge-structures.ts, has its top 0–2 cm under
+          //  it, over a copy sunk LID_OCC_SINK, and drew through the place's paving with its markings — the Place de l'Alma's blue line)
+          c.position.y = g === GROUP.building ? LID_OCC_G3_LIFT : -LID_OCC_SINK
           c.isPickable = false
           meshes.push(c)
         }
@@ -4176,6 +4267,9 @@ export class City {
       yield* refineAtWallsSteps(out, this.terrain, marked)
       yield 'refined'
       yield* this.terrain.drapeSteps(out.positions)
+      // (A CARRIAGEWAY NEVER STANDS UP either, owner 2026-11-16 at the Avenue de New York's mouth by the Place de Varsovie: a short ramp
+      //  piece's asphalt, draped over the trench's step, stood across the trench as a dark wall in front of the portal. ROAD_MAX_GRADE)
+      if (surface !== this.pkg.ground) dropSteep(out, ROAD_MAX_GRADE)
       // (the base ground's steepness per vertex, for its stone: render/road-material.ts, colour alpha −1..−2)
       if (surface === this.pkg.ground && CLIFF_SURFACES.has(surface) && this.region.viaduct === 'paris') {
         const P = out.positions, C = out.colors, d = CLIFF_GRADE_RUN, t = this.terrain
@@ -5217,7 +5311,7 @@ export class City {
             const n: [number, number, number] = [nx, 0, nz]
             const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
             const q = (p0: { x: number; z: number }, p1: { x: number; z: number }, y00: number, y10: number, y11: number, y01: number, c: [number, number, number], nn = n): void => {
-              walls.quad([[p0.x, y00, p0.z], [p1.x, y10, p1.z], [p1.x, y11, p1.z], [p0.x, y01, p0.z]], nn, UV, c, 0)
+              walls.quad([[p0.x, y00, p0.z], [p1.x, y10, p1.z], [p1.x, y11, p1.z], [p0.x, y01, p0.z]], nn, UV, c, c === TURF ? 0 : surfaceTag('ashlar'))
             }
             /*
              * A FOOT WAY gets no wall (Golden Gate Park audit, 2026-10-04: Strawberry Hill's trails, benched across its
@@ -5302,7 +5396,7 @@ export class City {
               const p1 = { x: P(t1).x + nx * d1, z: P(t1).z + nz * d1 }
               if (d0 > 0 || d1 > 0) {
                 const k0 = P(t0), k1 = P(t1)
-                walls.quad([[k0.x, h0 + 0.02, k0.z], [k1.x, h1 + 0.02, k1.z], [p1.x, h1 + 0.02, p1.z], [p0.x, h0 + 0.02, p0.z]], [0, 1, 0], UV, cap, 0)
+                walls.quad([[k0.x, h0 + 0.02, k0.z], [k1.x, h1 + 0.02, k1.z], [p1.x, h1 + 0.02, p1.z], [p0.x, h0 + 0.02, p0.z]], [0, 1, 0], UV, cap, cap === TURF ? 0 : surfaceTag('ashlar'))
               }
               /*
                * A park's bank SLOPES: from the road's edge out to the ground at about 1 in 2, not a vertical turf face
@@ -5314,7 +5408,7 @@ export class City {
                 const f0 = { x: p0.x + nx * run0, z: p0.z + nz * run0 }, f1 = { x: p1.x + nx * run1, z: p1.z + nz * run1 }
                 const g0 = this.terrain.rawHeightAt(f0.x, f0.z) - 0.15, g1 = this.terrain.rawHeightAt(f1.x, f1.z) - 0.15
                 const slope: [number, number, number] = [nx * 0.45, 0.9, nz * 0.45]
-                walls.quad([[f0.x, g0, f0.z], [f1.x, g1, f1.z], [p1.x, h1 + 0.02, p1.z], [p0.x, h0 + 0.02, p0.z]], slope, UV, face, 0)
+                walls.quad([[f0.x, g0, f0.z], [f1.x, g1, f1.z], [p1.x, h1 + 0.02, p1.z], [p0.x, h0 + 0.02, p0.z]], slope, UV, face, face === TURF ? 0 : surfaceTag('ashlar'))
                 continue
               }
               // the face, down to just under the ground, and the parapet's outer face above the street
@@ -5323,7 +5417,7 @@ export class City {
                 const i0 = { x: p0.x - nx * 0.3, z: p0.z - nz * 0.3 }
                 const i1 = { x: p1.x - nx * 0.3, z: p1.z - nz * 0.3 }
                 q(i1, i0, h1, h0, h0 + parapet, h1 + parapet, stone, [-nx, 0, -nz])
-                walls.quad([[p0.x, h0 + parapet, p0.z], [p1.x, h1 + parapet, p1.z], [i1.x, h1 + parapet, i1.z], [i0.x, h0 + parapet, i0.z]], [0, 1, 0], UV, cap, 0)
+                walls.quad([[p0.x, h0 + parapet, p0.z], [p1.x, h1 + parapet, p1.z], [i1.x, h1 + parapet, i1.z], [i0.x, h0 + parapet, i0.z]], [0, 1, 0], UV, cap, cap === TURF ? 0 : surfaceTag('ashlar'))
               }
             }
           }
@@ -5414,28 +5508,28 @@ export class City {
             const t0 = p0.h + rise[k - 1], t1 = p1.h + rise[k]
             const inN: [number, number, number] = [-nx, 0, -nz]
             // the face, seen from the road
-            walls.quad([[p1.x, p1.h - 0.3, p1.z], [p0.x, p0.h - 0.3, p0.z], [p0.x, t0, p0.z], [p1.x, t1, p1.z]], inN, UV, CONCRETE, 0)
+            walls.quad([[p1.x, p1.h - 0.3, p1.z], [p0.x, p0.h - 0.3, p0.z], [p0.x, t0, p0.z], [p1.x, t1, p1.z]], inN, UV, CONCRETE, surfaceTag('concrete'))
             // (under a slab the face is its abutment, and the slab is the top: no coping or parapet through it)
             if (this.region.viaduct === 'paris' && this.onOutline((p0.x + p1.x) / 2 + nx, (p0.z + p1.z) / 2 + nz)) continue
             // the coping strip, over the carve's pit to where the ground comes up to it
             const w0 = Math.max(TRENCH_T, wd[k - 1]), w1 = Math.max(TRENCH_T, wd[k])
             const f0 = { x: p0.x + p0.nx * w0, z: p0.z + p0.nz * w0 }, f1 = { x: p1.x + nx * w1, z: p1.z + nz * w1 }
-            walls.quad([[p0.x, t0, p0.z], [p1.x, t1, p1.z], [f1.x, t1, f1.z], [f0.x, t0, f0.z]], [0, 1, 0], UV, COPING, 0)
+            walls.quad([[p0.x, t0, p0.z], [p1.x, t1, p1.z], [f1.x, t1, f1.z], [f0.x, t0, f0.z]], [0, 1, 0], UV, COPING, surfaceTag('concrete'))
             if (Math.min(rise[k - 1], rise[k]) >= TRENCH_PARAPET_MIN) {
               const P = TRENCH_PARAPET
               const o0 = { x: p0.x + nx * TRENCH_T, z: p0.z + nz * TRENCH_T }, o1 = { x: p1.x + nx * TRENCH_T, z: p1.z + nz * TRENCH_T }
-              walls.quad([[p1.x, t1, p1.z], [p0.x, t0, p0.z], [p0.x, t0 + P, p0.z], [p1.x, t1 + P, p1.z]], inN, UV, CONCRETE, 0)
-              walls.quad([[o0.x, t0, o0.z], [o1.x, t1, o1.z], [o1.x, t1 + P, o1.z], [o0.x, t0 + P, o0.z]], [nx, 0, nz], UV, CONCRETE, 0)
-              walls.quad([[p0.x, t0 + P, p0.z], [p1.x, t1 + P, p1.z], [o1.x, t1 + P, o1.z], [o0.x, t0 + P, o0.z]], [0, 1, 0], UV, CONCRETE, 0)
+              walls.quad([[p1.x, t1, p1.z], [p0.x, t0, p0.z], [p0.x, t0 + P, p0.z], [p1.x, t1 + P, p1.z]], inN, UV, CONCRETE, surfaceTag('concrete'))
+              walls.quad([[o0.x, t0, o0.z], [o1.x, t1, o1.z], [o1.x, t1 + P, o1.z], [o0.x, t0 + P, o0.z]], [nx, 0, nz], UV, CONCRETE, surfaceTag('concrete'))
+              walls.quad([[p0.x, t0 + P, p0.z], [p1.x, t1 + P, p1.z], [o1.x, t1 + P, o1.z], [o0.x, t0 + P, o0.z]], [0, 1, 0], UV, CONCRETE, surfaceTag('concrete'))
               // the railing over the curb's middle: a top rail, and a post at each TRENCH_POST_EVERY m of the run
               const R = TRENCH_RAIL, rt = TRENCH_RAIL_T, c = TRENCH_T / 2
               const m0 = { x: p0.x + nx * c, z: p0.z + nz * c }, m1 = { x: p1.x + nx * c, z: p1.z + nz * c }
               const ux = p1.x - p0.x, uz = p1.z - p0.z, ul = Math.hypot(ux, uz) || 1
               const box = (ax: number, az: number, bx: number, bz: number, y0a: number, y0b: number, y1a: number, y1b: number, half: number): void => {
                 const ex = -(bz - az), ez = bx - ax, el = Math.hypot(ex, ez) || 1, sx = (ex / el) * half, sz = (ez / el) * half
-                walls.quad([[ax + sx, y0a, az + sz], [bx + sx, y0b, bz + sz], [bx + sx, y1b, bz + sz], [ax + sx, y1a, az + sz]], [ex / el, 0, ez / el], UV, RAIL, 0)
-                walls.quad([[bx - sx, y0b, bz - sz], [ax - sx, y0a, az - sz], [ax - sx, y1a, az - sz], [bx - sx, y1b, bz - sz]], [-ex / el, 0, -ez / el], UV, RAIL, 0)
-                walls.quad([[ax - sx, y1a, az - sz], [ax + sx, y1a, az + sz], [bx + sx, y1b, bz + sz], [bx - sx, y1b, bz - sz]], [0, 1, 0], UV, RAIL, 0)
+                walls.quad([[ax + sx, y0a, az + sz], [bx + sx, y0b, bz + sz], [bx + sx, y1b, bz + sz], [ax + sx, y1a, az + sz]], [ex / el, 0, ez / el], UV, RAIL, surfaceTag('metal'))
+                walls.quad([[bx - sx, y0b, bz - sz], [ax - sx, y0a, az - sz], [ax - sx, y1a, az - sz], [bx - sx, y1b, bz - sz]], [-ex / el, 0, -ez / el], UV, RAIL, surfaceTag('metal'))
+                walls.quad([[ax - sx, y1a, az - sz], [ax + sx, y1a, az + sz], [bx + sx, y1b, bz + sz], [bx - sx, y1b, bz - sz]], [0, 1, 0], UV, RAIL, surfaceTag('metal'))
               }
               box(m0.x, m0.z, m1.x, m1.z, t0 + R - rt, t1 + R - rt, t0 + R, t1 + R, rt)
               if (Math.floor(p0.s / TRENCH_POST_EVERY) !== Math.floor(p1.s / TRENCH_POST_EVERY)) {
@@ -5571,14 +5665,22 @@ export class City {
          * deck-coloured slab in the middle of the place's cobbles. Its carriageway is laid like any other, in its own surface, at its
          * own level (lidLevel), in the carriageways' group; the slab's top (lidTops) and the place's layers meet it there.
          */
-        const lid = LID_TOP_GROUND && !e.foot && e.heights ? this.lidUnder(e) : null
-        if (lid) {
+        const lid = LID_TOP_GROUND && e.heights && e.kind !== 'steps' ? this.lidUnder(e) : null
+        /*
+         * A RAMP LYING ON THE GROUND BESIDE A LID IS A STREET TOO (the Place de Varsovie's pieces either side of the slab: 364441, 192676,
+         * 192683 are flagged ramps with every height on the ground, and drawn as decks they were flat deck-grey slabs in the setts). A
+         * carriage way's ramp near a lid (LID_FLUSH_PAD) whose heights are all within LID_FLUSH_DH of the ground is laid like a street on a
+         * lid, at its own heights.
+         */
+        // (a foot ramp on the ground is not raised at all: FLUSH_FOOT_RAMPS where raisedIds is filled)
+        const flush = !lid && paris && LID_TOP_GROUND && e.ramp && !e.bridge && !e.foot && e.heights && e.kind !== 'steps' && LID_FLUSH_RAMPS && this.flushRamp(e, true)
+        if (lid || flush) {
           const pts = unpackPoints(e.points)
           const drawn = drawnSurface(e)
           const b = new MeshBuilder()
           quadStrip(b, pts, e.width, 0, [0.5, 0.5, 0.5])
           yield* subdivideSteps(b, LID_TOP_EDGE)
-          for (let i = 0; i < b.positions.length; i += 3) b.positions[i + 1] = this.lidLevel(lid, b.positions[i], b.positions[i + 2]) + LID_ROAD_LIFT
+          for (let i = 0; i < b.positions.length; i += 3) b.positions[i + 1] = (lid ? this.lidLevel(lid, b.positions[i], b.positions[i + 2]) : lineLevel(pts, e.heights!, b.positions[i], b.positions[i + 2])) + LID_ROAD_LIFT
           const out = lidRoads.get(drawn) ?? new MeshBuilder()
           lidRoads.set(drawn, out)
           const n0 = out.positions.length / 3
@@ -5644,6 +5746,7 @@ export class City {
     // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
     //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
     const boards: { x: number; z: number }[] = []
+    const standRows: { kind: string; x: number; z: number }[] = []
     let metroRings: { x: number; z: number }[][] | null = null
     const blockRings = (): { x: number; z: number }[][] => metroRings ??= (() => {
       const rs: { x: number; z: number }[][] = []
@@ -5730,6 +5833,16 @@ export class City {
         : f.kind === 'motoparking' ? rowOf(4 + (Math.abs(Math.round(f.x * 17 + f.z * 5)) % 7), 1, 2)
         : f.kind === 'bikeshare' && pf.bikeShare === 'velib' ? rowOf(18 + (Math.abs(Math.round(f.x * 7 + f.z * 13)) % 13), 0.8, 6) : 1
       if (!row) continue
+      /*
+       * OSM maps Paris's bike hoops and two-wheeler bays one node each — ~25,000 bike nodes in the centre, up to 30 in a
+       * 50 m cell — and each node here draws a ROW of 5–10 hoops: rows stacked on rows, the kerb all bikes (owner, #293).
+       * A node within a row's length of one already drawn is part of that same stand.
+       */
+      if (f.kind === 'bikeparking' || f.kind === 'motoparking') {
+        const gap = f.kind === 'bikeparking' ? STAND_GAP_BIKE : STAND_GAP_MOTO
+        if (standRows.some((q) => q.kind === f.kind && Math.hypot(q.x - f.x, q.z - f.z) < gap)) continue
+        standRows.push({ kind: f.kind, x: f.x, z: f.z })
+      }
       /*
        * NOT EVERY DRINKING FOUNTAIN (owner, 2026-11-03: "most of the drinking fountains and toilets are likely not on the street
        * - in a playground or park, or even inside a building"; "many of these are in fact on the side of a gray public toilet"):
@@ -5868,6 +5981,7 @@ export class City {
           if (!found && skippedIf('building', px, pz, 'metro entrance')) continue
         }
       }
+      if (f.kind === 'metro') this.metroSpot.set(`${f.x},${f.z}`, { x: px, z: pz, heading: heading + turn })
       placeModel(furniture, model, px, 0.15, pz, heading + turn)
       // and beside a Paris entrance, its totem: the yellow M in its ring on a post, what a rider sees from down the street
       // (not beside one of Guimard's own, which carries its METROPOLITAIN board instead)
@@ -5930,15 +6044,17 @@ export class City {
     const byStyle = new Map<StyleId, MeshBuilder>()
     const sunOff = shadowOffset(DAYLIGHT.sun)
     yield 'buildings'
-    for (const b of this.buildingsIn.get(k) ?? []) {
+    for (const b0 of this.buildingsIn.get(k) ?? []) {
       yield 'building'
       // a `building:part` of a bridge a landmark draws itself (BUGS.md #211)
-      if (this.coversBuilding(b)) continue
+      if (this.coversBuilding(b0)) continue
       // a suburban house is drawn by its own layer (render/paris-houses.ts), where the game has added it
-      if (this.housesLayer && isParisHouse(b)) continue
+      if (this.housesLayer && isParisHouse(b0)) continue
       // curves as chords a bay or more long: a hemicycle mapped in 3 m pieces had no wall wide enough for one
       // window (the Institut de France's wings were blank)
-      const ring = simplifyRing(unpackPoints(b.ring)) as Ring
+      const ring = simplifyRing(unpackPoints(b0.ring)) as Ring
+      // (a thin footprint with a guessed height is a shed, not a tower: render/sliver.ts)
+      const b = sliverTamed(b0, ring)
       /*
        * A building stands on a LEVEL pad, at the ground height under the middle of its footprint. Draping
        * its walls the way the road is draped would shear them: a terraced block on a San Francisco hill
@@ -6001,7 +6117,7 @@ export class City {
       // (a raised deck through the footprint: the building stands under it, render/deck-cap.ts)
       const height = height0 !== undefined ? capUnderDecks(b.ring, height0, b.minHeight ?? 0, foot, this.nearEdges) : height0
       // (a pump canopy's edge is a fascia a metre deep, whatever thin slab the map gives it)
-      const minHeight = special?.part === 'canopy' && b.minHeight && b.height ? Math.min(b.minHeight, b.height - 0.9) : b.minHeight
+      const minHeight = special?.part === 'canopy' && b.minHeight && b.height ? Math.min(b.minHeight, b.height - 0.9) : snappedMinHeight(b, k, this.buildingsIn)
       /*
        * THE MANSARD IS A STOREY (owner, 2026-11-05: "six floors plus an occupiable mansard roof … shows as 7 levels"): Paris
        * counts the lived-in mansard in building:levels, and the height runs to the ridge. The roof draws that storey, so the
@@ -6009,11 +6125,17 @@ export class City {
        */
       const attic = !lv && !b.stretch && this.region.roadPaint === 'paris' && ATTIC.roofs.includes(b.roof) && b.roofHeight >= ATTIC.minRoof &&
         (b.levels ?? 0) >= ATTIC.minLevels && ATTIC.styles.includes(styleId) && height !== undefined && height - (minHeight ?? 0) - b.roofHeight >= ATTIC.minWalls
+      // (#261: ground + at most MAXWALL storeys under the mansard — ground + 4, the mansard the sixth, however tall the OSM height;
+      //  a wall too tall for that many storeys of MAXSTOREY m keeps more. `stretch` holds the count against planFacade's re-fit.)
+      const atticN = attic ? Math.min(b.levels! - 1, Math.max(2, 1 + Math.round((height! - (minHeight ?? 0) - b.roofHeight - ATTIC.ground) / ATTIC.storey))) : 0
+      const atticCap = attic ? Math.max(ATTIC.maxWalls, Math.ceil(1 + (height! - (minHeight ?? 0) - b.roofHeight - ATTIC.ground) / ATTIC.maxStorey)) : 0
       const plan = planFacade(styleId, b.id, attic
-        ? { levels: Math.min(b.levels! - 1, Math.max(2, 1 + Math.round((height! - (minHeight ?? 0) - b.roofHeight - ATTIC.ground) / ATTIC.storey))),
+        ? { levels: Math.min(atticN, atticCap), stretch: atticN > atticCap,
             height: height! - b.roofHeight, minHeight, noShops: b.noShops, attic: true }
         : { levels: lv ?? b.levels, height, minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
         b.palette ? [b.palette] : areaPalettes(ring[0].x, ring[0].z, styleId) ?? this.region.palettes[styleId], look ?? undefined)
+      // Paris has no outside fire escapes (owner, 2026-11-16, PARIS_BUGS #169): the brick and tenement draws are San Francisco's
+      if (this.region.roadPaint === 'paris') plan.noFireEscape = true
       const out = byStyle.get(styleId) ?? new MeshBuilder()
       byStyle.set(styleId, out)
       if (this.pickable) {
@@ -6167,6 +6289,35 @@ export class City {
   /** the edges round the tile being built */
   private nearEdges: PackedEdge[] = []
 
+  /** The passages through a world footprint, as deck ways for a landmark to carve (Landmarks.passagesFor). */
+  passageWaysThrough(ring: { x: number; z: number }[]): { name: string; width: number; pts: [number, number, number][] }[] {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    const inRing = (x: number, z: number): boolean => {
+      let o = false
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) if ((ring[i].z > z) !== (ring[j].z > z) && x < ((ring[j].x - ring[i].x) * (z - ring[i].z)) / (ring[j].z - ring[i].z) + ring[i].x) o = !o
+      return o
+    }
+    const out: { name: string; width: number; pts: [number, number, number][] }[] = []
+    for (const e of this.nearEdges) {
+      if (!e.passage || e.bridge || e.tunnel) continue
+      const p = e.points
+      let hit = false
+      for (let i = 2; i < p.length && !hit; i += 2) {
+        const L = Math.hypot(p[i] - p[i - 2], p[i + 1] - p[i - 1]), n = Math.max(1, Math.ceil(L / 2))
+        for (let k = 0; k <= n && !hit; k++) {
+          const x = p[i - 2] + ((p[i] - p[i - 2]) * k) / n, z = p[i - 1] + ((p[i + 1] - p[i - 1]) * k) / n
+          if (x > x0 && x < x1 && z > z0 && z < z1 && inRing(x, z)) hit = true
+        }
+      }
+      if (!hit) continue
+      const pts: [number, number, number][] = []
+      for (let i = 0; i < p.length; i += 2) pts.push([p[i], p[i + 1], e.heights?.[i / 2] ?? this.terrain.heightAt(p[i], p[i + 1])])
+      out.push({ name: e.name ?? `edge ${e.id}`, width: Math.max(3, e.width + 2 * (e.walk ?? 0)), pts })
+    }
+    return out
+  }
+
   /** Where passages cut arches through this building's walls (render/passages.ts), as a per-wall lookup. */
   private archesFor(b: PackedBuilding, ring: { x: number; z: number }[], height: number): ((i: number) => Arch[]) | undefined {
     if (!this.passageGrid || this.passageFor !== this.nearEdges) {
@@ -6231,6 +6382,47 @@ export class City {
     return out
   }
 
+  /** the streets and paths of the tiles round (x, z), whole (render/birds.ts places its flocks on them) */
+  edgeObjectsNear(x: number, z: number): PackedEdge[] {
+    const [cx, cz] = tileOf(x, z)
+    const out: PackedEdge[] = []
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const e of this.edgesIn.get(key(cx + dx, cz + dz)) ?? []) out.push(e)
+    return out
+  }
+
+  /** the bake's trees within r of (x, z): where they stand and how tall (render/birds.ts perches on them) */
+  treesNear(x: number, z: number, r: number): { x: number; z: number; height: number }[] {
+    const [cx, cz] = tileOf(x, z)
+    const out: { x: number; z: number; height: number }[] = []
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+      const t = this.plantingsIn.get(key(cx + dx, cz + dz))
+      if (t) for (let i = 0; i + 4 < t.length; i += 5) if (Math.hypot(t[i] - x, t[i + 1] - z) < r) out.push({ x: t[i], z: t[i + 1], height: t[i + 2] })
+    }
+    return out
+  }
+
+  /** the kinds of the baked areas (wood, grass, sand, dirt, park…) whose outline holds (x, z) (render/birds.ts's zones) */
+  areaKindsAt(x: number, z: number): string[] {
+    const out: string[] = []
+    for (const a of this.areasIn.get(key(...tileOf(x, z))) ?? []) {
+      const r = a.ring
+      let o = false
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+      }
+      if (o) out.push(a.kind)
+    }
+    return out
+  }
+
+  /** the buildings of the tiles round (x, z): outline and height above the ground (render/birds.ts perches on the eaves) */
+  buildingsNear(x: number, z: number): readonly PackedBuilding[] {
+    const [cx, cz] = tileOf(x, z)
+    const out: PackedBuilding[] = []
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const b of this.buildingsIn.get(key(cx + dx, cz + dz)) ?? []) out.push(b)
+    return out
+  }
+
   get built(): number { return this.tiles.size }
   get name(): string { return this.pkg.name }
 }
@@ -6249,7 +6441,7 @@ const ZCHECK = typeof location !== 'undefined' && new URLSearchParams(location.s
  * haussmann buildings are 1 floor too tall STILL … looks 7 levels tall, PLUS a mansard"). The bake's storeys are its
  * height over 3.1 m, so a 22 m block came out seven storeys, six of them squeezed to 2.6 m in 17.8 m of wall; it holds five.
  */
-const ATTIC = { minRoof: 2.5, minLevels: 3, minWalls: 6, ground: 4.6, storey: 3.2, roofs: ['mansard', 'hipped'] as string[], styles: ['haussmann', 'marais', 'classical'] as string[] }
+const ATTIC = { minRoof: 2.5, minLevels: 3, minWalls: 6, ground: 4.6, storey: 3.2, maxWalls: 5, maxStorey: 4.4, roofs: ['mansard', 'hipped'] as string[], styles: ['haussmann', 'marais', 'classical'] as string[] }
 /** `?zcheck=1`: baked building feet against the ones the renderer would have computed, for measuring map v3 */
 function zcheck(id: number, baked: number, computed: number): void {
   const w = window as unknown as { __zcheck?: { n: number; sumAbs: number; max: number; worst: number; over5cm: number } }
@@ -6329,10 +6521,49 @@ export const WT_OCCLUDE = true, WT_OCC_SINK = 0.05, WT_OCC_GRADE = 1.0
 export const WT_OCC_BANKS = true
 /** the layers laid on a lid stand this far over its top (m), and its depth copy this far under it (m): see `liftOnLids` */
 export const LID_LAYER_LIFT = 0.03, LID_OCC_SINK = 0.05
+/** …but in the structures' group this far OVER it (m), hiding the lid slab's own top: see the lid tops */
+export const LID_OCC_G3_LIFT = 0.015
+/** the lid top's depth bias against the ground at its edges (Babylon zOffset units) */
+export const LID_TOP_ZOFFSET = -2
 /** a lid's top in triangles this size (m), following its streets; a street more than LID_STREET_DH m off the slab is not on it */
 export const LID_TOP_EDGE = 2, LID_STREET_DH = 4
 /** a way with this share of its length on a lid is drawn as a street on it, LID_ROAD_LIFT m over its level (m) */
 export const LID_ON_SHARE = 0.8, LID_ROAD_LIFT = 0.05
+/** a lid's top reaches LID_GROW m past the long sides (LID_GROW_EDGE m or longer) of its outline, over ground LID_GROW_DH m or more under it */
+export const LID_GROW = 6, LID_GROW_EDGE = 25, LID_GROW_DH = 1
+/** a ring with its edges LID_GROW_EDGE m or longer moved d m outward (each corner where its two edges' moved lines cross) */
+function growRing(ring: { x: number; z: number }[], d: number, minEdge: number): { x: number; z: number }[] {
+  const n = ring.length
+  let a2 = 0
+  for (let i = 0; i < n; i++) { const p = ring[i], q = ring[(i + 1) % n]; a2 += p.x * q.z - q.x * p.z }
+  const sgn = a2 > 0 ? 1 : -1
+  // each edge i (ring[i] → ring[i+1]) as a point and a direction, moved along its outward normal
+  const lines = ring.map((p, i) => {
+    const q = ring[(i + 1) % n], dx = q.x - p.x, dz = q.z - p.z, l = Math.hypot(dx, dz) || 1
+    const off = l >= minEdge ? d : 0, nx = (sgn * dz) / l, nz = (-sgn * dx) / l
+    return { x: p.x + nx * off, z: p.z + nz * off, dx: dx / l, dz: dz / l }
+  })
+  return ring.map((p, i) => {
+    const A = lines[(i + n - 1) % n], B = lines[i], den = A.dx * B.dz - A.dz * B.dx
+    if (Math.abs(den) < 0.2) return { x: B.x, z: B.z }
+    const t = ((B.x - A.x) * B.dz - (B.z - A.z) * B.dx) / den
+    return { x: A.x + A.dx * t, z: A.z + A.dz * t }
+  })
+}
+/** a carriage way's ramp lying on the ground (every height within LID_FLUSH_DH m) within LID_FLUSH_PAD m of a lid is laid as a street */
+export const LID_FLUSH_RAMPS = true, LID_FLUSH_PAD = 15, LID_FLUSH_DH = 0.3
+/** a foot way's ramp lying on the ground (as above) anywhere in Paris is not raised: painted as a footway, not a deck */
+export const FLUSH_FOOT_RAMPS = true, FLUSH_FOOT_DH = 0.4
+/** the height at (x, z) of a polyline with heights: its nearest point's */
+function lineLevel(pts: { x: number; z: number }[], h: number[], x: number, z: number): number {
+  let best = Infinity, y = h[0]
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], dx = pts[i].x - a.x, dz = pts[i].z - a.z, t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+    const d = Math.hypot(a.x + dx * t - x, a.z + dz * t - z)
+    if (d < best) { best = d; y = h[i - 1] + (h[i] - h[i - 1]) * t }
+  }
+  return y
+}
 /** a street's retaining wall on fine ground goes out to the ground's step (see `footD` in the walls' pass): on/off, the finest ground
  *  it applies to (m), how far it may go (posts, m), the ground's tolerance to the low ground beyond (m), a margin past the foot (m), and
  *  the least drop over that distance that is a step (a hillside sloping away is not) */

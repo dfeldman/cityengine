@@ -141,12 +141,15 @@ import { louisXIV, fochTrocadero } from './paris/equestrian.ts'
 import { petitPalais } from './paris/petit-palais.ts'
 import { burenColumns } from './paris/buren-columns.ts'
 import { wallFountain } from './paris/wall-fountain.ts'
+import { FOUNTAIN_BUILDERS } from './fountains/index.ts'
 
 export type { Fit }
 
 export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit, kit?: KitArgs) => void> = {
   // San Francisco's (render/landmarks/sf/index.ts)
   ...SF_BUILDERS,
+  // the special-case fountains (render/landmarks/fountains/)
+  ...FOUNTAIN_BUILDERS,
   // Paris's families (PARIS_PARITY.md): each its own folder and its own manifest file
   ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS, ...PARIS_RIVEGAUCHE, ...PARIS_MINOR, ...PARIS_BATCH1, ...PARIS_BUGS, ...PARIS_CITEU, ...PARIS_VINCENNES, ...PARIS_BATCH2, ...PARIS_BATCH3, ...PARIS_BATCH4, ...PARIS_BATCH5, ...PARIS_BATCH6, ...VERSAILLES_ROAD, ...PARIS_BATCH7, ...PARIS_CEINTURE, ...PARIS_DEFENSE2, ...PARIS_DEFENSE3, ...PARIS_BATCH8, ...PARIS_BATCH9, ...PARIS_BATCH10, ...PARIS_BATCH11, ...PARIS_BATCH12, ...PARIS_COMMERCIAL1, ...PARIS_EXPO, ...PARIS_ISSY, ...PARIS_CAROUSELS,
   // (the exceptions, said by kind and date: paris/kit/)

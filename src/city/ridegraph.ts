@@ -97,7 +97,57 @@ const k0 = (e: Edge): string => e.kind ?? 'residential'
  */
 export const BIKE_PATHS = /Petite Ceinture/
 const bikePath = (e: Pick<Edge, 'name'>): boolean => !!e.name && BIKE_PATHS.test(e.name)
+/**
+ * A bike rides footpaths and paths that are PATHS, not pavements (owner, 2026-11: "park footpaths should all be
+ * bikeable. maybe just all footpaths"): a footway/path/bridleway/track that is not a crossing, not steps, not a
+ * timber deck (bridges excepted), and whose quarter, middle and three-quarter points lie more than
+ * `PATH_OFF_STREET` m from every street's line — a pavement mapped as its own way runs beside a street; a park's
+ * path does not. `RIDE_ALL_FOOTPATHS=0` in the environment turns it off.
+ */
+export const PATH_OFF_STREET = 12
+export const PATH_MIN_FOOTWAY = 30
+const PATH_KINDS = new Set(['footway', 'path', 'bridleway', 'track'])
+function offStreetPaths(edges: Edge[]): (e: Edge) => boolean {
+  const CELL = 32
+  const grid = new Map<number, Edge[]>()
+  const key = (cx: number, cz: number): number => cx * 100003 + cz
+  const isStreet = (e: Edge): boolean => !e.foot && BIKE.has(e.kind ?? 'residential') && e.kind !== 'service'
+  for (const e of edges) {
+    if (!isStreet(e) || e.tunnel) continue
+    const seen = new Set<number>()
+    for (const p of e.points) {
+      for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+        const k = key(Math.floor(p.x / CELL) + dx, Math.floor(p.z / CELL) + dz)
+        if (!seen.has(k)) { seen.add(k); (grid.get(k) ?? grid.set(k, []).get(k)!).push(e) }
+      }
+    }
+  }
+  const dist = (e: Edge, x: number, z: number): number => {
+    let best = Infinity
+    for (let i = 1; i < e.points.length; i++) {
+      const a = e.points[i - 1], b = e.points[i]
+      const dx = b.x - a.x, dz = b.z - a.z
+      const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+      best = Math.min(best, Math.hypot(x - a.x - dx * t, z - a.z - dz * t))
+    }
+    return best
+  }
+  return (e) => {
+    if (typeof process !== 'undefined' && process.env?.RIDE_ALL_FOOTPATHS === '0') return false
+    if (!PATH_KINDS.has(e.kind ?? '') || e.crossing || e.tunnel || e.noBike) return false
+    if (e.surface === 'wood' && !e.bridge) return false
+    // (a footway scrap a few metres long and unnamed is a kerb ramp or a courtyard step, not a path)
+    if (e.kind === 'footway' && !e.name && e.length < PATH_MIN_FOOTWAY) return false
+    const pts = e.points, n = pts.length
+    for (const q of [pts[Math.floor(n / 4)], pts[Math.floor(n / 2)], pts[Math.floor((3 * n) / 4)]]) {
+      for (const s of grid.get(key(Math.floor(q.x / CELL), Math.floor(q.z / CELL))) ?? []) if (dist(s, q.x, q.z) < PATH_OFF_STREET) return false
+    }
+    return true
+  }
+}
+
 export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
+  const openPath = mode === 'bike' ? offStreetPaths(edges) : () => false
   return edges
     .filter((e) => {
       // tunnels and ways mapped below grade are not drawn (render/city.ts `onSurface`), so nobody rides them — except
@@ -133,6 +183,7 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       // (and a short flight a foot bridge's way off goes up: tools/bridges.ts footBridgeLinks)
       // a promenade a bike rides by name though OSM draws it as a footway (BIKE_PATHS: the Petite Ceinture)
       if (bikePath(e) && (k === 'footway' || k === 'path' || k === 'track' || k === 'cycleway')) return true
+      if (openPath(e)) return true
       if (e.trail && (k === 'footway' || k === 'path' || k === 'track' || k === 'bridleway' || k === 'steps')) return true
       return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
@@ -879,6 +930,10 @@ export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z:
   return alongside >= 0.6 * samples.length
 }
 
+/** the share of a merged pair's length left out at each end when measuring how far apart its carriageways run (`lane`) */
+export const LANE_TRIM = 0.25
+/** …unless that leaves fewer samples than this */
+const LANE_MIN_SAMPLES = 4
 /**
  * Rule 7: one path per street. A boulevard drawn as two one-way carriageways is replaced by one edge down
  * its middle, and the four end nodes are moved onto that edge's two ends; the stubs that crossed the median
@@ -1012,7 +1067,13 @@ function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean, oneDeck =
    * put the rider 2.7 m past the side carriageway, on the pavement among the BART plaza's planters, the camera through
    * the buildings (owner, 2026-10-15). Too little only keeps the rider nearer the middle of the road.
    */
-  const spreads = re.pts.map((p, i) => distance(p, rf.pts[i])).sort((a, b) => a - b)
+  // (…taken over the MIDDLE of the merge only: the two carriageways converge toward their junctions, and those ends
+  //  dragged the low percentile to nothing — Route de la Reine, Boulogne, 12 m between its carriageways, got no `lane`
+  //  and the rider rode the median among the trees, BUGS #162. Ends trimmed LANE_TRIM of the length each; short merges
+  //  keep all their samples)
+  const spreadAll = re.pts.map((p, i) => distance(p, rf.pts[i]))
+  const trimmed = spreadAll.slice(Math.floor(spreadAll.length * LANE_TRIM), Math.ceil(spreadAll.length * (1 - LANE_TRIM)))
+  const spreads = (trimmed.length >= LANE_MIN_SAMPLES ? trimmed : spreadAll).sort((a, b) => a - b)
   // (the smallest spread, less a metre: the rider rides the inner half of their carriageway, away from its kerb — a
   //  merged pair's side carriageway is often a narrow slip lane along the buildings, Market at Beale)
   const lane = Math.round(Math.max(0, spreads[Math.floor(spreads.length * 0.1)] / 2 - 1) * 100) / 100
@@ -1875,6 +1936,8 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   if (overrides?.straighten !== false) es = straightenJunctions(es, outsideOf(edges), blocked).edges
   // …and NO SHARP TURN NEAR ANY JUNCTION, whatever made it (below)
   if (overrides?.straighten !== false) es = smoothApproaches(es)
+  // …and a junction that sits off its through street's straight line pulled back onto it (BUGS #295)
+  if (overrides?.straighten !== false && SNAP_MAX > 0) es = snapToThroughLine(es).edges
   return buildGraph(es) as RideGraph
 }
 
@@ -2171,6 +2234,122 @@ export function straightCorridor(edges: RideEdge[], c: Corridor, ids: Ids, heigh
     const o = best.get(e.a < e.b ? `${e.a}:${e.b}` : `${e.b}:${e.a}`)!
     return o === e || o.length > e.length * 2 || e.length > o.length * 2
   })
+}
+
+/** a junction node may be pulled onto its through street's chord by at most this (m); where a real street crosses, SNAP_MAX_CROSS; 0 turns the pass off */
+export const SNAP_MAX = 6, SNAP_MAX_CROSS = 2
+/** …only when the through street's two arms, SNAP_SPAN m out, turn less than this (degrees) at the node */
+export const SNAP_SPAN = 20, SNAP_TURN = 20
+/** …each arm at least this long (m; an arm shorter than SNAP_SPAN is measured to its far end) */
+export const SNAP_ARM_MIN = 12
+/** …and the node is off its chord by more than this (m) */
+export const SNAP_MIN = 0.75
+/** …the street's line followed this far out (m) to judge it straight */
+export const SNAP_FAR = 38
+/** …an edge at the node this long that is a named street of another name, off the through pair, is a real crossing */
+export const SNAP_CROSS_LEN = 30
+
+/**
+ * JUNCTIONS BACK ON THEIR STREET (BUGS #295, 2026-11-17). OSM puts a junction's node where the side street's centre line
+ * meets it, and the through street's polyline runs to that node, so a street that is straight either side of the
+ * junction jogs sideways 3–11 m to reach it (Rue de Rivoli at Rue Perrault). For each node on a near-straight through
+ * street (two edges of one name, each at least SNAP_ARM_MIN long, the chords from SNAP_SPAN m out on each side turning under
+ * SNAP_TURN°): if every other edge there is a short connector, crossing or footway the node moves onto the chord by up to
+ * SNAP_MAX; where another real street crosses (named streets over SNAP_CROSS_LEN leaving on both sides of the line, or a third edge of the
+ * same name) by SNAP_MAX_CROSS only. The edges' points near it follow, the shift fading out over six times its size.
+ */
+export function snapToThroughLine(edges: RideEdge[]): { edges: RideEdge[]; moved: number[] } {
+  const byNode = new Map<number, RideEdge[]>()
+  for (const e of edges) { if (e.a === e.b) continue; for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e) }
+  const atPt = (e: RideEdge, n: number): Point => (e.a === n ? e.points[0] : e.points[e.points.length - 1])
+  const from = (e: RideEdge, n: number): Point[] => (e.a === n ? e.points : [...e.points].reverse())
+  // the street's line leaving `n` along `e`, carried on through same-named edges that continue it (turning under 45°) until
+  // it is SNAP_FAR long: an arm that ends at the next junction after 12 m is no reason to lose the street's direction
+  const path = (e: RideEdge, n: number): Point[] => {
+    let pts = from(e, n), cur = e, node = n
+    for (let hop = 0; hop < 3 && lengthOf(pts) < SNAP_FAR; hop++) {
+      node = cur.a === node ? cur.b : cur.a
+      const into = bearing(pts[pts.length - 2], pts[pts.length - 1])
+      let next: RideEdge | undefined, bestTurn = Math.PI / 4
+      for (const f of byNode.get(node) ?? []) {
+        if (f === cur || f.name !== e.name || f.foot) continue
+        const q = from(f, node)
+        const t = Math.abs(angleDiff(into, bearing(q[0], q[Math.min(1, q.length - 1)])))
+        if (t < bestTurn) { bestTurn = t; next = f }
+      }
+      if (!next) break
+      pts = [...pts, ...from(next, node).slice(1)]
+      cur = next
+    }
+    return pts
+  }
+  const shift = new Map<number, Point>()
+  for (const [n, es] of byNode) {
+    if (es.length < 3) continue
+    if (es.some((e) => e.bridge || e.tunnel || e.raised || e.lane)) continue
+    const c = atPt(es[0], n)
+    let best: { dx: number; dz: number; len: number; a: RideEdge; b: RideEdge; a2: Point; b2: Point } | null = null
+    for (let i = 0; i < es.length; i++) for (let j = i + 1; j < es.length; j++) {
+      const A = es[i], B = es[j]
+      if (!A.name || A.name !== B.name || A.foot || B.foot || A.length < SNAP_ARM_MIN || B.length < SNAP_ARM_MIN) continue
+      const PA = path(A, n), PB = path(B, n)
+      const pa = pointAt(PA, Math.min(SNAP_SPAN, lengthOf(PA))), pb = pointAt(PB, Math.min(SNAP_SPAN, lengthOf(PB)))
+      const dx = pb.x - pa.x, dz = pb.z - pa.z, L = Math.hypot(dx, dz)
+      if (L < SNAP_ARM_MIN * 2) continue
+      // the street is straight THROUGH the junction if its two arms, taken beyond the node's own neighbourhood, run along the chord
+      // (a node off the line, its approach bent to reach it, still has them straight); where an arm has no more beyond, the
+      // turn is measured at the node itself
+      const chord = bearing(pa, pb)
+      const far = (P: Point[], toward: number): number => {
+        const lo = SNAP_SPAN, hi = Math.min(SNAP_FAR, lengthOf(P))
+        if (hi - lo < 6) return NaN
+        const u = pointAt(P, lo), v = pointAt(P, hi)
+        return Math.abs(angleDiff(toward, bearing(u, v)))
+      }
+      const fa = far(PA, chord + Math.PI), fb = far(PB, chord)
+      const turn = (Number.isNaN(fa) || Number.isNaN(fb) ? Math.abs(angleDiff(bearing(pa, c), bearing(c, pb))) : Math.max(fa, fb)) * 180 / Math.PI
+      if (turn >= SNAP_TURN) continue
+      const t = ((c.x - pa.x) * dx + (c.z - pa.z) * dz) / (L * L)
+      const q = { x: pa.x + t * dx, z: pa.z + t * dz }
+      const len = Math.min(A.length, B.length)
+      if (!best || len > best.len) best = { dx: q.x - c.x, dz: q.z - c.z, len, a: A, b: B, a2: pa, b2: pb }
+    }
+    if (!best) continue
+    const d = Math.hypot(best.dx, best.dz)
+    if (d < SNAP_MIN) continue
+    const others = es.filter((e) => e !== best!.a && e !== best!.b)
+    // a REAL crossing has named streets leaving it on both sides of the through line; a side street joining from one side
+    // (a T) meets the through street wherever its line does, and the node belongs on that line
+    const streets = others.filter((e) => !e.foot && !!e.name && e.length >= SNAP_CROSS_LEN && e.kind !== 'service' && e.kind !== 'cycleway')
+    const sideOf = (e: RideEdge): number => {
+      const q = pointAt(from(e, n), Math.min(SNAP_SPAN, e.length))
+      return Math.sign((best!.b2.x - best!.a2.x) * (q.z - best!.a2.z) - (best!.b2.z - best!.a2.z) * (q.x - best!.a2.x))
+    }
+    const sides = new Set(streets.map(sideOf))
+    const crossing = (sides.has(1) && sides.has(-1)) || others.some((e) => e.name === best!.a.name && !e.foot)
+    const cap = crossing ? SNAP_MAX_CROSS : SNAP_MAX
+    const k = Math.min(1, cap / d)
+    shift.set(n, { x: best.dx * k, z: best.dz * k })
+  }
+  if (!shift.size) return { edges, moved: [] }
+  const fall = (s: number, reach: number): number => (s >= reach ? 0 : (1 - s / reach) ** 2 * (1 + 2 * (s / reach)))
+  const out = edges.map((e) => {
+    const sa = e.a !== e.b ? shift.get(e.a) : undefined, sb = e.a !== e.b ? shift.get(e.b) : undefined
+    if (!sa && !sb) return e
+    const total = lengthOf(e.points)
+    const reachOf = (v: Point): number => Math.min(Math.max(12, 6 * Math.hypot(v.x, v.z)), 0.45 * total)
+    let s = 0
+    const pts = e.points.map((p, i) => {
+      if (i) s += distance(e.points[i - 1], p)
+      let x = p.x, z = p.z
+      // a short edge between two moved nodes: each end's pull fades over at most 0.95 of the edge between them
+      if (sa) { const f = sb ? fall(s, Math.min(reachOf(sa), 0.95 * total)) : fall(s, reachOf(sa)); x += sa.x * f; z += sa.z * f }
+      if (sb) { const f = sa ? fall(total - s, Math.min(reachOf(sb), 0.95 * total)) : fall(total - s, reachOf(sb)); x += sb.x * f; z += sb.z * f }
+      return { x, z }
+    })
+    return { ...e, points: pts, length: lengthOf(pts) }
+  })
+  return { edges: out, moved: [...shift.keys()] }
 }
 
 /**

@@ -3,6 +3,8 @@
  * beds and tree rows (tools/gardens/index.ts). Coordinates are lat/lon; `frame` lets a symmetrical garden be laid out in metres along
  * its own axis, which is how it was designed.
  */
+import type { TreeForm } from '../../src/city/tree-forms.ts'
+
 export type LL = [number, number]
 
 export interface GardenPlan {
@@ -21,7 +23,7 @@ export interface GardenPlan {
   /** a clipped row on its trunks: limes at the Palais-Royal and the Place des Vosges. Crown from y0 (3.5 m), h (5 m) tall, w (5 m) wide */
   pleached?: { line: LL[]; y0?: number; h?: number; w?: number; spacing?: number }[]
   /** real trees, in a line: chestnuts in a quincunx, the planes of an allée */
-  rows?: { line: LL[]; spacing?: number; h?: number; form?: 'plane' }[]
+  rows?: { line: LL[]; spacing?: number; h?: number; form?: TreeForm }[]
   /**
    * Clipped walls either side of every mapped footway and path inside `ring` (the bosquets' charmilles stand along the allées OSM
    * draws, not along walks of our own): `gap` metres off the path's edge (0.6). Cut where another way crosses (index.ts).

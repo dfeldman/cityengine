@@ -46,6 +46,8 @@ const HUT_RISE: [number, number] = [0.4, 4.8]
 const HUT_SETBACK = 1.6
 /** a gangway only where the quay is no higher than this above the deck */
 const GANGWAY_MAX_RISE = 5.5
+/** a hand-placed boat's beam keeps this far (m) off a quay wall's land side */
+const HAND_WALL_CLEAR = 1.5
 /** a hand-placed boat in local metres: stern (a) to bow (b), its beam, its kind, its seed */
 export interface LocalHandBoat { ax: number; az: number; bx: number; bz: number; w: number; kind: string; seed: number }
 
@@ -287,7 +289,17 @@ export function boatsLayer(scene: Scene, terrain?: Terrain, lib: BoatLibrary | n
         const size = lib!.sizes[h.kind]
         const B = size && Math.abs(h.w / size.B - 1) > BEAM_TRUST ? size.B : h.w
         // OSM's water edge is not the photo's: a hull over the quay is pushed out from the bank, the least that floats it
-        const afloat = (x: number, z: number): boolean => HULL_SAMPLES.every(([u, v]) => wet(x + ux * u * L0 + uz * v * B, z + uz * u * L0 - ux * v * B))
+        // (…and clear of the quay walls: in the Seine band the river's outline runs on under the stone, and boats pushed only until they
+        //  were inside it lay through the walls — owner, 2026-11-16, Port Debilly. A hull sample HAND_WALL_CLEAR m out to either beam
+        //  must not be on a wall's land side, city/wall-ground.ts `side`)
+        const W = terrain?.walls
+        const clear = (x: number, z: number): boolean => !W || W.side(x, z, terrain!.stepAt(x, z)) !== 1
+        const afloat = (x: number, z: number): boolean => HULL_SAMPLES.every(([u, v]) => {
+          const px = x + ux * u * L0 + uz * v * B, pz = z + uz * u * L0 - ux * v * B
+          if (!wet(px, pz)) return false
+          const m = v === 0 ? 0 : Math.sign(v) * HAND_WALL_CLEAR
+          return clear(px + uz * m, pz - ux * m)
+        })
         let cx = cx0, cz = cz0
         if (bank && !afloat(cx, cz)) {
           for (let d = PUSH_STEP; d <= PUSH_MAX; d += PUSH_STEP) {

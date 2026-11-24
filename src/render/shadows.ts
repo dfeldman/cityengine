@@ -139,6 +139,21 @@ export function shadowMaterial(scene: Scene): ShaderMaterial {
    */
   mat.disableDepthWrite = false
   mat.depthFunction = Constants.LESS
+  /**
+   * The depth union only holds where every shadow lies at one height. On a deck (La Défense's dalle, stairs,
+   * slabs at ground + something) shadows sit at different heights, the depth test passes them all, and five
+   * towers' shadows multiplied the ground to black. SHADOW_STENCIL makes it a true union: a pixel is darkened
+   * by the first shadow to reach it, and every later one is rejected.
+   */
+  const st = mat.stencil
+  st.enabled = true
+  st.func = Constants.NOTEQUAL
+  st.funcRef = SHADOW_STENCIL
+  st.funcMask = SHADOW_STENCIL
+  st.mask = SHADOW_STENCIL
+  st.opStencilFail = Constants.KEEP
+  st.opDepthFail = Constants.KEEP
+  st.opStencilDepthPass = Constants.REPLACE
   mat.setFloat('fogDensity', 0.0016)
   /**
    * How dark a shadow is. Not black: an outdoor shadow is lit by the whole sky, and a black one reads as a
@@ -231,6 +246,9 @@ export function blobQuad(out: MeshBuilder): void {
  * They must share it exactly, or the depth test that de-duplicates them layers them by height instead and
  * the overlaps come back.
  */
+/** stencil bit the static shadows mark (bit 1 is city.ts GROUND_STENCIL) */
+export const SHADOW_STENCIL = 2
+
 export const SHADOW_Y = 0.172
 
 export function shadowOffset(sun: Vector3): { x: number; z: number } {

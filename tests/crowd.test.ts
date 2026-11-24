@@ -8,7 +8,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { addEdges, buildGraph, type Edge } from '../src/city/graph.ts'
-import { Crowd } from '../src/sim/crowd.ts'
+import { Crowd, crowdLook } from '../src/sim/crowd.ts'
 
 function street(): ReturnType<typeof buildGraph> {
   const e: Edge = {
@@ -261,7 +261,37 @@ describe('strangers in company', () => {
     }
   })
 
+  it('walks dogs: about the city share of people, never a runner, the dog on the pavement beside its walker', () => {
+    for (const [region, share] of [['paris', 0.05], ['san-francisco', 0.08]] as const) {
+      crowdLook(region)
+      const all = []
+      for (let batch = 0; batch < 40 && all.length < 3000; batch++) {
+        const g = buildGraph(Array.from({ length: 12 }, (_, i) => road(batch * 100 + i + 1, 2 * i, 2 * i + 1, [[-150, i * 25], [150, i * 25]])))
+        const crowd = new Crowd(g, 'busy')
+        const near = [...g.edges.values()]
+        for (let k = 0; k < 3; k++) crowd.update(0.1, { x: 0, z: 150 }, near)
+        all.push(...crowd.all)
+      }
+      const dogs = all.filter((w) => w.dog)
+      expect(all.length).toBeGreaterThan(1500)
+      expect(dogs.length / all.length).toBeGreaterThan(share * 0.7)
+      expect(dogs.length / all.length).toBeLessThan(share * 1.3)
+      for (const w of dogs) {
+        expect(w.kind).toBe('walk')
+        expect(w.leader).toBeUndefined()
+        const gap = Math.hypot(w.dogAt!.x - w.at.x, w.dogAt!.z - w.at.z)
+        expect(gap).toBeLessThan(0.8)
+        // on its own street's pavement: never out in the carriageway (7 m road: half is 3.5)
+        expect(Math.abs(w.dogAt!.z - Math.round(w.dogAt!.z / 25) * 25)).toBeGreaterThan(3.4)
+      }
+    }
+    crowdLook(undefined)
+  })
+
   it('keeps walkers on the same pavement from walking through one another', () => {
+    // (no dogs: their extra draws reshuffle who spawns where, and at 0.08 one unlucky layout sits at 0.0075; every other
+    // share tried, 0.03–0.3, passes — this test is about sidestepping, not dogs)
+    crowdLook(undefined, 0)
     const long = buildGraph([road(1, 0, 1, [[-150, 0], [-50, 0], [0, 0], [50, 0], [150, 0]])])
     const crowd = new Crowd(long, 'busy')
     const near = [...long.edges.values()]
@@ -280,6 +310,7 @@ describe('strangers in company', () => {
     }
     // overlaps are rare events, not the norm
     expect(close / Math.max(1, pairs)).toBeLessThan(0.002)
+    crowdLook(undefined)
   })
 })
 

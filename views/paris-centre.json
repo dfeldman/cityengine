@@ -1364,426 +1364,6 @@
   ]
  },
  {
-  "name": "Pont de Bir-Hakeim — side",
-  "group": "bridge",
-  "from": [
-   48.856349,
-   2.289974,
-   9
-  ],
-  "to": [
-   48.855692,
-   2.287622,
-   -3
-  ]
- },
- {
-  "name": "Pont Saint-Michel — side",
-  "group": "bridge",
-  "from": [
-   48.854398,
-   2.343938,
-   9
-  ],
-  "to": [
-   48.854066,
-   2.344591,
-   -3
-  ]
- },
- {
-  "name": "Petit-Pont - Cardinal Lustiger — side",
-  "group": "bridge",
-  "from": [
-   48.853547,
-   2.346189,
-   9
-  ],
-  "to": [
-   48.853306,
-   2.346925,
-   -3
-  ]
- },
- {
-  "name": "Pont Saint-Louis — side",
-  "group": "bridge",
-  "from": [
-   48.852223,
-   2.352892,
-   9
-  ],
-  "to": [
-   48.852762,
-   2.352766,
-   -3
-  ]
- },
- {
-  "name": "Pont Louis-Philippe — side",
-  "group": "bridge",
-  "from": [
-   48.853389,
-   2.355191,
-   9
-  ],
-  "to": [
-   48.853847,
-   2.354418,
-   -3
-  ]
- },
- {
-  "name": "Pont de l'Archevêché — side",
-  "group": "bridge",
-  "from": [
-   48.851804,
-   2.350878,
-   9
-  ],
-  "to": [
-   48.851505,
-   2.351569,
-   -3
-  ]
- },
- {
-  "name": "Pont Marie — side",
-  "group": "bridge",
-  "from": [
-   48.853246,
-   2.356641,
-   9
-  ],
-  "to": [
-   48.852847,
-   2.357394,
-   -3
-  ]
- },
- {
-  "name": "Pont de Sully — side",
-  "group": "bridge",
-  "from": [
-   48.848632,
-   2.358435,
-   9
-  ],
-  "to": [
-   48.849767,
-   2.357964,
-   -3
-  ]
- },
- {
-  "name": "Pont de la Tournelle — side",
-  "group": "bridge",
-  "from": [
-   48.851148,
-   2.354487,
-   9
-  ],
-  "to": [
-   48.850626,
-   2.355441,
-   -3
-  ]
- },
- {
-  "name": "Pont d'Arcole — side",
-  "group": "bridge",
-  "from": [
-   48.855883,
-   2.349792,
-   9
-  ],
-  "to": [
-   48.855521,
-   2.350566,
-   -3
-  ]
- },
- {
-  "name": "Pont de Sully (146497603) — side",
-  "group": "bridge",
-  "from": [
-   48.851308,
-   2.360386,
-   9
-  ],
-  "to": [
-   48.850633,
-   2.360669,
-   -3
-  ]
- },
- {
-  "name": "Pont-métro Morland — side",
-  "group": "bridge",
-  "from": [
-   48.846847,
-   2.364778,
-   9
-  ],
-  "to": [
-   48.846921,
-   2.365593,
-   -3
-  ]
- },
- {
-  "name": "Voie Mazas — side",
-  "group": "bridge",
-  "from": [
-   48.846992,
-   2.366142,
-   9
-  ],
-  "to": [
-   48.846756,
-   2.365402,
-   -3
-  ]
- },
- {
-  "name": "Pont d'Austerlitz — side",
-  "group": "bridge",
-  "from": [
-   48.845961,
-   2.365074,
-   9
-  ],
-  "to": [
-   48.844931,
-   2.366024,
-   -3
-  ]
- },
- {
-  "name": "Pont Morland — side",
-  "group": "bridge",
-  "from": [
-   48.847417,
-   2.366711,
-   9
-  ],
-  "to": [
-   48.847104,
-   2.366039,
-   -3
-  ]
- },
- {
-  "name": "Passerelle Jim-Morrison — side",
-  "group": "bridge",
-  "from": [
-   48.849715,
-   2.367437,
-   9
-  ],
-  "to": [
-   48.849211,
-   2.367139,
-   -3
-  ]
- },
- {
-  "name": "Pont d'Iéna — side",
-  "group": "bridge",
-  "from": [
-   48.860446,
-   2.293373,
-   9
-  ],
-  "to": [
-   48.859808,
-   2.292075,
-   -3
-  ]
- },
- {
-  "name": "Passerelle Debilly — side",
-  "group": "bridge",
-  "from": [
-   48.862261,
-   2.295541,
-   9
-  ],
-  "to": [
-   48.862561,
-   2.296928,
-   -3
-  ]
- },
- {
-  "name": "Pont de l'Alma — side",
-  "group": "bridge",
-  "from": [
-   48.863388,
-   2.303255,
-   9
-  ],
-  "to": [
-   48.863463,
-   2.301783,
-   -3
-  ]
- },
- {
-  "name": "Pont Alexandre III — side",
-  "group": "bridge",
-  "from": [
-   48.863463,
-   2.315131,
-   9
-  ],
-  "to": [
-   48.863649,
-   2.313546,
-   -3
-  ]
- },
- {
-  "name": "Pont des Invalides — side",
-  "group": "bridge",
-  "from": [
-   48.863707,
-   2.30886,
-   9
-  ],
-  "to": [
-   48.863575,
-   2.310392,
-   -3
-  ]
- },
- {
-  "name": "Pont de la Concorde — side",
-  "group": "bridge",
-  "from": [
-   48.86398,
-   2.318267,
-   9
-  ],
-  "to": [
-   48.863373,
-   2.319593,
-   -3
-  ]
- },
- {
-  "name": "Pont Royal — side",
-  "group": "bridge",
-  "from": [
-   48.859602,
-   2.331037,
-   9
-  ],
-  "to": [
-   48.860125,
-   2.329919,
-   -3
-  ]
- },
- {
-  "name": "Passerelle Léopold-Sédar-Senghor — side",
-  "group": "bridge",
-  "from": [
-   48.862339,
-   2.323472,
-   9
-  ],
-  "to": [
-   48.861795,
-   2.324688,
-   -3
-  ]
- },
- {
-  "name": "Pont des Arts — side",
-  "group": "bridge",
-  "from": [
-   48.85894,
-   2.336152,
-   9
-  ],
-  "to": [
-   48.858442,
-   2.337572,
-   -3
-  ]
- },
- {
-  "name": "Pont Neuf — side",
-  "group": "bridge",
-  "from": [
-   48.85611,
-   2.341432,
-   9
-  ],
-  "to": [
-   48.856526,
-   2.340841,
-   -3
-  ]
- },
- {
-  "name": "Pont Neuf (53574164) — side",
-  "group": "bridge",
-  "from": [
-   48.857168,
-   2.343236,
-   9
-  ],
-  "to": [
-   48.857772,
-   2.34193,
-   -3
-  ]
- },
- {
-  "name": "Pont au Change — side",
-  "group": "bridge",
-  "from": [
-   48.85633,
-   2.347744,
-   9
-  ],
-  "to": [
-   48.856696,
-   2.346803,
-   -3
-  ]
- },
- {
-  "name": "Pont Notre-Dame — side",
-  "group": "bridge",
-  "from": [
-   48.85582,
-   2.349539,
-   9
-  ],
-  "to": [
-   48.856169,
-   2.348613,
-   -3
-  ]
- },
- {
-  "name": "Pont du Carrousel — side",
-  "group": "bridge",
-  "from": [
-   48.859828,
-   2.331588,
-   9
-  ],
-  "to": [
-   48.85934,
-   2.332912,
-   -3
-  ]
- },
- {
   "name": "Notre-Dame — portals",
   "group": "landmark",
   "from": [
@@ -3163,6 +2743,1140 @@
    0,
    null,
    10
+  ]
+ },
+ {
+  "name": "Viaduc de Meudon — side",
+  "group": "bridge",
+  "from": [
+   48.812764,
+   2.245957,
+   9
+  ],
+  "to": [
+   48.813645,
+   2.246592,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle du Chaperon Vert — side",
+  "group": "bridge",
+  "from": [
+   48.814055,
+   2.336263,
+   9
+  ],
+  "to": [
+   48.813512,
+   2.336186,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle du Cambodge — side",
+  "group": "bridge",
+  "from": [
+   48.816438,
+   2.337542,
+   9
+  ],
+  "to": [
+   48.816671,
+   2.336796,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Nelson Mandela — side",
+  "group": "bridge",
+  "from": [
+   48.822261,
+   2.39681,
+   9
+  ],
+  "to": [
+   48.820835,
+   2.39847,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Nelson Mandela (440494790) — side",
+  "group": "bridge",
+  "from": [
+   48.818754,
+   2.402522,
+   9
+  ],
+  "to": [
+   48.820016,
+   2.400476,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Industrielle d'Ivry-Charenton — side",
+  "group": "bridge",
+  "from": [
+   48.81714,
+   2.408999,
+   9
+  ],
+  "to": [
+   48.817828,
+   2.406971,
+   -3
+  ]
+ },
+ {
+  "name": "Pont d'Ivry — side",
+  "group": "bridge",
+  "from": [
+   48.81552,
+   2.410427,
+   9
+  ],
+  "to": [
+   48.814548,
+   2.410188,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle d'Alfortville — side",
+  "group": "bridge",
+  "from": [
+   48.81649,
+   2.412409,
+   9
+  ],
+  "to": [
+   48.816352,
+   2.413293,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de l'Île Martinet — side",
+  "group": "bridge",
+  "from": [
+   48.818021,
+   2.411604,
+   9
+  ],
+  "to": [
+   48.817831,
+   2.412375,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Renault — side",
+  "group": "bridge",
+  "from": [
+   48.824865,
+   2.234498,
+   9
+  ],
+  "to": [
+   48.825997,
+   2.232843,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Sèvres — side",
+  "group": "bridge",
+  "from": [
+   48.829777,
+   2.226606,
+   9
+  ],
+  "to": [
+   48.828537,
+   2.227155,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Seibert — side",
+  "group": "bridge",
+  "from": [
+   48.820774,
+   2.236424,
+   9
+  ],
+  "to": [
+   48.821466,
+   2.235116,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Sud — side",
+  "group": "bridge",
+  "from": [
+   48.824526,
+   2.22987,
+   9
+  ],
+  "to": [
+   48.824043,
+   2.230577,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Billancourt — side",
+  "group": "bridge",
+  "from": [
+   48.824584,
+   2.250089,
+   9
+  ],
+  "to": [
+   48.824427,
+   2.248819,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Daydé — side",
+  "group": "bridge",
+  "from": [
+   48.822935,
+   2.23811,
+   9
+  ],
+  "to": [
+   48.82355,
+   2.236929,
+   -3
+  ]
+ },
+ {
+  "name": "Les Arches d'Issy — side",
+  "group": "bridge",
+  "from": [
+   48.821162,
+   2.262933,
+   9
+  ],
+  "to": [
+   48.821778,
+   2.261629,
+   -3
+  ]
+ },
+ {
+  "name": "Pont d'Issy — side",
+  "group": "bridge",
+  "from": [
+   48.831494,
+   2.260966,
+   9
+  ],
+  "to": [
+   48.830354,
+   2.259461,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Masséna — side",
+  "group": "bridge",
+  "from": [
+   48.826093,
+   2.38045,
+   9
+  ],
+  "to": [
+   48.825384,
+   2.380801,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Masséna (449188281) — side",
+  "group": "bridge",
+  "from": [
+   48.825941,
+   2.378628,
+   9
+  ],
+  "to": [
+   48.823076,
+   2.381473,
+   -3
+  ]
+ },
+ {
+  "name": "Pont National — side",
+  "group": "bridge",
+  "from": [
+   48.826349,
+   2.388129,
+   9
+  ],
+  "to": [
+   48.827903,
+   2.386878,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Amont — side",
+  "group": "bridge",
+  "from": [
+   48.824581,
+   2.389603,
+   9
+  ],
+  "to": [
+   48.826373,
+   2.388625,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de la Liberté — side",
+  "group": "bridge",
+  "from": [
+   48.82456,
+   2.404366,
+   9
+  ],
+  "to": [
+   48.824134,
+   2.40506,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Kennedy — side",
+  "group": "bridge",
+  "from": [
+   48.823864,
+   2.406608,
+   9
+  ],
+  "to": [
+   48.823531,
+   2.407258,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Victor Hugo — side",
+  "group": "bridge",
+  "from": [
+   48.82082,
+   2.411618,
+   9
+  ],
+  "to": [
+   48.820516,
+   2.412299,
+   -3
+  ]
+ },
+ {
+  "name": "Viaduc de Saint-Cloud — side",
+  "group": "bridge",
+  "from": [
+   48.849412,
+   2.213814,
+   9
+  ],
+  "to": [
+   48.844518,
+   2.222985,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Aval — side",
+  "group": "bridge",
+  "from": [
+   48.832679,
+   2.263578,
+   9
+  ],
+  "to": [
+   48.8349,
+   2.26434,
+   -3
+  ]
+ },
+ {
+  "name": "Pont du Garigliano — side",
+  "group": "bridge",
+  "from": [
+   48.838247,
+   2.266911,
+   9
+  ],
+  "to": [
+   48.839301,
+   2.268381,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Bercy — side",
+  "group": "bridge",
+  "from": [
+   48.839007,
+   2.374035,
+   9
+  ],
+  "to": [
+   48.838051,
+   2.374881,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Tolbiac — side",
+  "group": "bridge",
+  "from": [
+   48.83169,
+   2.382001,
+   9
+  ],
+  "to": [
+   48.832874,
+   2.380983,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Simone de Beauvoir — side",
+  "group": "bridge",
+  "from": [
+   48.83416,
+   2.37957,
+   9
+  ],
+  "to": [
+   48.835449,
+   2.378411,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Saint-Cloud — side",
+  "group": "bridge",
+  "from": [
+   48.840056,
+   2.223116,
+   9
+  ],
+  "to": [
+   48.841316,
+   2.223652,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Mirabeau — side",
+  "group": "bridge",
+  "from": [
+   48.84577,
+   2.274364,
+   9
+  ],
+  "to": [
+   48.84666,
+   2.275576,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Grenelle - Cadets de Saumur — side",
+  "group": "bridge",
+  "from": [
+   48.851203,
+   2.281946,
+   9
+  ],
+  "to": [
+   48.850269,
+   2.280103,
+   -3
+  ]
+ },
+ {
+  "name": "Viaduc d'Austerlitz — side",
+  "group": "bridge",
+  "from": [
+   48.844464,
+   2.366984,
+   9
+  ],
+  "to": [
+   48.84355,
+   2.367873,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Sully — side",
+  "group": "bridge",
+  "from": [
+   48.848632,
+   2.358435,
+   9
+  ],
+  "to": [
+   48.849767,
+   2.357964,
+   -3
+  ]
+ },
+ {
+  "name": "Pont d'Austerlitz — side",
+  "group": "bridge",
+  "from": [
+   48.845961,
+   2.365074,
+   9
+  ],
+  "to": [
+   48.844931,
+   2.366024,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Charles de Gaulle — side",
+  "group": "bridge",
+  "from": [
+   48.843817,
+   2.368014,
+   9
+  ],
+  "to": [
+   48.842575,
+   2.369099,
+   -3
+  ]
+ },
+ {
+  "name": "Pont-métro Morland — side",
+  "group": "bridge",
+  "from": [
+   48.846847,
+   2.364778,
+   9
+  ],
+  "to": [
+   48.846921,
+   2.365593,
+   -3
+  ]
+ },
+ {
+  "name": "Voie Mazas — side",
+  "group": "bridge",
+  "from": [
+   48.846992,
+   2.366142,
+   9
+  ],
+  "to": [
+   48.846756,
+   2.365402,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Jim-Morrison — side",
+  "group": "bridge",
+  "from": [
+   48.849715,
+   2.367437,
+   9
+  ],
+  "to": [
+   48.849211,
+   2.367139,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Morland — side",
+  "group": "bridge",
+  "from": [
+   48.847417,
+   2.366711,
+   9
+  ],
+  "to": [
+   48.847104,
+   2.366039,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle de l'Avre — side",
+  "group": "bridge",
+  "from": [
+   48.851446,
+   2.22112,
+   9
+  ],
+  "to": [
+   48.852773,
+   2.221278,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle de l'Avre (456366207) — side",
+  "group": "bridge",
+  "from": [
+   48.85432,
+   2.224465,
+   9
+  ],
+  "to": [
+   48.852942,
+   2.224312,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Bir-Hakeim — side",
+  "group": "bridge",
+  "from": [
+   48.856349,
+   2.289974,
+   9
+  ],
+  "to": [
+   48.855692,
+   2.287622,
+   -3
+  ]
+ },
+ {
+  "name": "Pont d'Iéna — side",
+  "group": "bridge",
+  "from": [
+   48.860446,
+   2.293373,
+   9
+  ],
+  "to": [
+   48.859808,
+   2.292075,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Rouelle — side",
+  "group": "bridge",
+  "from": [
+   48.850135,
+   2.281463,
+   9
+  ],
+  "to": [
+   48.852536,
+   2.282806,
+   -3
+  ]
+ },
+ {
+  "name": "Pont des Arts — side",
+  "group": "bridge",
+  "from": [
+   48.85894,
+   2.336152,
+   9
+  ],
+  "to": [
+   48.858442,
+   2.337572,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Royal — side",
+  "group": "bridge",
+  "from": [
+   48.859602,
+   2.331037,
+   9
+  ],
+  "to": [
+   48.860125,
+   2.329919,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Neuf — side",
+  "group": "bridge",
+  "from": [
+   48.85611,
+   2.341432,
+   9
+  ],
+  "to": [
+   48.856526,
+   2.340841,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Neuf (53574164) — side",
+  "group": "bridge",
+  "from": [
+   48.857168,
+   2.343236,
+   9
+  ],
+  "to": [
+   48.857772,
+   2.34193,
+   -3
+  ]
+ },
+ {
+  "name": "Pont au Change — side",
+  "group": "bridge",
+  "from": [
+   48.85633,
+   2.347744,
+   9
+  ],
+  "to": [
+   48.856696,
+   2.346803,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Notre-Dame — side",
+  "group": "bridge",
+  "from": [
+   48.85582,
+   2.349539,
+   9
+  ],
+  "to": [
+   48.856169,
+   2.348613,
+   -3
+  ]
+ },
+ {
+  "name": "Pont d'Arcole — side",
+  "group": "bridge",
+  "from": [
+   48.855883,
+   2.349792,
+   9
+  ],
+  "to": [
+   48.855521,
+   2.350566,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Saint-Michel — side",
+  "group": "bridge",
+  "from": [
+   48.854398,
+   2.343938,
+   9
+  ],
+  "to": [
+   48.854066,
+   2.344591,
+   -3
+  ]
+ },
+ {
+  "name": "Petit-Pont - Cardinal Lustiger — side",
+  "group": "bridge",
+  "from": [
+   48.853547,
+   2.346189,
+   9
+  ],
+  "to": [
+   48.853306,
+   2.346925,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de l'Archevêché — side",
+  "group": "bridge",
+  "from": [
+   48.851804,
+   2.350878,
+   9
+  ],
+  "to": [
+   48.851505,
+   2.351569,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Saint-Louis — side",
+  "group": "bridge",
+  "from": [
+   48.852223,
+   2.352892,
+   9
+  ],
+  "to": [
+   48.852762,
+   2.352766,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Louis-Philippe — side",
+  "group": "bridge",
+  "from": [
+   48.853389,
+   2.355191,
+   9
+  ],
+  "to": [
+   48.853847,
+   2.354418,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de la Tournelle — side",
+  "group": "bridge",
+  "from": [
+   48.851148,
+   2.354487,
+   9
+  ],
+  "to": [
+   48.850626,
+   2.355441,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Marie — side",
+  "group": "bridge",
+  "from": [
+   48.853246,
+   2.356641,
+   9
+  ],
+  "to": [
+   48.852847,
+   2.357394,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Sully (146497603) — side",
+  "group": "bridge",
+  "from": [
+   48.851308,
+   2.360386,
+   9
+  ],
+  "to": [
+   48.850633,
+   2.360669,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Suresnes — side",
+  "group": "bridge",
+  "from": [
+   48.865623,
+   2.228489,
+   9
+  ],
+  "to": [
+   48.866846,
+   2.229591,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de l'Alma — side",
+  "group": "bridge",
+  "from": [
+   48.863388,
+   2.303255,
+   9
+  ],
+  "to": [
+   48.863463,
+   2.301783,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Debilly — side",
+  "group": "bridge",
+  "from": [
+   48.862261,
+   2.295541,
+   9
+  ],
+  "to": [
+   48.862561,
+   2.296928,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de la Concorde — side",
+  "group": "bridge",
+  "from": [
+   48.86398,
+   2.318267,
+   9
+  ],
+  "to": [
+   48.863373,
+   2.319593,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Léopold-Sédar-Senghor — side",
+  "group": "bridge",
+  "from": [
+   48.862339,
+   2.323472,
+   9
+  ],
+  "to": [
+   48.861795,
+   2.324688,
+   -3
+  ]
+ },
+ {
+  "name": "Pont des Invalides — side",
+  "group": "bridge",
+  "from": [
+   48.863707,
+   2.30886,
+   9
+  ],
+  "to": [
+   48.863575,
+   2.310392,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Alexandre III — side",
+  "group": "bridge",
+  "from": [
+   48.863463,
+   2.315131,
+   9
+  ],
+  "to": [
+   48.863649,
+   2.313546,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Puteaux — side",
+  "group": "bridge",
+  "from": [
+   48.87568,
+   2.241803,
+   9
+  ],
+  "to": [
+   48.87719,
+   2.244431,
+   -3
+  ]
+ },
+ {
+  "name": "Place de l’Europe - Simone Veil — side",
+  "group": "bridge",
+  "from": [
+   48.877884,
+   2.323584,
+   9
+  ],
+  "to": [
+   48.878929,
+   2.323506,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Neuilly — side",
+  "group": "bridge",
+  "from": [
+   48.885459,
+   2.253246,
+   9
+  ],
+  "to": [
+   48.886651,
+   2.254498,
+   -3
+  ]
+ },
+ {
+  "name": "Passerelle Marcelle Henry — side",
+  "group": "bridge",
+  "from": [
+   48.890468,
+   2.310124,
+   9
+  ],
+  "to": [
+   48.889834,
+   2.310907,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Courbevoie — side",
+  "group": "bridge",
+  "from": [
+   48.895545,
+   2.263742,
+   9
+  ],
+  "to": [
+   48.895975,
+   2.265201,
+   -3
+  ]
+ },
+ {
+  "name": "Pont du Maréchal-Juin — side",
+  "group": "bridge",
+  "from": [
+   48.894197,
+   2.267953,
+   9
+  ],
+  "to": [
+   48.89394,
+   2.267229,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Levallois — side",
+  "group": "bridge",
+  "from": [
+   48.900777,
+   2.278513,
+   9
+  ],
+  "to": [
+   48.900362,
+   2.277259,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de Levallois (568510074) — side",
+  "group": "bridge",
+  "from": [
+   48.899159,
+   2.27757,
+   9
+  ],
+  "to": [
+   48.89943,
+   2.278284,
+   -3
+  ]
+ },
+ {
+  "name": "Pont des Souverains — side",
+  "group": "bridge",
+  "from": [
+   48.89076,
+   2.308891,
+   9
+  ],
+  "to": [
+   48.891662,
+   2.307907,
+   -3
+  ]
+ },
+ {
+  "name": "Pont de la Petite Ceinture — side",
+  "group": "bridge",
+  "from": [
+   48.898577,
+   2.361632,
+   9
+  ],
+  "to": [
+   48.89817,
+   2.361086,
+   -3
+  ]
+ },
+ {
+  "name": "Pont du Carrousel — side",
+  "group": "bridge",
+  "from": [
+   48.859828,
+   2.331588,
+   9
+  ],
+  "to": [
+   48.85934,
+   2.332912,
+   -3
+  ]
+ },
+ {
+  "name": "Pont Rouelle — south",
+  "group": "bridge",
+  "from": [
+   48.853313,
+   2.282981,
+   14
+  ],
+  "to": [
+   48.852307,
+   2.282981,
+   8
+  ]
+ },
+ {
+  "name": "Pont Rouelle — east",
+  "group": "bridge",
+  "from": [
+   48.852954,
+   2.285848,
+   12
+  ],
+  "to": [
+   48.852289,
+   2.283663,
+   6
   ]
  }
 ]

@@ -14,7 +14,9 @@
     "name": "Cité universitaire: la Fondation des États-Unis",
     "procedural": "fondationEtatsUnis",
     "osm": [
-      "way/52072807"
+      "way/52072807",
+      "way/860140474",
+      "way/860407555"
     ],
     "height": 23,
     "front": 198,
@@ -25,7 +27,8 @@
     "name": "Cité universitaire: le Collège Franco-Britannique",
     "procedural": "collegeFrancoBritannique",
     "osm": [
-      "way/52090391"
+      "way/52090391",
+      "way/860140469"
     ],
     "height": 28,
     "front": 198,
@@ -102,7 +105,11 @@
     "name": "Cité universitaire: le Collège d'Espagne",
     "procedural": "collegeEspagne",
     "osm": [
-      "way/52090417"
+      "way/52090417",
+      "way/860140473",
+      "way/860140472",
+      "way/860140470",
+      "way/860140471"
     ],
     "height": 27,
     "front": 305,

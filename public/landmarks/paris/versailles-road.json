@@ -80,7 +80,13 @@
     "name": "Hôtel de ville de Sèvres",
     "procedural": "sevresMairie",
     "osm": [
-      "way/146283515"
+      "way/146283515",
+      "way/309042223",
+      "way/309042228",
+      "way/309042237",
+      "way/309042243",
+      "way/309042240",
+      "way/309042235"
     ],
     "front": 160,
     "height": 14.5,

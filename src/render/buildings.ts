@@ -105,6 +105,13 @@ export class MeshBuilder {
    */
   readonly plants: { x: number; z: number; species: string; h: number; spin: number; dy?: number }[] = []
 
+  /**
+   * WEATHERING (facade-material.ts): per vertex, the world height of the building's foot and a 0..1 seed of the
+   * building, so the shader knows how far up the wall a pixel is (grime at the base, streaks under each storey) and can
+   * give each building its own slight tone. Written only by `buildBuilding`, padded with NO_FOOT for everything else.
+   */
+  readonly uvs2: number[] = []
+
   /** One quad, wound so its face points along `n`. `uv` is the four corners, in order bl, br, tr, tl. */
   quad(
     p: [number, number, number][],
@@ -142,9 +149,16 @@ export class MeshBuilder {
     vd.normals = new Float32Array(this.normals)
     vd.uvs = new Float32Array(this.uvs)
     vd.colors = new Float32Array(this.colors)
+    if (this.uvs2.length > 0) { padFoot(this, this.positions.length / 3); vd.uvs2 = new Float32Array(this.uvs2) }
     vd.indices = this.positions.length / 3 > 65535 ? new Uint32Array(this.indices) : new Uint16Array(this.indices)
     return vd
   }
+}
+
+/** the weathering channel's "not a building": far below any foot, so the shader leaves the pixel as it was */
+export const NO_FOOT = -10000
+function padFoot(out: MeshBuilder, vertices: number): void {
+  while (out.uvs2.length < vertices * 2) out.uvs2.push(NO_FOOT, 0)
 }
 
 const rgb = (hex: string): [number, number, number] => {
@@ -785,7 +799,13 @@ export function glassCode(hex: string): number {
 /** (the recursive calls below go to buildBuildingRaw: the tint is added once, here — nested wrappers summed it past 0.5 and the shader decoded pure red) */
 export function buildBuilding(...a: Parameters<typeof buildBuildingRaw>): void {
   const c0 = a[0].colors.length
+  const v0 = a[0].positions.length / 3
   buildBuildingRaw(...a)
+  // the weathering channel: this building's foot and seed on every vertex it just added
+  const out = a[0]
+  padFoot(out, v0)
+  const foot = a[5] ?? 0, seed = 0.001 + 0.998 * (Math.imul(a[4] | 0, 2654435761) >>> 0) / 4294967296  // (0 means none: a mesh without the channel reads 0)
+  for (let v = v0; v < out.positions.length / 3; v++) out.uvs2.push(foot, seed)
   const hex = a[2].dress?.glassTint ?? a[2].glassTint
   if (!hex) return
   const f = glassCode(hex) / GLASS_SCALE, c = a[0].colors
@@ -856,6 +876,14 @@ function buildBuildingRaw(
   for (let i = 0; i < ring.length; i++) {
     wall(out, ring[i], ring[(i + 1) % ring.length], plan, atlas, seed ^ (i * 0x9e3779b1), baseY,
       streets[i], arches?.(i) ?? [], depthBehind(ring, i), roles[i])
+  }
+  // a part that starts above the street (OSM min_height: a cantilever, an overhang) has an underside: the soffit, facing down (PARIS_BUGS #307)
+  const y0 = plan.storeys[0]?.y0 ?? 0
+  if (y0 > 0.5) {
+    const b0 = out.positions.length / 3, i0 = out.indices.length
+    capPolygonWithHoles(out, [ring, ...holes], baseY + y0, shadeRgb(rgb(plan.palette.wall), 0.75), KIND_WALL)
+    for (let v = b0; v < out.positions.length / 3; v++) out.normals[v * 3 + 1] = -1
+    for (let k = i0; k < out.indices.length; k += 3) { const t = out.indices[k]; out.indices[k] = out.indices[k + 1]; out.indices[k + 1] = t }
   }
   // the court walls: a clockwise ring's outward normal (uz, −ux) points into the court
   holes.forEach((h, k) => {

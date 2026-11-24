@@ -47,7 +47,9 @@
     "osm": [
       "relation/538267",
       "relation/3076120",
-      "way/229418339"
+      "way/229418339",
+      "relation/3076122",
+      "relation/3076121"
     ],
     "name": "Tour DGA (Cité de l'Air, Tour A)",
     "procedural": "tourDGA",
@@ -227,7 +229,12 @@
   },
   {
     "osm": [
-      "way/83863766"
+      "way/83863766",
+      "way/272578455",
+      "way/321792878",
+      "way/321792876",
+      "way/321792877",
+      "way/404688612"
     ],
     "name": "Le Passy Kennedy",
     "procedural": "passyKennedy",

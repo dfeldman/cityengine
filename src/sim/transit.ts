@@ -45,6 +45,8 @@ export interface VehicleView {
   dwelling: boolean
   /** what to call it on the HUD: "Powell–Hyde cable car" */
   name?: string
+  /** its own boarding reach, metres, where the kind's is too short (a balloon on its pad in the middle of a lawn) */
+  near?: number
 }
 
 /** A position on the ride graph, as `sim/navigate.ts` means it. */
@@ -130,7 +132,7 @@ export class Transit {
       // (the gondola's lower station stands back in Salesforce Plaza, 24 m off Mission Street, the nearest street a
       // bike is on: within reach of it, not of the kerb)
       // (and the ferris wheel's deck, set back in its lot off Jefferson Street)
-      if (d > (v.kind === 'gondola' || v.kind === 'wheel' ? GONDOLA_NEAR : BOARD_NEAR)) continue
+      if (d > (v.near ?? (v.kind === 'gondola' || v.kind === 'wheel' ? GONDOLA_NEAR : BOARD_NEAR))) continue
       if (!best || d < best.d) best = { v, d }
     }
     this.candidate = best?.v ?? null

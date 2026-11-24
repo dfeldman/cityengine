@@ -12,7 +12,7 @@
   {"osm": ["way/256993595"], "name": "Haas-Lilienthal House", "procedural": "haasLilienthalHouse", "front": 80, "height": 22, "note": "1886 Queen Anne Victorian, San Francisco Heritage's house museum: lavender-grey wood siding, round corner turret."},
   {"osm": ["way/263349499"], "name": "First Apostolic Faith Church", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary storefront church, plain stucco block."},
   {"osm": ["way/579664204"], "name": "1051 3rd Street", "procedural": "thirdStreetSubstation", "front": "street", "height": 7, "note": "Small Muni/rail substation, roof=pyramidal in OSM: brick box under a pyramid crown."},
-  {"osm": ["way/288645261"], "name": "83m tower", "procedural": "unnamedEightyThreeMeterTower", "front": "street", "height": 83, "note": "No name or type on record; recipe midcentury-slab used generically by height."},
+  {"osm": ["way/288645261", "way/1295386883"], "name": "83m tower", "procedural": "unnamedEightyThreeMeterTower", "front": "street", "height": 83, "note": "No name or type on record; recipe midcentury-slab used generically by height."},
   {"osm": ["way/262586259"], "name": "Church of Christ", "restyle": "stucco", "levels": 4, "height": 16, "note": "Ordinary neighbourhood church, plain stucco block."},
   {"osm": ["way/32839432"], "name": "Fontana East", "procedural": "fontanaEast", "front": "street", "height": 55, "note": "1963-64 twin white concrete slab at Aquatic Park; its bulk led to SF's 40-ft waterfront height limit."},
   {"osm": ["way/32839422"], "name": "Fontana West", "procedural": "fontanaWest", "front": "street", "height": 55, "note": "2026-10-17: the twin of Fontana East (owner: identical in real life); was a haiku chicago reface in brown."},

@@ -1,4 +1,5 @@
 import { alignWallLine } from './wall-align.ts'
+import { modelLevelAt, onLevels } from '../src/city/model-walks.ts'
 import { stepWalls } from './step-walls.ts'
 /** a step wall within this of a wall already there (m), or this near a structure's outline (m) or a trench road's corridor (m), is not built */
 const SW_NEAR_WALL = 3, SW_STRUCT_PAD = 1.5, SW_TRENCH_PAD = 2
@@ -110,7 +111,7 @@ import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
-import { BT_FOOT_DECKS, DALLE_BT, btFootDecks, btOffset, capUnderDecks, dalleHeight, dalleVerts, stairsAtDeckEnds } from './defense-decks.ts'
+import { BT_FOOT_DECKS, DALLE_BT, WALKWAYS, applyWalkways, btFootDecks, btOffset, capUnderDecks, dalleHeight, dalleVerts, stairsAtDeckEnds } from './defense-decks.ts'
 import { alignDeckEnds, closedFootBridge, bridgeHeights, liftWalksOffTheSea, meetDecks, rampFootBridgeEnds, footBridgeLinks, mergeBridgeLanes } from './bridges.ts'
 import { bedPosts, footWaysOnTracks, levelParisRails, parisRailRecord, railFineTiles, stationShells, straightDeck } from './rail-levels.ts'
 import { levelFootOnDecks } from '../src/render/rail-overbridge.ts'
@@ -160,6 +161,7 @@ import { insetNested } from '../src/city/nesting.ts'
 import { GroundModel } from '../src/map/ground.ts'
 import { writeV3 } from './v3-writer.ts'
 import { HUGE_AREA_SPAN, tooBigForAnArea } from '../src/city/park-planting.ts'
+import { clearTrailsOfBuildings } from './trail-clear.ts'
 import { localZones, zoneTouchesRect, zonesAt, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
 import { ROOF_RGB, roofKind } from '../src/city/paris/materials.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
@@ -427,18 +429,6 @@ const sameBox = (a: { south: number; north: number; west: number; east: number }
   Math.abs(a.south - b.south) < 1e-6 && Math.abs(a.north - b.north) < 1e-6 && Math.abs(a.west - b.west) < 1e-6 && Math.abs(a.east - b.east) < 1e-6
 
 /**
- * THE FAR MASSING (render/far-massing.ts): the whole city as plain blocks for the views from high up, made from the v3 tiles
- * just written (tools/far-massing.ts, from disk). Under vite-node, like the audit, for the region and style code it reads.
- * A failure is reported and the bake goes on: the layer is optional and the game runs without the file.
- */
-function farMassStage(id: string): void {
-  if (process.argv.includes('--no-farmass')) return
-  const bin = resolve(import.meta.dirname, '..', 'node_modules', '.bin', 'vite-node')
-  const r = spawnSync(bin, [resolve(import.meta.dirname, 'far-massing.ts'), '--', `--city=${id}`], { stdio: 'inherit' })
-  if (r.status !== 0) console.warn(`  !! far massing not made for ${id}${r.error ? `: ${r.error.message}` : ''} — the views from high up will stop at the streamed tiles`)
-}
-
-/**
  * The landmark audit, spawned under vite-node because it needs the REAL selection code from
  * src/render/landmarks.ts and that imports Babylon with extensionless specifiers, which plain node — the
  * bake's own runtime — cannot resolve.
@@ -464,6 +454,36 @@ function auditStage(stage: string, spec: CitySpec, extra: string[] = []): void {
   console.error('     Nothing below this point has been baked. Fix the manifest, or re-run with --no-audit.')
   process.exit(1)
 }
+
+/**
+ * THE FAR MASSING (render/far-massing.ts): the whole city as plain blocks for the views from high up, made from the v3 tiles
+ * just written (tools/far-massing.ts, from disk). Under vite-node, like the audit, for the region and style code it reads.
+ * A failure is reported and the bake goes on: the layer is optional and the game runs without the file.
+ */
+function farMassStage(id: string): void {
+  if (process.argv.includes('--no-farmass')) return
+  const bin = resolve(import.meta.dirname, '..', 'node_modules', '.bin', 'vite-node')
+  const r = spawnSync(bin, [resolve(import.meta.dirname, 'far-massing.ts'), '--', `--city=${id}`], { stdio: 'inherit' })
+  if (r.status !== 0) console.warn(`  !! far massing not made for ${id}${r.error ? `: ${r.error.message}` : ''} — the views from high up will stop at the streamed tiles`)
+}
+
+/**
+ * THE SEINE BAND IS THE DEFAULT (2026-11-16, owner: "make the proper bake settings the default"): a city whose region has a river
+ * level (Paris) bakes with the band and the multi-level pass unless BDTOPO_BAND=0. A paris-centre bake run without the flag lost
+ * the multi-level pass and lifted the Pont d'Iéna's crossings 4 m over the lidar (docs/SEINE-MULTILEVEL.md, Round 9).
+ */
+function bandOn(spec: CitySpec): boolean {
+  const v = process.env.BDTOPO_BAND
+  return v === '1' || (v === undefined && region(spec.region).riverLevel !== undefined)
+}
+
+/**
+ * Spots where the lidar took something with no big footprint for ground (a moored balloon, a marquee…): within `r` metres a bump
+ * over the 48 m opening of the ground goes back to it, as at a big building (the "lidar's relief kept" pass).
+ */
+const SURVEY_MISTAKES: { lat: number; lon: number; r: number; why: string }[] = [
+  { lat: 48.841329, lon: 2.273955, r: 20, why: 'the Ballon de Paris on its pad, Parc André-Citroën (owner, 2026-11-18)' },
+]
 
 async function bake(spec: CitySpec): Promise<void> {
   console.log(`\n${spec.name}`)
@@ -534,7 +554,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // BDTOPO_BAND=1 (tools/seine-band.ts, 2026-11-08): ONE Seine band from BD TOPO (water + bridges), the hand zones as overrides on
   //  top; `bandAt` (local x, z) stands the inference passes down inside it (plates, deck clearance, the lower-quay shelf, sunk
   //  tunnel mouths, meetDecks)
-  const seine = process.env.BDTOPO_BAND === '1' ? await (async () => {
+  const seine = bandOn(spec) ? await (async () => {
     const r = region(spec.region), t0 = Date.now()
     // (bandExclude by location: the excluded bridges' OSM outlines (bridgesQuery, cached; fetched again for the outlines below)
     //  and their named bridge-tagged deck ways)
@@ -894,6 +914,7 @@ async function bake(spec: CitySpec): Promise<void> {
             ...wayTags(w.tags),
             // (its own heights, at its nodes: the bake puts more points along long ways later, so they are kept with
             // where they are, and laid along every point at the end — tools/deck-conform.ts)
+            ...({ _way: w.id } as {}),
             ...(w.tags['sr:authored'] ? { authored: true, _y: pts.map((p, k) => [p.x, p.z, authored.y.get(w.nodes[startIdx + k]) ?? 0]) } : {}),
           })
           last = edges[edges.length - 1]
@@ -2107,6 +2128,22 @@ async function bake(spec: CitySpec): Promise<void> {
         }
       }
     }
+    /*
+     * …and the few things the survey took for ground with no big footprint to say so (owner, 2026-11-18: "a giant peak in the ground
+     * … likely caused by a stray LIDAR reading of the balloon itself" — the Ballon de Paris moored on its pad, 16 m of spike 15 m
+     * across). Within `r` of each the same bump test as a big building's, fading out over `SURVEY_FADE` past it.
+     */
+    const SURVEY_FADE = 10
+    for (const s of SURVEY_MISTAKES) {
+      const c = proj.toLocal({ lat: s.lat, lon: s.lon }), R = s.r + SURVEY_FADE
+      for (let rr = Math.max(0, Math.floor((c.z - R - fz0) / FINE_STEP)); rr <= Math.min(frows - 1, Math.ceil((c.z + R - fz0) / FINE_STEP)); rr++) {
+        for (let cc = Math.max(0, Math.floor((c.x - R - fx0) / FINE_STEP)); cc <= Math.min(fcols - 1, Math.ceil((c.x + R - fx0) / FINE_STEP)); cc++) {
+          const d = Math.hypot(fx0 + cc * FINE_STEP - c.x, fz0 + rr * FINE_STEP - c.z)
+          const w = d <= s.r ? 1 : 1 - (d - s.r) / SURVEY_FADE, i = rr * fcols + cc
+          if (w > reach[i]) reach[i] = w
+        }
+      }
+    }
     let n = 0, flattened = 0
     for (let i = 0; i < fineGround.length; i++) {
       if (!lidarPosts[i] || fineWet[i]) continue
@@ -3101,6 +3138,20 @@ async function bake(spec: CitySpec): Promise<void> {
     const BE_R = 50, BE_FADE = 25, BE_SLOPE = Number(process.env.BE_SLOPE ?? 1), BE_ABOVE = 0.6, BE_NEAR_WATER = 80, BE_SEEK = 60
     const gAt = (x: number, z: number): number => sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z)
     const wetAt = (x: number, z: number): boolean => wetIndex(x, z) !== null
+    /*
+     * …the RIVER, not any water (PARIS_BUGS.md #326, 2026-11-22): `riverY` is the Seine's level, so an end beside a lake or a canal
+     * was laid down to it — Lac Daumesnil's island bridge sat in a dry gorge 19 m under the lidar and its own lake, the Canal de
+     * l'Ourcq's bridges 23 m (water at 52 m NGF, the Seine at 27). "Near" and the distance to the water count only the rings that
+     * take the Seine's level (`a.river`, 8000 m² and more: the same test as the water levels below); every other water stays
+     * out of the laying, and its bridges keep the survey's ground.
+     */
+    const riverIndex = waterLookup(areas.filter((a) => a.kind === 'water' && a.river && Math.abs(area(unpackPoints(a.ring))) >= 8000).map((a) => {
+      const ring = unpackPoints(a.ring)
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: 0 }
+    }))
+    const riverAt = (x: number, z: number): boolean => riverIndex(x, z) !== null
     const roadAt = new Set<number>()
     for (const e of kept) if (!e.bridge && !e.foot && !e.tunnel) { roadAt.add(e.a); roadAt.add(e.b) }
     const ends: { x: number; z: number }[] = []
@@ -3110,7 +3161,7 @@ async function bake(spec: CitySpec): Promise<void> {
       for (const [n, x, z] of [[e.a, p[0], p[1]], [e.b, p[p.length - 2], p[p.length - 1]]] as const) {
         if (!roadAt.has(n) || wetAt(x, z) || ends.some((q) => Math.hypot(q.x - x, q.z - z) < 20)) continue
         let near = false
-        for (let k = 0; k < 16 && !near; k++) for (let r = 10; r <= BE_NEAR_WATER && !near; r += 10) near = wetAt(x + Math.cos(k * Math.PI / 8) * r, z + Math.sin(k * Math.PI / 8) * r)
+        for (let k = 0; k < 16 && !near; k++) for (let r = 10; r <= BE_NEAR_WATER && !near; r += 10) near = riverAt(x + Math.cos(k * Math.PI / 8) * r, z + Math.sin(k * Math.PI / 8) * r)
         if (near) ends.push({ x, z })
       }
     }
@@ -3131,7 +3182,7 @@ async function bake(spec: CitySpec): Promise<void> {
         const x = fx0 + cc * FINE_STEP, z = fz0 + rr * FINE_STEP, d = Math.hypot(x - c.x, z - c.z)
         if (d > R || wetAt(x, z)) continue
         let dw = BE_SEEK
-        for (let k = 0; k < 16; k++) for (let r = 2; r < dw; r += 2) if (wetAt(x + Math.cos(k * Math.PI / 8) * r, z + Math.sin(k * Math.PI / 8) * r)) { dw = r; break }
+        for (let k = 0; k < 16; k++) for (let r = 2; r < dw; r += 2) if (riverAt(x + Math.cos(k * Math.PI / 8) * r, z + Math.sin(k * Math.PI / 8) * r)) { dw = r; break }
         const laid = Math.min(level, riverY + BE_ABOVE + dw * BE_SLOPE)
         const w = Math.min(1, (R - d) / BE_FADE), i = rr * fcols + cc
         fineGround[i] = fineGround[i] + (laid - fineGround[i]) * w
@@ -3799,6 +3850,9 @@ async function bake(spec: CitySpec): Promise<void> {
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
   // La Défense's foot decks at BD TOPO's heights, replacing the one-storey cap where BD TOPO has them (tools/defense-decks.ts)
+  /** NGF − package, measured in La Défense's zone by the BD TOPO pass; DEFENSE_DATUM when it did not run (docs/DEFENSE-WALKWAYS.md) */
+  let walkDatum: number | undefined
+  const DEFENSE_DATUM = 31.5
   if (spec.region === 'paris' && BT_FOOT_DECKS && layerCaps.length) {
     for (const c of streetRegion.footBridgeLayers ?? []) {
       const dLat = c.radius / 111200, dLon = c.radius / (111200 * Math.cos(c.lat * Math.PI / 180))
@@ -3810,10 +3864,18 @@ async function bake(spec: CitySpec): Promise<void> {
       const zone = kept.filter((e) => !e.authored)
       const off = btOffset(zone, segs, cap)
       if (off === null) { console.log(`  ${c.name}: too few BD TOPO matches for an offset, decks left at the layer cap`); continue }
+      walkDatum ??= off
       const ids = btFootDecks(zone, segs, cap, off, groundAt)
       console.log(`  ${c.name}: ${ids.length} foot decks at BD TOPO's heights (NGF − ${off.toFixed(2)})`)
     }
   }
+  // La Défense's listed walkways (data/defense-walkways.json): bridges at the lidar's decks, before the ends are aligned and the ramps sloped
+  if (spec.region === 'paris' && WALKWAYS && existsSync(resolve(import.meta.dirname, '../data/defense-walkways.json'))) {
+    const list = JSON.parse(readFileSync(resolve(import.meta.dirname, '../data/defense-walkways.json'), 'utf8'))
+    const ids = applyWalkways(kept.filter((e) => !e.authored), list, (lat, lon) => proj.toLocal({ lat, lon }), walkDatum ?? DEFENSE_DATUM, groundAt)
+    console.log(`  ${ids.length} listed La Défense walkway ways laid at the lidar's decks (applyWalkways, NGF − ${(walkDatum ?? DEFENSE_DATUM).toFixed(2)})`)
+  }
+  for (const e of kept as (typeof kept[number] & { _way?: number })[]) delete e._way
   {
     const aligned = alignDeckEnds(kept.filter((e) => !e.authored), layerCaps)
     if (aligned.length) console.log(`  ${aligned.length} foot-bridge ends brought to one level where they meet (alignDeckEnds)`)
@@ -3954,6 +4016,7 @@ async function bake(spec: CitySpec): Promise<void> {
     const r = rampFootBridgeEnds(kept, spec.region === 'paris')
     if (r.size) console.log(`  ${r.size} foot-bridge ends graded down to the paths they join`)
   }
+  const dzRings = (streetRegion.deckZones ?? []).map((z: { ring: [number, number][] }) => z.ring.flatMap(([lat, lon]) => { const q = proj.toLocal({ lat, lon }); return [q.x, q.z] }))
   // street tunnels under a hill: their own mouth-to-mouth profile, and `bore` — ridden and drawn (tools/tunnels.ts)
   const bores = boreTunnels(kept, groundAt,
     (name, why) => console.log(why.startsWith('the street') ? `  ${name}: ${why}` : `  tunnel not ridden: ${name} — ${why}`),
@@ -3962,11 +4025,15 @@ async function bake(spec: CitySpec): Promise<void> {
     (() => {
       const lidar = zones.filter((zn) => zn.props.lidar)
       return (x: number, z: number): number => zonesAt(lidar, x, z).length ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z) : NaN
-    })())
+    })(),
+    // (and the fine ground everywhere, for the cover a bore keeps under it: the fill over it reads the fine grid too)
+    (x, z) => sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z),
+    // (…but not where a later pass lays the ground over the fill — the Seine band's multi-level pass, a deck zone: no hill shows
+    //  there, and a dip only buried the Tunnel des Tuileries under the Seine's level)
+    (x, z) => bandAt(x, z) || dzRings.some((r: number[]) => r.length > 0 && inRingTT(r, x, z)))
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
   trace('bores')
   // a mouth inside a deck zone, or within DZ_SINK_MARGIN of its ring, is left to the zone (tools/deck-zones.ts)
-  const dzRings = (streetRegion.deckZones ?? []).map((z: { ring: [number, number][] }) => z.ring.flatMap(([lat, lon]) => { const q = proj.toLocal({ lat, lon }); return [q.x, q.z] }))
   const nearDz = (x: number, z: number): boolean => bandAt(x, z) || dzRings.filter((r: number[]) => r.length).some((r: number[]) => {
     if (inRingTT(r, x, z)) return true
     for (let i = 0; i < r.length; i += 2) {
@@ -4553,25 +4620,16 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   // walks on a model's own paved levels (region `modelWalks`: the Trocadéro's parvis, whose paths were draped on the ground under its paving)
   for (const m of streetRegion.modelWalks ?? []) {
-    const c = proj.toLocal({ lat: m.at[0], lon: m.at[1] }), r = (m.rotateDeg * Math.PI) / 180, lift = m.lift ?? 0.06
-    const levelAt = (x: number, z: number): number | null => {
-      const dx = x - c.x, dz = z - c.z
-      const lx = dx * Math.cos(r) - dz * Math.sin(r), lz = dx * Math.sin(r) + dz * Math.cos(r)
-      for (const [x0, x1, z0, z1, ya, yb] of m.levels) {
-        if (lx >= x0 && lx <= x1 && lz >= z0 && lz <= z1) return m.baseY + ya + ((yb - ya) * (lz - z0)) / (z1 - z0 || 1) + lift
-      }
-      return null
-    }
+    const levelAt = modelLevelAt([m], proj)!
     let lifted = 0, cleared = 0, w = 0
     for (const e of kept) {
       const walk = e.foot || e.kind === 'steps'
       const ps = walk ? unpackPoints(e.points) : []
-      const ys = ps.map((q) => levelAt(q.x, q.z))
-      const on = ys.filter((y) => y !== null).length
+      const on = ps.filter((q) => levelAt(q.x, q.z) !== null).length
       if (walk && e.kind === 'steps' && on * 2 >= ps.length) { cleared++; continue }
       kept[w++] = e
       if (!walk || !on || !e.heights) continue
-      e.heights = e.heights.map((h, i) => ys[i] ?? h)
+      e.heights = onLevels(levelAt, ps, e.heights)!.heights
       delete e.ramp
       lifted++
     }
@@ -5415,6 +5473,11 @@ async function bake(spec: CitySpec): Promise<void> {
     const sw = stepWalls(shipped.blocks, TILE, (x, z) => shipped.heightAt(x, z), skip, paved, (s) => console.log(s)).filter((q) => !near(q))
     return [...w, ...sw]
   }
+  {
+    // (trails in a clear-of-buildings zone that run through one stay footways: tools/trail-clear.ts; the buildings exist only now)
+    const shut = clearTrailsOfBuildings(kept, buildings, loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })))
+    if (shut.length) console.log(`  ${shut.length} paths kept off the bike graph: through a building or in a tunnel (trailsClearBuildings)`)
+  }
   const pkg: CityPackage = {
     id: spec.id, name: spec.name, origin: spec.centre, radius: spec.radius, ground: spec.ground, region: spec.region,
     seaLevel,
@@ -5753,6 +5816,38 @@ async function bake(spec: CitySpec): Promise<void> {
   await writeFile(file, JSON.stringify(withoutFineGrid(pkg)))
   const kb = Math.round((await import('node:fs')).statSync(file).size / 1024)
   console.log(`  → ${file}  ${kb} kB (bake-private)`)
+  /*
+   * SURVEY MISTAKES, last (owner, 2026-11-18, the Ballon de Paris): the fine grid was flattened there with the lidar's relief, but the
+   * 1 m detail over it (the Garigliano deck zone's MNT, then the multi-level pass) read the balloon back in. Inside a mistake's ring the
+   * detail answers the fine grid.
+   */
+  if (quayDetail && SURVEY_MISTAKES.length) {
+    // (the level: the median of the ground on a rim just outside the ring — the multi-level pass relaid the fine posts from the detail
+    //  too, so the grid inside is no longer the flattened one)
+    const ms = SURVEY_MISTAKES.map((m) => {
+      const c = proj.toLocal({ lat: m.lat, lon: m.lon }), rim: number[] = []
+      for (let a = 0; a < 32; a++) rim.push(shipped.heightAt(c.x + Math.cos(a / 32 * Math.PI * 2) * (m.r + 3), c.z + Math.sin(a / 32 * Math.PI * 2) * (m.r + 3)))
+      rim.sort((p, q) => p - q)
+      return { ...c, r: m.r, y: rim[16] }
+    })
+    for (const m of ms) {
+      for (let r = Math.max(0, Math.floor((m.z - m.r - fz0) / FINE_STEP)); r <= Math.min(frows - 1, Math.ceil((m.z + m.r - fz0) / FINE_STEP)); r++) {
+        for (let c = Math.max(0, Math.floor((m.x - m.r - fx0) / FINE_STEP)); c <= Math.min(fcols - 1, Math.ceil((m.x + m.r - fx0) / FINE_STEP)); c++) {
+          if (Math.hypot(fx0 + c * FINE_STEP - m.x, fz0 + r * FINE_STEP - m.z) < m.r) fineGround[r * fcols + c] = Math.round(m.y * 100) / 100
+        }
+      }
+    }
+    const atM = quayDetail.at
+    quayDetail.at = (x, z) => { const m = ms.find((q) => Math.hypot(x - q.x, z - q.z) < q.r); return m ? m.y : atM(x, z) }
+    shipped = new GroundModel({
+      coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+      fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+      fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE, detail: quayDetail,
+    })
+    for (const [k2, b] of shipped.blocks) {
+      if (shipped.fineTiles.has(k2)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+    }
+  }
   await writeTiles(pkg, streetRegion.riverDrop ?? 0, bake, shipped, zones, datumRaw)
   await writeRides(pkg)
   if (deckWork) await writeFile(decksUndoFile(spec.id), JSON.stringify(deckWork.undo))
@@ -6362,6 +6457,8 @@ async function main(): Promise<void> {
         const o = openElevatedWalks(pkg.edges, region(spec.region).elevatedWalks ?? [], (lon) => proj.toLocal({ lat: pkg.origin.lat, lon }).x)
         if (o.opened) { console.log(`  elevated walks ridden: ${o.opened} ways, ${o.flights} flights up, ${o.ramped} ways ramped down`); opened += o.opened }
       }
+      const shut = clearTrailsOfBuildings(pkg.edges, pkg.buildings, trailZones)
+      if (shut.length) console.log(`  ${shut.length} paths kept off the bike graph: through a building or in a tunnel (trailsClearBuildings)`)
       if (opened) console.log(`  ${opened} more trails opened to bikes`)
       // the declared bike ramps, laid again: the package, the tiles they (and the last ones) lie in, then v3
       const old = new Map(pkg.edges.filter((e) => e.bikeRamp).map((e) => [e.id, e]))
@@ -6379,8 +6476,8 @@ async function main(): Promise<void> {
       }
       // the deck zones again (tools/deck-zones.ts): re-pinned and re-graded only (ground, walls and laid routes need the full bake)
       // (with the band, the multi-level pass already solved the package's heights: laying the zones' routes again would undo it)
-      if (process.env.BDTOPO_BAND === '1' && process.env.MULTILEVEL !== '0') console.log('  deck zones: the package heights are the multi-level pass\'s, kept')
-      else if (process.env.DECK_ZONES !== '0' && (region(spec.region).deckZones?.length || process.env.BDTOPO_BAND === '1')) {
+      if (bandOn(spec) && process.env.MULTILEVEL !== '0') console.log('  deck zones: the package heights are the multi-level pass\'s, kept')
+      else if (process.env.DECK_ZONES !== '0' && (region(spec.region).deckZones?.length || bandOn(spec))) {
         if (spec.datum === undefined) console.log('  deck zones: skipped (--rides needs the CitySpec datum)')
         else {
           // (BDTOPO_BAND=1: the Seine band again, from BD TOPO's cached pages, the hand zones over it: the same zones as the bake)
@@ -6388,7 +6485,7 @@ async function main(): Promise<void> {
           // (the excluded bridges' shapes from the package: its outlines and its named bridge edges; the bake used OSM's ways)
           const osmB: BandBridgeShape[] = [...(pkg.bridges ?? []).filter((q) => q.name).map((q) => ({ name: q.name!, pts: unpackPoints(q.ring), ring: true })),
             ...pkg.edges.filter((e) => e.bridge && e.name).map((e) => ({ name: e.name!, pts: unpackPoints(e.points) }))]
-          const specs = process.env.BDTOPO_BAND === '1' ? (await bandDeckZones(spec.centre, spec.radius ?? 1000, r.deckZones ?? [], r.bandExclude ?? [], toL, (t) => console.log(`  ${t}`), r.riverLevel, osmB)).zones : r.deckZones
+          const specs = bandOn(spec) ? (await bandDeckZones(spec.centre, spec.radius ?? 1000, r.deckZones ?? [], r.bandExclude ?? [], toL, (t) => console.log(`  ${t}`), r.riverLevel, osmB)).zones : r.deckZones
           const dz = applyDeckZoneRoutes(pkg.edges, deckZonesOf(specs, toL, spec.datum), toL, false)
           for (const t of dz.log) console.log(`  ${t}`)
           for (const e of dz.moved) pins.moved.add(e)
@@ -6409,7 +6506,7 @@ async function main(): Promise<void> {
         }
         console.log(`  survey pins: ${pins.moved.size} ways, ${byTile.size} tiles rewritten`)
       }
-      if (opened || ramps || pins.moved.size) await writeFile(packageFile(spec.id), JSON.stringify(pkg))
+      if (opened || shut.length || ramps || pins.moved.size) await writeFile(packageFile(spec.id), JSON.stringify(pkg))
       if (ramps) {
         const { existsSync, writeFileSync } = await import('node:fs')
         const tiles = new Set<string>()

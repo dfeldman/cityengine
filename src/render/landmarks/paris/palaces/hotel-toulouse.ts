@@ -2,7 +2,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import type { Rgb } from '../../../models.ts'
 import { block, hex, shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
-import { extrude, fitted, palette, pts, type Pal } from './common.ts'
+import { extrude, fitted, hipRoof, palette, pts, type Pal } from './common.ts'
 import { lettersAlong } from './showfront.ts'
 import { baysOf, wallOn, type Wall } from './wall.ts'
 
@@ -10,6 +10,15 @@ import { baysOf, wallOn, type Wall } from './wall.ts'
 const HX = 125.25
 const HZ = 56.15
 const EAVES = 19.4
+/** the mansard skirt's top, where the flat of the interior roof would be (extrude's `rise`) */
+const RISE = 3.8
+/** tunable: the interior's pitched slate wings, [x0, x1, z0, z1] in the design frame, clear of the courts; ridge height of each */
+const WING_H = 3.6
+const WINGS: [number, number, number, number][] = [
+  [-100, -42, -42, -28], [-100, -42, -8, 6], [-100, -42, 14, 28],
+  [-20, 36, -42, -29], [-20, 10, -8, 6], [-20, 10, 14, 28],
+  [86, 106, 2, 14], [72, 100, -22, -10],
+]
 
 /** The relation's outer ring (way 54046037) and its nine courts, in the model's frame. */
 const OUTER = pts([
@@ -50,6 +59,13 @@ function draw(out: MeshBuilder): void {
   extrude(out, [OUTER, ...COURTS], p, { eaves: EAVES, bay: 4.6, win: 1.6, rise: 3.8, inset: 2, dormers: true,
     storeys: [{ y: 0.6, h: 3.2 }, { y: 8, h: 3 }, { y: 12.4, h: 2.6 }, { y: 16, h: 1.8 }] })
   const iron: Rgb = [0.12, 0.12, 0.12]
+  // the interior: the skirt's flat is broken into pitched slate wings between the courts, with a few skylights on what is left
+  for (const [x0, x1, z0, z1] of WINGS) {
+    hipRoof(out, x0, x1, z0, z1, EAVES + RISE, WING_H, shade(p.slate, 0.95), 0.3)
+    const mx = (x0 + x1) / 2
+    for (const dx of [-0.25, 0.25]) block(out, mx + dx * (x1 - x0) - 1.4, mx + dx * (x1 - x0) + 1.4, (z0 + z1) / 2 - 0.6, (z0 + z1) / 2 + 0.6, EAVES + RISE + WING_H - 0.2, EAVES + RISE + WING_H + 0.7, shade(p.stone, 0.85))
+  }
+  for (const [x, z] of [[-70, -17], [20, -18], [60, 20], [-5, -18]]) block(out, x - 7, x + 7, z - 3, z + 3, EAVES + RISE, EAVES + RISE + 0.9, [0.3, 0.38, 0.42])
   // ---- the long street front, in two stretches (the wall bends by 3° at the middle), and its corner to Rue Baillif
   const a = wallOn(out, { x: -118.9, z: -53.4 }, { x: -20.4, z: -52.4 })
   const b = wallOn(out, { x: -20.4, z: -52.4 }, { x: 49.8, z: -56.1 })

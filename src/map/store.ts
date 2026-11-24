@@ -9,6 +9,9 @@ import type { TileData } from '../city/tiles.ts'
 import { adaptIndex, adaptTile } from './adapt.ts'
 import type { MapIndex, MapTile } from './format.ts'
 import { applyPatches, indexPatches, type PatchSet } from './patch.ts'
+import { liftPackedWalks, modelLevelAt } from '../city/model-walks.ts'
+import { region } from '../city/region.ts'
+import { Projection } from '../city/geo.ts'
 
 /** a JSON file, or null — a dev server answers a missing file with the app's own HTML page and a 200 */
 async function json<T>(url: string, init?: RequestInit): Promise<T | null> {
@@ -55,6 +58,8 @@ export async function openV3(root: string, id: string): Promise<CitySource | nul
   if (patches.count) console.info(`map v3: ${patches.count} patch ops for ${id}`)
 
   const byKey = new Map(m.tiles.map((t) => [t.key, t]))
+  // walks on a model's own paved levels take its levels (city/model-walks.ts), the regions.json of today, not the bake's
+  const levelAt = index.origin ? modelLevelAt(region(index.region).modelWalks, new Projection(index.origin)) : null
   const pending = new Map<string, Promise<TileData | null>>()
   return {
     index,
@@ -67,7 +72,10 @@ export async function openV3(root: string, id: string): Promise<CitySource | nul
       if (had) return had
       const p = json<MapTile>(`${base}${e.tx}_${e.ty}.json?b=${stamp}`).then((t) => {
         pending.delete(k)
-        return t ? adaptTile(applyPatches(t, patches, m), m) : null
+        if (!t) return null
+        const d = adaptTile(applyPatches(t, patches, m), m)
+        if (levelAt) liftPackedWalks(levelAt, d.edges)
+        return d
       })
       pending.set(k, p)
       return p

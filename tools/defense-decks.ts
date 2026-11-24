@@ -281,3 +281,45 @@ export function stairsAtDeckEnds(edges: PackedEdge[], caps: Cap[]): number[] {
   }
   return [...changed]
 }
+
+/*
+ * LA DÉFENSE'S LISTED WALKWAYS (data/defense-walkways.json, tools/defense-walkways.ts; owner, 2026-11-17). A listed way is a bridge
+ * at its listed deck — the lidar's, NGF less `datum` — interpolated along the profile at each of the edge's vertices, and drawn in
+ * its listed style. Runs before alignDeckEnds/stairsAtDeckEnds, so the ways leading up to it are sloped to these decks. A way the
+ * list has no deck for (NaN: no lidar node over the ground) is left to the passes as before. WALKWAYS=0 skips it.
+ */
+export const WALKWAYS = process.env.WALKWAYS !== '0'
+/** a listed deck is never laid under the game's ground (the lidar's ground and the game's differ by a metre here and there) */
+export const WALK_MIN_OVER = 0.05
+type WalkList = { walkways: { style: string; ways: { id: number; nodes: [number, number, number][] }[] }[] }
+export function applyWalkways(edges: (PackedEdge & { _way?: number })[], list: WalkList, toLocal: (lat: number, lon: number) => { x: number; z: number },
+  datum: number, ground: (x: number, z: number) => number): number[] {
+  const prof = new Map<number, { style: string; pts: { x: number; z: number; h: number }[] }>()
+  for (const w of list.walkways) for (const x of w.ways) {
+    const pts = x.nodes.filter((n) => Number.isFinite(n[2])).map(([lat, lon, h]) => ({ ...toLocal(lat, lon), h: h - datum }))
+    if (pts.length) prof.set(x.id, { style: w.style, pts })
+  }
+  const out: number[] = []
+  for (const e of edges) {
+    const p = e._way !== undefined ? prof.get(e._way) : undefined
+    if (!p || !e.heights) continue
+    const at = (x: number, z: number): number => {
+      if (p.pts.length === 1) return p.pts[0].h
+      let best = Infinity, h = p.pts[0].h
+      for (let i = 1; i < p.pts.length; i++) {
+        const a = p.pts[i - 1], b = p.pts[i], dx = b.x - a.x, dz = b.z - a.z
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+        const d = Math.hypot(a.x + dx * t - x, a.z + dz * t - z)
+        if (d < best) { best = d; h = a.h + (b.h - a.h) * t }
+      }
+      return h
+    }
+    const pts = unpackPoints(e.points)
+    e.heights = pts.map((q) => Math.round(Math.max(at(q.x, q.z), ground(q.x, q.z) + WALK_MIN_OVER) * 100) / 100)
+    e.bridge = true
+    e.ramp = undefined
+    if (p.style !== 'slab') e.walkStyle = p.style as PackedEdge['walkStyle']
+    out.push(e.id)
+  }
+  return out
+}

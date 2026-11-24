@@ -198,7 +198,8 @@
   },
   {
     "osm": [
-      "way/53396302"
+      "way/53396302",
+      "way/353535645"
     ],
     "name": "Beaugrenelle: Magnetic",
     "procedural": "beaugrenelleMagnetic",
@@ -727,7 +728,8 @@
   {
     "name": "Maine-Montparnasse: the base",
     "osm": [
-      "way/23936267"
+      "way/23936267",
+      "way/1485266133"
     ],
     "procedural": "maineMontparnasse",
     "height": 24,
