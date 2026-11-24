@@ -435,4 +435,5 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - statue équestre de Jeanne d'Arc (no Wikidata id): already modelled: placed as an img2glb statue at this point (public/landmarks/paris-statues-img2glb.json)
 - Casimir Périer (no Wikidata id): already modelled: placed as the img2glb statue casimir-perier (public/landmarks/paris-statues-img2glb.json)
 - Monument aux combattants polonais pour la défense et la libération de la France (no Wikidata id): already modelled: placed as an img2glb statue at this point (public/landmarks/paris-statues-img2glb.json)
+- Fontaine de Place d'Italie (Huge on a Building): skipped: the name is an OSM node note, not a monument; it is the plain central basin of the place (OSM way/78534394, cadastre water basin, ~22 m across, 0.3 m wall, no sculpture, no photos or Wikidata), left to the generic water/basin pipeline; the Grand Écran (batch3.json) is 130 m south and not involved
 - Fontaine de Neptune (no Wikidata id): the same fountain as fontaine de la rue Cherche-Midi (Q16928450), skipped above (closed courtyard of 86 rue du Cherche-Midi)
