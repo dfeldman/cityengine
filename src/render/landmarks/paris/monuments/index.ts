@@ -69,6 +69,8 @@ import { fontaineAmbassadeurs } from './minor/fontaine-ambassadeurs.ts'
 import { fontaineDiane } from './minor/fontaine-diane.ts'
 import { fontaineGrilleCoq } from './minor/fontaine-grille-coq.ts'
 import { fontaineTheatreFrancaisMarine, fontaineTheatreFrancaisFluviale } from './minor/fontaine-theatre-francais.ts'
+import { pavillonReunion } from './minor/pavillon-reunion.ts'
+import { monumentExpansionColoniale } from './minor/monument-expansion-coloniale.ts'
 import { monumentSoldatsNoirs } from './minor/monument-soldats-noirs.ts'
 import { memorialCharmElCheikh } from './minor/memorial-charm-el-cheikh.ts'
 import { memorialAf447 } from './minor/memorial-af447.ts'
@@ -150,6 +152,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineSainteGenevieve,
   fontaineArtsMetiers,
   fontaineMoliere,
+  pavillonReunion,
+  monumentExpansionColoniale,
   fontaineParadis,
   fontainePuitsButteAuxCailles,
   fontaineReine,

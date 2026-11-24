@@ -2542,6 +2542,38 @@
     "note": "Q74555507 (inaugurated 11 Nov 2019, Stéphane Vigny), parc André-Citroën. The square plaza is OSM way 672001632 (37 m a side, corners measured, turned to rotateDeg 30). Procedural: slate paving, black granite ring wall (planted top, gilt name rows on the inner face, an entrance gap), flagpole with tricolour. Wall height/thickness, gap and flag position are by eye off Commons photos (Djiril5c 2022 -1, -3; Monument OPEX - Paris 15e). The six bronze soldiers are the Modly piece opex-soldats (paris-statues.json)."
   },
   {
+    "name": "Pavillon de la Réunion (Jardin d'agronomie tropicale)",
+    "procedural": "pavillonReunion",
+    "kind": "pavilion",
+    "osm": [
+      "way/62819542"
+    ],
+    "lat": 48.83362,
+    "lon": 2.46712,
+    "front": 200,
+    "height": 7.5,
+    "sign": false,
+    "noShops": true,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3373069: the 1900 Trocadéro 'kiosque de la Réunion', re-erected in the garden for 1907 and abandoned since (fr.wikipedia, Jardin d'agronomie tropicale). A small dark-timber two-stage pavilion: glazed ground storey, skirt roof, narrower upper stage, shingled hip roof. Footprint is OSM way 62819542 (about 5x4 m); stage heights, window rhythm and colours are by eye off Commons 'Jardin tropical - Paris - Pavillon de la Réunion - 03'; the front bearing is a guess."
+  },
+  {
+    "name": "Monument à la Gloire de l'expansion coloniale française (fragments)",
+    "procedural": "monumentExpansionColoniale",
+    "kind": "monument",
+    "lat": 48.834714,
+    "lon": 2.468756,
+    "rotateDeg": 0,
+    "size": [
+      14,
+      14
+    ],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q20055095, Belloc 1913-22. Dismantled in 1961; today five weathered stone pieces lie on the gravel in an arc near the garden entrance (fr.wikipedia; Commons 'Fragments Monument Gloire Expansion Coloniale ...' 2021 and 2026 series). Positions are the five OSM artwork nodes (9592931081-84, 9592962449). Procedural: the low broken-socle slabs; the stone pieces are the Modly models coloniale-republique, -coq, -femme, -couchee (the fifth piece is not modelled). Slab sizes and the pieces' facing are guesses."
+  },
+  {
     "name": "Monument à la mission Marchand",
     "procedural": "monumentMissionMarchand",
     "kind": "monument",

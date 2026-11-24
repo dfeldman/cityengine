@@ -1672,6 +1672,38 @@
     "attach": { "to": "Monument funéraire de Legru et Lhenoret (Père-Lachaise)", "at": [0.98, 1.38, 0], "bearing": 180 },
     "range": 250,
     "note": "Seated bronze woman on the right drum, arm stretched to the stele. assetkit img2glb guided from Commons 'Père-Lachaise - Division 1 - Legru et Lhenoret 03.jpg'; height 1.25 m by eye."
+  },
+  {
+    "id": "coloniale-republique",
+    "name": "Expansion coloniale fragments: the two-women group with a basin",
+    "asset": "coloniale-republique",
+    "attach": { "to": "Monument à la Gloire de l'expansion coloniale française (fragments)", "at": [-4.9, 0.68, 3.3], "bearing": 200 },
+    "range": 250,
+    "note": "Weathered stone group (a seated woman by a basin, a standing woman before a broken stele), lying on the gravel. assetkit img2glb guided from Commons 'Fragments Monument Gloire Expansion Coloniale ... 2021-05-09 - 1.jpg' (left piece); 1.9 m by eye."
+  },
+  {
+    "id": "coloniale-couchee",
+    "name": "Expansion coloniale fragments: the reclining piece",
+    "asset": "coloniale-couchee",
+    "attach": { "to": "Monument à la Gloire de l'expansion coloniale française (fragments)", "at": [3.5, 0.6, -2.8], "bearing": 200 },
+    "range": 250,
+    "note": "The long reclining fragment (figure on a broken block) lying on the gravel. assetkit img2glb guided from Commons '... 2026-08-10 - 13.jpg'; 0.9 m high by eye."
+  },
+  {
+    "id": "coloniale-femme",
+    "name": "Expansion coloniale fragments: the seated draped woman",
+    "asset": "coloniale-femme",
+    "attach": { "to": "Monument à la Gloire de l'expansion coloniale française (fragments)", "at": [1.7, 0.62, 1.1], "bearing": 200 },
+    "range": 250,
+    "note": "Standing draped woman holding a cloth, from Commons '... 2026-08-10 - 3.jpg'; 2.2 m by eye."
+  },
+  {
+    "id": "coloniale-coq",
+    "name": "Expansion coloniale fragments: the cockerel and globe block",
+    "asset": "coloniale-coq",
+    "attach": { "to": "Monument à la Gloire de l'expansion coloniale française (fragments)", "at": [-1.6, 0.62, 4.4], "bearing": 200 },
+    "range": 250,
+    "note": "Gallic cockerel on a globe among trophies, on a tall block, from Commons '... 2026-08-10 - 5.jpg'; 2.0 m by eye."
   }
 
 
