@@ -1928,6 +1928,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Tombe du Dragon (Père-Lachaise)",
+    "procedural": "tombeDragon",
+    "kind": "monument",
+    "lat": 48.85906,
+    "lon": 2.39588,
+    "rotateDeg": 0,
+    "size": [
+      2.0,
+      1.6
+    ],
+    "height": 1.7,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Stele of Antoine de Guillaume-Lagrange, dragoon (Q3531119, 1809): round-topped limestone stele on a step base, shallow relief of the helmeted bust in a laurel wreath, sabre, musket, mourning figure and inscription; back all inscription. No sculpture in the round, so no Modly piece. Placed on Wikidata's coordinates (no OSM way there). Sizes (~0.62 m wide, 1.7 m tall) estimated off Commons photos against the base, not surveyed; facing south is a guess."
+  },
+  {
     "name": "Mémorial du vol Air France 447 (Père-Lachaise)",
     "procedural": "memorialAf447",
     "kind": "monument",
