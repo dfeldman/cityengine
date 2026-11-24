@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildGraph, type Edge } from '../src/city/graph.ts'
 import { CYCLE, GREEN, Signals } from '../src/sim/signals.ts'
-import { Traffic, type RiderNow } from '../src/sim/traffic.ts'
+import { Traffic, laneOf, type RiderNow } from '../src/sim/traffic.ts'
 import { SIZE, boxOf, overlap } from '../src/sim/collide.ts'
 
 /**
@@ -123,6 +123,50 @@ describe('the traffic, headless', () => {
       // nobody waits forever: a light's wait is under a cycle; a stop's queue clears
       expect(r.longestWait).toBeLessThan(lit ? CYCLE + 10 : 60)
     }, 60_000)   // 200 simulated seconds of a busy crossroads: ~5 s of work, more under load
+  }
+
+  /**
+   * A rider stopped in the lane is passed where the street has room (BUGS.md #323): cars on an 8 m (into a clear oncoming lane), a 9 m and a 14 m street
+   * pull out round them and get by without ever touching their box; on a 6 m street there is no room beside the
+   * oncoming lane, and they queue. (`run` counts `hits`, which need a car over 2 m/s: the overlap here is checked
+   * every frame on its own, so a car creeping into the bike would count.)
+   */
+  for (const [width, passes] of [[8, true], [9, true], [14, true], [6, false]] as [number, boolean][]) {
+    it(`${passes ? 'passes' : 'queues behind'} a rider stopped in the lane of a ${width} m street, never touching them`, () => {
+      const g = crossroads(width)
+      const traffic = new Traffic(g, 'dense', { signals: new Signals(g, (id) => id === 0) })
+      const edges = [...g.edges.values()]
+      // standing in the right-hand lane of arm 3 (along −z from the junction), heading for the junction, 30 m from it
+      const e = g.edges.get(3)!
+      const lane = laneOf(e)
+      // the rider heads +z (towards the node), so a→b (−z) is dir −1; right of the rider's heading is +x
+      const at = { x: lane, z: -30 }
+      const rider: RiderNow = { at, heading: 0, speed: 0, edgeId: 3, s: 30, dir: -1, grade: 0, box: boxOf(at.x, at.z, 0, SIZE.bike) }
+      let touched = 0
+      let worstOverlap = 0
+      const behind = new Set<number>()
+      let passed = 0
+      let seen = 0
+      for (let t = 0; t < 150; t += 0.05) {
+        traffic.update(0.05, rider, edges)
+        const vs = traffic.all
+        for (let i = 0; i < vs.length; i++) {
+          const v = vs[i]
+          if (overlap(traffic.boxOf(v), rider.box)) touched++
+          for (let j = i + 1; j < vs.length; j++) if (overlap(traffic.boxOf(v), traffic.boxOf(vs[j])) && Math.hypot(v.at.x, v.at.z) > 8) worstOverlap++
+          if (v.edgeId !== 3 || v.dir !== -1) continue
+          const ahead = (rider.s - v.s) * v.dir
+          if (ahead > 3 && ahead < 60) { behind.add(v.id); seen++ }
+          else if (ahead < -3 && behind.has(v.id)) { behind.delete(v.id); passed++ }
+        }
+      }
+      expect(seen).toBeGreaterThan(0)
+      expect(touched).toBe(0)
+      // no new car-on-car overlaps along the streets either (the junction's known corner clips are left out)
+      expect(worstOverlap).toBe(0)
+      if (passes) expect(passed).toBeGreaterThan(3)
+      else expect(passed).toBe(0)
+    }, 60_000)
   }
 
   it('never drives into a rider standing in the junction', () => {

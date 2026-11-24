@@ -91,6 +91,8 @@ export interface Vehicle {
   still?: number
   /** the rider squeezed past it after being held for too long: no longer an obstacle to them */
   passed?: true
+  /** passing a rider stopped in its lane: the lane offset it has pulled out to (`drive`), until the rider is behind it */
+  pass?: number
   /** until when the junction look-ahead is off for it (the never-stuck valve in `drive`), sim seconds */
   lookOff?: number
   /** a taxi: allowed where private cars are not (`carFree`), and drawn in a taxi livery (render/street-fleet.ts) */
@@ -173,6 +175,16 @@ export const DESCENT = -0.04
 export const LOOK_PATIENCE = 10
 /** m/s: traffic going the rider's way slower than this is woven round, not followed */
 export const CRAWL = 6
+/**
+ * Passing a rider stopped in the lane (`drive`): the lateral metres a car gains per metre driven (~17°), the least it
+ * moves across per second (so a car slowed to a crawl behind the rider still finishes pulling out), and the air left
+ * between its flank and the bike.
+ */
+const PASS_SHIFT = 0.3
+const PASS_RATE = 0.4
+const PASS_AIR = 0.5
+/** …and how far into the oncoming lane's strip it may edge while that lane is clear (a bus on a 9 m street needs 0.2 m) */
+const PASS_INTRUDE = 0.3
 /** metres: the grid cell for finding the vehicles near one */
 const NEAR_CELL = 16
 
@@ -807,6 +819,45 @@ export class Traffic {
 
   boxOf(v: Vehicle): Box { return boxOf(v.at.x, v.at.z, v.heading, this.sizeOf(v)) }
 
+  /** the rider's extent across their street in the frame of a vehicle going `dir` (right positive): the corners of their box */
+  private riderSpan(e: Edge, rider: RiderNow, dir: 1 | -1): [number, number] {
+    const b = rider.box
+    const fx = Math.sin(b.heading), fz = Math.cos(b.heading), rx = Math.cos(b.heading), rz = -Math.sin(b.heading)
+    let lo = Infinity, hi = -Infinity
+    for (const [a, c] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const l = this.lateral(e, rider.s, { x: b.x + fx * b.halfLen * a + rx * b.halfWid * c, z: b.z + fz * b.halfLen * a + rz * b.halfWid * c }) * dir
+      lo = Math.min(lo, l); hi = Math.max(hi, l)
+    }
+    return [lo, hi]
+  }
+
+  /**
+   * Where a vehicle can pass a rider standing across `r0`..`r1` of its street (the vehicle's own frame, right positive):
+   * the lane offset to pull out to, or null where the carriageway has no room. The oncoming lane's strip — a car's
+   * width about `laneOf` on the other side, or the widest vehicle actually in that lane — is kept out of, bar
+   * PASS_INTRUDE while nothing is coming within 50 m of the rider, so a 6 m street queues and a 9 m one passes; on a
+   * one-way street the far kerb is the limit. Passing on the right, between the rider and the kerb, when that is
+   * clearly the smaller move (a rider standing left of the lane).
+   */
+  private passLane(v: Vehicle, e: Edge, r0: number, r1: number, rider: RiderNow, lanes: Map<string, Vehicle[]>): number | null {
+    const hw = this.halfWid(v)
+    const home = laneOf(e)
+    let farSide = -(e.width / 2) + 0.2
+    if (!e.oneway) {
+      let wide = SIZE.car.wid / 2
+      let coming = false
+      for (const o of lanes.get(`${e.id}:${-v.dir}`) ?? []) { wide = Math.max(wide, this.halfWid(o)); if (Math.abs(o.s - rider.s) < 50) coming = true }
+      farSide = Math.max(farSide, -(home - wide) + 0.2 - (coming ? 0 : PASS_INTRUDE))
+    }
+    const left = r0 - PASS_AIR - hw
+    const right = r1 + PASS_AIR + hw
+    const canLeft = left - hw >= farSide
+    const canRight = right + hw <= e.width / 2 - 0.2
+    // (on the left unless the right is clearly the smaller move: the rider at the middle of a wide lane is passed as a driver would)
+    if (canLeft && canRight) return Math.abs(right - home) + 0.5 < Math.abs(left - home) ? right : left
+    return canLeft ? left : canRight ? right : null
+  }
+
   /** a point's signed distance to the right of an edge's a→b centre line, at `s` */
   private lateral(e: Edge, s: number, p: Point): number {
     const c = pointAlong(e.points, clamp(s, 0, e.length))
@@ -1317,14 +1368,49 @@ export class Traffic {
     }
     // the rider, in this lane, ahead — followed or waited for like a car, so nothing runs into them. Not after a
     // collision: then the two ignore each other and the vehicle drives on (owner: "have the vehicle keep going")
+    /*
+     * …or PASSED (2026-10-26, BUGS.md #323). A rider STOPPED in the lane — at a red, looking round — was an obstacle
+     * for every car behind them for good, and the lane queued behind a bike (mid-block, 60% of the vehicles within
+     * 60 m standing against 22% with no rider). Where the carriageway has room (`passLane`) a car pulls out to a lane
+     * offset that clears the rider's side by PASS_AIR and keeps out of the oncoming lane's strip — so a 9 m street
+     * passes and a 6 m one still queues — holds back until the pull-out is done, drives by, and eases back to its
+     * lane once the rider is behind its tail. A rider who is riding is followed as before; one who pulls away is
+     * followed again once they are well ahead.
+     */
     if (rider && rider.edgeId === v.edgeId && !v.bumped && !v.passed) {
       const ahead = (rider.s - v.s) * v.dir
-      if (ahead > 0 && Math.abs(this.lateral(e, rider.s, rider.at) - v.lane * v.dir) < this.halfWid(v) + SIZE.bike.wid / 2 + 0.4) {
-        obstacles.push([ahead - this.halfLen(v) - SIZE.bike.len / 2, rider.dir === v.dir ? rider.speed : 0]); whys.push('rider in lane')
+      const tail = this.halfLen(v) + SIZE.bike.len / 2
+      // the rider's extent across the street in this vehicle's frame, right positive
+      const [r0, r1] = this.riderSpan(e, rider, v.dir)
+      const inWay = ahead > 0 && v.lane + this.halfWid(v) + 0.4 > r0 && v.lane - this.halfWid(v) - 0.4 < r1
+      // the pass is over once the rider is behind the tail — never steer back while they are beside — or has ridden off
+      if (v.pass !== undefined && (ahead < -(tail + 1) || (rider.speed > 3 && ahead > tail + 3))) v.pass = undefined
+      // …and begins behind a stopped or crawling rider, with room to pull out, pass and be back in lane before the
+      // junction — from the head of the queue only: behind a vehicle that is not passing (a bus too wide for the gap)
+      // a car waits in line, as it would, rather than hanging out beside it
+      const lead = i > 0 ? lane[i - 1] : null
+      const head = !lead || lead.pass !== undefined || (lead.s - rider.s) * v.dir > 0
+      if (inWay && head && v.pass === undefined && rider.speed < 1.5 && ahead < 40 && toGo - ahead > (this.signals?.control(node).radius ?? 6) + 12) {
+        v.pass = this.passLane(v, e, r0, r1, rider, lanes) ?? undefined
+      }
+      if (inWay) {
+        const clear = ahead - tail
+        if (v.pass === undefined) { obstacles.push([clear, rider.dir === v.dir ? rider.speed : 0]); whys.push('rider in lane') }
+        else {
+          // held back only until the pull-out is done: the shift still to make, at PASS_SHIFT per metre driven
+          const remaining = Math.abs(v.pass - v.lane)
+          if (remaining > 0.05) { obstacles.push([clear - remaining / PASS_SHIFT, 0]); whys.push('passing rider') }
+        }
       }
       // a car AHEAD of a descending rider in their lane gets out of the way
       const behind = (v.s - rider.s) * rider.dir
       if (rider.dir === v.dir && rider.grade < DESCENT && behind > 0 && behind < 60) v0 = Math.max(v0, rider.speed + 1.5)
+    } else v.pass = undefined   // (the rider gone from this street, or the two ignoring each other after a crash: back in lane)
+    // steering across: out to the passing lane, and back to the middle of the lane once the rider is behind
+    {
+      const want = v.pass ?? laneOf(e)
+      const step = Math.max(PASS_RATE, PASS_SHIFT * v.speed) * dt
+      v.lane += clamp(want - v.lane, -step, step)
     }
     /*
      * LOOK-AHEAD AT JUNCTIONS (owner, 2026-09-29: "I still see vehicles going through other vehicles, especially at
@@ -1391,8 +1477,11 @@ export class Traffic {
     // …and by any vehicle going slowly enough to stop for them anyway (under 3 m/s: a car creeping through a jammed
     // box, and above all one turning RIGHT across a rider keeping right — the right hook, measured once keeping
     // right came in)
+    // (a car passing the rider sweeps with its box where it will be, at the passing lane: swept from where it still is
+    //  it stood behind the rider until it had slid clear of them)
     if (rider && !v.bumped && !v.passed && (rider.speed < 1.5 || v.speed < 3) && Math.hypot(rider.at.x - v.at.x, rider.at.z - v.at.z) < 26 && !this.otherLevel(rider, v)) {
       const box = this.boxOf(v)
+      if (v.pass !== undefined) { const d0 = v.pass - v.lane; box.x += Math.cos(v.heading) * d0; box.z -= Math.sin(v.heading) * d0 }
       const fx = Math.sin(v.heading)
       const fz = Math.cos(v.heading)
       for (let dd = 0.5; dd <= 20; dd += 0.75) {
@@ -1654,6 +1743,7 @@ export class Traffic {
       v.dir = v.next.dir
       v.s = v.dir > 0 ? over : n.length - over
       v.lane = laneOf(n)
+      v.pass = undefined
       v.next = undefined
       v.stoppedAt = undefined
       e = n

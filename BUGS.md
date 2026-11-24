@@ -10982,3 +10982,32 @@ drive loop's sweep fires only under 1.5 m/s. **Closed the same day:** `RiderNow.
 right — turning left, 7 → 4 collisions in the soak (the old rules' 4), 49% → 52% standing nearby (the old 53%);
 straight through unchanged at 4 and 44%. Still open: a rider who stops in the lane holds the cars behind
 them for good (`rider in lane`) — mid-block 60% standing nearby either way; drivers would pass a stopped bike.
+
+### #323 Cars pass a rider stopped in their lane (FIXED 2026-10-26)
+
+Left open by #322: a rider who stops in the lane — at a red, to look round — was an obstacle for every car behind
+them (`drive`, `rider in lane`) for as long as they stood, and the lane queued behind a bicycle for good. Measured
+headless on san-francisco's streets at the shipped 80 vehicles/km (a scratchpad copy of #322's soak, the standing
+share now counted within 60 m of the RIDER rather than of the node): rider standing mid-block in the right-hand lane
+of a 9 m two-way street, 30 m from a lit junction, 70.9% of the vehicles within 60 m standing and nothing ever past
+them; the same spot with no rider, 24.2%.
+
+**Fix** (sim/traffic.ts). A vehicle with a stopped or crawling rider (under 1.5 m/s) in its way, at the head of the
+queue behind them and with room to be back in lane before the junction, asks `passLane` for a lane offset to pull out
+to: clear of the rider's side (the corners of their box, `riderSpan`) by 0.5 m, and outside the oncoming lane's strip
+— a car's width about `laneOf` on the far side, or the widest vehicle actually in that lane — bar 0.3 m while nothing
+is coming within 50 m; on a one-way street the far kerb is the limit; on the right, between the rider and the kerb,
+only when that is clearly the smaller move. `v.lane` then steers towards it at 0.3 m per metre driven (at least
+0.4 m/s), the rider holds it (`passing rider`) only until the pull-out is done, the stopped-rider sweep tests the box
+where it is going, and the lane eases back once the rider is behind its tail — never while they are beside. A rider
+who is riding is followed as before; one who pulls away is followed again once well ahead. Behind a vehicle that
+cannot pass (a bus on 9 m, with a car coming) the cars wait in line rather than hanging out beside it.
+
+What the geometry gives: a 6 m street queues (the pass would sit 1.3 m into the oncoming lane), 7 m queues, 8 m passes
+only while the oncoming lane is clear, 9 m and wider pass; a bus passes on 9 m only while it is clear. After: the 9 m
+street above 32.5% standing (25 vehicles past the rider in 300 s, the rest the light's own queue), a 16 m street 57.4%
+against 49.9% with no rider; no frame in any run with a vehicle's box over the rider's. tests/traffic.test.ts: cars
+on an 8 m (into the clear oncoming lane), a 9 m and a 14 m crossroads arm pass a rider standing 30 m from the
+junction without ever touching their box and without a car-on-car overlap along the streets; on 6 m nothing passes.
+A pass is dropped the moment the rider is off the street or the two are ignoring each other after a crash, so a car
+never carries a stale offset into the junction's curve. `leaderFor` and `weave` are untouched.
