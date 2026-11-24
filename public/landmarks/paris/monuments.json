@@ -2889,5 +2889,21 @@
     "noShops": true,
     "madeBy": "claude-sonnet-5-5",
     "note": "Q3377363: the one-storey pavilion in the middle of the place d'Aligre opposite the marché Beauvau, a cream box with a flat parapeted roof and a small clock tower. Footprint is OSM way 78146411 (box ~6.9 x 7.3 m, two corners cut off); wall ~3.5 m, tower to ~8.6 m, colours and the louvred belfry are scaled by eye off Commons 'Place d'Aligre, la Petite Mairie, Paris 2020', not surveyed; the tower's place on the roof is a guess."
+  },
+  {
+    "name": "Aux plus jeunes combattants volontaires de la Résistance (Père-Lachaise, division 82)",
+    "procedural": "monumentJeunesResistants",
+    "kind": "monument",
+    "lat": 48.86402,
+    "lon": 2.39478,
+    "rotateDeg": 0,
+    "size": [
+      2,
+      2.8
+    ],
+    "height": 0.8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q96117713, a grey granite grave in Père-Lachaise division 82 with a pale cream cross laid flat on the slab and a copper plaque, read off one Commons photo (Division 82 - Résistance 01). Grave ~2.2 x 1.1 m, ~0.6 m high and cross ~1.2 x 1.2 m are estimated against neighbouring tombs, not surveyed; its orientation is a guess; no OSM building there. Placed on the row's coordinates."
   }
 ]
