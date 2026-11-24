@@ -2783,5 +2783,31 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Cast-iron fountain in the railed central garden of the cité de Trévise, 9e (no Wikidata id; fr.wikipedia cité de Trévise: a private gated close of 1838-40, opened to traffic in the 1950s, public since 1983, so it can be ridden into). No pool: a square plinth, scrolled pedestal, wide shallow bowl, a die and three women standing together holding a small upper bowl. Form read off six Commons photos (Fontaine Trévise - Paris IX (FR75) - 2025-04-21 - 1..6); dimensions (~5 m total, bowl ~3.2 m across, women ~1.45 m) estimated against the building behind, not surveyed. The garden is OSM way 83432479 (leisure=garden, ~14x18 m), the fountain at its centre; no building way under it. The three women with the top bowl are a Modly model (statues manifest: trevise-graces)."
+  },
+  {
+    "name": "Les Bancs et la Pyramide noire (La Défense)",
+    "procedural": "monumentBancsPyramideNoire",
+    "kind": "monument",
+    "lat": 48.8914,
+    "lon": 2.24028,
+    "rotateDeg": 27,
+    "size": [18, 14],
+    "height": 2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Émile Aillaud, 1985 (Q3230943; fr.wikipedia: the only built part of his Tête Défense scheme, by the bus-station exit on the esplanade). Form read off Panoramax 360 photos (2017, camera ~25 m north): a low truncated pyramid of black stone in about five wide steps, a flat top with long benches. Plan ~18 x 14 m, 5 steps of 0.27 m and the benches are estimated by eye, not surveyed; the 27 deg turn follows the lawn and canopy edges nearby. Commons has no free photo (placeholder only). The OSM building=roof way beside it is the escalator canopy and is not claimed."
+  },
+  {
+    "name": "Arc déplacé (La Défense)",
+    "procedural": "arcDeplace",
+    "kind": "monument",
+    "lat": 48.8907,
+    "lon": 2.2416,
+    "rotateDeg": 27,
+    "size": [23, 12],
+    "height": 0.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Christine O'Loughlin, 1994 (fr.wikipedia: a half-disc of lawn 22 m across cut out and turned a half turn on the esplanade lawn). Drawn as a kerbed half-disc of turf, radius 11 m (published); which way it bulges, the kerb section and its place on the lawn (OSM landuse=grass 3329..3396 m z, not claimed) are guessed from one Panoramax 2017 view of the curved kerb. No Commons photo found."
   }
 ]
