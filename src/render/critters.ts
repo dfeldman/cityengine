@@ -9,7 +9,7 @@
  *
  * As render/birds.ts: the city is cut into CELL-metre squares and each, by its own seeded dice, may hold a group or two.
  * Where it sits decides who (WEIGHTS): a street's pavement, a town park, or open country split into woods ('forest')
- * and grass or scrub ('scrub': a big park's lawns and planting too). Squirrels need a tree within SQUIRREL_TREE of their spot (they bolt up it from the
+ * and grass or scrub ('scrub': a big park's lawns and planting too). Squirrels favour a tree within SQUIRREL_TREE of their spot (they bolt up it from the
  * rider); rabbits, foxes and coyotes keep to the parks and open country. The cats are COLONIES, hand-placed.
  * The rider is the threat (critterkit's behaviour); they never touch the bike.
  */
@@ -25,8 +25,8 @@ import { Projection, type LatLon } from '../city/geo.ts'
 const CELL = 140
 type Site = 'street' | 'park' | 'forest' | 'scrub'
 /** the chance a square has animals, by the zone of the first spot found; and how many groups then */
-const CHANCE: Record<Site, number> = { street: 0.16, park: 0.45, forest: 0.85, scrub: 0.7 }
-const GROUPS: Record<Site, [number, number]> = { street: [1, 1], park: [1, 2], forest: [1, 3], scrub: [1, 2] }
+const CHANCE: Record<Site, number> = { street: 0.35, park: 0.65, forest: 0.85, scrub: 0.75 }
+const GROUPS: Record<Site, [number, number]> = { street: [1, 2], park: [1, 3], forest: [1, 3], scrub: [1, 2] }
 /** squares within ACTIVE of the rider are decided and moved; beyond FORGET dropped (m) */
 const ACTIVE = 130
 const FORGET = 380
@@ -40,7 +40,9 @@ const WALL = 0.3
 /** a park group keeps this clear of a carriageway's edge (m) */
 const ROAD_CLEAR = 3
 /** a squirrel's spot needs a tree this near (m); a tree's trunk radius is TRUNK_R + TRUNK_K × height */
-const SQUIRREL_TREE = 20
+const SQUIRREL_TREE = 35
+/** with no tree that near, squirrels keep this share of their weight (they flee along the ground instead of up a trunk) */
+const SQUIRREL_BARE = 0.35
 const TRUNK_R = 0.12
 const TRUNK_K = 0.012
 /** a group's ground reaches its habits' range plus its longest flight plus this (m) */
@@ -63,15 +65,15 @@ const SQUIRRELS: Kind[] = ['squirrelSF', 'squirrelParis']
 const WEIGHTS: Record<'paris' | 'san-francisco', Record<Site, Partial<Record<Kind, number>>>> = {
   paris: {
     street: { squirrelParis: 1 },
-    park: { squirrelParis: 4, rabbit: 0.6, redFox: 0.1 },
-    forest: { squirrelParis: 3, rabbit: 2, redFox: 1.2 },
-    scrub: { rabbit: 4, redFox: 1, squirrelParis: 1.5 },
+    park: { squirrelParis: 6, rabbit: 0.6, redFox: 0.1 },
+    forest: { squirrelParis: 4, rabbit: 2, redFox: 1.2 },
+    scrub: { rabbit: 4, redFox: 1, squirrelParis: 3 },
   },
   'san-francisco': {
     street: { squirrelSF: 1 },
-    park: { squirrelSF: 4, brushRabbit: 0.3, coyote: 0.25, grayFox: 0.1 },
-    forest: { squirrelSF: 2.5, brushRabbit: 1.2, grayFox: 0.8, coyote: 1, redFox: 0.2 },
-    scrub: { brushRabbit: 2.5, jackrabbit: 0.8, coyote: 1.3, grayFox: 0.5, redFox: 0.2, squirrelSF: 2 },
+    park: { squirrelSF: 6, brushRabbit: 0.3, coyote: 0.25, grayFox: 0.1 },
+    forest: { squirrelSF: 3.5, brushRabbit: 1.2, grayFox: 0.8, coyote: 1, redFox: 0.2 },
+    scrub: { brushRabbit: 2.5, jackrabbit: 0.8, coyote: 1.3, grayFox: 0.5, redFox: 0.2, squirrelSF: 3.5 },
   },
 }
 const VARIANTS: Record<Kind, [CritterSpec, number][]> = {
@@ -249,10 +251,10 @@ export class Critters {
     return this.city.areaKindsAt(x, z).includes('wood') ? 'forest' : 'scrub'
   }
 
-  /** a kind for this zone; squirrels only with a tree at hand */
+  /** a kind for this zone; squirrels at SQUIRREL_BARE weight without a tree at hand */
   private pick(zone: Site, r: () => number, treed: boolean): Kind | null {
     const w = WEIGHTS[this.region === 'paris' ? 'paris' : 'san-francisco'][zone]
-    const all = (Object.entries(w) as [Kind, number][]).filter(([k]) => treed || !SQUIRRELS.includes(k))
+    const all = (Object.entries(w) as [Kind, number][]).map(([k, v]): [Kind, number] => [k, treed || !SQUIRRELS.includes(k) ? v : v * SQUIRREL_BARE])
     if (!all.length) return null
     let n = r() * all.reduce((a, [, k]) => a + k, 0)
     for (const [k, v] of all) if ((n -= v) <= 0) return k

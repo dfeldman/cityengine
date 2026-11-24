@@ -1,6 +1,6 @@
 /**
  * Stills of the small mammals (render/critters.ts, critterkit), via the :5200 dev server.
- *   node tools/critter-shot.mjs <out-prefix> <city> <lat,lon,family[,dist,up]> ... [W=320 H=200 WAIT=5]
+ *   node tools/critter-shot.mjs <out-prefix> <city> <lat,lon,family[,dist,up]> ... [W=320 H=200 WAIT=5 CRIT=0 for normal density]
  * Loads with ?critters=1 (a group in every square), and for each stop jumps there (window.__jump), waits WAIT s, frames
  * the nearest group of that family (squirrel | rabbit | canid | cat) and writes <out-prefix>-<n>.png.
  * RIDE=<m/s> then drives a fake rider through the group and shoots WAIT2 s later (flush test).
@@ -13,7 +13,7 @@ const p = await (await b.newContext({ viewport: { width: W, height: H } })).newP
 const errs = []
 p.on('console', (m) => { if (m.type() === 'error' || /critter/i.test(m.text())) errs.push(m.text().slice(0, 200)) })
 p.on('pageerror', (e) => errs.push('PAGEERR ' + String(e).slice(0, 300)))
-await p.goto(`http://localhost:5200/?city=${city}&dev=1&critters=1`)
+await p.goto(`http://localhost:5200/?city=${city}&dev=1&critters=${process.env.CRIT ?? 1}`)
 try { await p.waitForFunction('window.riderReady === true && !!window.__critters', null, { timeout: 180000 }) }
 catch (e) { console.log('TIMEOUT', String(e).slice(0, 120), errs.filter((x) => !x.includes('#define')).slice(-6).join('\n')); await b.close(); process.exit(1) }
 await p.addStyleTag({ content: 'body * { visibility: hidden !important } canvas { visibility: visible !important }' })
