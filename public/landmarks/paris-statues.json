@@ -886,6 +886,22 @@
     "note": "Jean Boucher's bronze American soldier, right arm raised with his cap, on the attic plinth of the monument (1923). assetkit img2glb guided from Commons 'Monument aux volontaires américains juin 2014.jpeg'; published in assetkit-models-paris. Height 2.4 m estimated (raised arm included)."
   },
   {
+    "id": "vel-dhiv-spitzer-groupe",
+    "name": "Monument de la rafle du Vél' d'Hiv' (Spitzer): the bronze group",
+    "attach": {
+      "to": "Monument de la rafle du Vél' d'Hiv' (Spitzer)",
+      "at": [
+        0,
+        2.26,
+        -0.05
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Walter Spitzer's bronze group of deported civilians (1994): seated and kneeling adults and children. assetkit img2glb guided from Commons 'Monument des Martyrs Juifs du Veledrome d'Hiver.JPG' cropped to the group; published in assetkit-models-paris. Height 1.3 m scaled off the slab. The model carries a thin slab at its foot.",
+    "asset": "vel-dhiv-spitzer-groupe"
+  },
+  {
     "id": "komitas-statue2",
     "name": "Monument à Komitas: the bronze statue",
     "attach": {

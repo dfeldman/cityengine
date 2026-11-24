@@ -70,6 +70,7 @@ import { fontaineDiane } from './minor/fontaine-diane.ts'
 import { fontaineGrilleCoq } from './minor/fontaine-grille-coq.ts'
 import { fontaineTheatreFrancaisMarine, fontaineTheatreFrancaisFluviale } from './minor/fontaine-theatre-francais.ts'
 import { monumentSoldatsNoirs } from './minor/monument-soldats-noirs.ts'
+import { jardinMemorialVelDHiv, monumentVelDHiv } from './minor/memorial-vel-d-hiv.ts'
 import { monumentKomitas } from './minor/monument-komitas.ts'
 import { monumentVolontairesAmericains } from './minor/monument-volontaires-americains.ts'
 import { monumentVictimesOperaComique } from './minor/monument-victimes-opera-comique.ts'
@@ -157,6 +158,8 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineTheatreFrancaisFluviale,
   monumentSoldatsNoirs,
   monumentKomitas,
+  jardinMemorialVelDHiv,
+  monumentVelDHiv,
   monumentVolontairesAmericains,
   monumentVictimesOperaComique,
   monumentMortsAfriqueDuNord,

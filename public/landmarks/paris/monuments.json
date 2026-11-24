@@ -2342,5 +2342,37 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Père-Lachaise division 92 (Wikidata Q29650332; 1899, gift of the City of Paris): grey-stone pedestal on two dark granite steps, a round moulded shaft with a leaf collar, an abacus, a die lettered LA VILLE DE PARIS and a small gabled top with the inscription tympanum. OSM has only a node (no building way). Sizes and facing (inscription toward -z) are guesses from two Commons photos; Wikidata width 2 m. Nothing in the round, so no Modly pieces; lettering is blocks, not legible."
+  },
+  {
+    "name": "Jardin mémorial des enfants du Vél' d'Hiv'",
+    "procedural": "jardinMemorialVelDHiv",
+    "kind": "monument",
+    "lat": 48.853558,
+    "lon": 2.288788,
+    "rotateDeg": 218.7,
+    "size": [
+      19.6,
+      18.2
+    ],
+    "height": 3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Memorial garden at 7 rue Nélaton (Q39075133; Mutabilis Paysage, opened 16 July 2017; 120 m2) on the site of the Vélodrome d'Hiver's entrance. Plan from OSM park way 767547602 (no building way under it, nothing to claim) and the wall way 767547603; wall faces north-east. Procedural: gravel court, a concave limestone wall of the deported children's names (about 4,115), a dark steel screen on the street with an entry gap, a trellis with climbers and about twenty photographs, pale stone blocks and grey bands in the gravel. Wall height ~2.3 m, the arc's sagitta (~1.4 m), the screen and block sizes are scaled by eye off Commons photos, not surveyed; names are engraved rows, not legible. Nothing in the round, so no Modly pieces."
+  },
+  {
+    "name": "Monument de la rafle du Vél' d'Hiv' (Spitzer)",
+    "procedural": "monumentVelDHiv",
+    "kind": "monument",
+    "lat": 48.8535791,
+    "lon": 2.2871813,
+    "rotateDeg": 313,
+    "size": [
+      8.6,
+      12
+    ],
+    "height": 3.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Walter Spitzer's 1994 monument (architect Mario Azagury; inaugurated 17 July 1994) in the place des Martyrs-Juifs-du-Vélodrome-d'Hiver on the quai de Grenelle, placed on OSM's memorial node (~100 m west of the garden). Procedural: three granite steps, a tapering walkway, an inscribed red-granite pedestal and a concave stone slab (the velodrome's banked curve). Facing south-east toward the quai is a guess; every dimension is scaled by eye off one Commons photo (Monument des Martyrs Juifs du Veledrome d'Hiver.JPG), not surveyed. The bronze group of civilians is Modly vel-dhiv-spitzer-groupe (paris-statues.json)."
   }
 ]
