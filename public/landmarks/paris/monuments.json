@@ -1241,6 +1241,22 @@
     "note": "Visconti's cast-iron fountain of 1844 in the square Louvois (Wikidata Q3076038; sculptor Klagmann): octagonal basin (OSM way 26277959, ~6 m flat to centre, a sloppy polygon so +-1 m; vertices near east, hence front 25), square pedestal with four tritons on dolphins, a wide bowl with zodiac band and mascarons, an upper pedestal, the four river goddesses back to back under the top bowl. Basin from OSM; bowls, pedestals and the ~8.5 m total height scaled off Commons photographs against the 3.6 m goddess group, not surveyed. Goddesses and top bowl are a Modly model (statues manifest: louvois-group), the tritons likewise (louvois-triton)."
   },
   {
+    "name": "Fontaine des Polypores (rue Modigliani)",
+    "procedural": "fontainePolypores",
+    "kind": "fountain",
+    "lat": 48.838385,
+    "lon": 2.278643,
+    "rotateDeg": 0,
+    "size": [
+      11.2,
+      11.2
+    ],
+    "height": 4.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Jean-Yves Lechevallier's 1982 fountain (Wikidata Q23459533, OSM way 291115567) at the rue Saint-Charles end of the rue Modigliani, 15e: a round basin with wide coping and two heaps of tilted stone dishes ('the bracket fungi'). Placed on the centroid of the OSM basin way (~5 m radius plus coping); the dishes' number, sizes and the 3.4 m and 2.6 m heights are scaled off two Commons photographs, not surveyed. Procedural dishes (seeded tilted lathe bowls), no Modly piece."
+  },
+  {
     "name": "Fontaine de la Paix (Détournelle)",
     "procedural": "fontainePaix",
     "kind": "fountain",

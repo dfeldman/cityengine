@@ -428,6 +428,7 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - tombe du Dragon (Q3531119): modelled (minor/tombe-dragon.ts `tombeDragon`, monuments.json "Tombe du Dragon (Père-Lachaise)"; round-topped stele with shallow relief only, no sculpture in the round; Modly pieces: none)
 - tombe de l'abbé Delille (Q3323390): modelled (minor/tombe-abbe-delille.ts `tombeAbbeDelille`, monuments.json "Tombe de l'abbé Delille (Père-Lachaise)"; claims OSM way 1210797358; plain gabled stone tomb house in a railed plot on a kerb, all procedural; Modly pieces: none; sizes estimated, facing guessed)
 - Fontaine Marta Pan (no Wikidata id): the same fountain as Fontaine-labyrinthe (Q635634), modelled above (same point, place des Fêtes)
+- Fontaine des Polypores: modelled (minor/fontaine-polypores.ts `fontainePolypores`, monuments.json "Fontaine des Polypores (rue Modigliani)"; Q23459533, OSM way 291115567, Lechevallier 1982, rue Modigliani; two heaps of tilted stone dishes as seeded procedural lathe bowls; Modly pieces: none) (closed courtyard of 86 rue du Cherche-Midi)
 - Fontaine des Fleuves (no Wikidata id): already modelled: drawn by place-concorde.ts (both Concorde fountains); the img2glb statue of it is skipped as a double
 - Fontaine des Mers (no Wikidata id): already modelled: drawn by place-concorde.ts (both Concorde fountains)
 - Colonne de la Paix armée (no Wikidata id): already modelled: placed as the img2glb statue colonne-de-la-paix-armee (public/landmarks/paris-statues-img2glb.json)
