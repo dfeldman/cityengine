@@ -1752,6 +1752,14 @@
     "attach": { "to": "Fontaine de Trévise (cité de Trévise)", "at": [0, 2.93, 0], "bearing": 0 },
     "range": 250,
     "note": "Three draped women standing back to back on the die, holding the small upper bowl; assetkit img2glb guided from Commons 'Fontaine Trévise - Paris IX (FR75) - 2025-04-21 - 4 and 6.jpg'; 1.45 m by eye."
+  },
+  {
+    "id": "baleine-bleue-whale",
+    "name": "Fontaine de la Baleine Bleue: the whale",
+    "asset": "baleine-bleue-whale",
+    "attach": { "to": "Fontaine de la Baleine Bleue (square Saint-Eloi)", "at": [0, 0.76, 0], "bearing": 180 },
+    "range": 250,
+    "note": "The blue mosaic whale standing on its tail in the inner basin (1982); assetkit img2glb guided from Commons photo 33646041096; 3.6 m by eye. Bearing untuned."
   }
 
 
