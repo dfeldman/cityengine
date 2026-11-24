@@ -1642,6 +1642,22 @@
     "note": "The veiled seated woman with a palm against the pedestal front. assetkit img2glb guided from Commons 'Père-Lachaise - Monument aux travailleurs municipaux 10.jpg'; height 1.5 m by eye."
   },
   {
+    "id": "belfort-figure",
+    "name": "Monument aux défenseurs de Belfort: allegorical woman",
+    "asset": "belfort-figure",
+    "attach": { "to": "Monument aux défenseurs de Belfort 1870-1871 (Père-Lachaise)", "at": [0, 1.2, -0.34], "bearing": 180 },
+    "range": 250,
+    "note": "Bronze woman with a raised laurel branch on the front plinth. assetkit img2glb guided from Commons 'Père-Lachaise - Division 54 - Monument à la mémoire des défenseurs de Belfort 1870-71 01.jpg'; 1.8 m by eye."
+  },
+  {
+    "id": "belfort-buste",
+    "name": "Monument aux défenseurs de Belfort: officer bust",
+    "asset": "belfort-buste",
+    "attach": { "to": "Monument aux défenseurs de Belfort 1870-1871 (Père-Lachaise)", "at": [0, 3.3, 0], "bearing": 180 },
+    "range": 250,
+    "note": "Bronze bust of the officer on top of the pedestal, same photo; 0.75 m by eye."
+  },
+  {
     "id": "legru-femme-gauche",
     "name": "Legru-Lhenoret tomb: woman holding the chain (left)",
     "asset": "legru-femme-gauche",

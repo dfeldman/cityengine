@@ -2376,6 +2376,22 @@
     "note": "Q15156042, Père-Lachaise, on Wikidata's point at a bend of the cemetery road; no OSM building way (only tomb/memorial nodes nearby). The City of Paris's memorial to its employees killed on duty (sewermen, street cleaners, gardeners). Form read off Commons Monument aux travailleurs municipaux 06, 10, 12, 14, 19: pale-limestone obelisk with name panels on a pedestal, panelled double door on the base, two piers with medallions, low curved wall behind, and a veiled seated mourner with a palm (Modly piece travailleurs-figure). Dimensions by eye (Wikidata says ~5 m tall), facing direction is a guess."
   },
   {
+    "name": "Monument aux défenseurs de Belfort 1870-1871 (Père-Lachaise)",
+    "procedural": "monumentDefenseursBelfort",
+    "kind": "monument",
+    "lat": 48.86182,
+    "lon": 2.39229,
+    "rotateDeg": 270,
+    "size": [
+      3.2,
+      3.0
+    ],
+    "height": 4.1,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q94997851, Père-Lachaise division 54 (1911, ~4 m per Wikidata); no OSM building way. Grey-stone memorial: front block with plinth (inscription, bronze lion tablet), two arched wings with bronze portrait medallions, tall pedestal with scrolled cornice; Modly woman and officer bust attached (paris-statues belfort-*). Proportions read by eye from Commons 'Père-Lachaise - Division 54 - Monument à la mémoire des défenseurs de Belfort 1870-71 01.jpg' (160 px/m from the 4 m height); depth guessed 0.9 m; facing east towards Chemin de Mont-Louis guessed from the photo's path."
+  },
+  {
     "name": "Monument aux victimes de Juin (Père-Lachaise)",
     "procedural": "monumentVictimesJuin",
     "kind": "monument",
