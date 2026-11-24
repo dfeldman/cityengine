@@ -17,6 +17,7 @@ import { capPolygonWithHoles } from '../../../../buildings.ts'
 import { ccw, FIXED, UV, walls, type P2 } from '../../monuments/common.ts'
 import { edgeAt } from '../../../parts.ts'
 import { circle } from '../../monuments/plaza-common.ts'
+import { frog, lizard, rockPile, upright } from './gilt-kit.ts'
 import { roundBasin } from '../../monuments/minor/monument-kit.ts'
 
 // tunables (metres)
@@ -26,14 +27,14 @@ const ROCK = { r0: 2.0, r1: 1.0, h: 1.0 }
 const FIGURE = { on: true, h: 2.9, kids: 0.9 }
 const ANIMALS = { perTier: [14, 12, 10, 8], r: 0.22 }
 export const LATONE = { STANDIN: FIGURE.on, topY: TIERS.depth.reduce((s, d) => s + d, 0) - TIERS.sink * 3 + ROCK.h }
-const LEZ = { rim: 0.4, h: 0.2, rockR: 1.7, rockH: 0.9, animals: 7 }
+const LEZ = { rim: 0.4, h: 0.2, rockR: 1.8, rockH: 1.2, onMound: 4, ring: 8, size: 1.0, figure: 1.6 }   // small rock ~1.2 m; ring creatures ~1 m
+const LEZ_ROCK: Rgb = hex('#3f3b35')
 
 const STONE: Rgb = hex('#d6d0c3')
 const MARBLE: Rgb = hex('#cdc4b6')
 const WATER: Rgb = hex('#7fa3ad')
 const ROCKC: Rgb = hex('#9a9487')
 const GOLD: Rgb = hex('#c9a13a')
-const LEAD: Rgb = hex('#6f6f68')
 const BRONZE: Rgb = hex('#5a5240')
 
 const hash = (a: number, b: number): number => { const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return v - Math.floor(v) }
@@ -118,11 +119,21 @@ export function bassinDesLezards(out: MeshBuilder, fit: Fit): void {
   walls(q, outer, y - 0.2, y + LEZ.h, STONE)
   capPolygonWithHoles(q, [ccw(outer), [...ccw(inner)].reverse()], y + LEZ.h, shade(STONE, 1.05), FIXED)
   innerWalls(q, inner, y - 0.2, y + LEZ.h, shade(STONE, 0.85))
+  // a small rough rock in the middle (footprint ~LEZ.rockR, top ~LEZ.rockH), open water round it
   const R = LEZ.rockR, H = LEZ.rockH
-  lathe(q, c.x, c.z, [[R, y - 0.1], [R * 0.92, y + H * 0.3], [R * 0.7, y + H * 0.6], [R * 0.4, y + H * 0.9], [0.01, y + H]], 9, ROCKC)
-  for (let k = 0; k < LEZ.animals; k++) {
-    const a = (k / LEZ.animals) * Math.PI * 2 + hash(k, 3), t = 0.25 + 0.6 * hash(k, 9)
-    const rr = R * (1 - t * 0.7), hy = y + H * t
-    lump(q, c.x + Math.sin(a) * rr, hy, c.z + Math.cos(a) * rr, 0.2 + 0.1 * hash(k, 5), LEAD, 70 + k)
+  rockPile(q, c.x, y, c.z, R, H, LEZ_ROCK, 4)
+  const topY = y + H
+  // on it: the peasant turning into a frog, upright and gilded, and a few lizards/frogs on the flanks facing in
+  upright(q, c.x, topY - 0.15, c.z, LEZ.figure)
+  for (let k = 0; k < LEZ.onMound; k++) {
+    const a = (k / LEZ.onMound) * Math.PI * 2 + 0.4, rr = R * 0.7
+    const x = c.x + Math.sin(a) * rr, z = c.z + Math.cos(a) * rr, yaw = a + Math.PI
+    if (k % 2) frog(q, x, y + H * 0.45, z, yaw, LEZ.size); else lizard(q, x, y + H * 0.45, z, yaw, LEZ.size)
+  }
+  // on the coping: a ring facing the centre, alternating lizards and frogs
+  const rc = rMean - LEZ.rim * 0.5
+  for (let k = 0; k < LEZ.ring; k++) {
+    const a = (k / LEZ.ring) * Math.PI * 2 + 0.2, x = c.x + Math.sin(a) * rc, z = c.z + Math.cos(a) * rc
+    if (k % 2) frog(q, x, y + LEZ.h, z, a + Math.PI, LEZ.size); else lizard(q, x, y + LEZ.h, z, a + Math.PI, LEZ.size * 1.2)
   }
 }

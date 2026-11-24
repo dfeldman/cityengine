@@ -3218,7 +3218,7 @@
     "height": 6,
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
-    "note": "Q2887454. Stone curb round OSM's quatrefoil water (relation 6356905: outer way/124531624, island way/224643672; centred on the water's bbox), a kerbed island, a stone drum and a STAND-IN for Tuby's gilded-lead Apollo chariot group (four horses, tritons, dolphins; Modly queued, attach APOLLON_STAND_AT in versailles/minor/bassin-apollon.ts). Curb size and group proportions guessed from photos; the bake draws the water."
+    "note": "Q2887454. Stone curb round OSM's quatrefoil water (relation 6356905: outer way/124531624, island way/224643672; centred on the water's bbox), a dark wet island (OSM way/224643672) and a gilded procedural STAND-IN for Tuby's Apollo chariot group (four rearing horses, Apollo, two tritons, dolphins; ~10 m wide, ~4.5 m above the water, facing east; switch STANDIN in the builder; Modly queued, attach APOLLON_STAND_AT in versailles/minor/bassin-apollon.ts). Curb size and group proportions guessed from photos; the bake draws the water."
   },
   {
     "name": "Versailles: Bassin du Miroir",

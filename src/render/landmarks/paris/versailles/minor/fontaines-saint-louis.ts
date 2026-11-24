@@ -15,7 +15,9 @@ import type { Fit } from '../../../fit.ts'
 import { block, hex, shade, type Rgb } from '../../../kit.ts'
 
 const CFG = {
-  stone: '#d6cdb4', stoneDark: '#b9ae93', recess: '#6f6757', lead: '#6e7378', dark: '#3a3c40',
+  /** the ashlar shader greys pale stone in shade; off, the string courses are drawn as thin bands instead */
+  tagAshlar: false,
+  stone: '#f2e9d0', stoneDark: '#d9cfb4', recess: '#8a8270', lead: '#6e7378', dark: '#3a3c40',
   /** Quatre Pavés: footprint side, wall height to the cornice, plinth height, cornice height and overhang, roof parapet */
   qp: { w: 8.6, d: 8.5, wall: 6.1, plinth: 0.55, cornice: 0.55, out: 0.2, top: 0.35,
     /** the niche: half-width, springing height, crown height, recess depth */
@@ -36,7 +38,7 @@ const ASH = surfaceTag('ashlar')
 function ash(out: MeshBuilder, x0: number, x1: number, z0: number, z1: number, y0: number, y1: number, c: Rgb): void {
   const before = out.colors.length
   block(out, x0, x1, z0, z1, y0, y1, c)
-  for (let i = before + 3; i < out.colors.length; i += 4) out.colors[i] = ASH
+  if (CFG.tagAshlar) for (let i = before + 3; i < out.colors.length; i += 4) out.colors[i] = ASH
 }
 
 /**
@@ -95,7 +97,7 @@ export function versaillesFontaineQuatrePaves(out: MeshBuilder, fit: Fit): void 
   // the carved frieze panels either side of the niche (darker, slightly proud) and the upper windows, front and back
   for (const sx of [-1, 1]) {
     const c = sx * (Q.niche.hw + 0.35 + Q.frieze.w / 2)
-    block(out, c - Q.frieze.w / 2, c + Q.frieze.w / 2, -hd - 0.08, -hd, y + Q.frieze.y0, y + Q.frieze.y1, shade(DARK, 0.95))
+    block(out, c - Q.frieze.w / 2, c + Q.frieze.w / 2, -hd - 0.08, -hd, y + Q.frieze.y0, y + Q.frieze.y1, shade(DARK, 1.0))
     window(out, sx * Q.win.dx, -hd, y + Q.win.y0, y + Q.win.y1, Q.win.hw, 'z', -1)
     window(out, sx * Q.win.dx, hd, y + Q.win.y0, y + Q.win.y1, Q.win.hw, 'z', 1)
     // sides: one window each, the carved band beneath

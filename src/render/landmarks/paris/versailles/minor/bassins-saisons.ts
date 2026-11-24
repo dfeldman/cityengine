@@ -28,22 +28,23 @@ export interface Season {
 }
 
 export const SEASONS: Record<'bacchus' | 'ceres' | 'flore' | 'saturne', Season> = {
-  bacchus: { name: 'Bassin de Bacchus', rock: { r: 2.8, h: 0.55, seed: 3 }, god: { h: 1.2, cherubs: 3 },
+  bacchus: { name: 'Bassin de Bacchus', rock: { r: 3.0, h: 0.95, seed: 3 }, god: { h: 1.2, cherubs: 3 },
     ring: [[-7.84, 4.64], [2.28, 8.92], [4.60, 7.98], [8.74, -2.37], [7.83, -4.68], [-2.25, -8.85], [-4.56, -7.77], [-8.78, 2.14]] },
-  ceres: { name: 'Bassin de Cérès', rock: { r: 2.8, h: 0.55, seed: 5 }, god: { h: 1.2, cherubs: 3 },
+  ceres: { name: 'Bassin de Cérès', rock: { r: 3.0, h: 0.95, seed: 5 }, god: { h: 1.2, cherubs: 3 },
     ring: [[-8.22, 4.19], [-8.90, 2.45], [-4.08, -8.10], [-2.30, -8.82], [8.21, -4.25], [8.86, -2.58], [4.05, 8.22], [2.38, 8.88]] },
-  flore: { name: 'Bassin de Flore', rock: { r: 2.4, h: 0.5, seed: 8 }, god: { h: 1.1, cherubs: 3 },
+  flore: { name: 'Bassin de Flore', rock: { r: 2.6, h: 0.9, seed: 8 }, god: { h: 1.1, cherubs: 3 },
     ring: [[-0.60, 7.38], [2.55, 7.00], [4.68, 5.78], [6.26, 3.91], [7.11, 1.61], [6.91, -1.68], [5.81, -3.87], [4.02, -5.55], [2.68, -6.23], [0.28, -6.69], [-2.15, -6.32], [-4.30, -5.13], [-5.42, -3.98], [-6.57, -1.82], [-6.92, 0.61], [-6.41, 3.00], [-4.95, 5.26], [-2.97, 6.70]] },
-  saturne: { name: 'Bassin de Saturne', rock: { r: 2.5, h: 0.55, seed: 11 }, god: { h: 1.3, cherubs: 2 },
+  saturne: { name: 'Bassin de Saturne', rock: { r: 2.7, h: 0.95, seed: 11 }, god: { h: 1.3, cherubs: 2 },
     ring: [[-5.11, 5.74], [-3.12, 6.99], [-0.84, 7.58], [1.52, 7.44], [3.72, 6.61], [5.56, 5.15], [6.88, 3.21], [7.55, 0.95], [7.51, -1.41], [6.74, -3.63], [5.35, -5.52], [3.35, -6.96], [0.99, -7.69], [-1.47, -7.64], [-3.79, -6.81], [-5.73, -5.30], [-7.09, -3.25], [-7.74, -0.89], [-7.60, 1.57], [-6.70, 3.86]] },
 }
 
 // tunables (metres)
 const CURB_OUT = 0.55, CURB_H = 0.32, CURB_DEPTH = 0.3   // the stone kerb: width outside the water, height over the ground, how far its inner face goes down
 const COPE_OVER = 0.05, COPE_H = 0.07                      // the coping's overhang and thickness
-const PLINTH_R = 1.8, PLINTH_H = 0.1                     // the rock's flat top the group stands on
+const PLINTH_R = 1.3, PLINTH_H = 0.1                     // the rock's flat top the group stands on
 const CHERUB_H = 0.55, CHERUB_R = 1.0                      // a cherub's height, how far from the god's axis
-const STONE: Rgb = hex('#c9c3b2'), ROCK: Rgb = hex('#8b8475'), LEAD: Rgb = hex('#7d6a36'), GOLD: Rgb = hex('#b8963a')
+const STONE: Rgb = hex('#c9c3b2'), LEAD: Rgb = hex('#7d6a36'), GOLD: Rgb = hex('#d4a82e')
+const ISLE_ROCK: Rgb = hex('#625a4e')                     // weathered grey-brown, darker than the curb
 const rockTag = surfaceTag('rock')
 
 const grow = (ring: [number, number][], d: number): P2[] => ring.map(([x, z]) => { const l = Math.hypot(x, z) || 1; return { x: x * (1 + d / l), z: z * (1 + d / l) } })
@@ -74,8 +75,10 @@ function season(out: MeshBuilder, fit: Fit, s: Season): void {
   wall(out, water, y - CURB_DEPTH, y + CURB_H, shade(STONE, 0.82), true)
   // the island: a crag, its top levelled by a rock plinth the group stands on
   const R = s.rock
-  crag(out, 0, y - 0.35, 0, R.r, R.h + 0.35, R.r, R.seed, ROCK)
-  prism(out, 0, 0, y, y + R.h + PLINTH_H, PLINTH_R, 9, shade(ROCK, 0.95), rockTag, PLINTH_R * 0.9)
+  crag(out, 0, y - 0.35, 0, R.r, R.h + 0.35, R.r, R.seed, ISLE_ROCK)
+  const heap: [number, number, number, number][] = [[0.45, 0.2, 0.55, 0.8], [-0.4, 0.3, 0.5, 0.85], [0.1, -0.5, 0.5, 0.75], [-0.35, -0.3, 0.45, 0.9], [0.0, 0.0, 0.42, 1.0]]
+  heap.forEach(([dx, dz, k, h], i) => crag(out, dx * R.r, y - 0.1, dz * R.r, R.r * k, (R.h + 0.1) * h, R.r * k, R.seed + 4 * i + 1, shade(ISLE_ROCK, 0.88 + 0.07 * i)))
+  prism(out, 0, 0, y, y + R.h + PLINTH_H, PLINTH_R, 9, shade(ISLE_ROCK, 0.95), rockTag, PLINTH_R * 0.9)
   // the stand-in group (the real ones are reclining gods on a heaped mound, ~3 m across and ~1.2 m high): a lying torso, a head,
   // a raised arm and cherubs sprawled round it on the mound
   const y0 = y + R.h + PLINTH_H, H = s.god.h

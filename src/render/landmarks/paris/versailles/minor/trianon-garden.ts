@@ -29,16 +29,20 @@ const toP2 = (r: Pt[], k = 1): P2[] => r.map(([x, z]) => ({ x: x * k, z: z * k }
 
 /* ------------------------------------------------------------------------------------------------------- coping */
 
-const RIM = { stone: '#cdc7b6', w: 0.42, h: 0.2, below: 0.15 }
+const RIM = { stone: '#cdc7b6', w: 0.42, h: 0.2, below: 0.15, slope: 0.35 }
 
 /** A stone coping `w` wide laid along a closed outline, each stretch at the ground under its middle (a basin on a slope keeps its rim at the ground). */
-function coping(out: MeshBuilder, fit: Fit, pts: Pt[], o: { w?: number; h?: number; c?: string } = {}): void {
-  const w = o.w ?? RIM.w, h = o.h ?? RIM.h, c = hex(o.c ?? RIM.stone), ring = toP2(pts)
+function coping(out: MeshBuilder, fit: Fit, pts: Pt[], o: { w?: number; h?: number; c?: string; lift?: number } = {}): void {
+  const w = o.w ?? RIM.w, h = o.h ?? RIM.h, c = hex(o.c ?? RIM.stone), ring = ccw(toP2(pts))
+  const gAt = (x: number, z: number): number => (fit.groundAt ? fit.groundAt(x, z) : (fit.grade ?? 0))
+  // the bake's water stands at the ring's lowest bank (city/package.ts waterLevels): the coping follows it, within RIM.slope of the ground
+  const wl = Math.min(...ring.map((p) => gAt(p.x, p.z)))
   for (let i = 0; i < ring.length; i++) {
     const e = edgeAt(ring, i)
     if (e.L < 0.05) continue
-    const g = fit.groundAt ? fit.groundAt(e.mid.x, e.mid.z) : (fit.grade ?? 0)
-    boxAlong(out, e.mid.x, g + (h - RIM.below) / 2, e.mid.z, e.L / 2 + w / 2, (h + RIM.below) / 2, w / 2, e.heading, c)
+    const g = Math.min(Math.max(gAt(e.mid.x, e.mid.z), wl), wl + RIM.slope) + (o.lift ?? 0)
+    // the coping lies OUTSIDE the water's edge (its inner face on the outline), so the lip never overhangs the water
+    boxAlong(out, e.mid.x + e.nx * w / 2, g + (h - RIM.below) / 2, e.mid.z + e.nz * w / 2, e.L / 2 + w / 2, (h + RIM.below) / 2, w / 2, e.heading, c)
   }
 }
 
@@ -237,11 +241,11 @@ export function versaillesPavillonFrais(out: MeshBuilder, fit: Fit): void {
 /* ------------------------------------------------------------------------------------------------------ Buffet d'eau */
 
 const BUF = {
-  red: '#9a5560', redDark: '#7a3f4a', grey: '#5d6063', white: '#e8e3d8', gold: '#c4a048', dark: '#2f2a2c',
+  red: '#cfb0a4', redDark: '#a88a82', grey: '#7d7f80', white: '#e4dfd2', gold: '#b39a58', dark: '#2f2a2c',
   /** x extent of the wall (it sits a little west of the outline's centre), the wall's front z and back z */
   x0: -5.6, x1: 4.6, zf: 1.2, zb: 4.9,
   /** the tiers: lower wall height, middle tier height and setback, top block height, its half-width */
-  low: 2.3, mid: 1.5, midBack: 0.9, top: 1.1, topHw: 2.2,
+  low: 1.9, mid: 1.1, midBack: 0.9, top: 0.9, topHw: 2.0,
   /** the three shell basins: centre and side bowl radius, rise over the foot */
   bowl: { r: 0.95, side: 0.6, y: 1.25, at: 3.2 },
 }
@@ -249,7 +253,7 @@ const BUF = {
 /** The Grand Trianon's Buffet d'eau: a stepped red-marble wall, three shell basins, a gilded pediment and figures along the top. Front is −z (south). */
 export function versaillesBuffetEau(out: MeshBuilder, fit: Fit): void {
   const B = BUF, g = fit.grade ?? 0, red = hex(B.red), cx = (B.x0 + B.x1) / 2, hw = (B.x1 - B.x0) / 2
-  coping(out, fit, TRIANON_RINGS.buffet, { w: 0.45, h: 0.28, c: B.red })
+  coping(out, fit, TRIANON_RINGS.buffet, { w: 0.45, h: 0.28, c: B.white })
   // lower wall: a grey socle in the water, red marble above, three dark niche panels with a gold mask on each
   block(out, B.x0, B.x1, B.zf, B.zb, g - 0.4, g + 0.7, hex(B.grey))
   block(out, B.x0, B.x1, B.zf, B.zb, g + 0.7, g + B.low, red)
