@@ -82,6 +82,7 @@ import { monumentCorpsExpeditionnaireRusse } from './minor/monument-corps-expedi
 import { monumentMortsParisiensWw1 } from './minor/monument-morts-parisiens-ww1.ts'
 import { obelisquePyramideVincennes } from './minor/obelisque-pyramide-vincennes.ts'
 import { fontaineSquareLamartine } from './minor/fontaine-square-lamartine.ts'
+import { tombeDantan } from './minor/tombe-dantan.ts'
 import { monumentMortsPereLachaise } from './minor/monument-morts-pere-lachaise.ts'
 import { tombeHeloiseAbelard } from './minor/tombe-heloise-abelard.ts'
 import { tombeGaspardMonge } from './minor/tombe-gaspard-monge.ts'
@@ -163,6 +164,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   monumentKomitas,
   jardinMemorialVelDHiv,
   monumentVelDHiv,
+  tombeDantan,
   monumentVolontairesAmericains,
   monumentVictimesOperaComique,
   monumentMortsAfriqueDuNord,

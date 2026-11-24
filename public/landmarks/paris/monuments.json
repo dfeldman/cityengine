@@ -2190,6 +2190,22 @@
     "note": "Mausolée de Gaspard Monge (Q5526576), Père-Lachaise division 18, OSM way 1211895435 (5.5 x 5.7 m, building=service + historic=tomb, claimed; south face has the door). Rubble crypt with ashlar corner piers, a grilled door in a framed surround, a flat terrace behind an X-braced iron railing, and an Egyptian-style open aedicule (jambs, winged disc, cavetto cornice) holding the marble bust of Monge (Modly tombe-monge-buste, paris-statues.json). Dimensions by eye off Commons photos (door grille ~0.95 m wide), not surveyed; OSM bust node at 48.8603096, 2.3936585."
   },
   {
+    "name": "Monument funéraire de Dantan (Père-Lachaise)",
+    "procedural": "tombeDantan",
+    "kind": "monument",
+    "lat": 48.8587,
+    "lon": 2.3923,
+    "rotateDeg": 0,
+    "size": [
+      2.4,
+      1.6
+    ],
+    "height": 4.4,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3323375, Père-Lachaise division 4, on Wikidata's point (no OSM building within 12 m; the nearest tomb ways are other graves). Dantan family tomb of 1859: grey slab and name plinth, dark red-brown ledge, ochre stele with green mosaic border and four portrait medallions, mourning women at the corners (Modly dantan-pleureuse-g/-d), cornice, frieze, attic with relief, small corner figures (stand-in blocks). Proportions scaled by eye from Commons 'Dantan div. 4 Père-Lachaise (2)' against a ~1.9 m stele width guess; front faces south (-z) as in the photo, bearing not verified."
+  },
+  {
     "name": "Tombe d'Héloïse et Abélard",
     "procedural": "tombeHeloiseAbelard",
     "kind": "monument",

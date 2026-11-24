@@ -1522,6 +1522,38 @@
     "note": "Marble bust of Monge (0.6 m with its block) on the aedicule's pedestal. assetkit img2glb guided from Commons 'Perelachaise-Monge-p1000360.jpg' (one crop, first attempt)."
   },
   {
+    "id": "dantan-pleureuse-g",
+    "name": "Monument funéraire de Dantan: pleureuse gauche",
+    "asset": "dantan-pleureuse-g",
+    "attach": {
+      "to": "Monument funéraire de Dantan (Père-Lachaise)",
+      "at": [
+        -0.78,
+        2.09,
+        -0.46
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Veiled mourning woman, hands to her face, 1.6 m by eye. assetkit img2glb guided from Commons 'Dantan div. 4 Père-Lachaise (2).jpg' (one crop, first attempt)."
+  },
+  {
+    "id": "dantan-pleureuse-g-bis",
+    "name": "Monument funéraire de Dantan: pleureuse droite (même modèle)",
+    "asset": "dantan-pleureuse-g",
+    "attach": {
+      "to": "Monument funéraire de Dantan (Père-Lachaise)",
+      "at": [
+        0.78,
+        2.09,
+        -0.46
+      ],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "The right-hand mourner reuses the left one's model: two Modly attempts at the right figure (tree-occluded crop) failed."
+  },
+  {
     "id": "baudelaire-poete",
     "name": "Cénotaphe de Baudelaire: the poet and genie relief",
     "asset": "baudelaire-poete",
