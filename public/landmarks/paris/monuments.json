@@ -2374,5 +2374,24 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Walter Spitzer's 1994 monument (architect Mario Azagury; inaugurated 17 July 1994) in the place des Martyrs-Juifs-du-Vélodrome-d'Hiver on the quai de Grenelle, placed on OSM's memorial node (~100 m west of the garden). Procedural: three granite steps, a tapering walkway, an inscribed red-granite pedestal and a concave stone slab (the velodrome's banked curve). Facing south-east toward the quai is a guess; every dimension is scaled by eye off one Commons photo (Monument des Martyrs Juifs du Veledrome d'Hiver.JPG), not surveyed. The bronze group of civilians is Modly vel-dhiv-spitzer-groupe (paris-statues.json)."
+  },
+  {
+    "name": "Monument aux morts pour la France en opérations extérieures",
+    "procedural": "monumentOpex",
+    "kind": "monument",
+    "lat": 48.83814,
+    "lon": 2.27695,
+    "rotateDeg": 30,
+    "size": [
+      37,
+      37
+    ],
+    "height": 9,
+    "sign": false,
+    "osm": [
+      "way/672001632"
+    ],
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q74555507 (inaugurated 11 Nov 2019, Stéphane Vigny), parc André-Citroën. The square plaza is OSM way 672001632 (37 m a side, corners measured, turned to rotateDeg 30). Procedural: slate paving, black granite ring wall (planted top, gilt name rows on the inner face, an entrance gap), flagpole with tricolour. Wall height/thickness, gap and flag position are by eye off Commons photos (Djiril5c 2022 -1, -3; Monument OPEX - Paris 15e). The six bronze soldiers are the Modly piece opex-soldats (paris-statues.json)."
   }
 ]

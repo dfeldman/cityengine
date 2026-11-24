@@ -96,6 +96,7 @@ import { fontaineGrenelle } from './minor/fontaine-grenelle.ts'
 import { fontaineJarente } from './minor/fontaine-jarente.ts'
 import { fontainePetiteHalle } from './minor/fontaine-petite-halle.ts'
 import { fontaineJoyeuse } from './minor/fontaine-joyeuse.ts'
+import { monumentOpex } from './minor/monument-opex.ts'
 import { fontaineReservoirMontmartre } from './minor/fontaine-reservoir-montmartre.ts'
 import { fontaineMarcheCarmes } from './minor/fontaine-marche-carmes.ts'
 import { fontainePastorale } from './minor/fontaine-pastorale.ts'
@@ -133,6 +134,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineLionsJardinPlantes,
   fontainePastorale,
   fontaineSquareTolstoi,
+  monumentOpex,
   fontaineSainteGenevieve,
   fontaineArtsMetiers,
   fontaineMoliere,

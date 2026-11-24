@@ -1584,6 +1584,14 @@
     "attach": { "to": "Fontaine du square Tolstoï", "at": [0, 1.60, 0], "bearing": 180 },
     "range": 200,
     "note": "Cassou's marble woman with a child on her shoulder, on the top basin's pedestal. assetkit img2glb guided from Commons 'Fontaine du square Tolstoï, Paris 16e 3.jpg'; published in assetkit-models-paris"
+  },
+  {
+    "id": "opex-soldats",
+    "name": "Monument OPEX: six soldiers carrying the coffin (Vigny, 2019)",
+    "asset": "opex-soldats",
+    "attach": { "to": "Monument aux morts pour la France en opérations extérieures", "at": [0, 0.95, 0], "bearing": 0 },
+    "range": 250,
+    "note": "The bronze group of six soldiers bearing an invisible coffin, on the plaza's middle. assetkit img2glb guided from Commons 'Monument aux morts pour la France en OPEX - Statue - Paris 15 - Aout 2022 - Djiril5c - 3.jpg'; published in assetkit-models-paris"
   }
 
 
