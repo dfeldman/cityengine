@@ -154,8 +154,6 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineTheatreFrancaisFluviale,
   monumentSoldatsNoirs,
   monumentKomitas,
-  jardinMemorialVelDHiv,
-  monumentVelDHiv,
   monumentVolontairesAmericains,
   monumentVictimesOperaComique,
   fontaineOctaveGreard,
