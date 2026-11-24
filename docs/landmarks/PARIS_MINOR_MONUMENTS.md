@@ -259,6 +259,7 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 
 ## Status
 
+- Fontaine de la Baleine Bleue: modelled (minor/fontaine-baleine-bleue.ts `fontaineBaleineBleue`, monuments.json "Fontaine de la Baleine Bleue (square Saint-Eloi)", OSM way 661816194; Modly piece baleine-bleue-whale: queued on ml1's GPU, not yet made/published when this line was written)
 - mur des Fédérés: modelled (src/render/landmarks/paris/monuments/minor/mur-des-federes.ts, public/landmarks/paris/monuments.json; Modly pieces: none)
 - mémorial de la France combattante (Q3333148): skipped: Mont Valérien (lon 2.2138) lies west of the baked Paris box (lon 2.218–2.410)
 - Les Deux Plateaux (Q3232046): already modelled as src/render/landmarks/paris/buren-columns.ts

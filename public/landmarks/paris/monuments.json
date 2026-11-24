@@ -2740,6 +2740,22 @@
     "note": "Disused wall fountain closing the dead-end rue Alfred-Stevens (9e, no Wikidata id; fr.wikipedia rue Alfred-Stevens: 'fontaine Alfred-Stevens, aujourd'hui désaffectée, qui ferme la rue'). A freestanding screen wall across the street end: yellow footing, cream upper wall with two pink panels, central pavilion with arched blank panel and segmental pediment, console with mascaron over a niche and a round-fronted basin. Form and proportions read off Commons P1150212/P1150214 Paris IX fontaine Alfred-Stevens rwk against the ~10 m street width; not surveyed. Mascaron is the Modly piece alfred-stevens-mascaron. Facing = along the street toward the boulevard (OSM way 23762997 bearing ~104)."
   },
   {
+    "name": "Fontaine de la Baleine Bleue (square Saint-Eloi)",
+    "procedural": "fontaineBaleineBleue",
+    "kind": "fountain",
+    "osm": [
+      "way/661816194"
+    ],
+    "lat": 48.84472,
+    "lon": 2.38753,
+    "rotateDeg": 0,
+    "size": [11.9, 10.9],
+    "height": 1,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Wikidata Q23321581 (1982), OSM way 661816194, square Saint-Eloi, rue de Reuilly, 12e. Wide shallow round pool of pale blue tiles with a white kerb (outline OSM's ~11.9 x 10.9 m), raised round inner basin, and a blue mosaic whale standing on its tail (Modly piece baleine-bleue-whale, ~3.6 m by eye against the benches). Heights and the inner basin radius are guessed from Commons 'Whale fountain @ Square Saint-Eloi' photos."
+  },
+  {
     "name": "Fontaine Saussure (square Paul-Paray)",
     "procedural": "fontaineSaussure",
     "kind": "fountain",

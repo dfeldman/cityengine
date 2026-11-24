@@ -63,6 +63,7 @@ import { fontainePuitsButteAuxCailles } from './minor/fontaine-puits-butte-aux-c
 import { fontaineDuCoq } from './minor/fontaine-du-coq.ts'
 import { fontaineVertBois } from './minor/fontaine-vert-bois.ts'
 import { fontainePreSaintGervais } from './minor/fontaine-pre-saint-gervais.ts'
+import { fontaineBaleineBleue } from './minor/fontaine-baleine-bleue.ts'
 import { fontaineEphresienne } from './minor/fontaine-ephresienne.ts'
 import { fontaineChildebert } from './minor/fontaine-childebert.ts'
 import { fontaineDejean } from './minor/fontaine-dejean.ts'
@@ -144,6 +145,7 @@ import { quatreTemps } from '../defense-famous/quatreTemps.ts'
 import { tourFirst } from '../defense-famous/tourFirst.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  fontaineBaleineBleue,
   araigneeRouge,
   arenesLutece,
   carrouselArch,
