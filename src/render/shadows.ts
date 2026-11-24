@@ -183,16 +183,28 @@ export function blobMaterial(scene: Scene): ShaderMaterial {
   mat.needAlphaBlending = () => true
   mat.backFaceCulling = false
   /**
-   * Depth WRITE on, and a strict LESS test — which is what stops overlapping shadows stacking.
+   * Blobs TEST the shadow stencil but write neither it nor depth, and are drawn after every static shadow (city.ts
+   * sorts them last in their group).
    *
-   * Multiply blending is order-independent, which is why a thousand shadow polygons need no sorting. It is
-   * not idempotent: two shadows crossing multiply twice, three cross three times, and on a square where a
-   * row of trees stands in front of a building the ground went to mud. Every static shadow is laid at
-   * exactly the same height, so the first one to cover a pixel writes its depth and the rest are rejected —
-   * a union, for free, from hardware that is already running.
+   * They used to write both, as the static shadows do — over the WHOLE quad, faint corners included. Wherever the
+   * blobs happened to be drawn before a building's or tree's shadow (the group's transparent queue sorts by distance,
+   * and the blob pool's bounds sit at the world origin, so anywhere away from it they went first), that shadow was
+   * rejected under every blob's square: a walker in the shade of a building stood on a sunlit rectangle with a soft
+   * dark smudge in it (owner, 2026-11-24, "rectangles with a light centre"). Testing without writing means a person
+   * already in shade casts no second shadow, and one blob's corners cannot cut a square out of its neighbour's.
+   * Two blobs overlapping darken twice, which at their strength reads as a crowd, not as mud.
    */
-  mat.disableDepthWrite = false
-  mat.depthFunction = Constants.LESS
+  mat.disableDepthWrite = true
+  mat.depthFunction = Constants.LEQUAL
+  const st = mat.stencil
+  st.enabled = true
+  st.func = Constants.NOTEQUAL
+  st.funcRef = SHADOW_STENCIL
+  st.funcMask = SHADOW_STENCIL
+  st.mask = 0x00
+  st.opStencilFail = Constants.KEEP
+  st.opDepthFail = Constants.KEEP
+  st.opStencilDepthPass = Constants.KEEP
   mat.setFloat('fogDensity', 0.0016)
   mat.setColor3('shade', softened(new Color3(0.74, 0.76, 0.81)))
   return mat

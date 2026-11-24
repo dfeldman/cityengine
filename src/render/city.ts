@@ -24,6 +24,8 @@ import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp
 import { WallaceFountains } from './paris/wallace.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { Constants } from '@babylonjs/core/Engines/constants'
+import { RenderingGroup } from '@babylonjs/core/Rendering/renderingGroup'
+import type { SubMesh } from '@babylonjs/core/Meshes/subMesh'
 import type { Material } from '@babylonjs/core/Materials/material'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
@@ -1640,8 +1642,14 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   const rank = (mesh: { name: string }): number =>
     mesh.name.startsWith('tunnel:entry') || (mesh.name.startsWith('tunnel:portals') && (mesh as { metadata?: { first?: boolean } }).metadata?.first) ? -1
       : mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
+  // Transparent: Babylon's own back-to-front, except moving things' shadow blobs (render/shadows.ts blobMaterial) go
+  // after everything else, so the static shadows have marked the stencil before a blob tests it. By distance alone the
+  // blob pool (bounds at the world origin) went FIRST anywhere away from it and its quads punched lit squares in the
+  // building shadows (owner, 2026-11-24).
+  const lastBlob = (s: SubMesh): number => (s.getMaterial()?.name === 'shadowBlob' ? 1 : 0)
+  const transparent = (a: SubMesh, b: SubMesh): number => lastBlob(a) - lastBlob(b) || RenderingGroup.defaultTransparentSortCompare(a, b)
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
-    scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()))
+    scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()), undefined, transparent)
   }
   return {
     mark(tx, tz) {
