@@ -21,7 +21,7 @@ const BASIN_R = 1.55
 const BASIN_H = 0.4
 const COL_R = 0.23
 const COL_H = 2.7
-const DRUMS = 9               // drum joints on a tall column
+export const DRUMS = 9        // drum joints on a tall column (tunable; the banding uses its own spacing for now)
 const SPIKES = 9
 const SPIKE_H = 1.5
 
