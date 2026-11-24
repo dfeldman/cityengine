@@ -2081,6 +2081,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "L'Arc (Urs Fischer, parvis Alan-Turing)",
+    "procedural": "sculptureLArc",
+    "kind": "monument",
+    "lat": 48.83446,
+    "lon": 2.37031,
+    "rotateDeg": 0,
+    "size": [
+      8.4,
+      5.6
+    ],
+    "height": 10,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Urs Fischer's cast-aluminium arch (OSM node tourism=artwork 'L'Arc', artist Q503641, unveiled Feb 2022; plaque on Commons says 2016) on the parvis Alan-Turing by Station F; no OSM building under it. Height ~9 m and span ~8 m scaled by eye off Panoramax 2026 and one Commons 2022 photo against the Halle Freyssinet facade, not surveyed; its heading is a guess. The sculpture is Modly l-arc-sculpture (paris-statues.json); the builder lays only a thin aluminium footing plate."
+  },
+  {
     "name": "Le Kiosque des Noctambules (bouche de métro Palais-Royal)",
     "procedural": "kiosqueNoctambules",
     "kind": "monument",
