@@ -63,6 +63,7 @@ import { fontainePreSaintGervais } from './minor/fontaine-pre-saint-gervais.ts'
 import { fontaineChildebert } from './minor/fontaine-childebert.ts'
 import { fontaineDejean } from './minor/fontaine-dejean.ts'
 import { fontaineGavarni } from './minor/fontaine-gavarni.ts'
+import { fontaineSaussure } from './minor/fontaine-saussure.ts'
 import { fontaineBassinSoufflot } from './minor/fontaine-bassin-soufflot.ts'
 import { fontaineAvril } from './minor/fontaine-avril.ts'
 import { fontainePlaceFrancoisIer } from './minor/fontaine-place-francois-ier.ts'
@@ -144,6 +145,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   chapelleSalpetriere,
   cnitVault,
   domeImax,
+  fontaineSaussure,
   fers,
   fontaineChateauEau,
   fontaineLionsNubie,
