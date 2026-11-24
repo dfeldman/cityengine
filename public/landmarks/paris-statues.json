@@ -938,6 +938,18 @@
     "asset": "jeanne-augustin-equestre"
   },
   {
+    "id": "port-vendres-maillol-figure",
+    "name": "Monument aux morts de Port-Vendres: the reclining figure",
+    "attach": {
+      "to": "Monument aux morts de Port-Vendres (Maillol, Carrousel)",
+      "at": [0, 1.35, 0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Maillol's reclining woman (Tuileries cast). assetkit img2glb guided from Commons 'Monument aux morts de Port-Vendres by Aristide Maillol (Tuileries) 01/03'. Height 0.85 m estimated; at.y = block top (G 0.5 + 0.85)",
+    "asset": "monument-port-vendres-maillol-figure"
+  },
+  {
     "id": "barye-theseus",
     "name": "Monument à Barye: Theseus and the centaur Bienor",
     "attach": { "to": "Monument à Barye", "at": [0, 5.35, 0], "bearing": 180 },

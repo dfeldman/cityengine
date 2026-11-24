@@ -2030,6 +2030,22 @@
     "note": "Charles-Auguste Lebourg's standing bronze Jeanne d'Arc (OSM node 6414628699, tourism=artwork) on a round limestone pedestal on the traffic island where the boulevard Saint-Marcel meets the rue Jeanne-d'Arc, 13e; no OSM building under it. Pedestal ~3.1 m tall, ~2.2 m across the foot, statue ~2.1 m (banner to ~2.6 m): all scaled by eye off one 2008 Commons photo (Statuaire de Jeanne dArc, Boulevard Saint-Marcel), not surveyed. The face toward the viewer in that photo is taken as south; unverified. Figure: Modly jeanne-marcel-statue (paris-statues.json)."
   },
   {
+    "name": "Monument aux morts de Port-Vendres (Maillol, Carrousel)",
+    "procedural": "monumentPortVendresMaillol",
+    "kind": "monument",
+    "lat": 48.86181,
+    "lon": 2.33072,
+    "rotateDeg": 0,
+    "size": [
+      3.2,
+      2.4
+    ],
+    "height": 1.8,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Cast of Maillol's reclining draped woman from the Port-Vendres war memorial, one of the Maillol bronzes in the Jardin du Carrousel; placed on the list's coordinates (no OSM building). Granite block ~2.0 x 1.0 x 0.85 m and figure ~0.85 m high estimated off Commons photos (Monument aux morts de Port-Vendres by Aristide Maillol (Tuileries) 01-08), not surveyed; facing south is a guess. Figure: Modly monument-port-vendres-maillol-figure (paris-statues.json)."
+  },
+  {
     "name": "Monument à Barye",
     "procedural": "monumentBarye",
     "osm": [

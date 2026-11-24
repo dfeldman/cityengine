@@ -456,4 +456,5 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - La Petite Mairie: modelled (minor/pavillon-petite-mairie.ts, monuments.json; Modly pieces: none; Q3377363, cream flat-roofed box with a clock tower on OSM way 78146411, claimed; heights by eye off one Commons photo)
 - Monument à Barye: modelled (src/render/landmarks/paris/monuments/minor/monument-barye.ts, monuments.json, claims way/92316091; Modly pieces barye-theseus, barye-seated, barye-lion being made)
 - Monument aux agents du chemin de fer métropolitain de Paris morts pour la France: skipped: indoors, inside the Richelieu - Drouot metro station (Wikidata Q56844152 P276 and its P18 photo, Sarrabezolles 1931); not on a street
+- Monument aux Morts de Port-Vendres: modelled (minor/monument-port-vendres-maillol.ts, monuments.json; Modly pieces: monument-port-vendres-maillol-figure, published)
 - Fontaine de Neptune (no Wikidata id): the same fountain as fontaine de la rue Cherche-Midi (Q16928450), skipped above (closed courtyard of 86 rue du Cherche-Midi)
