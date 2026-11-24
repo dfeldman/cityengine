@@ -950,6 +950,18 @@
     "asset": "komitas-statue2"
   },
   {
+    "id": "jeanne-marcel-statue",
+    "name": "Jeanne d'Arc (boulevard Saint-Marcel): the standing bronze",
+    "attach": {
+      "to": "Jeanne d'Arc 1412-1431 (boulevard Saint-Marcel)",
+      "at": [0, 3.67, 0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Lebourg's standing Jeanne d'Arc (raised arm, shield). assetkit img2glb guided from Commons 'Statuaire de Jeanne dArc, Boulevard Saint-Marcel Paris 2008.jpg' (hand-polygon cut-out; the banner pole is not in the model). Height 2.2 m (to the raised hand) estimated. at.y = pedestal top (G 0.5 + 3.12)",
+    "asset": "jeanne-marcel-statue"
+  },
+  {
     "id": "villemin-fontaine",
     "name": "Fontaine du jardin Villemin: tritons, bowl and child",
     "attach": {

@@ -2014,6 +2014,22 @@
     "note": "Paul Dubois's bronze Jeanne d'Arc (1896) on its limestone pedestal on the parvis of Saint-Augustin; no OSM building under it. Pedestal ~3.1 x 1.6 m in plan, ~3.3 m tall, estimated off Commons photos (not surveyed); long axis and inscription face are guesses. Horse and rider: Modly jeanne-augustin-equestre (paris-statues.json)."
   },
   {
+    "name": "Jeanne d'Arc 1412-1431 (boulevard Saint-Marcel)",
+    "procedural": "monumentJeanneArcSaintMarcel",
+    "kind": "monument",
+    "lat": 48.838321,
+    "lon": 2.3570316,
+    "rotateDeg": 0,
+    "size": [
+      3,
+      3
+    ],
+    "height": 5.6,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Charles-Auguste Lebourg's standing bronze Jeanne d'Arc (OSM node 6414628699, tourism=artwork) on a round limestone pedestal on the traffic island where the boulevard Saint-Marcel meets the rue Jeanne-d'Arc, 13e; no OSM building under it. Pedestal ~3.1 m tall, ~2.2 m across the foot, statue ~2.1 m (banner to ~2.6 m): all scaled by eye off one 2008 Commons photo (Statuaire de Jeanne dArc, Boulevard Saint-Marcel), not surveyed. The face toward the viewer in that photo is taken as south; unverified. Figure: Modly jeanne-marcel-statue (paris-statues.json)."
+  },
+  {
     "name": "Monument à Komitas",
     "procedural": "monumentKomitas",
     "kind": "monument",
