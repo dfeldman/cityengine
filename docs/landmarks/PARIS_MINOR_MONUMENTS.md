@@ -449,4 +449,5 @@ Arc de Triomphe du Carrousel (as Arc de Triomphe du Carrousel), Barrière du Tr�
 - Les Bancs et la Pyramide noire: modelled (minor/monument-bancs-pyramide-noire.ts, monuments.json; Modly pieces: none; Aillaud 1985, black five-step truncated pyramid with top benches, read off Panoramax; size and 27 deg turn guessed)
 - Arc déplacé: modelled (minor/arc-deplace.ts, monuments.json; Modly pieces: none; O'Loughlin 1994, 22 m kerbed turf half-disc on the esplanade lawn; its place and bulge direction are guesses, one Panoramax view; not clearly seen in the one city shot)
 - La Porte de l'Enfer: skipped: inside the Musée Rodin's paid garden, not visible from the street (Rodin museum already in museums.json)
+- Au Gagne Petit (no Wikidata id): skipped: a figure on a shop front (avenue de l'Opéra), façade sculpture, which this list leaves out on purpose
 - Fontaine de Neptune (no Wikidata id): the same fountain as fontaine de la rue Cherche-Midi (Q16928450), skipped above (closed courtyard of 86 rue du Cherche-Midi)
