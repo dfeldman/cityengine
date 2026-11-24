@@ -1493,6 +1493,25 @@
     "note": "The 1712 wall fountain of the rue Saint-Martin / rue du Vertbois (Wikidata Q3076291): a stone portal against the foot of the Saint-Martin-des-Champs tower, rusticated pilasters, relief, bronze plaque, shell and bronze mascaron spout, cornice and a cartouche of arms on top (Modly: vertbois-crown, vertbois-mascaron). OSM way 54964126 (amenity=fountain) claimed. Faces the rue Saint-Martin / rue du Vertbois junction (front 335, NNW), the tower to its right: read off OSM's footway/fence line and the junction position, not checked on site. Dimensions scaled off Commons photos at ~80 px/m (pilaster ~0.9 m), not surveyed; heights shakiest."
   },
   {
+    "name": "Regard des Maussins (boulevard Sérurier)",
+    "procedural": "regardMaussins",
+    "kind": "monument",
+    "osm": [
+      "way/63224543"
+    ],
+    "lat": 48.8775,
+    "lon": 2.40705,
+    "front": 166,
+    "size": [
+      6.9,
+      5.6
+    ],
+    "height": 5,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "The medieval stone regard (inspection house) of the Eaux du Pré-Saint-Gervais, moved here in 1963; boulevard Sérurier / avenue de la Porte-des-Lilas beside the Porte des Lilas metro, in a small garden with footways (Wikidata Q3423359; monument historique classé 1899, PA00086776). Footprint 6.9 x 5.6 m incl. roof overhang from OSM way 63224543 (building, claimed). Front 166 (SSE, toward the garden footway/cycleway) read from the footway layout and the Commons photos. Stepped slab pavilion roof, plank door in an ashlar surround. Heights (wall 2.4, roof top 5.0) scaled off Commons photos against the door, not surveyed. No sculpture."
+  },
+  {
     "name": "Regard de la fontaine du Pré-Saint-Gervais",
     "procedural": "fontainePreSaintGervais",
     "kind": "fountain",

@@ -152,6 +152,7 @@ import { araigneeRouge, domeImax, lePouce } from './la-defense.ts'
 import { cnitVault } from '../defense-famous/cnitVault.ts'
 import { quatreTemps } from '../defense-famous/quatreTemps.ts'
 import { tourFirst } from '../defense-famous/tourFirst.ts'
+import { regardMaussins } from './minor/regard-maussins.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fontaineBaleineBleue,
@@ -322,4 +323,5 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineEugeneDelacroix,
   fontaineBaqueIssy,
   fontainePolypores,
+  regardMaussins,
 }
