@@ -1728,6 +1728,22 @@
     "attach": { "to": "Monument à la Gloire de l'expansion coloniale française (fragments)", "at": [-1.6, 0.62, 4.4], "bearing": 200 },
     "range": 250,
     "note": "Gallic cockerel on a globe among trophies, on a tall block, from Commons '... 2026-08-10 - 5.jpg'; 2.0 m by eye."
+  },
+  {
+    "id": "delacroix-bust",
+    "name": "Monument à Eugène Delacroix: the bust",
+    "asset": "delacroix-bust",
+    "attach": { "to": "Monument à Eugène Delacroix (Jardin du Luxembourg)", "at": [0, 5.42, 0.65], "bearing": 180 },
+    "range": 250,
+    "note": "Dalou's bronze bust of Delacroix on the socle above the pedestal's cornice; img2glb guided from a Commons close-up; 0.8 m by eye."
+  },
+  {
+    "id": "delacroix-group",
+    "name": "Monument à Eugène Delacroix: Time, Glory and the Genius of the Arts",
+    "asset": "delacroix-group",
+    "attach": { "to": "Monument à Eugène Delacroix (Jardin du Luxembourg)", "at": [0, 1.82, 0.2], "bearing": 180 },
+    "range": 250,
+    "note": "Dalou's three bronze figures on the plinth at the pedestal's foot; img2glb guided from Commons photographs; 2.6 m by eye."
   }
 
 

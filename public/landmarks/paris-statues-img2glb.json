@@ -835,19 +835,6 @@
   "note": "img2glb paris-007; facing towards the nearest path, 4 m"
  },
  {
-  "id": "fontaine-de-l-avril",
-  "name": "Fontaine de l'Avril",
-  "asset": "fontaine-de-l-avril",
-  "lat": 48.86529,
-  "lon": 2.29671,
-  "bearing": 175,
-  "lodRanges": [
-   30,
-   104
-  ],
-  "note": "img2glb paris-004; facing towards the nearest footway, 24 m"
- },
- {
   "id": "fontaine-de-la-cour-du-15-rue-du-louvre",
   "name": "Fontaine de la cour du 15 rue du Louvre",
   "asset": "fontaine-de-la-cour-du-15-rue-du-louvre",
@@ -872,45 +859,6 @@
    112
   ],
   "note": "img2glb paris-007; facing towards the camera of its photo (50 m)"
- },
- {
-  "id": "fontaine-des-fleuves",
-  "name": "Fontaine des Fleuves",
-  "asset": "fontaine-des-fleuves",
-  "lat": 48.86599,
-  "lon": 2.32151,
-  "bearing": 151,
-  "lodRanges": [
-   50,
-   200
-  ],
-  "note": "img2glb paris-005; facing towards the camera of its photo (11 m)"
- },
- {
-  "id": "fontaine-des-polypores",
-  "name": "Fontaine des Polypores",
-  "asset": "fontaine-des-polypores",
-  "lat": 48.83839,
-  "lon": 2.27864,
-  "bearing": 307,
-  "lodRanges": [
-   36,
-   144
-  ],
-  "note": "img2glb paris-002; facing towards the camera of its photo (21 m)"
- },
- {
-  "id": "fontaine-eugene-delacroix",
-  "name": "Fontaine Eugène Delacroix",
-  "asset": "fontaine-eugene-delacroix",
-  "lat": 48.84821,
-  "lon": 2.33554,
-  "bearing": 182,
-  "lodRanges": [
-   50,
-   200
-  ],
-  "note": "img2glb paris-002; facing towards the nearest footway, 7 m"
  },
  {
   "id": "francis-garnier",
@@ -2243,19 +2191,6 @@
    116
   ],
   "note": "img2glb paris-010; facing towards the nearest footway, 8 m"
- },
- {
-  "id": "le-lion-gardien-du-jardin-des-plantes",
-  "name": "Le lion, gardien du Jardin des plantes",
-  "asset": "le-lion-gardien-du-jardin-des-plantes",
-  "lat": 48.84369,
-  "lon": 2.35551,
-  "bearing": 355,
-  "lodRanges": [
-   30,
-   90
-  ],
-  "note": "img2glb paris-010; facing towards the nearest footway (Allée Chevreul), 8 m"
  },
  {
   "id": "le-marchand-de-masques",

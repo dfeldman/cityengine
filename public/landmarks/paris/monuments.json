@@ -1273,6 +1273,25 @@
     "note": "Pierre Baqué's 1992 fountain (stainless steel and masonry) in the stepped pedestrian rue Prudent-Jassedé, Issy-les-Moulineaux; OSM node 4962502455 'Fontaine'. Round brick-lipped basin with leaning steel spikes, three tall banded-drum columns (two carrying a lintel), four stumps. Only two Commons photos (from above): sizes and the layout's orientation are guessed; no Modly pieces (the steel spikes are procedural)."
   },
   {
+    "name": "Monument à Eugène Delacroix (Jardin du Luxembourg)",
+    "procedural": "fontaineEugeneDelacroix",
+    "kind": "fountain",
+    "osm": [
+      "way/62848407"
+    ],
+    "lat": 48.84821,
+    "lon": 2.33554,
+    "size": [
+      9.8,
+      5.2
+    ],
+    "height": 6.4,
+    "front": 180,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Dalou's 1890 monument (Wikidata Q18191182, OSM way 62848407): a long basin 9.8 x 5.2 m (from OSM) backed by a stone wall, a three-step stage, a tall stone pedestal and the bronze bust of Delacroix with a palm. Stage, pedestal and heights estimated off Commons photographs (not surveyed); the bust (delacroix-bust) and the group of Time, Glory and the Genius of the Arts (delacroix-group) are Modly models in the statues manifest. Replaces the batch img2glb whole-monument model."
+  },
+  {
     "name": "Fontaine des Polypores (rue Modigliani)",
     "procedural": "fontainePolypores",
     "kind": "fountain",
