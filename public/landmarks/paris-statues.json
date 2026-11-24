@@ -1812,7 +1812,29 @@
     "attach": { "to": "Fontaine de la Baleine Bleue (square Saint-Eloi)", "at": [0, 0.76, 0], "bearing": 180 },
     "range": 250,
     "note": "The blue mosaic whale standing on its tail in the inner basin (1982); assetkit img2glb guided from Commons photo 33646041096; 3.6 m by eye. Bearing untuned."
+  },
+  {
+    "id": "alphand-figure",
+    "name": "Monument à Adolphe Alphand: Alphand standing",
+    "attach": {
+      "to": "Monument à Adolphe Alphand (avenue Foch)",
+      "at": [0.08, 3.39, 0],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Dalou's standing Alphand (1899), hat in hand. assetkit img2glb guided from Commons 'Monument Alphand (2).jpg' (cropped). Height 2.2 m estimated. at.y = G 0.5 + steps 0.34 + pedestal 2.55 (builder FIGURE_AT).",
+    "asset": "alphand-figure"
+  },
+  {
+    "id": "alphand-left",
+    "name": "Monument à Adolphe Alphand: the left group of collaborators",
+    "attach": {
+      "to": "Monument à Adolphe Alphand (avenue Foch)",
+      "at": [-0.95, 1.95, -0.05],
+      "bearing": 180
+    },
+    "range": 250,
+    "note": "Dalou's left-hand group (an engineer in a frock coat with a smaller figure beside him) leaning on the pedestal ledge. assetkit img2glb guided from a crop of Commons 'Monument Alphand (2).jpg'. Height 2.2 m estimated. at.y = G 0.5 + steps 0.34 + pedestal tier 0.95 (builder LEFT_AT).",
+    "asset": "alphand-left"
   }
-
-
 ]
