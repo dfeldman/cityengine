@@ -2473,5 +2473,24 @@
     ],
     "madeBy": "claude-sonnet-5-5",
     "note": "Q74555507 (inaugurated 11 Nov 2019, Stéphane Vigny), parc André-Citroën. The square plaza is OSM way 672001632 (37 m a side, corners measured, turned to rotateDeg 30). Procedural: slate paving, black granite ring wall (planted top, gilt name rows on the inner face, an entrance gap), flagpole with tricolour. Wall height/thickness, gap and flag position are by eye off Commons photos (Djiril5c 2022 -1, -3; Monument OPEX - Paris 15e). The six bronze soldiers are the Modly piece opex-soldats (paris-statues.json)."
+  },
+  {
+    "name": "Monument à la mission Marchand",
+    "procedural": "monumentMissionMarchand",
+    "kind": "monument",
+    "osm": [
+      "way/62819232"
+    ],
+    "lat": 48.8344996,
+    "lon": 2.4087672,
+    "rotateDeg": 151,
+    "size": [
+      12.47,
+      1.94
+    ],
+    "height": 3.2,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3323421, Léon Baudry (1934; fr.wikipedia: a stone wall ~10 m long with a high-relief frieze of the Congo-Nile column, 6 French soldiers and 6 tirailleurs in profile, a route map behind, and a bronze shield naming Marchand and his officers at the right end; on avenue Daumesnil facing the Palais de la Porte Dorée). Claims OSM memorial way 62819232 (12.47 x 1.94 m, long axis bearing 299 deg). Procedural: two steps, wall, cornice, map panel, shield and inscription; the frieze is blocky stand-in figures (the only Commons photo, Monument_Mission_Marchand_Paris_1.jpg, shows just the shield end, so nothing to give Modly). Heights and wall thickness scaled by eye off that photo; the front facing NNE (rotateDeg 151) is inferred from the palace opposite."
   }
 ]
