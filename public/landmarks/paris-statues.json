@@ -958,6 +958,14 @@
     "asset": "barye-theseus"
   },
   {
+    "id": "barye-seated",
+    "name": "Monument à Barye: seated allegory with child",
+    "attach": { "to": "Monument à Barye", "at": [2.2, 1.65, -1.125], "bearing": 180 },
+    "range": 250,
+    "note": "Stone seated figure with a child on the rock block at the right of the pylon. assetkit img2glb guided from Commons 'P1280342 Paris IV square Barye monument Barye rwk.jpg'. Height 1.5 m estimated; at = builder SEATED_AT.",
+    "asset": "barye-seated"
+  },
+  {
     "id": "komitas-statue2",
     "name": "Monument à Komitas: the bronze statue",
     "attach": {
