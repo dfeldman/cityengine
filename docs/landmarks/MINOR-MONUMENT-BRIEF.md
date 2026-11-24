@@ -36,7 +36,7 @@ colonne-*.ts …), src/render/statues.ts; and check landmark entries within ~80 
 `osm` way have no lat/lon: resolve with osmium on tools/cache/osm/ile-de-france-latest.osm.pbf). Also check it lies in
 the modelled city: paris-centre's DETAIL box (x −8355…5715, z −4510…4175 m, tools/cities.ts) or one of its detail
 regions (tools/regions/paris-extra.ts: Cité universitaire, bois and château de Vincennes); outside them no streets or
-buildings are drawn. Versailles is out of scope for now. If it is
+buildings are drawn. Versailles has its own list and rules: see "Versailles" at the end of this brief. If it is
 already modelled, or out of the area, or not really a thing to ride past (indoors, a plaque only), say so and stop:
 append one line to the "## Status" section at the end of PARIS_MINOR_MONUMENTS.md (create the section if missing):
 `- <name>: already modelled as <entry/builder> | skipped: <reason>`.
@@ -134,3 +134,24 @@ monument except monument-kit.ts and the list's Status section. Append to Status:
 `- <name>: modelled (<builder file>, <manifest file>; Modly pieces: <ids or none>)`.
 Report back in under 200 words: files changed (exact paths), the builder function name, the Modly ids and whether each was published, the path of your best
 lowres shot, what is guessed, and anything that failed or looks wrong.
+
+## Versailles
+
+For the works in docs/landmarks/VERSAILLES_MINOR_MONUMENTS.md (owner, 2026-11-24). Everything above holds, except:
+
+- **In scope**: inside tools/regions/versailles.ts's "Parc de Versailles" and "Versailles, the old town" rings.
+- **Files**: builders in **src/render/landmarks/paris/versailles/minor/** (import monument-kit from
+  `../../monuments/minor/monument-kit.ts`), registered in monuments/index.ts as usual (`import … from
+  '../versailles/minor/<file>.ts'` and a PARIS_MONUMENTS line); entries in public/landmarks/paris/monuments.json. One
+  builder may serve several entries of the same kind (the four Seasons basins), parameterised by a tunable table.
+- **What already exists**: the bake draws OSM's water; tools/versailles-fountains.py adds the jets. Draw the rims, curbs,
+  tiers, rocks, steps and pedestals, never a second water surface or jets. Read the builders in
+  src/render/landmarks/paris/versailles/ (neptune.ts, colonnade.ts, garden-structures.ts) for the house style and colours.
+- **Shots**: `CITY=versailles-mini`, x = (lon − 2.1269)·73343, z = (lat − 48.8044)·111200. Take one trial shot to
+  check the frame before trusting a bearing.
+- **Sculpture**: if your prompt says the GPU is busy, do not run guided at all. Draw a plain plinth or a simple
+  stand-in where each figure goes, and append each piece's ready-to-run command to the queue file your prompt names:
+  `- <entry name> / <piece>: tools/img2glb/guided <id> '<Commons URL>@x0,y0,x1,y1' --height <m> --name "…"  # attach:
+  <how it sits on the model>`. Pick and crop the photos as in step 3.
+- **Status**: the list's own "## Status" section (VERSAILLES_MINOR_MONUMENTS.md). If PARIS_MINOR_MONUMENTS.md has a
+  "skipped: Versailles estate" line for your work, replace that line with your result rather than adding one.

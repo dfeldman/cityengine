@@ -153,6 +153,14 @@ import { cnitVault } from '../defense-famous/cnitVault.ts'
 import { quatreTemps } from '../defense-famous/quatreTemps.ts'
 import { tourFirst } from '../defense-famous/tourFirst.ts'
 import { regardMaussins } from './minor/regard-maussins.ts'
+import { bassinDeLatone, bassinDesLezards } from '../versailles/minor/bassin-latone.ts'
+import { versaillesBassinBacchus, versaillesBassinCeres, versaillesBassinFlore, versaillesBassinSaturne } from '../versailles/minor/bassins-saisons.ts'
+import { versaillesTheatreEau, versaillesEnfantsDores, versaillesTroisFontaines, versaillesBassinDomes, versaillesObeliscBasin, versaillesBassinDauphin, versaillesBassinFranceTriomphante } from '../versailles/minor/bosquets.ts'
+import { versaillesBassinApollon, versaillesBassinMiroir } from '../versailles/minor/bassin-apollon.ts'
+import { versaillesAlleeEau, versaillesDragon, versaillesNymphes, versaillesPyramide } from '../versailles/minor/north-axis.ts'
+import { versaillesParterreMidi, versaillesParterreNord, versaillesPointDuJour, versaillesFontaineDuSoir, versaillesCouronnes, versaillesCouronnesOuest } from '../versailles/minor/parterre-basins.ts'
+import { versaillesPavillonFrancais, versaillesPavillonFrais, versaillesBuffetEau, versaillesFontaineAmour, versaillesFontaineEnfantsOiseaux, versaillesFontaineEnfantsPoissons, versaillesRimPlatFond, versaillesRimFerACheval, versaillesRimTrefle, versaillesRimPetiteGerbe, versaillesRimLaocoon } from '../versailles/minor/trianon-garden.ts'
+import { versaillesFontaineQuatrePaves, versaillesFontaineSaintLouis } from '../versailles/minor/fontaines-saint-louis.ts'
 
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fontaineBaleineBleue,
@@ -324,4 +332,42 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineBaqueIssy,
   fontainePolypores,
   regardMaussins,
+  bassinDeLatone,
+  bassinDesLezards,
+  versaillesBassinBacchus,
+  versaillesBassinCeres,
+  versaillesBassinFlore,
+  versaillesBassinSaturne,
+  versaillesTheatreEau,
+  versaillesEnfantsDores,
+  versaillesTroisFontaines,
+  versaillesBassinDomes,
+  versaillesObeliscBasin,
+  versaillesBassinDauphin,
+  versaillesBassinFranceTriomphante,
+  versaillesBassinApollon,
+  versaillesBassinMiroir,
+  versaillesPyramide,
+  versaillesNymphes,
+  versaillesAlleeEau,
+  versaillesDragon,
+  versaillesParterreMidi,
+  versaillesParterreNord,
+  versaillesPointDuJour,
+  versaillesFontaineDuSoir,
+  versaillesCouronnes,
+  versaillesCouronnesOuest,
+  versaillesPavillonFrancais,
+  versaillesPavillonFrais,
+  versaillesBuffetEau,
+  versaillesFontaineAmour,
+  versaillesFontaineEnfantsOiseaux,
+  versaillesFontaineEnfantsPoissons,
+  versaillesRimPlatFond,
+  versaillesRimFerACheval,
+  versaillesRimTrefle,
+  versaillesRimPetiteGerbe,
+  versaillesRimLaocoon,
+  versaillesFontaineQuatrePaves,
+  versaillesFontaineSaintLouis,
 }
