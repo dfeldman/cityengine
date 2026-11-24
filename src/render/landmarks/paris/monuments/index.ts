@@ -141,6 +141,9 @@ import { fontainePastorale } from './minor/fontaine-pastorale.ts'
 import { fontaineSquareTolstoi } from './minor/fontaine-square-tolstoi.ts'
 import { danseFontaineEmergente } from './minor/danse-fontaine-emergente.ts'
   fontaineTrevise,
+  fontaineBaqueIssy,
+  fontaineEugeneDelacroix,
+  fontainePolypores,
 import { fusillesCascade } from './minor/fusilles-cascade.ts'
   fontaineEugeneDelacroix,
 import { fontaineSaintSulpice } from './fontaine-saint-sulpice.ts'
@@ -148,6 +151,7 @@ import { fontaineQuatreSaisons } from './fontaine-quatre-saisons.ts'
 import { fontaineChateauEau } from './fontaine-chateau-eau.ts'
 import { fontaineLionsNubie } from './minor/fontaine-lions-nubie.ts'
   fontaineRoseauxArgent,
+  fontaineTrevise,
 import { monumentMoncey, monumentPasteur, statueLiberte, washingtonIena } from './plaza-statues.ts'
   fontaineBaqueIssy,
 import { hautesHerbes } from './hautes-herbes.ts'
@@ -176,6 +180,7 @@ export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => voi
   fontaineQuatreSaisons,
   fontainePaix,
   fontaineLouvois,
+  fontaineRoseauxArgent,
   fontaineLabyrinthe,
   fontaineLionsJardinPlantes,
   fontainePastorale,
