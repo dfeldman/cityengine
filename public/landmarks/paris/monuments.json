@@ -2328,6 +2328,22 @@
     "note": "Q15156018, division 6, chemin de Lesseps, on Wikidata's point (no OSM building way there; the nearby OSM points are trees and tombs). The City of Paris's stele for the dead of June 1832. Form read off Commons Division 6 - Monument aux victimes de juin 01 and 02: rock-faced plinth, tall panel with three name columns under three wreath medallions, dedication band, die with a shallow wreath-and-eagle relief over the motto, cornice with low gable; the relief is shallow so no Modly piece. All dimensions (panel ~1.6 m wide, total ~4.6 m) and the facing direction are estimated by eye, not surveyed."
   },
   {
+    "name": "Monument de l'Assistance publique (Père-Lachaise)",
+    "procedural": "monumentAssistancePublique",
+    "kind": "monument",
+    "lat": 48.85984,
+    "lon": 2.3906,
+    "rotateDeg": 90,
+    "size": [
+      4,
+      3.2
+    ],
+    "height": 3.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q15155995, division 2 section 2, against the cemetery wall on the rue du Repos side, in line with avenue du Bureau; 1911-1930. Form read off Commons Monument Assistance Publique Cimetière Père Lachaise 2024-08-24 and Père-Lachaise - Division 2 - Assistance publique 02, and fr.wikipedia: wide limestone stele, taller pedimented central pillar with a roundel, red inscription Au personnel des hôpitaux de Paris victime du devoir and a black bronze wreath, a 17-name panel each side, palm-relief end pylons, stone-kerbed flower bed in front. Everything shallow or a ring, so no Modly piece. Sizes (pillar ~0.9 m wide, stele ~3.4 m, pillar ~3 m) and the facing (west, away from the wall) are estimated by eye, not surveyed; no OSM building way there."
+  },
+  {
     "name": "Monument aux victimes non reconnues de l'incendie du Bazar de la Charité",
     "procedural": "monumentBazarCharite",
     "kind": "monument",
