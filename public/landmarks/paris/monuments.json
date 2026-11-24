@@ -1960,6 +1960,22 @@
     "note": "Q96035892 (unveiled 19 Dec 1934), division 84 on the avenue des Combattants étrangers, on Wikidata's point. Form read off Commons photos (panoramio 'Monument Honoring Czech Volunteers', Flickr 31328958391): a wide pink-grey granite slab in three joined panels with the Czech and French dedications, a bronze group on top (Modly piece monument-soldats-tchecoslovaques-groupe) and a small WWII plaque on the paving. No OSM building under it. Slab width ~3.7 m, height ~1.2 m, group ~1.9 m are estimated against the figures; rotateDeg 0 is a guess (front faces -z) pending a look at the avenue."
   },
   {
+    "name": "Stèle du génocide des Tutsi au Rwanda (Père-Lachaise)",
+    "procedural": "steleGenocideTutsi",
+    "kind": "monument",
+    "lat": 48.86291,
+    "lon": 2.39744,
+    "rotateDeg": 0,
+    "size": [
+      2.4,
+      1.4
+    ],
+    "height": 1.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q96080492 (its Wikidata label is the Abdellys stele but the point and Commons 'Père-Lachaise - Division 88 - Rwanda genocide memorial 01-06' show this one). Pale limestone stele on a low plinth: arched-top panel between two capped shoulders, tan engraved plaque 'En 1994 au Rwanda plusieurs centaines de milliers de Tutsi ont été victimes d'un génocide'. All procedural, no sculpture, no Modly. Sizes (~1.6 m wide, ~1.1 m high) estimated against the hedge and flowers; rotateDeg a guess pending a look at the path. No OSM building way under it."
+  },
+  {
     "name": "Monument aux victimes de l'Opéra-Comique",
     "procedural": "monumentVictimesOperaComique",
     "kind": "monument",
