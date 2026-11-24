@@ -2841,5 +2841,18 @@
     "sign": false,
     "madeBy": "claude-sonnet-5-5",
     "note": "Christine O'Loughlin, 1994 (fr.wikipedia: a half-disc of lawn 22 m across cut out and turned a half turn on the esplanade lawn). Drawn as a kerbed half-disc of turf, radius 11 m (published); which way it bulges, the kerb section and its place on the lawn (OSM landuse=grass 3329..3396 m z, not claimed) are guessed from one Panoramax 2017 view of the curved kerb. No Commons photo found."
+  },
+  {
+    "name": "La Petite Mairie (place d'Aligre)",
+    "procedural": "pavillonPetiteMairie",
+    "kind": "pavilion",
+    "osm": [
+      "way/78146411"
+    ],
+    "height": 8.6,
+    "sign": false,
+    "noShops": true,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q3377363: the one-storey pavilion in the middle of the place d'Aligre opposite the marché Beauvau, a cream box with a flat parapeted roof and a small clock tower. Footprint is OSM way 78146411 (box ~6.9 x 7.3 m, two corners cut off); wall ~3.5 m, tower to ~8.6 m, colours and the louvred belfry are scaled by eye off Commons 'Place d'Aligre, la Petite Mairie, Paris 2020', not surveyed; the tower's place on the roof is a guess."
   }
 ]

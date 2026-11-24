@@ -69,6 +69,7 @@ import { fontaineChildebert } from './minor/fontaine-childebert.ts'
 import { fontaineDejean } from './minor/fontaine-dejean.ts'
 import { fontaineGavarni } from './minor/fontaine-gavarni.ts'
 import { fontaineSaussure } from './minor/fontaine-saussure.ts'
+import { pavillonPetiteMairie } from './minor/pavillon-petite-mairie.ts'
 import { fontaineBassinSoufflot } from './minor/fontaine-bassin-soufflot.ts'
 import { monumentJeanneArcSaintMarcel } from './minor/monument-jeanne-arc-saint-marcel.ts'
 import { monumentJeanneArcSaintAugustin } from './minor/monument-jeanne-arc-saint-augustin.ts'
@@ -151,6 +152,7 @@ import { tourFirst } from '../defense-famous/tourFirst.ts'
 export const PARIS_MONUMENTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fontaineBaleineBleue,
   araigneeRouge,
+  pavillonPetiteMairie,
   arenesLutece,
   carrouselArch,
   chapelleExpiatoire,
