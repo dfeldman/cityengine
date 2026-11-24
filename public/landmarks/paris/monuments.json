@@ -1928,6 +1928,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Mémorial du vol Air France 447 (Père-Lachaise)",
+    "procedural": "memorialAf447",
+    "kind": "monument",
+    "lat": 48.86322,
+    "lon": 2.39618,
+    "rotateDeg": 0,
+    "size": [
+      5.2,
+      3.2
+    ],
+    "height": 2.0,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Memorial to the 228 dead of AF447 (2009), division 84, Q96106655, on Wikidata's coordinates (no OSM way of its own). Procedural only, no sculpture: black granite slab with names face, upright engraved glass pane behind, four paving slabs in front; sizes estimated off one Commons photo (Division 84 - AF 447 memorial 02), facing unverified."
+  },
+  {
     "name": "Monument aux soldats tchécoslovaques (Père-Lachaise)",
     "procedural": "monumentSoldatsTchecoslovaques",
     "kind": "monument",
