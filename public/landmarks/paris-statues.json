@@ -1618,6 +1618,14 @@
     "note": "Cassou's marble woman with a child on her shoulder, on the top basin's pedestal. assetkit img2glb guided from Commons 'Fontaine du square Tolstoï, Paris 16e 3.jpg'; published in assetkit-models-paris"
   },
   {
+    "id": "monument-soldats-tchecoslovaques-groupe",
+    "name": "Monument aux soldats tchécoslovaques: bronze group",
+    "asset": "monument-soldats-tchecoslovaques-groupe",
+    "attach": { "to": "Monument aux soldats tchécoslovaques (Père-Lachaise)", "at": [0, 1.84, 0], "bearing": 0 },
+    "range": 200,
+    "note": "Bronze group (Marianne, dying soldier, widow, Czechoslovakia) on the granite slab; from a Commons panoramio photo via assetkit guided."
+  },
+  {
     "id": "opex-soldats",
     "name": "Monument OPEX: six soldiers carrying the coffin (Vigny, 2019)",
     "asset": "opex-soldats",

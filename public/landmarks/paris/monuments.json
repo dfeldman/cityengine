@@ -1928,6 +1928,22 @@
     "note": "Bronze Komitas by David Erevantsi (2003, Q3323366) on a plain limestone cube at the west end of the Cours Albert-1er, placed on Wikidata's coordinates (no OSM building there). Pedestal ~1.6 x 1.4 x 1.5 m and statue ~2.8 m estimated off Commons photos, not surveyed; the inscription face toward the south is a guess. The statue is Modly komitas-statue (paris-statues.json)."
   },
   {
+    "name": "Monument aux soldats tchécoslovaques (Père-Lachaise)",
+    "procedural": "monumentSoldatsTchecoslovaques",
+    "kind": "monument",
+    "lat": 48.86334,
+    "lon": 2.39687,
+    "rotateDeg": 0,
+    "size": [
+      4.8,
+      2.8
+    ],
+    "height": 3.3,
+    "sign": false,
+    "madeBy": "claude-sonnet-5-5",
+    "note": "Q96035892 (unveiled 19 Dec 1934), division 84 on the avenue des Combattants étrangers, on Wikidata's point. Form read off Commons photos (panoramio 'Monument Honoring Czech Volunteers', Flickr 31328958391): a wide pink-grey granite slab in three joined panels with the Czech and French dedications, a bronze group on top (Modly piece monument-soldats-tchecoslovaques-groupe) and a small WWII plaque on the paving. No OSM building under it. Slab width ~3.7 m, height ~1.2 m, group ~1.9 m are estimated against the figures; rotateDeg 0 is a guess (front faces -z) pending a look at the avenue."
+  },
+  {
     "name": "Monument aux victimes de l'Opéra-Comique",
     "procedural": "monumentVictimesOperaComique",
     "kind": "monument",
