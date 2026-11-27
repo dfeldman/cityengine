@@ -105,7 +105,12 @@ import { Energy } from './sim/energy.ts'
 import { capTextures } from './render/texture-cap.ts'
 import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
-import { DAYLIGHT, setWeathering, updateEye } from './render/facade-material.ts'
+import { DAYLIGHT, setFacadeDetail, setWeathering, updateEye } from './render/facade-material.ts'
+import { setRoadDetail } from './render/road-material.ts'
+import { setLitter, setLitterPlace } from './render/litter-glsl.ts'
+import { setGrassDetail, getGrassDetail, GRASS_FIELD_GLSL } from './render/grass-glsl.ts'
+import { GrassMask } from './render/grass-mask.ts'
+import { GrassNear } from './render/grass-near.ts'
 import { obscuraView } from './render/obscura.ts'
 import { bouldersLayer } from './render/boulders.ts'
 import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from './render/beach-surf.ts'
@@ -409,6 +414,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!settings().fog) DAYLIGHT.fogDensity = 0
   // Menu → Settings → Graphics → Weathered walls (render/facade-material.ts), read as each facade material is made
   setWeathering(off.has('weathering') ? 0 : 1)
+  // Menu → Settings → Graphics → Detailed roads (render/road-material.ts): 2 full, 1 the cheap set phones get on Auto,
+  // 0 the plain page; `?roads=0|1|2` wins, to compare them
+  { const asked = new URLSearchParams(location.search).get('roads'), r = settings().roads ?? 'auto'
+    setRoadDetail(asked !== null ? Number(asked) : r === 'off' ? 0 : r === 'on' ? 2 : opts.tier === 'ultra' ? 1 : 2) }
+  // Detailed facades (render/facade-material.ts F_, cartoon-material.ts A_): stone bedding, courses, crust and relief on
+  // the city's walls and the landmarks' stone; the same levels and Auto rule, `?facades=0|1|2` wins
+  { const asked = new URLSearchParams(location.search).get('facades'), r = settings().facades ?? 'auto'
+    setFacadeDetail(asked !== null ? Number(asked) : r === 'off' ? 0 : r === 'on' ? 2 : opts.tier === 'ultra' ? 1 : 2) }
+  // Detailed grass (render/grass-glsl.ts GR): olive lawns, dry patches, stripes, weeds, a grazing-angle shift; the same levels and Auto
+  // rule, `?grass=0|1|2` wins
+  { const asked = new URLSearchParams(location.search).get('grass'), r = settings().grass ?? 'auto'
+    setGrassDetail(asked !== null ? Number(asked) : r === 'off' ? 0 : r === 'on' ? 2 : opts.tier === 'ultra' ? 1 : 2) }
+  // Litter and graffiti (render/litter-glsl.ts LT, LITTER_PLACES): leaves, twigs, paper, cans, gum, mud, footprints in the ground
+  // shaders, tags on the walls. Auto is High (the desktop tier) only; `?litter=0|1|2` wins (2 tints the ground by the amounts)
+  { const asked = new URLSearchParams(location.search).get('litter'), r = settings().litter ?? 'auto'
+    setLitter(asked !== null ? Number(asked) : r === 'off' ? 0 : r === 'on' ? 1 : (opts.tier ?? 'desktop') === 'desktop' ? 1 : 0)
+    setLitterPlace(src.index.region ?? '', src.index.origin, Number(new URLSearchParams(location.search).get('litterx') ?? 1) || 1) }
   if (new URLSearchParams(location.search).has('dev')) (window as unknown as { __weathering?: (v: number) => void }).__weathering = (v) => setWeathering(v, scene)
 
   const __t0 = performance.now()
@@ -956,6 +978,46 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // Montmartre and Père-Lachaise (render/critters.ts, critterkit); `?critters=1` a group in every square, `?without=critters` none
   const critters = off.has('critters') || off.has('life') ? null : new Critters(scene, city, pkg.region ?? '', pkg.origin, new URLSearchParams(location.search).get('critters') === '1')
   ;(window as unknown as { __critters?: Critters | null }).__critters = critters
+  /*
+   * NEAR-FIELD GRASS (render/grass-near.ts, docs/GRASS-PLAN.md): cards and shells standing on the lawns round the rider, from
+   * a mask of where each kind of grass is (render/grass-mask.ts). Desktop at full grass detail only; a 5 MP canvas takes the
+   * Medium set (its cost is the shells' fill). `?grassnear=0|1|2` (off, Medium, High) wins; `?without=grassnear` none.
+   */
+  const grassNear = ((): { mask: GrassMask; near: GrassNear } | null => {
+    const asked = new URLSearchParams(location.search).get('grassnear')
+    const big = engine.getRenderWidth() * engine.getRenderHeight() > 3.5e6
+    const q = asked !== null ? (asked === '0' ? null : asked === '1' ? 'medium' : 'high')
+      : getGrassDetail() >= 2 && opts.tier === 'desktop' ? (big ? 'medium' : 'high') : null
+    if (!q || off.has('grassnear')) return null
+    const dry = city.dryZones
+    const inRing = (r: number[], x: number, z: number): boolean => {
+      let c = false
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < (r[j] - r[i]) * (z - r[i + 1]) / (r[j + 1] - r[i + 1]) + r[i]) c = !c
+      }
+      return c
+    }
+    const mask = new GrassMask(scene, {
+      heightAt: (x, z) => city.terrain.grassHeightAt(x, z),
+      // (a formal garden's lawns are manicured, as the ground shader has them; its gravel and beds grow nothing)
+      extra: (rect) => (city.gardenTiles()?.flatsIn(Math.floor(rect.x0 / 200 + 0.5), Math.floor(rect.z0 / 200 + 0.5)) ?? [])
+        .map((f) => ({ ring: f.ring.flatMap((p) => [p.x, p.z]), type: f.kind === 'lawn' ? 1 : 0 })),
+      dry: dry.length ? (x, z) => dry.some((d) => x >= d.bbox[0] && x <= d.bbox[2] && z >= d.bbox[1] && z <= d.bbox[3] && inRing(d.ring, x, z)) : undefined,
+    })
+    city.addLayer(mask.layer(1))
+    // (group 3, the buildings' own: depth is cleared between groups, and there the hills' and the buildings' depth hides it)
+    const near = new GrassNear(scene, mask, { quality: q, fieldGlsl: GRASS_FIELD_GLSL, cityFog: true, renderingGroupId: 3 })
+    near.setLight(DAYLIGHT.sun.negate(), { sky: DAYLIGHT.skyColour, sunCol: DAYLIGHT.sunColour, fog: DAYLIGHT.fogColour, fogD: DAYLIGHT.fogDensity, expo: 1 })
+    // (before each render rather than in the ride loop, so a frozen view and the orbit camera get it too; centred on the camera)
+    scene.onBeforeRenderObservable.add(() => {
+      const cam = scene.activeCamera?.globalPosition
+      if (!cam) return
+      mask.near(cam.x, cam.z)
+      near.update(cam.x, cam.z, performance.now() / 1000)
+    })
+    return { mask, near }
+  })()
+  ;(window as unknown as { __grassNear?: unknown }).__grassNear = grassNear
   const statues = off.has('landmarks') ? null : new Statues(scene, await statueManifest(document.baseURI, opts.city, pkg.region),
     pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [], index.sea ?? null)
   ;(window as unknown as { __statues?: unknown }).__statues = statues
@@ -3084,11 +3146,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let aimY = nav.elevationAhead(12)
 
   // Contact shadows, sun shadows, bloom, the grade and its film look, FXAA (render/post.ts) — each `?without=` by name:
-  // ao, aogeo (the AO kept on the pre-pass depth even when the shadows' geometry buffer is there), shadows, bloom, grade, film, vignette, grain
+  // ao, aogeo (the AO kept on the pre-pass depth even when the shadows' geometry buffer is there), shadows, bloom, grade, film, vignette, grain (AO makes the geometry buffer itself when shadows are off: the pre-pass depth misses every ShaderMaterial)
   {
     const g = new URLSearchParams(location.search).get('grade')?.split(',').map(Number)
     postStack(scene, camera, {
-      ao: !off.has('ao'), aoGeometry: !off.has('aogeo') && !off.has('shadows'), shadows: !off.has('shadows'), bloom: !off.has('bloom'),
+      ao: !off.has('ao'), aoGeometry: !off.has('aogeo'), shadows: !off.has('shadows'), bloom: !off.has('bloom'),
       grade: !off.has('grade'), film: !off.has('film'), vignette: !off.has('vignette'), grain: !off.has('grain'),
     }, g && g.length === 3 && g.every((v) => v > 0) ? { exposure: g[0], saturation: g[1], contrast: g[2] } : off.has('ao') ? GRADE_NO_AO : GRADE)
   }

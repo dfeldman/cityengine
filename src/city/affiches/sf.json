@@ -1,0 +1,2569 @@
+[
+ {
+  "id": "s-brain",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "BRAINBUCKET",
+  "headline": "Your skull has no cloud backup.",
+  "sub": "Helmets, but make it smart.",
+  "small": "$89 · free returns, not free brains",
+  "art": "helmet",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s-nook",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "NOOK LIVING",
+  "headline": "Cozy 1BR. 'Cozy' is doing a lot of work.",
+  "sub": "",
+  "small": "$3,400/mo · broom closet sold separately",
+  "art": "house",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "e-foghorns",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THE DRAFTY ROOM",
+  "headline": "The Foghorns",
+  "sub": "Live. Loud. Slightly damp.",
+  "small": "FRI 9 PM · $15",
+  "art": "note",
+  "palette": [
+   "#0b132b",
+   "#f8f9fa",
+   "#5bc0be"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s-gutsy",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "GUTSY BREW",
+  "headline": "Live cultures. Live a little.",
+  "sub": "Small-batch kombucha, probably alive.",
+  "small": "$9.50 · refills are a lifestyle",
+  "art": "bottle",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#e63946"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s-starter",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "split",
+  "brand": "STARTER & CO.",
+  "headline": "Our starter is older than your startup.",
+  "sub": "And more profitable.",
+  "small": "Sourdough, 14 hours, no apologies",
+  "art": "bread",
+  "palette": [
+   "#e9d8a6",
+   "#3d2c1e",
+   "#0a9396"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "e-pitch",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "MARINA PLAYHOUSE",
+  "headline": "A Midsummer Night's Pitch Deck",
+  "sub": "A comedy about fairies, funding, and Series A",
+  "small": "JUL 12 — 28",
+  "art": "star",
+  "palette": [
+   "#3c1642",
+   "#f8edeb",
+   "#ffb703"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s-fogline",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "FOGLINE OUTERWEAR",
+  "headline": "It's July. Obviously.",
+  "sub": "",
+  "small": "Jackets from $240 · layers from $60",
+  "art": "cloud",
+  "palette": [
+   "#d9d9d9",
+   "#202020",
+   "#e4572e"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s-zippy",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "ZIPPY",
+  "headline": "Arrive in five minutes. Arrive in a tree.",
+  "sub": "",
+  "small": "$0.40/min · helmets sold separately",
+  "art": "scooter",
+  "palette": [
+   "#005f73",
+   "#fefae0",
+   "#ee9b00"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s-muse",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "SANDWICH.AI",
+  "headline": "We put AI in your sandwich.",
+  "sub": "",
+  "small": "Join the waitlist",
+  "art": "laptop",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "e-founders",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THE LAUGH VALVE",
+  "headline": "Founders Cry Night",
+  "sub": "Open mic. Bring your runway. Leave your pride.",
+  "small": "TUE 8 PM · 2-drink minimum",
+  "art": "mask",
+  "palette": [
+   "#c1121f",
+   "#fff1e6",
+   "#ffd166"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s-quake",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "EARTHQUAKE & SON",
+  "headline": "Insured against the Big One.",
+  "sub": "The small ones are just wear and tear.",
+  "small": "Plans from $19/mo",
+  "art": "house",
+  "palette": [
+   "#14213d",
+   "#fdf6e3",
+   "#fca311"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s-love",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "LOVE.EXE",
+  "headline": "Meet someone who also owns a standing desk.",
+  "sub": "",
+  "small": "Compatibility: 94% (we made that up)",
+  "art": "heart",
+  "palette": [
+   "#ffc2d4",
+   "#3a0ca3",
+   "#d00000"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "e-bayhill",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "TWIN PEAKS CLUB",
+  "headline": "Hill Climb for People Who Hate Hills",
+  "sub": "Ten blocks. Zero dignity.",
+  "small": "SAT 8 AM",
+  "art": "hill",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s-climb",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "CLIMB CO.",
+  "headline": "Hills are free. Climbing is $189 a month.",
+  "sub": "",
+  "small": "First class $0, second guess $189",
+  "art": "hill",
+  "palette": [
+   "#0077b6",
+   "#ffffff",
+   "#ffb703"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s-beanery",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "BEANERY NINE",
+  "headline": "$9 coffee. Free Wi-Fi. Free judgment.",
+  "sub": "",
+  "small": "Laptops welcome until 11:01",
+  "art": "coffee",
+  "palette": [
+   "#111111",
+   "#f5f5f5",
+   "#ffd60a"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "e-barista",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "BAYSIDE OPERA HOUSE",
+  "headline": "The Barista of Seville",
+  "sub": "An opera in three acts and one oat milk",
+  "small": "OCT 3 — 14 · FROM $45",
+  "art": "coffee",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "s-woof",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "WOOF OS",
+  "headline": "Your dog deserves equity.",
+  "sub": "Premium kibble for senior engineers.",
+  "small": "",
+  "art": "dog",
+  "palette": [
+   "#cad2c5",
+   "#2f3e46",
+   "#bc4749"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s-brightline",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "PEARLY DENTAL",
+  "headline": "Whiter than your investor deck.",
+  "sub": "Teeth, but disruptive.",
+  "small": "New patients: 3 months, $400",
+  "art": "tooth",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "e-sourdough",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "FORT MASON HALL",
+  "headline": "Sourdough Summit",
+  "sub": "Forty bakers. One starter. Zero gluten-free.",
+  "small": "SAT & SUN · 10 AM",
+  "art": "bread",
+  "palette": [
+   "#e9d8a6",
+   "#3d2c1e",
+   "#0a9396"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s-snooze",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "SNOOZE LABS",
+  "headline": "Sleep like your runway is infinite.",
+  "sub": "",
+  "small": "Queen $1,100 · nightmares extra",
+  "art": "bed",
+  "palette": [
+   "#0b132b",
+   "#f8f9fa",
+   "#5bc0be"
+  ],
+  "font": "script"
+ },
+ {
+  "id": "s-oak",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "OAK & VAULT",
+  "headline": "Banking for people who say 'liquidity' at brunch.",
+  "sub": "",
+  "small": "Member of several things",
+  "art": "key",
+  "palette": [
+   "#111111",
+   "#f5f5f5",
+   "#ffd60a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "s-marine",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "OVERCAST Nº 5",
+  "headline": "The fragrance. Damp. Gray. Faintly hopeful.",
+  "sub": "",
+  "small": "Eau de parfum · 1.7 oz",
+  "art": "perfume",
+  "palette": [
+   "#d9d9d9",
+   "#202020",
+   "#e4572e"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "e-quit",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "PAGES & CO. ANNEX",
+  "headline": "An Evening With a Man Who Quit Tech",
+  "sub": "He grows tomatoes now. He's fine. He's not fine.",
+  "small": "THU 7 PM · FREE, NO PITCH",
+  "art": "plant",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#e63946"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "s-hire",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "HIREBRO",
+  "headline": "Rockstar ninja wanted. Equity: a feeling.",
+  "sub": "",
+  "small": "Free snacks. Free feelings.",
+  "art": "star",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s-scoop",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "split",
+  "brand": "FOGGY SCOOPS",
+  "headline": "Ice cream, because it's 54° and we gave up.",
+  "sub": "Flavors: Mist, Overcast, Drizzle",
+  "small": "$7 a cone, $9 a regret",
+  "art": "icecream",
+  "palette": [
+   "#ffc2d4",
+   "#3a0ca3",
+   "#d00000"
+  ],
+  "font": "script"
+ },
+ {
+  "id": "s-spoke",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "SPOKE & SON",
+  "headline": "Hills are flat roads with commitment issues.",
+  "sub": "Tune-ups in 24 hours.",
+  "small": "Valencia & 22nd",
+  "art": "bike",
+  "palette": [
+   "#005f73",
+   "#fefae0",
+   "#ee9b00"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "e-flea",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "POTRERO FLEA",
+  "headline": "Stoop Sale of the Century",
+  "sub": "Used standing desks, 40% off. They never worked.",
+  "small": "SUN 9 AM",
+  "art": "star",
+  "palette": [
+   "#e9d8a6",
+   "#3d2c1e",
+   "#0a9396"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s-fiber",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "FIBERFOX",
+  "headline": "Internet so fast your landlord raises the rent.",
+  "sub": "",
+  "small": "Gigabit from $89",
+  "art": "laptop",
+  "palette": [
+   "#14213d",
+   "#fdf6e3",
+   "#fca311"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s-realty",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "SUNSET & CO. REALTY",
+  "headline": "Own a piece of the Sunset. Fog included.",
+  "sub": "3BR, 1BA, 2 dreams",
+  "small": "Open Sun · bring a sweater",
+  "art": "house",
+  "palette": [
+   "#cad2c5",
+   "#2f3e46",
+   "#bc4749"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s-ulocked",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "U-LOCKED",
+  "headline": "Your bike is not safe. This helps. Slightly.",
+  "sub": "",
+  "small": "$59 · now with extra optimism",
+  "art": "lock",
+  "palette": [
+   "#c1121f",
+   "#fff1e6",
+   "#ffd166"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "e-ocean",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "OCEAN BEACH BANDSHELL",
+  "headline": "Surf Rock for Fog People",
+  "sub": "Four bands, no sun, one bonfire",
+  "small": "SAT 6 PM",
+  "art": "sun",
+  "palette": [
+   "#0077b6",
+   "#ffffff",
+   "#ffb703"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s-shuttle",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "COMMUTE LABS",
+  "headline": "Your shuttle has Wi-Fi and a vibe.",
+  "sub": "",
+  "small": "Free for employees. Soul extra.",
+  "art": "gear",
+  "palette": [
+   "#d9d9d9",
+   "#202020",
+   "#e4572e"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-e-comedy",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THE SOGGY ANCHOR",
+  "headline": "Fog Calling: Stand-Up Night",
+  "sub": "Six comics. One heckler. Zero sun.",
+  "small": "THU 8 PM · $12",
+  "art": "mask",
+  "palette": [
+   "#1d1a3a",
+   "#fff4d6",
+   "#ff7a59"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s2-e-cablerace",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "HYDE STREET HALL",
+  "headline": "Cable Car Karaoke",
+  "sub": "Sing the hill. Ring the bell.",
+  "small": "SAT 7 PM · $10",
+  "art": "s_cablecar",
+  "palette": [
+   "#fff1cc",
+   "#3b1f0e",
+   "#c8102e"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s2-e-bikeswap",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "POTRERO YARD",
+  "headline": "Bike Swap & Bell Fair",
+  "sub": "Bring a frame. Leave with two.",
+  "small": "SUN 10-4 · FREE",
+  "art": "bike",
+  "palette": [
+   "#d9f2e6",
+   "#0b3d2e",
+   "#f4a300"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-e-crit",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "SUNSET FLATS",
+  "headline": "Neighborhood Crit Race",
+  "sub": "Eight corners. Zero stop signs obeyed.",
+  "small": "SAT 9 AM · $20",
+  "art": "helmet",
+  "palette": [
+   "#ff5a36",
+   "#fff",
+   "#111"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s2-e-taco",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "MISSION ROW LOT",
+  "headline": "Taco Truck Throwdown",
+  "sub": "Forty trucks. One napkin.",
+  "small": "SAT NOON · $5 FORK",
+  "art": "s_taco",
+  "palette": [
+   "#ffe14d",
+   "#7a1f00",
+   "#1b998b"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s2-e-gallery",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THE THIN WALL GALLERY",
+  "headline": "Opening: Fog, in Oils",
+  "sub": "Wine, cheese, 40 shades of gray.",
+  "small": "FRI 6 PM · FREE",
+  "art": "star",
+  "palette": [
+   "#f4f1ea",
+   "#1a1a1a",
+   "#c0392b"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "s2-e-wave",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "LAND'S END LANES",
+  "headline": "Surf Film Night, Indoors",
+  "sub": "Watch waves. Stay dry. Be smug.",
+  "small": "WED 7:30 · $9",
+  "art": "s_surf",
+  "palette": [
+   "#00334e",
+   "#e8f6ff",
+   "#ffb703"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s2-e-skate",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "PIER 12 PARK",
+  "headline": "Kickflip Jam for Grown-Ups",
+  "sub": "Knee pads mandatory. Ego optional.",
+  "small": "SUN 1 PM · $8",
+  "art": "s_skate",
+  "palette": [
+   "#ff9f1c",
+   "#111",
+   "#2ec4b6"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s2-e-seals",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "FISHERMAN'S SHED",
+  "headline": "Sea Lion Sing-Along",
+  "sub": "Bring a bucket. Bark if you must.",
+  "small": "SAT 3 PM · DONATE",
+  "art": "s_sealion",
+  "palette": [
+   "#0f4c5c",
+   "#fdf0d5",
+   "#e36414"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s2-e-robotslam",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THE LOOSE BOLT",
+  "headline": "Robot Poetry Slam",
+  "sub": "Humans in the audience. For now.",
+  "small": "FRI 9 PM · $14",
+  "art": "s_robot",
+  "palette": [
+   "#10002b",
+   "#e0aaff",
+   "#ff9e00"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "s2-e-night",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "OLD STAMP ANNEX",
+  "headline": "Night Market on Wheels",
+  "sub": "Dumplings. Lanterns. Rolling stalls.",
+  "small": "FRI-SAT 6-11 PM",
+  "art": "bottle",
+  "palette": [
+   "#7b2cbf",
+   "#fff",
+   "#ffd60a"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s2-e-guitar",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THE LEANING BAR",
+  "headline": "Open Strings Night",
+  "sub": "Bring a guitar. Leave with a band.",
+  "small": "TUE 8 PM · FREE",
+  "art": "s_guitar",
+  "palette": [
+   "#e63946",
+   "#fff8f0",
+   "#f1faee"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s2-hero1",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "VANTA GLIDE",
+  "headline": "Silence, at 28 mph.",
+  "sub": "Electric bikes. Whisper-tuned.",
+  "small": "from $4,900",
+  "art": "bike",
+  "palette": [
+   "#0a0a0a",
+   "#f5f5f0",
+   "#c9a24a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "s2-hero2",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "MAISON BRUME",
+  "headline": "Eau de Ocean Beach",
+  "sub": "A fragrance for pale people.",
+  "small": "50 ml · $140",
+  "art": "perfume",
+  "palette": [
+   "#f1e4d3",
+   "#2b1b17",
+   "#a8453c"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "s2-hero3",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "NIMBUS-9",
+  "headline": "It folds your laundry. Judgmentally.",
+  "sub": "Home robotics, finally smug.",
+  "small": "pre-order $2,999",
+  "art": "s_robot",
+  "palette": [
+   "#12263a",
+   "#eaf2f8",
+   "#00c2a8"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-quote1",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "quote",
+  "brand": "CLEATS & SON BIKES",
+  "headline": "\"I sold my car. My calves have opinions now.\"",
+  "sub": "- Dana, 34, Outer Sunset",
+  "small": "Tune-ups from $60",
+  "art": "bike",
+  "palette": [
+   "#fbe9d0",
+   "#2a1608",
+   "#d95d39"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s2-quote2",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "quote",
+  "brand": "FOGLIFT PHYSIO",
+  "headline": "\"My knees forgave me. The hills did not.\"",
+  "sub": "- Marcus, 41, Twin Peaks-ish",
+  "small": "Book a bend",
+  "art": "hill",
+  "palette": [
+   "#e3f0ec",
+   "#12322b",
+   "#e07a1f"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s2-quote3",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "quote",
+  "brand": "EL TIGRE BURRITOS",
+  "headline": "\"I ate it in 2019. I am still full.\"",
+  "sub": "- Priya, 29, the Mission, mostly",
+  "small": "Super size · $13",
+  "art": "burrito",
+  "palette": [
+   "#fff3b0",
+   "#3b2300",
+   "#c1121f"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s2-photo1",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "SQUAWK",
+  "headline": "Seagull-proof sandwiches.",
+  "sub": "Wrapped in hope and tinfoil.",
+  "small": "$11 · pier-tested",
+  "art": "gull",
+  "palette": [
+   "#bde0fe",
+   "#0b2545",
+   "#ef233c"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-photo2",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "PEDAL PUDDING",
+  "headline": "Dessert for people who rode here.",
+  "sub": "Pudding cups, 400 calories earned.",
+  "small": "$6 · spoon included",
+  "art": "icecream",
+  "palette": [
+   "#ffc8dd",
+   "#3d0a2f",
+   "#7209b7"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s2-photo3",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "AVO-KADO",
+  "headline": "Toast $19. Avocado: legally mandatory.",
+  "sub": "Brunch, as a service.",
+  "small": "Sat-Sun · no wait*",
+  "art": "s_avocado",
+  "palette": [
+   "#d4e09b",
+   "#2a3a0a",
+   "#e76f51"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-photo4",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "FLIP SIDE WASH",
+  "headline": "Wash. Dry. Judge your sock choices.",
+  "sub": "Open 24 hours. Quarters only.",
+  "small": "Wash $4.50",
+  "art": "s_washer",
+  "palette": [
+   "#caf0f8",
+   "#03045e",
+   "#ff6b35"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s2-type1",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "LEFT LANE PARKING",
+  "headline": "$38 for an hour. The spot is imaginary.",
+  "sub": "",
+  "small": "Meter not included",
+  "art": "s_meter",
+  "palette": [
+   "#fcf6bd",
+   "#1a1a1a",
+   "#d00000"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s2-type2",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "MUNI WHO?",
+  "headline": "Your bus is 11 minutes away. Forever.",
+  "sub": "Ride a bike instead.",
+  "small": "Free to rethink",
+  "art": "bike",
+  "palette": [
+   "#ffffff",
+   "#0d1b2a",
+   "#ff3c38"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "s2-type3",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "FOG & SONS PLUMBING",
+  "headline": "Leaks! Floods! Damp, but legal.",
+  "sub": "Same-day. Same fog.",
+  "small": "555-0142",
+  "art": "cloud",
+  "palette": [
+   "#e8eddf",
+   "#242423",
+   "#1982c4"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "s2-min1",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "MOSS & MILK",
+  "headline": "Oat latte. Ironic oat. Real latte.",
+  "sub": "",
+  "small": "$8",
+  "art": "coffee",
+  "palette": [
+   "#f7f3e8",
+   "#2d2a26",
+   "#7f9172"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "s2-min2",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "BELLWETHER",
+  "headline": "Sold your car? Buy a bell.",
+  "sub": "",
+  "small": "$12 · loud",
+  "art": "bell",
+  "palette": [
+   "#111111",
+   "#f4f4f4",
+   "#ffd60a"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-min3",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "HILL HOUSE REALTY",
+  "headline": "Walk-up. Literally. All 142 steps.",
+  "sub": "",
+  "small": "Open house Sun",
+  "art": "s_victorian",
+  "palette": [
+   "#e9edc9",
+   "#283618",
+   "#bc6c25"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "s2-split1",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "split",
+  "brand": "CLAM & CO",
+  "headline": "Chowder in a bread bowl. Bread bowl in a hat.",
+  "sub": "Soup with commitment.",
+  "small": "$14",
+  "art": "bread",
+  "palette": [
+   "#fae1dd",
+   "#3d1c18",
+   "#1d7874"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "s2-split2",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "TWO WHEELS TRAIN",
+  "headline": "Learn to ride. Ages 4 to 74.",
+  "sub": "Lessons in a very flat lot.",
+  "small": "Sat mornings",
+  "art": "tandem",
+  "palette": [
+   "#caffbf",
+   "#0a2e0c",
+   "#ff6d00"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "s2-split3",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "SHEEPISH SELF STORAGE",
+  "headline": "Your stuff, but not your problem.",
+  "sub": "Climate controlled: foggy.",
+  "small": "$129/mo",
+  "art": "house",
+  "palette": [
+   "#ffe5b4",
+   "#3a1f00",
+   "#4361ee"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "w-vibe",
+  "family": "wide",
+  "kind": "service",
+  "layout": "type",
+  "brand": "VIBELY",
+  "headline": "We replaced your CRM with a vibe.",
+  "sub": "",
+  "small": "",
+  "art": "cloud",
+  "palette": [
+   "#111111",
+   "#f5f5f5",
+   "#ffd60a"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "w-lake",
+  "family": "wide",
+  "kind": "service",
+  "layout": "split",
+  "brand": "LIFEGUARD DB",
+  "headline": "Your data lake needs a lifeguard.",
+  "sub": "",
+  "small": "",
+  "art": "fish",
+  "palette": [
+   "#0077b6",
+   "#ffffff",
+   "#ffb703"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "w-ted",
+  "family": "wide",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "TED & TED LAW",
+  "headline": "Hurt? Don't wait. Fog is no excuse.",
+  "sub": "",
+  "small": "",
+  "art": "star",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "w-snooze",
+  "family": "wide",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "SNOOZE LABS",
+  "headline": "Cheaper than a month's rent. Also a bed.",
+  "sub": "",
+  "small": "",
+  "art": "bed",
+  "palette": [
+   "#0b132b",
+   "#f8f9fa",
+   "#5bc0be"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "w-burrito",
+  "family": "wide",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "EL GRANDE",
+  "headline": "Burrito the size of a baby. Hug it.",
+  "sub": "",
+  "small": "",
+  "art": "burrito",
+  "palette": [
+   "#c1121f",
+   "#fff1e6",
+   "#ffd166"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "w-psa",
+  "family": "wide",
+  "kind": "psa",
+  "layout": "split",
+  "brand": "CITY RIDE PSA",
+  "headline": "Hills aren't hard. Drivers are.",
+  "sub": "",
+  "small": "",
+  "art": "bike",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#e63946"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "w-overseer",
+  "family": "wide",
+  "kind": "service",
+  "layout": "type",
+  "brand": "OVERSEER LABS",
+  "headline": "Our AI manages your AI.",
+  "sub": "",
+  "small": "",
+  "art": "laptop",
+  "palette": [
+   "#14213d",
+   "#fdf6e3",
+   "#fca311"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "w-kombu",
+  "family": "wide",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "GUTSY BREW",
+  "headline": "Brewed slowly by someone who quit tech.",
+  "sub": "",
+  "small": "",
+  "art": "bottle",
+  "palette": [
+   "#cad2c5",
+   "#2f3e46",
+   "#bc4749"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "w-pivot",
+  "family": "wide",
+  "kind": "service",
+  "layout": "type",
+  "brand": "PIVOT PARTNERS",
+  "headline": "Pivot. Pivot. Pivot. We bill hourly.",
+  "sub": "",
+  "small": "",
+  "art": "rocket",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "w-quake",
+  "family": "wide",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "EARTHQUAKE & SON",
+  "headline": "Earthquake insurance? Ha.",
+  "sub": "",
+  "small": "",
+  "art": "house",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "w-nook",
+  "family": "wide",
+  "kind": "service",
+  "layout": "split",
+  "brand": "NOOK LIVING",
+  "headline": "Studio. $3,900. Walls extra.",
+  "sub": "",
+  "small": "",
+  "art": "key",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "w-drip",
+  "family": "wide",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "DRIPHOUSE",
+  "headline": "Drip coffee. $7. Please sit.",
+  "sub": "",
+  "small": "",
+  "art": "coffee",
+  "palette": [
+   "#005f73",
+   "#fefae0",
+   "#ee9b00"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "w2-photo1",
+  "family": "wide",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "EL GRANDE",
+  "headline": "Burrito: 3 lbs. Regrets: 0.",
+  "sub": "Foil-wrapped, bike-friendly.",
+  "small": "$14",
+  "art": "burrito",
+  "palette": [
+   "#ffe66d",
+   "#4a1000",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "w2-photo2",
+  "family": "wide",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "SOURDOUGH DEPT.",
+  "headline": "Born in a basement. Raised on fog.",
+  "sub": "Crust you can feel from the road.",
+  "small": "",
+  "art": "bread",
+  "palette": [
+   "#f2d7b6",
+   "#3a1f0a",
+   "#8c2f1b"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "w2-type1",
+  "family": "wide",
+  "kind": "service",
+  "layout": "type",
+  "brand": "HAZE.AI",
+  "headline": "AI for your AI's feelings.",
+  "sub": "",
+  "small": "Series Z",
+  "art": "s_robot",
+  "palette": [
+   "#0b132b",
+   "#f1faee",
+   "#5bc0be"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "w2-type2",
+  "family": "wide",
+  "kind": "service",
+  "layout": "type",
+  "brand": "CROW & CROW LAW",
+  "headline": "Hit by a scooter? Call us.",
+  "sub": "Personal injury, 24/7.",
+  "small": "555-0177",
+  "art": "scooter",
+  "palette": [
+   "#ffd60a",
+   "#111",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "w2-min1",
+  "family": "wide",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "MOTION OS",
+  "headline": "Synergy as a service.",
+  "sub": "",
+  "small": "",
+  "art": "gear",
+  "palette": [
+   "#f8f9fa",
+   "#212529",
+   "#ff6b35"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "w2-min2",
+  "family": "wide",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "NOT-A-STARTUP",
+  "headline": "We make blockchain for toast.",
+  "sub": "",
+  "small": "",
+  "art": "bread",
+  "palette": [
+   "#1a1a1a",
+   "#f5f5f5",
+   "#ffb703"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "w2-split1",
+  "family": "wide",
+  "kind": "service",
+  "layout": "split",
+  "brand": "HILLTOP LEASING",
+  "headline": "Your rent called. It went up.",
+  "sub": "Studios from $3,700.",
+  "small": "",
+  "art": "house",
+  "palette": [
+   "#caf0f8",
+   "#03045e",
+   "#ff5d8f"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "w2-split2",
+  "family": "wide",
+  "kind": "product",
+  "layout": "split",
+  "brand": "FOGBANK COFFEE",
+  "headline": "Dark roast. Darker weather.",
+  "sub": "Roasted loudly every morning.",
+  "small": "",
+  "art": "s_fogbank",
+  "palette": [
+   "#e5e5e5",
+   "#14213d",
+   "#fca311"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "w2-hero1",
+  "family": "wide",
+  "kind": "service",
+  "layout": "hero",
+  "brand": "CITY RIDE PSA",
+  "headline": "Look left. Look left again.",
+  "sub": "Bikes live here too.",
+  "small": "",
+  "art": "bike",
+  "palette": [
+   "#1b4332",
+   "#f1faee",
+   "#ffd166"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "w2-hero2",
+  "family": "wide",
+  "kind": "service",
+  "layout": "hero",
+  "brand": "CABLE & CO",
+  "headline": "Slowest commute. Best view.",
+  "sub": "Rides from $9. Ding included.",
+  "small": "",
+  "art": "s_cablecar",
+  "palette": [
+   "#fefae0",
+   "#3a0d0d",
+   "#bc4749"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "w2-quote1",
+  "family": "wide",
+  "kind": "product",
+  "layout": "quote",
+  "brand": "FOGGY SCOOPS",
+  "headline": "\"It melted. In July. I cried.\"",
+  "sub": "- Jess, 31, Richmond",
+  "small": "",
+  "art": "icecream",
+  "palette": [
+   "#fff1e6",
+   "#2b2d42",
+   "#ef233c"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "w2-quote2",
+  "family": "wide",
+  "kind": "service",
+  "layout": "quote",
+  "brand": "SEAWALL SELF-CARE",
+  "headline": "\"My landlord loved my yoga. Then my lease.\"",
+  "sub": "- Theo, 38, Dogpatch",
+  "small": "",
+  "art": "heart",
+  "palette": [
+   "#e2ece9",
+   "#1b3a4b",
+   "#ff7f51"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "fs-cat",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "LOST CAT",
+  "sub": "Answers to Kevin. Ignores everyone else. Reward: tacos.",
+  "small": "555-0142",
+  "art": "cat",
+  "palette": [
+   "#f6e58d",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-band",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "BAND TONIGHT",
+  "sub": "The Wet Socks. 9 PM. $5. Bring earplugs and earnings.",
+  "small": "555-0117",
+  "art": "note",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-room",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "ROOM $1,900",
+  "sub": "It's a closet. Has a door. Door is lovely.",
+  "small": "555-0188",
+  "art": "house",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs-bike",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "BIKE TUNE-UPS $40",
+  "sub": "I come to you. I judge your chain.",
+  "small": "555-0163",
+  "art": "chain",
+  "palette": [
+   "#dff0d8",
+   "#1d3a1d",
+   "#a94442"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-synth",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "LEARN SYNTH",
+  "sub": "Make weird noises. Annoy neighbors professionally.",
+  "small": "555-0194",
+  "art": "note",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-roomie",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "SEEKING ROOMMATE",
+  "sub": "No dairy. No lawyers. No VCs. Quiet cat OK.",
+  "small": "555-0129",
+  "art": "house",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-couch",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "FREE COUCH",
+  "sub": "You carry it. Four flights. It is heavy and emotional.",
+  "small": "555-0170",
+  "art": "bed",
+  "palette": [
+   "#f6e58d",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-barter",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "BARTER",
+  "sub": "Sourdough for debugging. Pickles for a ride to Oakland.",
+  "small": "555-0138",
+  "art": "bread",
+  "palette": [
+   "#dff0d8",
+   "#1d3a1d",
+   "#a94442"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-taichi",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "TAI CHI IN THE PARK",
+  "sub": "7 AM. Fog included. Bring a jacket and patience.",
+  "small": "555-0155",
+  "art": "cloud",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-dog",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "DOG WALKER",
+  "sub": "Your dog will meet more people than you.",
+  "small": "555-0176",
+  "art": "dog",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-scooter",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "FOUND: SCOOTER IN TREE",
+  "sub": "Still in tree. Call if it's yours. Bring a ladder.",
+  "small": "555-0111",
+  "art": "scooter",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs-bowl",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "SOUND BATH",
+  "sub": "Singing bowls. $40. Sit. Think about rent.",
+  "small": "555-0182",
+  "art": "bell",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-poem",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "OPEN MIC: POEMS ABOUT PARKING",
+  "sub": "Wed 8 PM. Sign up early. Feelings have no meter.",
+  "small": "555-0149",
+  "art": "note",
+  "palette": [
+   "#f6e58d",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-python",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "PYTHON FOR TODDLERS",
+  "sub": "Ages 2–5. Naptime included. Future founders welcome.",
+  "small": "555-0123",
+  "art": "laptop",
+  "palette": [
+   "#dff0d8",
+   "#1d3a1d",
+   "#a94442"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-parking",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "MISSING: PARKING SPOT",
+  "sub": "Last seen Tuesday. Answers to nothing. Reward: honor.",
+  "small": "555-0166",
+  "art": "key",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs-stoop",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "STOOP SALE",
+  "sub": "Sat 9–2. Ex's records, standing desk, one Roomba.",
+  "small": "555-0191",
+  "art": "star",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-t1",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "TENNIS BALL RETRIEVER WANTED",
+  "sub": "Tall, patient, owns a long arm.",
+  "small": "555-0101",
+  "art": "star",
+  "palette": [
+   "#f2efe6",
+   "#222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-t2",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "BIKE VALET FOR YOUR PARTY",
+  "sub": "We guard 40 bikes. We know nothing.",
+  "small": "555-0102",
+  "art": "lock",
+  "palette": [
+   "#fdf6e3",
+   "#1d1d1d",
+   "#1e6091"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-t3",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "FREE FOG. BRING A JAR.",
+  "sub": "Delivered fresh most mornings.",
+  "small": "555-0103",
+  "art": "s_fogbank",
+  "palette": [
+   "#eef3f6",
+   "#1f2d3a",
+   "#3a86ff"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-t4",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "SOURDOUGH SITTER",
+  "sub": "I feed your starter while you are away.",
+  "small": "555-0104",
+  "art": "bread",
+  "palette": [
+   "#faf0e1",
+   "#3b2300",
+   "#c1121f"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-t5",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "SKATE LESSONS, GENTLE",
+  "sub": "Ages 30+. Wrist guards on loan.",
+  "small": "555-0105",
+  "art": "s_skate",
+  "palette": [
+   "#f6f6f6",
+   "#111",
+   "#ff6600"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-t6",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "TAX HELP FOR FREELANCE DJs",
+  "sub": "Receipts are optional. Ours are not.",
+  "small": "555-0106",
+  "art": "note",
+  "palette": [
+   "#fff9db",
+   "#222",
+   "#6a040f"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-t7",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "LEARN TO ROLL A BURRITO",
+  "sub": "Saturdays. Bring your own beans.",
+  "small": "555-0107",
+  "art": "burrito",
+  "palette": [
+   "#f4ebd9",
+   "#2a1608",
+   "#2d6a4f"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-t8",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "FRIENDLY SEAGULL MEDIATION",
+  "sub": "Your fries. Their beak. Resolved.",
+  "small": "555-0108",
+  "art": "gull",
+  "palette": [
+   "#edf6f9",
+   "#14213d",
+   "#e63946"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-g1",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "THE DAMP BASEMENT",
+  "headline": "WET SOCKS",
+  "sub": "w/ Lint Trap + Hill Bound",
+  "small": "SAT 9PM · $7 · ALL AGES",
+  "art": "s_guitar",
+  "palette": [
+   "#ff6ec7",
+   "#111111",
+   "#ffffff"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-g2",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "FLIP SIDE WASH",
+  "headline": "CYCLE: SPIN",
+  "sub": "Laundromat show! Bring change",
+  "small": "FRI 8PM · $5",
+  "art": "s_washer",
+  "palette": [
+   "#f7ff00",
+   "#111111",
+   "#e0006f"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "fs2-g3",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "PIER 80 ANNEX",
+  "headline": "FOG HORN ORCHESTRA",
+  "sub": "14 horns, 1 lighthouse",
+  "small": "SUN 6PM · FREE",
+  "art": "bell",
+  "palette": [
+   "#7dff6a",
+   "#111111",
+   "#0066ff"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-g4",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "THE GREASE TRAP GARAGE",
+  "headline": "SAD HELMET",
+  "sub": "+ Kickstand + Chain Gang",
+  "small": "SAT 10PM · $8",
+  "art": "helmet",
+  "palette": [
+   "#ffb347",
+   "#111111",
+   "#7a0019"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "fs2-g5",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "NORTH BEACH LOFT",
+  "headline": "ZINE FAIR",
+  "sub": "50 tables. Staples provided.",
+  "small": "SUN 11-5 · FREE",
+  "art": "note",
+  "palette": [
+   "#8fd3ff",
+   "#111111",
+   "#ff3d00"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-g6",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "HIGH PEAK GARAGE",
+  "headline": "GARAGE SALE-ISH",
+  "sub": "Records, skates, one canoe",
+  "small": "SAT 8-2 · CASH",
+  "art": "s_skate",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#e6007a"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-g7",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "THE LOOSE BOLT",
+  "headline": "POETRY SLAM VS. ROBOTS",
+  "sub": "Humans: 9. Robots: 9.",
+  "small": "THU 9PM · $6",
+  "art": "s_robot",
+  "palette": [
+   "#00ffd5",
+   "#111111",
+   "#7b2cbf"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-g8",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "CABLE STREET BAR",
+  "headline": "GRIP & DING",
+  "sub": "Two-piece. Eight bells.",
+  "small": "FRI 9PM · $10",
+  "art": "s_cablecar",
+  "palette": [
+   "#ff6ec7",
+   "#1a0033",
+   "#ffee00"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-g9",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "WAREHOUSE 17B",
+  "headline": "DEEP FOG RAVE",
+  "sub": "Bass. Mist. Zero sunlight.",
+  "small": "SAT 11PM · $15 · 21+",
+  "art": "s_fogbank",
+  "palette": [
+   "#c8ff00",
+   "#111111",
+   "#ff006e"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "fs2-g10",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "SEAL ROCK ROOM",
+  "headline": "THE SEA LIONS",
+  "sub": "+ Barnacle Boys",
+  "small": "SAT 8PM · $9",
+  "art": "s_sealion",
+  "palette": [
+   "#f7ff00",
+   "#111111",
+   "#0066ff"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-g11",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "AVOCADO ROOM",
+  "headline": "TOAST MASTERS",
+  "sub": "Brunch punk. 11 AM sharp.",
+  "small": "SUN 11AM · $6",
+  "art": "s_avocado",
+  "palette": [
+   "#7dff6a",
+   "#1b3a00",
+   "#ff3d00"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-g12",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "THE LEANING BAR",
+  "headline": "OPEN MIC: ANY INSTRUMENT",
+  "sub": "Kazoo, cello, kettle",
+  "small": "TUE 8PM · FREE",
+  "art": "s_guitar",
+  "palette": [
+   "#ffb347",
+   "#111111",
+   "#ffffff"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-g13",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "THE SPOKE SHED",
+  "headline": "CRANKSET",
+  "sub": "+ Dropouts + Chainring",
+  "small": "FRI 9PM · $7 · ALL AGES",
+  "art": "chain",
+  "palette": [
+   "#8fd3ff",
+   "#111111",
+   "#d90429"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "fs2-g14",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "SUNSET TOOL LIBRARY",
+  "headline": "BLOCK PARTY (LAWN CHAIRS)",
+  "sub": "Potluck, one speaker, no sausage jokes",
+  "small": "SAT 2PM · FREE",
+  "art": "s_taco",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#ff3d00"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l1",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "BISCUIT",
+  "headline": "LOST DOG",
+  "sub": "Small, brown, thinks he is a mountain lion.",
+  "small": "REWARD: BACON",
+  "art": "dog",
+  "palette": [
+   "#fff200",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l2",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "MY BIKE",
+  "headline": "STOLEN",
+  "sub": "Blue, many scratches, loved. Please bring back the seat.",
+  "small": "REWARD: A HUG",
+  "art": "bike",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l3",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "MY MOTIVATION",
+  "headline": "MISSING",
+  "sub": "Last seen Monday at 9 AM. Answers to \"do it\".",
+  "small": "555-0111",
+  "art": "rocket",
+  "palette": [
+   "#ffe6a7",
+   "#3a0d0d",
+   "#bb3e03"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-l4",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "MR. PEBBLES",
+  "headline": "HAVE YOU SEEN",
+  "sub": "Orange cat. Enormous. Eats foil. Not stolen, just huge.",
+  "small": "555-0112",
+  "art": "cat",
+  "palette": [
+   "#fefae0",
+   "#111111",
+   "#bc4749"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-l5",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "A SINGLE SOCK",
+  "headline": "FOUND",
+  "sub": "Purple, left foot, found on Hyde. Claim with description.",
+  "small": "555-0113",
+  "art": "sock",
+  "palette": [
+   "#e0fbfc",
+   "#111111",
+   "#3d5a80"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l6",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "MY HOT TAKE",
+  "headline": "LOST",
+  "sub": "Last seen in a comments section. Will not be missed.",
+  "small": "REWARD: NONE",
+  "art": "star",
+  "palette": [
+   "#ffd6e0",
+   "#111111",
+   "#c9184a"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-l7",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "MY PATIENCE",
+  "headline": "LOST",
+  "sub": "Somewhere on the 38 Muni line. Do not approach.",
+  "small": "555-0114",
+  "art": "bell",
+  "palette": [
+   "#caf0f8",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l8",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "HELMET",
+  "headline": "FOUND",
+  "sub": "Red, fits a large head with big ideas. Describe it.",
+  "small": "555-0115",
+  "art": "helmet",
+  "palette": [
+   "#ccff66",
+   "#111111",
+   "#c1121f"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l9",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "THE WIND",
+  "headline": "MISSING",
+  "sub": "It was here yesterday. My hat followed it.",
+  "small": "REWARD: THE HAT",
+  "art": "cloud",
+  "palette": [
+   "#fff3b0",
+   "#111111",
+   "#1d3557"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-l10",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "GULL ROGER",
+  "headline": "HAVE YOU SEEN",
+  "sub": "Seagull, one eye, stole my sandwich. Come back, no hard feelings.",
+  "small": "555-0116",
+  "art": "gull",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#ff6b35"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-l11",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "MY KEYS",
+  "headline": "LOST",
+  "sub": "On a bike key ring. Possibly in a burrito.",
+  "small": "REWARD: $20",
+  "art": "key",
+  "palette": [
+   "#fbc4ab",
+   "#111111",
+   "#9d0208"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "fs2-l12",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "lost",
+  "brand": "SKATEBOARD",
+  "headline": "FOUND",
+  "sub": "Found halfway down a steep hill, going quite fast. No rider.",
+  "small": "555-0117",
+  "art": "s_skate",
+  "palette": [
+   "#b8f2e6",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "fs2-n1",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "Concerned Neighbor, Apt 3",
+  "headline": "NOTICE TO NEIGHBORS",
+  "sub": "The recycling bin is not a conversation. Please stop leaving notes.",
+  "small": "Signed, Management-ish",
+  "art": "star",
+  "palette": [
+   "#fdfdfd",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n2",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Landlord Mike",
+  "headline": "RENT UPDATE",
+  "sub": "Rent is going up. The window is staying the same. Thanks for understanding.",
+  "small": "Effective Monday",
+  "art": "house",
+  "palette": [
+   "#fffbe6",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n3",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "A Quiet Roommate",
+  "headline": "ROOMMATE WANTED",
+  "sub": "Must tolerate loud cello, quiet fog, and one strong opinion about dishes.",
+  "small": "$1,950 · 555-0121",
+  "art": "bed",
+  "palette": [
+   "#f3f3ef",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n4",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Dog Walker Dee",
+  "headline": "DOG WALKING",
+  "sub": "Hills included. Your dog will return exhausted and unionized.",
+  "small": "$25/walk · 555-0122",
+  "art": "dog",
+  "palette": [
+   "#eef6ee",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n5",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Guitar Guy",
+  "headline": "GUITAR LESSONS",
+  "sub": "Three chords, one fog horn, no judgment. Ages 8 and up.",
+  "small": "$30/hr · 555-0123",
+  "art": "s_guitar",
+  "palette": [
+   "#fff8e8",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n6",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Garage Gary",
+  "headline": "BIKE REPAIR IN GARAGE",
+  "sub": "Flats, chains, feelings. Knock twice. Dog is friendly, cat is not.",
+  "small": "Open evenings",
+  "art": "tire",
+  "palette": [
+   "#f4f4f0",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n7",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "Block Committee (Informal)",
+  "headline": "PARKING SPOT MEETING",
+  "sub": "Whose spot is the blue one? Pizza served. Bring documents. Calm voices.",
+  "small": "Thu 7 PM, garage",
+  "art": "s_meter",
+  "palette": [
+   "#fdfdf5",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n8",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "The Person Upstairs",
+  "headline": "DEAR DOWNSTAIRS",
+  "sub": "I am sorry. The cat is, in fact, a cat. It is leaping. It is fine.",
+  "small": "Unit 4",
+  "art": "cat",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n9",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Tutor Tom",
+  "headline": "MATH TUTORING",
+  "sub": "Fractions made scary then un-scary. Also taught: bike math (gears).",
+  "small": "$40/hr · 555-0124",
+  "art": "gear",
+  "palette": [
+   "#f7f7f2",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n10",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "Laundry Room Committee",
+  "headline": "PLEASE REMOVE YOUR SOCKS",
+  "sub": "The dryer is not a lost-and-found. Socks are not currency.",
+  "small": "Thank you",
+  "art": "sock",
+  "palette": [
+   "#fffef0",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n11",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Victorian Flat, Unit B",
+  "headline": "ROOM FOR RENT $$$",
+  "sub": "Sunny, if you stand on a chair at noon. Sharing a bath with a ghost.",
+  "small": "$2,400 · 555-0125",
+  "art": "s_victorian",
+  "palette": [
+   "#fbfbf5",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n12",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "Your Neighbor Pat",
+  "headline": "PLEASE LOCK YOUR BIKE",
+  "sub": "I have now seen three bikes wander off. It is not a vibe. Chain it.",
+  "small": "- Pat",
+  "art": "lock",
+  "palette": [
+   "#f8f8f0",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n13",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "Garden Folk (Unofficial)",
+  "headline": "COMPOST HAPPENS",
+  "sub": "Banana peels in the green bin. Not the blue one. We are watching kindly.",
+  "small": "Thank you",
+  "art": "plant",
+  "palette": [
+   "#f5fbf0",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "fs2-n14",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "notice",
+  "brand": "Mia, 2nd Floor",
+  "headline": "LOST YOUR KEYS?",
+  "sub": "I found a key ring on the stairs. Describe it. Also, hello.",
+  "small": "555-0126",
+  "art": "key",
+  "palette": [
+   "#fff9ec",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ }
+]

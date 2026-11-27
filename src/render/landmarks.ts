@@ -31,11 +31,11 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import type { Scene } from '@babylonjs/core/scene'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
-import { MeshBuilder, capPolygon } from './buildings.ts'
+import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { fogIsOff } from './photo.ts'
-import { SHADOW_Y, shadowHull, shadowMaterial, shadowOffset } from './shadows.ts'
+import { penumbra, SHADOW_Y, shadowHull, shadowMaterial, shadowOffset, softHull, softShadowMaterial } from './shadows.ts'
 /** a landmark's shadow from its own vertices over this height (m), from at most this many of them */
 const LM_SHADOW_MIN_H = 1.5, LM_SHADOW_PTS = 6000
 /*
@@ -1625,6 +1625,7 @@ export class Landmarks {
        * the deck the rider is on. A bridge over water casts its shadow on the water, which we do not draw.
        */
       const shadows = new MeshBuilder()
+      const skirts = new MeshBuilder()
       // …and nor does one standing on piles over the water (`deckAbove`): its shadow draped on the sea bed showed
       // up through the water as a dark box round every pier (appearance audit, 2026-10-02: Hyde Street Pier,
       // the Ferry Building's floats)
@@ -1651,8 +1652,10 @@ export class Landmarks {
         // (…only when few: hundreds of overlapping hulls, draped apart, multiply to black — the Colonne Vendôme's beam; and also when the
         //  model reaches far past its footprint, LM_SHADOW_SPREAD × its area — the Concorde, fitted to the obelisk's base)
         const fa = area(fromFoot)
-        if (fromModel.length && fromModel.length <= LM_SHADOW_STACK_MAX && (unionArea(fromModel) < fa || area(shadowHull(fromModel.flat(), 0, off)) > LM_SHADOW_SPREAD * fa)) for (const r of fromModel) capPolygon(shadows, r, SHADOW_Y, [0.85, 0, 0], 0, 1)
-        else capPolygon(shadows, fromFoot, SHADOW_Y, [0.85, 0, 0], 0, 1)
+        // (soft-edged, one penumbra for the whole model: the width its tallest point's shadow edge would get)
+        const pw = penumbra(mh * Math.hypot(off.x, off.z) * 0.6)
+        if (fromModel.length && fromModel.length <= LM_SHADOW_STACK_MAX && (unionArea(fromModel) < fa || area(shadowHull(fromModel.flat(), 0, off)) > LM_SHADOW_SPREAD * fa)) for (const r of fromModel) softHull(shadows, skirts, r, pw, SHADOW_Y)
+        else softHull(shadows, skirts, fromFoot, pw, SHADOW_Y)
       }
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
@@ -1666,6 +1669,17 @@ export class Landmarks {
         sm.renderingGroupId = 3
         sm.isPickable = false
         shed(sm)
+      }
+      if (skirts.triangles > 0) {
+        const km = new Mesh(`landmark:shadow:soft:${e.name}`, this.scene)
+        this.placing?.meshes.push(km)
+        bisectLong(skirts, LM_SHADOW_EDGE)
+        this.terrain.drape(skirts.positions)
+        skirts.toVertexData().applyToMesh(km)
+        km.material = softShadowMaterial(this.scene)
+        km.renderingGroupId = 3
+        km.isPickable = false
+        shed(km)
       }
       shed(m)
     } else if (e.file) {

@@ -165,6 +165,129 @@ export function strut(out: MeshBuilder, a: [number, number, number], b: [number,
   out.quad([P(b, -1, -1), P(b, 1, -1), P(b, 1, 1), P(b, -1, 1)], [t[0], t[1], t[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
 }
 
+/**
+ * Where a street lamp's light is, in the model's own frame (the lamp centre, metres): a lamp model registers itself
+ * here (`LAMP_LIGHTS.set(parisLamp, [[0, 7.3, 0]])`) and the city's placer, finding it, lays the pool of light on the
+ * ground under each head after dark (render/lamp-glow.ts). `r` overrides the pool's radius (default 0.7 × the height).
+ */
+export const LAMP_LIGHTS = new Map<(o: MeshBuilder) => void, { at: [number, number, number]; r?: number; warm?: number }[]>()
+
+/** a vertex straight into a builder, with its own normal (for the smooth-shaded primitives below) */
+function vtx(out: MeshBuilder, p: V3, n: V3, colour: Rgb, tag: number): number {
+  const i = out.positions.length / 3
+  const l = Math.hypot(n[0], n[1], n[2]) || 1
+  out.positions.push(p[0], p[1], p[2])
+  out.normals.push(n[0] / l, n[1] / l, n[2] / l)
+  out.uvs.push(0, 0)
+  out.colors.push(colour[0], colour[1], colour[2], tag)
+  return i
+}
+/** a triangle of existing vertices, wound to face the mean of their normals (MeshBuilder.quad's convention) */
+function tri(out: MeshBuilder, a: number, b: number, c: number): void {
+  const P = out.positions, N = out.normals
+  const ax = P[b * 3] - P[a * 3], ay = P[b * 3 + 1] - P[a * 3 + 1], az = P[b * 3 + 2] - P[a * 3 + 2]
+  const bx = P[c * 3] - P[a * 3], by = P[c * 3 + 1] - P[a * 3 + 1], bz = P[c * 3 + 2] - P[a * 3 + 2]
+  const nx = N[a * 3] + N[b * 3] + N[c * 3], ny = N[a * 3 + 1] + N[b * 3 + 1] + N[c * 3 + 1], nz = N[a * 3 + 2] + N[b * 3 + 2] + N[c * 3 + 2]
+  const facing = (ay * bz - az * by) * nx + (az * bx - ax * bz) * ny + (ax * by - ay * bx) * nz
+  if (facing > 0) out.indices.push(a, c, b)
+  else out.indices.push(a, b, c)
+}
+type V3 = [number, number, number]
+
+/**
+ * A SMOOTH-SHADED solid of revolution about the vertical through (cx, cz): `profile` is [radius, y] from the bottom up,
+ * each ring of `sides` vertices sharing one normal per vertex, so an eight-sided column shades round, as cast iron does,
+ * for the triangles of a faceted prism. A step in the profile (two points at one y) makes a crisp ledge — a plinth's top,
+ * a collar. A radius of 0 closes the end to a point; `capTop`/`capBottom` close a flat end. `phase` turns the first vertex
+ * off +z (π/4 on four sides squares a lantern to the axes); `hard` gives each side its own normal (a faceted lantern pane).
+ */
+export function lathe(out: MeshBuilder, cx: number, cz: number, profile: [number, number][], sides: number, colour: Rgb,
+                      tag = FIXED, o: { phase?: number; capTop?: boolean; capBottom?: boolean; hard?: boolean } = {}): void {
+  const ph = o.phase ?? 0
+  const ang = (j: number): number => (j / sides) * Math.PI * 2 + ph
+  // per profile segment, its slope normal (dr/dy), averaged at shared points unless the step is a ledge
+  const segN = (k: number): [number, number] => {
+    const [r0, y0] = profile[k], [r1, y1] = profile[k + 1]
+    const dy = y1 - y0, dr = r1 - r0, l = Math.hypot(dy, dr) || 1
+    return [dy / l, -dr / l]                      // (radial, up)
+  }
+  for (let k = 0; k < profile.length - 1; k++) {
+    const [r0, y0] = profile[k], [r1, y1] = profile[k + 1]
+    if (r0 < 1e-5 && r1 < 1e-5) continue
+    // smooth across the joint when the neighbouring segment turns gently (< ~40°), crisp otherwise
+    const here = segN(k)
+    const blend = (j: number): [number, number] => {
+      if (j < 0 || j >= profile.length - 1) return here
+      const t = segN(j)
+      return here[0] * t[0] + here[1] * t[1] > 0.76 ? [(here[0] + t[0]) / 2, (here[1] + t[1]) / 2] : here
+    }
+    const nb = blend(k - 1), nt = blend(k + 1)
+    if (o.hard) {
+      for (let j = 0; j < sides; j++) {
+        const am = (ang(j) + ang(j + 1)) / 2
+        const n: V3 = [Math.sin(am) * here[0], here[1], Math.cos(am) * here[0]]
+        const q = [[r0, y0, j], [r0, y0, j + 1], [r1, y1, j + 1], [r1, y1, j]].map(([r, y, jj]) => vtx(out, [cx + Math.sin(ang(jj)) * r, y, cz + Math.cos(ang(jj)) * r], n, colour, tag))
+        tri(out, q[0], q[1], q[2]); tri(out, q[0], q[2], q[3])
+      }
+      continue
+    }
+    const bot: number[] = [], top: number[] = []
+    for (let j = 0; j < sides; j++) {
+      const s = Math.sin(ang(j)), c = Math.cos(ang(j))
+      bot.push(vtx(out, [cx + s * r0, y0, cz + c * r0], [s * nb[0], nb[1], c * nb[0]], colour, tag))
+      top.push(vtx(out, [cx + s * r1, y1, cz + c * r1], [s * nt[0], nt[1], c * nt[0]], colour, tag))
+    }
+    for (let j = 0; j < sides; j++) {
+      const j1 = (j + 1) % sides
+      if (r0 > 1e-5) tri(out, bot[j], bot[j1], top[j1])
+      if (r1 > 1e-5) tri(out, bot[j], top[j1], top[j])
+    }
+  }
+  const cap = (r: number, y: number, up: number): void => {
+    if (r < 1e-5) return
+    const c = vtx(out, [cx, y, cz], [0, up, 0], colour, tag)
+    const ring: number[] = []
+    for (let j = 0; j < sides; j++) ring.push(vtx(out, [cx + Math.sin(ang(j)) * r, y, cz + Math.cos(ang(j)) * r], [0, up, 0], colour, tag))
+    for (let j = 0; j < sides; j++) tri(out, c, ring[j], ring[(j + 1) % sides])
+  }
+  if (o.capTop) cap(profile[profile.length - 1][0], profile[profile.length - 1][1], 1)
+  if (o.capBottom) cap(profile[0][0], profile[0][1], -1)
+}
+
+/**
+ * A SMOOTH round tube along a polyline — a crook arm, a scroll, a mast arm — `sides` round (5–6 is plenty for a thin arm),
+ * the radius per point (taper) or one for all. Rings are turned by parallel transport, so a curl does not twist.
+ */
+export function tube(out: MeshBuilder, path: V3[], r: number | number[], sides: number, colour: Rgb, tag = FIXED): void {
+  if (path.length < 2) return
+  const rad = (i: number): number => (typeof r === 'number' ? r : r[Math.min(i, r.length - 1)])
+  const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
+  const norm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l] }
+  const cross = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
+  const tan = path.map((_, i) => norm(sub(path[Math.min(path.length - 1, i + 1)], path[Math.max(0, i - 1)])))
+  let u = norm(cross(tan[0], Math.abs(tan[0][1]) > 0.9 ? [1, 0, 0] : [0, 1, 0]))
+  let prev: number[] | null = null
+  for (let i = 0; i < path.length; i++) {
+    // carry the frame along: project the last side vector off the new tangent
+    const t = tan[i]
+    const d = u[0] * t[0] + u[1] * t[1] + u[2] * t[2]
+    u = norm([u[0] - t[0] * d, u[1] - t[1] * d, u[2] - t[2] * d])
+    const v = cross(t, u)
+    const ring: number[] = []
+    for (let j = 0; j < sides; j++) {
+      const a = (j / sides) * Math.PI * 2
+      const n: V3 = [u[0] * Math.cos(a) + v[0] * Math.sin(a), u[1] * Math.cos(a) + v[1] * Math.sin(a), u[2] * Math.cos(a) + v[2] * Math.sin(a)]
+      const R = rad(i)
+      ring.push(vtx(out, [path[i][0] + n[0] * R, path[i][1] + n[1] * R, path[i][2] + n[2] * R], n, colour, tag))
+    }
+    if (prev) for (let j = 0; j < sides; j++) {
+      const j1 = (j + 1) % sides
+      tri(out, prev[j], prev[j1], ring[j1]); tri(out, prev[j], ring[j1], ring[j])
+    }
+    prev = ring
+  }
+}
+
 /** A box with its top face inset — a car roof, a bus front, anything that should not look like a brick. */
 export function wedge(out: MeshBuilder, cx: number, cy: number, cz: number,
                       hx: number, hy: number, hz: number, inset: number, colour: Rgb, tag = BODY): void {
@@ -575,6 +698,8 @@ export function lampPost(out: MeshBuilder): void {
   box(out, 0, 4.45, 0.28, 0.05, 0.05, 0.32, iron, FIXED)
   box(out, 0, 4.36, 0.58, 0.17, 0.10, 0.17, [1.0, 0.93, 0.72], EMIT)
 }
+LAMP_LIGHTS.set(lampPost, [{ at: [0, 4.3, 0.58] }])
+LAMP_LIGHTS.set(wallLamp, [{ at: [0, -0.34, 0.9] }])
 
 /**
  * A traffic light: a post, a head with three lamps, and a hood over each.

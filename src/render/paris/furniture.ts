@@ -9,68 +9,123 @@
  * lamp loop's slots local +x points AWAY from the road, over the pavement, so a console arm that should hang over the
  * kerb reaches to −x; the bench is long in x and faces +z, which its placer turns toward the road.
  */
+import { affiche, AFFICHE_LIFT } from '../affiches.ts'
+import { topiaryBall } from '../topiary.ts'
 import type { MeshBuilder } from '../buildings.ts'
-import { box, EMIT, FIXED, member, prism, slab, strut, type Rgb } from '../models.ts'
+import { box, EMIT, FIXED, LAMP_LIGHTS, lathe, member, prism, slab, strut, tube, type Rgb } from '../models.ts'
 
 /** the dark green-black the city paints its iron ("vert wagon") */
 const IRON: Rgb = [0.1, 0.14, 0.12]
 const PARIS_GREEN: Rgb = [0.16, 0.27, 0.21]
 const ANTHRACITE: Rgb = [0.2, 0.21, 0.22]
-const GLOW: Rgb = [1.0, 0.92, 0.7]
 const WHITE: Rgb = [0.94, 0.94, 0.92]
 
 const hash = (seed: number, k: number): number => ((Math.imul((seed ^ Math.imul(k, 0x9e3779b1)) >>> 0, 0x85ebca6b) >>> 0) % 1000) / 1000
 
 /*
- * THE CANDELABRA (owner, 2026-10-30: lamp posts are "a key part of the city's look"). The old model was a plain post
- * with a side arm, a modern streetlight. Haussmann's is a cast-iron column: an octagonal plinth, the swell of the
- * base tapering into the shaft, a collar, and the square Paris lantern on top — glass flaring out under a pyramidal
- * hat with its finial. About eight metres. One stands every 22–31 m, so the shaft is six-sided and the stacked
- * pieces have no caps: ~85 quads.
+ * THE CANDELABRA (owner, 2026-10-30: lamp posts are "a key part of the city's look"). Haussmann's is a cast-iron
+ * column: an octagonal plinth, the swell of the base tapering into a fluted shaft, collars, a capital, and the Paris
+ * lantern — glass widening upward inside four corner mullions, a flared brim, a pyramidal hat and a finial. Built
+ * with lathe/tube (smooth-shaded, so eight sides read round); every figure below is tunable.
  */
-function column(out: MeshBuilder, top: number): void {
-  prism(out, 0, 0, 0, 0.12, 0.34, 8, IRON, FIXED, 0.34, true)
-  prism(out, 0, 0, 0.12, 0.55, 0.27, 8, IRON, FIXED, 0.27, false)
-  prism(out, 0, 0, 0.55, 0.78, 0.3, 8, IRON, FIXED, 0.2, false)
-  prism(out, 0, 0, 0.78, 1.45, 0.2, 8, IRON, FIXED, 0.11, false)
-  prism(out, 0, 0, 1.45, 1.57, 0.14, 8, IRON, FIXED, 0.14, false)
-  prism(out, 0, 0, 1.57, top - 0.32, 0.1, 6, IRON, FIXED, 0.07, false)
-  prism(out, 0, 0, top - 0.32, top - 0.2, 0.12, 6, IRON, FIXED, 0.12, false)
-  prism(out, 0, 0, top - 0.2, top, 0.065, 6, IRON, FIXED, 0.065, false)
+const IRON_G: Rgb = [0.12, 0.165, 0.14]
+const GLASS: Rgb = [0.95, 0.88, 0.72]
+/** lantern dimensions at scale 1 (metres): glass height, corner radius at the bottom / top, brim, hat, finial */
+const LN = { base: 0.07, glass: 0.58, r0: 0.145, r1: 0.215, brimR: 0.29, brimH: 0.06, hat: 0.2, fin: 0.14, mull: 0.011 }
+/** lantern's overall height at scale 1 */
+const LN_H = LN.base + LN.glass + LN.brimH + LN.hat + LN.fin
+const COL = { top: 6.75, shaftR0: 0.085, shaftR1: 0.058 }
+
+/** the Paris lantern, base plate at y; `full` false drops the corner mullions (distant / hanging lanterns) */
+function lanternParis(out: MeshBuilder, x: number, y: number, z: number, scale = 1, full = true): void {
+  const s = scale, q = Math.PI / 4
+  const yb = y + LN.base * s, yg = yb + LN.glass * s, yh = yg + LN.brimH * s, yt = yh + LN.hat * s
+  lathe(out, x, z, [[0.1 * s, y], [LN.r0 * s * 1.15, y + 0.02 * s], [LN.r0 * s * 1.15, yb]], 4, IRON_G, FIXED, { phase: q, capBottom: full })
+  lathe(out, x, z, [[LN.r0 * s, yb], [LN.r1 * s, yg]], 4, GLASS, EMIT, { phase: q, hard: true })
+  lathe(out, x, z, [[LN.r1 * s * 1.05, yg], [LN.brimR * s, yg + 0.02 * s], [LN.brimR * s, yh]], 4, IRON_G, FIXED, { phase: q })
+  lathe(out, x, z, [[LN.brimR * s * 0.88, yh], [0.045 * s, yt]], 4, IRON_G, FIXED, { phase: q })
+  lathe(out, x, z, full ? [[0.05 * s, yt], [0.028 * s, yt + 0.03 * s], [0.04 * s, yt + 0.07 * s], [0.0, yt + LN.fin * s]] : [[0.04 * s, yt], [0.0, yt + LN.fin * s]], 3, IRON_G, FIXED)
+  if (full) for (let k = 0; k < 4; k++) {
+    const a = q + k * Math.PI / 2, sn = Math.sin(a), cs = Math.cos(a)
+    tube(out, [[x + sn * LN.r0 * s, yb, z + cs * LN.r0 * s], [x + sn * LN.r1 * s, yg, z + cs * LN.r1 * s]], LN.mull * 1.6 * s, 3, IRON_G)
+  }
 }
 
-/** the Paris lantern, its base plate at y: square glass flaring upward, the hat's brim, the hat, the finial */
-function lantern(out: MeshBuilder, x: number, y: number, z: number, s = 1): void {
-  const q = Math.PI / 4
-  prism(out, x, z, y, y + 0.06 * s, 0.2 * s, 4, IRON, FIXED, 0.2 * s, true, q)
-  prism(out, x, z, y + 0.06 * s, y + 0.7 * s, 0.17 * s, 4, GLOW, EMIT, 0.25 * s, false, q)
-  prism(out, x, z, y + 0.7 * s, y + 0.78 * s, 0.31 * s, 4, IRON, FIXED, 0.31 * s, false, q)
-  prism(out, x, z, y + 0.78 * s, y + 1.06 * s, 0.31 * s, 4, IRON, FIXED, 0.06 * s, false, q)
-  prism(out, x, z, y + 1.06 * s, y + 1.22 * s, 0.035 * s, 4, IRON, FIXED, 0, false, q)
+/** the cast-iron column from the pavement to the lantern's seat at `top` */
+function column(out: MeshBuilder, top: number): void {
+  const R0 = COL.shaftR0, R1 = COL.shaftR1
+  // plinth, swelling bulb, and the taper into the shaft (eight sides: it is the part at eye height)
+  lathe(out, 0, 0, [
+    [0.33, 0], [0.33, 0.12], [0.25, 0.16], [0.25, 0.32],      // octagonal plinth, its moulded top
+    [0.2, 0.4], [0.23, 0.62], [0.1, 1.2],                     // the bulb and its taper
+    [0.13, 1.3],                                               // base collar
+  ], 8, IRON_G, FIXED)
+  // the fluted-look shaft with its mid-height collar (six sides, smooth: reads round beyond a few metres)
+  lathe(out, 0, 0, [[R0, 1.3], [R0 * 0.92, 3.4], [0.115, 3.4], [0.115, 3.5], [R1, 3.58], [R1 * 0.85, top - 0.5]], 6, IRON_G, FIXED)
+  // capital: ring, neck, swell, seat
+  lathe(out, 0, 0, [[R1 * 0.85, top - 0.5], [0.1, top - 0.46], [0.1, top - 0.4], [0.07, top - 0.34], [0.12, top - 0.2], [0.12, top - 0.1], [0.17, top - 0.1], [0.17, top]], 6, IRON_G, FIXED)
 }
 
 /** the boulevard candelabra with its lantern on top */
 export function parisLamp(out: MeshBuilder): void {
-  column(out, 6.9)
-  lantern(out, 0, 6.9, 0)
+  column(out, COL.top)
+  lanternParis(out, 0, COL.top, 0, 1)
 }
+LAMP_LIGHTS.set(parisLamp, [{ at: [0, COL.top + 0.4, 0] }])
+
+/**
+ * The same lamp with flyers taped round its shaft at eye height — a lost cat, a guitar teacher (owner, 2026-11-27:
+ * "work on the flyers"). A5 sheets: a letter-size one would stand off the 17 cm shaft like a card. The placer swaps it
+ * in for one lamp in TAPED_EVERY.
+ */
+export const TAPED = { every: 4, hw: 0.074, hh: 0.1, y: 1.55 }
+export function parisLampTaped(out: MeshBuilder): void {
+  parisLamp(out)
+  for (let i = 0; i < 2; i++) {
+    const a = 0.9 + i * 2.6, r = COL.shaftR0 + 0.008
+    affiche(out, 'flyer', Math.sin(a) * r, TAPED.y + i * 0.24, Math.cos(a) * r, Math.sin(a), Math.cos(a), TAPED.hw, TAPED.hh, 11 + i, false).tilt = i ? -0.06 : 0.09
+  }
+}
+LAMP_LIGHTS.set(parisLampTaped, [{ at: [0, COL.top + 0.4, 0] }])
 
 /**
  * The avenue's candelabra: the same column, a lantern on top and two crook arms, a lantern hanging from each — the
  * Rivoli pattern, where the pavement is wide enough that a single top lantern leaves the kerb dark.
  */
 export function parisLampConsole(out: MeshBuilder): void {
-  column(out, 7.1)
-  lantern(out, 0, 7.1, 0, 0.85)
+  const top = 7.1, hs = 0.8
+  column(out, top)
+  lanternParis(out, 0, top, 0, 0.85)
   for (const s of [-1, 1]) {
-    strut(out, [0, 6.6, 0], [s * 0.55, 7.0, 0], 0.05, 0.05, IRON)
-    strut(out, [s * 0.55, 7.0, 0], [s * 1.15, 7.05, 0], 0.045, 0.045, IRON)
-    strut(out, [s * 1.15, 7.05, 0], [s * 1.4, 6.85, 0], 0.04, 0.04, IRON)
-    // (a scroll under the arm, the bracket's curl)
-    strut(out, [s * 0.2, 6.3, 0], [s * 0.7, 6.9, 0], 0.03, 0.03, IRON)
-    lantern(out, s * 1.4, 5.65, 0, 0.9)
+    // swan neck: up out of the shaft, over, and down onto the lantern's hook
+    const hang = top - 1.75, hy = hang + LN_H * hs + 0.03
+    tube(out, [[0, top - 1.2, 0], [s * 0.4, top - 0.9, 0], [s * 0.95, top - 0.72, 0], [s * 1.25, top - 0.95, 0], [s * 1.3, hy, 0]],
+      [0.06, 0.045, 0.038, 0.034, 0.025], 5, IRON_G)
+    // the scroll under the arm
+    tube(out, [[s * 0.1, top - 1.65, 0], [s * 0.45, top - 1.4, 0], [s * 0.62, top - 1.05, 0], [s * 0.5, top - 0.9, 0], [s * 0.4, top - 1.0, 0]], 0.026, 3, IRON_G)
+    lanternParis(out, s * 1.3, hang, 0, hs, false)
   }
 }
+LAMP_LIGHTS.set(parisLampConsole, [{ at: [0, 7.1 + 0.35, 0] }, { at: [-1.3, 5.4, 0] }, { at: [1.3, 5.4, 0] }])
+
+/**
+ * The wall console of the narrow rues. Frame: origin at the wall plate's centre, +z away from the wall; the placer
+ * sets the height. A scrolled bracket with a diagonal brace, the lantern standing on its end.
+ */
+/** the whole console's size (1 = the first cut, whose 0.78-scale lantern read as a speck on a six-storey facade) */
+const WALL_S = 1.3
+export function parisWallLamp(out: MeshBuilder): void {
+  const S = WALL_S, ls = 0.78 * S, out1 = 0.8 * S
+  const P = (y: number, z: number): [number, number, number] => [0, y * S, z * S]
+  box(out, 0, 0, 0.02, 0.05 * S, 0.14 * S, 0.02, IRON_G, FIXED)          // the wall plate
+  // the arm: out from the plate, a slight rise, ending in a seat
+  tube(out, [P(0.1, 0.04), P(0.11, 0.3), P(0.12, 0.6), P(0.12, 0.8)], 0.02 * S, 5, IRON_G)
+  lathe(out, 0, out1, [[0.1 * S, 0.1 * S], [0.1 * S, 0.12 * S], [0.07 * S, 0.13 * S]], 6, IRON_G, FIXED, { capBottom: true })
+  // the diagonal brace ending in a curl against the arm
+  tube(out, [P(-0.2, 0.04), P(-0.12, 0.2), P(-0.02, 0.4), P(0.07, 0.56), P(0.04, 0.64), P(-0.02, 0.6)], 0.022 * S, 4, IRON_G)
+  lanternParis(out, 0, 0.13 * S, out1, ls, true)
+}
+LAMP_LIGHTS.set(parisWallLamp, [{ at: [0, (0.13 + LN_H * 0.78 * 0.5) * WALL_S, 0.8 * WALL_S] }])
 
 /*
  * THE DAVIOUD BENCH: Paris's pavement bench since the 1850s. Two broad slats on the seat and two raked up the back,
@@ -113,35 +168,9 @@ export function wallaceFountain(out: MeshBuilder): void {
   prism(out, 0, 0, 2.55, 2.72, 0.05, 6, g, FIXED, 0.0)                           // the finial
 }
 
-/** An ad, 1.2 × 1.76 m, as blocks: a glowing ground, a picture side, the headline's lines, the brand's mark. `dir` is the side it faces (±z). */
+/** An ad from the library (render/affiches.ts): the 2 m² sheet, or the 8 m² panel's landscape, facing `dir` (±z) */
 function poster(out: MeshBuilder, cx: number, cy: number, cz: number, hw: number, hh: number, dir: 1 | -1, seed: number): void {
-  const palettes: Rgb[][] = [
-    [[0.96, 0.84, 0.2], [0.1, 0.1, 0.12], [0.9, 0.2, 0.2]],
-    [[0.12, 0.36, 0.72], [0.96, 0.96, 0.94], [0.95, 0.72, 0.2]],
-    [[0.92, 0.92, 0.9], [0.8, 0.1, 0.14], [0.14, 0.14, 0.16]],
-    [[0.1, 0.12, 0.14], [0.96, 0.96, 0.94], [0.3, 0.8, 0.5]],
-    [[0.88, 0.3, 0.5], [0.98, 0.94, 0.9], [0.2, 0.2, 0.3]],
-    [[0.2, 0.6, 0.64], [0.98, 0.98, 0.96], [0.98, 0.5, 0.2]],
-    [[0.97, 0.95, 0.9], [0.3, 0.2, 0.16], [0.85, 0.6, 0.2]],
-    // the city's own (owner's photographs, 2026-11-03): Ville de Paris's pale sheet with its navy lettering, and the
-    // saturated gradient of an event poster, orange on blue
-    [[0.95, 0.95, 0.93], [0.12, 0.2, 0.45], [0.78, 0.84, 0.9]],
-    [[0.95, 0.95, 0.93], [0.12, 0.2, 0.45], [0.86, 0.72, 0.5]],
-    [[0.2, 0.3, 0.8], [0.25, 0.3, 0.85], [0.98, 0.45, 0.2]],
-  ]
-  const [bg, ink, accent] = palettes[Math.floor(hash(seed, 1) * palettes.length)]
-  // (the layers centimetres apart, not millimetres: they fought from across the street — owner, 2026-10-06)
-  const face = (u: number, v: number, w: number, h: number, col: Rgb, lift: number, glow = false): void =>
-    box(out, cx + u, cy + v, cz + dir * lift, w, h, 0.004, col, glow ? EMIT : FIXED)
-  face(0, 0, hw, hh, bg, 0.012, true)
-  const s = hash(seed, 2) < 0.5 ? -1 : 1
-  const skies: Rgb[] = [[0.45, 0.7, 0.92], [0.98, 0.72, 0.4], [0.2, 0.22, 0.3], [0.85, 0.88, 0.9]]
-  face(0, hh * 0.28, hw * 0.9, hh * 0.6, skies[Math.floor(hash(seed, 3) * skies.length)], 0.024, true)
-  face(s * hw * 0.3, hh * 0.1, hw * 0.16, hh * 0.42, ink, 0.036)                          // the product, or the face
-  face(0, -hh * 0.62, hw * 0.9, hh * 0.3, accent, 0.024, true)
-  face(-s * hw * 0.2, -hh * 0.55, hw * 0.5, hh * 0.07, ink, 0.036)
-  face(-s * hw * 0.3, -hh * 0.72, hw * 0.36, hh * 0.05, ink, 0.036)
-  face(s * hw * 0.72, -hh * 0.82, hw * 0.12, hh * 0.08, WHITE, 0.036)
+  affiche(out, hw / hh > 1.2 ? 'landscape' : 'portrait', cx, cy, cz + dir * AFFICHE_LIFT, 0, dir, hw, hh, seed)
 }
 
 /**
@@ -169,16 +198,7 @@ export function parisBusStop(out: MeshBuilder, shelter = true, seed = 0): void {
   box(out, -1.74, 1.4, -0.15, 0.007, 0.5, 0.4, [0.78, 0.84, 0.9], FIXED)
   // the poster at +x, lit, both faces; the panel is turned across the shelter, its faces to ±x
   box(out, 1.78, 1.45, -0.15, 0.05, 0.95, 0.68, ANTHRACITE, FIXED)
-  for (const d of [1, -1] as const) {
-    // (a poster faces ±z in its own frame: this one is drawn turned, the axes swapped)
-    const face = (u: number, v: number, w: number, h: number, col: Rgb, lift: number, glow = false): void =>
-      box(out, 1.78 + d * (0.05 + lift), 1.45 + v, -0.15 + u, 0.004, h, w, col, glow ? EMIT : FIXED)
-    const [bg, ink, accent] = [[[0.12, 0.36, 0.72], [0.96, 0.96, 0.94], [0.95, 0.72, 0.2]], [[0.92, 0.92, 0.9], [0.8, 0.1, 0.14], [0.14, 0.14, 0.16]], [[0.88, 0.3, 0.5], [0.98, 0.94, 0.9], [0.2, 0.2, 0.3]]][Math.floor(hash(seed, 11 + d) * 3)] as Rgb[]
-    face(0, 0, 0.58, 0.86, bg, 0.012, true)
-    face(0, 0.25, 0.5, 0.45, accent, 0.024, true)
-    face(0.1, -0.5, 0.36, 0.06, ink, 0.036)
-    face(0.0, -0.64, 0.28, 0.05, ink, 0.036)
-  }
+  for (const d of [1, -1] as const) affiche(out, 'portrait', 1.78 + d * (0.05 + AFFICHE_LIFT), 1.45, -0.15, d, 0, 0.58, 0.86, seed + d)
   // the bench: grey slats on two brackets off the back
   for (const z of [-0.74, -0.58]) box(out, 0.1, 0.47, z, 1.1, 0.025, 0.06, [0.5, 0.52, 0.52], FIXED)
   for (const x of [-0.7, 0.9]) {
@@ -317,7 +337,7 @@ export function boxwoodPot(out: MeshBuilder, seed = 0): void {
   prism(out, 0, 0, 0, 0.42, 0.2, 8, pot, FIXED, 0.25, false)
   prism(out, 0, 0, 0.42, 0.47, 0.27, 8, pot, FIXED, 0.27)
   prism(out, 0, 0, 0.46, 0.475, 0.22, 8, [0.22, 0.17, 0.12])
-  shrub(out, 0, 0.47, 0, 0.3, 0.55, hash(seed, 2) < 0.7 ? [0.18, 0.34, 0.16] : [0.26, 0.42, 0.2])
+  topiaryBall(out, 0, 0.45, 0, 0.3, hash(seed, 2) < 0.7 ? [0.18, 0.34, 0.16] : [0.26, 0.42, 0.2], { seed, sink: 0 })
 }
 
 /**
@@ -350,8 +370,8 @@ export function parisPanel(out: MeshBuilder, seed = 0): void {
   box(out, 0, 1.2, 0, 0.12, 1.2, 0.12, ANTHRACITE, FIXED)
   box(out, 0, 3.5, 0, 1.75, 1.25, 0.09, ANTHRACITE, FIXED)
   box(out, 0, 4.8, 0, 1.6, 0.04, 0.2, ANTHRACITE, FIXED)                                  // the lamp hood
-  poster(out, 0, 3.5, 0.09, 1.65, 1.15, 1, seed)
-  poster(out, 0, 3.5, -0.09, 1.65, 1.15, -1, seed + 3)
+  poster(out, 0, 3.5, 0.09, 1.6, 1.2, 1, seed)
+  poster(out, 0, 3.5, -0.09, 1.6, 1.2, -1, seed + 3)
 }
 
 /**

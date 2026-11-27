@@ -233,6 +233,15 @@ export interface PackedArea {
   /** …whose ground is MOSS, not mulch (a zone's `ground: 'garden'`: the Japanese Tea Garden) */
   moss?: true
   /**
+   * a BIG park (tools/bake.ts, whole polygon over MEADOW_PARK_M2: the Bois de Boulogne, Vincennes, Golden Gate Park, the
+   * Presidio): its own open ground — what OSM maps as neither lawn nor wood — is long meadow grass, not a mown lawn
+   * (render/city.ts grassKind, render/grass-mask.ts; owner 2026-11-26: "always auto tag big parks as meadows")
+   */
+  meadow?: true
+  /** a kept GARDEN (tools/bake.ts isGarden: `leisure=garden`, not a backyard or allotment): its lawn is manicured, nearly flawless
+   *  (render/city.ts grassKind, render/grass-mask.ts; owner 2026-11-26). Baked: an older package lacks it and its gardens are park lawn */
+  garden?: true
+  /**
    * a surface CAR PARK (OSM `amenity=parking` drawn as a lot, or a region square marked `lot`): render/city.ts lays out
    * stalls on it and render/street-fleet.ts parks cars in them (owner, 2026-10-17: "surface parking lots look like big
    * empty asphalt areas right now") — not a pier deck, which is a lot with no cars

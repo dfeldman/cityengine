@@ -10,6 +10,8 @@ import { MeshBuilder } from './buildings.ts'
 import { surfaceTag } from './cartoon-material.ts'
 import { unpackPoints, type PackedGarden } from '../city/package.ts'
 import type { Projection } from '../city/geo.ts'
+import { topiaryBall, topiaryBox, topiaryCone } from './topiary.ts'
+import { lathe } from './models.ts'
 import { ROSE, roseBedShape, type RoseBedShape } from './roses.ts'
 import { FLOWER_GARDENS, flowerBed, flowerBorder, type Flower } from './flower-gardens.ts'
 
@@ -57,52 +59,6 @@ const noise = (a: number, b: number): number => {
 }
 const toned = (c: Rgb, f: number): Rgb => [c[0] * f, c[1] * f, c[2] * f]
 
-/** the vertical face from a to b, from y0 to y1, facing the way a→b's left hand does */
-function face(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: number, nz: number, c: Rgb): void {
-  out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y1, b.z], [a.x, y1, a.z]], [nx, 0, nz], UV, c, 0)
-}
-
-/** the same for clipped leaves, which take the light from above whichever way they face: a hedge's shaded side is not black */
-function leafFace(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: number, nz: number, c: Rgb): void {
-  out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y1, b.z], [a.x, y1, a.z]], [nx * 0.55, 0.83, nz * 0.55], UV, c, CLIPPED)
-}
-
-/** a length of clipped hedge from a to b: its sides darker at the foot, a lighter top; the ends only where it `caps` */
-function hedgePiece(out: MeshBuilder, a: Point, b: Point, y0: number, h: number, w: number, foot: Rgb, side: Rgb, top: Rgb, capA: boolean, capB: boolean): void {
-  const L = Math.hypot(b.x - a.x, b.z - a.z)
-  if (L < 0.05) return
-  const ux = (b.x - a.x) / L, uz = (b.z - a.z) / L
-  const nx = -uz, nz = ux
-  const hw = w / 2
-  const P = (p: Point, s: number): Point => ({ x: p.x + nx * hw * s, z: p.z + nz * hw * s })
-  const al = P(a, 1), ar = P(a, -1), bl = P(b, 1), br = P(b, -1)
-  const y1 = y0 + h
-  const band = y0 + h * 0.3
-  // (each side wound to face out: the left side a→b, the right side b→a)
-  if (y0 > 1) {
-    leafySide(out, bl, al, y0, y1, nx, nz, side, capB, capA)
-    leafySide(out, ar, br, y0, y1, -nx, -nz, side, capA, capB)
-  } else {
-    leafFace(out, bl, al, y0, band, nx, nz, foot)
-    leafFace(out, bl, al, band, y1, nx, nz, side)
-    leafFace(out, ar, br, y0, band, -nx, -nz, foot)
-    leafFace(out, ar, br, band, y1, -nx, -nz, side)
-  }
-  if (y0 > 1) {
-    // (a crown's top, a shallow ridge down its middle: it is leaves, not a slab)
-    // (each end's rise from where it stands, so the next piece's ridge starts where this one's ends: one rise a piece left notches between them)
-    const riseA = 0.3 + smooth(a.x, a.z, 4, 5) * 0.5, riseB = 0.3 + smooth(b.x, b.z, 4, 5) * 0.5, rise = (riseA + riseB) / 2
-    const am: V = [a.x, y1 + riseA, a.z], bm: V = [b.x, y1 + riseB, b.z]
-    const up = hw / Math.hypot(hw, rise), lean = rise / Math.hypot(hw, rise)
-    out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], bm, am], [nx * lean, up, nz * lean], UV, top, CLIPPED)
-    out.quad([am, bm, [br.x, y1, br.z], [ar.x, y1, ar.z]], [-nx * lean, up, -nz * lean], UV, toned(top, 1.14), CLIPPED)
-  } else out.quad([[al.x, y1, al.z], [bl.x, y1, bl.z], [br.x, y1, br.z], [ar.x, y1, ar.z]], [0, 1, 0], UV, top, CLIPPED)
-  if (capA) leafFace(out, al, ar, y0, y1, -ux, -uz, side)
-  if (capB) leafFace(out, br, bl, y0, y1, ux, uz, side)
-  // (a crown on trunks: its underside is what you ride under)
-  if (y0 > 1) out.quad([[ar.x, y0, ar.z], [br.x, y0, br.z], [bl.x, y0, bl.z], [al.x, y0, al.z]], [0, -1, 0], UV, foot, CLIPPED)
-}
-
 /*
  * THE CLIPPED BOX HEDGE (owner, 2026-11-18: the Champ de Mars hedges "show very visible holes": plain box prisms whose pieces did not
  * meet — open ends where a run stopped, notches at every bend). Now one profile swept along the line: narrower at the foot, a full belly,
@@ -125,6 +81,28 @@ const HEDGE_TONE = 0.1
 const HEDGE_SKY = 0.7
 /** the mitre's stretch beyond which a bend is too sharp to mitre (about 130°): both pieces are capped there instead */
 const HEDGE_MITRE_MAX = 2.4
+
+/** how a swept hedge is drawn: its profile, rings, wobble, and how high it is lifted (a pleached crown on its trunks) */
+interface HedgeLook {
+  profile: [number, number][]; step: number; cell: number; wobbleW: number; wobbleH: number; tone: number; sky: number
+  /** metres the profile is lifted (0: on the ground, its foot sunk) */
+  lift: number
+  /** each vertex pushed in and out along its normal by up to this, m, on a noise of this cell, m: leaves, not a wall */
+  bump: number; bumpCell: number
+}
+const BOX_LOOK: HedgeLook = { profile: HEDGE_PROFILE, step: HEDGE_STEP, cell: HEDGE_WOBBLE_CELL, wobbleW: HEDGE_WOBBLE_W, wobbleH: HEDGE_WOBBLE_H, tone: HEDGE_TONE, sky: HEDGE_SKY, lift: 0, bump: 0, bumpCell: 1 }
+
+/*
+ * THE PLEACHED CROWN (owner, 2026-11-27: "the hedges are good, but the box trees are still very primitive … essentially a type of
+ * hedge even if it isn't a bush"): the limes and planes clipped into a wall or a box on bare trunks — the Champ de Mars, the Palais-Royal,
+ * the Tuileries. The box hedge's own sweep, lifted onto the trunks, its profile closed underneath (the underside is what you ride under),
+ * coarser and looser than box: bigger leaves, sheared less often, so the faces bulge and dip.
+ */
+/** the crown's section, one side, from the middle of its underside over the side to the middle of its top */
+const CROWN_PROFILE: [number, number][] = [[0, 0], [0.7, 0.01], [0.95, 0.12], [1, 0.4], [0.97, 0.75], [0.82, 0.95], [0.4, 1], [0, 1]]
+const CROWN_LOOK: HedgeLook = { profile: CROWN_PROFILE, step: 1.2, cell: 2.6, wobbleW: 0.1, wobbleH: 0.07, tone: 0.16, sky: 0.6, lift: 0, bump: 0.22, bumpCell: 0.8 }
+/** a trunk: radius at the foot and under the crown, m; how far it goes up into the crown, m; sides round */
+const TRUNK_R0 = 0.17, TRUNK_R1 = 0.12, TRUNK_INTO = 0.6, TRUNK_SIDES = 7
 
 /** a smooth value noise in 0..1 (bilinear over a lattice): unlike `noise` it barely moves for a point a float's width away */
 function smooth(x: number, z: number, cell: number, salt: number): number {
@@ -156,7 +134,8 @@ function smoothQuad(out: MeshBuilder, p: V[], n: V[], c: Rgb[], kind: number): v
  * A length of clipped hedge from a to b on the ground, `h` tall and `w` wide. `prev` is the row's direction coming into a and `next`
  * its direction going on from b, where the row goes on (null where it stops: that end is capped). Colours: foot, side, top.
  */
-function boxHedge(out: MeshBuilder, a: Point, b: Point, h: number, w: number, foot: Rgb, side: Rgb, top: Rgb, prev: Point | null, next: Point | null): void {
+function boxHedge(out: MeshBuilder, a: Point, b: Point, h: number, w: number, foot: Rgb, side: Rgb, top: Rgb, prev: Point | null, next: Point | null,
+                  o: HedgeLook = BOX_LOOK): void {
   const L = Math.hypot(b.x - a.x, b.z - a.z)
   if (L < 0.05) return
   const ux = (b.x - a.x) / L, uz = (b.z - a.z) / L
@@ -174,38 +153,46 @@ function boxHedge(out: MeshBuilder, a: Point, b: Point, h: number, w: number, fo
   }
   const [ax, az, capA] = end(prev), [bx, bz, capB] = end(next)
   // (the profile's normals, from its own edges, leaned to the sky)
-  const P = HEDGE_PROFILE, K = P.length
+  const P = o.profile, K = P.length
   const pn: [number, number][] = P.map((_, i) => {
     const p0 = P[Math.max(0, i - 1)], p1 = P[Math.min(K - 1, i + 1)]
     let s = (p1[1] - p0[1]) * h, y = -(p1[0] - p0[0]) * hw
     if (i === K - 1) { s = 0; y = 1 }
     const m = Math.hypot(s, y) || 1
-    return [s / m, y / m + HEDGE_SKY]
+    // (a crown's underside is not leaned to the sky like its sides: it is what is in shade)
+    return [s / m, y / m + (o.lift > 0 ? o.sky * Math.max(0.15, Math.min(1, 0.5 + y / m)) : o.sky)]
   })
   const shade: Rgb[] = P.map((_, i) => {
-    const t = i / (K - 1)
+    const t = o.lift > 0 ? P[i][1] : i / (K - 1)
     const from = t < 0.34 ? foot : side, to = t < 0.34 ? side : top, f = t < 0.34 ? t / 0.34 : (t - 0.34) / 0.66
     return [from[0] + (to[0] - from[0]) * f, from[1] + (to[1] - from[1]) * f, from[2] + (to[2] - from[2]) * f]
   })
-  const steps = Math.max(1, Math.round(L / HEDGE_STEP))
+  const steps = Math.max(1, Math.round(L / o.step))
   // ring[i] = the profile's 2K - 1 points across, left foot to right foot, with their normals and colours
   type Ring = { p: V[]; n: V[]; c: Rgb[] }
   const ring = (t: number): Ring => {
     const x = a.x + (b.x - a.x) * t, z = a.z + (b.z - a.z) * t
     // (the sideways vector, eased from a's mitre to b's: a short piece on a sharp bend never crosses itself)
     const sx = ax + (bx - ax) * t, sz = az + (bz - az) * t
-    const ww = hw * (1 + (smooth(x, z, HEDGE_WOBBLE_CELL, 1) - 0.5) * 2 * HEDGE_WOBBLE_W)
-    const hh = h * (1 + (smooth(x, z, HEDGE_WOBBLE_CELL, 2) - 0.5) * 2 * HEDGE_WOBBLE_H)
-    const tone = 1 + (smooth(x, z, HEDGE_WOBBLE_CELL * 1.3, 3) - 0.5) * 2 * HEDGE_TONE
+    const ww = hw * (1 + (smooth(x, z, o.cell, 1) - 0.5) * 2 * o.wobbleW)
+    const hh = h * (1 + (smooth(x, z, o.cell, 2) - 0.5) * 2 * o.wobbleH)
+    const tone = 1 + (smooth(x, z, o.cell * 1.3, 3) - 0.5) * 2 * o.tone
     const r: Ring = { p: [], n: [], c: [] }
     for (let j = -(K - 1); j <= K - 1; j++) {
       const i = K - 1 - Math.abs(j), sg = j < 0 ? 1 : -1
       const [q, y] = P[i]
       const off = q * ww * sg
-      r.p.push([x + sx * off, y === 0 ? -HEDGE_SINK : y * hh, z + sz * off])
       const [ns, ny] = pn[i]
       const m = Math.hypot(ns, ny)
-      r.n.push([(nx * ns * sg) / m, ny / m, (nz * ns * sg) / m])
+      const nv: V = [(nx * ns * sg) / m, ny / m, (nz * ns * sg) / m]
+      const pv: V = [x + sx * off, o.lift + (y === 0 && o.lift === 0 ? -HEDGE_SINK : y * hh), z + sz * off]
+      // (leaves: each vertex pushed along its normal by a noise of where it is — a shared ring is pushed the same in both pieces)
+      if (o.bump > 0 && !(q === 0 && y === 0 && o.lift === 0)) {
+        const d = (smooth(pv[0] + pv[1] * 0.7, pv[2] - pv[1] * 0.4, o.bumpCell, 4) - 0.5) * 2 * o.bump
+        pv[0] += nv[0] * d; pv[1] += nv[1] * d * 0.6; pv[2] += nv[2] * d
+      }
+      r.p.push(pv)
+      r.n.push(nv)
       r.c.push(toned(shade[i], tone))
     }
     return r
@@ -217,15 +204,15 @@ function boxHedge(out: MeshBuilder, a: Point, b: Point, h: number, w: number, fo
     for (let j = 0; j < r0.p.length - 1; j++) {
       smoothQuad(out, [r0.p[j], r1.p[j], r1.p[j + 1], r0.p[j + 1]], [r0.n[j], r1.n[j], r1.n[j + 1], r0.n[j + 1]], [r0.c[j], r1.c[j], r1.c[j + 1], r0.c[j + 1]], CLIPPED)
     }
-    if (s === steps && capB) hedgeCap(out, r1, ux, uz)
+    if (s === steps && capB) hedgeCap(out, r1, ux, uz, o.sky)
     r0 = r1
   }
-  if (capA) hedgeCap(out, first, -ux, -uz)
+  if (capA) hedgeCap(out, first, -ux, -uz, o.sky)
 }
 
 /** a hedge's end: the profile closed along the ground, in quads from the foot up, facing (ux, uz) and leaned to the sky */
-function hedgeCap(out: MeshBuilder, r: { p: V[]; c: Rgb[] }, ux: number, uz: number): void {
-  const m = Math.hypot(1, HEDGE_SKY), n: V = [ux / m, HEDGE_SKY / m, uz / m]
+function hedgeCap(out: MeshBuilder, r: { p: V[]; c: Rgb[] }, ux: number, uz: number, sky = HEDGE_SKY): void {
+  const m = Math.hypot(1, sky), n: V = [ux / m, sky / m, uz / m]
   const N = r.p.length, half = (N - 1) / 2
   // (pair the left and right sides, rung by rung: the profile is convex, so each rung's quad is too)
   for (let k = 0; k < half; k++) {
@@ -234,65 +221,26 @@ function hedgeCap(out: MeshBuilder, r: { p: V[]; c: Rgb[] }, ux: number, uz: num
   }
 }
 
+/** a trunk: round, tapering, flared at the foot and a little out of true, up into the crown */
+function trunk(out: MeshBuilder, p: Point, y1: number, seed = 0): void {
+  const lean = (noise(seed, 11) - 0.5) * 0.12
+  const prof: [number, number][] = [[TRUNK_R0 * 1.35, -0.1], [TRUNK_R0, 0.35], [(TRUNK_R0 + TRUNK_R1) / 2, y1 * 0.5], [TRUNK_R1, y1]]
+  lathe(out, p.x + lean, p.z - lean, prof, TRUNK_SIDES, toned(TRUNK, 0.85 + noise(seed, 12) * 0.3), 0, { phase: seed })
+}
+
 /**
- * A pleached crown's side from a to b, facing (nx, nz): leaves, so a grid pushed in and out by where each corner stands (a piece's
- * corners meet its neighbour's) and mottled cell by cell. The clipped wall of limes is even from afar and never flat from under it.
+ * a clipped yew or box: a cone (0), a ball (1), a cube (2) — or an unclipped shrub (3). The shapes are render/topiary.ts's: one
+ * watertight surface each, smooth, sunk into the ground. `h` is the baked height.
  */
-function leafySide(out: MeshBuilder, a: Point, b: Point, y0: number, y1: number, nx: number, nz: number, c: Rgb, capA = false, capB = false): void {
-  const COLS = 2, ROWS = 3
-  const corner = (i: number, j: number): V => {
-    const u = i / COLS
-    const x = a.x + (b.x - a.x) * u, z = a.z + (b.z - a.z) * u
-    const y = y0 + ((y1 - y0) * j) / ROWS
-    // (the top and bottom rows stay on the line, where the crown's top and underside meet them, and so does a capped end: pushed, they
-    //  opened slits of sky along the crown's edges)
-    const pinned = j === 0 || j === ROWS || (i === 0 && capA) || (i === COLS && capB)
-    const push = pinned ? 0 : (noise(x * 1.7 + j * 3.1, z * 1.7) - 0.5) * 0.7
-    return [x + nx * push, y + (j > 0 && j < ROWS ? (noise(z + j, x) - 0.5) * 0.5 : 0), z + nz * push]
-  }
-  for (let j = 0; j < ROWS; j++) {
-    for (let i = 0; i < COLS; i++) {
-      const lit = 0.72 + (0.34 * (j + 0.5)) / ROWS + noise(a.x + i * 5.3, a.z + j * 7.9) * 0.3
-      out.quad([corner(i, j), corner(i + 1, j), corner(i + 1, j + 1), corner(i, j + 1)], [nx * 0.55, 0.83, nz * 0.55], UV, toned(c, lit), CLIPPED)
-    }
-  }
-}
-
-/** a trunk, a plain square post */
-function trunk(out: MeshBuilder, p: Point, y1: number): void {
-  const r = 0.14
-  const q = [{ x: p.x + r, z: p.z + r }, { x: p.x + r, z: p.z - r }, { x: p.x - r, z: p.z - r }, { x: p.x - r, z: p.z + r }]
-  const n: [number, number][] = [[1, 0], [0, -1], [-1, 0], [0, 1]]
-  for (let i = 0; i < 4; i++) face(out, q[(i + 1) % 4], q[i], 0, y1, n[i][0], n[i][1], TRUNK)
-}
-
-/** a clipped yew: a cone, a ball on a short foot, or a cube */
 function topiary(out: MeshBuilder, x: number, z: number, h: number, shape: number, seed: number): void {
   if (shape === 3) return shrub(out, x, z, h, seed)
   const c = toned(YEW, 0.9 + noise(seed, 1) * 0.3)
-  if (shape === 2) {
-    const w = h * 0.45
-    boxHedge(out, { x: x - w, z }, { x: x + w, z }, h, w * 2, toned(c, 0.8), c, toned(c, 1.3), null, null)
-    return
-  }
-  const sides = 8
-  const ring = (r: number, k: number): Point => ({ x: x + Math.sin((k / sides) * Math.PI * 2) * r, z: z + Math.cos((k / sides) * Math.PI * 2) * r })
-  // radii up the shape: a cone tapers, a ball swells and closes
-  const levels: [number, number][] = shape === 0
-    ? [[0, h * 0.2], [h * 0.12, h * 0.2], [h, 0]]
-    : [[0, 0.1], [h * 0.22, 0.1], [h * 0.3, h * 0.38], [h * 0.65, h * 0.48], [h, 0]]
-  for (let l = 1; l < levels.length; l++) {
-    const [y0, r0] = levels[l - 1], [y1, r1] = levels[l]
-    const tone = toned(c, 0.82 + (0.42 * l) / levels.length)
-    for (let k = 0; k < sides; k++) {
-      const a = ring(r0, k), b = ring(r0, k + 1), p = ring(r1, k), q = ring(r1, k + 1)
-      const mx = Math.sin(((k + 0.5) / sides) * Math.PI * 2), mz = Math.cos(((k + 0.5) / sides) * Math.PI * 2)
-      const up = (r0 - r1) / Math.max(0.01, y1 - y0)
-      const len = Math.hypot(1, up)
-      out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [q.x, y1, q.z], [p.x, y1, p.z]], [mx / len, up / len, mz / len], UV, tone, CLIPPED)
-    }
-  }
+  if (shape === 2) return topiaryBox(out, x, 0, z, h * 0.9, h * 0.9, h, c, { seed, heading: noise(seed, 4) * 0.3 })
+  if (shape === 0) return topiaryCone(out, x, 0, z, h, h * TOPIARY_CONE_R, c, { seed })
+  topiaryBall(out, x, 0, z, h / 2 / 0.93, c, { seed })
 }
+/** a yew cone's foot radius, share of its height */
+const TOPIARY_CONE_R = 0.24
 
 /**
  * A SHRUB, unclipped (Batch 1's parks, 2026-10-31): a laurel, a spiraea, a mound as wide as it is high that belongs to no shape. Seven corners pushed about by where it
@@ -848,8 +796,9 @@ export class GardenTiles {
     for (const p of this.pieces.get(k) ?? []) {
       const f = 0.92 + noise(p.seed, 3) * 0.16
       if (p.y0 > 0) {
-        hedgePiece(out, p.a, p.b, p.y0, p.h, p.w, toned(LIME_FOOT, f), toned(LIME, f), toned(LIME_TOP, f), p.capA, p.capB)
-        if (p.post) trunk(out, { x: (p.a.x + p.b.x) / 2, z: (p.a.z + p.b.z) / 2 }, p.y0 + 0.4)
+        void f
+        boxHedge(out, p.a, p.b, p.h, p.w, LIME_FOOT, LIME, LIME_TOP, p.prev, p.next, { ...CROWN_LOOK, lift: p.y0 })
+        if (p.post) trunk(out, { x: (p.a.x + p.b.x) / 2, z: (p.a.z + p.b.z) / 2 }, p.y0 + TRUNK_INTO, p.seed)
       } else boxHedge(out, p.a, p.b, p.h, p.w, HEDGE_FOOT, HEDGE, HEDGE_TOP, p.prev, p.next)
     }
     for (const i of this.yews.get(k) ?? []) topiary(out, this.topiary[i], this.topiary[i + 1], this.topiary[i + 2], this.topiary[i + 3], i)

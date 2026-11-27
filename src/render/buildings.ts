@@ -20,6 +20,7 @@
  * rather than one per building. Trail Trainer learned that lesson the expensive way: a triangle budget goes
  * not on detail but on things drawn separately.
  */
+import type { AfficheFace } from './affiches.ts'
 import type { WaterFeature } from './water.ts'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
@@ -62,6 +63,8 @@ export class MeshBuilder {
    * Empty and untouched for everything else that builds a mesh, including the whole facade generator.
    */
   readonly signs: PlacedSign[] = []
+  /** the street ads the model carries (render/affiches.ts), in its own frame; NOT geometry — one textured mesh a tile */
+  readonly affiches: AfficheFace[] = []
   /**
    * The clock faces the model carries (render/landmarks/parts.ts `clockFace`), in its own frame: the centre, the
    * horizontal direction the face looks, and the dial's radius. The hands are NOT geometry — they turn with the real

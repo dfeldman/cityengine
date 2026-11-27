@@ -1,0 +1,2569 @@
+[
+ {
+  "id": "p-cadenas",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "LE CADENAS",
+  "headline": "Plus fidèle que votre ex.",
+  "sub": "Antivol en acier trempé.",
+  "small": "Existe en trois tailles de regrets.",
+  "art": "lock",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p-sueur",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "SUEUR DE MONTÉE",
+  "headline": "Pour lui. Après Montmartre.",
+  "sub": "",
+  "small": "Eau de toilette · 50 ml",
+  "art": "perfume",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p-beurre",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "MAISON BEURRÉ",
+  "headline": "Le beurre, c'est la vie. Le reste est de la farine.",
+  "sub": "",
+  "small": "Croissants pur beurre depuis hier",
+  "art": "croissant",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p-assur",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "ALLIANCE SOLIDE",
+  "headline": "Assuré contre tout. Sauf les grèves.",
+  "sub": "Tout le reste est inclus.",
+  "small": "Voir conditions, annexe 14, page 212",
+  "art": "cloud",
+  "palette": [
+   "#14213d",
+   "#fdf6e3",
+   "#fca311"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "e-balcon",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THÉÂTRE DES TILLEULS",
+  "headline": "Le Balcon du sixième",
+  "sub": "Comédie en trois étages, sans ascenseur",
+  "small": "12 — 19 MARS",
+  "art": "house",
+  "palette": [
+   "#3c1642",
+   "#f8edeb",
+   "#ffb703"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p-sommeil",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "SOMMEIL & FILS",
+  "headline": "Votre sixième étage mérite un vrai lit.",
+  "sub": "Livraison par la fenêtre.",
+  "small": "Matelas dès 490 €",
+  "art": "bed",
+  "palette": [
+   "#0077b6",
+   "#ffffff",
+   "#ffb703"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "e-pave",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "SALLE GASPARD",
+  "headline": "Orchestre des Pavés",
+  "sub": "Concert pour cordes et nids-de-poule",
+  "small": "SAM 21 H",
+  "art": "note",
+  "palette": [
+   "#0b132b",
+   "#f8f9fa",
+   "#5bc0be"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p-filant",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "FROMAGERIE FILANT",
+  "headline": "Il sent fort. Vous aussi, après la côte.",
+  "sub": "",
+  "small": "Le brie qui a des opinions",
+  "art": "cheese",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "e-elegie",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "OPÉRA DE QUARTIER",
+  "headline": "L'Élégie du métro",
+  "sub": "Opéra en quatre actes et un retard",
+  "small": "DU 3 AU 10 AVRIL",
+  "art": "tower",
+  "palette": [
+   "#c1121f",
+   "#fff1e6",
+   "#ffd166"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p-courrier",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "COURRIER GRIS",
+  "headline": "Livraison par pigeon. Plus fiable que la grève.",
+  "sub": "Colis légers uniquement.",
+  "small": "Délai : quand il veut",
+  "art": "pigeon",
+  "palette": [
+   "#cad2c5",
+   "#2f3e46",
+   "#bc4749"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "p-minuscule",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "IMMO MINUSCULE",
+  "headline": "Studio 9 m². Vue sur un autre mur.",
+  "sub": "Charmant. Très charmant. Par nécessité.",
+  "small": "720 € / mois, charges en sus",
+  "art": "house",
+  "palette": [
+   "#e9d8a6",
+   "#3d2c1e",
+   "#0a9396"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "e-pigeons",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "MUSÉE DU PETIT DÉTAIL",
+  "headline": "Pigeons de Paris : 400 ans de dédain",
+  "sub": "Exposition permanente jusqu'à nouvel ordre",
+  "small": "TOUS LES JOURS SAUF GRÈVE",
+  "art": "pigeon",
+  "palette": [
+   "#d9d9d9",
+   "#202020",
+   "#e4572e"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "p-trotti",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "TROTTI-TROTTE",
+  "headline": "Arrivez en retard, mais plus vite.",
+  "sub": "",
+  "small": "Casque non fourni. Sagesse non plus.",
+  "art": "scooter",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p-dimanche",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "CAVES DU DIMANCHE",
+  "headline": "Le vin se déguste. Le lundi aussi.",
+  "sub": "",
+  "small": "L'abus d'alcool est dangereux pour la santé. Le lundi aussi.",
+  "art": "wine",
+  "palette": [
+   "#3c1642",
+   "#f8edeb",
+   "#ffb703"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "e-reve",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "CINÉMA LE RIDEAU",
+  "headline": "Le Vélo et la Pluie",
+  "sub": "Film noir. Très mouillé.",
+  "small": "DÈS LE 14 MAI · 20 H 30",
+  "art": "film",
+  "palette": [
+   "#111111",
+   "#f5f5f5",
+   "#ffd60a"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p-escalier",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "FORME & CIE",
+  "headline": "Votre escalier est déjà une salle de sport.",
+  "sub": "Résiliez le nôtre.",
+  "small": "Abonnement 49 €, sans engagement ni espoir",
+  "art": "shoe",
+  "palette": [
+   "#005f73",
+   "#fefae0",
+   "#ee9b00"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p-sourire",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "CABINET DU SOURIRE",
+  "headline": "Souriez. Mais pas trop. Vous êtes à Paris.",
+  "sub": "",
+  "small": "Rendez-vous : dans trois mois",
+  "art": "tooth",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "e-sansfrein",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "CIRQUE DES SANS-FREIN",
+  "headline": "Descente garantie",
+  "sub": "Funambules, jongleurs, un cycliste en panne",
+  "small": "DU 1er AU 30 JUIN",
+  "art": "bike",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p-silence",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "BANQUE DU SILENCE",
+  "headline": "Votre argent. Notre indifférence élégante.",
+  "sub": "",
+  "small": "Parlons-en. Ou pas.",
+  "art": "key",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p-coin",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "CAFÉ DU COIN",
+  "headline": "Un expresso : 4 €. Le droit de rester : inestimable.",
+  "sub": "",
+  "small": "Le serveur vous ignore avec soin",
+  "art": "coffee",
+  "palette": [
+   "#e9d8a6",
+   "#3d2c1e",
+   "#0a9396"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "e-fromage",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "SALON DU FROMAGE QUI PUE",
+  "headline": "Odeurs de France",
+  "sub": "Dégustation. Masque offert.",
+  "small": "9 — 11 OCTOBRE",
+  "art": "cheese",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "p-rouelibre",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "ROUE LIBRE",
+  "headline": "Votre vélo a des pavés dans l'âme.",
+  "sub": "",
+  "small": "Pneus renforcés, dos non remboursé",
+  "art": "tire",
+  "palette": [
+   "#111111",
+   "#f5f5f5",
+   "#ffd60a"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p-coeurs",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "CŒURS SÉRIEUX",
+  "headline": "Rencontrez quelqu'un qui n'est pas en grève.",
+  "sub": "Inscription gratuite. Sentiments en sus.",
+  "small": "",
+  "art": "heart",
+  "palette": [
+   "#ffc2d4",
+   "#3a0ca3",
+   "#d00000"
+  ],
+  "font": "script"
+ },
+ {
+  "id": "e-quartet",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "LE SOUS-SOL",
+  "headline": "Quartet du Sous-Sol",
+  "sub": "Jazz, fumée artificielle, un saxophone vexé",
+  "small": "VEN 22 H",
+  "art": "note",
+  "palette": [
+   "#0b132b",
+   "#f8f9fa",
+   "#5bc0be"
+  ],
+  "font": "script"
+ },
+ {
+  "id": "p-majeste",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "CROQUETTES MAJESTÉ",
+  "headline": "Pour chats qui méprisent tout.",
+  "sub": "Saveur saumon. Mépris inclus.",
+  "small": "",
+  "art": "cat",
+  "palette": [
+   "#cdb4db",
+   "#240046",
+   "#ff6d00"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "e-ballet",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "BALLET DES GRÈVES",
+  "headline": "Piétinement en trois actes",
+  "sub": "Sur le trottoir, aux heures de pointe",
+  "small": "DU 5 AU 8 NOVEMBRE",
+  "art": "shoe",
+  "palette": [
+   "#c1121f",
+   "#fff1e6",
+   "#ffd166"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p-tete",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "type",
+  "brand": "TÊTE D'ŒUF",
+  "headline": "Protégez ce qui reste de vos idées.",
+  "sub": "",
+  "small": "Casque homologué pour penseurs",
+  "art": "helmet",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "e-conciergerie",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "CHORALE DES CONCIERGES",
+  "headline": "Tout le monde sait tout",
+  "sub": "Chants du palier et ragots en polyphonie",
+  "small": "DIM 17 H · ÉGLISE SAINT-ANATOLE",
+  "art": "note",
+  "palette": [
+   "#cad2c5",
+   "#2f3e46",
+   "#bc4749"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "e-court",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "NUIT DU TRÈS COURT",
+  "headline": "Quinze films, quinze secondes",
+  "sub": "Entrée libre, sortie conseillée",
+  "small": "SAM 23 H",
+  "art": "film",
+  "palette": [
+   "#14213d",
+   "#fdf6e3",
+   "#fca311"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "e-queue",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "GALERIE LA FILE",
+  "headline": "L'art de faire la queue",
+  "sub": "Installation. Veuillez patienter.",
+  "small": "JUSQU'AU 30 AVRIL",
+  "art": "star",
+  "palette": [
+   "#d9d9d9",
+   "#202020",
+   "#e4572e"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "e-regrets",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "SALON DU VÉLO ET DES REGRETS",
+  "headline": "Vous avez vendu le vôtre ?",
+  "sub": "Occasions, anecdotes, remords",
+  "small": "20 — 22 FÉVRIER",
+  "art": "bike",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#e63946"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p-mauvais",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "ATELIER NOIR",
+  "headline": "Noir. Encore.",
+  "sub": "",
+  "small": "Collection hiver, printemps, été",
+  "art": "glasses",
+  "palette": [
+   "#111111",
+   "#f5f5f5",
+   "#ffd60a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-voisin",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THÉÂTRE DU PETIT PAVÉ",
+  "headline": "Mon voisin du dessus",
+  "sub": "Comédie en un acte, murs très fins",
+  "small": "3 — 14 AVRIL",
+  "art": "mask",
+  "palette": [
+   "#1d3557",
+   "#f1faee",
+   "#ffb703"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-critere",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "VÉLO-CLUB DES TROIS PÉDALES",
+  "headline": "Grand Prix du Croissant",
+  "sub": "Dix tours de butte, ravitaillement en beurre",
+  "small": "DIM. 9 H · DÉPART DEVANT LA BOULANGERIE",
+  "art": "bike",
+  "palette": [
+   "#ffd60a",
+   "#14213d",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p2-bal",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "BAL DU PONT ROUGE",
+  "headline": "Le Bal des Accordéons fâchés",
+  "sub": "Valse, java et mauvaise humeur",
+  "small": "SAM. 21 H · ENTRÉE LIBRE",
+  "art": "p_accordion",
+  "palette": [
+   "#6a040f",
+   "#fff3b0",
+   "#f48c06"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-parapluie",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "FESTIVAL DES PARAPLUIES",
+  "headline": "Trois jours de pluie, avec musique",
+  "sub": "Concerts sous abri, danse sous gouttière",
+  "small": "DU 8 AU 10 OCTOBRE",
+  "art": "p_umbrella",
+  "palette": [
+   "#264653",
+   "#e9f5db",
+   "#f4a261"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "p2-petits",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "SALON DES PETITS APPARTEMENTS",
+  "headline": "Vivre à 12 m², et en être fier",
+  "sub": "Lits escamotables · cuisines en tiroir",
+  "small": "ENTRÉE 4 € · ASCENSEUR EN PANNE",
+  "art": "house",
+  "palette": [
+   "#e0fbfc",
+   "#293241",
+   "#ee6c4d"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p2-escargots",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "LE SOUS-PONT",
+  "headline": "Les Escargots du Métro",
+  "sub": "Concert lent. Très lent. Ouverture des portes : 20 h",
+  "small": "VEN. · 8 €",
+  "art": "p_snail",
+  "palette": [
+   "#22223b",
+   "#f2e9e4",
+   "#f6bd60"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p2-eclusier",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "OPÉRA DES GOUTTIÈRES",
+  "headline": "L'Éclusier fantôme",
+  "sub": "Drame lyrique en quatre ponts",
+  "small": "15 — 22 NOVEMBRE",
+  "art": "bridge",
+  "palette": [
+   "#10002b",
+   "#e0aaff",
+   "#ff9e00"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-ferraille",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "GALERIE DU DEUXIÈME",
+  "headline": "Cent vélos rouillés",
+  "sub": "Exposition de ferraille poétique · entrée libre",
+  "small": "JUSQU'AU 30 JUIN",
+  "art": "chain",
+  "palette": [
+   "#f8f9fa",
+   "#212529",
+   "#e76f51"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "p2-doigts",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "CONSERVATOIRE DES DOIGTS FRAIS",
+  "headline": "Récital : un piano, onze fausses notes",
+  "sub": "Élèves de première année, parents de dernière minute",
+  "small": "MER. 19 H · GRATUIT",
+  "art": "p_piano",
+  "palette": [
+   "#f4f1de",
+   "#3d405b",
+   "#e07a5f"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-invisible",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "SALLE DES FÊTES DU 12 BIS",
+  "headline": "Championnat de guitare imaginaire",
+  "sub": "Zéro corde. Cent pour cent solo.",
+  "small": "SAM. 20 H · 6 €",
+  "art": "p_guitar",
+  "palette": [
+   "#ff006e",
+   "#ffffff",
+   "#ffbe0b"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p2-baguette",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "FÊTE DE LA BAGUETTE",
+  "headline": "Le plus long pain de la rue",
+  "sub": "Concours, dégustation, miettes",
+  "small": "DIM. 10 H — 18 H",
+  "art": "baguette",
+  "palette": [
+   "#fefae0",
+   "#432818",
+   "#bc6c25"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-tandem",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "CIRQUE DU GRAND TANDEM",
+  "headline": "À deux sur un fil",
+  "sub": "Acrobates, vélos, et un peu de peur",
+  "small": "DU 2 AU 17 MAI",
+  "art": "tandem",
+  "palette": [
+   "#023e8a",
+   "#caf0f8",
+   "#ffd166"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p2-roulis",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "PÉNICHE LE ROULIS",
+  "headline": "Jazz sous la pluie",
+  "sub": "Quartet de fortune, bière de caisse",
+  "small": "JEU. 21 H · 10 €",
+  "art": "note",
+  "palette": [
+   "#0b132b",
+   "#f1faee",
+   "#5bc0be"
+  ],
+  "font": "script"
+ },
+ {
+  "id": "p2-sonnette",
+  "family": "portrait",
+  "kind": "event",
+  "layout": "event",
+  "brand": "THÉÂTRE DE L'ESCALIER",
+  "headline": "Moi, ma sonnette et moi",
+  "sub": "Seul en scène, dring compris",
+  "small": "TOUS LES SOIRS SAUF LUNDI",
+  "art": "bell",
+  "palette": [
+   "#fcbf49",
+   "#003049",
+   "#d62828"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "p2-gateau",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "PÂTISSERIE DU PRÉTEXTE",
+  "headline": "Un gâteau. Une raison. N'importe laquelle.",
+  "sub": "Génoise maison, bougies en option.",
+  "small": "Ouvert même les jours sans anniversaire",
+  "art": "p_cake",
+  "palette": [
+   "#ffafcc",
+   "#2b2d42",
+   "#7209b7"
+  ],
+  "font": "script"
+ },
+ {
+  "id": "p2-escargot-express",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "ESCARGOTS EXPRESS",
+  "headline": "Livraison en trois à cinq semaines.",
+  "sub": "Garanti lent. Frais de port : une salade.",
+  "small": "",
+  "art": "p_snail",
+  "palette": [
+   "#a7c957",
+   "#1b1b1b",
+   "#bc4749"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "p2-maison-parapluie",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "MAISON PARAPLUIE",
+  "headline": "Il pleut. Vous, non.",
+  "sub": "Le parapluie qui ne se retourne que par politesse.",
+  "small": "Dès 19 €",
+  "art": "p_umbrella",
+  "palette": [
+   "#0077b6",
+   "#ffffff",
+   "#ffd60a"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "p2-echelle",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "ÉCHELLE & FILS",
+  "headline": "Montez dans la vie. Ou au sixième.",
+  "sub": "",
+  "small": "Échelles, escabeaux, conseils",
+  "art": "p_ladder",
+  "palette": [
+   "#fff1e6",
+   "#1b263b",
+   "#e85d04"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "p2-deratizen",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "DÉRATIZEN",
+  "headline": "Dératisation douce : on les invite à partir.",
+  "sub": "",
+  "small": "Devis gratuit, souris reconnaissantes",
+  "art": "p_mouse",
+  "palette": [
+   "#e9ecef",
+   "#212529",
+   "#d00000"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p2-blanccasse",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "type",
+  "brand": "BLANC CASSÉ & FILS",
+  "headline": "Votre mur a vu pire. Rafraîchissons-le.",
+  "sub": "",
+  "small": "Peinture, rouleaux, patience",
+  "art": "p_roller",
+  "palette": [
+   "#caf0f8",
+   "#03045e",
+   "#ff5400"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-horloge",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "HORLOGERIE DU MÉTRO",
+  "headline": "Huit minutes de retard.",
+  "sub": "",
+  "small": "Toujours à l'heure, jamais à la vôtre",
+  "art": "p_clock",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#d62828"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-muet",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "HUILE & SILENCE",
+  "headline": "Chaîne huilée. Vélo muet.",
+  "sub": "",
+  "small": "Flacon de 100 ml",
+  "art": "chain",
+  "palette": [
+   "#f1f1f1",
+   "#111111",
+   "#7a7a7a"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "p2-grain",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "LE GRAIN",
+  "headline": "Café. Point.",
+  "sub": "",
+  "small": "Torréfié ce matin, bu ce matin",
+  "art": "coffee",
+  "palette": [
+   "#2b2118",
+   "#f4e9d8",
+   "#c68b59"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-depanne",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "SERRURERIE DU RETARD",
+  "headline": "Clés perdues ? Dépannage en 20 minutes. Ou en 2 heures.",
+  "sub": "Selon l'étage.",
+  "small": "Jour et nuit · hors grèves",
+  "art": "key",
+  "palette": [
+   "#005f73",
+   "#e9d8a6",
+   "#ee9b00"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "p2-pedale",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "split",
+  "brand": "L'ATELIER PÉDALE",
+  "headline": "Réglage des freins : 10 minutes. Café : 4 minutes.",
+  "sub": "Révision complète le temps d'un croissant.",
+  "small": "Cour du 14 · du mardi au samedi",
+  "art": "p_wrench",
+  "palette": [
+   "#3a0ca3",
+   "#f8f9fa",
+   "#f72585"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "p2-montmartron",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "MONTMARTRON",
+  "headline": "Le vélo qui rit des pentes.",
+  "sub": "",
+  "small": "Électrique · 25 km/h · 0 regret",
+  "art": "bike",
+  "palette": [
+   "#0d1b2a",
+   "#e0e1dd",
+   "#ffb703"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-casque",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "LUMIÈRE & FILS",
+  "headline": "Le casque. Pour les têtes qui comptent.",
+  "sub": "",
+  "small": "Édition limitée · sur rendez-vous",
+  "art": "helmet",
+  "palette": [
+   "#f8f9fa",
+   "#212529",
+   "#c1121f"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "p2-beret",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "MAISON CHAPEAU TOMBÉ",
+  "headline": "Le béret. Comme un cliché, mais chaud.",
+  "sub": "",
+  "small": "Laine · fait main · un seul modèle",
+  "art": "p_beret",
+  "palette": [
+   "#1b1b1b",
+   "#f2e9e4",
+   "#d00000"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-q-selle",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "quote",
+  "brand": "SELLE MOELLEUSE",
+  "headline": "Depuis que j'ai ma selle, je ne sens plus mes soucis.",
+  "sub": "— Gérard, 54 ans, cycliste depuis mardi",
+  "small": "Gel · mousse · confiance",
+  "art": "bike",
+  "palette": [
+   "#fdf0d5",
+   "#003049",
+   "#c1121f"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-q-pente",
+  "family": "portrait",
+  "kind": "service",
+  "layout": "quote",
+  "brand": "CAFÉ DE LA PENTE",
+  "headline": "Je viens pour le café. Je reste pour la pente.",
+  "sub": "— Monique, 61 ans, cycliste depuis jeudi",
+  "small": "Petit-déjeuner des grimpeurs",
+  "art": "coffee",
+  "palette": [
+   "#f4f1de",
+   "#3d405b",
+   "#e07a5f"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "p2-q-antivol",
+  "family": "portrait",
+  "kind": "product",
+  "layout": "quote",
+  "brand": "ANTIVOL BÉTON",
+  "headline": "Mon vélo est toujours là. Mon voisin, moins.",
+  "sub": "— Hervé, 47 ans, cycliste depuis lundi",
+  "small": "Acier trempé · garantie à vie du vélo",
+  "art": "lock",
+  "palette": [
+   "#e5e5e5",
+   "#14213d",
+   "#fca311"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "l-bleu",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "EXPRESS DU SUD",
+  "headline": "Partir. Revenir en retard.",
+  "sub": "Marseille en trois heures. Le retour, c'est autre chose.",
+  "small": "",
+  "art": "bridge",
+  "palette": [
+   "#0077b6",
+   "#ffffff",
+   "#ffb703"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "l-yaourt",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "split",
+  "brand": "LAITERIE DES PRÉS",
+  "headline": "Yaourt au pot. Pot consigné. Regrets non consignés.",
+  "sub": "",
+  "small": "",
+  "art": "icecream",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "l-avocat",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "type",
+  "brand": "MAÎTRE DUBOIS & ASSOCIÉS",
+  "headline": "Votre propriétaire a un avocat. Prenez-en deux.",
+  "sub": "",
+  "small": "Première consultation : une heure, un café",
+  "art": "key",
+  "palette": [
+   "#14213d",
+   "#fdf6e3",
+   "#fca311"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "l-fournil",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "photo",
+  "brand": "FOURNIL DU COIN",
+  "headline": "Le pain, c'est comme l'amour : croustillant et fini à midi.",
+  "sub": "",
+  "small": "",
+  "art": "baguette",
+  "palette": [
+   "#e9d8a6",
+   "#3d2c1e",
+   "#0a9396"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "l-velocite",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "split",
+  "brand": "VÉLOCITÉ",
+  "headline": "Le métro est en grève. Vous, non.",
+  "sub": "Vélos de ville dès 380 €",
+  "small": "",
+  "art": "bike",
+  "palette": [
+   "#ffd60a",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "l-noir",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "minimal",
+  "brand": "ATELIER BLANC",
+  "headline": "Le blanc. Pour changer.",
+  "sub": "",
+  "small": "",
+  "art": "star",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "l-allo",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "type",
+  "brand": "ALLÔ MOBILE",
+  "headline": "Parlez sous le tunnel. Personne n'entendra.",
+  "sub": "",
+  "small": "Forfait 12 € · 3 Go d'espoir",
+  "art": "phone",
+  "palette": [
+   "#005f73",
+   "#fefae0",
+   "#ee9b00"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "l-bonsens",
+  "family": "landscape",
+  "kind": "psa",
+  "layout": "photo",
+  "brand": "COMITÉ DU BON SENS",
+  "headline": "Pour votre santé, pédalez au moins 30 minutes par jour.",
+  "sub": "",
+  "small": "",
+  "art": "sun",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#e63946"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "l-mousse",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "split",
+  "brand": "BRASSERIE LA MOUSSE",
+  "headline": "Blonde, brune, ou lundi.",
+  "sub": "",
+  "small": "L'abus d'alcool est dangereux pour la santé.",
+  "art": "bottle",
+  "palette": [
+   "#c1121f",
+   "#fff1e6",
+   "#ffd166"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "l-plafond",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "type",
+  "brand": "PIERRE & PLAFOND",
+  "headline": "Plafond bas. Prix haut.",
+  "sub": "",
+  "small": "Visites sur rendez-vous, à genoux",
+  "art": "house",
+  "palette": [
+   "#f4ead5",
+   "#1b1b1b",
+   "#d62828"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "l2-reveil",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "RÉVEIL-STATION",
+  "headline": "Dormez dans le métro. Descendez au bon arrêt.",
+  "sub": "Alarme à vibrations, garantie jusqu'au terminus.",
+  "small": "",
+  "art": "p_clock",
+  "palette": [
+   "#1d3557",
+   "#f1faee",
+   "#ffb703"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "l2-dignite",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "LOCATION DIGNE",
+  "headline": "Louez un vélo. Gardez votre dignité.",
+  "sub": "Selle réglable, regard fier fourni.",
+  "small": "",
+  "art": "bike",
+  "palette": [
+   "#ffd166",
+   "#073b4c",
+   "#ef476f"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "l2-seine",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "photo",
+  "brand": "SEINE & SOUS",
+  "headline": "La Seine, vue d'en bas.",
+  "sub": "Croisière à la rame, vue sur les canards.",
+  "small": "",
+  "art": "fish",
+  "palette": [
+   "#0096c7",
+   "#ffffff",
+   "#ffd60a"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "l2-agence",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "type",
+  "brand": "AGENCE LE CLOU",
+  "headline": "Propriétaire cherche locataire sans bruit, sans chat, sans vie.",
+  "sub": "",
+  "small": "Loyer négociable. Pas par vous.",
+  "art": "house",
+  "palette": [
+   "#f1faee",
+   "#1d3557",
+   "#e63946"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "l2-parapluie-greve",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "type",
+  "brand": "PARAPLUIES DE GRÈVE",
+  "headline": "Les grèves, c'est comme la pluie : prévoyez large.",
+  "sub": "",
+  "small": "Abris de fortune dès 15 €",
+  "art": "p_umbrella",
+  "palette": [
+   "#ffbe0b",
+   "#1b1b1b",
+   "#3a86ff"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "l2-pedaler",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "PÉDALE",
+  "headline": "Pédaler.",
+  "sub": "",
+  "small": "Rien d'autre.",
+  "art": "bike",
+  "palette": [
+   "#fafafa",
+   "#1a1a1a",
+   "#8a8a8a"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "l2-cafepave",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "minimal",
+  "brand": "CAFÉ DU PAVÉ",
+  "headline": "Un café. Un pavé. Un jour.",
+  "sub": "",
+  "small": "",
+  "art": "coffee",
+  "palette": [
+   "#f4e9d8",
+   "#2b2118",
+   "#8d5524"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "l2-roue",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "split",
+  "brand": "ATELIER DE LA ROUE",
+  "headline": "Le vélo se répare. Le métro, on attend.",
+  "sub": "Chaîne, freins, patience : tout est en stock.",
+  "small": "",
+  "art": "p_wrench",
+  "palette": [
+   "#264653",
+   "#f1faee",
+   "#e9c46a"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "l2-piano",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "split",
+  "brand": "PIANOS DE L'IMPASSE",
+  "headline": "Piano droit. Voisins gauches.",
+  "sub": "Livraison au sixième : deux hommes, un cri.",
+  "small": "",
+  "art": "p_piano",
+  "palette": [
+   "#f8f9fa",
+   "#212529",
+   "#e63946"
+  ],
+  "font": "slab"
+ },
+ {
+  "id": "l2-rouedor",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "MAISON ROUE D'OR",
+  "headline": "L'élégance a deux roues.",
+  "sub": "",
+  "small": "Sur rendez-vous · par ascenseur",
+  "art": "bike",
+  "palette": [
+   "#0b090a",
+   "#f5f3f4",
+   "#d4af37"
+  ],
+  "font": "didone"
+ },
+ {
+  "id": "l2-tour",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "hero",
+  "brand": "ASCENSEUR & CIE",
+  "headline": "Montez plus haut que votre loyer.",
+  "sub": "",
+  "small": "Visite du ciel · 12 € · assis",
+  "art": "tower",
+  "palette": [
+   "#10002b",
+   "#e0aaff",
+   "#ffd60a"
+  ],
+  "font": "sans"
+ },
+ {
+  "id": "l2-beret",
+  "family": "landscape",
+  "kind": "product",
+  "layout": "hero",
+  "brand": "BÉRET & BÉRET",
+  "headline": "Ne perdez pas la tête. Gardez le béret.",
+  "sub": "",
+  "small": "Depuis un certain temps",
+  "art": "p_beret",
+  "palette": [
+   "#d00000",
+   "#fff1e6",
+   "#111111"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "l2-q-libre",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "quote",
+  "brand": "LIBRE-VÉLO",
+  "headline": "Depuis que je pédale, je ne pense plus à mon loyer.",
+  "sub": "— Gérard, 54 ans, cycliste depuis mardi",
+  "small": "Abonnement mensuel · résiliable en cas de pente",
+  "art": "bike",
+  "palette": [
+   "#fdf0d5",
+   "#003049",
+   "#c1121f"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "l2-q-metro",
+  "family": "landscape",
+  "kind": "service",
+  "layout": "quote",
+  "brand": "LES DEUX-ROUES DU MATIN",
+  "headline": "J'ai quitté le métro. Il ne m'a même pas écrit.",
+  "sub": "— Monique, 61 ans, cycliste depuis jeudi",
+  "small": "Pour arriver à l'heure, sans lui",
+  "art": "bike",
+  "palette": [
+   "#e9ecef",
+   "#212529",
+   "#e76f51"
+  ],
+  "font": "serif"
+ },
+ {
+  "id": "f-chat",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "CHAT PERDU",
+  "sub": "Répond au nom de Monsieur. Ne répond à rien d'autre.",
+  "small": "06 39 98 13 42",
+  "art": "cat",
+  "palette": [
+   "#f6e58d",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-guitare",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "COURS DE GUITARE",
+  "sub": "Débutants, désespérés bienvenus.",
+  "small": "06 39 98 16 44",
+  "art": "note",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-coloc",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "COLOC 7 M²",
+  "sub": "Lit mezzanine. Plafond en option. 550 € tout compris.",
+  "small": "06 39 98 19 46",
+  "art": "bed",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f-vide",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "VIDE-GRENIER",
+  "sub": "Dimanche, place des Tilleuls. Ex non inclus.",
+  "small": "01 99 00 22 48",
+  "art": "star",
+  "palette": [
+   "#dff0d8",
+   "#1d3a1d",
+   "#a94442"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-velo",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "RÉPARATION VÉLO",
+  "sub": "Crevaison 8 €. Philosophie gratuite.",
+  "small": "06 39 98 25 50",
+  "art": "tire",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-chorale",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "CHORALE CHERCHE BASSES",
+  "sub": "Vous chantez faux ? Parfait, nous aussi. Mardi 19 h.",
+  "small": "06 39 98 28 52",
+  "art": "note",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-francais",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "COURS DE FRANÇAIS",
+  "sub": "Apprenez à dire « c'est compliqué » en neuf nuances.",
+  "small": "06 39 98 31 54",
+  "art": "glasses",
+  "palette": [
+   "#f6e58d",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f-pigeon",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "PIGEON TROUVÉ",
+  "sub": "Il a l'air de savoir quelque chose. Réclamez-le.",
+  "small": "06 39 98 34 56",
+  "art": "pigeon",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-demenage",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "DÉMÉNAGEUR 6e ÉTAGE",
+  "sub": "Piano : non. Même au double.",
+  "small": "06 39 98 37 58",
+  "art": "house",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-yoga",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "YOGA DU MARDI",
+  "sub": "Respirez. C'est pollué, mais respirez.",
+  "small": "06 39 98 40 60",
+  "art": "plant",
+  "palette": [
+   "#dff0d8",
+   "#1d3a1d",
+   "#a94442"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-parapluie",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "TROUVÉ : UN PARAPLUIE",
+  "sub": "Décrivez la pluie pour le récupérer.",
+  "small": "06 39 98 43 62",
+  "art": "rain",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-canape",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "DONNE CANAPÉ",
+  "sub": "Vous venez le chercher. 5e sans ascenseur. Il pèse une tonne.",
+  "small": "06 39 98 46 64",
+  "art": "bed",
+  "palette": [
+   "#f6e58d",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-maths",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "COURS DE MATHS",
+  "sub": "Je vous explique pourquoi l'addition est fausse.",
+  "small": "06 39 98 49 66",
+  "art": "chart",
+  "palette": [
+   "#d6eaf8",
+   "#17202a",
+   "#c0392b"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f-tricot",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "ATELIER TRICOT",
+  "sub": "Pulls pour chiens, bonnets pour guidons. Jeudi 18 h.",
+  "small": "06 39 98 52 68",
+  "art": "sock",
+  "palette": [
+   "#fad7a0",
+   "#2e1c0e",
+   "#922b21"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-petanque",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "CHERCHE PARTENAIRE PÉTANQUE",
+  "sub": "Pastis fourni. Honneur non.",
+  "small": "06 39 98 55 70",
+  "art": "star",
+  "palette": [
+   "#dff0d8",
+   "#1d3a1d",
+   "#a94442"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f-chien",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "PROMENEUR DE CHIENS",
+  "sub": "Votre chien rencontrera des gens importants.",
+  "small": "06 39 98 58 72",
+  "art": "dog",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-piano",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "COURS DE PIANO",
+  "sub": "Premier cours offert. Voisins prévenus.",
+  "small": "06 39 98 21 05",
+  "art": "p_piano",
+  "palette": [
+   "#f6f1e0",
+   "#1d1d1d",
+   "#c0392b"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-peintre",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "PEINTRE EN BÂTIMENT",
+  "sub": "Vos murs ont vu pire. Blanc cassé, nerfs solides.",
+  "small": "06 39 98 35 18",
+  "art": "p_roller",
+  "palette": [
+   "#e8f4f8",
+   "#1d1d1d",
+   "#1565c0"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-velo-adultes",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "LEÇONS DE VÉLO ADULTES",
+  "sub": "Jamais trop tard. Parfois trop haut.",
+  "small": "06 39 98 62 47",
+  "art": "bike",
+  "palette": [
+   "#ffe8a3",
+   "#222222",
+   "#d62828"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-montre",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "MONTRES REMISES À L'HEURE",
+  "sub": "Pas à l'heure de pointe. À la bonne.",
+  "small": "01 99 00 17 24",
+  "art": "p_clock",
+  "palette": [
+   "#f2efe6",
+   "#222222",
+   "#b00020"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-escargots",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "ESCARGOTS À DONNER",
+  "sub": "Dix escargots, pas pressés de partir.",
+  "small": "06 39 98 90 03",
+  "art": "p_snail",
+  "palette": [
+   "#d8f3dc",
+   "#1b4332",
+   "#d00000"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-souris",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "SOURIS : ON S'EN OCCUPE",
+  "sub": "Dératisation douce. Les souris vous remercient.",
+  "small": "01 99 00 83 66",
+  "art": "p_mouse",
+  "palette": [
+   "#f5f5f5",
+   "#212121",
+   "#e63946"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-accordeon",
+  "family": "flyer",
+  "kind": "product",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "ACCORDÉON À VENDRE",
+  "sub": "Peu servi. Beaucoup entendu.",
+  "small": "06 39 98 07 71",
+  "art": "p_accordion",
+  "palette": [
+   "#fff3b0",
+   "#1d1d1d",
+   "#9d0208"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-echelle",
+  "family": "flyer",
+  "kind": "service",
+  "layout": "flyer",
+  "brand": "",
+  "headline": "ÉCHELLE À LOUER",
+  "sub": "Pour atteindre vos rêves, ou le plafond.",
+  "small": "06 39 98 54 29",
+  "art": "p_ladder",
+  "palette": [
+   "#f4a261",
+   "#1d1d1d",
+   "#264653"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-g1",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "LA CAVE DU CHAT SEC",
+  "headline": "LES CROISSANTS DE COMBAT",
+  "sub": "+ DJ Beurre Noir · Fanzine offert",
+  "small": "SAM 23H · 5 €",
+  "art": "croissant",
+  "palette": [
+   "#f7ff00",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g2",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "BAR DU CLOU TORDU",
+  "headline": "CHAÎNE LÂCHE",
+  "sub": "Rock fatigué · deux sets · pas de rappel",
+  "small": "VEN 21H · PRIX LIBRE",
+  "art": "chain",
+  "palette": [
+   "#ff6ec7",
+   "#111111",
+   "#ffffff"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "f2-g3",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "PÉNICHE LE FIL DE L'EAU",
+  "headline": "MADAME PIGEON & LES MIGRATEURS",
+  "sub": "Chanson d'hiver · apportez un manteau",
+  "small": "JEU 20H30 · 8 €",
+  "art": "pigeon",
+  "palette": [
+   "#8fd3ff",
+   "#111111",
+   "#0033cc"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g4",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "SQUAT LA FOURMILIÈRE",
+  "headline": "FREIN À MAIN SERRÉ",
+  "sub": "Punk à vélo · tournée du quartier",
+  "small": "DIM 17H · 3 €",
+  "art": "bike",
+  "palette": [
+   "#7dff6a",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "f2-g5",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "LA LAVERIE DE NUIT",
+  "headline": "SCÈNE OUVERTE : ON SE LANCE",
+  "sub": "Inscription sur place · trois minutes max",
+  "small": "MAR 20H · GRATUIT",
+  "art": "note",
+  "palette": [
+   "#ffb347",
+   "#111111",
+   "#ffffff"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g6",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "CAFÉ DES DEUX RATS",
+  "headline": "LE TRIO DU RETARD",
+  "sub": "Jazz de rattrapage · le batteur arrive plus tard",
+  "small": "MER 21H · 5 €",
+  "art": "p_clock",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#ff2d95"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "f2-g7",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "HANGAR 13 BIS",
+  "headline": "QUARTET ESCALATOR",
+  "sub": "Electro qui monte · qui descend à 2 h",
+  "small": "SAM 23H30 · 10 €",
+  "art": "star",
+  "palette": [
+   "#f7ff00",
+   "#111111",
+   "#6a00ff"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g8",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "CAVE SAINT-CRÉPUSCULE",
+  "headline": "LES ESCARGOTS ÉLECTRIQUES",
+  "sub": "Rock lent · bière rapide",
+  "small": "VEN 22H · 6 €",
+  "art": "p_snail",
+  "palette": [
+   "#ff6ec7",
+   "#111111",
+   "#f7ff00"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g9",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "BRASSERIE LE ZINC FATIGUÉ",
+  "headline": "BAL DU DIMANCHE SOIR",
+  "sub": "Accordéon, java, croque-monsieur",
+  "small": "DIM 18H · UN CROQUE",
+  "art": "p_accordion",
+  "palette": [
+   "#ffb347",
+   "#111111",
+   "#9d0208"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "f2-g10",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "LA BELLE DE TRAVERSE",
+  "headline": "MÉTRO BOULOT BOUILLIE",
+  "sub": "Cover band de nos propres soucis",
+  "small": "SAM 22H · 4 €",
+  "art": "mask",
+  "palette": [
+   "#8fd3ff",
+   "#111111",
+   "#ff006e"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g11",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "BAR TABAC LE VERTIGE",
+  "headline": "TONTON PÉDALE",
+  "sub": "Chanson à texte · texte à rallonge",
+  "small": "JEU 21H · CHAPEAU",
+  "art": "p_guitar",
+  "palette": [
+   "#7dff6a",
+   "#111111",
+   "#ffffff"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "f2-g12",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "LE BOUIBOUI",
+  "headline": "VIDE-DRESSING DE NUIT",
+  "sub": "Fringues, vinyles et mauvais conseils",
+  "small": "SAM 22H · ENTRÉE 2 €",
+  "art": "shoe",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#ff6ec7"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-g13",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "SQUAT LES MIMOSAS",
+  "headline": "ORCHESTRE DES GOUTTIÈRES",
+  "sub": "Percussions sur tuyaux · bouchons d'oreilles",
+  "small": "VEN 20H · PRIX LIBRE",
+  "art": "bell",
+  "palette": [
+   "#f7ff00",
+   "#111111",
+   "#2d6a4f"
+  ],
+  "font": "condensed"
+ },
+ {
+  "id": "f2-g14",
+  "family": "flyer",
+  "kind": "event",
+  "layout": "gig",
+  "brand": "PÉNICHE LE ROULIS",
+  "headline": "LES PAVÉS VOLANTS",
+  "sub": "Rock acrobatique · casques conseillés",
+  "small": "SAM 21H · 7 €",
+  "art": "helmet",
+  "palette": [
+   "#ff6ec7",
+   "#111111",
+   "#7dff6a"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l1",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MA PATIENCE",
+  "headline": "PERDU",
+  "sub": "Dernière vue au guichet n°4, vers 9 h. Répond à « Veuillez patienter ».",
+  "small": "RÉCOMPENSE : UN CAFÉ",
+  "art": "p_clock",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l2",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MON VÉLO",
+  "headline": "VOLÉ",
+  "sub": "Bleu, selle déchirée, panier cassé. Je tiens surtout à la sonnette.",
+  "small": "06 39 98 44 10",
+  "art": "bike",
+  "palette": [
+   "#fff3a0",
+   "#111111",
+   "#c1121f"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l3",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MA CLÉ",
+  "headline": "PERDU",
+  "sub": "Porte-clés en forme de baguette. Je dors sur le palier.",
+  "small": "RÉCOMPENSE : UN CROISSANT",
+  "art": "key",
+  "palette": [
+   "#ffe5b4",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-l4",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "LE VOISIN DU PIANO",
+  "headline": "RECHERCHÉ",
+  "sub": "Dernière écoute : 23 h, un mardi. Mérite une conversation. Amicale.",
+  "small": "06 39 98 16 52",
+  "art": "p_piano",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#e63946"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l5",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "UN ESCARGOT",
+  "headline": "VU ?",
+  "sub": "Aperçu rue des Trois-Pédales vers 8 h. Il est peut-être encore là.",
+  "small": "01 99 00 29 40",
+  "art": "p_snail",
+  "palette": [
+   "#d8f3dc",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-l6",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "UNE CHAUSSETTE",
+  "headline": "TROUVÉ",
+  "sub": "Rayée, gauche, trouvée sur un banc. Cherche sa jumelle.",
+  "small": "06 39 98 70 85",
+  "art": "sock",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#0077b6"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l7",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MON BÉRET",
+  "headline": "PERDU",
+  "sub": "Noir, très parisien, fortement attaché à ma tête.",
+  "small": "RÉCOMPENSE : UNE BAGUETTE",
+  "art": "p_beret",
+  "palette": [
+   "#ffd6a5",
+   "#111111",
+   "#9d0208"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-l8",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MA ROUE AVANT",
+  "headline": "VOLÉ",
+  "sub": "Il me reste la roue arrière. Elle se sent seule.",
+  "small": "06 39 98 76 31",
+  "art": "tire",
+  "palette": [
+   "#f7ff00",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l9",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MON CHIEN SAUCISSE",
+  "headline": "PERDU",
+  "sub": "Répond à « Baguette ». Ne répond à rien d'autre, surtout pas à moi.",
+  "small": "06 39 98 48 02",
+  "art": "dog",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#c1121f"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-l10",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "UN CROISSANT",
+  "headline": "VU ?",
+  "sub": "Un croissant fugueur, aperçu près du café. Encore tiède.",
+  "small": "RÉCOMPENSE : LE CROISSANT",
+  "art": "croissant",
+  "palette": [
+   "#fff1c1",
+   "#111111",
+   "#bc6c25"
+  ],
+  "font": "hand"
+ },
+ {
+  "id": "f2-l11",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "MON PORTABLE",
+  "headline": "RECHERCHÉ",
+  "sub": "Écran fissuré, batterie fatiguée. Appelez-le, il sonne chez quelqu'un.",
+  "small": "01 99 00 61 38",
+  "art": "phone",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#3a0ca3"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-l12",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "lost",
+  "brand": "UN CASQUE DE VÉLO",
+  "headline": "TROUVÉ",
+  "sub": "Trouvé près du pont. Il s'est sûrement sauvé après un virage.",
+  "small": "06 39 98 25 93",
+  "art": "helmet",
+  "palette": [
+   "#caf0f8",
+   "#111111",
+   "#d00000"
+  ],
+  "font": "black"
+ },
+ {
+  "id": "f2-n1",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "SYNDIC DE L'IMMEUBLE",
+  "headline": "AVIS AUX RIVERAINS",
+  "sub": "Le portail du n°12 est cassé depuis mardi. Une commission a été formée. Elle se réunira en mars.",
+  "small": "Le conseil syndical",
+  "art": "house",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#444444"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n2",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "COMITÉ DES FÊTES DE LA RUE DES TROIS-PÉDALES",
+  "headline": "FÊTE DES VOISINS",
+  "sub": "Chacun apporte un plat. Pas de thon, merci. Rendez-vous dans la cour à 19 h.",
+  "small": "Samedi, 19 h",
+  "art": "wine",
+  "palette": [
+   "#fffbe6",
+   "#1a1a1a",
+   "#b00020"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n3",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "LE VOISIN DU 4e",
+  "headline": "PLACE VÉLO",
+  "sub": "Cher inconnu : le local à vélos n'est pas à vous. Mon vélo vous remercie de le lui rendre.",
+  "small": "Cordialement, le 4e",
+  "art": "bike",
+  "palette": [
+   "#f2f2f2",
+   "#111111",
+   "#555555"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n4",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "LA VOISINE DU 2e",
+  "headline": "LES POUBELLES ONT UN JOUR",
+  "sub": "Elles ont aussi un tri. Le verre n'est pas du plastique. Je vous observe, affectueusement.",
+  "small": "Mme Roussel, 2e gauche",
+  "art": "can",
+  "palette": [
+   "#fff9db",
+   "#1a1a1a",
+   "#c92a2a"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n5",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "ÉCHANGE",
+  "headline": "APPARTEMENT À ÉCHANGER",
+  "sub": "Studio 14 m², Paris, contre maison en Bretagne. Vue sur cour. Ou sur la cour d'à côté.",
+  "small": "06 39 98 31 77",
+  "art": "house",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#1d3557"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n6",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "LÉA, 17 ANS",
+  "headline": "BABY-SITTING",
+  "sub": "Étudiante sérieuse. Contes, devoirs, sieste. Pas d'écran avant 20 h.",
+  "small": "06 39 98 12 66",
+  "art": "star",
+  "palette": [
+   "#fff0f5",
+   "#222222",
+   "#d6336c"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n7",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "MME PÉRIGORD",
+  "headline": "CHAMBRE À LOUER",
+  "sub": "Chambre de bonne, 7e étage, 8 m². Lumineuse (une lucarne). Vue sur toits et pigeons.",
+  "small": "01 99 00 45 73",
+  "art": "bed",
+  "palette": [
+   "#fdf6e3",
+   "#1a1a1a",
+   "#8b4513"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n8",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "GARDE DE CHAT",
+  "headline": "JE GARDE VOTRE CHAT",
+  "sub": "Pendant vos vacances. Il sera adoré, nourri, et plaint pour votre absence.",
+  "small": "06 39 98 83 20",
+  "art": "cat",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#6a4c93"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n9",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "ATELIER DE COUR",
+  "headline": "VÉLO EN PANNE ?",
+  "sub": "Je répare dans la cour du 14, le mercredi, avec du café. Apportez la chaîne.",
+  "small": "Mercredi, 17 h",
+  "art": "p_wrench",
+  "palette": [
+   "#f8f9fa",
+   "#111111",
+   "#e8590c"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n10",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "COMITÉ DES TROTTOIRS DE LA RUE DES TROIS-PÉDALES",
+  "headline": "TRAVAUX DE LA RUE",
+  "sub": "Les travaux commencent lundi. Ils finiront. Nous ne savons pas quand. Merci de votre patience.",
+  "small": "Le comité",
+  "art": "p_clock",
+  "palette": [
+   "#fff3bf",
+   "#1a1a1a",
+   "#495057"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n11",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "RÉSIDENCE LES TILLEULS",
+  "headline": "ASCENSEUR EN PANNE",
+  "sub": "Le technicien a été prévenu. L'escalier est disponible 24 h sur 24.",
+  "small": "La gardienne",
+  "art": "p_ladder",
+  "palette": [
+   "#ffffff",
+   "#111111",
+   "#c92a2a"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n12",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "LE 5e DROITE",
+  "headline": "MUSIQUE APRÈS 22 H",
+  "sub": "Nous aimons la musique. Nous aimons aussi dormir. Entre les deux, il y a la gentillesse.",
+  "small": "Merci d'avance",
+  "art": "note",
+  "palette": [
+   "#f1f3f5",
+   "#1a1a1a",
+   "#364fc7"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n13",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "JARDIN PARTAGÉ DE L'IMPASSE",
+  "headline": "TOMATES À PARTAGER",
+  "sub": "Trop de tomates, pas assez de voisins. Venez cueillir jeudi à 18 h. Apportez un sac.",
+  "small": "Jeudi, 18 h",
+  "art": "plant",
+  "palette": [
+   "#ebfbee",
+   "#1a1a1a",
+   "#2b8a3e"
+  ],
+  "font": "mono"
+ },
+ {
+  "id": "f2-n14",
+  "family": "flyer",
+  "kind": "civic",
+  "layout": "notice",
+  "brand": "LE GARDIEN",
+  "headline": "CLÉ DE LA CAVE",
+  "sub": "La clé de la cave est perdue. Si vous la retrouvez, gardez aussi les vieilles bouteilles.",
+  "small": "06 39 98 99 14",
+  "art": "key",
+  "palette": [
+   "#fff9db",
+   "#1a1a1a",
+   "#7048e8"
+  ],
+  "font": "mono"
+ }
+]

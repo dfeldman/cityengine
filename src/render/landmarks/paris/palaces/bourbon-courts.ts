@@ -1,6 +1,7 @@
 import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { topiaryCone } from '../../../topiary.ts'
 import { block, hex, roof, shade } from '../../kit.ts'
 import { boxAlong, edgeAt, offsetRing } from '../../parts.ts'
 import type { Fit } from '../../fit.ts'
@@ -309,7 +310,7 @@ function court(out: MeshBuilder, p: Pal): void {
 function yew(out: MeshBuilder, x: number, z: number): void {
   const g = hex('#2f5a2c')
   prism(out, x, z, 0.28, 0.6, 0.35, 8, hex('#4a3a2a'), FIXED)
-  prism(out, x, z, 0.6, 2.6, 0.62, 8, g, surfaceTag('clipped'), 0.04)
+  topiaryCone(out, x, 0.6, z, 2.0, 0.62, g, { seed: x + z * 7, sink: 0.02 })
 }
 
 function lamp(out: MeshBuilder, x: number, z: number): void {

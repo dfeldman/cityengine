@@ -167,6 +167,88 @@ its own, but every one counts against the same ~6.5 µs per mesh. Merge statues 
 On the phone tiers, the budget is now about 9 ms of CPU on an M4, so the ultra tier has room for some of what it
 currently leaves out.
 
+### Road shader detail (`?roads=0|1|2`, 2026-11-26)
+
+Road-only GPU time (`--only=road: --gpu`, ultra tier, SF chase view at 37.7905,-122.4085, M4 Metal, two runs each).
+The full-scene frame (37 ms at 1440×900, 58 ms at 2880×1800) did not move by more than run-to-run noise.
+
+| level | GPU 1.3 MP | GPU 5.2 MP | added per MP |
+|---|---|---|---|
+| Off (0) | 4.4 ms | 7.37 ms | — |
+| Simple (1, Auto on phones) | 4.6 ms | 8.26 ms | ~0.17 ms |
+| Full (2, Auto on desktop) | 4.8 ms | 8.56–9.14 ms | ~0.25–0.34 ms |
+
+An iPhone renders ~0.33 MP on the ultra tier (maxDpr 1). Even if the phone GPU is 4–5× slower than the M4, Simple
+should add only about 0.2–0.3 ms, and Full about 0.5 ms. This is a scaled estimate, not a phone measurement.
+No textures or memory are added.
+
+### Facade stone detail (`?facades=0|1|2`, 2026-11-26)
+
+Menu → Settings → Graphics → Detailed facades; Auto gives 1 on the ultra (phone) tier, 2 elsewhere. Level 1 is arithmetic only
+(bedding mottle, warm/cool drift, a tone per painted course); level 2 adds the uncleaned-front crust, render grain and a
+relief probe (two extra texture fetches). The landmarks' ashlar, dressed stone and stucco (cartoon-material.ts `aged`) follow
+the same levels. Tunables: `F_` in facade-material.ts, `A_` in cartoon-material.ts.
+
+Facade-only GPU time (`--only=facade: --gpu`, ultra tier, Rue de la Chaussée-d'Antin 48.87245,2.33295, M4, two runs):
+
+| Level | 1.3 MP | 5.2 MP |
+|---|---|---|
+| Off | 2.33 / 2.38 ms | 12.2 / 13.0 ms |
+| Simple | 2.22 / 2.30 ms | 11.9 / 11.9 ms |
+| Full | 2.29 / 2.25 ms | 12.3 / 12.2 ms |
+
+No difference above run-to-run noise (±0.5 ms at 5.2 MP): the facade pass is bound by geometry, not fill. No textures or memory added.
+
+### Window dressing and coated glass (part of `?facades=`, 2026-11-26)
+
+Panes get a lit backing (sheer, drapes, blind) by a per-window random, and untinted towers a coating by building seed
+(facade-material.ts `G_` constants, `GLASS_LOOKS`). Arithmetic only, no texture reads. Same facade-only GPU test, two runs:
+
+| Level | 1.3 MP | 5.2 MP |
+|---|---|---|
+| Off | 2.41/2.23 ms | 12.2/12.2 ms |
+| Simple | 2.23/2.31 ms | 11.9/12.7 ms |
+| Full | 2.24/2.26 ms | 12.3/11.5 ms |
+
+No difference above noise.
+
+### Grass (`?grass=0|1|2`, 2026-11-26)
+
+Ground-shader arithmetic only (render/grass-glsl.ts, shared by `road:grass` and `facade:brutalist:ground`); no texture reads added
+beyond one second sample of the road page at level 2. GPU ms, Champ de Mars, `--only=<prefix> --gpu`, medians of 3 runs (the last
+facade level 2 run lost; 2 runs), chromium/ANGLE Metal on a busy shared machine:
+
+| Material | Level | 1440x900 | 720x450 |
+|---|---|---|---|
+| road:grass | 0 / 1 / 2 | 24.2 / 25.7 / 23.9 | 17.0 / 17.5 / 17.4 |
+| facade:brutalist:ground | 0 / 1 / 2 | 25.3 / 23.8 / 24.2 | 17.7 / 16.6 / 17.5 |
+
+Single runs ranged 23 to 32 ms, so the noise (about 30 percent) is larger than any difference: no cost is measurable. The absolute
+numbers are high because the machine was loaded; compare within the table only.
+
+Whole-frame, near-field grass (render/grass-near.ts), 2026-11-26. `profile-frame.mjs --gpu`, chromium/ANGLE Metal, full city (nothing hidden), 90
+frames a run after an 8 s settle, 3 runs a config, the 4 configs interleaved (A,B,C,D,A,B,C,D...) so the machine's noise spreads over all of them.
+Medians of the 3 runs: whole-frame GPU ms / frame interval ms. The 2880x1800 column is `--scales=0.5`.
+
+| Place | Config | 1440x900 GPU / frame | 2880x1800 GPU / frame |
+|---|---|---|---|
+| Champ de Mars | grass=0 | 23.6 / 36.4 | 83.5 / 45.6 |
+| | grass=2, near off | 25.0 / 36.3 | 73.1 / 52.2 |
+| | grass=2, grassnear=1 (Medium) | 25.7 / 36.7 | 71.6 / 52.0 |
+| | grass=2, grassnear=2 (High) | 24.6 / 35.7 | 89.4 / 53.0 |
+| Dolores Park | grass=0 | 27.9 / 42.4 | 69.7 / 48.1 |
+| | grass=2, near off | 26.9 / 40.7 | 94.2 / 50.1 |
+| | grass=2, grassnear=1 (Medium) | 28.2 / 42.0 | 91.6 / 49.7 |
+| | grass=2, grassnear=2 (High) | 26.9 / 43.2 | 83.9 / 52.2 |
+
+Noise: at 1440x900 single runs spread 2-5 ms GPU (about 10-20 percent) and 1-4 ms frame; at 2880x1800 the GPU timer swings 64-108 ms
+between runs of one config (the frame interval is steadier, 1-6 ms). So: at 1440x900 no config differs from grass=0 by more than the noise,
+near-field grass costs under 1 ms. At 2880x1800 the GPU column cannot rank the configs; the frame interval says grass=2 costs 2-7 ms (the
+ground shader, present with near off), and Medium or High near-field adds under 1 ms (Champ de Mars) to 2 ms (Dolores) on top. The frame
+interval sits under the GPU time at 2880x1800 because the timer sums queries ANGLE reports across a deeper pipeline; trust the frame column.
+Draw calls: near-field adds 3 meshes (1 shell, 2 card layers). Not re-measured after the slope-lift edit (grass-mask.ts `groundLift`, 4 more
+height taps per shell vertex).
+
 ## Not yet measured
 
 - A real iPhone 15. The fix should be checked there first. A `?profile=1` overlay would make phone numbers easy
@@ -182,9 +264,24 @@ currently leaves out.
 npm run build && npx vite preview --port 5201                    # what is measured
 node tools/perf/profile-load.mjs --cache --net=25 --rtt=80        # cold load: requests, marks, long tasks
 node tools/perf/profile-load.mjs --cache --warm --net=100 --rtt=40   # a repeat visit
-node tools/perf/profile-frame.mjs --scales=0.5,1,2 [--q=without=life] [--hud] [--browser=webkit --headed]
+node tools/perf/profile-frame.mjs --scales=0.5,1,2 [--q=without=life] [--hud] [--only=road: --gpu] [--browser=webkit --headed]
 node tools/perf/cpu-profile.mjs --url=http://localhost:5200       # dev server: top functions by self/inclusive time
 ```
 
 Load numbers need `--cache`. Without it the HTTP cache is off, and every duplicate texture counts against the
 wire (188 MB instead of 100 MB).
+
+### Ambient occlusion (SSAO2, High tier only, 2026-11-27)
+
+GPU ms per frame, M4 Chromium, settings as they were (16 samples, full-resolution blur), median of two runs:
+
+| | 1.3 MP | 5.2 MP |
+|---|---|---|
+| Hôtel de Ville, AO on / off | 17.1 / 16.0 | 23.3 / 19.5 |
+| Louvre square, AO on / off | 16.3 / 15.2 | 20.0 / 15.0 |
+
+Frame time did not move: the loop is CPU-bound on the M4. Those settings (`base` 0.42) clipped away almost all of the
+AO, so it cost 4–5 ms at 5 MP for nothing visible. Retuned in `src/render/depth.ts` `AO` (base 0, strength 1, radius
+1.5 m, 8 samples, half-resolution blur), and AO now always reads the geometry buffer, even with shadows off. The
+cheaper blur and samples are not measured yet: the runs overlapped another session's tests. Rerun on a quiet machine
+with `--q=aoblur=1&aosamples=16` against the default.

@@ -1,5 +1,6 @@
 import { type MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import { prism, type Rgb } from '../../../models.ts'
+import { topiaryCone } from '../../../topiary.ts'
 import { block, hex, shade } from '../../kit.ts'
 import type { P2 } from '../../stairway.ts'
 import { offsetRing } from '../../parts.ts'
@@ -52,7 +53,7 @@ export function fontaineVarsovie(out: MeshBuilder): void {
     block(out, s > 0 ? 13.1 : -15.1, s > 0 ? 15.1 : -13.1, -47, 40.5, 0, 0.75, STONE)
     for (let z = -45; z <= 38; z += 6.9) {
       prism(out, s * 14.1, z, 0.75, 0.95, 0.75, 10, shade(STONE, 0.9))
-      prism(out, s * 14.1, z, 0.95, 3.2, 0.72, 10, YEW, FIXED, 0.03)
+      topiaryCone(out, s * 14.1, 0.95, z, 2.25, 0.72, YEW, { seed: z * s, sink: 0.02 })
     }
   }
 

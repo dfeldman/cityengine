@@ -2,13 +2,13 @@ import { VIEWPORT } from './shot-size.ts'
 /**
  * The chase camera at a place: loads the city with `?at=lat,lon` (the rider put on the nearest rideable
  * street), frozen, and screenshots what the rider sees — for reports given as "at 48.86, 2.29".
- *   node --experimental-strip-types tools/ride-shot.ts --city=paris-centre --at=48.863689,2.297469 --out=x.png [--view=high] [--life] [--device=treadmill] [--clean]
+ *   node --experimental-strip-types tools/ride-shot.ts --city=paris-centre --at=48.863689,2.297469 --out=x.png [--view=high] [--life] [--device=treadmill] [--clean] [--q=roads=1]
  */
 import { chromium } from 'playwright'
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: VIEWPORT })
-await page.goto(`http://localhost:${arg('port', '5200')}/?city=${arg('city', 'paris-centre')}&at=${arg('at')}&freeze=1${process.argv.includes('--life') ? '' : '&without=life'}${arg('view') ? `&view=${arg('view')}` : ''}${arg('device') ? `&device=${arg('device')}` : ''}`)
+await page.goto(`http://localhost:${arg('port', '5200')}/?city=${arg('city', 'paris-centre')}&at=${arg('at')}&freeze=1${process.argv.includes('--life') ? '' : '&without=life'}${arg('view') ? `&view=${arg('view')}` : ''}${arg('device') ? `&device=${arg('device')}` : ''}${arg('q') ? `&${arg('q')}` : ''}`)
 await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })
 if (process.argv.includes('--life')) await page.waitForFunction('window.crowdReady === true', null, { timeout: 180_000 }).catch(() => console.warn('(crowd still baking)'))
 await page.waitForFunction('window.treesReady === true', null, { timeout: 120_000 }).catch(() => {})

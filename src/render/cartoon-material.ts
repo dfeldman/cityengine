@@ -21,7 +21,7 @@ import { Effect } from '@babylonjs/core/Materials/effect'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import type { Scene } from '@babylonjs/core/scene'
-import { DAYLIGHT, NIGHT, type SkyLook } from './facade-material.ts'
+import { DAYLIGHT, FACADE_DETAIL, NIGHT, type SkyLook } from './facade-material.ts'
 
 /**
  * Two vertex shaders, because a mesh either IS thin-instanced or is not, and the difference is not optional.
@@ -100,6 +100,50 @@ float vnoise(vec2 p) {
   f = f * f * (3.0 - 2.0 * f);
   return mix(mix(hash2(i), hash2(i + vec2(1.0, 0.0)), f.x), mix(hash2(i + vec2(0.0, 1.0)), hash2(i + vec2(1.0, 1.0)), f.x), f.y);
 }
+/*
+ * STONE AGE (owner, 2026-11-26: Paris fronts "a little bit too perfect"; the Pariscivic kit's stone and render). The
+ * ashlar and dressed-stone blocks were all one clean cream. Menu → Settings → Graphics → Detailed facades: FACADE_DETAIL
+ * 1 adds bedding, a wider tone per block and the odd replaced block (arithmetic only, phones on Auto); 2 adds the black
+ * crust of an uncleaned front and each block's lit top arris and shaded underside. Tunables: A_ below.
+ */
+#ifndef FACADE_DETAIL
+#define FACADE_DETAIL 0
+#endif
+#define A_BLOCK 0.04       // extra tone per block, ±, on top of the builder's own
+#define A_NEW 0.06         // a replaced block: this much paler, and cooler
+#define A_NEW_ODDS 0.05    // the share of blocks replaced
+#define A_MOTTLE 0.065     // bedding in the stone, ±
+#define A_HUE 0.03         // warm/cool drift, ±
+#define A_SOOT 0.14        // black crust: this much darker
+#define A_SOOT_COVER 0.62  // noise level it starts at (higher = less)
+#define A_EDGE 0.09        // a block's top arris lighter, its underside darker, by this
+// (p: metres across and up the face; blk: the block's row and column; fy: 0..1 up the block; near: the fine terms' fade)
+vec3 aged(vec3 c, vec2 p, vec2 blk, float fy, float near) {
+#if FACADE_DETAIL > 0
+  c *= 1.0 + (hash2(blk + 7.3) - 0.5) * 2.0 * A_BLOCK * near;
+  c = mix(c, c * vec3(0.99, 1.0, 1.04) * (1.0 + A_NEW), step(1.0 - A_NEW_ODDS, hash2(blk * 1.7 + 3.1)) * near);
+  float bed = vnoise(p / vec2(2.6, 0.8)) * 0.6 + vnoise(p / vec2(0.9, 0.35)) * 0.4 - 0.5;
+  c *= 1.0 + 2.0 * A_MOTTLE * bed;
+  c *= 1.0 + vec3(1.0, 0.2, -1.0) * (2.0 * A_HUE * (vnoise(p / 4.3 + 11.0) - 0.5));
+#endif
+#if FACADE_DETAIL > 1
+  float crust = smoothstep(A_SOOT_COVER, A_SOOT_COVER + 0.2, vnoise(p / vec2(3.0, 5.0) + 23.0)) * (0.35 + 0.65 * vnoise(vec2(p.x / 0.7, p.y / 6.0) + 9.0));
+  c = mix(c, mix(c, vec3(dot(c, vec3(0.333))), 0.3) * (1.0 - A_SOOT), crust);
+  c *= 1.0 + A_EDGE * near * (smoothstep(0.86, 0.95, fy) - smoothstep(0.14, 0.05, fy));
+#endif
+  return c;
+}
+// render: the same bedding and crust, softer, with no blocks
+vec3 agedRender(vec3 c, vec2 p) {
+#if FACADE_DETAIL > 0
+  c *= 1.0 + 1.4 * A_MOTTLE * (vnoise(p / vec2(3.0, 1.4)) - 0.5);
+  c *= 1.0 + vec3(1.0, 0.2, -1.0) * (2.0 * A_HUE * (vnoise(p / 4.3 + 11.0) - 0.5));
+#endif
+#if FACADE_DETAIL > 1
+  c *= 1.0 - 0.6 * A_SOOT * smoothstep(A_SOOT_COVER, A_SOOT_COVER + 0.25, vnoise(p / vec2(4.0, 7.0) + 31.0));
+#endif
+  return c;
+}
 // dressed limestone for the pale surfaces of a monument (BUGS 8): courses, staggered joints, a tone per block
 // and faint veins, all in world metres so every landmark is cut from the same stone
 vec3 dressed(vec3 c, vec3 n) {
@@ -113,6 +157,8 @@ vec3 dressed(vec3 c, vec3 n) {
   vec2 pl = vWorld.xz;
   float tone = 1.0;
   float joint = 0.0;
+  vec2 blk = vec2(0.0);
+  float fy = 0.5;
   if (an.y < 0.7) {
     float row = floor(y / 0.55);
     float u = along / 1.1 + 0.5 * mod(row, 2.0);
@@ -124,11 +170,14 @@ vec3 dressed(vec3 c, vec3 n) {
     joint = edge * (1.0 - smoothstep(35.0, 70.0, vDepth));
     tone = 0.97 + 0.06 * hash2(vec2(row, floor(u)));
     pl = vec2(along, y);
+    blk = vec2(row, floor(u));
+    fy = fract(y / 0.55);
   }
   float vein = vnoise(pl * 1.7) * 0.6 + vnoise(pl * 6.0) * 0.4;
   // white still, but stone: a touch warm (Paris is built of a cream limestone), with the texture in the tone
   vec3 lime = c * vec3(1.0, 0.985, 0.955) * tone * (0.975 + 0.05 * vein);
   lime *= 1.0 - 0.16 * joint;
+  lime = aged(lime, pl, blk, fy, (1.0 - smoothstep(35.0, 70.0, vDepth)) * step(an.y, 0.7));
   return mix(c, lime, pale);
 }
 
@@ -335,7 +384,7 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
     float edge = max(smoothstep(0.455, 0.49, abs(fract(p.y / 0.55) - 0.5)), smoothstep(0.475, 0.498, abs(fract(u) - 0.5))) * vert;
     float tone = 0.95 + 0.1 * hash2(vec2(row, floor(u)));
     float vein = vnoise(p * 1.7) * 0.6 + vnoise(p * 6.0) * 0.4;
-    return c * tone * (0.97 + 0.06 * vein) * (1.0 - 0.18 * edge * nearFade(35.0, 70.0));
+    return aged(c * tone * (0.97 + 0.06 * vein) * (1.0 - 0.18 * edge * nearFade(35.0, 70.0)), p, vec2(row, floor(u)), fract(p.y / 0.55), nearFade(35.0, 70.0) * vert);
   }
   if (sid < 2.5) {
     // 2 BRICK: running bond, 0.24 x 0.086 m courses, each brick its own tone
@@ -398,7 +447,7 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
   if (sid < 8.5) {
     // 8 STUCCO: a fine trowelled noise and broader patches of repair and weather
     float grain = (vnoise(p * 9.0) - 0.5) * 0.08 * nearFade(15.0, 35.0) + (vnoise(p * 1.3) - 0.5) * 0.06;
-    return c * (1.0 + grain);
+    return agedRender(c * (1.0 + grain), p);
   }
   if (sid < 9.5) {
     // 9 COPPER: verdigris with dark streaks run down it
@@ -589,6 +638,7 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
     uniforms: ['world', 'viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
       'fogColour', 'fogDensity', 'night', 'stone', 'flood'],
     samplers: ['rockTex'],
+    defines: [`#define FACADE_DETAIL ${FACADE_DETAIL}`],
   })
   // the photographed rock for the `rock` surface (Poly Haven via Trail Trainer: public/rocks/textures)
   const rockTex = new Texture(typeof document === 'undefined' ? 'rocks/textures/rock_grey_diff.jpg' : new URL('rocks/textures/rock_grey_diff.jpg', document.baseURI).href, scene)

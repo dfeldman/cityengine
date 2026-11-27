@@ -59,7 +59,7 @@ window.visualViewport?.addEventListener('resize', () => {
 })
 
 // the loading screen (in index.html, ui/loading.ts): a ride follows it; anything else takes it down at once
-const showcasing = ['model', 'trees', 'palms', 'showcase'].some((k) => params.get(k))
+const showcasing = ['model', 'trees', 'palms', 'showcase', 'grasslab'].some((k) => params.get(k))
 if (showcasing || params.get('freeze') === '1') LoadingScreen.dismiss()
 else {
   LoadingScreen.get().stage('boot')
@@ -81,6 +81,9 @@ if (params.get('model')) {
 } else if (params.get('palms')) {
   const { palmShowcase } = await import('./palm-showcase.ts')
   void palmShowcase(canvas, (Number(params.get('lod') ?? 0) as 0 | 1 | 2), params.get('view') === 'close')
+} else if (params.get('grasslab')) {
+  const { grassLab } = await import('./grass-lab.ts')
+  void grassLab(canvas, params)
 } else if (params.get('showcase')) {
   const { showcase } = await import('./showcase.ts')
   void showcase(canvas, params.get('style') ?? undefined)

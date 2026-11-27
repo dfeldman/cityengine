@@ -52,6 +52,13 @@ export interface Settings {
   film: boolean
   /** grime, streaks and tone on every building's walls (render/facade-material.ts) */
   weathering: boolean
+  /** the road shader's detail (render/road-material.ts RD): auto = full on Medium/High, the simple set on Low; off = the plain page */
+  roads: Feature
+  facades: Feature
+  /** the grass shader's detail (render/grass-glsl.ts GR): auto = full on Medium/High, the simple set on Low; off = today's flat green */
+  grass: Feature
+  /** litter, grime and graffiti in the ground and wall shaders (render/litter-glsl.ts): auto = High only */
+  litter: Feature
   vignette: boolean
   grain: boolean
 }
@@ -70,7 +77,7 @@ export const FEATURE_OFF: Record<'trees' | 'people' | 'details' | 'ao' | 'shadow
 const KEY = 'cycledash.settings'
 const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', touch: false, steering: 'auto', quality: 'auto', motion: true, fog: true, farCity: 'auto', time: 'auto', weather: 'auto',
   trees: 'auto', people: 'auto', cars: 'auto', details: 'auto',
-  ao: 'auto', shadows: 'auto', bloom: 'auto', film: true, weathering: true, vignette: true, grain: true }
+  ao: 'auto', shadows: 'auto', bloom: 'auto', film: true, weathering: true, roads: 'auto', facades: 'auto', grass: 'auto', litter: 'auto', vignette: true, grain: true }
 
 let current: Settings | null = null
 const listeners = new Set<(s: Settings) => void>()
@@ -142,6 +149,14 @@ export const SETTING_DEFS: SettingDef[] = [
   ...(['ao', 'shadows', 'bloom'] as const).map((key) => def({ key, group: 'Graphics', applies: 'ride',
     label: { ao: 'Ambient occlusion', shadows: 'Sun shadows', bloom: 'Bloom' }[key],
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] })),
+  def({ key: 'roads', group: 'Graphics', label: 'Detailed roads', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] }),
+  def({ key: 'facades', group: 'Graphics', label: 'Detailed facades', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] }),
+  def({ key: 'grass', group: 'Graphics', label: 'Detailed grass', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] }),
+  def({ key: 'litter', group: 'Graphics', label: 'Litter and graffiti', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] }),
   ...(['weathering', 'film', 'vignette', 'grain'] as const).map((key) => def({ key, group: 'Graphics', applies: 'ride',
     label: { weathering: 'Weathered walls', film: 'Film colour', vignette: 'Vignette', grain: 'Film grain' }[key],
     choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] })),

@@ -8,6 +8,7 @@
  * `window.__rebuild(fit)` builds the model again to a given fit — a real footprint (a tower-grammar building is
  * its own outline raised), which the tool reads from the Overpass cache — and returns its bounds.
  */
+import { afficheMeshes } from './render/affiches.ts'
 import { amphib, carrier, destroyer, queenMary2 } from './render/sf/big-ships.ts'
 import { SF_MOORED, SF_SIZES, sailboat, type SfKind } from './render/sf/moored.ts'
 import type { KitArgs } from './render/landmarks/paris/kit/recipes.ts'
@@ -26,10 +27,13 @@ import { box } from './render/models.ts'
 import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
 import { bartEntrance } from './render/sf/furniture.ts'
-import { sfFireAlarmBox, nycFireAlarmBox } from './render/us-furniture.ts'
+import { sfFireAlarmBox, nycFireAlarmBox, utilityPole, pathOfGold } from './render/us-furniture.ts'
+import { topiaryBall, topiaryBox, topiaryCone, topiaryStandard } from './render/topiary.ts'
+import { cobraHeadArm, sfConcreteLight, sfSteelLight, dragonLamp } from './render/sf/street-lights.ts'
 import { bench, bikeParking, guimardEntrance, parisEntrance, parisNewsstand } from './render/models.ts'
 import { parisStreetModel } from './render/paris/street.ts'
-import { cafeBoard, stoneBench, laPosteBox, parisPanel, boxwoodPot, horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, sucette, treePit, wallaceFountain } from './render/paris/furniture.ts'
+import { cafeBoard, stoneBench, laPosteBox, parisPanel, boxwoodPot, horodateur, jardiniere, parisBench, parisBusStop, parisLamp, parisLampConsole, parisWallLamp, sucette, treePit, wallaceFountain } from './render/paris/furniture.ts'
+import { champsElyseesMast, marechauxMast } from './render/paris/famous-lamps.ts'
 import { court } from './render/sports.ts'
 import { fitCourt, type CourtSport } from './city/sports.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
@@ -86,9 +90,11 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
   // (and street furniture, drawn in the game's own static material: `?model=bartEntrance`)
   const FURNITURE: Record<string, (o: MeshBuilder) => void> = {
+    cobraOnPole: (o) => { utilityPole(o, 3); cobraHeadArm(o) }, sfConcreteLight, sfSteelLight, dragonLamp, pathOfGold,
+    topiaryTrio: (o) => { const y: [number, number, number] = [0.05, 0.11, 0.055]; topiaryBall(o, -2.2, 0, 0, 0.75, y, { seed: 1 }); topiaryCone(o, 0, 0, 0, 3.2, 0.8, y, { seed: 2 }); topiaryBox(o, 2.2, 0, 0, 1.3, 1.3, 1.3, y, { seed: 3 }); topiaryStandard(o, 0, 0, 2.4, 1.2, 0.5, y, [0.17, 0.13, 0.1], { seed: 4 }) },
     bartEntrance, bench, sfFireAlarmBox, nycFireAlarmBox, guimardEntrance, parisEntrance,
     // Paris's pavement (render/paris/furniture.ts): `?model=parisBench`
-    parisBench, parisLamp, parisLampConsole, wallaceFountain, parisNewsstand, horodateur, treePit: treePit(true),
+    parisBench, parisLamp, parisLampConsole, parisWallLamp, champsElyseesMast, marechauxMast, wallaceFountain, parisNewsstand, horodateur, treePit: treePit(true),
     parisBusStop: (o) => parisBusStop(o, true, 3), parisStopPost: (o) => parisBusStop(o, false, 5),
     sanisette: (o) => parisStreetModel('sanisette', 1)!(o),
     bikeRack: (o) => bikeParking(6, 11)(o), bikeRackEmpty: (o) => bikeParking(6, 4)(o),
@@ -157,6 +163,11 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
       if (sm) sm.parent = m
       return sm ? [sm] : []
     })
+    // the street ads it carries (render/affiches.ts), on flat ground, Paris's set for a Paris piece (or `?region=`)
+    if (mb.affiches.length) {
+      const region = new URLSearchParams(location.search).get('region') ?? (/paris|sucette|morris|abribus|velib|wallace|guimard|horodateur/i.test(name) ? 'paris' : undefined)
+      for (const am of afficheMeshes(`affiches:${name}`, scene, mb.affiches, region, () => 0, m.renderingGroupId)) { am.parent = m; signs.push(am) }
+    }
     // two triangles each, which is the whole point of the flat path
     return signs.length * 2
   }

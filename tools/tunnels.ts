@@ -678,6 +678,8 @@ export const LID_GRADE = Number(process.env.LID_GRADE ?? 3)
 export const LID_TWIN = Number(process.env.LID_TWIN ?? 30), LID_TWIN_LEN = 0.35, LID_TWIN_SIDE = 0.7
 /** a road out of a lid's mouth shorter than this, to no other road, is a stub and dropped */
 const LID_STUB = 15
+/** a road out of a lid's mouth shorter than this passes the mouth on to the same street beyond it (m) */
+const LID_CHAIN = Number(process.env.LID_CHAIN ?? 12)
 /** a way on a lid's slab is a deck to this far past the slab's edge (more, and a way alongside the edge became a deck drawn with its own structure) */
 const LID_SLAB_EDGE = 0.5
 /** the corridor test steps along a crossing way this often, metres */
@@ -908,6 +910,26 @@ export function lidTunnels(edges: TunnelEdge[], report?: (name: string, why: str
    */
   if (mouthY.size) {
     let met = 0
+    /*
+     * (2026-11-27, the Place de Varsovie's south-west mouth: OSM ends the westbound tunnel at a 3.6 m stub, 151936, and its carriageway
+     * 151937 carried on uncut beside its cut twin 152059, 1.3 m over it 4 m away, with a grass bank and a trench wall between them.)
+     * A road out of a mouth shorter than LID_CHAIN m passes the mouth's level on to its far end, so the same-named road beyond is
+     * brought down and cut too.
+     */
+    for (let more = true; more;) {
+      more = false
+      for (const e of edges) {
+        if (!road(e) || drop.has(e.id) || !e.heights?.length || e.bridge || /_link$/.test(e.kind ?? '')) continue
+        const ya = mouthY.get(e.a), yb = mouthY.get(e.b)
+        if ((ya === undefined) === (yb === undefined)) continue
+        const Le = lengths(unpackPoints(e.points)).at(-1) ?? 0
+        if (Le >= LID_CHAIN) continue
+        const far = ya !== undefined ? e.b : e.a
+        // (the same street carrying on at the same level: not a link or a deck up onto the place over the trench)
+        if (!(byNode.get(far) ?? []).some((o) => o !== e && road(o) && !o.bridge && o.kind === e.kind && o.name && o.name === e.name)) continue
+        mouthY.set(far, (ya ?? yb)!); more = true
+      }
+    }
     for (const e of edges) {
       if (!road(e) || lidRoadIds.has(e.id) || drop.has(e.id) || e.heights!.length * 2 !== e.points.length) continue
       const ya = mouthY.get(e.a), yb = mouthY.get(e.b)

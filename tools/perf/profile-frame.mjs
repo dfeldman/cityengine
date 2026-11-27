@@ -1,6 +1,8 @@
 // Frame profile of Cycle Dash at one spot: total frame interval, the game loop's CPU time (everything in the
 // render-loop callback), Babylon's scene.render CPU share, draw calls, active meshes; optionally at several
 // render resolutions (hardware scaling) and with the HUD hidden.
+// --only=road: hides every mesh whose material name doesn't start with that prefix (isolates one shader's fill cost);
+// --gpu adds GPU ms per frame where EXT_disjoint_timer_query_webgl2 exists.
 //   node tools/perf/profile-frame.mjs --browser=chromium|webkit --url=http://localhost:5201 --at=37.788,-122.4075 [--q=without=crowd] [--scales=1,2,4] [--mobile] [--frames=180]
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
@@ -26,10 +28,16 @@ await page.goto(url)
 await page.waitForFunction('window.gameReady === true', null, { timeout: 180_000 })
 await page.waitForTimeout(Number(arg('settle', '15000')))
 const frames = Number(arg('frames', '180'))
+const only = arg('only')
+if (only) await page.evaluate((pre) => { for (const m of window.__scene.meshes) { const n = m.material?.name ?? ''; if (!n.startsWith(pre)) m.setEnabled(false) } }, only)
+const gpuOk = flag('gpu') && await page.evaluate(() => !!window.__scene.getEngine()._gl.getExtension('EXT_disjoint_timer_query_webgl2'))
 const scales = arg('scales', '').split(',').filter(Boolean).map(Number)
 const measure = `async (n, scale) => {
   const s = window.__scene, e = s.getEngine()
   if (scale) { e.setHardwareScalingLevel(scale); await new Promise((r) => setTimeout(r, 1500)) }
+  let gi = null
+  if (${gpuOk}) { const B = window.BABYLON ?? (await import('/node_modules/.vite/deps/@babylonjs_core.js').catch(() => null)); const EI = B?.EngineInstrumentation; if (EI) { gi = new EI(e); gi.captureGPUFrameTime = true } }
+  const gpuMs = []
   const loops = e._activeRenderLoops
   const loopMs = [], renderMs = []
   let tb = 0
@@ -40,7 +48,7 @@ const measure = `async (n, scale) => {
   const dc = []
   const iv = []
   let last = performance.now()
-  await new Promise((done) => { const f = () => { const now = performance.now(); iv.push(now - last); last = now; dc.push(e._drawCalls ? e._drawCalls.current : -1); iv.length < n ? requestAnimationFrame(f) : done() }; requestAnimationFrame(f) })
+  await new Promise((done) => { const f = () => { const now = performance.now(); iv.push(now - last); last = now; if (gi) gpuMs.push(gi.gpuFrameTimeCounter.current * 1e-6); dc.push(e._drawCalls ? e._drawCalls.current : -1); iv.length < n ? requestAnimationFrame(f) : done() }; requestAnimationFrame(f) })
   for (let i = 0; i < loops.length; i++) loops[i] = orig[i]
   s.onBeforeAnimationsObservable.remove(o1); s.onAfterRenderObservable.remove(o2)
   const med = (a) => { const b = a.slice().sort((x, y) => x - y); return +b[Math.floor(b.length / 2)].toFixed(2) }
@@ -50,7 +58,7 @@ const measure = `async (n, scale) => {
   return {
     scale: e.getHardwareScalingLevel(), px: e.getRenderWidth() + 'x' + e.getRenderHeight(),
     frameMed: med(iv.slice(5)), frameP90: p90(iv.slice(5)), loopCpuMed: med(loopMs), renderCpuMed: med(renderMs),
-    drawCalls: med(dc.slice(6).map((v, i) => v - dc[i + 5])), activeMeshes: s.getActiveMeshes().length, activeIndicesM: +(s.getActiveIndices() / 1e6).toFixed(2),
+    gpuMed: gpuMs.length > 20 ? med(gpuMs.slice(10)) : null, drawCalls: med(dc.slice(6).map((v, i) => v - dc[i + 5])), activeMeshes: s.getActiveMeshes().length, activeIndicesM: +(s.getActiveIndices() / 1e6).toFixed(2),
     meshes: s.meshes.length, materials: s.materials.length, textures: s.textures.length,
     renderer: dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : '?', webgl: e.webGLVersion,
   }
@@ -58,5 +66,5 @@ const measure = `async (n, scale) => {
 const results = []
 for (const sc of scales.length ? scales : [0]) results.push(await page.evaluate(`(${measure})(${frames}, ${sc})`))
 const mem = await page.evaluate(() => [...document.querySelectorAll('div')].map((d) => d.textContent).find((t) => /GPU ~/.test(t ?? '')) ?? '')
-console.log(JSON.stringify({ mem: mem.replace(/\n/g, ' | '), browser: kind, mobile: flag('mobile'), q: arg('q') || '(default)', at: arg('at', '37.788,-122.4075'), results, errors: errs.slice(0, 3) }))
+console.log(JSON.stringify({ mem: mem.replace(/\n/g, ' | '), browser: kind, mobile: flag('mobile'), q: arg('q') || '(default)', at: arg('at', '37.788,-122.4075'), gpuExt: gpuOk, only: only || null, results, errors: errs.slice(0, 3) }))
 await browser.close()

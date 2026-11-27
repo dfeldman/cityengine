@@ -1,91 +1,17 @@
 /**
- * Posters (PARIS_EXPAND §6 item 9): a library of poster designs per region, drawn once into one texture page
- * at a STANDARD size (the 2:3 poster; Paris's Morris column wrap is a ring of them), and pasted onto the
- * furniture that carries them — for now every Morris column, a ring of posters round its drum.
- *
- * The designs are invented, never anyone's real campaign: an event word (EXPOSITION, CONCERT, THÉÂTRE…),
- * a run of dates, and a bold geometric image in a strong palette, the look of a Paris column in any season.
- * A region with its own words (and one day its own library of images) gets its own page.
+ * Posters (PARIS_EXPAND §6 item 9): the Morris columns' ring of posters, twelve round each drum. The designs are the
+ * street-ad library's events (render/affiches.ts, src/city/affiches/<set>.json: invented theatre, concerts,
+ * exhibitions — never anyone's real campaign), on plain paper, unlit at night.
  */
-import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
-import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { afficheCell, afficheMaterial } from './affiches.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import type { TileLayer } from './city.ts'
 import type { Terrain } from '../city/terrain.ts'
 
-const COLS = 8
-const ROWS = 2
-const CELL_W = 256
-const CELL_H = 384
-
-const WORDS: Record<string, string[]> = {
-  paris: ['EXPOSITION', 'CONCERT', 'THÉÂTRE', 'OPÉRA', 'CINÉMA', 'FESTIVAL', 'DANSE', 'JAZZ', 'BALLET', 'CIRQUE', 'SALON', 'RÉCITAL', 'COMÉDIE', 'MUSÉE', 'LIVRES', 'NUIT BLANCHE'],
-  default: ['CONCERT', 'EXHIBIT', 'THEATER', 'JAZZ', 'FESTIVAL', 'BALLET', 'CINEMA', 'OPERA', 'COMEDY', 'CIRCUS', 'BOOK FAIR', 'MUSEUM', 'RECITAL', 'DANCE', 'GALA', 'SHOW'],
-}
-const PALETTES: [string, string, string][] = [
-  ['#e63946', '#f1faee', '#1d3557'], ['#ffb703', '#023047', '#fb8500'], ['#2a9d8f', '#e9c46a', '#264653'],
-  ['#8338ec', '#ffbe0b', '#ffffff'], ['#ef476f', '#ffd166', '#073b4c'], ['#003049', '#fcbf49', '#d62828'],
-  ['#1b1b1e', '#f5f3f5', '#e4572e'], ['#f4f1de', '#e07a5f', '#3d405b'],
-]
-const MONTHS = { paris: ['JANV', 'FÉVR', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUIL', 'SEPT', 'OCT', 'NOV', 'DÉC'], default: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'SEP', 'OCT', 'NOV', 'DEC'] }
-
-let atlas: { tex: DynamicTexture; mat: StandardMaterial } | null = null
-
-/** The poster page: sixteen designs, drawn once. */
-export function posterMaterial(scene: Scene, region: string | undefined): StandardMaterial {
-  if (atlas) return atlas.mat
-  const words = WORDS[region ?? ''] ?? WORDS.default
-  const months = MONTHS[region === 'paris' ? 'paris' : 'default']
-  const tex = new DynamicTexture('posters', { width: COLS * CELL_W, height: ROWS * CELL_H }, scene, true)
-  const ctx = tex.getContext() as unknown as CanvasRenderingContext2D
-  for (let i = 0; i < COLS * ROWS; i++) {
-    const x0 = (i % COLS) * CELL_W
-    const y0 = Math.floor(i / COLS) * CELL_H
-    const [bg, fg, ink] = PALETTES[i % PALETTES.length]
-    ctx.fillStyle = bg
-    ctx.fillRect(x0, y0, CELL_W, CELL_H)
-    // the image: one of four bold figures, in the poster's second colour
-    ctx.fillStyle = fg
-    const cx = x0 + CELL_W / 2
-    const cy = y0 + CELL_H * 0.42
-    const kind = (i * 7) % 4
-    ctx.beginPath()
-    if (kind === 0) ctx.arc(cx, cy, CELL_W * 0.32, 0, Math.PI * 2)
-    else if (kind === 1) { ctx.moveTo(cx, cy - 110); ctx.lineTo(cx + 100, cy + 80); ctx.lineTo(cx - 100, cy + 80) }
-    else if (kind === 2) for (let k = 0; k < 5; k++) ctx.rect(x0 + 24 + k * 44, cy - 90 + (k % 2) * 40, 28, 150)
-    else { ctx.ellipse(cx - 30, cy, 70, 110, 0.4, 0, Math.PI * 2); ctx.moveTo(cx + 110, cy); ctx.arc(cx + 60, cy + 20, 50, 0, Math.PI * 2) }
-    ctx.fill()
-    // the event, its dates, a line of small print
-    ctx.fillStyle = ink
-    ctx.textAlign = 'center'
-    const word = words[i % words.length]
-    ctx.font = `900 ${word.length > 9 ? 30 : 40}px Helvetica, Arial, sans-serif`
-    ctx.fillText(word, cx, y0 + CELL_H * 0.8)
-    ctx.font = '700 22px Helvetica, Arial, sans-serif'
-    const d = 3 + ((i * 11) % 20)
-    ctx.fillText(`${d} — ${d + 7 + (i % 9)} ${months[i % months.length]}`, cx, y0 + CELL_H * 0.89)
-    ctx.fillRect(x0 + 40, y0 + CELL_H * 0.93, CELL_W - 80, 3)
-  }
-  tex.update(true)
-  const mat = new StandardMaterial('posters', scene)
-  mat.diffuseTexture = tex
-  mat.emissiveColor = new Color3(0.62, 0.6, 0.56)
-  mat.disableLighting = true
-  mat.backFaceCulling = true
-  atlas = { tex, mat }
-  return mat
-}
-
-/** The UV rectangle of design `i`. */
-function cell(i: number): [number, number, number, number] {
-  const c = i % COLS
-  const r = Math.floor(i / COLS) % ROWS
-  // DynamicTexture's v runs bottom-up
-  return [c / COLS, 1 - (r + 1) / ROWS, (c + 1) / COLS, 1 - r / ROWS]
-}
+/** a cell of the street-ad library's events (render/affiches.ts): the Morris column wears the city's theatre and concerts */
+const cell = (region: string | undefined, i: number): [number, number, number, number] => afficheCell(region, 'portrait', i, 'event')
 
 /**
  * The posters of the Morris columns in a tile: twelve round each drum, in two staggered tiers, each design
@@ -111,7 +37,7 @@ export function postersLayer(scene: Scene, terrain: Terrain, region: string | un
           const r = 0.625
           const y0 = g + 0.5 + tier * 1.0
           const y1 = y0 + 0.93
-          const [u0, v0, u1, v1] = cell(seed + k * 5)
+          const [u0, v0, u1, v1] = cell(region, seed + k * 5)
           // bent round the drum in four facets: one flat chord over a sixth of the circle cut into the column
           const F = 4
           for (let q = 0; q < F; q++) {
@@ -128,7 +54,7 @@ export function postersLayer(scene: Scene, terrain: Terrain, region: string | un
       }
       const m = new Mesh(`posters:${near.key}`, scene)
       out.toVertexData().applyToMesh(m)
-      m.material = posterMaterial(scene, region)
+      m.material = afficheMaterial(scene, region, false)
       m.renderingGroupId = 3
       m.isPickable = false
       m.freezeWorldMatrix()

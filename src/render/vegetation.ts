@@ -31,7 +31,7 @@ import '@babylonjs/loaders/glTF/2.0'
 import { Vector3 as V3 } from '@babylonjs/core/Maths/math.vector'
 import { DAYLIGHT, OVERCAST } from './facade-material.ts'
 import { MeshBuilder } from './buildings.ts'
-import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
+import { addLeafShade, addShadow, leafMaterial, shadowMaterial, shadowOffset, SHADOW_Y, SOFT_SHADOWS } from './shadows.ts'
 import { Mesh as BMesh } from '@babylonjs/core/Meshes/mesh'
 import type { Terrain } from '../city/terrain.ts'
 import { plantHash, unpackPlantings, type Planting } from '../city/plantings.ts'
@@ -698,6 +698,8 @@ export class Vegetation {
       // the models average about twelve metres, and the crown is roughly a fifth of that across
       const height = p.height
       const crown = p.height * 0.2
+      // dappled: an ellipse where the crown lands and a strip for the trunk (shadows.ts addLeafShade)
+      if (SOFT_SHADOWS) { addLeafShade(out, p.x, p.z, height, crown, off, SHADOW_Y, plantHash(p.x, p.z)); continue }
       const ring: { x: number; z: number }[] = []
       for (let i = 0; i < 9; i++) {
         const a = (i / 9) * Math.PI * 2
@@ -713,7 +715,7 @@ export class Vegetation {
     else for (let i = 1; i < out.positions.length; i += 3) out.positions[i] += lift
     const m = new BMesh(name, this.scene)
     out.toVertexData().applyToMesh(m)
-    m.material = shadowMaterial(this.scene)
+    m.material = SOFT_SHADOWS ? leafMaterial(this.scene) : shadowMaterial(this.scene)
     m.renderingGroupId = 3
     m.isPickable = false
     return m

@@ -14,8 +14,9 @@
  *
  * Local frames: +z toward the street, the foot at the origin.
  */
+import { affiche, AFFICHE_LIFT } from './affiches.ts'
 import type { MeshBuilder } from './buildings.ts'
-import { box, prism, strut, EMIT, FIXED, type Rgb } from './models.ts'
+import { box, prism, strut, lathe, tube, EMIT, FIXED, LAMP_LIGHTS, type Rgb } from './models.ts'
 
 const STEEL: Rgb = [0.5, 0.52, 0.54]
 const DARK: Rgb = [0.14, 0.14, 0.15]
@@ -88,48 +89,11 @@ export function busShelter(out: MeshBuilder, seed = 0): void {
   adFace(out, [1.92, 1.3, -0.1], 0.58, 0.9, 'x', seed)
 }
 
-/** An ad, painted as blocks: a background, a photo block, a headline, a line of small type, a logo. */
+/** An ad from the library (render/affiches.ts): a bulletin's wide one or the 2 m² sheet, facing +`axis`. */
 function adFace(out: MeshBuilder, c: [number, number, number], hw: number, hh: number, axis: 'x' | 'z', seed: number): void {
-  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
-  const palettes: Rgb[][] = [
-    [[0.96, 0.84, 0.2], [0.1, 0.1, 0.12], [0.9, 0.2, 0.2]],
-    [[0.12, 0.36, 0.72], [0.96, 0.96, 0.94], [0.95, 0.72, 0.2]],
-    [[0.92, 0.92, 0.9], [0.8, 0.1, 0.14], [0.14, 0.14, 0.16]],
-    [[0.1, 0.12, 0.14], [0.96, 0.96, 0.94], [0.3, 0.8, 0.5]],
-    [[0.88, 0.3, 0.5], [0.98, 0.94, 0.9], [0.2, 0.2, 0.3]],
-    [[0.2, 0.6, 0.64], [0.98, 0.98, 0.96], [0.98, 0.5, 0.2]],
-  ]
-  const [bg, ink, accent] = palettes[Math.floor(r(1) * palettes.length)]
-  // (the layers a few CENTIMETRES apart, as thin slabs: a few millimetres fought at the distance a billboard is
-  //  read from — owner, 2026-10-06, "billboards have z fighting")
-  const face = (u: number, v: number, w: number, h: number, col: Rgb, lift0: number, glow = false): void => {
-    const lift = lift0 * 10
-    const [x, y, z] = c
-    if (axis === 'z') box(out, x + u, y + v, z + lift, w, h, 0.004, col, glow ? EMIT : FIXED)
-    else box(out, x + lift, y + v, z + u, 0.004, h, w, col, glow ? EMIT : FIXED)
-  }
-  face(0, 0, hw, hh, bg, 0, true)
-  /*
-   * Reworked 2026-10-02 (owner: "billboards look really bad"): what a bulletin reads as from the street is a PHOTO
-   * on one side and three or four huge words on the other. The photo: a sky band over a horizon band, and the
-   * product in it — a round can or a bottle or a phone, by seed; the words: two heavy ink lines, a lighter third;
-   * the brand's mark in a corner.
-   */
-  const s = r(2) < 0.5 ? -1 : 1
-  const px = s * hw * 0.48
-  const skies: Rgb[] = [[0.45, 0.7, 0.92], [0.98, 0.72, 0.4], [0.2, 0.22, 0.3], [0.85, 0.88, 0.9]]
-  const sky = skies[Math.floor(r(3) * skies.length)]
-  face(px, hh * 0.25, hw * 0.5, hh * 0.72, sky, 0.003, true)
-  face(px, -hh * 0.5, hw * 0.5, hh * 0.47, accent, 0.004, true)
-  const prod = Math.floor(r(4) * 3)
-  if (prod === 0) face(px, -hh * 0.05, hw * 0.12, hh * 0.55, ink, 0.006)                                  // a can
-  else if (prod === 1) { face(px, -hh * 0.15, hw * 0.08, hh * 0.45, ink, 0.006); face(px, hh * 0.38, hw * 0.035, hh * 0.12, ink, 0.006) } // a bottle
-  else face(px, -hh * 0.02, hw * 0.13, hh * 0.62, [0.08, 0.08, 0.1], 0.006)                                // a phone
-  const tx = -s * hw * 0.42
-  face(tx, hh * 0.42, hw * 0.44, hh * 0.2, ink, 0.004)
-  face(tx, hh * 0.0, hw * 0.4, hh * 0.2, ink, 0.004)
-  face(tx, -hh * 0.36, hw * 0.3, hh * 0.08, ink, 0.004)
-  face(-s * hw * 0.84, -hh * 0.72, hw * 0.1, hh * 0.18, accent, 0.004, true)
+  const [x, y, z] = c
+  affiche(out, hw / hh > 2 ? 'wide' : 'portrait', x + (axis === 'x' ? AFFICHE_LIFT : 0), y, z + (axis === 'z' ? AFFICHE_LIFT : 0),
+    axis === 'x' ? 1 : 0, axis === 'z' ? 1 : 0, hw, hh, seed)
 }
 
 /** A billboard: 14.6 × 4.3 m (the "bulletin"), on a steel post, with its catwalk and the lamps along it. */
@@ -304,14 +268,33 @@ export function parkingMeter(out: MeshBuilder): void {
  * street-name sign sometimes. 11 m. The wires between poles are strung by the placer. The crossarm along ±x.
  */
 export function utilityPole(out: MeshBuilder, seed = 0): void {
-  const wood: Rgb = [0.34, 0.26, 0.18]
-  strut(out, [0, 0, 0], [0, 11, 0], 0.14, 0.14, wood, FIXED)
-  box(out, 0, 10.2, 0, 1.2, 0.06, 0.06, wood, FIXED)
+  const wood: Rgb = [0.35, 0.29, 0.23]
+  const arm: Rgb = [0.3, 0.24, 0.18]
+  // the round tapered pole, weathered brown-grey, smooth-shaded
+  lathe(out, 0, 0, [[0.16, 0], [0.15, 0.3], [0.128, 6], [0.11, 11]], 8, wood, FIXED, { capTop: true })
+  box(out, 0, 10.2, 0, 1.2, 0.06, 0.06, arm, FIXED)
   for (const x of [-1.05, -0.4, 0.4, 1.05]) box(out, x, 10.35, 0, 0.03, 0.09, 0.03, [0.6, 0.62, 0.6], FIXED)
-  box(out, 0, 9.3, 0, 0.9, 0.05, 0.05, wood, FIXED)
+  box(out, 0, 9.3, 0, 0.9, 0.05, 0.05, arm, FIXED)
+  // the crossarm's two diagonal braces
+  for (const s of [-1, 1]) strut(out, [s * 0.15, 9.75, 0.1], [s * 0.7, 10.2, 0.1], 0.03, 0.03, arm, FIXED, false)
+  /*
+   * The flyers: lost cats, bands, rooms for rent, stapled round the pole at eye height (owner, 2026-11-26: "many small
+   * advertisements"). Two poles in three carry one to three, each a little turned, the lowest one oldest and lowest.
+   */
+  const n = seed % 3 === 2 ? 0 : 1 + (seed % 5) % 3
+  for (let i = 0; i < n; i++) {
+    const a = (seed * 2.4 + i * 2.1) % (Math.PI * 2)
+    const r = 0.152 + i * 0.002
+    affiche(out, 'flyer', Math.sin(a) * r, 1.45 + i * 0.27 + ((seed >> i) % 3) * 0.05, Math.cos(a) * r, Math.sin(a), Math.cos(a), 0.108, 0.14, seed + i * 3, false)
+      .tilt = (((seed * 7 + i * 5) % 9) - 4) * 0.035
+  }
   if (seed % 3 === 0) {
     // the transformer: a grey can bolted to the pole
-    box(out, 0.28, 8.4, 0, 0.2, 0.45, 0.2, [0.52, 0.54, 0.55], FIXED)
+    lathe(out, 0.3, 0, [[0.2, 8.0], [0.2, 8.8], [0.15, 8.86]], 8, [0.5, 0.52, 0.53], FIXED, { capTop: true })
+  }
+  if (seed % 2 === 1) {
+    // the street-name sign, a green blade high on the pole
+    box(out, 0.2, 6.2, 0.1, 0.45, 0.08, 0.015, [0.1, 0.34, 0.2], FIXED)
   }
 }
 
@@ -322,46 +305,40 @@ export function utilityPole(out: MeshBuilder, seed = 0): void {
  */
 export function pathOfGold(out: MeshBuilder): void {
   /*
-   * The 1916 Path of Gold standard (Arthur Putnam's base, the trident head). Procedural until the GLB the owner asked
-   * for (backlog: "render the path of gold lamps as glbs like sculptures"); this is the silhouette a rider reads:
-   * a stepped plinth, a fat sculpted drum with relief panels on four sides, a collar, a fluted shaft with a ring
-   * part-way up, and the three globes on curved arms.
+   * The Path of Gold standard: Willis Polk's 1908 pole on Arthur Putnam's three-banded relief base (wagons, lions,
+   * prospectors), Lentelli/Ryan's 1916 trident top: a centre globe on the shaft and two on curling scroll arms, each globe
+   * a golden-tinted opal glass drop. Landmark No. 200; 9.83 m (32 ft 3 in) per SF planning papers (2018-002022COA).
+   * Photos worth checking: Commons "Path of Gold light standard, Market Street".
    */
-  const green: Rgb = [0.13, 0.2, 0.16]
-  const dark: Rgb = [0.09, 0.14, 0.11]
-  const glow: Rgb = [1.0, 0.94, 0.74]
-  // the plinth, in two steps, and the sculpted drum
-  prism(out, 0, 0, 0, 0.18, 0.52, 8, dark, FIXED, 0.5)
-  prism(out, 0, 0, 0.18, 0.34, 0.44, 8, green, FIXED, 0.42)
-  prism(out, 0, 0, 0.34, 1.35, 0.38, 8, green, FIXED, 0.3)
-  // the relief panels: Putnam's four scenes (the pioneers, the bears, the settlers, the city) as proud tablets
+  const green: Rgb = [0.12, 0.2, 0.15]
+  const dark: Rgb = [0.08, 0.13, 0.1]
+  const glow: Rgb = [1.0, 0.9, 0.6]
+  const gold: Rgb = [0.7, 0.55, 0.22]
+  const H = 7.7                                     // top of the shaft
+  // base: stepped plinth, the fat relief drum (four proud tablets), a cornice
+  lathe(out, 0, 0, [[0.5, 0], [0.5, 0.14], [0.42, 0.2], [0.4, 0.34], [0.36, 0.36], [0.36, 1.3], [0.4, 1.34], [0.4, 1.46], [0.24, 1.55], [0.2, 1.75]], 8, green, FIXED, { phase: Math.PI / 8, hard: true })
   for (let k = 0; k < 4; k++) {
     const a = (k * Math.PI) / 2
-    box(out, Math.sin(a) * 0.36, 0.82, Math.cos(a) * 0.36, Math.abs(Math.cos(a)) * 0.2 + 0.03, 0.34, Math.abs(Math.sin(a)) * 0.2 + 0.03, dark, FIXED)
+    box(out, Math.sin(a) * 0.37, 0.82, Math.cos(a) * 0.37, Math.abs(Math.cos(a)) * 0.2 + 0.025, 0.36, Math.abs(Math.sin(a)) * 0.2 + 0.025, dark, FIXED)
   }
-  prism(out, 0, 0, 1.35, 1.5, 0.34, 8, dark, FIXED, 0.22)
-  prism(out, 0, 0, 1.5, 1.75, 0.2, 8, green, FIXED, 0.16)
-  // the shaft, fluted (sixteen sides read as flutes at this size), a ring two-thirds up, a capital
-  prism(out, 0, 0, 1.75, 8.0, 0.14, 16, green, FIXED, 0.09)
-  prism(out, 0, 0, 5.6, 5.8, 0.16, 8, dark, FIXED, 0.16)
-  prism(out, 0, 0, 8.0, 8.25, 0.12, 8, dark, FIXED, 0.18)
-  // the arms: each a curve out and up in four short steps, a globe on its end; the middle globe higher on a finial
+  // fluted shaft, tapering, with a ring two-thirds up and a capital
+  lathe(out, 0, 0, [[0.16, 1.75], [0.14, 3], [0.115, 5.6], [0.1, H]], 12, green, FIXED, { phase: Math.PI / 12 })
+  lathe(out, 0, 0, [[0.125, 5.55], [0.17, 5.62], [0.17, 5.75], [0.115, 5.82]], 8, dark, FIXED)
+  lathe(out, 0, 0, [[0.11, H - 0.05], [0.2, H + 0.05], [0.2, H + 0.18], [0.1, H + 0.3]], 8, dark, FIXED)
+  // scroll arms: out, down a touch, then curling up to the globe's cup
   for (const sx of [-1, 1]) {
-    let x = 0.1, y = 8.2
-    for (let k = 0; k < 4; k++) {
-      const nx = x + 0.2, ny = y + 0.04 + k * 0.05
-      box(out, sx * (x + nx) / 2, (y + ny) / 2, 0, 0.11, 0.05, 0.05, green, FIXED)
-      x = nx; y = ny
-    }
-    box(out, sx * x, y + 0.12, 0, 0.05, 0.12, 0.05, green, FIXED)
-    prism(out, sx * x, 0, y + 0.22, y + 0.3, 0.12, 8, dark, FIXED, 0.12)
-    prism(out, sx * x, 0, y + 0.3, y + 0.78, 0.22, 10, glow, EMIT, 0.2)
+    const arm: [number, number, number][] = [[0.08, H + 0.15, 0], [0.4, H + 0.05, 0], [0.72, H + 0.14, 0], [0.9, H + 0.4, 0], [0.88, H + 0.65, 0]]
+    tube(out, arm.map(([x, y, z]) => [sx * x, y, z] as [number, number, number]), [0.04, 0.035, 0.03, 0.028, 0.026], 5, green, FIXED)
+    lathe(out, sx * 0.88, 0, [[0.05, H + 0.6], [0.16, H + 0.7], [0.15, H + 0.76]], 8, gold, FIXED)
+    lathe(out, sx * 0.88, 0, [[0.15, H + 0.76], [0.22, H + 1.0], [0.21, H + 1.35], [0.1, H + 1.58], [0.001, H + 1.62]], 8, glow, EMIT)
   }
-  prism(out, 0, 0, 8.25, 9.0, 0.06, 6, green, FIXED, 0.05)
-  prism(out, 0, 0, 9.0, 9.08, 0.13, 8, dark, FIXED, 0.13)
-  prism(out, 0, 0, 9.08, 9.58, 0.23, 10, glow, EMIT, 0.21)
-  prism(out, 0, 0, 9.58, 9.75, 0.06, 6, green, FIXED, 0.01)
+  // the centre globe, higher: neck, cup, globe, finial
+  lathe(out, 0, 0, [[0.1, H + 0.3], [0.07, H + 0.7], [0.06, H + 0.95], [0.16, H + 1.05], [0.15, H + 1.12]], 8, dark, FIXED)
+  lathe(out, 0, 0, [[0.15, H + 1.12], [0.26, H + 1.4], [0.25, H + 1.85], [0.12, H + 2.1], [0.001, H + 2.14]], 8, glow, EMIT)
+  lathe(out, 0, 0, [[0.03, H + 2.12], [0.02, H + 2.25]], 5, gold, FIXED, { capTop: true })
 }
+// (its three globes as one pool of light, a little wider: three pools stacked would burn a white hole in Market Street)
+LAMP_LIGHTS.set(pathOfGold, [{ at: [0, 9.5, 0], r: 6.5 }])
 
 /*
  * THE TOURIST STRIP's furniture (owner, 2026-10-17, Fisherman's Wharf: "a LOT of street furniture in this area. Poster
@@ -399,30 +376,20 @@ export function bikeRack(out: MeshBuilder, seed = 0): void {
 
 /** The city's triple bin: landfill, recycling, compost side by side in a dark steel housing, a poster panel on its end. */
 export function tripleBin(out: MeshBuilder, seed = 0): void {
-  const POSTERS: Rgb[] = [[0.95, 0.75, 0.15], [0.85, 0.2, 0.25], [0.2, 0.55, 0.85], [0.95, 0.5, 0.2], [0.55, 0.25, 0.7]]
   box(out, 0, 0.55, 0, 0.9, 0.55, 0.32, [0.2, 0.22, 0.22], FIXED)
   const lids: Rgb[] = [[0.12, 0.12, 0.12], [0.15, 0.35, 0.7], [0.2, 0.55, 0.25]]
   lids.forEach((c, i) => box(out, (i - 1) * 0.58, 1.12, 0, 0.27, 0.03, 0.3, c, FIXED))
   lids.forEach((c, i) => box(out, (i - 1) * 0.58, 0.75, 0.33, 0.2, 0.06, 0.01, c, FIXED))
   // the poster on the end, lit from inside at night
-  const p = POSTERS[(seed >>> 0) % POSTERS.length]
-  box(out, 0.92, 0.75, 0, 0.02, 0.5, 0.3, p, FIXED)
   box(out, 0.92, 0.75, 0, 0.025, 0.52, 0.32, [0.2, 0.22, 0.22], FIXED)
+  affiche(out, 'portrait', 0.945 + AFFICHE_LIFT, 0.75, 0, 1, 0, 0.3, 0.46, seed)
 }
 
 /** A free-standing poster board on its post: two faces of bright advertising, lit, a dark steel frame. */
 export function posterBoard(out: MeshBuilder, seed = 0): void {
-  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
-  // (the poster: a band of colour over a pale field and a dark strip of type — read as an advertisement, not a lamp)
-  const ADS: Rgb[] = [[0.75, 0.25, 0.18], [0.15, 0.42, 0.62], [0.8, 0.62, 0.15], [0.45, 0.2, 0.55], [0.15, 0.5, 0.35], [0.75, 0.35, 0.5]]
   const FR: Rgb = [0.16, 0.17, 0.18]
   box(out, 0, 1.25, 0, 0.62, 0.9, 0.12, FR, FIXED)
-  for (const [sd, k] of [[1, 1], [-1, 2]] as const) {
-    const c = ADS[Math.floor(r(k) * ADS.length)]
-    box(out, 0, 1.25, sd * 0.125, 0.55, 0.82, 0.005, [0.86, 0.84, 0.78], FIXED)
-    box(out, 0, 1.55, sd * 0.128, 0.55, 0.45, 0.005, c, FIXED)
-    box(out, 0, 0.75, sd * 0.128, 0.42, 0.08, 0.005, [0.15, 0.15, 0.17], FIXED)
-  }
+  for (const sd of [1, -1] as const) affiche(out, 'portrait', 0, 1.25, sd * (0.12 + AFFICHE_LIFT), 0, sd, 0.55, 0.81, seed + sd)
   box(out, 0, 0.18, 0, 0.3, 0.18, 0.1, FR, FIXED)
 }
 

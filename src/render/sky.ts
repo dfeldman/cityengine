@@ -18,7 +18,7 @@ import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import type { Scene } from '@babylonjs/core/scene'
-import { DAYLIGHT } from './facade-material.ts'
+import { DAYLIGHT, NIGHT, OVERCAST } from './facade-material.ts'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { birdWing, box, plane as planeModel } from './models.ts'
@@ -42,6 +42,43 @@ uniform vec3 horizon;
 uniform vec3 sunDir;
 uniform vec3 sunColour;
 uniform float night;
+uniform float time;
+uniform float cover;
+uniform vec3 shade;
+
+// ---- tunables: the sun ----
+#define SUN_DISC_IN  0.99935   // cos of the disc's outer edge (~2°: bigger than the real sun, so it reads)
+#define SUN_DISC_OUT 0.99975
+#define SUN_HALO_K   220.0     // tight glow round the disc
+#define SUN_HALO_A   0.55
+#define SUN_WIDE_K   12.0      // the broad brightening of that half of the sky
+#define SUN_WIDE_A   0.16
+
+// ---- tunables: the clouds (one flat layer, projected onto the dome) ----
+#define CLOUD_SCALE  0.0022    // 1 / feature size in metres on the layer (~450 m)
+#define CLOUD_H      900.0     // layer height; with CLOUD_SCALE sets how fast clouds shrink toward the horizon
+#define CLOUD_WIND   6.0       // drift, m/s along +x
+#define CLOUD_OCT    4         // noise octaves (half the screen is sky: keep it small)
+#define CLOUD_SOFT   0.16      // edge softness above the coverage threshold
+#define CLOUD_HORIZ0 0.025     // clouds fade out below this d.y ...
+#define CLOUD_HORIZ1 0.20      // ... and are fully drawn above this
+#define CLOUD_LIT_STEP 0.045   // how far toward the sun the second density tap is taken (layer uv units)
+#define CLOUD_MAXA   0.92      // densest a cloud gets
+#define CLOUD_TH_EMPTY 0.74    // noise threshold at cover 0 (fbm sits mostly in 0.25..0.75) ...
+#define CLOUD_TH_FULL  0.30    // ... and at cover 1
+
+float hash2(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float vnoise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash2(i), hash2(i + vec2(1.0, 0.0)), u.x), mix(hash2(i + vec2(0.0, 1.0)), hash2(i + 1.0), u.x), u.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int k = 0; k < CLOUD_OCT; k++) { v += a * vnoise(p); p = p * 2.03 + vec2(17.1, 9.2); a *= 0.5; }
+  return v;
+}
+
 void main(void) {
   vec3 d = normalize(vDir);
   float up = clamp(d.y, 0.0, 1.0);
@@ -50,12 +87,36 @@ void main(void) {
   vec3 toSun = -normalize(sunDir);
   float cosA = dot(d, toSun);
 
-  // the sun's own disc, about half a degree across, with a soft edge so it does not alias into a hexagon
-  float disc = smoothstep(0.99955, 0.99985, cosA);
+  // the sun's own disc, with a soft edge so it does not alias into a hexagon
+  float disc = smoothstep(SUN_DISC_IN, SUN_DISC_OUT, cosA);
   // and the glow around it, which is most of what you actually see
-  float glow = pow(max(cosA, 0.0), 220.0) * 0.55 + pow(max(cosA, 0.0), 12.0) * 0.16;
+  float glow = pow(max(cosA, 0.0), SUN_HALO_K) * SUN_HALO_A + pow(max(cosA, 0.0), SUN_WIDE_K) * SUN_WIDE_A;
 
   vec3 col = sky + sunColour * glow;
+
+  // clouds: a flat layer CLOUD_H up, drifting with the wind. The coverage threshold comes from the weather;
+  // shading is a second density tap stepped toward the sun — thinner there means that edge faces the sun and
+  // catches its colour, so dusk clouds go orange on the side the shadows run away from.
+  float cloudA = 0.0;
+  if (cover > 0.0 && d.y > CLOUD_HORIZ0) {
+    vec2 uv = d.xz / d.y * CLOUD_H * CLOUD_SCALE + vec2(time, time * 0.3) * CLOUD_WIND * CLOUD_SCALE;
+    float n = fbm(uv);
+    float th = mix(CLOUD_TH_EMPTY, CLOUD_TH_FULL, cover);
+    float dens = smoothstep(th, th + CLOUD_SOFT, n);
+    if (dens > 0.0) {
+      vec2 sxz = normalize(toSun.xz + vec2(1e-4));
+      float n2 = fbm(uv + sxz * CLOUD_LIT_STEP);
+      float lit = clamp(0.55 + (n - n2) * 6.0, 0.0, 1.0);
+      vec3 cLit = mix(vec3(1.0), sunColour, 0.55) * 1.05;
+      vec3 cloud = mix(shade, cLit, lit);
+      // silver lining: thin edges right next to the sun glow
+      cloud += sunColour * pow(max(cosA, 0.0), 40.0) * (1.0 - dens) * 0.9;
+      // distant cloud melts into the horizon colour, like everything else does
+      cloud = mix(cloud, horizon, smoothstep(0.35, 0.0, d.y) * 0.6);
+      cloudA = dens * CLOUD_MAXA * smoothstep(CLOUD_HORIZ0, CLOUD_HORIZ1, d.y);
+      col = mix(col, cloud, cloudA);
+    }
+  }
 
   // stars, once it is dark enough for them. A night sky with nothing in it reads as a bug.
   if (night > 0.5) {
@@ -66,9 +127,9 @@ void main(void) {
     float r = fract(sin(dot(g, vec2(12.9898, 78.233))) * 43758.5453);
     vec2 at = fract(cell) - 0.5 - (vec2(fract(r * 13.0), fract(r * 29.0)) - 0.5) * 0.6;
     float dot1 = smoothstep(0.16, 0.04, length(at));
-    col += vec3(step(0.9965, r) * dot1 * max(0.0, d.y) * (0.7 + 0.6 * fract(r * 91.0)));
+    col += vec3(step(0.9965, r) * dot1 * max(0.0, d.y) * (0.7 + 0.6 * fract(r * 91.0))) * (1.0 - cloudA);
   }
-  col = mix(col, sunColour * 1.45, disc);
+  col = mix(col, sunColour * 1.45, disc * (1.0 - cloudA * 0.85));
   gl_FragColor = vec4(col, 1.0);
 }
 `
@@ -86,6 +147,10 @@ const CLOUD_Y = 760
 const CLOUD_SPREAD = 3400
 const BIRD_Y = 110
 const PLANE_Y = 1150
+/** Dome-shader cloud coverage (0 none … 1 solid), by weather. The dome clouds replace the old box puffs. */
+const CLOUD_COVER_CLEAR = 0.45
+const CLOUD_COVER_OVERCAST = 0.85
+const CLOUD_COVER_NIGHT = 0.25
 
 interface Cloud { x: number; z: number; scale: number; drift: number }
 interface Bird { cx: number; cz: number; r: number; a: number; speed: number; y: number; flap: number }
@@ -94,6 +159,7 @@ interface Plane { x: number; z: number; heading: number; speed: number; y: numbe
 export class Sky {
   private readonly scene: Scene
   private readonly dome: Mesh
+  private readonly domeMat: ShaderMaterial
   private readonly cloudMesh: Mesh
   private readonly birdMesh: Mesh
   private readonly planeMesh: Mesh
@@ -111,6 +177,8 @@ export class Sky {
   constructor(scene: Scene, opts: Partial<SkyOptions> = {}) {
     this.scene = scene
     /*
+     * The CLOUDS now live in the dome shader (DOME_FRAGMENT, 2026-11-26): a noise layer projected onto the sky,
+     * lit from DAYLIGHT.sun. The box-puff mesh below stays off:
      * CLOUDS ARE OFF (owner, 2026-09-23: "the clouds are really bad. we should delete those and figure out
      * atmosphere later"). They drew as flat pale ellipses pasted on the dome — visible in every render taken
      * today, and worse than an empty sky.
@@ -129,13 +197,20 @@ export class Sky {
     }
     const domeMat = new ShaderMaterial('skyDome', scene, 'skyDome', {
       attributes: ['position'],
-      uniforms: ['worldViewProjection', 'zenith', 'horizon', 'sunDir', 'sunColour', 'night'],
+      uniforms: ['worldViewProjection', 'zenith', 'horizon', 'sunDir', 'sunColour', 'night', 'time', 'cover', 'shade'],
     })
     domeMat.setFloat('night', DAYLIGHT.fogDensity > 0.004 ? 1 : 0)
     domeMat.setColor3('zenith', DAYLIGHT.zenith)
     domeMat.setColor3('horizon', DAYLIGHT.horizon)
     domeMat.setVector3('sunDir', DAYLIGHT.sun)
     domeMat.setColor3('sunColour', DAYLIGHT.sunColour)
+    domeMat.setFloat('time', 0)
+    // coverage: a scattering of fair-weather cumulus on a clear day, a lid when overcast, thin at night
+    const cover = OVERCAST > 0 ? CLOUD_COVER_OVERCAST : NIGHT >= 1 ? CLOUD_COVER_NIGHT : CLOUD_COVER_CLEAR
+    domeMat.setFloat('cover', cover)
+    // the underside of a cloud: the horizon's colour, darkened (much darker under an overcast lid)
+    domeMat.setColor3('shade', DAYLIGHT.horizon.scale(OVERCAST > 0 ? 0.62 : 0.86))
+    this.domeMat = domeMat
     domeMat.backFaceCulling = false
     domeMat.disableDepthWrite = true
 
@@ -244,6 +319,7 @@ export class Sky {
   /** `at` is the rider, so the sky furniture follows them and never runs out. */
   update(dt: number, at: { x: number; z: number }): void {
     this.t += dt
+    this.domeMat.setFloat('time', this.t)
     const m = Matrix.Identity()
 
     // clouds: drift downwind and wrap round the rider, so the sky is never empty wherever they ride to

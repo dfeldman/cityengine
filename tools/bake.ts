@@ -1327,7 +1327,7 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!kind || !w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     if (area(ring) < 40) continue
-    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' && /^(surface)?$/.test(w.tags.parking ?? '') ? { parking: true as const } : {}), ...(kind === 'water' && isRiver(w.tags) ? { river: true as const } : {}) })
+    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' && /^(surface)?$/.test(w.tags.parking ?? '') ? { parking: true as const } : {}), ...(kind === 'water' && isRiver(w.tags) ? { river: true as const } : {}), ...(kind === 'park' && isGarden(w.tags) ? { garden: true as const } : {}) })
   }
   /*
    * ---- THE SPORTS-PITCH KIT (BUGS.md #214, src/city/sports.ts, src/render/sports.ts)
@@ -1542,7 +1542,7 @@ async function bake(spec: CitySpec): Promise<void> {
         // 2026-10 brought in nature_reserve relations running 228 km down the coast, which hung the planting
         // (45 million candidate points on a 6 663-point ring) and would have greened the whole city.
         if (kind !== 'water' && tooBigForAnArea(pts)) { hugeAreas++; continue }
-        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(kind === 'water' && isRiver(rel.tags) ? { river: true as const } : {}), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' && /^(surface)?$/.test(rel.tags.parking ?? '') ? { parking: true as const } : {}) })
+        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(kind === 'water' && isRiver(rel.tags) ? { river: true as const } : {}), ...(kind === 'park' && isGarden(rel.tags) ? { garden: true as const } : {}), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' && /^(surface)?$/.test(rel.tags.parking ?? '') ? { parking: true as const } : {}) })
       }
       fromRelations++
     }
@@ -3548,6 +3548,24 @@ async function bake(spec: CitySpec): Promise<void> {
       if (zn) { a.beds = true; if (zn.props.ground === 'garden') a.moss = true; n++ }
     }
     if (bedZones.length) console.log(`  ${n} parks laid out as planted beds`)
+    /*
+     * BIG PARKS ARE MEADOW (owner, 2026-11-26: "always auto tag big parks as meadows"): a park over MEADOW_PARK_M2 (100 ha —
+     * the Bois de Boulogne and Vincennes, Golden Gate Park, McLaren, the Presidio; not the Champ de Mars, Luxembourg or
+     * Buttes-Chaumont at about 25 ha) has long grass on its open ground. Only the whole polygon can say so: the tiles get
+     * clipped pieces, which is why this is decided here and not at run time.
+     */
+    {
+      const MEADOW_PARK_M2 = 1_000_000
+      let nm = 0
+      for (const a of areas) {
+        if (a.kind !== 'park' || a.beds) continue
+        const r = unpackPoints(a.ring)
+        let s2 = 0
+        for (let i = 0, j = r.length - 1; i < r.length; j = i++) s2 += (r[j].x + r[i].x) * (r[j].z - r[i].z)
+        if (Math.abs(s2) / 2 > MEADOW_PARK_M2) { a.meadow = true; nm++ }
+      }
+      console.log(`  ${nm} big parks tagged meadow`)
+    }
     /*
      * …and a LAWN a zone lays down where OSM maps none (`ground: 'grass'`): the one grass in a park of beds is what OSM
      * says is grass, and at Francisco Park that is the steep upper slope while the mown lawn — the dog run along Bay
@@ -6128,6 +6146,14 @@ function ccw(ring: { x: number; z: number }[]): { x: number; z: number }[] {
 
 /** OSM's river, as opposed to a lake, a pond or a canal's basin: what a region's `riverLevel` is the surface of */
 const isRiver = (t: Record<string, string>): boolean => t.water === 'river' || t.waterway === 'riverbank'
+
+/**
+ * A kept GARDEN (`leisure=garden`, not a backyard, allotment or community plot): its lawns are flawless (render/grass-glsl.ts
+ * GR.upkeep, manicured; owner 2026-11-26: "in gardens it is perfectly maintained and nearly flawless")
+ */
+function isGarden(t: Record<string, string>): boolean {
+  return t.leisure === 'garden' && !/^(residential|community|allotment|vegetable)$/.test(t['garden:type'] ?? '')
+}
 
 function areaKind(w: OsmWay): PackedArea['kind'] | null {
   const t = w.tags

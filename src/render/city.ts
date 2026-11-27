@@ -12,6 +12,7 @@
  * drawn separately, and a city is the case where that bites hardest.
  */
 import { Projection } from '../city/geo.ts'
+import { LAMP_RULES, type LampRule } from './lamp-rules.ts'
 import { squareBenches } from './paris/square-benches.ts'
 import { inRing, levelPlanTweaks, prepareTweaks } from '../city/terrain-tweaks.ts'
 import { modelLevelAt } from '../city/model-walks.ts'
@@ -20,9 +21,12 @@ import { modelLevelAt } from '../city/model-walks.ts'
 const FIGURE_PAD = 6
 const FIGURE_KINDS = new Set(['statue', 'bust', 'sculpture'])
 import { marketStall, parisStreetModel, PARIS_STREET } from './paris/street.ts'
-import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisPanel, sucette, treePit } from './paris/furniture.ts'
+import { afficheMeshes } from './affiches.ts'
+import { WILD, WILD_MODELS, WILD_STYLES } from './wild-posting.ts'
+import { horodateur, jardiniere, laPosteBox, parisBench, parisBusStop, parisLamp, parisLampConsole, parisLampTaped, TAPED, parisWallLamp, parisPanel, sucette, treePit } from './paris/furniture.ts'
 import { WallaceFountains } from './paris/wallace.ts'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { VertexBuffer } from '@babylonjs/core/Buffers/buffer'
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { RenderingGroup } from '@babylonjs/core/Rendering/renderingGroup'
 import type { SubMesh } from '@babylonjs/core/Meshes/subMesh'
@@ -35,6 +39,7 @@ import { stopSign, uspsBox, sfFireAlarmBox, nycFireAlarmBox, billboard, muniStop
 import { streetClockPost } from './street-clock.ts'
 import { clockFace } from './landmarks/parts.ts'
 import { Clocks } from './clocks.ts'
+import { GRASS_TYPE, grassCode, getGrassDetail } from './grass-glsl.ts'
 import { GardenTiles, GARDEN_TINT, insideRing as inGardenRing } from './garden.ts'
 import { MeshBuilder, buildBuilding, capPolygon, fronts, type StreetFacing, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
@@ -47,14 +52,16 @@ import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { court } from './sports.ts'
 import { surfaceTag } from './cartoon-material.ts'
-import { groundLayerMaterial, roadMaterial, CLIFF_SURFACES, CLIFF_GRADE_FROM, CLIFF_GRADE_TO, CLIFF_GRADE_RUN } from './road-material.ts'
-import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
+import { groundLayerMaterial, roadMaterial, CLIFF_SURFACES, CLIFF_GRADE_FROM, CLIFF_GRADE_TO, CLIFF_GRADE_RUN, trailPad, trailDetail } from './road-material.ts'
+import { addShadow, shadowMaterial, shadowOffset, softShadowMaterial, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
   bench, bikeDocks, bollard, box, motoParking, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, parisEntrance, kiosk, lampPost,
   morrisColumn, parisBarrier, velibStation, bikeParking, metroTotem, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis,
-  wallLamp, strut, prism, FIXED,
+  wallLamp, strut, prism, FIXED, LAMP_LIGHTS,
 } from './models.ts'
+import { glowWanted, lampGlowMesh, type LampLight } from './lamp-glow.ts'
+import { cobraHeadArm, COBRA_ON_POLE_LIGHT, sfConcreteLight, sfSteelLight } from './sf/street-lights.ts'
 import { centreDistance, facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
 import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
@@ -296,6 +303,25 @@ export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain
 
 const key = tileKey
 
+/**
+ * The grass type a polygon is drawn as (render/grass-glsl.ts, in the colour alpha's fraction; 0 = not grass, or the grass shader is off):
+ * a pitch or a kept garden is manicured, a park is lawn (unkempt above GR.parkBigArea m2: the Bois's great parks), a mapped grass polygon lawn
+ * (meadow above GR.meadowArea m2). A forest floor, sand, dirt and paving stay what they were.
+ */
+/** ?grasstype=1..4 draws every grass polygon as that type (a look-development knob) */
+const GRASS_FORCE = typeof location !== 'undefined' ? Number(new URLSearchParams(location.search).get('grasstype')) || 0 : 0
+function grassKind(a: PackedArea, tint: readonly number[]): number {
+  if (getGrassDetail() === 0 || (a.kind !== 'grass' && a.kind !== 'park' && a.kind !== 'pitch') || a.beds || a.surface || a.brick || tint !== AREA_TINT[a.kind]) return 0
+  if (GRASS_FORCE) return grassCode(GRASS_FORCE)
+  if (a.kind === 'pitch' || (a.kind === 'park' && a.garden)) return grassCode(GRASS_TYPE.manicured)
+  // the same rules as render/grass-mask.ts: a mapped grass polygon and a park's own ground are mown lawn however big. Meadow
+  // is the dry zones' alone (below): a tile holds clipped pieces, so "a big park" cannot be told here, and the Champ de Mars'
+  // parade lawns went to wheat when a big piece meant meadow
+  // (a city park's ground is mown too — the Champ de Mars, Dolores — so lawn; unkempt is the base ground's, the verges and the lots)
+  // (…but a BIG park's own open ground is meadow, baked as `meadow`: its mapped lawns inside it are still lawns)
+  return grassCode(a.kind === 'park' && a.meadow ? GRASS_TYPE.meadow : GRASS_TYPE.lawn)
+}
+
 const YELLOW: [number, number, number] = [0.89, 0.71, 0.0]
 
 /** The colours of the ground, which are not part of any building's palette. The carriageway is not here:
@@ -442,6 +468,29 @@ function pointOn(points: { x: number; z: number }[], s: number): { x: number; z:
 const VIADUCT_CLEAR = 6.5
 /** set while a tile's furniture is placed: points on a viaduct-top walk, where nothing of the streets' may stand */
 let offDeck: ((x: number, z: number) => boolean) | null = null
+/**
+ * Whether a street carries wooden utility poles (SF's residential streets, the `clutter` pass) — decided in one place,
+ * because the lamp loop must know it too: on those streets the light is a cobra head bolted to the poles, and a lamp post
+ * of its own as well would be a second row of lights (owner, 2026-11-26, the street lamps).
+ */
+const poleHash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 1000) / 1000
+const streetHasPoles = (e: { id: number; kind?: string }, total: number): boolean => e.kind === 'residential' && total > 40 && poleHash(e.id, 11) < 0.7
+/** the pavement a Paris street with `sidewalk=separate` is furnished as if it had (m) */
+const SEPARATE_WALK = 2.4
+/** Paris's wall consoles: the plate's height up the facade, and one per this many metres of a street-facing wall */
+const WALL_LAMP_Y = 5.0
+const WALL_LAMP_PITCH = 22
+/** SF: a street this wide (m) or wider is an arterial and gets the taller galvanised pole (render/sf/street-lights.ts) */
+const SF_ARTERIAL_WIDTH = 13
+
+/** a tile's furniture builder, after dark → the lamp heads placed into it, for their pools of light (render/lamp-glow.ts) */
+const LAMP_SINK = new WeakMap<MeshBuilder, LampLight[]>()
+/** wild-posting walls placed ([x, z, heading, variant]), for finding one to photograph */
+const WILD_PLACED: number[][] = []
+if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>).__wildPlaced = WILD_PLACED
+/** lamps placed after dark, by model, for tools/perf/lamp-count.mjs */
+const LAMPS_PLACED: Record<string, number | string> = {}
+if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>).__lampsPlaced = LAMPS_PLACED
 
 const MODEL_MEMO = new WeakMap<(b: MeshBuilder) => void, MeshBuilder>()
 function placeModel(out: MeshBuilder, model: (b: MeshBuilder) => void, x: number, y: number, z: number,
@@ -467,6 +516,21 @@ function placeModel(out: MeshBuilder, model: (b: MeshBuilder) => void, x: number
   for (let i = 0; i < tmp.colors.length; i++) out.colors.push(tmp.colors[i])
   for (const idx of tmp.indices) out.indices.push(base + idx)
   RIGID.get(out)?.push([base, tmp.positions.length / 3, x, z])
+  // the ads it carries, turned with it, each picked by where the model stands (render/affiches.ts)
+  if (tmp.affiches.length) {
+    const here = Math.imul(Math.round(x * 7) ^ Math.imul(Math.round(z * 13), 0x9e3779b1), 0x85ebca6b) >>> 0
+    for (const f of tmp.affiches) {
+      out.affiches.push({ ...f, x: x + f.x * cos + f.z * sin, y: y + f.y, z: z - f.x * sin + f.z * cos,
+        nx: f.nx * cos + f.nz * sin, nz: -f.nx * sin + f.nz * cos, seed: (f.seed ^ here) >>> 0, ax: x, az: z })
+    }
+  }
+  const sink = LAMP_SINK.get(out)
+  const lights = sink && LAMP_LIGHTS.get(model)
+  // (a count by model, and the last one's x, z, heading as a place to photograph one)
+  if (lights) { LAMPS_PLACED[model.name] = Number(LAMPS_PLACED[model.name] ?? 0) + 1; LAMPS_PLACED[`${model.name}@`] = `${Math.round(x)},${Math.round(z)},${heading.toFixed(2)}` }
+  if (lights) for (const l of lights) {
+    sink!.push({ x: x + l.at[0] * cos + l.at[2] * sin, z: z - l.at[0] * sin + l.at[2] * cos, h: y + l.at[1], r: l.r, warm: l.warm })
+  }
 }
 
 /**
@@ -506,10 +570,17 @@ export function densify(pts: { x: number; z: number }[], step = 4): { x: number;
 }
 
 function quadStrip(out: MeshBuilder, pts0: { x: number; z: number }[], width: number, y: number,
-                   tint: [number, number, number], ground?: (x: number, z: number) => number): void {
+                   tint: [number, number, number], ground?: (x: number, z: number) => number, carriage = false): void {
   const pts = densify(pts0)
   const h = width / 2
-  for (let i = 1; i < pts.length; i++) {
+  /*
+   * uv.y is metres along the WHOLE way, not along each 4 m piece: restarting it every piece made the page jump at every
+   * overlap, and the road shader's patches, cracks and manholes (render/road-material.ts RD) are laid in cells along it.
+   * A CARRIAGEWAY also carries its half-width in the colour's alpha, for the shader's lanes.
+   */
+  let s = 0
+  const kind = carriage ? h : 0
+  for (let i = 1; i < pts.length; i++, s += Math.hypot(pts[i - 1].x - pts[i - 2].x, pts[i - 1].z - pts[i - 2].z)) {
     const a = pts[i - 1]
     const b = pts[i]
     const dx = b.x - a.x
@@ -544,8 +615,8 @@ function quadStrip(out: MeshBuilder, pts0: { x: number; z: number }[], width: nu
         [[a.x + nx * s0 - ex, y, a.z + nz * s0 - ez], [a.x + nx * s1 - ex, y, a.z + nz * s1 - ez],
          [b.x + nx * s1 + ex, y, b.z + nz * s1 + ez], [b.x + nx * s0 + ex, y, b.z + nz * s0 + ez]],
         [0, 1, 0],
-        [[h * s0, 0], [h * s1, 0], [h * s1, len], [h * s0, len]],
-        tint, 0,
+        [[h * s0, s - h * 0.55], [h * s1, s - h * 0.55], [h * s1, s + len + h * 0.55], [h * s0, s + len + h * 0.55]],
+        tint, kind,
       )
     }
   }
@@ -1088,6 +1159,54 @@ function distantSea(scene: Scene, pkg: CityPackage): Mesh | null {
 
 /** a coarse post beside a river post stands this far over the river's clamp (m): just under the water's sheet, never through it */
 export const DISTANT_BANK_LIFT = 0
+/** the distant ground's posts round a way in a cut go under it: on/off, how far under the coarse surface a way must run, how far out
+ *  its posts go down, and how far under the way's level (m) — distantGround, UNDER A CUT */
+export const DISTANT_CUT = true, DISTANT_CUT_MIN = 0.5, DISTANT_CUT_REACH = 8, DISTANT_CUT_SINK = 0.5
+/** the distant ground's chunks, for sinkDistantUnder: the grid, chunk size in posts, and each chunk's vertex per post */
+let distantChunks: { t: PackedTerrain; per: number; chunks: Map<string, { m: Mesh; c0: number; r0: number; W: number; id: Int32Array; pos: Float32Array }> } | null = null
+/**
+ * UNDER A CUT (2026-11-27, owner: grass banks and holes in the Avenue de New York's trench by the Place de Varsovie). The distant
+ * ground is drawn under the tiles' own ground, and a 20 m cell spanning a trench's 4–5 m step stood over the trench's floor and drew
+ * across it as a broad grass bank in front of the trench's walls. As each tile's ways arrive, every way that runs DISTANT_CUT_MIN m or
+ * more under the coarse surface (a trench, a cut down to a tunnel's mouth, a sunken port) takes the distant posts within
+ * DISTANT_CUT_REACH m of it down to DISTANT_CUT_SINK m under its own level, so no cell crosses it above its floor (the river's rule,
+ * distantGround UNDER THE RIVER). Not tunnels (under the ground, not in it) or bridges.
+ */
+function sinkDistantUnder(edges: readonly PackedEdge[]): void {
+  const D = distantChunks
+  if (!DISTANT_CUT || !D) return
+  const { t, per } = D, H = t.heights
+  const coarse = (x: number, z: number): number => {
+    const fc = Math.max(0, Math.min(t.cols - 1.001, (x - t.x0) / t.step)), fr = Math.max(0, Math.min(t.rows - 1.001, (z - t.z0) / t.step))
+    const c = Math.floor(fc), r = Math.floor(fr), u = fc - c, v = fr - r, i = r * t.cols + c
+    return (H[i] * (1 - u) + H[i + 1] * u) * (1 - v) + (H[i + t.cols] * (1 - u) + H[i + t.cols + 1] * u) * v
+  }
+  const R = Math.ceil(DISTANT_CUT_REACH / t.step), dirty = new Set<{ m: Mesh; pos: Float32Array }>()
+  for (const e of edges) {
+    if (!e.heights?.length || e.bridge || (e.tunnel && !e.cut)) continue
+    const pts = unpackPoints(e.points)
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i], n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.z - a.z) / (t.step / 2)))
+      for (let j = 0; j <= n; j++) {
+        const f = j / n, x = a.x + (b.x - a.x) * f, z = a.z + (b.z - a.z) * f, h = e.heights[i - 1] + (e.heights[i] - e.heights[i - 1]) * f
+        if (h > coarse(x, z) - DISTANT_CUT_MIN) continue
+        const c0 = Math.floor((x - t.x0) / t.step), r0 = Math.floor((z - t.z0) / t.step)
+        for (let r = r0 - R + 1; r <= r0 + R; r++) for (let c = c0 - R + 1; c <= c0 + R; c++) {
+          // (a post on a chunk's edge is a vertex of each chunk it bounds)
+          for (const [kc, kr] of [[Math.floor(c / per), Math.floor(r / per)], [Math.floor(c / per) - 1, Math.floor(r / per)], [Math.floor(c / per), Math.floor(r / per) - 1], [Math.floor(c / per) - 1, Math.floor(r / per) - 1]]) {
+            const ch = D.chunks.get(`${kc},${kr}`)
+            if (!ch || c < ch.c0 || r < ch.r0 || c - ch.c0 >= ch.W || r > ch.r0 + per) continue
+            const vi = ch.id[(r - ch.r0) * ch.W + (c - ch.c0)]
+            if (vi === undefined || vi < 0 || ch.pos[vi * 3 + 1] <= h - DISTANT_CUT_SINK) continue
+            ch.pos[vi * 3 + 1] = h - DISTANT_CUT_SINK
+            dirty.add(ch)
+          }
+        }
+      }
+    }
+  }
+  for (const ch of dirty) ch.m.setVerticesData(VertexBuffer.PositionKind, ch.pos, false)
+}
 function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets: string): Mesh | null {
   const t = groundGrid(pkg.terrain)
   if (!t) return null
@@ -1135,7 +1254,15 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
     const h = t.heights[r * t.cols + c]
     return rc ? rc(t.x0 + c * t.step, t.z0 + r * t.step, h) : h
   }
-  const distantY = (c: number, r: number): number => {
+  /*
+   * UNDER A CUT (2026-11-27, owner: grass banks and holes in the Avenue de New York's trench by the Place de Varsovie). The same rule
+   * as the river's: a 20 m cell spanning a trench's 4–5 m step stood over the trench's floor and drew across it, over the tiles' own
+   * ground, as a broad grass bank in front of the trench's walls. Every way that runs DISTANT_CUT_MIN m or more under the coarse
+   * surface (a trench, a cut down to a tunnel's mouth, a sunken port) takes the posts within DISTANT_CUT_REACH m of it down to
+   * DISTANT_CUT_SINK m under its own level, so no cell crosses it above its floor. Not tunnels (under the ground, not in it) or bridges.
+   */
+  const distantY = (c: number, r: number): number => distantY0(c, r)
+  const distantY0 = (c: number, r: number): number => {
     const own = clampAt(c, r)
     if (!rc) return own
     let y = own
@@ -1147,6 +1274,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
     return y
   }
   let cells = 0
+  distantChunks = { t, per, chunks: new Map() }
   for (let r0 = 0; r0 + stride < t.rows; r0 += per * stride) {
     for (let c0 = 0; c0 + stride < t.cols; c0 += per * stride) {
       const r1 = Math.min(r0 + per * stride, t.rows - 1)
@@ -1188,6 +1316,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
       vd.indices = n > 65535 ? new Uint32Array(idx) : new Uint16Array(idx)
       const m = new Mesh(`ground:distant:${c0},${r0}`, scene)
       vd.applyToMesh(m)
+      distantChunks.chunks.set(`${c0 / per},${r0 / per}`, { m, c0, r0, W, id, pos: vd.positions as Float32Array })
       m.geometry?.clearCachedData()
       m.material = mat
       markGroundStencil(mat)
@@ -1650,7 +1779,10 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   // after everything else, so the static shadows have marked the stencil before a blob tests it. By distance alone the
   // blob pool (bounds at the world origin) went FIRST anywhere away from it and its quads punched lit squares in the
   // building shadows (owner, 2026-11-24).
-  const lastBlob = (s: SubMesh): number => (s.getMaterial()?.name === 'shadowBlob' ? 1 : 0)
+  // (and the soft shadows in their order: hard shadows mark the stencil, leaf shade marks it too, then the penumbra
+  //  skirts and the blobs only test it — see shadows.ts)
+  const SHADOW_RANK: Record<string, number> = { shadowLeaf: 1, shadowSoft: 2, shadowBlob: 3 }
+  const lastBlob = (s: SubMesh): number => SHADOW_RANK[s.getMaterial()?.name ?? ''] ?? 0
   const transparent = (a: SubMesh, b: SubMesh): number => lastBlob(a) - lastBlob(b) || RenderingGroup.defaultTransparentSortCompare(a, b)
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()), undefined, transparent)
@@ -2366,6 +2498,24 @@ export class City {
 
   /** regions.json `retypeAreas`, in local metres: set with the tweaks */
   private retypes: { from: string; to: PackedArea['kind']; ring: number[] }[] = []
+  /** LAMP_RULES with their boxes in local metres (render/lamp-rules.ts), made on first use */
+  private lampRulesLocal: { rule: LampRule; x0: number; z0: number; x1: number; z1: number }[] | null = null
+  /** the famous-lamp rule a street falls under, if any: its name, and its middle point inside the rule's box */
+  private lampRuleFor(e: { name?: string }, pts: { x: number; z: number }[]): LampRule | null {
+    if (!e.name || !this.pkg.origin || pts.length === 0) return null
+    if (!this.lampRulesLocal) {
+      const proj = new Projection(this.pkg.origin)
+      this.lampRulesLocal = LAMP_RULES.map((rule) => {
+        const a = proj.toLocal({ lat: rule.box[0], lon: rule.box[1] }), b = proj.toLocal({ lat: rule.box[2], lon: rule.box[3] })
+        return { rule, x0: Math.min(a.x, b.x), z0: Math.min(a.z, b.z), x1: Math.max(a.x, b.x), z1: Math.max(a.z, b.z) }
+      })
+    }
+    const m = pts[pts.length >> 1]
+    for (const r of this.lampRulesLocal) {
+      if (r.rule.streets.includes(e.name) && m.x >= r.x0 && m.x <= r.x1 && m.z >= r.z0 && m.z <= r.z1) return r.rule
+    }
+    return null
+  }
 
   ingest(t: TileData): void {
     for (const r of this.retypes) {
@@ -3395,13 +3545,30 @@ export class City {
     // raised edges — bridges and the ramps onto them — are structures, built below, not painted
     // (and walks on a model's own paved levels — the Trocadéro's parvis — are its paving's, city/model-walks.ts)
     const groundEdges = (this.edgesIn.get(k) ?? []).filter((e) => !this.raisedIds.has(e.id) && !this.onModelLevel(e))
+    sinkDistantUnder(this.edgesIn.get(k) ?? [])
     /*
      * A WAY'S STRIP STOPS ONLY AT A SEAM ITS NEIGHBOUR ALSO DRAWS IT UP TO (owner, 2026-11-16, Pine and Mason, 37.7894, −122.4121:
      * "grassy strips in the road"). A tile holds a way when the way's centre line passes through it (city/tiles.ts tilesOfLine), so a
      * street running just inside a seam spills its far half into a tile that never draws it; clipping every strip to the tile's square
      * cut that half off and the ground showed along the seam. Each strip is cut only on the sides whose neighbour holds the same way.
      */
-    const seamIds = [[-1, 0], [1, 0], [0, -1], [0, 1]].map(([dx, dz]) => new Set((this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []).map((o) => o.id)))
+    /*
+     * …AND ONLY IF ITS NEIGHBOUR'S PIECE REACHES THAT SEAM (owner, 2026-11-25, Quai Anatole France, 48.861595,2.322681: "holes in the road
+     * where it's just grass"). `splitLong` files a long way's ~120 m pieces under one id, each in the tile it starts in, so "the neighbour
+     * holds this way" was also true of a piece that only began 97 m past the seam: the near piece was cut at the seam, the far one started
+     * well beyond it, and the carriageway between was drawn by nobody — parked cars on lawn. A side is cut only where a neighbour's piece
+     * of the same way crosses the seam line, i.e. draws up to it.
+     */
+    const seamSides = [[-1, 0], [1, 0], [0, -1], [0, 1]] as const
+    const seamLine = [ktx * TILE, (ktx + 1) * TILE, ktz * TILE, (ktz + 1) * TILE]
+    const seamIds = seamSides.map(([dx, dz], side) => {
+      const reach = new Set<number>(), at = seamLine[side], onX = dx !== 0, sign = dx + dz
+      for (const o of this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []) {
+        // (reaches: some vertex of the neighbour's piece on the seam or over it into this tile — west neighbour x ≥ seam, east x ≤ seam…)
+        for (let i = onX ? 0 : 1; i < o.points.length; i += 2) if ((o.points[i] - at) * sign <= 0) { reach.add(o.id); break }
+      }
+      return reach
+    })
     const seamClip = (b: MeshBuilder, from: number, id: number): void => {
       if (!TILE_CLIP || b.indices.length <= from) return
       const [w, e2, s, n] = seamIds.map((ids) => ids.has(id))
@@ -3426,6 +3593,8 @@ export class City {
     const corridor = new MeshBuilder()
     const trails = new Map<string, MeshBuilder>()
     const shadows = new MeshBuilder()
+    // (their penumbras, drawn after every hard shadow: see shadows.ts softShadowMaterial)
+    const shadowSkirts = new MeshBuilder()
     const roads = new Map<string, MeshBuilder>()
     const water = new MeshBuilder()
 
@@ -3574,7 +3743,7 @@ export class City {
         const tint = walkInGarden ? GARDEN_TINT.gravel : a.kind === 'paved' && !a.surface && !a.brick && this.pkg.region === 'paris' ? PARIS_SQUARE : a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           // (a Paris square's plain paving: the concrete page at 2.4 m read as tan planks across the Concorde and the parvis of Notre-Dame)
-          0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : a.kind === 'paved' && this.pkg.region === 'paris' ? 24 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+          0.02, tint, grassKind(a, tint), a.kind === 'sand' || a.surface ? 1 : a.kind === 'paved' && this.pkg.region === 'paris' ? 24 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         /*
          * DRY GROUND (ZoneProps `dry`; owner, 2026-10-06: the Marin Headlands are "very dry and covered in low shrubs", and
          * a green lawn over them read as a golf course): grass, park and wood inside such a zone take the colours of
@@ -3591,6 +3760,8 @@ export class City {
               ? [0.42 + 0.1 * t, 0.45 + 0.02 * t, 0.27 + 0.04 * t]     // olive scrub to sage
               : [0.47 + 0.16 * (t - 0.5), 0.46 + 0.06 * (t - 0.5), 0.29 + 0.02 * (t - 0.5)]  // to dry straw
             into.colors[v * 4] = c[0]; into.colors[v * 4 + 1] = c[1]; into.colors[v * 4 + 2] = c[2]
+            // (and meadow, to the grass shader: render/grass-glsl.ts. A wood stays forest duff)
+            if (a.kind !== 'wood' && getGrassDetail() > 0) into.colors[v * 4 + 3] = grassCode(GRASS_TYPE.meadow)
           }
         }
         if (beach) {
@@ -3608,7 +3779,7 @@ export class City {
       const bx0 = ktx * TILE, bz0 = ktz * TILE
       for (const f of this.gardenTiles()?.flatsIn(ktx, ktz) ?? []) {
         const piece = clipToBox(f.ring, bx0, bz0, bx0 + TILE, bz0 + TILE)
-        if (piece.length >= 3) capPolygonWithHoles(areas, [piece], f.kind === 'gravel' ? 0.03 : f.kind === 'lawn' ? 0.045 : 0.06, GARDEN_TINT[f.kind], 0, 30, AREA_MAX_EDGE)
+        if (piece.length >= 3) capPolygonWithHoles(areas, [piece], f.kind === 'gravel' ? 0.03 : f.kind === 'lawn' ? 0.045 : 0.06, GARDEN_TINT[f.kind], f.kind === 'lawn' && getGrassDetail() > 0 ? grassCode(GRASS_TYPE.manicured) : 0, 30, AREA_MAX_EDGE)
       }
     }
     // the paving landmarks asked for (`paveGround`), clipped to this tile, over every area
@@ -3740,7 +3911,8 @@ export class City {
         // (and a path's asphalt sun-bleached paler than a drive's: the road page at full depth made the web of paths
         //  the darkest thing in the park)
         const tint: [number, number, number] = page === 'asphalt' && w < e.width + 0.01 && e.kind !== 'pedestrian' ? [0.68, 0.68, 0.66] : [0.5, 0.5, 0.5]
-        quadStrip(out, pts, w, 0.15, tint, (x, z) => this.terrain.rawHeightAt(x, z))
+        // (widened for the trail shader's ragged edge, and carrying its half-width for it: render/road-material.ts TR)
+        quadStrip(out, pts, w + 2 * trailPad(page), 0.15, tint, (x, z) => this.terrain.rawHeightAt(x, z), trailDetail())
       }
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
@@ -3841,7 +4013,7 @@ export class City {
       const out = roads.get(drawn) ?? new MeshBuilder()
       roads.set(drawn, out)
       const i0 = out.indices.length
-      quadStrip(out, pts, e.width, 0.05, [0.5, 0.5, 0.5])
+      quadStrip(out, pts, e.width, 0.05, [0.5, 0.5, 0.5], undefined, true)
       seamClip(out, i0, e.id)
       if (stripe && e.width > stripe.cobbles + 2) {
         const side = (e.width - stripe.cobbles) / 2, off = stripe.cobbles / 2 + side / 2
@@ -4348,6 +4520,7 @@ export class City {
     // the small evidence that somebody maintains the place.
     const furniture = new MeshBuilder()
     RIGID.set(furniture, [])
+    if (glowWanted()) LAMP_SINK.set(furniture, [])
     // never in a road, nor in the median of one mapped as two ways (Carriageways.noFurniture)
     const kerbside = new Carriageways(kerbEdges)
     /*
@@ -4449,7 +4622,8 @@ export class City {
     yield
     for (const o of around) {
       yield
-      if (o.foot || !o.name) continue
+      // (a cycle track of the same name beside the carriageway is not its twin: on the Champs-Élysées they took every lamp)
+      if (o.foot || !o.name || o.kind === 'cycleway') continue
       const l = twins.get(o.name) ?? []
       l.push({ id: o.id, pts: unpackPoints(o.points) })
       twins.set(o.name, l)
@@ -4472,11 +4646,24 @@ export class City {
     for (const e of groundEdges) {
       yield 'ground edge 5'
       if (e.foot) continue
-      if (e.walk < 1.2) continue
-      const walk = e.walk
+      /*
+       * A Paris street whose pavements OSM maps as ways of their own (`sidewalk=separate`: the bake gives it walk 0.6 —
+       * tools/bake.ts) still HAS its pavements, and its candelabras on them: the Rue de Rennes and most of the big avenues
+       * had no lamps at all (owner, 2026-11-26, the street lamps). Its furniture is placed as if the pavement were
+       * SEPARATE_WALK wide, which puts the lamps a metre and a bit behind the kerb.
+       */
+      const separate = !!this.region.furniture.boulevardLamps && e.walk > 0.5 && e.walk < 0.7 && e.width >= 7
+      if (e.walk < 1.2 && !separate) continue
+      const walk = separate ? SEPARATE_WALK : e.walk
       const pts = unpackPoints(e.points)
-      const off = e.width / 2 + walk * 0.55
+      // a famous street's own lamps (render/lamp-rules.ts) take the lamp slots, at their own pitch and setback
+      const rule = this.lampRuleFor(e, pts)
+      const off = rule?.inset !== undefined ? e.width / 2 + rule.inset : rule?.at === 'kerb' ? e.width / 2 + 0.45 : e.width / 2 + walk * 0.55
       const market = this.region.pointFurniture.american && e.name === 'Market Street'
+      // (SF: the poled streets light from their poles, below; the others stand a concrete or steel light at the kerb)
+      const sfLights = !!this.region.furniture.clutter
+      const poled = sfLights && onSurface(e) && streetHasPoles(e, lengthOf(pts)) && !rule?.noPoles
+      const sfLight = e.width >= SF_ARTERIAL_WIDTH ? sfSteelLight : sfConcreteLight
       let acc = 8 + (e.id % 11)
       let n = 0
       for (let i = 1; i < pts.length; i++) {
@@ -4489,7 +4676,7 @@ export class City {
           const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
           const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
           const heading = Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0)
-          if (skippedIf(kerbside.whyNoFurniture(px, pz, market ? 7 : 4), px, pz, 'lamp/bench') || insideTwin(e, pts, px, pz)) { acc += market ? 15 : 22 + ((e.id + n) % 9); n++; continue }
+          if (skippedIf(kerbside.whyNoFurniture(px, pz, market ? 7 : 4), px, pz, rule ? rule.label : 'lamp/bench') || (!rule && insideTwin(e, pts, px, pz))) { acc += rule ? rule.pitch : market ? 15 : 22 + ((e.id + n) % 9); n++; continue }
           // what stands on the pavement is regional: Paris hangs its lamps on the buildings
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
           // (Paris sits more often: a Davioud bench one slot in ten, render/paris/furniture.ts)
@@ -4502,16 +4689,28 @@ export class City {
              * bench is long in x and faces +z, so it takes the normal towards the road.
              */
             if (this.region.furniture.benches && !nearStairMouth(px, pz)) placeModel(furniture, parisSeats ? parisBench : bench, px, 0.15, pz, Math.atan2(dz * side, -dx * side))
+          } else if (rule && (this.region.furniture.lampPosts || this.region.furniture.boulevardLamps) && !nearStairMouth(px, pz)) {
+            placeModel(furniture, rule.model, px, 0.15, pz, heading)
+            // (the opposite one too, if that side's spot is clear)
+            const ox = pts[i - 1].x + dx * t + (dz / seg) * off * side, oz = pts[i - 1].z + dz * t - (dx / seg) * off * side
+            if (rule.paired && !skippedIf(kerbside.whyNoFurniture(ox, oz), ox, oz, rule.label)) placeModel(furniture, rule.model, ox, 0.15, oz, heading + Math.PI)
           } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
-            placeModel(furniture, market ? pathOfGold : lampPost, px, 0.15, pz, heading)
+            if (market) placeModel(furniture, pathOfGold, px, 0.15, pz, heading)
+            else if (!sfLights) placeModel(furniture, lampPost, px, 0.15, pz, heading)
+            else if (!poled) {
+              // at the kerb, its arm out over the road (local −x)
+              const kx = pts[i - 1].x + dx * t + (-dz / seg) * (e.width / 2 + 0.45) * side
+              const kz = pts[i - 1].z + dz * t + (dx / seg) * (e.width / 2 + 0.45) * side
+              placeModel(furniture, sfLight, kx, 0.15, kz, heading)
+            }
           } else if (this.region.furniture.boulevardLamps && walk >= 1.8 && !nearStairMouth(px, pz)) {
             // Paris: the dark lanterns on their posts along every street with the pavement for them, staggered side to side
             // every 22–31 m (owner, 2026-10-30: "we also don't have any lampposts in paris. They are a key part of the
             // city's look" — they had stood on the boulevards only, every other slot; the narrow rues keep their wall lamps)
             // (the avenue's two-armed candelabra on the wide streets, the single lantern elsewhere; one pattern per street)
-            placeModel(furniture, e.width >= 10 && walk >= 3.5 && e.id % 2 === 0 ? parisLampConsole : parisLamp, px, 0.15, pz, heading)
+            placeModel(furniture, e.width >= 10 && walk >= 3.5 && e.id % 2 === 0 ? parisLampConsole : (e.id + n) % TAPED.every === 1 ? parisLampTaped : parisLamp, px, 0.15, pz, heading)
           }
-          const pitch = market ? 15 : 22 + ((e.id + n) % 9)
+          const pitch = rule ? rule.pitch : market ? 15 : 22 + ((e.id + n) % 9)
           /*
            * PARIS'S PAVEMENT between the lamps (owner, 2026-11-03: "put some cycles into Paris street furniture… make it more
            * paris-y"): halfway to the next slot, on the lamps' own line (mid-pavement, clear of the kerb's bollards), a horodateur
@@ -4794,14 +4993,21 @@ export class City {
           }
         }
         // utility poles and their wires down a residential street, one side
-        if (e.kind === 'residential' && total > 40 && hash(e.id, 11) < 0.7) {
+        if (streetHasPoles(e, total) && !this.lampRuleFor(e, pts)?.noPoles) {
           const side = hash(e.id, 12) < 0.5 ? 1 : -1
           let last: { x: number; z: number } | null = null
           for (let s = 10; s < total - 6; s += 34) {
             // (the crossarm ACROSS the street — the model's local x — with the wires running along it from arm to arm;
             //  a quarter turn here laid every arm along the kerb, owner 2026-10-17: "our electrical poles are oriented the
             //  wrong way - parallel to the street instead of perpendicular")
-            const here = put(s, side, e.width / 2 + 0.4, (o) => utilityPole(o, e.id + Math.round(s)))
+            // (and the street's light on it: a cobra head on its arm out over the road, local −x, below the wires)
+            const here = put(s, side, e.width / 2 + 0.4, (o) => { utilityPole(o, e.id + Math.round(s)); cobraHeadArm(o) })
+            const sink = here && LAMP_SINK.get(furniture)
+            if (sink) {
+              const p = at(s)
+              const reach = -COBRA_ON_POLE_LIGHT[0]
+              sink.push({ x: here.x + p.tz * reach * side, z: here.z - p.tx * reach * side, h: 0.15 + COBRA_ON_POLE_LIGHT[1] })
+            }
             if (here && last) {
               const ga = this.terrain.heightAt(last.x, last.z)
               const gb = this.terrain.heightAt(here.x, here.z)
@@ -5448,11 +5654,26 @@ export class City {
       const TRENCH_SMOOTH = 3
       const CONCRETE: [number, number, number] = [0.5, 0.49, 0.47]
       const COPING: [number, number, number] = [0.32, 0.3, 0.275]
+      // the gutter strip from the road's edge (TRENCH_VERGE_IN m under it) to the wall's foot, TRENCH_VERGE_LIFT m over the road's line
+      const TRENCH_VERGE = true
+      const TRENCH_VERGE_IN = 0.15
+      const TRENCH_VERGE_LIFT = 0.04
+      const VERGE: [number, number, number] = [0.42, 0.41, 0.4]
+      // the face hugs the bake's floor: at where the ground first rises TRENCH_HUG_RISE over the road (scanned every
+      // TRENCH_HUG_STEP m out from the carriageway's edge), TRENCH_HUG_BACK m short of it, at least TRENCH_HUG_MIN m past the edge
+      const TRENCH_HUG = true
+      const TRENCH_HUG_RISE = 0.3
+      const TRENCH_HUG_STEP = 0.25
+      const TRENCH_HUG_BACK = 0.25
+      const TRENCH_HUG_MIN = 0.3
+      // (how far out the floor's edge is looked for, and how far past the carriageway's edge its own cut corridor reaches)
+      const TRENCH_HUG_REACH = 8
+      const TRENCH_HUG_OWN = 1.2
       for (const e of groundEdges) {
         if (!e.trench || !e.heights) continue
         const pts = unpackPoints(e.points)
         const half = e.width / 2 + Math.max(e.walk, 0.6) + 0.3
-        type S = { x: number; z: number; nx: number; nz: number; h: number; top: number; w: number; brk: boolean; s: number }
+        type S = { x: number; z: number; nx: number; nz: number; h: number; top: number; w: number; brk: boolean; s: number; off: number; hug: boolean }
         for (const side of [-1, 1]) {
           /*
            * Out from the corridor's edge in TRENCH_STEP steps: the wall's top is where the bank ends — where the next
@@ -5470,8 +5691,18 @@ export class City {
             const pieces = Math.max(1, Math.ceil(l / TRENCH_PIECE))
             for (let j = 0; j <= pieces; j++) {
               const t = j / pieces
-              const x = a.x + (b.x - a.x) * t + nx * half, z = a.z + (b.z - a.z) * t + nz * half
+              const cx = a.x + (b.x - a.x) * t, cz = a.z + (b.z - a.z) * t
               const h = e.heights[i - 1] + (e.heights[i] - e.heights[i - 1]) * t
+              // (2026-11-27, owner: grass banks inside the Avenue de New York's trench) the bake's floor can end short of `half`: the
+              // face stands at the floor's edge, where the ground first rises TRENCH_HUG_RISE over the road, not buried behind its bank
+              let off = half, hug = false
+              if (TRENCH_HUG) for (let d = e.width / 2; d < TRENCH_HUG_REACH; d += TRENCH_HUG_STEP) {
+                const qx = cx + nx * d, qz = cz + nz * d
+                if (this.terrain.rawHeightAt(qx, qz) > h + TRENCH_HUG_RISE) { off = Math.max(e.width / 2 + TRENCH_HUG_MIN, d - TRENCH_HUG_BACK); hug = true; break }
+                // (the twin carriageway's corridor across a flat floor: the median, no wall)
+                if (d > e.width / 2 + TRENCH_HUG_OWN && this.terrain.cut?.(qx, qz) != null) break
+              }
+              const x = cx + nx * off, z = cz + nz * off
               let top = h, w = 0
               // under a slab the wall is its abutment, up to the slab (the deck way over it is no street's bank)
               const lid = this.lidOver(x + nx, z + nz)
@@ -5486,7 +5717,7 @@ export class City {
                 const g = this.terrain.rawHeightAt(qx, qz)
                 if (g > top + 0.05) { top = g; w = d } else if (top - h >= TRENCH_MIN) break
               }
-              ss.push({ x, z, nx, nz, h, top: Math.min(top, h + TRENCH_MAX), w, brk: j === 0 && ss.length > 0, s: s0 - l + l * t })
+              ss.push({ x, z, nx, nz, h, top: Math.min(top, h + TRENCH_MAX), w, brk: j === 0 && ss.length > 0, s: s0 - l + l * t, off, hug })
             }
           }
           /*
@@ -5501,6 +5732,16 @@ export class City {
           const rise = mx.map((_, k) => { const sl = mx.slice(Math.max(0, k - TRENCH_SMOOTH), k + TRENCH_SMOOTH + 1); return sl.reduce((u, v) => u + v, 0) / sl.length })
           const wd = ss.map((_, k) => Math.max(...ss.slice(Math.max(0, k - TRENCH_SMOOTH), k + TRENCH_SMOOTH + 1).map((q) => q.w)))
           const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+          // (2026-11-27, owner: grass strips inside the Avenue de New York's trench) the trench's floor between the carriageway's edge and
+          // its wall's foot (this face's, or a shipped wall's in front of it) is a concrete gutter a hair over the road, not the ground's
+          // grass: wherever the floor's edge was found, walled or not, as far along as the bake walls the trench (`trenchTo`)
+          if (TRENCH_VERGE) for (let k = 1; k < ss.length; k++) {
+            const p0 = ss[k - 1], p1 = ss[k]
+            if (p1.brk || !p0.hug || !p1.hug || (to !== undefined && (to >= 0 ? p1.s > to : L - p1.s > -to))) continue
+            const g0 = p0.off - e.width / 2 + TRENCH_VERGE_IN, g1 = p1.off - e.width / 2 + TRENCH_VERGE_IN
+            const v0 = { x: p0.x - p0.nx * g0, z: p0.z - p0.nz * g0 }, v1 = { x: p1.x - p1.nx * g1, z: p1.z - p1.nz * g1 }
+            walls.quad([[v0.x, p0.h + TRENCH_VERGE_LIFT, v0.z], [v1.x, p1.h + TRENCH_VERGE_LIFT, v1.z], [p1.x, p1.h + TRENCH_VERGE_LIFT, p1.z], [p0.x, p0.h + TRENCH_VERGE_LIFT, p0.z]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], VERGE, surfaceTag('concrete'))
+          }
           for (let k = 1; k < ss.length; k++) {
             const p0 = ss[k - 1], p1 = ss[k]
             if (p1.brk || Math.max(rise[k - 1], rise[k]) < TRENCH_MIN) continue
@@ -5678,7 +5919,7 @@ export class City {
           const pts = unpackPoints(e.points)
           const drawn = drawnSurface(e)
           const b = new MeshBuilder()
-          quadStrip(b, pts, e.width, 0, [0.5, 0.5, 0.5])
+          quadStrip(b, pts, e.width, 0, [0.5, 0.5, 0.5], undefined, true)
           yield* subdivideSteps(b, LID_TOP_EDGE)
           for (let i = 0; i < b.positions.length; i += 3) b.positions[i + 1] = (lid ? this.lidLevel(lid, b.positions[i], b.positions[i + 2]) : lineLevel(pts, e.heights!, b.positions[i], b.positions[i + 2])) + LID_ROAD_LIFT
           const out = lidRoads.get(drawn) ?? new MeshBuilder()
@@ -6002,7 +6243,8 @@ export class City {
         // bracket above a shop's parapet is a lantern standing on the roof
         const top = b.height ?? (b.levels ? b.levels * 3.3 : 12)
         if (top < 5.2) continue
-        const lampY = Math.min(4.4, top - 1.0)
+        // (the console's plate ~5 m up, its lantern standing on the arm's end, under the cornice of a low building)
+        const lampY = Math.min(WALL_LAMP_Y, top - 1.6)
         const ring = unpackPoints(b.ring)
         for (let i = 0; i < ring.length; i++) {
           const a = ring[i]
@@ -6015,16 +6257,43 @@ export class City {
           const nx = ez / len
           const nz = -ex / len
           if (!facesStreet(this.streets, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)) continue
-          const n = Math.max(1, Math.floor(len / 16))
+          const n = Math.max(1, Math.floor(len / WALL_LAMP_PITCH))
           for (let j = 0; j < n; j++) {
             const t = (j + 0.5) / n
-            placeModel(furniture, wallLamp, a.x + ex * t + nx * 0.02, lampY, a.z + ez * t + nz * 0.02, Math.atan2(nx, nz))
+            placeModel(furniture, this.region.roadPaint === 'paris' ? parisWallLamp : wallLamp, a.x + ex * t + nx * 0.02, lampY, a.z + ez * t + nz * 0.02, Math.atan2(nx, nz))
           }
         }
       }
     }
 
+    /*
+     * WILD POSTING (render/wild-posting.ts): bill rows and flyer patches on a few street walls of everyday buildings,
+     * Paris and SF — more where the ground floor has no shop windows to keep clear.
+     */
+    if ((this.region.roadPaint === 'paris' || this.region.furniture.clutter) && !this.off.has('furniture')) {
+      for (const b of this.buildingsIn.get(k) ?? []) {
+        if ((b.minHeight ?? 0) > 0.5 || b.partOf != null || !WILD_STYLES.has(b.style)) continue
+        if ((b.height ?? (b.levels ? b.levels * 3.3 : 12)) < 3) continue
+        const ring = unpackPoints(b.ring)
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i], c = ring[(i + 1) % ring.length]
+          const ex = c.x - a.x, ez = c.z - a.z
+          const len = Math.hypot(ex, ez)
+          if (len < WILD.minWall) continue
+          const r = ((Math.imul((b.id * 131 + i) ^ 0x5bd1e995, 0x85ebca6b) >>> 0) % 10007) / 10007
+          if (r >= (b.noShops ? WILD.rateBlank : WILD.rate) * (this.region.roadPaint === 'paris' ? 1 : WILD.sfBoost)) continue
+          const nx = ez / len, nz = -ex / len
+          const t = WILD.margin + (r * 7919 % 1) * (1 - 2 * WILD.margin)
+          const px = a.x + ex * t, pz = a.z + ez * t
+          if (!facesStreet(this.streets, px, pz, nx, nz)) continue
+          placeModel(furniture, WILD_MODELS[(b.id + i) % WILD_MODELS.length], px, 0, pz, Math.atan2(nx, nz))
+          if (WILD_PLACED.length < 400) WILD_PLACED.push([Math.round(px * 10) / 10, Math.round(pz * 10) / 10, Math.round(Math.atan2(nx, nz) * 100) / 100, (b.id + i) % WILD_MODELS.length])
+        }
+      }
+    }
+
     offDeck = null
+    const tileLamps = LAMP_SINK.get(furniture)
     if (furniture.triangles > 0 && !this.off.has('furniture')) {
       const m = new Mesh(`street:${k}`, this.scene)
       drapeRigid(furniture, this.terrain)
@@ -6033,6 +6302,11 @@ export class City {
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
       m.renderingGroupId = GROUP.building
       meshes.push(m)
+      // the lamps' pools of light and halos, after dark (render/lamp-glow.ts)
+      const glow = tileLamps && lampGlowMesh(`lampglow:${k}`, this.scene, tileLamps, (x, z) => this.terrain.heightAt(x, z), GROUP.building)
+      if (glow) meshes.push(glow)
+      // the street ads, a textured mesh beside the furniture that carries them
+      if (furniture.affiches.length) meshes.push(...afficheMeshes(`affiches:${k}`, this.scene, furniture.affiches, this.region.id, (x, z) => this.terrain.heightAt(x, z), GROUP.building))
       // the street clocks' hands, on the same ground as the dials they turn over
       if (furniture.clocks.length) {
         for (const c of furniture.clocks) c.y += this.terrain.heightAt(c.x, c.z)
@@ -6229,7 +6503,7 @@ export class City {
       }
       // the shadow this building throws across the street, as geometry; see shadows.ts
       if (!this.off.has('shadows')) {
-        addShadow(shadows, ring, plan.height + b.roofHeight * 0.6 + (pad - foot), sunOff, SHADOW_Y)
+        addShadow(shadows, ring, plan.height + b.roofHeight * 0.6 + (pad - foot), sunOff, SHADOW_Y, shadowSkirts)
       }
     }
 
@@ -6239,6 +6513,15 @@ export class City {
       shadows.toVertexData().applyToMesh(m)
       m.material = shadowMaterial(this.scene)
       // after the ground and its markings, before nothing: a shadow multiplies whatever it lands on
+      m.renderingGroupId = GROUP.walk
+      m.isPickable = false
+      meshes.push(m)
+    }
+    if (shadowSkirts.triangles > 0) {
+      const m = new Mesh(`shadow:soft:${k}`, this.scene)
+      yield* this.terrain.drapeSteps(shadowSkirts.positions)
+      shadowSkirts.toVertexData().applyToMesh(m)
+      m.material = softShadowMaterial(this.scene)
       m.renderingGroupId = GROUP.walk
       m.isPickable = false
       meshes.push(m)

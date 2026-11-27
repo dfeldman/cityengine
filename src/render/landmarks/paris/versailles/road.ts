@@ -10,6 +10,7 @@
 import { MeshBuilder } from '../../../buildings.ts'
 import { box, prism, strut } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { topiaryCone } from '../../../topiary.ts'
 import type { Fit } from '../../fit.ts'
 import { dome, hex, placed, roof, shade, type Rgb } from '../../kit.ts'
 import { civic, frontEdge, type CivicSpec } from '../kit/civic.ts'
@@ -37,8 +38,7 @@ function sheet(out: MeshBuilder, g: (x: number, z: number) => number, x0: number
 
 /** A clipped yew: a short drum, then the cone to a point. */
 function coneYew(out: MeshBuilder, x: number, z: number, y: number, h: number, r: number): void {
-  prism(out, x, z, y, y + h * 0.12, r, 10, YEW, clipped)
-  prism(out, x, z, y + h * 0.12, y + h, r, 10, YEW, clipped, r * 0.06)
+  topiaryCone(out, x, y, z, h, r, YEW, { tag: clipped, seed: x * 3.1 + z })
 }
 
 // ---- THE ALLÉE DES STATUES (the château's terrace, west of the Orangerie): OSM's three walks, 10.5 m apart, from the

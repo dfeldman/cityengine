@@ -972,3 +972,26 @@ The round-3 plaza review's leftovers, render-side (no bake):
     in the median that is there with the rule off too: the mini doesn't reproduce the paris-centre view, and the slope is a
     `retaining` mesh. It is not the park-bank slope: capping that changed nothing, so the cap was reverted. **Not verified in
     paris-centre**, which needs a rebake. bir-hakeim-mini is currently baked with `ML_TRENCH_FLOOR_WINS=0`.
+
+### Round 11: the Place de Varsovie trench's grass banks (2026-11-27)
+
+The owner reported sunken routes and odd holes and banks at the Iéna bridgehead. Grass banks lay inside the Avenue de New York's
+trench at both mouths, in front of the walls.
+- **The cause was the DISTANT ground**, not the bake, the tiles' ground, `retaining` or `quays`.
+  - `ground:distant` is the 20 m coarse mesh drawn "under the tiles' own ground". A cell spanning the trench's 4–5 m step stood over
+    the trench floor and drew across it.
+  - Picks and `--hide` of the other meshes all missed it. Hiding `ground:distant` showed the right trench at once.
+  - Found by listing visible mesh prefixes (look-at `--eval`).
+- **Fix: `sinkDistantUnder` (render/city.ts).** It runs as each tile's ways arrive, because `pkg.edges` is empty at runtime.
+  - Every non-tunnel, non-bridge way running at least `DISTANT_CUT_MIN` under the coarse surface takes the distant posts within
+    `DISTANT_CUT_REACH` down to `DISTANT_CUT_SINK` under its level. This is the river's rule, applied to cuts.
+  - It is runtime only, so paris-centre needed no rebake.
+  - Verified on both mouths in bir-hakeim-mini and the SW mouth in paris-centre.
+- **Trench faces hug the floor (`TRENCH_HUG`).** The face stands where the ground first rises `TRENCH_HUG_RISE` over the road. It
+  scans up to `TRENCH_HUG_REACH` and stops at the twin's cut corridor. It used to stand at `half`, which is 2.5 m for a 3.2 m
+  carriageway, inside the 4 m floor.
+- **Concrete verge (`TRENCH_VERGE`)** from the carriageway's edge to the face, wherever the floor's edge was found.
+- **Bake change (tools/tunnels.ts `LID_CHAIN`).** A road out of a lid's mouth shorter than 12 m passes the mouth on to the same
+  street beyond it, so the SW stub's carriageway (151937) is cut like its twin.
+  - Verified in the mini. paris-centre picks it up at its next rebake.
+- **tools/zone-way-audit.ts** lists ways near a point that run buried or floating against the baked ground.

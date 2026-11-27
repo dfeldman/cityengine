@@ -1,0 +1,18 @@
+/** Extra pictograms for the Paris street ads (second batch); same 100 x 100 style as art.ts. */
+const BG = 'fill="var(--bg)"'
+const S = (w: number): string => `fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`
+
+export const ART_PARIS: Record<string, string> = {
+  p_piano: `<rect x="8" y="16" width="84" height="68" rx="6"/><rect x="14" y="44" width="72" height="34" ${BG}/>${[26, 38, 50, 62, 74].map((x) => `<path d="M${x} 44 V78" stroke="currentColor" stroke-width="2"/>`).join('')}${[20, 32, 56, 68].map((x) => `<rect x="${x}" y="44" width="8" height="20"/>`).join('')}<path d="M24 22 H76" ${S(3)} stroke="var(--bg)"/>`,
+  p_beret: `<ellipse cx="50" cy="64" rx="42" ry="20"/><path d="M14 58 Q18 24 54 22 Q88 24 90 58 Z"/><rect x="48" y="10" width="8" height="14" rx="3"/><path d="M12 64 Q50 80 90 64" fill="none" stroke="var(--bg)" stroke-width="3"/>`,
+  p_accordion: `<rect x="6" y="18" width="18" height="64" rx="4"/><rect x="76" y="18" width="18" height="64" rx="4"/><path d="M26 28 L34 20 L42 28 L50 20 L58 28 L66 20 L74 28 V72 L66 80 L58 72 L50 80 L42 72 L34 80 L26 72 Z"/><path d="M34 22 V78 M50 22 V78 M66 22 V78" stroke="var(--bg)" stroke-width="2.5"/><circle cx="85" cy="32" r="3.5" ${BG}/><circle cx="85" cy="50" r="3.5" ${BG}/><circle cx="85" cy="68" r="3.5" ${BG}/>`,
+  p_umbrella: `<path d="M6 54 Q8 12 50 10 Q92 12 94 54 Q84 44 72 54 Q61 44 50 54 Q39 44 28 54 Q16 44 6 54 Z"/><rect x="47" y="2" width="6" height="10"/><path d="M50 54 V82 Q50 94 38 90" ${S(6)}/>`,
+  p_guitar: `<g transform="rotate(35 50 50)"><circle cx="50" cy="74" r="20"/><circle cx="50" cy="50" r="14"/><rect x="45" y="12" width="10" height="42"/><rect x="41" y="2" width="18" height="14" rx="3"/><circle cx="50" cy="68" r="7" ${BG}/></g>`,
+  p_snail: `<circle cx="58" cy="42" r="30"/><path d="M58 42 a5 5 0 1 1 8 4 a12 12 0 1 1 -18 -10 a19 19 0 1 1 30 14" fill="none" stroke="var(--bg)" stroke-width="3"/><rect x="4" y="72" width="92" height="14" rx="7"/><path d="M4 80 Q4 60 16 60 Q24 60 26 74 Z"/><path d="M10 62 L6 44 M18 60 L20 42" ${S(3.5)}/><circle cx="6" cy="43" r="3.5"/><circle cx="20" cy="41" r="3.5"/>`,
+  p_mouse: `<ellipse cx="46" cy="62" rx="34" ry="22"/><path d="M72 46 L98 62 L72 78 Z"/><circle cx="56" cy="38" r="13"/><circle cx="36" cy="40" r="13"/><circle cx="56" cy="38" r="6" ${BG}/><circle cx="36" cy="40" r="6" ${BG}/><circle cx="78" cy="58" r="3" ${BG}/><path d="M12 68 Q2 56 10 38" ${S(4)}/>`,
+  p_ladder: `<g ${S(6)}><path d="M30 6 L22 94 M70 6 L78 94"/><path d="M27 26 H73 M25 46 H75 M23 66 H77 M22 84 H78"/></g>`,
+  p_roller: `<rect x="8" y="12" width="68" height="26" rx="7"/><path d="M76 25 H90 V52 H50 V64" ${S(6)}/><rect x="42" y="62" width="16" height="32" rx="5"/>`,
+  p_cake: `<rect x="12" y="54" width="76" height="34" rx="5"/><rect x="24" y="36" width="52" height="20" rx="5"/><path d="M12 64 Q22 74 32 64 Q42 74 52 64 Q62 74 72 64 Q82 74 88 64" fill="none" stroke="var(--bg)" stroke-width="3"/><rect x="35" y="18" width="5" height="19"/><rect x="48" y="18" width="5" height="19"/><rect x="61" y="18" width="5" height="19"/><ellipse cx="37.5" cy="13" rx="4" ry="6"/><ellipse cx="50.5" cy="13" rx="4" ry="6"/><ellipse cx="63.5" cy="13" rx="4" ry="6"/>`,
+  p_clock: `<circle cx="20" cy="20" r="11"/><circle cx="80" cy="20" r="11"/><circle cx="50" cy="55" r="38"/><circle cx="50" cy="55" r="30" ${BG}/><path d="M50 55 V32 M50 55 L68 65" ${S(6)}/><path d="M34 94 L28 100 M66 94 L72 100" ${S(4)}/>`,
+  p_wrench: `<g transform="rotate(-45 50 50)"><rect x="42" y="30" width="16" height="64" rx="7"/><path d="M30 4 H42 V28 H58 V4 H70 V36 Q70 48 50 48 Q30 48 30 36 Z"/></g>`,
+}

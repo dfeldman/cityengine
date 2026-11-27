@@ -18,6 +18,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { topiaryBall, topiaryCone } from '../../../topiary.ts'
 import { shade } from '../../kit.ts'
 import type { Fit } from '../../fit.ts'
 import { archOn, balustrade, palette, rectOn, slabOn, type Pal } from './common.ts'
@@ -224,10 +225,9 @@ export function gallieraSquare(out: MeshBuilder, fit: Fit): void {
     if (z > -32 || z < -71 || x < -48 || x > 58) continue
     const g = gy(x, z)
     prism(out, x, z, g, g + 2.6, 0.18, 6, [0.35, 0.28, 0.2])
-    prism(out, x, z, g + 2.6, g + 4.2, 1.5, 12, green, leaf, 2.0)              // the clipped round head
-    prism(out, x, z, g + 4.2, g + 5.6, 2.0, 12, green, leaf, 1.0)
+    topiaryBall(out, x, g + 2.5, z, 1.75, green, { tag: leaf, seed: i, sink: 0 })   // the clipped round head
   }
-  for (const x of [-12, -6, 10, 16]) prism(out, x, -38.5, gy(x, -38.5), gy(x, -38.5) + 2.4, 0.8, 10, shade(green, 0.85), leaf, 0.05)
+  for (const x of [-12, -6, 10, 16]) topiaryCone(out, x, gy(x, -38.5), -38.5, 2.4, 0.8, shade(green, 0.85), { tag: leaf, seed: x })
   // ---- empty pedestals on the lawns (the sculptures are placed by the statues' builder)
   for (const [x, z] of [[-30, -45], [34, -45], [-28, -18], [38, -18], [2, -66]]) {
     const g = gy(x, z)
